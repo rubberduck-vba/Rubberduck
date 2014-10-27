@@ -61,7 +61,13 @@ namespace RetailCoderVBE.UnitTesting.UI
             var handler = OnRunSelectedTestButtonClick;
             if (handler != null && _allTests.Any())
             {
-                handler(this, new SelectedTestEventArgs(_allTests[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
+                var selection = _allTests.Where(test => testOutputGridView.SelectedRows
+                                                                          .Cast<DataGridViewRow>()
+                                                                          .Select(row => row.DataBoundItem as TestExplorerItem)
+                                                                          .Select(item => item.GetTestMethod())
+                                                                          .Contains(test.GetTestMethod()));
+
+                handler(this, new SelectedTestEventArgs(selection));
             }
         }
 
@@ -217,13 +223,17 @@ namespace RetailCoderVBE.UnitTesting.UI
 
     internal class SelectedTestEventArgs : EventArgs
     {
-        public SelectedTestEventArgs(TestExplorerItem item)
+        public SelectedTestEventArgs(IEnumerable<TestExplorerItem> items)
         {
-            _selection = item.GetTestMethod();
+            _selection = items.Select(item => item.GetTestMethod());
         }
 
-        private readonly TestMethod _selection;
-        public TestMethod Selection { get { return _selection; } }
+        public SelectedTestEventArgs(TestExplorerItem item)
+            : this(new[] { item })
+        { }
+
+        private readonly IEnumerable<TestMethod> _selection;
+        public IEnumerable<TestMethod> Selection { get { return _selection; } }
     }
 
     internal class TestExplorerItem

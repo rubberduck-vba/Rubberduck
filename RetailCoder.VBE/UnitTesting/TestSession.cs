@@ -53,6 +53,19 @@ namespace RetailCoderVBE.UnitTesting
             ShowExplorerWindow();
         }
 
+        public void Run(IEnumerable<TestMethod> tests)
+        {
+            _timestamp = DateTime.Now;
+            _explorer.ClearProgress();
+            var methods = tests.ToDictionary(test => test, test => null as TestResult);
+
+            _explorer.SetPlayList(methods);
+            AssignResults(methods.Keys);
+
+            _lastRun = methods.Keys;
+            ShowExplorerWindow();
+        }
+
         public void Run()
         {
             _explorer.ClearProgress();
@@ -201,17 +214,23 @@ namespace RetailCoderVBE.UnitTesting
 
         void OnExplorerGoToSelectedTest(object sender, SelectedTestEventArgs e)
         {
+            var selection = e.Selection.FirstOrDefault();
+            if (selection == null)
+            {
+                return;
+            }
+
             var startLine = 1;
             var startColumn = 1;
             var endLine = -1;
             var endColumn = -1;
 
-            var signature = string.Concat("Public Sub ", e.Selection.MethodName, "()");
+            var signature = string.Concat("Public Sub ", selection.MethodName, "()");
 
             var codeModule = _vbe.VBProjects.Cast<VBProject>()
-                                 .Single(project => project.Name == e.Selection.ProjectName)
+                                 .Single(project => project.Name == selection.ProjectName)
                                  .VBComponents.Cast<VBComponent>()
-                                 .Single(component => component.Name == e.Selection.ModuleName)
+                                 .Single(component => component.Name == selection.ModuleName)
                                  .CodeModule;
 
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
