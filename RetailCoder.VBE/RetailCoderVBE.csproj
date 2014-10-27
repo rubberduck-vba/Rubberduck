@@ -115,24 +115,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\tick-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Resources\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\minus-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Resources\minus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\exclamation-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Resources\exclamation-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\question-white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Resources\question-white.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-circle-double.png" />
