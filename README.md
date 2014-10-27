@@ -3,6 +3,34 @@ RetailCoderVBE
 
 A COM Add-In for the VBA IDE.
 
+##Registry Keys
+
+The GUID and ProgId for the `RetailCoderVBE.Extension` class must be registered in the Windows Registry. There is not automated deployment process in place at this point, so the keys must be added & configured manually with RegEdit.
+
+Should there already be a CLSID with the same GUID, a new value will need to be generated and the code recompiled with the new GUID, before the add-in can run.
+
+    [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins64\RetailCoderVBE]
+     ~> [CommandLineSafe] (DWORD:00000000)
+     ~> [Description] ("RetailCoderVBE add-in for VBA IDE.")
+     ~> [LoadBehavior] (DWORD:00000003)
+     ~> [FriendlyName] ("RetailCoderVBE")
+   
+    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}]
+     ~> [@] ("RetailCoderVBE.Extension")
+     
+    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
+     ~> [@] ("mscoree.dll")
+     ~> [ThreadingModel] ("Both")
+     ~> [Class] ("RetailCoderVBE.Extension")
+     ~> [Assembly] ("RetailCoderVBE")
+     ~> [RuntimeVersion] ("v2.0.50727")
+     ~> [CodeBase] ("file:///C:\Dev\RetailCoder\RetailCoder.VBE\RetailCoder.VBE\bin\Debug\RetailCoderVBE.dll")
+   
+    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
+     ~> [@] ("RetailCoderVBE.Extension")
+
+
+
 ##Features
 
 The add-in inserts a [Test] menu to the VBA IDE main menu bar, as well as a [Test] commandbar with the following buttons:
