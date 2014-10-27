@@ -13,6 +13,9 @@ namespace RetailCoderVBE.UnitTesting.UI
 {
     internal partial class TestExplorerWindow : Form, ITestOutput
     {
+        private BindingList<TestExplorerItem> _allTests;
+        private IList<TestExplorerItem> _tests;
+
         public TestExplorerWindow()
         {
             InitializeComponent();
@@ -29,8 +32,10 @@ namespace RetailCoderVBE.UnitTesting.UI
             runLastRunMenuItem.Click += runLastRunMenuItem_Click;
             runSelectedTestMenuItem.Click += runSelectedTestMenuItem_Click;
 
-            _items = new BindingList<TestExplorerItem>();
-            testOutputGridView.DataSource = _items;
+            _allTests = new BindingList<TestExplorerItem>();
+            _tests = new List<TestExplorerItem>();
+
+            testOutputGridView.DataSource = _allTests;
 
             var messageColumn = testOutputGridView.Columns
                                                   .Cast<DataGridViewColumn>()
@@ -54,9 +59,9 @@ namespace RetailCoderVBE.UnitTesting.UI
         void runSelectedTestMenuItem_Click(object sender, EventArgs e)
         {
             var handler = OnRunSelectedTestButtonClick;
-            if (handler != null && _items.Any())
+            if (handler != null && _allTests.Any())
             {
-                handler(this, new SelectedTestEventArgs(_items[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
+                handler(this, new SelectedTestEventArgs(_allTests[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
             }
         }
 
@@ -108,8 +113,6 @@ namespace RetailCoderVBE.UnitTesting.UI
             OnButtonClick(OnAddTestModuleButtonClick);
         }
 
-        private BindingList<TestExplorerItem> _items;        
-
         void TestExplorerWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
@@ -119,33 +122,54 @@ namespace RetailCoderVBE.UnitTesting.UI
         public void ClearProgress()
         {
             _completedCount = 0;
-            testProgressBar.Maximum = _items.Count;
+            testProgressBar.Maximum = _allTests.Count;
             testProgressBar.Value = 0;
+            UpdateCompletedTestsLabels();
+        }
+
+        public void ClearResults()
+        {
+            _allTests = new BindingList<TestExplorerItem>(_allTests.Select(test => new TestExplorerItem(test.GetTestMethod(), null)).ToList());
+            testOutputGridView.DataSource = _allTests;
         }
 
         private int _completedCount; 
         private void UpdateProgress()
         {
-            passedTestsLabel.Text = string.Format("{0} Passed", _items.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
-            failedTestsLabel.Text = string.Format("{0} Failed", _items.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
-            inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _items.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
+            UpdateCompletedTestsLabels();
 
-            testProgressBar.Maximum = _items.Count;
+            testProgressBar.Maximum = _tests.Count;
             testProgressBar.Value = ++_completedCount;
+        }
+
+        private void UpdateCompletedTestsLabels()
+        {
+            passedTestsLabel.Text = string.Format("{0} Passed", _tests.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
+            failedTestsLabel.Text = string.Format("{0} Failed", _tests.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
+            inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _tests.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
+        }
+
+        private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
+        {
+            return items.FirstOrDefault(item => item.ProjectName == test.ProjectName
+                                                 && item.ModuleName == test.ModuleName
+                                                 && item.MethodName == test.MethodName);
         }
 
         public void WriteResult(TestMethod test, TestResult result)
         {
-            var row = _items.FirstOrDefault(item => item.ProjectName == test.ProjectName
-                                                 && item.ModuleName == test.ModuleName
-                                                 && item.MethodName == test.MethodName);
-            if (row == null)
+            var gridItem = FindItem(_allTests, test);
+            var playListItem = FindItem(_tests, test);
+            
+            if (gridItem == null)
             {
-                _items.Add(new TestExplorerItem(test, result));
+                var item = new TestExplorerItem(test, result);
+                _allTests.Add(item);
             }
             else
             {
-                row.SetResult(result);
+                gridItem.SetResult(result);
+                playListItem.SetResult(result);
             }
 
             UpdateProgress();
@@ -154,9 +178,15 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         public void Refresh(IDictionary<TestMethod,TestResult> tests)
         {
-            _items = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
-            testOutputGridView.DataSource = _items;
+            _allTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
+            testOutputGridView.DataSource = _allTests;
             testOutputGridView.Refresh();
+        }
+
+        public void SetPlayList(IDictionary<TestMethod,TestResult> tests)
+        {
+            _tests = tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList();
+            UpdateCompletedTestsLabels();
         }
 
         public event EventHandler OnRefreshListButtonClick;
@@ -171,16 +201,16 @@ namespace RetailCoderVBE.UnitTesting.UI
             var handler = OnGoToSelectedTest;
             if (handler != null)
             {
-                handler(this, new SelectedTestEventArgs(_items[e.RowIndex]));
+                handler(this, new SelectedTestEventArgs(_allTests[e.RowIndex]));
             }
         }
 
         void gotoSelectionButton_Click(object sender, EventArgs e)
         {
             var handler = OnGoToSelectedTest;
-            if (handler != null && _items.Any())
+            if (handler != null && _allTests.Any())
             {
-                handler(this, new SelectedTestEventArgs(_items[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
+                handler(this, new SelectedTestEventArgs(_allTests[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
             }
         }
     }

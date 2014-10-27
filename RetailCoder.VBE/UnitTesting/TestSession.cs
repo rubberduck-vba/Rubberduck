@@ -14,7 +14,7 @@ namespace RetailCoderVBE.UnitTesting
         public TestSession(VBE vbe)
         {
             _vbe = vbe;
-            _tests = new Dictionary<TestMethod, TestResult>();
+            _allTests = new Dictionary<TestMethod, TestResult>();
             _explorer = new TestExplorerWindow();
             RegisterTestExplorerEvents();
 
@@ -24,7 +24,7 @@ namespace RetailCoderVBE.UnitTesting
         private readonly VBE _vbe;
 
         private readonly TestExplorerWindow _explorer;
-        private IDictionary<TestMethod,TestResult> _tests;
+        private IDictionary<TestMethod,TestResult> _allTests;
         private IEnumerable<TestMethod> _lastRun;
         private readonly TestEngine _engine;
 
@@ -33,7 +33,7 @@ namespace RetailCoderVBE.UnitTesting
 
         private void ShowExplorerWindow()
         {
-            _explorer.Refresh(_tests);
+            _explorer.Refresh(_allTests);
             if (!_explorer.Visible)
             {
                 _explorer.Show();
@@ -44,10 +44,12 @@ namespace RetailCoderVBE.UnitTesting
         {
             _timestamp = DateTime.Now;
             _explorer.ClearProgress();
-            _tests[test] = _engine.Run(test);
-            _explorer.Update();
+            var tests = new Dictionary<TestMethod, TestResult> { { test, null } };
 
-            _lastRun = new[] { test };
+            _explorer.SetPlayList(tests);
+            AssignResults(tests.Keys);
+
+            _lastRun = tests.Keys;
             ShowExplorerWindow();
         }
 
@@ -56,14 +58,18 @@ namespace RetailCoderVBE.UnitTesting
             _explorer.ClearProgress();
 
             SynchronizeTests();
-            if (!_tests.Any())
+            _explorer.SetPlayList(_allTests);
+
+            if (!_allTests.Any())
             {
+                _explorer.ClearResults();
+                _lastRun = null;
                 return;
             }
 
             _timestamp = DateTime.Now;
 
-            var tests = _tests.Keys;
+            var tests = _allTests.Keys;
             AssignResults(tests);
 
             _lastRun = tests;
@@ -74,11 +80,18 @@ namespace RetailCoderVBE.UnitTesting
         {
             if (_lastRun == null)
             {
+                var tests = _allTests.Keys.ToList();
+                foreach (var test in tests)
+                {
+                    _allTests[test] = null;
+                }
+
                 return;
             }
 
             _timestamp = DateTime.Now;
             _explorer.ClearProgress();
+            _explorer.SetPlayList(_lastRun.ToDictionary(test => test, test => null as TestResult));
 
             AssignResults(_lastRun);
             ShowExplorerWindow();
@@ -91,7 +104,7 @@ namespace RetailCoderVBE.UnitTesting
         /// <returns></returns>
         public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
         {
-            return _tests.Where(test => test.Value != null 
+            return _allTests.Where(test => test.Value != null 
                              && test.Value.Outcome == (outcome ?? test.Value.Outcome))
                              .Select(test => test.Key);
         }
@@ -101,8 +114,8 @@ namespace RetailCoderVBE.UnitTesting
             var tests = _vbe.VBProjects
                             .Cast<VBProject>()
                             .SelectMany(project => project.TestMethods())
-                            .ToDictionary(test => test, test => _tests.ContainsKey(test) ? _tests[test] : null);
-            _tests = tests;
+                            .ToDictionary(test => test, test => _allTests.ContainsKey(test) ? _allTests[test] : null);
+            _allTests = tests;
         }
 
         public void ShowExplorer()
@@ -163,27 +176,27 @@ namespace RetailCoderVBE.UnitTesting
         {
             NewUnitTestModuleCommand.NewUnitTestModule(_vbe);
             SynchronizeTests();
-            _explorer.Refresh(_tests);
+            _explorer.Refresh(_allTests);
         }
 
         void OnExplorerAddTestMethodButtonClick(object sender, EventArgs e)
         {
             NewTestMethodCommand.NewTestMethod(_vbe);
             SynchronizeTests();
-            _explorer.Refresh(_tests);
+            _explorer.Refresh(_allTests);
         }
 
         void OnExplorerAddExpectedErrorTestMethodButtonClick(object sender, EventArgs e)
         {
             NewTestMethodCommand.NewExpectedErrorTestMethod(_vbe);
             SynchronizeTests();
-            _explorer.Refresh(_tests);
+            _explorer.Refresh(_allTests);
         }
 
         void OnExplorerRefreshListButtonClick(object sender, EventArgs e)
         {
             SynchronizeTests();
-            _explorer.Refresh(_tests);
+            _explorer.Refresh(_allTests);
         }
 
         void OnExplorerGoToSelectedTest(object sender, SelectedTestEventArgs e)
@@ -208,13 +221,13 @@ namespace RetailCoderVBE.UnitTesting
             }
         }
 
-        public IDictionary<TestMethod, TestResult> AllTests { get { return _tests; } }
+        public IDictionary<TestMethod, TestResult> AllTests { get { return _allTests; } }
 
         public IEnumerable<TestMethod> PassedTests
         {
             get
             {
-                return _tests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
+                return _allTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
                              .Select(test => test.Key);
             }
         }
@@ -224,7 +237,9 @@ namespace RetailCoderVBE.UnitTesting
             _explorer.ClearProgress();
 
             var tests = PassedTests;
-            if (FailedTests.Any())
+            _explorer.SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
+
+            if (tests.Any())
             {
                 _timestamp = DateTime.Now;
 
@@ -233,13 +248,18 @@ namespace RetailCoderVBE.UnitTesting
                 _lastRun = tests;
                 ShowExplorerWindow();
             }
+            else
+            {
+                _explorer.ClearResults();
+                _lastRun = null;
+            }
         }
 
         public IEnumerable<TestMethod> FailedTests
         {
             get
             {
-                return _tests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
+                return _allTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
                              .Select(test => test.Key);
             }
         }
@@ -249,7 +269,9 @@ namespace RetailCoderVBE.UnitTesting
             _explorer.ClearProgress();
 
             var tests = FailedTests;
-            if (FailedTests.Any())
+            _explorer.SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
+
+            if (tests.Any())
             {
                 _timestamp = DateTime.Now;
 
@@ -258,21 +280,26 @@ namespace RetailCoderVBE.UnitTesting
                 _lastRun = tests;
                 ShowExplorerWindow();
             }
+            else
+            {
+                _explorer.ClearResults();
+                _lastRun = null;
+            }
         }
 
         private void AssignResults(IEnumerable<TestMethod> testMethods)
         {
             var tests = testMethods.ToList();
-            var keys = _tests.Keys.ToList();
+            var keys = _allTests.Keys.ToList();
             foreach (var test in keys)
             {
                 if (tests.Contains(test))
                 {
-                    _tests[test] = _engine.Run(test);
+                    _allTests[test] = _engine.Run(test);
                 }
                 else
                 {
-                    _tests[test] = TestResult.Unknown();
+                    _allTests[test] = null;
                 }
             }
         }
@@ -281,8 +308,8 @@ namespace RetailCoderVBE.UnitTesting
         {
             get 
             {
-                return _tests.Where(test => test.Value == null)
-                             .Select(test => test.Key);
+                return _allTests.Where(test => test.Value == null)
+                                .Select(test => test.Key);
             }
         }
 
@@ -290,15 +317,22 @@ namespace RetailCoderVBE.UnitTesting
         {
             _explorer.ClearProgress();
 
-            if (NotRunTests.Any())
+            var tests = NotRunTests.ToList();
+            if (tests.Any())
             {
                 _timestamp = DateTime.Now;
 
-                var tests = NotRunTests;
+                _explorer.SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
+
                 AssignResults(tests);
 
                 _lastRun = tests;
                 ShowExplorerWindow();
+            }
+            else
+            {
+                _explorer.ClearResults();
+                _lastRun = null;
             }
         }
 
