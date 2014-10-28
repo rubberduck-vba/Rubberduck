@@ -5,7 +5,7 @@ A COM Add-In for the VBA IDE.
 
 ##Registry Keys
 
-The GUID and ProgId for the `RetailCoderVBE.Extension` class must be registered in the Windows Registry. There is not automated deployment process in place at this point, so the keys must be added & configured manually with RegEdit.
+The GUID and ProgId for the `RetailCoderVBE.Extension` class must be registered in the Windows Registry. There is no automated deployment process in place at this point, so the keys must be added & configured manually with RegEdit.
 
 Should there already be a CLSID with the same GUID, a new value will need to be generated and the code recompiled with the new GUID, before the add-in can run.
 
@@ -28,7 +28,6 @@ Should there already be a CLSID with the same GUID, a new value will need to be 
    
     [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
      ~> [@] ("RetailCoderVBE.Extension")
-
 
 
 ##Features
@@ -74,8 +73,8 @@ Adding a *Test Method* adds this template snippet at the end of the active test 
         'Act
 
         'Assert
-    
         Assert.Inconclusive
+        
     TestExit:
         Exit Sub
     TestFail:
@@ -97,8 +96,8 @@ Adding a *Test Method (expected error)* adds this template snippet at the end of
         'Act
     
         'Assert
-    
         Assert.Fail "Expected error was not raised."
+        
     TestExit:
         Exit Sub
     TestFail:
