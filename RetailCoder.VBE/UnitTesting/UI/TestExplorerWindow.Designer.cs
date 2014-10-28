@@ -108,6 +108,7 @@
             // 
             // runSelectedTestMenuItem
             // 
+            this.runSelectedTestMenuItem.Enabled = false;
             this.runSelectedTestMenuItem.Name = "runSelectedTestMenuItem";
             this.runSelectedTestMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runSelectedTestMenuItem.Text = "&Selected Tests";
@@ -134,6 +135,7 @@
             // 
             // runFailedTestsMenuItem
             // 
+            this.runFailedTestsMenuItem.Enabled = false;
             this.runFailedTestsMenuItem.Image = global::RetailCoderVBE.Properties.Resources.minus_circle;
             this.runFailedTestsMenuItem.Name = "runFailedTestsMenuItem";
             this.runFailedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
@@ -141,6 +143,7 @@
             // 
             // runPassedTestsMenuItem
             // 
+            this.runPassedTestsMenuItem.Enabled = false;
             this.runPassedTestsMenuItem.Image = global::RetailCoderVBE.Properties.Resources.tick_circle;
             this.runPassedTestsMenuItem.Name = "runPassedTestsMenuItem";
             this.runPassedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
@@ -153,6 +156,7 @@
             // 
             // runLastRunMenuItem
             // 
+            this.runLastRunMenuItem.Enabled = false;
             this.runLastRunMenuItem.Image = global::RetailCoderVBE.Properties.Resources.arrow_repeat;
             this.runLastRunMenuItem.Name = "runLastRunMenuItem";
             this.runLastRunMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 

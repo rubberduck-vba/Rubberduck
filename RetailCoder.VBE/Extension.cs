@@ -11,38 +11,13 @@ using RetailCoderVBE.UnitTesting.UI;
 
 namespace RetailCoderVBE
 {
-    /* Windows Registry keys
-     *
-     * [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins64\RetailCoderVBE]
-     *  ~> [CommandLineSafe] (DWORD:00000000)
-     *  ~> [Description] ("RetailCoderVBE add-in for VBA IDE.")
-     *  ~> [LoadBehavior] (DWORD:00000003)
-     *  ~> [FriendlyName] ("RetailCoderVBE")
-     *
-     * [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}]
-     *  ~> [@] ("RetailCoderVBE.Extension")
-     *  
-     * [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
-     *  ~> [@] ("mscoree.dll")
-     *  ~> [ThreadingModel] ("Both")
-     *  ~> [Class] ("RetailCoderVBE.Extension")
-     *  ~> [Assembly] ("RetailCoderVBE")
-     *  ~> [RuntimeVersion] ("v2.0.50727")
-     *  ~> [CodeBase] ("file:///C:\Dev\RetailCoder\RetailCoder.VBE\RetailCoder.VBE\bin\Debug\RetailCoderVBE.dll")
-     *
-     * [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
-     *  ~> [@] ("RetailCoderVBE.Extension")
-     *
-    */
-
     [ComVisible(true)]
     [Guid("8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66")]
     [ProgId("RetailCoderVBE.Extension")]
-    public class Extension : IDTExtensibility2
+    public class Extension : IDTExtensibility2, IDisposable
     {
         private VBE _vbe;
         private TestMenu _testMenu;
-        private TestToolbar _testToolbar;
         private TestSession _testSession;
 
         public void OnAddInsUpdate(ref Array custom)
@@ -69,7 +44,6 @@ namespace RetailCoderVBE
         public void OnStartupComplete(ref Array custom)
         {
             CreateTestMenu();
-            CreateTestToolbar();
         }
 
         private void CreateTestMenu()
@@ -89,15 +63,6 @@ namespace RetailCoderVBE
         void OnShowTestExplorer(object sender, EventArgs e)
         {
             _testSession.ShowExplorer();
-        }
-
-        private void CreateTestToolbar()
-        {
-            _testToolbar = new TestToolbar();
-            _testToolbar.OnRunAllTests += OnRunAllTests;
-            _testToolbar.OnTestExporer += OnShowTestExplorer;
-
-            _testToolbar.Initialize(_vbe);
         }
 
         void OnNewExpectedErrorTestMethod(object sender, EventArgs e)
@@ -150,6 +115,11 @@ namespace RetailCoderVBE
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
+        {
+            Dispose();
+        }
+
+        public void Dispose()
         {
             _testSession.Dispose();
         }

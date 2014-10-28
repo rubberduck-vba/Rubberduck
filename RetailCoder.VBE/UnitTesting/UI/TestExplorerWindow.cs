@@ -20,7 +20,10 @@ namespace RetailCoderVBE.UnitTesting.UI
         {
             InitializeComponent();
             FormClosing += TestExplorerWindow_FormClosing;
+            
             testOutputGridView.CellDoubleClick += OnCellDoubleClick;
+            testOutputGridView.SelectionChanged += OnSelectionChanged;
+
             gotoSelectionButton.Click += gotoSelectionButton_Click;
             addTestMethodButton.Click += addTestMethodButton_Click;
             addTestModuleButton.Click += addTestModuleButton_Click;
@@ -44,6 +47,11 @@ namespace RetailCoderVBE.UnitTesting.UI
             {
                 messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+        }
+
+        void OnSelectionChanged(object sender, EventArgs e)
+        {
+            runSelectedTestMenuItem.Enabled = testOutputGridView.SelectedRows.Count != 0;
         }
 
         private void OnButtonClick(EventHandler clickEvent)
@@ -144,8 +152,13 @@ namespace RetailCoderVBE.UnitTesting.UI
         {
             UpdateCompletedTestsLabels();
 
+            runPassedTestsMenuItem.Enabled = _tests.Any(test => test.Outcome == TestOutcome.Succeeded.ToString());
+            runFailedTestsMenuItem.Enabled = _tests.Any(test => test.Outcome == TestOutcome.Failed.ToString());
+
             testProgressBar.Maximum = _tests.Count;
             testProgressBar.Value = ++_completedCount;
+
+            runLastRunMenuItem.Enabled = _completedCount > 0;
         }
 
         private void UpdateCompletedTestsLabels()
@@ -160,26 +173,6 @@ namespace RetailCoderVBE.UnitTesting.UI
             return items.FirstOrDefault(item => item.ProjectName == test.ProjectName
                                                  && item.ModuleName == test.ModuleName
                                                  && item.MethodName == test.MethodName);
-        }
-
-        public void WriteResult(TestMethod test, TestResult result)
-        {
-            var gridItem = FindItem(_allTests, test);
-            var playListItem = FindItem(_tests, test);
-            
-            if (gridItem == null)
-            {
-                var item = new TestExplorerItem(test, result);
-                _allTests.Add(item);
-            }
-            else
-            {
-                gridItem.SetResult(result);
-                playListItem.SetResult(result);
-            }
-
-            UpdateProgress();
-            testOutputGridView.Refresh();
         }
 
         public void Refresh(IDictionary<TestMethod,TestResult> tests)
@@ -219,6 +212,26 @@ namespace RetailCoderVBE.UnitTesting.UI
                 handler(this, new SelectedTestEventArgs(_allTests[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
             }
         }
+
+        public void WriteResult(TestMethod test, TestResult result)
+        {
+            var gridItem = FindItem(_allTests, test);
+            var playListItem = FindItem(_tests, test);
+
+            if (gridItem == null)
+            {
+                var item = new TestExplorerItem(test, result);
+                _allTests.Add(item);
+            }
+            else
+            {
+                gridItem.SetResult(result);
+                playListItem.SetResult(result);
+            }
+
+            UpdateProgress();
+            testOutputGridView.Refresh();
+        }    
     }
 
     internal class SelectedTestEventArgs : EventArgs
