@@ -285,7 +285,7 @@
             this.testOutputGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.testOutputGridView.Size = new System.Drawing.Size(584, 136);
             this.testOutputGridView.TabIndex = 1;
-            this.testOutputGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellDoubleClick);
+            this.testOutputGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridCellDoubleClicked);
             // 
             // TestExplorerWindow
             // 

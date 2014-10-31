@@ -13,31 +13,21 @@ namespace RetailCoderVBE.UnitTesting.UI
 {
     internal partial class TestExplorerWindow : Form, ITestOutput
     {
-        private BindingList<TestExplorerItem> _allTests;
-        private IList<TestExplorerItem> _tests;
+        private BindingList<TestExplorerItem> _allTests; // all tests found in solution
+        private IList<TestExplorerItem> _tests; // tests to execute
 
         public TestExplorerWindow()
         {
-            InitializeComponent();
-            FormClosing += TestExplorerWindow_FormClosing;
-            
-            testOutputGridView.CellDoubleClick += OnCellDoubleClick;
-            testOutputGridView.SelectionChanged += OnSelectionChanged;
-
-            gotoSelectionButton.Click += gotoSelectionButton_Click;
-            addTestMethodButton.Click += addTestMethodButton_Click;
-            addTestModuleButton.Click += addTestModuleButton_Click;
-            addExpectedErrorTestMethodButton.Click += addExpectedErrorTestMethodButton_Click;
-            runAllTestsMenuItem.Click += runAllTestsMenuItem_Click;
-            runFailedTestsMenuItem.Click += runFailedTestsMenuItem_Click;
-            runPassedTestsMenuItem.Click += runPassedTestsMenuItem_Click;
-            runNotRunTestsMenuItem.Click += runNotRunTestsMenuItem_Click;
-            runLastRunMenuItem.Click += runLastRunMenuItem_Click;
-            runSelectedTestMenuItem.Click += runSelectedTestMenuItem_Click;
-
             _allTests = new BindingList<TestExplorerItem>();
             _tests = new List<TestExplorerItem>();
 
+            InitializeComponent();
+            InitializeGrid();
+            RegisterUIEvents();
+        }
+
+        private void InitializeGrid()
+        {
             testOutputGridView.DataSource = _allTests;
 
             var messageColumn = testOutputGridView.Columns
@@ -49,7 +39,26 @@ namespace RetailCoderVBE.UnitTesting.UI
             }
         }
 
-        void OnSelectionChanged(object sender, EventArgs e)
+        private void RegisterUIEvents()
+        {
+            FormClosing += TestExplorerWindowFormClosing;
+
+            testOutputGridView.CellDoubleClick += GridCellDoubleClicked;
+            testOutputGridView.SelectionChanged += GridSelectionChanged;
+
+            gotoSelectionButton.Click += GotoSelectionButtonClicked;
+            addTestMethodButton.Click += AddTestMethodButtonClicked;
+            addTestModuleButton.Click += AddTestModuleButtonClicked;
+            addExpectedErrorTestMethodButton.Click += AddExpectedErrorTestMethodButtonClicked;
+            runAllTestsMenuItem.Click += RunAllTestsMenuItemClicked;
+            runFailedTestsMenuItem.Click += RunFailedTestsMenuItemClicked;
+            runPassedTestsMenuItem.Click += RunPassedTestsMenuItemClicked;
+            runNotRunTestsMenuItem.Click += RunNotRunTestsMenuItemClicked;
+            runLastRunMenuItem.Click += RunLastRunMenuItemClicked;
+            runSelectedTestMenuItem.Click += RunSelectedTestMenuItemClicked;
+        }
+
+        void GridSelectionChanged(object sender, EventArgs e)
         {
             runSelectedTestMenuItem.Enabled = testOutputGridView.SelectedRows.Count != 0;
         }
@@ -64,7 +73,7 @@ namespace RetailCoderVBE.UnitTesting.UI
         }
 
         public event EventHandler<SelectedTestEventArgs> OnRunSelectedTestButtonClick;
-        void runSelectedTestMenuItem_Click(object sender, EventArgs e)
+        void RunSelectedTestMenuItemClicked(object sender, EventArgs e)
         {
             var handler = OnRunSelectedTestButtonClick;
             if (handler != null && _allTests.Any())
@@ -80,54 +89,54 @@ namespace RetailCoderVBE.UnitTesting.UI
         }
 
         public event EventHandler OnRunLastRunTestsButtonClick;
-        void runLastRunMenuItem_Click(object sender, EventArgs e)
+        void RunLastRunMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunLastRunTestsButtonClick);
         }
 
         public event EventHandler OnRunNotRunTestsButtonClick;
-        void runNotRunTestsMenuItem_Click(object sender, EventArgs e)
+        void RunNotRunTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunNotRunTestsButtonClick);
         }
 
         public event EventHandler OnRunPassedTestsButtonClick;
-        void runPassedTestsMenuItem_Click(object sender, EventArgs e)
+        void RunPassedTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunPassedTestsButtonClick);
         }
 
         public event EventHandler OnRunFailedTestsButtonClick;
-        void runFailedTestsMenuItem_Click(object sender, EventArgs e)
+        void RunFailedTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunFailedTestsButtonClick);
         }
 
         public event EventHandler OnRunAllTestsButtonClick;
-        void runAllTestsMenuItem_Click(object sender, EventArgs e)
+        void RunAllTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunAllTestsButtonClick);
         }
 
         public event EventHandler OnAddExpectedErrorTestMethodButtonClick;
-        void addExpectedErrorTestMethodButton_Click(object sender, EventArgs e)
+        void AddExpectedErrorTestMethodButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddExpectedErrorTestMethodButtonClick);
         }
 
         public event EventHandler OnAddTestMethodButtonClick;
-        void addTestMethodButton_Click(object sender, EventArgs e)
+        void AddTestMethodButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddTestMethodButtonClick);
         }
 
         public event EventHandler OnAddTestModuleButtonClick;
-        void addTestModuleButton_Click(object sender, EventArgs e)
+        void AddTestModuleButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddTestModuleButtonClick);
         }
 
-        void TestExplorerWindow_FormClosing(object sender, FormClosingEventArgs e)
+        void TestExplorerWindowFormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
             Hide();
@@ -195,7 +204,7 @@ namespace RetailCoderVBE.UnitTesting.UI
         }
 
         public event EventHandler<SelectedTestEventArgs> OnGoToSelectedTest;
-        private void OnCellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void GridCellDoubleClicked(object sender, DataGridViewCellEventArgs e)
         {
             var handler = OnGoToSelectedTest;
             if (handler != null)
@@ -204,7 +213,7 @@ namespace RetailCoderVBE.UnitTesting.UI
             }
         }
 
-        void gotoSelectionButton_Click(object sender, EventArgs e)
+        void GotoSelectionButtonClicked(object sender, EventArgs e)
         {
             var handler = OnGoToSelectedTest;
             if (handler != null && _allTests.Any())
