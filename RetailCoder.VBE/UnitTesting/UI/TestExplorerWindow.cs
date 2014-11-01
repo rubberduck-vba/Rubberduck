@@ -13,30 +13,23 @@ namespace RetailCoderVBE.UnitTesting.UI
 {
     internal partial class TestExplorerWindow : Form, ITestOutput
     {
-        private BindingList<TestExplorerItem> _allTests; // all tests found in solution
-        private IList<TestExplorerItem> _tests; // tests to execute
+        private BindingList<TestExplorerItem> _allTests;
+        private IList<TestExplorerItem> _playList;
 
         public TestExplorerWindow()
         {
-            _allTests = new BindingList<TestExplorerItem>();
-            _tests = new List<TestExplorerItem>();
-
             InitializeComponent();
             InitializeGrid();
             RegisterUIEvents();
+
+            _allTests = new BindingList<TestExplorerItem>();
+            _playList = new List<TestExplorerItem>();
         }
 
         private void InitializeGrid()
         {
             testOutputGridView.DataSource = _allTests;
-
-            var messageColumn = testOutputGridView.Columns
-                                                  .Cast<DataGridViewColumn>()
-                                                  .FirstOrDefault(column => column.HeaderText == "Message");
-            if (messageColumn != null)
-            {
-                messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
+            testOutputGridView.Columns["Message"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         private void RegisterUIEvents()
@@ -58,7 +51,7 @@ namespace RetailCoderVBE.UnitTesting.UI
             runSelectedTestMenuItem.Click += RunSelectedTestMenuItemClicked;
         }
 
-        void GridSelectionChanged(object sender, EventArgs e)
+        private void GridSelectionChanged(object sender, EventArgs e)
         {
             runSelectedTestMenuItem.Enabled = testOutputGridView.SelectedRows.Count != 0;
         }
@@ -73,7 +66,7 @@ namespace RetailCoderVBE.UnitTesting.UI
         }
 
         public event EventHandler<SelectedTestEventArgs> OnRunSelectedTestButtonClick;
-        void RunSelectedTestMenuItemClicked(object sender, EventArgs e)
+        private void RunSelectedTestMenuItemClicked(object sender, EventArgs e)
         {
             var handler = OnRunSelectedTestButtonClick;
             if (handler != null && _allTests.Any())
@@ -89,54 +82,55 @@ namespace RetailCoderVBE.UnitTesting.UI
         }
 
         public event EventHandler OnRunLastRunTestsButtonClick;
-        void RunLastRunMenuItemClicked(object sender, EventArgs e)
+        private void RunLastRunMenuItemClicked(object sender, EventArgs e)
         {
+            _playList = _playList.Select(test => new TestExplorerItem(test.GetTestMethod(), null)).ToList();
             OnButtonClick(OnRunLastRunTestsButtonClick);
         }
 
         public event EventHandler OnRunNotRunTestsButtonClick;
-        void RunNotRunTestsMenuItemClicked(object sender, EventArgs e)
+        private void RunNotRunTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunNotRunTestsButtonClick);
         }
 
         public event EventHandler OnRunPassedTestsButtonClick;
-        void RunPassedTestsMenuItemClicked(object sender, EventArgs e)
+        private void RunPassedTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunPassedTestsButtonClick);
         }
 
         public event EventHandler OnRunFailedTestsButtonClick;
-        void RunFailedTestsMenuItemClicked(object sender, EventArgs e)
+        private void RunFailedTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunFailedTestsButtonClick);
         }
 
         public event EventHandler OnRunAllTestsButtonClick;
-        void RunAllTestsMenuItemClicked(object sender, EventArgs e)
+        private void RunAllTestsMenuItemClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnRunAllTestsButtonClick);
         }
 
         public event EventHandler OnAddExpectedErrorTestMethodButtonClick;
-        void AddExpectedErrorTestMethodButtonClicked(object sender, EventArgs e)
+        private void AddExpectedErrorTestMethodButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddExpectedErrorTestMethodButtonClick);
         }
 
         public event EventHandler OnAddTestMethodButtonClick;
-        void AddTestMethodButtonClicked(object sender, EventArgs e)
+        private void AddTestMethodButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddTestMethodButtonClick);
         }
 
         public event EventHandler OnAddTestModuleButtonClick;
-        void AddTestModuleButtonClicked(object sender, EventArgs e)
+        private void AddTestModuleButtonClicked(object sender, EventArgs e)
         {
             OnButtonClick(OnAddTestModuleButtonClick);
         }
 
-        void TestExplorerWindowFormClosing(object sender, FormClosingEventArgs e)
+        private void TestExplorerWindowFormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
             Hide();
@@ -161,10 +155,10 @@ namespace RetailCoderVBE.UnitTesting.UI
         {
             UpdateCompletedTestsLabels();
 
-            runPassedTestsMenuItem.Enabled = _tests.Any(test => test.Outcome == TestOutcome.Succeeded.ToString());
-            runFailedTestsMenuItem.Enabled = _tests.Any(test => test.Outcome == TestOutcome.Failed.ToString());
+            runPassedTestsMenuItem.Enabled = _playList.Any(test => test.Outcome == TestOutcome.Succeeded.ToString());
+            runFailedTestsMenuItem.Enabled = _playList.Any(test => test.Outcome == TestOutcome.Failed.ToString());
 
-            testProgressBar.Maximum = _tests.Count;
+            testProgressBar.Maximum = _playList.Count;
             testProgressBar.Value = ++_completedCount;
 
             runLastRunMenuItem.Enabled = _completedCount > 0;
@@ -172,9 +166,9 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         private void UpdateCompletedTestsLabels()
         {
-            passedTestsLabel.Text = string.Format("{0} Passed", _tests.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
-            failedTestsLabel.Text = string.Format("{0} Failed", _tests.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
-            inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _tests.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
+            passedTestsLabel.Text = string.Format("{0} Passed", _playList.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
+            failedTestsLabel.Text = string.Format("{0} Failed", _playList.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
+            inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _playList.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
         }
 
         private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
@@ -193,7 +187,7 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         public void SetPlayList(IDictionary<TestMethod,TestResult> tests)
         {
-            _tests = tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList();
+            _playList = tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList();
             UpdateCompletedTestsLabels();
         }
 
@@ -213,19 +207,20 @@ namespace RetailCoderVBE.UnitTesting.UI
             }
         }
 
-        void GotoSelectionButtonClicked(object sender, EventArgs e)
+        private void GotoSelectionButtonClicked(object sender, EventArgs e)
         {
             var handler = OnGoToSelectedTest;
             if (handler != null && _allTests.Any())
             {
-                handler(this, new SelectedTestEventArgs(_allTests[testOutputGridView.SelectedRows.Cast<DataGridViewRow>().First().Index]));
+                var selectionIndex = testOutputGridView.SelectedRows[0].Index;
+                handler(this, new SelectedTestEventArgs(_allTests[selectionIndex]));
             }
         }
 
         public void WriteResult(TestMethod test, TestResult result)
         {
             var gridItem = FindItem(_allTests, test);
-            var playListItem = FindItem(_tests, test);
+            var playListItem = FindItem(_playList, test);
 
             if (gridItem == null)
             {
