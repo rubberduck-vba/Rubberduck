@@ -9,12 +9,7 @@ using System.Threading.Tasks;
 
 namespace RetailCoderVBE
 {
-    internal interface IApp
-    {
-        void CreateExtUI();
-    }
-
-    internal class App : IApp, IDisposable
+    internal class App : IDisposable
     {
         private readonly VBE _vbe;
         private readonly TestMenu _testMenu;
