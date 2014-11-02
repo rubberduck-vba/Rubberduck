@@ -102,7 +102,8 @@ namespace RetailCoderVBE.Reflection
             body = body.Select(line => line.Replace("\r", string.Empty)).ToArray();
 
             var withoutKeyword = signature.Substring((_keywords.First(keyword => signature.StartsWith(keyword))).Length);
-            var name = withoutKeyword.Split(' ')[1].Split('(')[0];
+            var name = withoutKeyword.Split(' ')[1]
+                                     .Split('(')[0];
 
             var type = GetMemberType(signature, withoutKeyword);
             var visibility = GetMemberVisibility(signature);

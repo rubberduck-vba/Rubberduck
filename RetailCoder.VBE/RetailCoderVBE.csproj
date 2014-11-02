@@ -46,6 +46,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -61,9 +62,8 @@
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
-    <Compile Include="UnitTesting\TestSession.cs" />
+    <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,8 +72,7 @@
     </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VBIDE\TestMenu.cs" />
-    <Compile Include="VBIDE\TestToolbar.cs" />
+    <Compile Include="UnitTesting\UI\TestMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -158,6 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\magnifier--arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Refactoring\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

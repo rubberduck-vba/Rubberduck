@@ -4,10 +4,7 @@ using Extensibility;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-
-using RetailCoderVBE.VBIDE;
-using RetailCoderVBE.UnitTesting;
-using RetailCoderVBE.UnitTesting.UI;
+using System.Windows.Forms;
 
 namespace RetailCoderVBE
 {
@@ -16,9 +13,7 @@ namespace RetailCoderVBE
     [ProgId("RetailCoderVBE.Extension")]
     public class Extension : IDTExtensibility2, IDisposable
     {
-        private VBE _vbe;
-        private TestMenu _testMenu;
-        private TestSession _testSession;
+        private App _app;
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -32,86 +27,17 @@ namespace RetailCoderVBE
         {
             try
             {
-                _vbe = (VBE)Application;
-                _testSession = new TestSession(_vbe);
+                _app = new App((VBE)Application);
             }
             catch(Exception exception)
             {
-                System.Windows.Forms.MessageBox.Show(exception.Message);
+                MessageBox.Show(exception.Message);
             }
         }
 
         public void OnStartupComplete(ref Array custom)
         {
-            CreateTestMenu();
-        }
-
-        private void CreateTestMenu()
-        {
-            _testMenu = new TestMenu();
-            _testMenu.OnNewTestClass += OnNewUnitTestModule;
-            _testMenu.OnRunAllTests += OnRunAllTests;
-            _testMenu.OnRepeatLastRun += OnRepeatLastRun;
-            _testMenu.OnRunFailedTests += OnRunFailedTests;
-            _testMenu.OnRunPassedTests += OnRunPassedTests;
-            _testMenu.OnRunNotRunTests += OnRunNotRunTests;
-            _testMenu.OnTestExporer += OnShowTestExplorer;
-
-            _testMenu.Initialize(_vbe);
-        }
-
-        void OnShowTestExplorer(object sender, EventArgs e)
-        {
-            _testSession.ShowExplorer();
-        }
-
-        void OnNewExpectedErrorTestMethod(object sender, EventArgs e)
-        {
-            NewTestMethodCommand.NewExpectedErrorTestMethod(_vbe);
-            _testSession.SynchronizeTests();
-        }
-
-        void OnNewTestMethod(object sender, EventArgs e)
-        {
-            NewTestMethodCommand.NewTestMethod(_vbe);
-            _testSession.SynchronizeTests();
-        }
-
-        void OnRunAllTests(object sender, EventArgs e)
-        {
-            _testSession.SynchronizeTests();
-            _testSession.Run();
-        }
-
-        void OnRepeatLastRun(object sender, EventArgs e)
-        {
-            _testSession.ReRun();
-        }
-
-        void OnRunFailedTests(object sender, EventArgs e)
-        {
-            _testSession.RunFailedTests();
-        }
-
-        void OnRunPassedTests(object sender, EventArgs e)
-        {
-            _testSession.RunPassedTests();
-        }
-
-        void OnSynchronizeTests(object sender, EventArgs e)
-        {
-            _testSession.SynchronizeTests();
-        }
-
-        void OnRunNotRunTests(object sender, EventArgs e)
-        {
-            _testSession.SynchronizeTests();
-            _testSession.RunNotRunTests();
-        }
-
-        void OnNewUnitTestModule(object sender, EventArgs e)
-        {
-            NewUnitTestModuleCommand.NewUnitTestModule(_vbe);
+            _app.CreateExtUI();
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
@@ -121,7 +47,7 @@ namespace RetailCoderVBE
 
         public void Dispose()
         {
-            _testSession.Dispose();
+            _app.Dispose();
         }
     }
 }

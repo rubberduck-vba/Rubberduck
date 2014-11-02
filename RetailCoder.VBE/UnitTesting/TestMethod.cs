@@ -34,9 +34,6 @@ namespace RetailCoderVBE.UnitTesting
 
         public string QualifiedName { get { return string.Concat(this.ProjectName, ".", this.ModuleName, ".", this.MethodName); } }
 
-        private bool _hasExecuted;
-        public bool HasExecuted { get { return _hasExecuted; } }
-
         public TestResult Run()
         {
             TestResult result;

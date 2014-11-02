@@ -3,14 +3,22 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 
-namespace RetailCoderVBE.VBIDE
+namespace RetailCoderVBE.UnitTesting.UI
 {
-    [ComVisible(false)]
-    public class TestMenu
+    internal class TestMenu : IDisposable
     {
         // 2743: play icon with stopwatch
         // 3039: module icon || 3119 || 621 || 589 || 472
         // 3170: class module icon
+
+        private readonly VBE _vbe;
+        private readonly TestEngine _engine;
+
+        public TestMenu(VBE vbe)
+        {
+            _vbe = vbe;
+            _engine = new TestEngine(_vbe);
+        }
 
         private CommandBarButton _runAllTestsButton;
         public CommandBarButton RunAllTestsButton { get { return _runAllTestsButton; } }
@@ -18,16 +26,16 @@ namespace RetailCoderVBE.VBIDE
         private CommandBarButton _windowsTestExplorerButton;
         public CommandBarButton WindowsTestExplorerButton { get { return _windowsTestExplorerButton; } }
 
-        public void Initialize(VBE vbe)
+        public void Initialize()
         {
-            var menuBarControls = vbe.CommandBars[1].Controls;
+            var menuBarControls = _vbe.CommandBars[1].Controls;
             var beforeIndex = FindMenuInsertionIndex(menuBarControls);
             var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);
             _windowsTestExplorerButton.Caption = "&Test Explorer";
-            _windowsTestExplorerButton.FaceId = 3170; // 305; // a "document" icon, with a green checkmark and a red cross
+            _windowsTestExplorerButton.FaceId = 3170;
             _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
 
             _runAllTestsButton = AddMenuButton(menu);
@@ -56,61 +64,20 @@ namespace RetailCoderVBE.VBIDE
             return menu.Controls.Add(Type: MsoControlType.msoControlButton) as CommandBarButton;
         }
 
-        private void OnButtonClick(EventHandler clickEvent)
-        {
-            var handler = clickEvent;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        public event EventHandler OnNewTestClass;
-        void OnNewTestModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnNewTestClass);
-        }
-
-        public event EventHandler OnRunSelectedTests;
-        void OnRunSelectedTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnRunSelectedTests);
-        }
-
-        public event EventHandler OnRunAllTests;
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            OnButtonClick(OnRunAllTests);
+            _engine.SynchronizeTests();
+            _engine.Run();
         }
 
-        public event EventHandler OnRunFailedTests;
-        void OnRunFailedTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnRunFailedTests);
-        }
-
-        public event EventHandler OnRunNotRunTests;
-        void OnRunNotRunTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnRunNotRunTests);
-        }
-
-        public event EventHandler OnRunPassedTests;
-        void OnRunPassedTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnRunPassedTests);
-        }
-
-        public event EventHandler OnRepeatLastRun;
-        void OnRepeatLastRunButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            OnButtonClick(OnRepeatLastRun);
-        }
-
-        public event EventHandler OnTestExporer;
         void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            OnButtonClick(OnTestExporer);
+            _engine.ShowExplorer();
+        }
+
+        public void Dispose()
+        {
+            _engine.Dispose();
         }
     }
 }

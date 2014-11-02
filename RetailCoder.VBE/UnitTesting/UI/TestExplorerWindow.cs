@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace RetailCoderVBE.UnitTesting.UI
 {
-    internal partial class TestExplorerWindow : Form, ITestOutput
+    internal partial class TestExplorerWindow : Form
     {
         private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
@@ -19,17 +19,22 @@ namespace RetailCoderVBE.UnitTesting.UI
         public TestExplorerWindow()
         {
             InitializeComponent();
-            InitializeGrid();
-            RegisterUIEvents();
 
             _allTests = new BindingList<TestExplorerItem>();
             _playList = new List<TestExplorerItem>();
+            
+            InitializeGrid();
+            RegisterUIEvents();
         }
 
         private void InitializeGrid()
         {
             testOutputGridView.DataSource = _allTests;
-            testOutputGridView.Columns["Message"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            var messageColumn = testOutputGridView.Columns["Message"];
+            if (messageColumn != null)
+            {
+                messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
         }
 
         private void RegisterUIEvents()
@@ -183,6 +188,11 @@ namespace RetailCoderVBE.UnitTesting.UI
             _allTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
             testOutputGridView.DataSource = _allTests;
             testOutputGridView.Refresh();
+        }
+
+        public void SetPlayList(IEnumerable<TestMethod> tests)
+        {
+            SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
         }
 
         public void SetPlayList(IDictionary<TestMethod,TestResult> tests)
