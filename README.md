@@ -9,6 +9,8 @@ The GUID and ProgId for the `RetailCoderVBE.Extension` class must be registered 
 
 Should there already be a CLSID with the same GUID, a new value will need to be generated and the code recompiled with the new GUID, before the add-in can run.
 
+###64 bit Office
+
     [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins64\RetailCoderVBE]
      ~> [CommandLineSafe] (DWORD:00000000)
      ~> [Description] ("RetailCoderVBE add-in for VBA IDE.")
@@ -29,7 +31,13 @@ Should there already be a CLSID with the same GUID, a new value will need to be 
     [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
      ~> [@] ("RetailCoderVBE.Extension")
 
+###32 bit Office
 
+In the root folder of the project, there is a *.reg file that will install the necessary registry keys.
+
+	RetailCoderVBE32.reg
+
+	 
 ##Features
 
 The add-in inserts a [Test] menu to the VBA IDE main menu bar, as well as a [Test] commandbar with the following buttons:
