@@ -10,7 +10,6 @@ namespace RetailCoderVBE.UnitTesting
     {
         private static readonly string TestModuleEmptyTemplate = string.Concat(
             "'@TestModule\n",
-            "Option Explicit\n",
             "Private Assert As New RetailCoderVBE.AssertClass\n\n"
             );
 
@@ -41,7 +40,13 @@ namespace RetailCoderVBE.UnitTesting
 
             var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
             module.Name = GetNextTestModuleName(project);
-            module.CodeModule.AddFromString(TestModuleEmptyTemplate);
+
+            var hasOptionExplicit = false;
+            if (module.CodeModule.CountOfLines > 0 && module.CodeModule.CountOfDeclarationLines > 0)
+            {
+                hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
+            }
+            module.CodeModule.AddFromString((hasOptionExplicit ? string.Empty : "Option Explicit\n") + TestModuleEmptyTemplate);
             module.Activate();
         }
 
