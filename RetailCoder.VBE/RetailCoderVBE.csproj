@@ -52,10 +52,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Refactoring\ExtractMethodRefactoring.cs" />
+    <Compile Include="Refactoring\IRefactoring.cs" />
     <Compile Include="Reflection\Attributes.cs" />
+    <Compile Include="Reflection\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
+    <Compile Include="Reflection\VBA\SyntaxTree.cs" />
     <Compile Include="UnitTesting\Assert.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
@@ -158,9 +162,7 @@
   <ItemGroup>
     <None Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Refactoring\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

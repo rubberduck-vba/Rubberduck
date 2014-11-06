@@ -236,12 +236,11 @@ namespace RetailCoderVBE.UnitTesting.UI
             {
                 var item = new TestExplorerItem(test, result);
                 _allTests.Add(item);
+                gridItem = FindItem(_allTests, test);
             }
-            else
-            {
-                gridItem.SetResult(result);
-                playListItem.SetResult(result);
-            }
+
+            gridItem.SetResult(result);
+            playListItem.SetResult(result);
 
             UpdateProgress();
             testOutputGridView.Refresh();
