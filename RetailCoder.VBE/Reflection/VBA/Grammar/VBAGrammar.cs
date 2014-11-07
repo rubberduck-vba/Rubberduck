@@ -49,7 +49,7 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
         }
 
         /// <summary>
-        /// Gets a regular expression pattern for matching a module-scoped constant declaration.
+        /// Gets a regular expression pattern for matching a constant declaration.
         /// </summary>
         /// <remarks>
         /// Constants declared in class modules may only be <c>Private</c>.
