@@ -49,20 +49,13 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
         }
 
         /// <summary>
-        /// Gets a regular expression pattern for matching a local constant declaration.
-        /// </summary>
-        public static string GetLocalConstantDeclarationSyntax()
-        {
-            return @"^Const\s(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)(?<specifier>[%&@!#$])?(?<as>\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)))?\s\=\s(?<value>.*)$";
-        }
-
-        /// <summary>
         /// Gets a regular expression pattern for matching a module-scoped constant declaration.
         /// </summary>
         /// <remarks>
         /// Constants declared in class modules may only be <c>Private</c>.
+        /// Constants declared at procedure scope cannot have an access modifier.
         /// </remarks>
-        public static string GetModuleConstantDeclarationSyntax()
+        public static string GetConstantDeclarationSyntax()
         {
             return @"^((Private|Public|Global)\s)?Const\s(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)(?<specifier>[%&@!#$])?(?<as>\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)))?\s\=\s(?<value>.*)$";
         }
