@@ -120,6 +120,7 @@ namespace RetailCoderVBE.UnitTesting
                             .Cast<VBProject>()
                             .SelectMany(project => project.TestMethods())
                             .ToDictionary(test => test, test => _allTests.ContainsKey(test) ? _allTests[test] : null);
+
             _allTests = tests;
         }
 
@@ -345,6 +346,21 @@ namespace RetailCoderVBE.UnitTesting
 
         public void Dispose()
         {
+            _explorer.OnRefreshListButtonClick -= OnExplorerRefreshListButtonClick;
+
+            _explorer.OnRunAllTestsButtonClick -= OnExplorerRunAllTestsButtonClick;
+            _explorer.OnRunFailedTestsButtonClick -= OnExplorerRunFailedTestsButtonClick;
+            _explorer.OnRunLastRunTestsButtonClick -= OnExplorerRunLastRunTestsButtonClick;
+            _explorer.OnRunNotRunTestsButtonClick -= OnExplorerRunNotRunTestsButtonClick;
+            _explorer.OnRunPassedTestsButtonClick -= OnExplorerRunPassedTestsButtonClick;
+            _explorer.OnRunSelectedTestButtonClick -= OnExplorerRunSelectedTestButtonClick;
+
+            _explorer.OnGoToSelectedTest -= OnExplorerGoToSelectedTest;
+
+            _explorer.OnAddExpectedErrorTestMethodButtonClick -= OnExplorerAddExpectedErrorTestMethodButtonClick;
+            _explorer.OnAddTestMethodButtonClick -= OnExplorerAddTestMethodButtonClick;
+            _explorer.OnAddTestModuleButtonClick -= OnExplorerAddTestModuleButtonClick;
+
             _explorer.Dispose();
         }
     }

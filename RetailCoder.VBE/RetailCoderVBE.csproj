@@ -59,7 +59,18 @@
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
-    <Compile Include="Reflection\VBA\SyntaxTree.cs" />
+    <Compile Include="Reflection\VBA\ConstantNode.cs" />
+    <Compile Include="Reflection\VBA\DeclarationNode.cs" />
+    <Compile Include="Reflection\VBA\Grammar\ISyntax.cs" />
+    <Compile Include="Reflection\VBA\Grammar\VBAGrammar.cs" />
+    <Compile Include="Reflection\VBA\Identifier.cs" />
+    <Compile Include="Reflection\VBA\ReservedKeywords.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReservedKeywords.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reflection\VBA\SyntaxTreeNode.cs" />
+    <Compile Include="Reflection\VBA\VariableNode.cs" />
     <Compile Include="UnitTesting\Assert.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
@@ -112,6 +123,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reflection\VBA\ReservedKeywords.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UnitTesting\UI\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
