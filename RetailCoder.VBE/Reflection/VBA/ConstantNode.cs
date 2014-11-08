@@ -11,8 +11,8 @@ namespace RetailCoderVBE.Reflection.VBA
 
     internal class ConstantNode : DeclarationNode
     {
-        public ConstantNode(Match match)
-            : base(match)
+        public ConstantNode(string scope, Match match, string comment)
+            : base(scope, match, comment)
         { }
 
         /// <summary>
@@ -23,17 +23,6 @@ namespace RetailCoderVBE.Reflection.VBA
             get
             {
                 return RegexMatch.Groups["value"].Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the value is accessible beyond the scope where the constant is declared.
-        /// </summary>
-        public bool IsPublicScope
-        {
-            get
-            {
-                return new[] { ReservedKeywords.Public, ReservedKeywords.Global }.Contains(RegexMatch.Groups[0].Value);
             }
         }
     }
