@@ -56,6 +56,19 @@
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
+    <Compile Include="TaskList\UI\TaskListMenu.cs" />
+    <Compile Include="TaskList\UI\TaskListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TaskList\UI\TaskListControl.Designer.cs">
+      <DependentUpon>TaskListControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockableWindowHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DockableWindowHost.Designer.cs">
+      <DependentUpon>DockableWindowHost.cs</DependentUpon>
+    </Compile>
     <Compile Include="UnitTesting\Assert.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
@@ -78,7 +91,7 @@
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
-      <VersionMinor>5</VersionMinor>
+      <VersionMinor>4</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
@@ -87,7 +100,7 @@
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
-      <VersionMinor>7</VersionMinor>
+      <VersionMinor>6</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
@@ -108,6 +121,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TaskList\UI\TaskListControl.resx">
+      <DependentUpon>TaskListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UnitTesting\UI\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>

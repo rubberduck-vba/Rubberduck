@@ -27,7 +27,9 @@ namespace RetailCoderVBE
         {
             try
             {
-                _app = new App((VBE)Application);
+                _app = new App((VBE)Application, (AddIn)AddInInst);
+                
+                _app.CreateExtUI(); //todo: comment out for release
             }
             catch(Exception exception)
             {
@@ -37,7 +39,7 @@ namespace RetailCoderVBE
 
         public void OnStartupComplete(ref Array custom)
         {
-            _app.CreateExtUI();
+            //_app.CreateExtUI(); //todo: comment out for debugging
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
