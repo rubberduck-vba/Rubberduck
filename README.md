@@ -31,6 +31,10 @@ Should there already be a CLSID with the same GUID, a new value will need to be 
     [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
      ~> [@] ("RetailCoderVBE.Extension")
 
+In the root folder of the project, there is a *.reg file that will install the necessary registry keys.
+
+	RetailCoderVBE64.reg
+	 
 ###32 bit Office
 
 In the root folder of the project, there is a *.reg file that will install the necessary registry keys.
@@ -43,10 +47,12 @@ In the root folder of the project, there is a *.reg file that will install the n
 The add-in inserts a [Test] menu to the VBA IDE main menu bar, as well as a [Test] commandbar with the following buttons:
    - **Run All Tests** finds all test methods in all opened projects, and runs them, then displays the Test Explorer.
    - **Test Explorer** displays a stays-on-top sizeable window featuring a grid that lists all test methods in all opened projects, along with their last result.
+   
+Additionally, there is a [Task List] option added under the [View] menu.
 
 ---
 
-**Test Explorer**
+###Test Explorer
 
 The *Test Explorer* allows browsing/finding, running, and adding unit tests to the active VBProject:
 
@@ -114,3 +120,15 @@ Adding a *Test Method (expected error)* adds this template snippet at the end of
     End Sub
 
 The number at the end of the generated method name depends on the number of test methods in the test module.
+
+###Task List
+
+The task list searches through the active project for special comments and list them, along with the module name and line number. 
+Double clicking on any item in the task list will show display the code module and set the selection to the line of the comment.
+
+Currently, only three of these special comments are supported. 
+They must be spelled in your code exactly as below in order to be picked up by the task list, but the search is **not** case sensitive.
+
+	'BUG:
+	'TODO:
+	'NOTE:
