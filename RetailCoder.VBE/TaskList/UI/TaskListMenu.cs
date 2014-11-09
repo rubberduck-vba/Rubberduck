@@ -25,12 +25,14 @@ namespace RetailCoderVBE.TaskList
 
         public void Initialize()
         {
-            //todo: insert menu item after CallStack item
-            //todo: provide icon
             var menuBarControls = this.vbe.CommandBars["Menu Bar"].Controls;
-            CommandBarPopup viewMenu = (CommandBarPopup)menuBarControls["View"];
-            showTaskListButton = (CommandBarButton)viewMenu.Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true);
+            var viewMenu = (CommandBarPopup)menuBarControls["View"];
+            int beforeIndex = FindMenuInsertionIndex(viewMenu.Controls);
+            showTaskListButton = (CommandBarButton)viewMenu.Controls.Add(Type: MsoControlType.msoControlButton, Before: beforeIndex, Temporary: true);
             showTaskListButton.Caption = "&Task List";
+
+            const int clipboardWithCheck = 837;
+            showTaskListButton.FaceId = clipboardWithCheck;
 
             showTaskListButton.Click += OnShowTaskListButtonClick;
 
@@ -45,8 +47,7 @@ namespace RetailCoderVBE.TaskList
                 if ( this.toolWindow == null)
                 {
                     taskListControl = new TaskListControl(this.vbe);
-                    //todo: implement tasklist
-                    toolWindow = CreateToolWindow("My dockable window", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", taskListControl);
+                    toolWindow = CreateToolWindow("Task List", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", taskListControl);
                 }
                 else
                 {
@@ -77,6 +78,21 @@ namespace RetailCoderVBE.TaskList
 
             return toolWindow;
 
+        }
+
+        //todo: need a base menu class that takes in an additonal "before" and/or after param
+        private int FindMenuInsertionIndex(CommandBarControls controls)
+        {
+            for (int i = 1; i <= controls.Count; i++)
+            {
+                // insert menu before "Window" built-in menu:
+                if (controls[i].BuiltIn && controls[i].Caption == "&Immediate Window")
+                {
+                    return i;
+                }
+            }
+
+            return controls.Count;
         }
 
         public void Dispose()
