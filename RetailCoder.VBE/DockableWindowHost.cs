@@ -1,60 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.Runtime.InteropServices;
 
 namespace RetailCoderVBE
 {
     //todo: store GUID in a const so if it needs to be changed it can be changed once??
-    //todo: needs a way to handle toolwindow scrollbars when resizing
     [ComVisible(true), Guid("9CF1392A-2DC9-48A6-AC0B-E601A9802608"), ProgId("RetailCoderVBE.DockableWindowHost")]
     public partial class DockableWindowHost : UserControl
     {
-        private class SubClassingWindow : System.Windows.Forms.NativeWindow
-        {
-
-            public event SubClassingWindowEventHandler CallBackEvent;
-            public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
-           
-            protected virtual void OnCallBackEvent(SubClassingWindowEventArgs e)
-            {
-                CallBackEvent(this, e);
-            }
-            
-
-            public SubClassingWindow(IntPtr handle)
-            {
-                base.AssignHandle(handle);
-            }
-
-            protected override void WndProc(ref Message msg)
-            {
-                const int WM_SIZE = 0x5;
-
-                if (msg.Msg == WM_SIZE)
-                {
-                    SubClassingWindowEventArgs args = new SubClassingWindowEventArgs(msg);
-                    OnCallBackEvent(args);
-                }
-
- 	             base.WndProc(ref msg);
-            }
-
-            //destructor
-            ~SubClassingWindow()
-            {
-                this.ReleaseHandle();
-            }
-
-        }//end  subclassingwindow class
-
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
@@ -62,7 +16,6 @@ namespace RetailCoderVBE
             internal int Top;
             internal int Right;
             internal int Bottom;
-
         }
 
         [DllImport("User32.dll")]
@@ -144,6 +97,44 @@ namespace RetailCoderVBE
             }
             return result;
         }
+
+        private class SubClassingWindow : System.Windows.Forms.NativeWindow
+        {
+
+            public event SubClassingWindowEventHandler CallBackEvent;
+            public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
+
+            protected virtual void OnCallBackEvent(SubClassingWindowEventArgs e)
+            {
+                CallBackEvent(this, e);
+            }
+
+
+            public SubClassingWindow(IntPtr handle)
+            {
+                base.AssignHandle(handle);
+            }
+
+            protected override void WndProc(ref Message msg)
+            {
+                const int WM_SIZE = 0x5;
+
+                if (msg.Msg == WM_SIZE)
+                {
+                    SubClassingWindowEventArgs args = new SubClassingWindowEventArgs(msg);
+                    OnCallBackEvent(args);
+                }
+
+                base.WndProc(ref msg);
+            }
+
+            //destructor
+            ~SubClassingWindow()
+            {
+                this.ReleaseHandle();
+            }
+
+        }
     }
 
     internal class SubClassingWindowEventArgs : EventArgs
@@ -159,6 +150,5 @@ namespace RetailCoderVBE
         {
             this.msg = msg;
         }
-
     }
 }

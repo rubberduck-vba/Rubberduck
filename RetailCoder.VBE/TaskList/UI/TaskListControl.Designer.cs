@@ -50,7 +50,6 @@
             this.taskListGridView.ReadOnly = true;
             this.taskListGridView.Size = new System.Drawing.Size(319, 206);
             this.taskListGridView.TabIndex = 0;
-            this.taskListGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.taskListGridView_CellContentClick);
             // 
             // toolStrip1
             // 
@@ -85,7 +84,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(319, 206);
             this.panel1.TabIndex = 3;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // TaskListControl
             // 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
@@ -42,22 +41,14 @@ namespace RetailCoderVBE.TaskList
         {
             TaskListControl taskListControl;
 
-            try
+            if ( this.toolWindow == null)
             {
-                if ( this.toolWindow == null)
-                {
-                    taskListControl = new TaskListControl(this.vbe);
-                    toolWindow = CreateToolWindow("Task List", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", taskListControl);
-                }
-                else
-                {
-                    this.toolWindow.Visible = true;
-                }
-
+                taskListControl = new TaskListControl(this.vbe);
+                toolWindow = CreateToolWindow("Task List", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", taskListControl);
             }
-            catch(Exception ex)
+            else
             {
-                MessageBox.Show(ex.ToString());
+                this.toolWindow.Visible = true;
             }
         }
 
@@ -67,7 +58,7 @@ namespace RetailCoderVBE.TaskList
             Object userControlObject = null;
             DockableWindowHost userControlHost;
             Window toolWindow;
-            string progId = "RetailCoderVBE.DockableWindowHost"; //DockableWindowHost progId
+            const string progId = "RetailCoderVBE.DockableWindowHost"; //DockableWindowHost progId
 
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, progId, toolWindowCaption, toolWindowGUID, ref userControlObject);
 

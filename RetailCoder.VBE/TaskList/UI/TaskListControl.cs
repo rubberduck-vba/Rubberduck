@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 
@@ -37,12 +32,9 @@ namespace RetailCoderVBE.TaskList
 
         void taskListGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            var selectionIndex = e.RowIndex;
-            Task task = taskList.ElementAt(selectionIndex);
-
+            Task task = taskList.ElementAt(e.RowIndex);
             VBComponent component = vbe.ActiveVBProject.VBComponents.Item(task.Module);
 
-            component.Activate();
             component.CodeModule.CodePane.Show();
             component.CodeModule.CodePane.SetSelection(task.LineNumber, 1, task.LineNumber, 1);
         }
@@ -88,32 +80,15 @@ namespace RetailCoderVBE.TaskList
             return TaskPriority.Low;
         }
 
-
         private bool IsTaskComment(string line)
         {
             var upCasedLine = line.ToUpper();
-            if (upCasedLine.Contains("'TODO:") || upCasedLine.Contains("'BUG:")||upCasedLine.Contains("'NOTE:"))
-            {
-                return true;
-            }
-
-            return false;
+            return (upCasedLine.Contains("'TODO:") || upCasedLine.Contains("'BUG:") || upCasedLine.Contains("'NOTE:"));
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
             RefreshGridView();
         }
-
-        private void taskListGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
     }
 }
