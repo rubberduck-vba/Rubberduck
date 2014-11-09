@@ -18,7 +18,6 @@ namespace RetailCoderVBE.TaskList
 
         public TaskListControl(VBE vbe)
         {
-            //todo: implement an actual task list control instead of this example
             this.vbe = vbe;
 
             InitializeComponent();
@@ -31,7 +30,6 @@ namespace RetailCoderVBE.TaskList
         private void InitializeGrid()
         {
             taskListGridView.DataSource = taskList;
-            //todo: refresh isn't working
             taskListGridView.CellDoubleClick += RefreshGridView;
 
         }

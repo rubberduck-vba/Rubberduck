@@ -86,7 +86,7 @@ namespace RetailCoderVBE.TaskList
             for (int i = 1; i <= controls.Count; i++)
             {
                 // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Immediate Window")
+                if (controls[i].BuiltIn && controls[i].Caption == "&Project Explorer")
                 {
                     return i;
                 }
