@@ -14,21 +14,76 @@ namespace RetailCoderVBE.TaskList
     public partial class TaskListControl : UserControl
     {
         private VBE vbe;
+        private BindingList<Task> taskList;
 
         public TaskListControl(VBE vbe)
         {
             //todo: implement an actual task list control instead of this example
-            this.BackColor = Color.Red;
             this.vbe = vbe;
 
             InitializeComponent();
+            
+            RefreshTaskList();
+            InitializeGrid();
+
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void InitializeGrid()
         {
-            MessageBox.Show("ToolWindow shown in VBA editor version " + vbe.Version);
+            taskListGridView.DataSource = taskList;
+            //todo: refresh isn't working
+            taskListGridView.CellDoubleClick += RefreshGridView;
+
         }
 
-       
+        private void RefreshGridView(object sender, DataGridViewCellEventArgs e)
+        {
+            RefreshTaskList();
+            taskListGridView.Refresh();
+            taskListGridView.Parent.Refresh();
+        }
+
+        public void RefreshTaskList()
+        {
+            this.taskList = new BindingList<Task>();
+
+            foreach (VBComponent component in this.vbe.ActiveVBProject.VBComponents)
+            {
+                CodeModule module = component.CodeModule;
+                for (var i = 1; i <= module.CountOfLines; i++)
+                {
+                    string line = module.get_Lines(i, 1);
+                    if (IsTaskComment(line))
+                    {
+                        var priority = GetTaskPriority(line);
+                        this.taskList.Add(new Task(priority, line, module, i));
+                    }
+                }
+            }
+        }
+
+        private TaskPriority GetTaskPriority(string line)
+        {
+            //todo: Create xml config file to allow user customization of tags
+            var upCasedLine = line.ToUpper();
+            if (upCasedLine.Contains("'BUG:"))
+            {
+                return TaskPriority.Bug;
+            }
+
+            return TaskPriority.Low;
+        }
+
+
+        private bool IsTaskComment(string line)
+        {
+            var upCasedLine = line.ToUpper();
+            if (upCasedLine.Contains("'TODO:") || upCasedLine.Contains("'BUG:"))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

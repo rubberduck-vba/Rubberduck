@@ -28,44 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.taskListGridView = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.taskListGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // taskListGridView
             // 
-            this.button1.Location = new System.Drawing.Point(35, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(81, 30);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.taskListGridView.AllowUserToAddRows = false;
+            this.taskListGridView.AllowUserToDeleteRows = false;
+            this.taskListGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.taskListGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.taskListGridView.Location = new System.Drawing.Point(0, 0);
+            this.taskListGridView.Name = "taskListGridView";
+            this.taskListGridView.ReadOnly = true;
+            this.taskListGridView.Size = new System.Drawing.Size(319, 231);
+            this.taskListGridView.TabIndex = 0;
+            //this.taskListGridView.DoubleClick += new System.EventHandler(this.taskListGridView_DoubleClick);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(18, 74);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(247, 20);
-            this.textBox1.TabIndex = 1;
-            // 
-            // UserControl1
+            // TaskListControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
-            this.Name = "UserControl1";
+            this.Controls.Add(this.taskListGridView);
+            this.Name = "TaskListControl";
             this.Size = new System.Drawing.Size(319, 231);
+            ((System.ComponentModel.ISupportInitialize)(this.taskListGridView)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.DataGridView taskListGridView;
+
 
     }
 }

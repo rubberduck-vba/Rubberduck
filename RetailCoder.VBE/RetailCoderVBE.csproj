@@ -57,7 +57,6 @@
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="TaskList\Task.cs" />
-    <Compile Include="TaskList\TaskList.cs" />
     <Compile Include="TaskList\UI\TaskListMenu.cs" />
     <Compile Include="TaskList\UI\TaskListControl.cs">
       <SubType>UserControl</SubType>
@@ -177,6 +176,7 @@
     <None Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
     <Folder Include="Refactoring\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

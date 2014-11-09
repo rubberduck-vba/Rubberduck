@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RetailCoderVBE.Reflection;
 using Microsoft.Vbe.Interop;
 
+
 namespace RetailCoderVBE.TaskList
 {
     internal enum TaskPriority
@@ -20,14 +21,14 @@ namespace RetailCoderVBE.TaskList
     {
         public TaskPriority Priority{ get; set; }
         public string Description { get; set; }
-        public CodeModule Module { get; set; } 
+        public string Module { get; set; } 
         public int LineNumber { get; set; }
 
         public Task(TaskPriority priority, string description, CodeModule module,  int lineNumber)
         {
             this.Priority = priority;
-            this.Description = description;
-            this.Module = module;
+            this.Description = description.Trim();
+            this.Module = module.Parent.Name;
             this.LineNumber = lineNumber;
         }
     }
