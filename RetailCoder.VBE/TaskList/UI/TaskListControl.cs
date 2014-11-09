@@ -39,8 +39,8 @@ namespace RetailCoderVBE.TaskList
         private void RefreshGridView(object sender, DataGridViewCellEventArgs e)
         {
             RefreshTaskList();
+            taskListGridView.DataSource = taskList;
             taskListGridView.Refresh();
-            taskListGridView.Parent.Refresh();
         }
 
         public void RefreshTaskList()
