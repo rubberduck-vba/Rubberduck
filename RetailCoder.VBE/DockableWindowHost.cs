@@ -77,6 +77,7 @@ namespace RetailCoderVBE
         {
             parentHandle = GetParent(this.Handle);
             subClassingWindow = new SubClassingWindow(parentHandle);
+            subClassingWindow.CallBackEvent += OnCallBackEvent;
 
             control.Dock = DockStyle.Fill;
             this.Controls.Add(control);
@@ -85,7 +86,7 @@ namespace RetailCoderVBE
 
         }
 
-        private void subClassingWindow_OnCallBackEvent(ref System.Windows.Forms.Message msg)
+        void OnCallBackEvent(object sender, SubClassingWindowEventArgs e)
         {
             AdjustSize();
         }
@@ -144,7 +145,7 @@ namespace RetailCoderVBE
         }
     }
 
-    public class SubClassingWindowEventArgs : EventArgs
+    internal class SubClassingWindowEventArgs : EventArgs
     {
         private Message msg;
 
