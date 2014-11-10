@@ -59,9 +59,6 @@
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
-    <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
-    <Compile Include="Reflection\VBA\LabelNode.cs" />
-    <Compile Include="Reflection\VBA\LogicalCodeLineNode.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
     <Compile Include="Reflection\VBA\DeclarationNode.cs" />
     <Compile Include="Reflection\VBA\Grammar\ConstantSyntax.cs" />
@@ -70,11 +67,8 @@
     <Compile Include="Reflection\VBA\Grammar\ISyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\PrivateFieldSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\PublicFieldSyntax.cs" />
-    <Compile Include="Reflection\VBA\Grammar\StringExtensions.cs" />
     <Compile Include="Reflection\VBA\Grammar\VBAGrammar.cs" />
     <Compile Include="Reflection\VBA\Identifier.cs" />
-    <Compile Include="Reflection\VBA\ModuleNode.cs" />
-    <Compile Include="Reflection\VBA\Parser.cs" />
     <Compile Include="Reflection\VBA\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

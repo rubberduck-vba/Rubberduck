@@ -11,8 +11,8 @@ namespace RetailCoderVBE.Reflection.VBA
 
     internal class VariableNode : DeclarationNode
     {
-        public VariableNode(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public VariableNode(Match match)
+            : base(match)
         { }
 
         /// <summary>
