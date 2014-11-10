@@ -62,9 +62,9 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Reflection\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="Reflection\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
-    <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
     <Compile Include="Reflection\VBA\LabelNode.cs" />
     <Compile Include="Reflection\VBA\LogicalCodeLineNode.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
@@ -78,7 +78,6 @@
     <Compile Include="Reflection\VBA\Grammar\StringExtensions.cs" />
     <Compile Include="Reflection\VBA\Grammar\VBAGrammar.cs" />
     <Compile Include="Reflection\VBA\Identifier.cs" />
-    <Compile Include="Reflection\VBA\ModuleNode.cs" />
     <Compile Include="Reflection\VBA\Parser.cs" />
     <Compile Include="Reflection\VBA\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -157,6 +156,7 @@
     <EmbeddedResource Include="Reflection\VBA\ReservedKeywords.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="TaskList\UI\TaskListControl.resx">
       <DependentUpon>TaskListControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -165,7 +165,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -214,11 +213,10 @@
   <ItemGroup>
     <None Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="Refactoring\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

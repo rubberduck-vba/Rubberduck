@@ -25,9 +25,9 @@ namespace RetailCoderVBE.TaskList
         public void Initialize()
         {
             var menuBarControls = this.vbe.CommandBars["Menu Bar"].Controls;
-            var viewMenu = (CommandBarPopup)menuBarControls["View"];
-            int beforeIndex = FindMenuInsertionIndex(viewMenu.Controls);
-            showTaskListButton = (CommandBarButton)viewMenu.Controls.Add(Type: MsoControlType.msoControlButton, Before: beforeIndex, Temporary: true);
+            var toolsMenu = (CommandBarPopup)menuBarControls["Tools"];
+            int beforeIndex = FindMenuInsertionIndex(toolsMenu.Controls);
+            showTaskListButton = (CommandBarButton)toolsMenu.Controls.Add(Type: MsoControlType.msoControlButton, Before: beforeIndex, Temporary: true);
             showTaskListButton.Caption = "&Task List";
 
             const int clipboardWithCheck = 837;
@@ -77,7 +77,7 @@ namespace RetailCoderVBE.TaskList
             for (int i = 1; i <= controls.Count; i++)
             {
                 // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Project Explorer")
+                if (controls[i].BuiltIn && controls[i].Caption == "&Macros...")
                 {
                     return i;
                 }
