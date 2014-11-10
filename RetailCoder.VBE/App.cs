@@ -13,21 +13,28 @@ namespace RetailCoderVBE
     {
         private readonly VBE _vbe;
         private readonly TestMenu _testMenu;
+        private AddIn _addInInst;
+        private TaskList.TaskListMenu _taskListMenu;
 
-        public App(VBE vbe)
+        public App(VBE vbe, AddIn addInInst)
         {
+            _addInInst = addInInst;
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe);
+            _taskListMenu = new TaskList.TaskListMenu(_vbe, _addInInst);
+            
         }
 
         public void Dispose()
         {
             _testMenu.Dispose();
+            _taskListMenu.Dispose();
         }
 
         public void CreateExtUI()
         {
             _testMenu.Initialize();
+            _taskListMenu.Initialize();
         }
     }
 }
