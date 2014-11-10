@@ -16,7 +16,7 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
         /// </summary>
         /// <param name="keyword"><c>Dim</c> or <c>Static</c>.</param>
         /// <returns></returns>
-        public static string GetLocalDeclarationSyntax(string keyword)
+        public static string LocalDeclarationSyntax(string keyword)
         {
             var keywords = new[] { ReservedKeywords.Dim, ReservedKeywords.Static };
             if (!keywords.Contains(keyword))
@@ -24,7 +24,7 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
                 throw new InvalidOperationException("Keyword " + keyword + " is not valid in this context.");
             }
 
-            return GetDeclarationSyntax(keyword);
+            return DeclarationSyntax(keyword);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
         /// </summary>
         /// <param name="keyword"><c>Private</c>, <c>Public</c>, or <c>Global</c>.</param>
         /// <returns></returns>
-        public static string GetModuleDeclarationSyntax(string keyword)
+        public static string ModuleDeclarationSyntax(string keyword)
         {
             var keywords = new[] { ReservedKeywords.Private, ReservedKeywords.Public, ReservedKeywords.Global };
             if (!keywords.Contains(keyword))
@@ -40,12 +40,16 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
                 throw new InvalidOperationException("Keyword " + keyword + " is not valid in this context.");
             }
 
-            return GetDeclarationSyntax(keyword);
+            var pattern = DeclarationSyntax(keyword);
+            return pattern;
         }
 
-        private static string GetDeclarationSyntax(string keyword)
+        private static string IdentifierSyntax { get { return @"(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|(\[[a-zA-Z0-9_]*\]))"; } }
+        private static string ReferenceSyntax { get { return @"(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?)" + IdentifierSyntax; } }
+
+        private static string DeclarationSyntax(string keyword)
         {
-            return "^" + keyword + @"(\s(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)(?<specifier>[%&@!#$])?(?<array>\((?<size>(([0-9]+)\,?\s?)*|([0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(\s(?<initializer>New))?\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)))?(\,)?)+$";
+            return "^" + keyword + @"(\s" + IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(([0-9]+)\,?\s?)*|([0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(\s(?<initializer>New))?\s" + ReferenceSyntax + @")?(\,)?)+$";
         }
 
         /// <summary>
@@ -55,9 +59,29 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
         /// Constants declared in class modules may only be <c>Private</c>.
         /// Constants declared at procedure scope cannot have an access modifier.
         /// </remarks>
-        public static string GetConstantDeclarationSyntax()
+        public static string ConstantDeclarationSyntax()
         {
-            return @"^((Private|Public|Global)\s)?Const\s(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)(?<specifier>[%&@!#$])?(?<as>\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)))?\s\=\s(?<value>.*)$";
+            return @"^((Private|Public|Global)\s)?Const\s" + IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<as>\sAs\s" + ReferenceSyntax + @")?\s\=\s(?<value>.*)$";
+        }
+
+        public static string LabelSyntax()
+        {
+            return @"^(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)\:$";
+        }
+
+        public static string EnumSyntax()
+        {
+            return @"^((Private|Public|Global)\s)?Enum\s" + IdentifierSyntax;
+        }
+
+        public static string EnumMemberSyntax()
+        {
+            return @"^" + IdentifierSyntax + @"(\s\=\s(?<value>.*))?$";
+        }
+
+        public static string ProcedureSyntax()
+        {
+            return @"^((Private|Public)\s)?(?<ProcedureKind>(Sub|Function|Property (Get|Let|Set)))\s" + IdentifierSyntax;
         }
     }
 }

@@ -21,13 +21,7 @@ namespace RetailCoderVBE.Reflection.VBA
         /// <example>
         /// Returns <c>true</c> with <c>Dim foo As New Bar</c> declaration.
         /// </example>
-        public bool IsInitialized
-        {
-            get
-            {
-                return RegexMatch.Groups["initializer"].Success;
-            }
-        }
+        public bool IsInitialized { get { return RegexMatch.Groups["initializer"].Success; } }
 
         /// <summary>
         /// Gets a value indicating whether declaration is an array.
@@ -35,13 +29,7 @@ namespace RetailCoderVBE.Reflection.VBA
         /// <exexample>
         /// Returns <c>true</c> with <c>Dim foo() As String</c>, <c>Dim foo(10) As String</c> and <c>Dim foo(1 To 10) As String</c> declarations.
         /// </exexample>
-        public bool IsArray
-        {
-            get
-            {
-                return RegexMatch.Groups["array"].Success;
-            }
-        }
+        public bool IsArray { get { return RegexMatch.Groups["array"].Success; } }
 
         /// <summary>
         /// Gets the number of dimensions in an array declaration.
@@ -50,7 +38,7 @@ namespace RetailCoderVBE.Reflection.VBA
         /// <example>
         /// Returns <c>2</c> with <c>Dim foo(10, 2)</c>
         /// </example>
-        public int ArrayDimensionsCount
+        public int ArrayDimensionsCount 
         {
             get
             {
@@ -72,12 +60,6 @@ namespace RetailCoderVBE.Reflection.VBA
         /// <example>
         /// Returns <c>true</c> with <c>Dim foo() As String</c> declaration.
         /// </example>
-        public bool IsDynamicArray
-        {
-            get
-            {
-                return IsArray && !RegexMatch.Groups["size"].Success;
-            }
-        }
+        public bool IsDynamicArray { get { return IsArray && !RegexMatch.Groups["size"].Success; } }
     }
 }

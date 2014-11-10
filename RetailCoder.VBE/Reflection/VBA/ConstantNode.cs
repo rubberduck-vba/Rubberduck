@@ -18,12 +18,6 @@ namespace RetailCoderVBE.Reflection.VBA
         /// <summary>
         /// Gets the constant's value. Strings include delimiting quotes.
         /// </summary>
-        public string Value
-        {
-            get
-            {
-                return RegexMatch.Groups["value"].Value;
-            }
-        }
+        public string Value { get { return RegexMatch.Groups["value"].Value; } }
     }
 }

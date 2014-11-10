@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Microsoft.Vbe.Interop;
+using System.Text.RegularExpressions;
 
 namespace RetailCoderVBE.Reflection.VBA
 {
@@ -18,7 +19,8 @@ namespace RetailCoderVBE.Reflection.VBA
             var syntaxType = typeof(ISyntax);
             _grammar = Assembly.GetExecutingAssembly()
                                .GetTypes()
-                               .Where(type => type.GetInterfaces().Contains(syntaxType))
+                               .Where(type => type.BaseType == typeof(SyntaxBase))
+                               .Select(type => type.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes))
                                .Cast<ISyntax>()
                                .ToList();
         }
@@ -31,8 +33,8 @@ namespace RetailCoderVBE.Reflection.VBA
             var publicScope = project.Name;
             var localScope = string.Concat(project.Name, ".", component.Name);
 
-            var content = SplitLogicalCodeLines(module.Lines[1, module.CountOfLines - module.CountOfDeclarationLines]);
-            var memberNodes = ParseModuleMembers(publicScope, localScope, content);
+            var content = SplitLogicalCodeLines(module.Lines[1, module.CountOfLines]);
+            var memberNodes = ParseModuleMembers(publicScope, localScope, content).ToList();
 
             var result = new ModuleNode(project.Name, component.Name, memberNodes);
 
@@ -58,6 +60,7 @@ namespace RetailCoderVBE.Reflection.VBA
                 {
                     logicalLine.Append(line);
                     result.Add(index + 1, logicalLine.ToString());
+                    logicalLine.Clear();
                 }
             }
 
@@ -67,24 +70,36 @@ namespace RetailCoderVBE.Reflection.VBA
         private IEnumerable<SyntaxTreeNode> ParseModuleMembers(string publicScope, string localScope, IDictionary<int, string> logicalCodeLines)
         {
             var currentLocalScope = localScope;
-            var lines = logicalCodeLines.Values.ToList();
-            for (int index = 0; index < lines.Count; index++)
+            var lines = logicalCodeLines.Values.ToArray();
+            for (int index = 0; index < lines.Length; index++)
             {
                 var line = lines[index];
                 var instructions = SplitInstructions(line);
                 foreach (var instruction in instructions)
                 {
                     SyntaxTreeNode node;
-                    foreach (var syntax in _grammar)
+                    foreach (var syntax in _grammar.Where(syntax => !syntax.IsChildNodeSyntax))
                     {
-                        node = syntax.ToNode(publicScope, currentLocalScope, instruction);
-                        if (node != null)
+                        if (syntax.IsMatch(publicScope, localScope, instruction, out node))
                         {
-                            if (node.DefinesScope)
+                            if (node.HasChildNodes)
                             {
-                                
+                                var codeBlockNode = node as CodeBlockNode;
+                                if (codeBlockNode != null)
+                                {
+                                    node = ParseCodeBlock(publicScope, localScope, codeBlockNode, lines, ref index);
+                                }
+                                else
+                                {
+                                    var declarationNode = node as DeclarationNode;
+                                    if (declarationNode != null)
+                                    {
+                                        //node = ParseDeclaration(publicScope, localScope, instruction);
+                                    }
+                                }
                             }
                             yield return node;
+                            break;
                         }
                     }
                 }
@@ -93,17 +108,46 @@ namespace RetailCoderVBE.Reflection.VBA
         
         private IEnumerable<string> SplitInstructions(string logicalCodeLine)
         {
-            const char instructionSeparator = ':';
-
-            var trimmed = logicalCodeLine.Trim();
-            if (!trimmed.Contains(' ') && trimmed.EndsWith(instructionSeparator.ToString()))
+            if (Regex.Match(logicalCodeLine.Trim(), VBAGrammar.LabelSyntax()).Success)
             {
-                // line is a label; instruction separator also identifies a label...
                 return new[] { logicalCodeLine };
             }
 
-            return logicalCodeLine.Split(instructionSeparator)
-                                  .Select(instruction => instruction.Trim());
+            return logicalCodeLine.Split(':').Select(instruction => instruction.Trim());
+        }
+
+        private CodeBlockNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, string[] lines, ref int index)
+        {
+            var result = codeBlockNode;
+            var grammar = codeBlockNode.ChildSyntaxType == null 
+                ? _grammar 
+                : _grammar.Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == codeBlockNode.ChildSyntaxType);
+            
+            while (lines[index].Trim() != codeBlockNode.EndOfBlockMarker)
+            {
+                var line = lines[index];
+                var instructions = SplitInstructions(line);
+                foreach (var instruction in instructions)
+                {
+                    SyntaxTreeNode node;
+                    foreach (var syntax in grammar)
+                    {
+                        if (syntax.IsMatch(publicScope, localScope, instruction, out node))
+                        {
+                            if (node.HasChildNodes)
+                            {
+                                var childNode = node as CodeBlockNode;
+                                node = ParseCodeBlock(publicScope, localScope, childNode, lines, ref index);
+                            }
+                            result = codeBlockNode.AddNode(node);
+                            break;
+                        }
+                    }
+                }
+                index++;
+            }
+
+            return result;
         }
     }
 }
