@@ -59,7 +59,11 @@
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
+    <Compile Include="Reflection\VBA\CodeBlockNode.cs" />
+    <Compile Include="Reflection\VBA\EnumNode.cs" />
+    <Compile Include="Reflection\VBA\Grammar\EnumSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
+    <Compile Include="Reflection\VBA\Grammar\ProcedureSyntax.cs" />
     <Compile Include="Reflection\VBA\LabelNode.cs" />
     <Compile Include="Reflection\VBA\LogicalCodeLineNode.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
@@ -75,11 +79,13 @@
     <Compile Include="Reflection\VBA\Identifier.cs" />
     <Compile Include="Reflection\VBA\ModuleNode.cs" />
     <Compile Include="Reflection\VBA\Parser.cs" />
+    <Compile Include="Reflection\VBA\ProcedureNode.cs" />
     <Compile Include="Reflection\VBA\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReservedKeywords.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\VBA\Grammar\SyntaxBase.cs" />
     <Compile Include="Reflection\VBA\SyntaxTreeNode.cs" />
     <Compile Include="Reflection\VBA\VariableNode.cs" />
     <Compile Include="UnitTesting\Assert.cs" />
@@ -90,6 +96,7 @@
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
+    <Compile Include="UnitTesting\UI\RefactorMenu.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

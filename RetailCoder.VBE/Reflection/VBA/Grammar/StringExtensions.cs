@@ -21,7 +21,7 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
             int index;
             if (line.HasComment(out index))
             {
-                return line.Substring(0, index - 1).TrimEnd();
+                return line.Substring(0, index).TrimEnd();
             }
 
             return line;

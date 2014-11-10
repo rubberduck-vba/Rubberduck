@@ -25,28 +25,28 @@ namespace RetailCoderVBE.Reflection.VBA
 
         }
 
-        public SyntaxTreeNode(string scope, Match match, bool definesScope)
-            : this(scope, match, string.Empty, definesScope)
+        public SyntaxTreeNode(string scope, Match match, bool hasChildNodes)
+            : this(scope, match, string.Empty, hasChildNodes)
         {
 
         }
 
-        public SyntaxTreeNode(string scope, Match match, string comment, bool definesScope = false)
+        public SyntaxTreeNode(string scope, Match match, string comment, bool hasChildNodes = false)
         {
             _scope = scope;
             _match = match;
             _comment = comment;
-            _definesScope = definesScope;
+            _hasChildNodes = hasChildNodes;
         }
 
         private readonly string _scope;
         public string Scope { get { return _scope; } }
 
-        private readonly bool _definesScope;
-        public bool DefinesScope { get { return _definesScope; } }
+        private readonly bool _hasChildNodes;
+        public bool HasChildNodes { get { return _hasChildNodes; } }
 
         private readonly Match _match;
-        public Match RegexMatch { get { return _match; } }
+        protected Match RegexMatch { get { return _match; } }
 
         private readonly string _comment;
         public string Comment { get { return _comment; } }

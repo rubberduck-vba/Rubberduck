@@ -11,10 +11,11 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
     {
         public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
         {
-            var pattern = VBAGrammar.GetModuleDeclarationSyntax(ReservedKeywords.Private);
+            var pattern = VBAGrammar.ModuleDeclarationSyntax(ReservedKeywords.Private);
+            var reserved = new[] { ReservedKeywords.Sub, ReservedKeywords.Property, ReservedKeywords.Function, ReservedKeywords.Enum, ReservedKeywords.Type };
 
             var match = Regex.Match(instruction, pattern);
-            if (!match.Success)
+            if (!match.Success || reserved.Any(keyword => keyword == match.Groups["identifier"].Captures[0].Value))
             {
                 return null;
             }
@@ -27,6 +28,19 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
             }
 
             return new VariableNode(localScope, match, comment);
+        }
+
+
+        public bool IsMatch(string publicScope, string localScope, string instruction, out SyntaxTreeNode node)
+        {
+            node = ToNode(publicScope, localScope, instruction);
+            return node != null;
+        }
+
+
+        public bool IsChildNodeSyntax
+        {
+            get { return false; }
         }
     }
 }

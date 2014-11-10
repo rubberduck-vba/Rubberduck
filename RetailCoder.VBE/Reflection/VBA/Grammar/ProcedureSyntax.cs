@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RetailCoderVBE.Reflection.VBA.Grammar
 {
-    internal class ConstantSyntax : SyntaxBase
+    internal class ProcedureSyntax : SyntaxBase
     {
-        public ConstantSyntax()
+        public ProcedureSyntax()
             : base(SyntaxType.HasChildNodes)
         {
 
@@ -17,13 +17,13 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
 
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.ConstantDeclarationSyntax());
+            match = Regex.Match(instruction, VBAGrammar.ProcedureSyntax());
             return match.Success;
         }
 
         protected override SyntaxTreeNode CreateNode(string scope, Match match, string instruction, string comment)
         {
-            return new ConstantNode(scope, match, comment);
+            return new ProcedureNode(scope, match, comment);
         }
     }
 }
