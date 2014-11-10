@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RetailCoderVBE.Reflection.VBA.Grammar
 {
     internal class PrivateFieldSyntax : ISyntax
     {
-        public SyntaxTreeNode ToNode(string instruction)
+        public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
         {
             var pattern = VBAGrammar.GetModuleDeclarationSyntax(ReservedKeywords.Private);
 
@@ -18,7 +19,14 @@ namespace RetailCoderVBE.Reflection.VBA.Grammar
                 return null;
             }
 
-            return new VariableNode(match);
+            var comment = string.Empty;
+            int commentStart;
+            if (instruction.HasComment(out commentStart))
+            {
+                comment = instruction.Substring(commentStart);
+            }
+
+            return new VariableNode(localScope, match, comment);
         }
     }
 }

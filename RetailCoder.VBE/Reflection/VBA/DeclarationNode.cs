@@ -14,8 +14,8 @@ namespace RetailCoderVBE.Reflection.VBA
     /// </summary>
     internal abstract class DeclarationNode : SyntaxTreeNode
     {
-        public DeclarationNode(Match match)
-            : base(match)
+        public DeclarationNode(string scope, Match match, string comment)
+            : base(scope, match, comment)
         { }
 
         private static IDictionary<string, string> _typeSpecifiers = new Dictionary<string, string>
@@ -29,16 +29,17 @@ namespace RetailCoderVBE.Reflection.VBA
             };
 
         /// <summary>
-        /// Gets the declared identifier name.
+        /// Gets the declared identifier.
         /// </summary>
         /// <example>
         /// Returns "foo" from <c>Dim foo As String</c> declaration.
         /// </example>
-        public string Identifier
+        public Identifier Identifier
         {
             get
             {
-                return RegexMatch.Groups["identifier"].Value;
+                var name = RegexMatch.Groups["identifier"].Value;
+                return new Identifier(Scope, name, TypeName);
             }
         }
 
