@@ -3,18 +3,18 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 
-namespace RetailCoderVBE.TaskList
+namespace Rubberduck.ToDoItems
 {
-    internal class TaskListMenu : RetailCoderVBE.Menu
+    internal class ToDoItemsMenu : Rubberduck.Menu
     {
         private Window toolWindow;
 
-        public TaskListMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance){}
+        public ToDoItemsMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance){}
 
         private CommandBarButton showTaskListButton;
         public CommandBarButton ShowTaskListButton { get { return this.showTaskListButton; } }
 
-        public void Initialize()
+        public void Initialize(CommandBarControls menuControls)
         {
             var menuBarControls = this.IDE.CommandBars["Menu Bar"].Controls;
             var toolsMenu = (CommandBarPopup)menuBarControls["Tools"];
@@ -32,11 +32,11 @@ namespace RetailCoderVBE.TaskList
 
         void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
-            TaskListControl taskListControl;
+            ToDoItemsControl taskListControl;
 
             if ( this.toolWindow == null)
             {
-                taskListControl = new TaskListControl(this.IDE);
+                taskListControl = new ToDoItemsControl(this.IDE);
                 toolWindow = CreateToolWindow("Task List",  taskListControl);
             }                                             
             else

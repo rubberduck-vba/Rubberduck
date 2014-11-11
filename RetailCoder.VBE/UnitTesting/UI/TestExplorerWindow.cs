@@ -38,8 +38,7 @@ namespace Rubberduck.UnitTesting.UI
         }
 
         private void RegisterUIEvents()
-            //FormClosing += TestExplorerWindowFormClosing;
-
+        {
             testOutputGridView.CellDoubleClick += GridCellDoubleClicked;
             testOutputGridView.SelectionChanged += GridSelectionChanged;
 
