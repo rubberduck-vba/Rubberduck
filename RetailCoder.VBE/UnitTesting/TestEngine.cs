@@ -12,13 +12,15 @@ namespace Rubberduck.UnitTesting
     internal class TestEngine : IDisposable
     {
         private readonly VBE _vbe;
-        private readonly TestExplorerWindow _explorer;
+        private TestExplorerWindow _explorer;
+        private Window _hostWindow;
 
-        public TestEngine(VBE vbe)
+        public TestEngine(VBE vbe, TestExplorerWindow explorer, Window hostWindow)
         {
             _vbe = vbe;
             _allTests = new Dictionary<TestMethod, TestResult>();
-            _explorer = new TestExplorerWindow();
+            _explorer = explorer;
+            _hostWindow = hostWindow;
             RegisterTestExplorerEvents();
         }
 
@@ -30,8 +32,11 @@ namespace Rubberduck.UnitTesting
             _explorer.Refresh(_allTests);
             if (!_explorer.Visible)
             {
+                _explorer.Visible = true;
                 _explorer.Show();
             }
+
+            _hostWindow.Visible = true;
         }
 
         public void Run(TestMethod test)

@@ -93,7 +93,7 @@ namespace Rubberduck
             {
                 // insert menu before "Window" built-in menu:
                 if (controls[i].BuiltIn && controls[i].Caption == "&Window")
-                {
+        {
                     return i;
                 }
             }
