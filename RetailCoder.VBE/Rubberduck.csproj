@@ -79,7 +79,7 @@
     <Compile Include="Reflection\VBA\LabelNode.cs" />
     <Compile Include="Reflection\VBA\LogicalCodeLineNode.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
-    <Compile Include="Reflection\VBA\DeclarationNode.cs" />
+    <Compile Include="Reflection\VBA\DeclarationNodeBase.cs" />
     <Compile Include="Reflection\VBA\Grammar\ConstantSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\DimSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\GlobalFieldSyntax.cs" />

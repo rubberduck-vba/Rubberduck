@@ -9,7 +9,7 @@ namespace Rubberduck.Reflection.VBA
 {
     // todo: handle multiple declarations on single instruction - grammar/regex already supports it.
 
-    internal class VariableNode : DeclarationNode
+    internal class VariableNode : DeclarationNodeBase
     {
         public VariableNode(string scope, Match match, string comment)
             : base(scope, match, comment)

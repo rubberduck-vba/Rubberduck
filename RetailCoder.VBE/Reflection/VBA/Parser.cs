@@ -91,7 +91,7 @@ namespace Rubberduck.Reflection.VBA
                                 }
                                 else
                                 {
-                                    var declarationNode = node as DeclarationNode;
+                                    var declarationNode = node as DeclarationNodeBase;
                                     if (declarationNode != null)
                                     {
                                         //node = ParseDeclaration(publicScope, localScope, instruction);

@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA
 {
-    // todo: handle multiple declarations on single instruction - grammar/regex already supports it.
-
     /// <summary>
     /// Base class for a declaration node, in the form of <c>{Keyword} {Identifier}[TypeSpecifier] [As [New ]{Reference}]</c>.
     /// </summary>
-    internal abstract class DeclarationNode : SyntaxTreeNode
+    internal abstract class DeclarationNodeBase : SyntaxTreeNode
     {
-        public DeclarationNode(string scope, Match match, string comment)
+        public DeclarationNodeBase(string scope, Match match, string comment)
             : base(scope, match, comment)
         { }
 
