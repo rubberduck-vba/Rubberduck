@@ -193,6 +193,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap rubberduck_adsize {
+            get {
+                object obj = ResourceManager.GetObject("rubberduck_adsize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap tick_circle {
             get {
                 object obj = ResourceManager.GetObject("tick-circle", resourceCulture);

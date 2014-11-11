@@ -60,6 +60,8 @@ namespace Rubberduck
             _refactorMenu.Dispose();
         }
 
+        private CommandBarButton _about;
+
         public void Initialize()
         {
             var menuBarControls = _vbe.CommandBars[1].Controls;
@@ -70,6 +72,19 @@ namespace Rubberduck
             _testMenu.Initialize(menu.Controls);
             _refactorMenu.Initialize(menu.Controls);
             _todoItemsMenu.Initialize(menu.Controls);
+
+            _about = menu.Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            _about.Caption = "&About...";
+            _about.BeginGroup = true;
+            _about.Click += OnAboutClick;
+        }
+
+        void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            using (var window = new AboutWindow())
+            {
+                window.ShowDialog();
+            }
         }
 
         private int FindMenuInsertionIndex(CommandBarControls controls)
