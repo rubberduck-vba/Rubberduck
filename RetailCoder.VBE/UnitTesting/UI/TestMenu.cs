@@ -5,19 +5,21 @@ using Microsoft.Vbe.Interop;
 
 namespace RetailCoderVBE.UnitTesting.UI
 {
-    internal class TestMenu : IDisposable
+    internal class TestMenu : RetailCoderVBE.Menu
     {
         // 2743: play icon with stopwatch
         // 3039: module icon || 3119 || 621 || 589 || 472
         // 3170: class module icon
 
-        private readonly VBE _vbe;
+        //private readonly VBE _vbe;
         private readonly TestEngine _engine;
+        private Window toolWindow;
 
-        public TestMenu(VBE vbe)
+        public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
         {
-            _vbe = vbe;
-            _engine = new TestEngine(_vbe);
+            TestExplorerWindow testExplorer = new TestExplorerWindow();
+            toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+            _engine = new TestEngine(vbe, testExplorer, toolWindow);
         }
 
         private CommandBarButton _runAllTestsButton;
@@ -28,8 +30,8 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         public void Initialize()
         {
-            var menuBarControls = _vbe.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls);
+            var menuBarControls = this.IDE.CommandBars[1].Controls;
+            var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
             var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
@@ -43,25 +45,6 @@ namespace RetailCoderVBE.UnitTesting.UI
             _runAllTestsButton.Caption = "&Run All Tests";
             _runAllTestsButton.FaceId = 186; // a "play" icon
             _runAllTestsButton.Click += OnRunAllTestsButtonClick;
-        }
-
-        private int FindMenuInsertionIndex(CommandBarControls controls)
-        {
-            for (int i = 1; i <= controls.Count; i++)
-            {
-                // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Window")
-                {
-                    return i;
-                }
-            }
-
-            return controls.Count;
-        }
-
-        private CommandBarButton AddMenuButton(CommandBarPopup menu)
-        {
-            return menu.Controls.Add(Type: MsoControlType.msoControlButton) as CommandBarButton;
         }
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -78,6 +61,7 @@ namespace RetailCoderVBE.UnitTesting.UI
         public void Dispose()
         {
             _engine.Dispose();
+            base.Dispose();
         }
     }
 }

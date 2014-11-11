@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -86,6 +87,7 @@
     </Compile>
     <Compile Include="Reflection\VBA\SyntaxTreeNode.cs" />
     <Compile Include="Reflection\VBA\VariableNode.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="TaskList\Task.cs" />
     <Compile Include="TaskList\UI\TaskListMenu.cs" />
     <Compile Include="TaskList\UI\TaskListControl.cs">
@@ -109,7 +111,7 @@
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UnitTesting\UI\TestExplorerWindow.Designer.cs">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>

@@ -20,9 +20,8 @@ namespace RetailCoderVBE
         {
             _addInInst = addInInst;
             _vbe = vbe;
-            _testMenu = new TestMenu(_vbe);
+            _testMenu = new TestMenu(_vbe, _addInInst);
             _taskListMenu = new TaskList.TaskListMenu(_vbe, _addInInst);
-            
         }
 
         public void Dispose()

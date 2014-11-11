@@ -294,11 +294,11 @@
             this.ClientSize = new System.Drawing.Size(584, 161);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(600, 200);
             this.Name = "TestExplorerWindow";
             this.Text = "Test Explorer";
-            this.TopMost = true;
+            //this.TopMost = true;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);

@@ -9,12 +9,14 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
 
+
 namespace RetailCoderVBE.UnitTesting.UI
 {
-    internal partial class TestExplorerWindow : Form
+    internal partial class TestExplorerWindow : UserControl
     {
         private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
+
 
         public TestExplorerWindow()
         {
@@ -39,7 +41,7 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         private void RegisterUIEvents()
         {
-            FormClosing += TestExplorerWindowFormClosing;
+            //FormClosing += TestExplorerWindowFormClosing;
 
             testOutputGridView.CellDoubleClick += GridCellDoubleClicked;
             testOutputGridView.SelectionChanged += GridSelectionChanged;
