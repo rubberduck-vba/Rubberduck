@@ -8,7 +8,7 @@ using Microsoft.Vbe.Interop;
 using IDE = Microsoft.Vbe.Interop.VBE;
 using System.Windows.Forms;
 
-namespace RetailCoderVBE.Reflection
+namespace Rubberduck.Reflection
 {
     internal static class ProjectExtensions
     {
@@ -20,7 +20,7 @@ namespace RetailCoderVBE.Reflection
             }
         }
 
-        public static void EnsureReferenceToRetailCoderVBE(this VBProject project)
+        public static void EnsureReferenceToAddInLibrary(this VBProject project)
         {
             var referencePath = System.IO.Path.ChangeExtension(System.Reflection.Assembly.GetExecutingAssembly().Location, ".tlb");
             if (!project.References.Cast<Reference>().Any(r => r.FullPath == referencePath))

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Vbe.Interop;
-using RetailCoderVBE.Reflection;
-using RetailCoderVBE.UnitTesting.UI;
+using Rubberduck.Reflection;
+using Rubberduck.UnitTesting.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.UnitTesting
+namespace Rubberduck.UnitTesting
 {
     internal class TestEngine : IDisposable
     {

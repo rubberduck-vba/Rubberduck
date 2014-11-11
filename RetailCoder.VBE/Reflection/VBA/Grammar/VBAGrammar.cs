@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA.Grammar
+namespace Rubberduck.Reflection.VBA.Grammar
 {
     // todo: handle end-of-line comments
     // todo: handle multiple Const declarations in single instruction.

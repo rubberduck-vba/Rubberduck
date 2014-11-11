@@ -1,4 +1,4 @@
-﻿using RetailCoderVBE.Reflection.VBA.Grammar;
+﻿using Rubberduck.Reflection.VBA.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Reflection;
 using Microsoft.Vbe.Interop;
 using System.Text.RegularExpressions;
 
-namespace RetailCoderVBE.Reflection.VBA
+namespace Rubberduck.Reflection.VBA
 {
     internal class Parser
     {
@@ -94,7 +94,7 @@ namespace RetailCoderVBE.Reflection.VBA
                                     var declarationNode = node as DeclarationNode;
                                     if (declarationNode != null)
                                     {
-                                        node = ParseDeclaration(publicScope, localScope, instruction);
+                                        //node = ParseDeclaration(publicScope, localScope, instruction);
                                     }
                                 }
                             }
@@ -114,11 +114,6 @@ namespace RetailCoderVBE.Reflection.VBA
             }
 
             return logicalCodeLine.Split(':').Select(instruction => instruction.Trim());
-        }
-
-        private SyntaxTreeNode ParseDeclaration(string publicScope, string localScope, string instruction)
-        {
-            
         }
 
         private CodeBlockNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, string[] lines, ref int index)

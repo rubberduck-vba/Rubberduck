@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection
+namespace Rubberduck.Reflection
 {
     /// <summary>
     /// A base class for all member attributes.

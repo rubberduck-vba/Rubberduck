@@ -1,13 +1,13 @@
 ﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using RetailCoderVBE.Reflection.VBA;
+using Rubberduck.Reflection.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.UnitTesting.UI
+namespace Rubberduck.UnitTesting.UI
 {
     internal class RefactorMenu : IDisposable
     {
@@ -22,12 +22,10 @@ namespace RetailCoderVBE.UnitTesting.UI
 
         private CommandBarButton _parseModuleButton;
         public CommandBarButton ParseModuleButton { get { return _parseModuleButton; } }
-        
-        public void Initialize()
+
+        public void Initialize(CommandBarControls menuControls)
         {
-            var menuBarControls = _vbe.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls);
-            var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
             _parseModuleButton = AddMenuButton(menu);
@@ -52,20 +50,6 @@ namespace RetailCoderVBE.UnitTesting.UI
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
             return menu.Controls.Add(Type: MsoControlType.msoControlButton) as CommandBarButton;
-        }
-
-        private int FindMenuInsertionIndex(CommandBarControls controls)
-        {
-            for (int i = 1; i <= controls.Count; i++)
-            {
-                // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Window")
-                {
-                    return i;
-                }
-            }
-
-            return controls.Count;
         }
 
         public void Dispose()

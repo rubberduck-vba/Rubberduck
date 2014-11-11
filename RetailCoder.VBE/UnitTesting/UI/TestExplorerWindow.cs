@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
 
-namespace RetailCoderVBE.UnitTesting.UI
+namespace Rubberduck.UnitTesting.UI
 {
     internal partial class TestExplorerWindow : Form
     {
@@ -295,21 +295,21 @@ namespace RetailCoderVBE.UnitTesting.UI
     {
         public static Image Icon(this TestResult result)
         {
-            var image = RetailCoderVBE.Properties.Resources.question_white;
+            var image = Rubberduck.Properties.Resources.question_white;
             if (result != null)
             {
                 switch (result.Outcome)
                 {
                     case TestOutcome.Succeeded:
-                        image = RetailCoderVBE.Properties.Resources.tick_circle;
+                        image = Rubberduck.Properties.Resources.tick_circle;
                         break;
 
                     case TestOutcome.Failed:
-                        image = RetailCoderVBE.Properties.Resources.minus_circle;
+                        image = Rubberduck.Properties.Resources.minus_circle;
                         break;
 
                     case TestOutcome.Inconclusive:
-                        image = RetailCoderVBE.Properties.Resources.exclamation_circle;
+                        image = Rubberduck.Properties.Resources.exclamation_circle;
                         break;
                 }
             }

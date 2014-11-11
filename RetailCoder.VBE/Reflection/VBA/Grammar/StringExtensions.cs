@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA.Grammar
+namespace Rubberduck.Reflection.VBA.Grammar
 {
     internal static class StringExtensions
     {

@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using RetailCoderVBE.Reflection;
+using Rubberduck.Reflection;
 using System;
 
-namespace RetailCoderVBE.UnitTesting
+namespace Rubberduck.UnitTesting
 {
     internal static class NewUnitTestModuleCommand
     {
         private static readonly string TestModuleEmptyTemplate = string.Concat(
             "'@TestModule\n",
-            "Private Assert As New RetailCoderVBE.AssertClass\n\n"
+            "Private Assert As New Rubberduck.AssertClass\n\n"
             );
 
         private static readonly string TestModuleTemplate = string.Concat(
@@ -36,7 +36,7 @@ namespace RetailCoderVBE.UnitTesting
         public static void NewUnitTestModule(VBE vbe)
         {
             var project = vbe.ActiveVBProject;
-            project.EnsureReferenceToRetailCoderVBE();
+            project.EnsureReferenceToAddInLibrary();
 
             var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
             module.Name = GetNextTestModuleName(project);
@@ -53,7 +53,7 @@ namespace RetailCoderVBE.UnitTesting
         public static void NewUnitTestModuleTemplate(VBE vbe)
         {
             var project = vbe.ActiveVBProject;
-            project.EnsureReferenceToRetailCoderVBE();
+            project.EnsureReferenceToAddInLibrary();
 
             var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
             module.Name = GetNextTestModuleName(project);

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace RetailCoderVBE
+namespace Rubberduck
 {
     [ComVisible(true)]
     [Guid("8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66")]
-    [ProgId("RetailCoderVBE.Extension")]
+    [ProgId("Rubberduck.Extension")]
     public class Extension : IDTExtensibility2, IDisposable
     {
         private App _app;
@@ -27,7 +27,7 @@ namespace RetailCoderVBE
         {
             try
             {
-                _app = new App((VBE)Application);
+                _app = new App((VBE)Application, (AddIn)AddInInst);
             }
             catch(Exception exception)
             {
@@ -37,7 +37,7 @@ namespace RetailCoderVBE
 
         public void OnStartupComplete(ref Array custom)
         {
-            _app.CreateExtUI();
+            _app.CreateExtUI(); 
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)

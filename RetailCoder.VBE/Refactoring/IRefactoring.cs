@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Refactoring
+namespace Rubberduck.Refactoring
 {
     internal interface IRefactoring
     {

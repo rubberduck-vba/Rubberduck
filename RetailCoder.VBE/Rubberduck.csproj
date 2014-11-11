@@ -46,7 +46,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutWindow.cs" />
+    <Compile Include="AboutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
@@ -66,6 +68,7 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Reflection\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="Reflection\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="Reflection\VBA\CodeBlockNode.cs" />
@@ -86,7 +89,6 @@
     <Compile Include="Reflection\VBA\Grammar\StringExtensions.cs" />
     <Compile Include="Reflection\VBA\Grammar\VBAGrammar.cs" />
     <Compile Include="Reflection\VBA\Identifier.cs" />
-    <Compile Include="Reflection\VBA\ModuleNode.cs" />
     <Compile Include="Reflection\VBA\Parser.cs" />
     <Compile Include="Reflection\VBA\ProcedureNode.cs" />
     <Compile Include="Reflection\VBA\ReservedKeywords.Designer.cs">

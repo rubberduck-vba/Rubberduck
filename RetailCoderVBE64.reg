@@ -19,3 +19,9 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
   @="RetailCoderVBE.Extension"
+  
+[HKEY_CLASSES_ROOT\RetailCoderVBE.DockableWindowHost]
+@="RetailCoderVBE.ToDoList.DockableWindowHost"
+
+[HKEY_CLASSES_ROOT\RetailCoderVBE.DockableWindowHost\CLSID]
+@="{9CF1392A-2DC9-48A6-AC0B-E601A9802608}"

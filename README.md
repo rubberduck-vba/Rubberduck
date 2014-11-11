@@ -9,7 +9,7 @@ The GUID and ProgId for the `RetailCoderVBE.Extension` class must be registered 
 
 Should there already be a CLSID with the same GUID, a new value will need to be generated and the code recompiled with the new GUID, before the add-in can run.
 
-###64-bit Office
+###64 bit Office
 
     [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins64\RetailCoderVBE]
      ~> [CommandLineSafe] (DWORD:00000000)
@@ -31,7 +31,11 @@ Should there already be a CLSID with the same GUID, a new value will need to be 
     [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
      ~> [@] ("RetailCoderVBE.Extension")
 
-###32-bit Office
+In the root folder of the project, there is a *.reg file that will install the necessary registry keys.
+
+	RetailCoderVBE64.reg
+	 
+###32 bit Office
 
 In the root folder of the project, there is a *.reg file that will install the necessary registry keys.
 
@@ -40,13 +44,15 @@ In the root folder of the project, there is a *.reg file that will install the n
 	 
 ##Features
 
-The add-in inserts a [Test] menu to the VBA IDE main menu bar with the following buttons:
+The add-in inserts a [Test] menu to the VBA IDE main menu bar, as well as a [Test] commandbar with the following buttons:
    - **Run All Tests** finds all test methods in all opened projects, and runs them, then displays the Test Explorer.
    - **Test Explorer** displays a stays-on-top sizeable window featuring a grid that lists all test methods in all opened projects, along with their last result.
+   
+Additionally, there is a [Task List] option added under the [View] menu.
 
 ---
 
-**Test Explorer**
+###Test Explorer
 
 The *Test Explorer* allows browsing/finding, running, and adding unit tests to the active VBProject:
 
@@ -70,70 +76,59 @@ Adding a *Test Module* ensures the active VBProject has a reference to the add-i
     Option Explicit
     Private Assert As New RetailCoderVBE.AssertClass
 
-Adding a *Test Method* adds this template test method at the end of the active test module:
+Adding a *Test Method* adds this template snippet at the end of the active test module:
 
-	'@TestMethod
-	Public Sub TestMethod1() 'TODO: Rename test
-	    On Error GoTo TestFail
-	    
-	Arrange:
-	
-	Act:
-	
-	Assert:
-	    Assert.Inconclusive
-	
-	TestExit:
-	    Exit Sub
-	TestFail:
-	    If Err.Number <> 0 Then
-	        Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-	    Else
-	        Resume TestExit
-	    End If
-	End Sub
+    '@TestMethod
+    Public Sub TestMethod1() 'TODO: Rename test
+        On Error GoTo TestFail
+    
+        'Arrange
+    
+        'Act
+
+        'Assert
+        Assert.Inconclusive
+        
+    TestExit:
+        Exit Sub
+    TestFail:
+        If Err.Number <> 0 Then
+            Assert.Fail "Test raised an error: " & Err.Description
+        End If
+        Resume TestExit
+    End Sub
     
 Adding a *Test Method (expected error)* adds this template snippet at the end of the active test module:
 
-	'@TestMethod
-	Public Sub TestMethod2() 'TODO: Rename test
-	    Const ExpectedError As Long = 0 'TODO: Change to expected error number
-	    On Error GoTo TestFail
-	    
-	Arrange:
-	
-	Act:
-	
-	Assert:
-	    Assert.Fail "Expected error was not raised."
-	
-	TestExit:
-	    Exit Sub
-	TestFail:
-	    If Err.Number <> ExpectedError Then
-	        Resume Assert
-	    Else
-	        Resume TestExit
-	    End If
-	End Sub
+    '@TestMethod
+    Public Sub TestMethod2() 'TODO: Rename test
+        Const ExpectedError As Long = 0 'TODO: Change to expected error number
+        On Error GoTo TestFail
+        
+        'Arrange
+    
+        'Act
+    
+        'Assert
+        Assert.Fail "Expected error was not raised."
+        
+    TestExit:
+        Exit Sub
+    TestFail:
+        Assert.AreEqual ExpectedError, Err.Number
+        Resume TestExit
+    End Sub
 
 The number at the end of the generated method name depends on the number of test methods in the test module.
 
----
+###Task List
 
-Icons by Yusuke Kamiyamane ("Fugue Icons", CC license)
+The task list searches through the active project for special comments and list them, along with the module name and line number. 
+Double clicking on any item in the task list will show display the code module and set the selection to the line of the comment.
 
-**Fugue Icons**
+Currently, only three of these special comments are supported. 
+They must be spelled in your code exactly as below in order to be picked up by the task list, but the search is **not** case sensitive.
 
-(C) 2012 Yusuke Kamiyamane. All rights reserved.
-These icons are licensed under a Creative Commons
-Attribution 3.0 License.
-<http://creativecommons.org/licenses/by/3.0/>
-
-If you can't or don't want to provide attribution, please
-purchase a royalty-free license.
-<http://p.yusukekamiyamane.com/>
-
-I'm unavailable for custom icon design work. But your
-suggestions are always welcome!
-<mailto:p@yusukekamiyamane.com>
+	'BUG:
+	'TODO:
+	'NOTE:

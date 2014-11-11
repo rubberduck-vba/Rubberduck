@@ -10,7 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace RetailCoderVBE.UnitTesting
+namespace Rubberduck.UnitTesting
 {
     internal class TestMethod : IEquatable<TestMethod>
     {
