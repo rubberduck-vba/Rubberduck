@@ -6,8 +6,7 @@ namespace RetailCoderVBE.TaskList
     {
         Low,
         Medium,
-        High,
-        Bug
+        High
     }
 
     internal class Task

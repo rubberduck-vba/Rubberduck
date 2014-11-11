@@ -8,7 +8,6 @@ namespace RetailCoderVBE
 {
     class Menu : IDisposable
     {
-
         private VBE vbe;
         protected AddIn addInInstance;
         private DockableWindowHost userControlHost;
@@ -47,6 +46,12 @@ namespace RetailCoderVBE
             return controls.Count;
         }
 
+        /// <summary>
+        /// Attaches a user control to a native window through a new DockableWindowHost.
+        /// </summary>
+        /// <param name="toolWindowCaption">Text to display as the window title.</param>
+        /// <param name="toolWindowUserControl">User control to attach to the window.</param>
+        /// <returns>Microsoft.Vbe.Interop.Window</returns>
         protected Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
         {
             Object userControlObject = null;

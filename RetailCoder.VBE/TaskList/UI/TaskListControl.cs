@@ -77,6 +77,7 @@ namespace RetailCoderVBE.TaskList
             {
                 return TaskPriority.Medium;
             }
+            //must be a "NOTE:"
             return TaskPriority.Low;
         }
 
