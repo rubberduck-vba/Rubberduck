@@ -1,5 +1,4 @@
-Rubberduck
-==============
+![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
 A COM Add-In for the VBA IDE that makes VBA development even more enjoyable:
 
