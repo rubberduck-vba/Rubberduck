@@ -1,4 +1,4 @@
-﻿namespace RetailCoderVBE
+﻿namespace Rubberduck
 {
     partial class DockableWindowHost
     {

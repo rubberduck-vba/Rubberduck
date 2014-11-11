@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA.Grammar
+namespace Rubberduck.Reflection.VBA.Grammar
 {
     internal class PrivateFieldSyntax : ISyntax
     {

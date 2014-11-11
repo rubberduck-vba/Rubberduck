@@ -7,8 +7,8 @@
     <ProjectGuid>{20589DE8-432E-4359-9232-69EB070B7185}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RetailCoderVBE</RootNamespace>
-    <AssemblyName>RetailCoderVBE</AssemblyName>
+    <RootNamespace>Rubberduck</RootNamespace>
+    <AssemblyName>Rubberduck</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -93,13 +93,13 @@
     <Compile Include="Reflection\VBA\Grammar\SyntaxBase.cs" />
     <Compile Include="Reflection\VBA\SyntaxTreeNode.cs" />
     <Compile Include="Reflection\VBA\VariableNode.cs" />
-    <Compile Include="TaskList\Task.cs" />
-    <Compile Include="TaskList\UI\TaskListMenu.cs" />
-    <Compile Include="TaskList\UI\TaskListControl.cs">
+    <Compile Include="ToDoItems\ToDoItem.cs" />
+    <Compile Include="ToDoItems\UI\ToDoItemsMenu.cs" />
+    <Compile Include="ToDoItems\UI\ToDoItemsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TaskList\UI\TaskListControl.Designer.cs">
-      <DependentUpon>TaskListControl.cs</DependentUpon>
+    <Compile Include="ToDoItems\UI\ToDoItemsControl.Designer.cs">
+      <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="DockableWindowHost.cs">
       <SubType>UserControl</SubType>
@@ -115,7 +115,7 @@
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="UnitTesting\UI\RefactorMenu.cs" />
+    <Compile Include="Refactoring\RefactorMenu.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,8 +165,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaskList\UI\TaskListControl.resx">
-      <DependentUpon>TaskListControl.cs</DependentUpon>
+    <EmbeddedResource Include="ToDoItems\UI\ToDoItemsControl.resx">
+      <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UnitTesting\UI\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>

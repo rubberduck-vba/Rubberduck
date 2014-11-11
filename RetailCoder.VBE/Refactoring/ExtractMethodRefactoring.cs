@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using RetailCoderVBE.Reflection;
+using Rubberduck.Reflection;
 
-namespace RetailCoderVBE.Refactoring
+namespace Rubberduck.Refactoring
 {
     internal class ExtractMethodRefactoring : IRefactoring
     {

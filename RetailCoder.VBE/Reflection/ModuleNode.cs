@@ -1,11 +1,11 @@
-﻿using RetailCoderVBE.Reflection.VBA;
+﻿using Rubberduck.Reflection.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection
+namespace Rubberduck.Reflection
 {
     internal class ModuleNode : SyntaxTreeNode
     {

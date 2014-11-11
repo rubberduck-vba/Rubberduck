@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.UnitTesting
+namespace Rubberduck.UnitTesting
 {
     [ComVisible(true)]
     public interface IAssert

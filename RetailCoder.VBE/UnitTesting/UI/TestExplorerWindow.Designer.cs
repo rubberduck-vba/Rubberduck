@@ -1,4 +1,4 @@
-﻿namespace RetailCoderVBE.UnitTesting.UI
+﻿namespace Rubberduck.UnitTesting.UI
 {
     partial class TestExplorerWindow
     {
@@ -83,7 +83,7 @@
             // refreshTestsButton
             // 
             this.refreshTestsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshTestsButton.Image = global::RetailCoderVBE.Properties.Resources.arrow_circle_double;
+            this.refreshTestsButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
             this.refreshTestsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshTestsButton.Name = "refreshTestsButton";
             this.refreshTestsButton.Size = new System.Drawing.Size(23, 22);
@@ -100,7 +100,7 @@
             this.runPassedTestsMenuItem,
             this.toolStripSeparator4,
             this.runLastRunMenuItem});
-            this.RunButton.Image = global::RetailCoderVBE.Properties.Resources.control;
+            this.RunButton.Image = global::Rubberduck.Properties.Resources.control;
             this.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(57, 22);
@@ -115,7 +115,7 @@
             // 
             // runAllTestsMenuItem
             // 
-            this.runAllTestsMenuItem.Image = global::RetailCoderVBE.Properties.Resources.flask__arrow;
+            this.runAllTestsMenuItem.Image = global::Rubberduck.Properties.Resources.flask__arrow;
             this.runAllTestsMenuItem.Name = "runAllTestsMenuItem";
             this.runAllTestsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.A)));
@@ -136,7 +136,7 @@
             // runFailedTestsMenuItem
             // 
             this.runFailedTestsMenuItem.Enabled = false;
-            this.runFailedTestsMenuItem.Image = global::RetailCoderVBE.Properties.Resources.minus_circle;
+            this.runFailedTestsMenuItem.Image = global::Rubberduck.Properties.Resources.minus_circle;
             this.runFailedTestsMenuItem.Name = "runFailedTestsMenuItem";
             this.runFailedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runFailedTestsMenuItem.Text = "&Failed Tests";
@@ -144,7 +144,7 @@
             // runPassedTestsMenuItem
             // 
             this.runPassedTestsMenuItem.Enabled = false;
-            this.runPassedTestsMenuItem.Image = global::RetailCoderVBE.Properties.Resources.tick_circle;
+            this.runPassedTestsMenuItem.Image = global::Rubberduck.Properties.Resources.tick_circle;
             this.runPassedTestsMenuItem.Name = "runPassedTestsMenuItem";
             this.runPassedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runPassedTestsMenuItem.Text = "&Passed Tests";
@@ -157,7 +157,7 @@
             // runLastRunMenuItem
             // 
             this.runLastRunMenuItem.Enabled = false;
-            this.runLastRunMenuItem.Image = global::RetailCoderVBE.Properties.Resources.arrow_repeat;
+            this.runLastRunMenuItem.Image = global::Rubberduck.Properties.Resources.arrow_repeat;
             this.runLastRunMenuItem.Name = "runLastRunMenuItem";
             this.runLastRunMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.L)));
@@ -176,7 +176,7 @@
             this.toolStripSeparator2,
             this.addTestMethodButton,
             this.addExpectedErrorTestMethodButton});
-            this.addButton.Image = global::RetailCoderVBE.Properties.Resources.flask__plus;
+            this.addButton.Image = global::Rubberduck.Properties.Resources.flask__plus;
             this.addButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(58, 22);
@@ -195,7 +195,7 @@
             // 
             // addTestMethodButton
             // 
-            this.addTestMethodButton.Image = global::RetailCoderVBE.Properties.Resources.flask;
+            this.addTestMethodButton.Image = global::Rubberduck.Properties.Resources.flask;
             this.addTestMethodButton.Name = "addTestMethodButton";
             this.addTestMethodButton.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.T)));
@@ -204,7 +204,7 @@
             // 
             // addExpectedErrorTestMethodButton
             // 
-            this.addExpectedErrorTestMethodButton.Image = global::RetailCoderVBE.Properties.Resources.flask__exclamation;
+            this.addExpectedErrorTestMethodButton.Image = global::Rubberduck.Properties.Resources.flask__exclamation;
             this.addExpectedErrorTestMethodButton.Name = "addExpectedErrorTestMethodButton";
             this.addExpectedErrorTestMethodButton.Size = new System.Drawing.Size(227, 22);
             this.addExpectedErrorTestMethodButton.Text = "Test Method (Expected &Error)";
@@ -212,7 +212,7 @@
             // gotoSelectionButton
             // 
             this.gotoSelectionButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.gotoSelectionButton.Image = global::RetailCoderVBE.Properties.Resources.magnifier__arrow;
+            this.gotoSelectionButton.Image = global::Rubberduck.Properties.Resources.magnifier__arrow;
             this.gotoSelectionButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.gotoSelectionButton.Name = "gotoSelectionButton";
             this.gotoSelectionButton.Size = new System.Drawing.Size(23, 22);

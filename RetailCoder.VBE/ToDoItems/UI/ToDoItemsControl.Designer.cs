@@ -1,6 +1,6 @@
-﻿namespace RetailCoderVBE.TaskList
+﻿namespace Rubberduck.ToDoItems
 {
-    partial class TaskListControl
+    partial class ToDoItemsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,28 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.taskListGridView = new System.Windows.Forms.DataGridView();
+            this.todoItemsGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.taskListGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // taskListGridView
             // 
-            this.taskListGridView.AllowUserToAddRows = false;
-            this.taskListGridView.AllowUserToDeleteRows = false;
-            this.taskListGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.taskListGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.taskListGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.taskListGridView.Location = new System.Drawing.Point(0, 0);
-            this.taskListGridView.Name = "taskListGridView";
-            this.taskListGridView.ReadOnly = true;
-            this.taskListGridView.Size = new System.Drawing.Size(319, 206);
-            this.taskListGridView.TabIndex = 0;
+            this.todoItemsGridView.AllowUserToAddRows = false;
+            this.todoItemsGridView.AllowUserToDeleteRows = false;
+            this.todoItemsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.todoItemsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.todoItemsGridView.Location = new System.Drawing.Point(0, 0);
+            this.todoItemsGridView.Name = "taskListGridView";
+            this.todoItemsGridView.ReadOnly = true;
+            this.todoItemsGridView.Size = new System.Drawing.Size(319, 206);
+            this.todoItemsGridView.TabIndex = 0;
             // 
             // toolStrip1
             // 
@@ -65,7 +65,7 @@
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = global::RetailCoderVBE.Properties.Resources.arrow_circle_double;
+            this.refreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
@@ -78,7 +78,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.taskListGridView);
+            this.panel1.Controls.Add(this.todoItemsGridView);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
@@ -93,7 +93,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Name = "TaskListControl";
             this.Size = new System.Drawing.Size(319, 231);
-            ((System.ComponentModel.ISupportInitialize)(this.taskListGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -104,7 +104,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView taskListGridView;
+        private System.Windows.Forms.DataGridView todoItemsGridView;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

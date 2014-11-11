@@ -1,4 +1,4 @@
-﻿using RetailCoderVBE.Reflection.VBA.Grammar;
+﻿using Rubberduck.Reflection.VBA.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Reflection;
 using Microsoft.Vbe.Interop;
 using System.Text.RegularExpressions;
 
-namespace RetailCoderVBE.Reflection.VBA
+namespace Rubberduck.Reflection.VBA
 {
     internal class Parser
     {

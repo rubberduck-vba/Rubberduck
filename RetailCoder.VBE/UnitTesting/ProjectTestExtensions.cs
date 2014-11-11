@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Vbe.Interop;
-using RetailCoderVBE.Reflection;
+using Rubberduck.Reflection;
 
-namespace RetailCoderVBE.UnitTesting
+namespace Rubberduck.UnitTesting
 {
     internal static class ProjectTestExtensions
     {

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 
-namespace RetailCoderVBE.UnitTesting.UI
+namespace Rubberduck.UnitTesting.UI
 {
     internal class TestMenu : IDisposable
     {
@@ -26,11 +26,9 @@ namespace RetailCoderVBE.UnitTesting.UI
         private CommandBarButton _windowsTestExplorerButton;
         public CommandBarButton WindowsTestExplorerButton { get { return _windowsTestExplorerButton; } }
 
-        public void Initialize()
+        public void Initialize(CommandBarControls menuControls)
         {
-            var menuBarControls = _vbe.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls);
-            var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);
@@ -43,20 +41,6 @@ namespace RetailCoderVBE.UnitTesting.UI
             _runAllTestsButton.Caption = "&Run All Tests";
             _runAllTestsButton.FaceId = 186; // a "play" icon
             _runAllTestsButton.Click += OnRunAllTestsButtonClick;
-        }
-
-        private int FindMenuInsertionIndex(CommandBarControls controls)
-        {
-            for (int i = 1; i <= controls.Count; i++)
-            {
-                // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Window")
-                {
-                    return i;
-                }
-            }
-
-            return controls.Count;
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

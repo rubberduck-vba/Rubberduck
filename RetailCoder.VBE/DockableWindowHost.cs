@@ -3,10 +3,10 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace RetailCoderVBE
+namespace Rubberduck
 {
     //todo: store GUID in a const so if it needs to be changed it can be changed once??
-    [ComVisible(true), Guid("9CF1392A-2DC9-48A6-AC0B-E601A9802608"), ProgId("RetailCoderVBE.DockableWindowHost")]
+    [ComVisible(true), Guid("9CF1392A-2DC9-48A6-AC0B-E601A9802608"), ProgId("Rubberduck.DockableWindowHost")]
     public partial class DockableWindowHost : UserControl
     {
         [StructLayout(LayoutKind.Sequential)]

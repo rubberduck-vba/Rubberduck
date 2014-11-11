@@ -1,6 +1,6 @@
 ﻿using Microsoft.Vbe.Interop;
 
-namespace RetailCoderVBE.TaskList
+namespace Rubberduck.ToDoItems
 {
     internal enum TaskPriority
     {
@@ -10,14 +10,14 @@ namespace RetailCoderVBE.TaskList
         Bug
     }
 
-    internal class Task
+    internal class ToDoItem
     {
         public TaskPriority Priority{ get; set; }
         public string Description { get; set; }
         public string Module { get; set; } 
         public int LineNumber { get; set; }
 
-        public Task(TaskPriority priority, string description, CodeModule module,  int lineNumber)
+        public ToDoItem(TaskPriority priority, string description, CodeModule module,  int lineNumber)
         {
             this.Priority = priority;
             this.Description = description.Trim();

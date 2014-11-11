@@ -4,14 +4,14 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 
-namespace RetailCoderVBE.TaskList
+namespace Rubberduck.ToDoItems
 {
-    public partial class TaskListControl : UserControl
+    public partial class ToDoItemsControl : UserControl
     {
         private VBE vbe;
-        private BindingList<Task> taskList;
+        private BindingList<ToDoItem> taskList;
 
-        public TaskListControl(VBE vbe)
+        public ToDoItemsControl(VBE vbe)
         {
             this.vbe = vbe;
 
@@ -24,15 +24,21 @@ namespace RetailCoderVBE.TaskList
 
         private void InitializeGrid()
         {
-            taskListGridView.DataSource = taskList;
-            taskListGridView.CellDoubleClick += taskListGridView_CellDoubleClick;
+            todoItemsGridView.DataSource = taskList;
+            var descriptionColumn = todoItemsGridView.Columns["Description"];
+            if (descriptionColumn != null)
+            {
+                descriptionColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            todoItemsGridView.CellDoubleClick += taskListGridView_CellDoubleClick;
             refreshButton.Click += refreshButton_Click;
 
         }
 
         void taskListGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            Task task = taskList.ElementAt(e.RowIndex);
+            ToDoItem task = taskList.ElementAt(e.RowIndex);
             VBComponent component = vbe.ActiveVBProject.VBComponents.Item(task.Module);
 
             component.CodeModule.CodePane.Show();
@@ -42,13 +48,13 @@ namespace RetailCoderVBE.TaskList
         private void RefreshGridView()
         {
             RefreshTaskList();
-            taskListGridView.DataSource = taskList;
-            taskListGridView.Refresh();
+            todoItemsGridView.DataSource = taskList;
+            todoItemsGridView.Refresh();
         }
 
         public void RefreshTaskList()
         {
-            this.taskList = new BindingList<Task>();
+            this.taskList = new BindingList<ToDoItem>();
 
             foreach (VBComponent component in this.vbe.ActiveVBProject.VBComponents)
             {
@@ -59,7 +65,7 @@ namespace RetailCoderVBE.TaskList
                     if (IsTaskComment(line))
                     {
                         var priority = GetTaskPriority(line);
-                        this.taskList.Add(new Task(priority, line, module, i));
+                        this.taskList.Add(new ToDoItem(priority, line, module, i));
                     }
                 }
             }

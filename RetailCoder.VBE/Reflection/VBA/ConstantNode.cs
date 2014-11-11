@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA
+namespace Rubberduck.Reflection.VBA
 {
     // todo: handle multiple declarations on single instruction.
 

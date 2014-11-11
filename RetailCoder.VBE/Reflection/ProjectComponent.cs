@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Vbe.Interop;
 
-namespace RetailCoderVBE.Reflection
+namespace Rubberduck.Reflection
 {
     internal class ProjectComponent
     {

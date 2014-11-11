@@ -1,4 +1,4 @@
-﻿using RetailCoderVBE.Reflection.VBA.Grammar;
+﻿using Rubberduck.Reflection.VBA.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA.Grammar
+namespace Rubberduck.Reflection.VBA.Grammar
 {
     [Flags]
     internal enum SyntaxType
