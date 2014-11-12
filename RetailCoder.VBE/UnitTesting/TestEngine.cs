@@ -116,12 +116,19 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         public void SynchronizeTests()
         {
-            var tests = _vbe.VBProjects
-                            .Cast<VBProject>()
-                            .SelectMany(project => project.TestMethods())
-                            .ToDictionary(test => test, test => _allTests.ContainsKey(test) ? _allTests[test] : null);
+            try
+            {
+                var tests = _vbe.VBProjects
+                                .Cast<VBProject>()
+                                .SelectMany(project => project.TestMethods())
+                                .ToDictionary(test => test, test => _allTests.ContainsKey(test) ? _allTests[test] : null);
 
-            _allTests = tests;
+                _allTests = tests;
+            }
+            catch(ArgumentException)
+            {
+                System.Windows.Forms.MessageBox.Show("Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+            }
         }
 
         public void ShowExplorer()
