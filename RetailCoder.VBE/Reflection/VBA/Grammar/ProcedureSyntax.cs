@@ -23,7 +23,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new ProcedureNode(instruction, scope, match);
+            return new ProcedureNode(instruction, scope, match, match.Groups["ProcedureKind"].Value);
         }
     }
 }

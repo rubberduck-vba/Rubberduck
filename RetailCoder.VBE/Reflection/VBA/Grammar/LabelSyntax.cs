@@ -7,30 +7,17 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA.Grammar
 {
-    internal class LabelSyntax : ISyntax
+    internal class LabelSyntax : SyntaxBase
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
+        protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            var match = Regex.Match(instruction.Value, VBAGrammar.LabelSyntax());
-            if (match.Success)
-            {
-                return new LabelNode(instruction, localScope, match);
-            }
-
-            return null;
+            match = Regex.Match(instruction, VBAGrammar.LabelSyntax());
+            return match.Success;
         }
 
-
-        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
+        protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            node = ToNode(publicScope, localScope, instruction);
-            return node != null;
-        }
-
-
-        public bool IsChildNodeSyntax
-        {
-            get { return false; }
+            return new LabelNode(instruction, scope, match);
         }
     }
 }

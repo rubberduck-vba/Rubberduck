@@ -45,7 +45,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         }
 
         private static string IdentifierSyntax { get { return @"(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|(\[[a-zA-Z0-9_]*\]))"; } }
-        private static string ReferenceSyntax { get { return @"(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?)" + IdentifierSyntax; } }
+        private static string ReferenceSyntax { get { return @"(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?" + IdentifierSyntax + ")"; } }
 
         private static string DeclarationSyntax(string keyword)
         {
@@ -81,7 +81,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
 
         public static string ProcedureSyntax()
         {
-            return @"^((Private|Public)\s)?(?<ProcedureKind>(Sub|Function|Property (Get|Let|Set)))\s" + IdentifierSyntax;
+            return @"^((Private|Public)\s)?(?:(?<ProcedureKind>Sub|Function|Property)\s(Get|Let|Set))\s" + IdentifierSyntax;
         }
     }
 }

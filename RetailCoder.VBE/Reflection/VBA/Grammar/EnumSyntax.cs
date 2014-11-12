@@ -7,53 +7,40 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA.Grammar
 {
-    internal class EnumSyntax : ISyntax
+    internal class EnumSyntax : SyntaxBase
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
-        {
-            var match = Regex.Match(instruction.Content, VBAGrammar.EnumSyntax());
-            if (!match.Success)
-            {
-                return null;
-            }
+        public EnumSyntax()
+            : base(SyntaxType.HasChildNodes)
+        { }
 
-            return new EnumNode(instruction, localScope, match);
+        protected override bool MatchesSyntax(string instruction, out Match match)
+        {
+            match = Regex.Match(instruction, VBAGrammar.EnumSyntax());
+            return match.Success;
         }
 
-        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
+        protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            node = ToNode(publicScope, localScope, instruction);
-            return node != null;
-        }
-        
-        public bool IsChildNodeSyntax
-        {
-            get { return false; }
+            return new EnumNode(instruction, scope, match);
         }
     }
 
-    internal class EnumMemberSyntax : ISyntax
+    internal class EnumMemberSyntax : SyntaxBase
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
-        {
-            var match = Regex.Match(instruction.Content.Trim(), VBAGrammar.EnumMemberSyntax());
-            if (!match.Success)
-            {
-                return null;
-            }
-
-            return new EnumMemberNode(instruction, localScope, match);
+        public EnumMemberSyntax()
+            : base(SyntaxType.IsChildNodeSyntax)
+        { 
         }
 
-        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
+        protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            node = ToNode(publicScope, localScope, instruction);
-            return node != null;
+            match = Regex.Match(instruction, VBAGrammar.EnumMemberSyntax());
+            return match.Success;
         }
 
-        public bool IsChildNodeSyntax
+        protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            get { return true; }
+            return new EnumMemberNode(instruction, scope, match);
         }
     }
 }

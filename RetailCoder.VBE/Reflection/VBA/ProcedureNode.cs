@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA
 {
-    internal class ProcedureNode : SyntaxTreeNode
+    internal class ProcedureNode : CodeBlockNode
     {
-        public ProcedureNode(Instruction instruction, string scope, Match match)
-            : base(instruction, scope, match, true)
+        public ProcedureNode(Instruction instruction, string scope, Match match, string keyword)
+            : base(instruction, scope, match, ReservedKeywords.End + " " + keyword, typeof(SyntaxTreeNode))
         {
 
         }

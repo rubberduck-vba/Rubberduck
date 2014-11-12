@@ -21,7 +21,8 @@ namespace Rubberduck.Reflection.VBA
                                .GetTypes()
                                .Where(type => type.BaseType == typeof(SyntaxBase))
                                .Select(type => type.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes))
-                               .Cast<ISyntax>()
+                               .Cast<SyntaxBase>()
+                               .Where(syntax => !syntax.IsChildNodeSyntax)
                                .ToList();
         }
 
@@ -88,7 +89,7 @@ namespace Rubberduck.Reflection.VBA
                                 }
                                 else
                                 {
-                                    var declarationNode = node as DeclarationNodeBase;
+                                    var declarationNode = node as DeclarationNode;
                                     if (declarationNode != null)
                                     {
                                         //node = ParseDeclaration(publicScope, localScope, instruction);

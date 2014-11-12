@@ -36,7 +36,7 @@ namespace Rubberduck.Reflection.VBA
         {
             get
             {
-                var name = RegexMatch.Groups["identifier"].Value;
+                var name = RegexMatch.Groups["identifier"].Captures[0].Value;
                 return new Identifier(Scope, name, TypeName);
             }
         }

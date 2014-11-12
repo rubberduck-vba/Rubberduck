@@ -46,7 +46,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
                                                 ReservedKeywords.Global 
                                             };
 
-            return publicScopeKeywords.Contains(match.Groups[0].Value)
+            return publicScopeKeywords.Contains(match.Value.Split(' ')[0])
                                         ? publicScope
                                         : localScope;
         }
@@ -57,7 +57,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
         {
             Match match;
-            if (!MatchesSyntax(instruction.Content, out match))
+            if (!MatchesSyntax(instruction.Value.Trim(), out match))
             {
                 return null;
             }

@@ -10,7 +10,7 @@ namespace Rubberduck.Reflection.VBA
     internal class DeclarationNode : SyntaxTreeNode
     {
         public DeclarationNode(Instruction instruction, string scope, Match match)
-            : base(instruction, scope, match, true)
+            : base(instruction, scope, match)
         {
 
         }

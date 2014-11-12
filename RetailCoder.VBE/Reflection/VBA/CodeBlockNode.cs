@@ -9,6 +9,12 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class CodeBlockNode : SyntaxTreeNode
     {
+        public CodeBlockNode(Instruction instruction, string scope, Match match, string endingMarker, IEnumerable<SyntaxTreeNode> childNodes)
+            : this(instruction, scope, match, new[] { endingMarker }, typeof(SyntaxTreeNode), childNodes)
+        {
+
+        }
+
         public CodeBlockNode(Instruction instruction, string scope, Match match, string endingMarker, Type childNodeType)
             : this(instruction, scope, match, new[] {endingMarker}, childNodeType, new List<SyntaxTreeNode>())
         {
