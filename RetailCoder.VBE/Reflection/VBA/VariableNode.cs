@@ -11,8 +11,8 @@ namespace Rubberduck.Reflection.VBA
 
     internal class VariableNode : DeclarationNodeBase
     {
-        public VariableNode(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public VariableNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
         { }
 
         /// <summary>

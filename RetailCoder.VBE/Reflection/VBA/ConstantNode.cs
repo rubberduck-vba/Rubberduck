@@ -11,8 +11,8 @@ namespace Rubberduck.Reflection.VBA
 
     internal class ConstantNode : DeclarationNodeBase
     {
-        public ConstantNode(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public ConstantNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
         { }
 
         /// <summary>

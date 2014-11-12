@@ -9,25 +9,18 @@ namespace Rubberduck.Reflection.VBA.Grammar
 {
     internal class EnumSyntax : ISyntax
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
+        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
         {
-            var match = Regex.Match(instruction, VBAGrammar.EnumSyntax());
+            var match = Regex.Match(instruction.Content, VBAGrammar.EnumSyntax());
             if (!match.Success)
             {
                 return null;
             }
 
-            var comment = string.Empty;
-            int commentStart;
-            if (instruction.HasComment(out commentStart))
-            {
-                comment = instruction.Substring(commentStart);
-            }
-
-            return new EnumNode(localScope, match, comment);
+            return new EnumNode(instruction, localScope, match);
         }
 
-        public bool IsMatch(string publicScope, string localScope, string instruction, out SyntaxTreeNode node)
+        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
         {
             node = ToNode(publicScope, localScope, instruction);
             return node != null;
@@ -41,25 +34,18 @@ namespace Rubberduck.Reflection.VBA.Grammar
 
     internal class EnumMemberSyntax : ISyntax
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
+        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
         {
-            var match = Regex.Match(instruction.Trim(), VBAGrammar.EnumMemberSyntax());
+            var match = Regex.Match(instruction.Content.Trim(), VBAGrammar.EnumMemberSyntax());
             if (!match.Success)
             {
                 return null;
             }
 
-            var comment = string.Empty;
-            int commentStart;
-            if (instruction.HasComment(out commentStart))
-            {
-                comment = instruction.Substring(commentStart);
-            }
-
-            return new EnumMemberNode(localScope, match, comment);
+            return new EnumMemberNode(instruction, localScope, match);
         }
 
-        public bool IsMatch(string publicScope, string localScope, string instruction, out SyntaxTreeNode node)
+        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
         {
             node = ToNode(publicScope, localScope, instruction);
             return node != null;

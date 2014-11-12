@@ -78,7 +78,7 @@
     <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\ProcedureSyntax.cs" />
     <Compile Include="Reflection\VBA\LabelNode.cs" />
-    <Compile Include="Reflection\VBA\LogicalCodeLineNode.cs" />
+    <Compile Include="Reflection\VBA\LogicalCodeLine.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
     <Compile Include="Reflection\VBA\DeclarationNodeBase.cs" />
     <Compile Include="Reflection\VBA\Grammar\ConstantSyntax.cs" />

@@ -9,26 +9,19 @@ namespace Rubberduck.Reflection.VBA.Grammar
 {
     internal class LabelSyntax : ISyntax
     {
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
+        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
         {
-            var comment = string.Empty;
-            int index;
-            if (instruction.HasComment(out index))
-            {
-                comment = instruction.Substring(index);
-            }
-
-            var match = Regex.Match(instruction, VBAGrammar.LabelSyntax());
+            var match = Regex.Match(instruction.Value, VBAGrammar.LabelSyntax());
             if (match.Success)
             {
-                return new LabelNode(localScope, match, comment);
+                return new LabelNode(instruction, localScope, match);
             }
 
             return null;
         }
 
 
-        public bool IsMatch(string publicScope, string localScope, string instruction, out SyntaxTreeNode node)
+        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
         {
             node = ToNode(publicScope, localScope, instruction);
             return node != null;

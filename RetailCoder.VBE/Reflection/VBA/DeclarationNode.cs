@@ -9,12 +9,11 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class DeclarationNode : SyntaxTreeNode
     {
-        public DeclarationNode(string scope, Match match, string comment)
-            : base(scope, match, comment, true)
+        public DeclarationNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match, true)
         {
 
         }
-
 
         IEnumerable<DeclarationNodeBase> _declarations;
         IEnumerable<DeclarationNodeBase> Declarations { get { return _declarations; } }

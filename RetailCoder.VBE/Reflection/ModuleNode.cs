@@ -10,7 +10,7 @@ namespace Rubberduck.Reflection
     internal class ModuleNode : SyntaxTreeNode
     {
         public ModuleNode(string projectName, string componentName, IEnumerable<SyntaxTreeNode> nodes)
-            : base(projectName)
+            : base(Instruction.Empty(new LogicalCodeLine(projectName, componentName, 0, string.Empty)), projectName)
         {
 
         }

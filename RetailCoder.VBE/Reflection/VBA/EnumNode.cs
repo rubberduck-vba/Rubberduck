@@ -10,14 +10,8 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class EnumNode : CodeBlockNode
     {
-        public EnumNode(string scope, Match match)
-            : this(scope, match, string.Empty)
-        {
-
-        }
-
-        public EnumNode(string scope, Match match, string comment)
-            : base(scope, match, comment, string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Enum), typeof(EnumMemberSyntax))
+        public EnumNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match, string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Enum), typeof(EnumMemberSyntax))
         {
 
         }
@@ -34,8 +28,8 @@ namespace Rubberduck.Reflection.VBA
 
     internal class EnumMemberNode : SyntaxTreeNode
     {
-        public EnumMemberNode(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public EnumMemberNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
         {
         }
 

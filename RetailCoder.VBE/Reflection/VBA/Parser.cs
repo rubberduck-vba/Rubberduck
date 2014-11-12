@@ -33,7 +33,7 @@ namespace Rubberduck.Reflection.VBA
             var publicScope = project.Name;
             var localScope = string.Concat(project.Name, ".", component.Name);
 
-            var content = SplitLogicalCodeLines(module.Lines[1, module.CountOfLines]);
+            var content = SplitLogicalCodeLines(project.Name, component.Name, module.Lines[1, module.CountOfLines]);
             var memberNodes = ParseModuleMembers(publicScope, localScope, content).ToList();
 
             var result = new ModuleNode(project.Name, component.Name, memberNodes);
@@ -41,11 +41,10 @@ namespace Rubberduck.Reflection.VBA
             return result;
         }
 
-        private IDictionary<int, string> SplitLogicalCodeLines(string content)
+        private IEnumerable<LogicalCodeLine> SplitLogicalCodeLines(string projectName, string componentName, string content)
         {
             const string lineContinuationMarker = "_";
 
-            var result = new Dictionary<int, string>();
             var lines = content.Split('\n').Select(line => line.Replace("\r", string.Empty)).ToList();
 
             var logicalLine = new StringBuilder();
@@ -59,22 +58,20 @@ namespace Rubberduck.Reflection.VBA
                 else
                 {
                     logicalLine.Append(line);
-                    result.Add(index + 1, logicalLine.ToString());
+                    yield return new LogicalCodeLine(projectName, componentName, index + 1, logicalLine.ToString());
                     logicalLine.Clear();
                 }
             }
-
-            return result;
         }
 
-        private IEnumerable<SyntaxTreeNode> ParseModuleMembers(string publicScope, string localScope, IDictionary<int, string> logicalCodeLines)
+        private IEnumerable<SyntaxTreeNode> ParseModuleMembers(string publicScope, string localScope, IEnumerable<LogicalCodeLine> logicalCodeLines)
         {
             var currentLocalScope = localScope;
-            var lines = logicalCodeLines.Values.ToArray();
+            var lines = logicalCodeLines.ToArray();
             for (int index = 0; index < lines.Length; index++)
             {
                 var line = lines[index];
-                var instructions = SplitInstructions(line);
+                var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
                     SyntaxTreeNode node;
@@ -106,27 +103,19 @@ namespace Rubberduck.Reflection.VBA
             }
         }
         
-        private IEnumerable<string> SplitInstructions(string logicalCodeLine)
-        {
-            if (Regex.Match(logicalCodeLine.Trim(), VBAGrammar.LabelSyntax()).Success)
-            {
-                return new[] { logicalCodeLine };
-            }
-
-            return logicalCodeLine.Split(':').Select(instruction => instruction.Trim());
-        }
-
-        private CodeBlockNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, string[] lines, ref int index)
+        private CodeBlockNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, IEnumerable<LogicalCodeLine> logicalLines, ref int index)
         {
             var result = codeBlockNode;
             var grammar = codeBlockNode.ChildSyntaxType == null 
                 ? _grammar 
                 : _grammar.Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == codeBlockNode.ChildSyntaxType);
-            
-            while (lines[index].Trim() != codeBlockNode.EndOfBlockMarker)
+
+            var lines = logicalLines.ToArray();
+
+            while (codeBlockNode.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
             {
                 var line = lines[index];
-                var instructions = SplitInstructions(line);
+                var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
                     SyntaxTreeNode node;
@@ -137,7 +126,7 @@ namespace Rubberduck.Reflection.VBA
                             if (node.HasChildNodes)
                             {
                                 var childNode = node as CodeBlockNode;
-                                node = ParseCodeBlock(publicScope, localScope, childNode, lines, ref index);
+                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalLines, ref index);
                             }
                             result = codeBlockNode.AddNode(node);
                             break;

@@ -12,8 +12,8 @@ namespace Rubberduck.Reflection.VBA
     /// </summary>
     internal abstract class DeclarationNodeBase : SyntaxTreeNode
     {
-        public DeclarationNodeBase(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public DeclarationNodeBase(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
         { }
 
         private static IDictionary<string, string> _typeSpecifiers = new Dictionary<string, string>

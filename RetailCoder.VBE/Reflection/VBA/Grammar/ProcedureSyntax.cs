@@ -21,9 +21,9 @@ namespace Rubberduck.Reflection.VBA.Grammar
             return match.Success;
         }
 
-        protected override SyntaxTreeNode CreateNode(string scope, Match match, string instruction, string comment)
+        protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new ProcedureNode(scope, match, comment);
+            return new ProcedureNode(instruction, scope, match);
         }
     }
 }

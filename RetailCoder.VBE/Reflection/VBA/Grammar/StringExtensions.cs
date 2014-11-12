@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA.Grammar
 {
-    internal static class StringExtensions
+    [ComVisible(false)]
+    public static class StringExtensions
     {
         public static readonly char StringDelimiter = '"';
         public static readonly char CommentMarker = '\'';
@@ -31,38 +33,60 @@ namespace Rubberduck.Reflection.VBA.Grammar
         /// Returns a value indicating whether line of code is/contains a comment.
         /// </summary>
         /// <param name="line"></param>
-        /// <param name="comment">Returns the comment string, including the comment marker.</param>
+        /// <param name="index">Returns the start index of the comment string, including the comment marker.</param>
         /// <returns></returns>
         public static bool HasComment(this string line, out int index)
         {
-            var result = false;
-
-            var isString = false;
             index = -1;
+            var instruction = line.StripStringLiterals();
 
-            for (int cursor = 0; cursor < line.Length - 1; cursor++)
+            for (int cursor = 0; cursor < instruction.Length - 1; cursor++)
             {
-                // determine if cursor is inside a string literal:
-                if (line[cursor] == StringDelimiter)
-                {
-                    if (isString)
-                    {
-                        isString = line[cursor + 1] == StringDelimiter || cursor > 0 && (line[cursor - 1] == StringDelimiter);
-                    }
-                    else
-                    {
-                        isString = true;
-                    }
-                }
-
-                if (!isString && line[cursor] == CommentMarker)
+                if (instruction[cursor] == CommentMarker)
                 {
                     index = cursor;
                     return true;
                 }
             }
 
-            return result;
+            return false;
+        }
+
+        /// <summary>
+        /// Strips all string literals from a line of code or instruction.
+        /// Replaces string literals with whitespace characters, to maintain original length.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns>Returns a new string, stripped of all string literals and string delimiters.</returns>
+        public static string StripStringLiterals(this string line)
+        {
+            var builder = new StringBuilder(line.Length);
+            var isInsideString = false;
+            for (int cursor = 0; cursor < line.Length; cursor++)
+            {
+                if (line[cursor] == StringDelimiter)
+                {
+                    if (isInsideString)
+                    {
+                        isInsideString = cursor + 1 == line.Length || line[cursor + 1] == StringDelimiter || cursor > 0 && (line[cursor - 1] == StringDelimiter);
+                    }
+                    else
+                    {
+                        isInsideString = true;
+                    }
+                }
+
+                if (!isInsideString && line[cursor] != StringDelimiter)
+                {
+                    builder.Append(line[cursor]);
+                }
+                else
+                {
+                    builder.Append(' ');
+                }
+            }
+
+            return builder.ToString();
         }
     }
 }

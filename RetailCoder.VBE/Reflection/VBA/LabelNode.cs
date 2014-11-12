@@ -9,8 +9,8 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class LabelNode : SyntaxTreeNode
     {
-        public LabelNode(string scope, Match match, string comment)
-            : base(scope, match, comment)
+        public LabelNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
         {
         }
 

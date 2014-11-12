@@ -9,8 +9,8 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class ProcedureNode : SyntaxTreeNode
     {
-        public ProcedureNode(string scope, Match match, string comment)
-            : base(scope, match, comment, true)
+        public ProcedureNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match, true)
         {
 
         }

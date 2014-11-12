@@ -9,22 +9,28 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class CodeBlockNode : SyntaxTreeNode
     {
-        public CodeBlockNode(string scope, Match match, string comment, string endingMarker, Type childNodeType)
-            : this(scope, match, comment, endingMarker, childNodeType, new List<SyntaxTreeNode>())
+        public CodeBlockNode(Instruction instruction, string scope, Match match, string endingMarker, Type childNodeType)
+            : this(instruction, scope, match, new[] {endingMarker}, childNodeType, new List<SyntaxTreeNode>())
         {
 
         }
 
-        private CodeBlockNode(string scope, Match match, string comment, string endingMarker, Type childSyntaxType, IEnumerable<SyntaxTreeNode> nodes)
-            : base(scope, match, comment, true)
+        public CodeBlockNode(Instruction instruction, string scope, Match match, string[] endingMarkers, Type childNodeType)
+            : this(instruction, scope, match, endingMarkers, childNodeType, new List<SyntaxTreeNode>())
         {
-            _endingMarker = endingMarker;
+
+        }
+
+        private CodeBlockNode(Instruction instruction, string scope, Match match, string[] endingMarkers, Type childSyntaxType, IEnumerable<SyntaxTreeNode> nodes)
+            : base(instruction, scope, match, true)
+        {
+            _endingMarkers = endingMarkers;
             _childSyntaxType = childSyntaxType;
             _nodes = nodes;
         }
 
-        private readonly string _endingMarker;
-        public string EndOfBlockMarker { get { return _endingMarker; } }
+        private readonly string[] _endingMarkers;
+        public string[] EndOfBlockMarkers { get { return _endingMarkers; } }
 
         private readonly IEnumerable<SyntaxTreeNode> _nodes;
         public IEnumerable<SyntaxTreeNode> ChildNodes { get { return _nodes; } }
@@ -39,7 +45,7 @@ namespace Rubberduck.Reflection.VBA
         /// <returns></returns>
         public CodeBlockNode AddNode(SyntaxTreeNode node)
         {
-            return new CodeBlockNode(Scope, RegexMatch, Comment, _endingMarker, _childSyntaxType, _nodes.Concat(new[] { node }));
+            return new CodeBlockNode(node.Instruction, Scope, RegexMatch, _endingMarkers, _childSyntaxType, _nodes.Concat(new[] { node }));
         }
     }
 }

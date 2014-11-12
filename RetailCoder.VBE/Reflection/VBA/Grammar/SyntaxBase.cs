@@ -37,7 +37,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         }
 
         protected abstract bool MatchesSyntax(string instruction, out Match match);
-        protected abstract SyntaxTreeNode CreateNode(string scope, Match match, string instruction, string comment);
+        protected abstract SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match);
 
         protected virtual string Scope(string publicScope, string localScope, Match match)
         {
@@ -54,33 +54,20 @@ namespace Rubberduck.Reflection.VBA.Grammar
         private readonly SyntaxType _syntaxType;
         public SyntaxType Type { get { return _syntaxType; } }
 
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, string instruction)
+        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
         {
             Match match;
-            if (!MatchesSyntax(instruction, out match))
+            if (!MatchesSyntax(instruction.Content, out match))
             {
                 return null;
             }
 
             var scope = Scope(publicScope, localScope, match);
-            var comment = FindComment(instruction);
          
-            return CreateNode(scope, match, instruction, comment);
+            return CreateNode(instruction, scope, match);
         }
 
-        protected virtual string FindComment(string instruction)
-        {
-            var comment = string.Empty;
-            int commentStart;
-            if (instruction.HasComment(out commentStart))
-            {
-                comment = instruction.Substring(commentStart);
-            }
-
-            return comment;
-        }
-
-        public bool IsMatch(string publicScope, string localScope, string instruction, out SyntaxTreeNode node)
+        public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
         {
             node = ToNode(publicScope, localScope, instruction);
             return node != null;
