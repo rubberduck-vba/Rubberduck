@@ -9,7 +9,7 @@ namespace Rubberduck.Reflection.VBA
 {
     // todo: handle multiple declarations on single instruction.
 
-    internal class ConstantNode : DeclarationNodeBase
+    internal class ConstantNode : DeclarationNode
     {
         public ConstantNode(Instruction instruction, string scope, Match match)
             : base(instruction, scope, match)

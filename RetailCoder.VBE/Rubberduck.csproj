@@ -72,7 +72,6 @@
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="Reflection\VBA\CodeBlockNode.cs" />
-    <Compile Include="Reflection\VBA\DeclarationNode.cs" />
     <Compile Include="Reflection\VBA\EnumNode.cs" />
     <Compile Include="Reflection\VBA\Grammar\EnumSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
@@ -80,7 +79,7 @@
     <Compile Include="Reflection\VBA\LabelNode.cs" />
     <Compile Include="Reflection\VBA\LogicalCodeLine.cs" />
     <Compile Include="Reflection\VBA\ConstantNode.cs" />
-    <Compile Include="Reflection\VBA\DeclarationNodeBase.cs" />
+    <Compile Include="Reflection\VBA\DeclarationNode.cs" />
     <Compile Include="Reflection\VBA\Grammar\ConstantSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\DimSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\GlobalFieldSyntax.cs" />
