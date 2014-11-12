@@ -72,6 +72,7 @@
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="Reflection\VBA\CodeBlockNode.cs" />
+    <Compile Include="Reflection\VBA\DeclarationNode.cs" />
     <Compile Include="Reflection\VBA\EnumNode.cs" />
     <Compile Include="Reflection\VBA\Grammar\EnumSyntax.cs" />
     <Compile Include="Reflection\VBA\Grammar\LabelSyntax.cs" />
