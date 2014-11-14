@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
@@ -159,7 +154,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="message">An optional message to display if the assertion fails.</param>
         public void AreSame(object expected, object actual, string message = null)
         {
-            if (object.ReferenceEquals(expected, actual))
+            if (ReferenceEquals(expected, actual))
             {
                 AssertHandler.OnAssertSucceeded();
             }
@@ -177,7 +172,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="message">An optional message to display if the assertion fails.</param>
         public void AreNotSame(object expected, object actual, string message = null)
         {
-            if (!object.ReferenceEquals(expected, actual))
+            if (!ReferenceEquals(expected, actual))
             {
                 AssertHandler.OnAssertSucceeded();
             }

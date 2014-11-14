@@ -1,8 +1,6 @@
 ﻿using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
-using System;
 
 namespace Rubberduck.UnitTesting
 {

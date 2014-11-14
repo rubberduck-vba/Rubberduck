@@ -11,36 +11,31 @@ namespace Rubberduck.UnitTesting.UI
         // 3039: module icon || 3119 || 621 || 589 || 472
         // 3170: class module icon
 
-        private readonly VBE _vbe;
         private readonly TestEngine _engine;
 
         public TestMenu(VBE vbe)
         {
-            _vbe = vbe;
-            _engine = new TestEngine(_vbe);
+            _engine = new TestEngine(vbe);
         }
 
-        private CommandBarButton _runAllTestsButton;
-        public CommandBarButton RunAllTestsButton { get { return _runAllTestsButton; } }
-
-        private CommandBarButton _windowsTestExplorerButton;
-        public CommandBarButton WindowsTestExplorerButton { get { return _windowsTestExplorerButton; } }
+        public CommandBarButton RunAllTestsButton { get; private set; }
+        public CommandBarButton WindowsTestExplorerButton { get; private set; }
 
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
-            _windowsTestExplorerButton = AddMenuButton(menu);
-            _windowsTestExplorerButton.Caption = "&Test Explorer";
-            _windowsTestExplorerButton.FaceId = 3170;
-            _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
+            WindowsTestExplorerButton = AddMenuButton(menu);
+            WindowsTestExplorerButton.Caption = "&Test Explorer";
+            WindowsTestExplorerButton.FaceId = 3170;
+            WindowsTestExplorerButton.Click += OnTestExplorerButtonClick;
 
-            _runAllTestsButton = AddMenuButton(menu);
-            _runAllTestsButton.BeginGroup = true;
-            _runAllTestsButton.Caption = "&Run All Tests";
-            _runAllTestsButton.FaceId = 186; // a "play" icon
-            _runAllTestsButton.Click += OnRunAllTestsButtonClick;
+            RunAllTestsButton = AddMenuButton(menu);
+            RunAllTestsButton.BeginGroup = true;
+            RunAllTestsButton.Caption = "&Run All Tests";
+            RunAllTestsButton.FaceId = 186; // a "play" icon
+            RunAllTestsButton.Click += OnRunAllTestsButtonClick;
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
