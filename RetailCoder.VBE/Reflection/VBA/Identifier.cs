@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace Rubberduck.Reflection.VBA
 {
-    internal class Identifier
+    [ComVisible(false)]
+    public class Identifier
     {
         public Identifier(string scope, string name, string typeName)
         {

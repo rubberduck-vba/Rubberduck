@@ -1,15 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Reflection.VBA
 {
-    internal abstract class SyntaxTreeNode
+    [ComVisible(false)]
+    public abstract class SyntaxTreeNode
     {
-        protected SyntaxTreeNode(Instruction instruction, string scope)
-            : this(instruction, scope, null)
-        {
-        }
-
-        protected SyntaxTreeNode(Instruction instruction, string scope, Match match, bool hasChildNodes = false)
+        protected SyntaxTreeNode(Instruction instruction, string scope, Match match = null, bool hasChildNodes = false)
         {
             _instruction = instruction;
             _scope = scope;

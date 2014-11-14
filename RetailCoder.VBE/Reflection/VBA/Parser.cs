@@ -12,16 +12,20 @@ namespace Rubberduck.Reflection.VBA
 {
     internal class Parser
     {
-        private IEnumerable<ISyntax> _grammar;
+        private readonly IEnumerable<ISyntax> _grammar;
 
         public Parser()
         {
-            var syntaxType = typeof(ISyntax);
+            // include all types inherited from SyntaxBase:
             _grammar = Assembly.GetExecutingAssembly()
                                .GetTypes()
                                .Where(type => type.BaseType == typeof(SyntaxBase))
-                               .Select(type => type.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes))
-                               .Cast<SyntaxBase>()
+                               .Select(type =>
+                               {
+                                   var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+                                   return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
+                               })
+                               .Cast<ISyntax>()
                                .Where(syntax => !syntax.IsChildNodeSyntax)
                                .ToList();
         }
@@ -92,7 +96,7 @@ namespace Rubberduck.Reflection.VBA
                                     var declarationNode = node as DeclarationNode;
                                     if (declarationNode != null)
                                     {
-                                        //node = ParseDeclaration(publicScope, localScope, instruction);
+                                        yield return node;
                                     }
                                 }
                             }
@@ -107,11 +111,12 @@ namespace Rubberduck.Reflection.VBA
         private CodeBlockNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, IEnumerable<LogicalCodeLine> logicalLines, ref int index)
         {
             var result = codeBlockNode;
-            var grammar = codeBlockNode.ChildSyntaxType == null 
-                ? _grammar 
-                : _grammar.Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == codeBlockNode.ChildSyntaxType);
+            var grammar = codeBlockNode.ChildSyntaxType == null
+                ? _grammar.ToList()
+                : _grammar.Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == codeBlockNode.ChildSyntaxType).ToList();
 
-            var lines = logicalLines.ToArray();
+            var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
+            var lines = logicalCodeLines.ToArray();
 
             while (codeBlockNode.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
             {
@@ -119,19 +124,19 @@ namespace Rubberduck.Reflection.VBA
                 var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
-                    SyntaxTreeNode node;
                     foreach (var syntax in grammar)
                     {
-                        if (syntax.IsMatch(publicScope, localScope, instruction, out node))
+                        SyntaxTreeNode node;
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node)) continue;
+
+                        if (node.HasChildNodes)
                         {
-                            if (node.HasChildNodes)
-                            {
-                                var childNode = node as CodeBlockNode;
-                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalLines, ref index);
-                            }
-                            result = codeBlockNode.AddNode(node);
-                            break;
+                            var childNode = node as CodeBlockNode;
+                            node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
                         }
+
+                        result = codeBlockNode.AddNode(node);
+                        break;
                     }
                 }
                 index++;

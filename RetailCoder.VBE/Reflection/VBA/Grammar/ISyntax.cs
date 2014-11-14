@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA.Grammar
 {
-    internal interface ISyntax
+    [ComVisible(false)]
+    public interface ISyntax
     {
         /// <summary>
         /// Parses an instruction into a syntax node, if possible.

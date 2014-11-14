@@ -1,36 +1,15 @@
-﻿using Rubberduck.Reflection.VBA.Grammar;
-using System;
-using System.Collections.Generic;
+﻿using System.Runtime.InteropServices;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection.VBA.Grammar
 {
-    [Flags]
-    internal enum SyntaxType
-    {
-        Syntax = 0,
-        /// <summary>
-        /// Indicates that this syntax produces child nodes.
-        /// </summary>
-        HasChildNodes = 1,
-        /// <summary>
-        /// Indicates that this syntax isn't part of the language's general grammar, 
-        /// e.g. 
-        /// </summary>
-        IsChildNodeSyntax = 2
-    }
-
-    internal abstract class SyntaxBase : ISyntax
+    [ComVisible(false)]
+    public abstract class SyntaxBase : ISyntax
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="nodeFactory">
-        /// A factory that creates a specific implementation of the <see cref="SyntaxTreeNode"/> abstract class.
-        /// </param>
         protected SyntaxBase(SyntaxType syntaxType = SyntaxType.Syntax)
         {
             _syntaxType = syntaxType;
@@ -46,7 +25,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
                                                 ReservedKeywords.Global 
                                             };
 
-            return publicScopeKeywords.Contains(match.Value.Split(' ')[0])
+            return publicScopeKeywords.Contains(match.Value.Split(' ')[0] + ' ')
                                         ? publicScope
                                         : localScope;
         }
