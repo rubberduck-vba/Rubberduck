@@ -31,12 +31,13 @@ namespace Rubberduck
             }
             catch(Exception exception)
             {
-                MessageBox.Show(exception.Message);
+                MessageBox.Show(exception.Message.ToString());
             }
         }
 
         public void OnStartupComplete(ref Array custom)
         {
+            //bug: if OnConnection doesn't complete, _app == null
             _app.CreateExtUI(); 
         }
 

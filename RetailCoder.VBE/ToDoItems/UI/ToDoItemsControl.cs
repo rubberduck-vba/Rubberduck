@@ -83,6 +83,7 @@ namespace Rubberduck.ToDoItems
             {
                 return TaskPriority.Medium;
             }
+            //must be a "NOTE:"
             return TaskPriority.Low;
         }
 

@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Rubberduck.UnitTesting.UI
 {
-    internal partial class TestExplorerWindow : Form
+    internal partial class TestExplorerWindow : UserControl
     {
         private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
@@ -39,8 +39,6 @@ namespace Rubberduck.UnitTesting.UI
 
         private void RegisterUIEvents()
         {
-            FormClosing += TestExplorerWindowFormClosing;
-
             testOutputGridView.CellDoubleClick += GridCellDoubleClicked;
             testOutputGridView.SelectionChanged += GridSelectionChanged;
 

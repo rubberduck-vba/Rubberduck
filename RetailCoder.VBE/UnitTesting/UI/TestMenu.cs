@@ -5,42 +5,46 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UnitTesting.UI
 {
-    internal class TestMenu : IDisposable
+    internal class TestMenu : Rubberduck.Menu
     {
         // 2743: play icon with stopwatch
         // 3039: module icon || 3119 || 621 || 589 || 472
         // 3170: class module icon
 
+        //private readonly VBE _vbe;
         private readonly TestEngine _engine;
+        private Window toolWindow;
 
-        public TestMenu(VBE vbe)
+        public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
         {
-            _engine = new TestEngine(vbe);
+            TestExplorerWindow testExplorer = new TestExplorerWindow();
+            toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+            _engine = new TestEngine(vbe, testExplorer, toolWindow);
         }
 
-        public CommandBarButton RunAllTestsButton { get; private set; }
-        public CommandBarButton WindowsTestExplorerButton { get; private set; }
+        private CommandBarButton _runAllTestsButton;
+        public CommandBarButton RunAllTestsButton { get { return _runAllTestsButton; } }
+
+        private CommandBarButton _windowsTestExplorerButton;
+        public CommandBarButton WindowsTestExplorerButton { get { return _windowsTestExplorerButton; } }
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            var menuBarControls = this.IDE.CommandBars[1].Controls;
+            var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
+            var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
-            WindowsTestExplorerButton = AddMenuButton(menu);
-            WindowsTestExplorerButton.Caption = "&Test Explorer";
-            WindowsTestExplorerButton.FaceId = 3170;
-            WindowsTestExplorerButton.Click += OnTestExplorerButtonClick;
+            _windowsTestExplorerButton = AddMenuButton(menu);
+            _windowsTestExplorerButton.Caption = "&Test Explorer";
+            _windowsTestExplorerButton.FaceId = 3170;
+            _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
 
-            RunAllTestsButton = AddMenuButton(menu);
-            RunAllTestsButton.BeginGroup = true;
-            RunAllTestsButton.Caption = "&Run All Tests";
-            RunAllTestsButton.FaceId = 186; // a "play" icon
-            RunAllTestsButton.Click += OnRunAllTestsButtonClick;
-        }
-
-        private CommandBarButton AddMenuButton(CommandBarPopup menu)
-        {
-            return menu.Controls.Add(Type: MsoControlType.msoControlButton) as CommandBarButton;
+            _runAllTestsButton = AddMenuButton(menu);
+            _runAllTestsButton.BeginGroup = true;
+            _runAllTestsButton.Caption = "&Run All Tests";
+            _runAllTestsButton.FaceId = 186; // a "play" icon
+            _runAllTestsButton.Click += OnRunAllTestsButtonClick;
         }
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -57,6 +61,7 @@ namespace Rubberduck.UnitTesting.UI
         public void Dispose()
         {
             _engine.Dispose();
+            base.Dispose();
         }
     }
 }
