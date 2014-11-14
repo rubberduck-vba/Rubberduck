@@ -1,14 +1,8 @@
 ﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.ToDoItems;
-using Rubberduck.ToDoItems.UI;
-using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck
 {
