@@ -1,15 +1,10 @@
-﻿Windows Registry Editor Version 5.00
+Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck.Extension]
 "Description"="Rubberduck add-in for VBA IDE."
 "FriendlyName"="Rubberduck"
 "CommandLineSafe"=dword:00000000
 "LoadBehavior"=dword:00000003
-
-[HKEY_CLASSES_ROOT\Record\{F23AFC06-E337-364F-867F-18223EE254BC}\1.0.5420.38329]
-"Class"="Rubberduck.UnitTesting.TestOutcome"
-"Assembly"="Rubberduck, Version=1.0.5420.38329, Culture=neutral, PublicKeyToken=null"
-"RuntimeVersion"="v4.0.30319"
 
 [HKEY_CLASSES_ROOT\Rubberduck.Extension]
 @="Rubberduck.Extension"

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetailCoderVBE.Reflection.VBA
+namespace Rubberduck.Reflection.VBA
 {
     internal class ModuleNode : SyntaxTreeNode
     {

@@ -6,8 +6,7 @@ namespace Rubberduck.ToDoItems
     {
         Low,
         Medium,
-        High,
-        Bug
+        High
     }
 
     internal class ToDoItem
