@@ -10,7 +10,10 @@ namespace Rubberduck.ToDoItems
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private readonly DockableWindowHost _controlHost;
-        private readonly Window _toolWindow;
+        private Window _toolWindow;
+
+        private CommandBarButton _todoItemsButton;
+        public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }
 
         public ToDoItemsMenu(VBE vbe, AddIn addInInstance)
         {
@@ -18,21 +21,7 @@ namespace Rubberduck.ToDoItems
             _addIn = addInInstance;
             _controlHost = new DockableWindowHost();
 
-            try
-            {
-                var control = new ToDoItemsControl(_vbe);
-                _toolWindow = CreateToolWindow("ToDo Items", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", control);
-
-            }
-            catch (Exception exception)
-            {
-                
-                throw;
-            }
         }
-
-        private CommandBarButton _todoItemsButton;
-        public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }
 
         public void Initialize(CommandBarControls menuControls)
         {
@@ -47,7 +36,18 @@ namespace Rubberduck.ToDoItems
 
         void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
+            if (_toolWindow == null)
+            {
+                InitializeWindow();
+            }
+
             _toolWindow.Visible = true;
+        }
+
+        private void InitializeWindow()
+        {
+            var control = new ToDoItemsControl(_vbe);
+            _toolWindow = CreateToolWindow("ToDo Items", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", control);
         }
 
         private Window CreateToolWindow(string toolWindowCaption, string toolWindowGUID, UserControl toolWindowUserControl)
