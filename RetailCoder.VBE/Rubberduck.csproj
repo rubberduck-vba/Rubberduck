@@ -100,6 +100,7 @@
     <Compile Include="Reflection\VBA\Grammar\SyntaxBase.cs" />
     <Compile Include="Reflection\VBA\SyntaxTreeNode.cs" />
     <Compile Include="Reflection\VBA\VariableNode.cs" />
+    <Compile Include="RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="ToDoItems\UI\ToDoItemsMenu.cs" />
     <Compile Include="ToDoItems\UI\ToDoItemsControl.cs">

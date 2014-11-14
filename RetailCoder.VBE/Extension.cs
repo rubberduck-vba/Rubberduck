@@ -38,7 +38,7 @@ namespace Rubberduck
         public void OnStartupComplete(ref Array custom)
         {
             //bug: if OnConnection doesn't complete, _app == null
-            _app.CreateExtUI(); 
+            _app.CreateExtUi(); 
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
