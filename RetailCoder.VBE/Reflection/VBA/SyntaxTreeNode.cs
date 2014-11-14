@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Rubberduck.Reflection.VBA.Grammar;
+﻿using System.Text.RegularExpressions;
 
 namespace Rubberduck.Reflection.VBA
 {
     internal abstract class SyntaxTreeNode
     {
-        public SyntaxTreeNode(Instruction instruction, string scope)
+        protected SyntaxTreeNode(Instruction instruction, string scope)
             : this(instruction, scope, null)
         {
         }
 
-        public SyntaxTreeNode(Instruction instruction, string scope, Match match, bool hasChildNodes = false)
+        protected SyntaxTreeNode(Instruction instruction, string scope, Match match, bool hasChildNodes = false)
         {
             _instruction = instruction;
             _scope = scope;

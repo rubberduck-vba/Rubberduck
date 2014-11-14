@@ -12,11 +12,11 @@ namespace Rubberduck.Reflection.VBA
     /// </summary>
     internal abstract class DeclarationNode : SyntaxTreeNode
     {
-        public DeclarationNode(Instruction instruction, string scope, Match match)
+        protected DeclarationNode(Instruction instruction, string scope, Match match)
             : base(instruction, scope, match)
         { }
 
-        private static IDictionary<string, string> _typeSpecifiers = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> TypeSpecifiers = new Dictionary<string, string>
             {
                 { "%", ReservedKeywords.Integer },
                 { "&", ReservedKeywords.Long },
@@ -85,7 +85,7 @@ namespace Rubberduck.Reflection.VBA
             {
                 return IsTypeSpecified
                     ? !string.IsNullOrEmpty(TypeSpecifier)
-                        ? _typeSpecifiers[TypeSpecifier]
+                        ? TypeSpecifiers[TypeSpecifier]
                         : Reference
                     : ReservedKeywords.Variant;
             }
