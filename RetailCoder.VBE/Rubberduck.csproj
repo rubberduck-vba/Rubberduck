@@ -53,6 +53,7 @@
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -123,7 +124,7 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="Refactoring\RefactorMenu.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UnitTesting\UI\TestExplorerWindow.Designer.cs">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>

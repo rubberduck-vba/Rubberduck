@@ -48,7 +48,7 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _addIn = addIn;
-            _testMenu = new TestMenu(_vbe);
+            _testMenu = new TestMenu(_vbe, _addIn);
             _todoItemsMenu = new ToDoItemsMenu(_vbe, _addIn);
             _refactorMenu = new RefactorMenu(_vbe);
         }
@@ -93,7 +93,7 @@ namespace Rubberduck
             {
                 // insert menu before "Window" built-in menu:
                 if (controls[i].BuiltIn && controls[i].Caption == "&Window")
-                {
+        {
                     return i;
                 }
             }
