@@ -624,4 +624,7 @@
   <data name="Decimal" xml:space="preserve">
     <value>Decimal</value>
   </data>
+  <data name="TypeOf" xml:space="preserve">
+    <value>TypeOf</value>
+  </data>
 </root>

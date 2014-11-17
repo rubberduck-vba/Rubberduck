@@ -103,6 +103,12 @@ namespace Rubberduck.VBA.Parser
 
         private SyntaxTreeNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, IEnumerable<LogicalCodeLine> logicalLines, ref int index)
         {
+            var ifBlockNode = codeBlockNode as IfBlockNode;
+            if (ifBlockNode != null && string.IsNullOrEmpty(ifBlockNode.Expression.Value))
+            {
+                return codeBlockNode;
+            }
+
             var result = codeBlockNode;
             var grammar = result.ChildSyntaxType == null
                 ? VBAGrammar.GetGrammarSyntax().Where(syntax => !syntax.IsChildNodeSyntax).ToList()

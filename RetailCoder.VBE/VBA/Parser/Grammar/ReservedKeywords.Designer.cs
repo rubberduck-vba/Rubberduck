@@ -1447,6 +1447,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TypeOf.
+        /// </summary>
+        internal static string TypeOf {
+            get {
+                return ResourceManager.GetString("TypeOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UBound.
         /// </summary>
         internal static string UBound {

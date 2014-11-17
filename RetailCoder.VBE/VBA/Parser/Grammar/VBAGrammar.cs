@@ -70,5 +70,10 @@ namespace Rubberduck.VBA.Parser.Grammar
         {
             return @"(?:(?:(?:\s?(?<optional>Optional)\s)?(?<by>ByRef|ByVal|ParamArray)?\s))?(?:" + IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(?:(?:[0-9]+)\,?\s?)*|(?:[0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(?:\s" + ReferenceSyntax + @")?))";
         }
+
+        public static string IfBlockSyntax()
+        {
+            return @"If\s(?<condition>.*)\sThen(?:\s(?<expression>.*))?";
+        }
     }
 }

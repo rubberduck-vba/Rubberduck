@@ -76,13 +76,16 @@
     <Compile Include="VBA\Parser\ConstDeclarationNode.cs" />
     <Compile Include="VBA\Parser\EnumMemberNode.cs" />
     <Compile Include="VBA\Parser\EnumNode.cs" />
+    <Compile Include="VBA\Parser\Expression.cs" />
     <Compile Include="VBA\Parser\Grammar\DeclarationSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumMemberSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumSyntax.cs" />
+    <Compile Include="VBA\Parser\Grammar\IfBlockSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\LabelSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\ProcedureSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\SyntaxType.cs" />
     <Compile Include="VBA\Parser\IdentifierNode.cs" />
+    <Compile Include="VBA\Parser\IfBlockNode.cs" />
     <Compile Include="VBA\Parser\Instruction.cs" />
     <Compile Include="VBA\Parser\LabelNode.cs" />
     <Compile Include="VBA\Parser\LogicalCodeLine.cs" />
@@ -91,6 +94,9 @@
     <Compile Include="VBA\Parser\Grammar\StringExtensions.cs" />
     <Compile Include="VBA\Parser\Grammar\VBAGrammar.cs" />
     <Compile Include="VBA\Parser\Identifier.cs" />
+    <Compile Include="VBA\Parser\Operation.cs" />
+    <Compile Include="VBA\Parser\Operator.cs" />
+    <Compile Include="VBA\Parser\OperatorType.cs" />
     <Compile Include="VBA\Parser\ParameterNode.cs" />
     <Compile Include="VBA\Parser\Parser.cs" />
     <Compile Include="VBA\Parser\ProcedureNode.cs" />
