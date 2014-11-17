@@ -1,13 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.Reflection.VBA.Grammar;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Rubberduck.VBA.Parser.Grammar;
 
-namespace Rubberduck.Reflection.VBA
+namespace Rubberduck.VBA.Parser
 {
     /// <summary>
     /// An immutable value type representing a line of code. Abstracts line continuations.

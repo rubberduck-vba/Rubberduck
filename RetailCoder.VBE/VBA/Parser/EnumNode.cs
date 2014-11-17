@@ -1,17 +1,14 @@
-﻿using Rubberduck.Reflection.VBA.Grammar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Rubberduck.VBA.Parser.Grammar;
 
-namespace Rubberduck.Reflection.VBA
+namespace Rubberduck.VBA.Parser
 {
-    internal class EnumNode : CodeBlockNode
+    [ComVisible(false)]
+    public class EnumNode : CodeBlockNode
     {
         public EnumNode(Instruction instruction, string scope, Match match)
-            : base(instruction, scope, match, string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Enum), typeof(EnumMemberSyntax))
+            : base(instruction, scope, match, new[] {string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Enum)}, typeof(EnumMemberSyntax), null)
         {
 
         }
@@ -26,7 +23,8 @@ namespace Rubberduck.Reflection.VBA
         }
     }
 
-    internal class EnumMemberNode : SyntaxTreeNode
+    [ComVisible(false)]
+    public class EnumMemberNode : SyntaxTreeNode
     {
         public EnumMemberNode(Instruction instruction, string scope, Match match)
             : base(instruction, scope, match)
@@ -47,12 +45,9 @@ namespace Rubberduck.Reflection.VBA
             get
             {
                 var value = RegexMatch.Groups["value"];
-                if (value.Success)
-                {
-                    return value.Value;
-                }
-
-                return string.Empty;
+                return value.Success 
+                    ? value.Value 
+                    : string.Empty;
             }
         }
     }

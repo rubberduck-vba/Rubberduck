@@ -1,8 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using System.Linq;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace Rubberduck.Reflection.VBA.Grammar
+namespace Rubberduck.VBA.Parser.Grammar
 {
     [ComVisible(false)]
     public abstract class SyntaxBase : ISyntax
@@ -33,7 +33,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         private readonly SyntaxType _syntaxType;
         public SyntaxType Type { get { return _syntaxType; } }
 
-        public SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction)
+        public SyntaxTreeNode Parse(string publicScope, string localScope, Instruction instruction)
         {
             Match match;
             if (!MatchesSyntax(instruction.Value.Trim(), out match))
@@ -48,7 +48,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
 
         public bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node)
         {
-            node = ToNode(publicScope, localScope, instruction);
+            node = Parse(publicScope, localScope, instruction);
             return node != null;
         }
 

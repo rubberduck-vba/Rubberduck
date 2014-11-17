@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.Reflection.VBA.Grammar
+namespace Rubberduck.VBA.Parser.Grammar
 {
     [ComVisible(false)]
     [Flags]

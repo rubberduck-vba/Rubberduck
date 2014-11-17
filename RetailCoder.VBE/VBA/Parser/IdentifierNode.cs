@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Rubberduck.VBA.Parser.Grammar;
 
-namespace Rubberduck.Reflection.VBA
+namespace Rubberduck.VBA.Parser
 {
     [ComVisible(false)]
     public class IdentifierNode : SyntaxTreeNode
     {
-        public static readonly IDictionary<string, string> TypeSpecifiers = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> TypeSpecifiers = new Dictionary<string, string>
         {
             { "%", ReservedKeywords.Integer },
             { "&", ReservedKeywords.Long },
@@ -23,12 +24,12 @@ namespace Rubberduck.Reflection.VBA
         {
         }
 
-        public virtual string Identifier
+        public virtual string Name
         {
             get
             {
                 return RegexMatch.Groups["identifier"].Success
-                    ? RegexMatch.Groups["identifier"].Value
+                    ? RegexMatch.Groups["identifier"].Captures[0].Value
                     : string.Empty;
             }
         }

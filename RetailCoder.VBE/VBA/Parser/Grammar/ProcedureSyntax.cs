@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Rubberduck.Reflection.VBA.Grammar
+namespace Rubberduck.VBA.Parser.Grammar
 {
     internal class ProcedureSyntax : SyntaxBase
     {
@@ -23,7 +19,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new ProcedureNode(instruction, scope, match, match.Groups["ProcedureKind"].Value);
+            return new ProcedureNode(instruction, scope, match, match.Groups["kind"].Value, new List<SyntaxTreeNode>());
         }
     }
 }

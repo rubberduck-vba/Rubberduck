@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.Reflection.VBA.Grammar;
+using Rubberduck.VBA.Parser.Grammar;
 
-namespace Rubberduck.Reflection.VBA
+namespace Rubberduck.VBA.Parser
 {
     /// <summary>
     /// An immutable value type representing a single instruction. Abstracts instruction separators.
@@ -20,7 +20,7 @@ namespace Rubberduck.Reflection.VBA
             if (_content.HasComment(out index))
             {
                 _comment = _content.Substring(index);
-                _instruction = _content.Substring(0, index - 1);
+                _instruction = _content.Substring(0, index);
             }
             else
             {

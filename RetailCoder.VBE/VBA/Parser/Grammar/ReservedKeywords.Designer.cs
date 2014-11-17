@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck.Reflection.VBA {
+namespace Rubberduck.VBA.Parser.Grammar {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Rubberduck.Reflection.VBA {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Reflection.VBA.ReservedKeywords", typeof(ReservedKeywords).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.VBA.Parser.Grammar.ReservedKeywords", typeof(ReservedKeywords).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

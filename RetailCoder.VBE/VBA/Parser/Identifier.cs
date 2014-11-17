@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Rubberduck.Reflection.VBA
+namespace Rubberduck.VBA.Parser
 {
     [ComVisible(false)]
     public class Identifier

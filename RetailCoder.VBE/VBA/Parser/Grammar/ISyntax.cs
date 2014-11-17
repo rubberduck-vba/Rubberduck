@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
-namespace Rubberduck.Reflection.VBA.Grammar
+namespace Rubberduck.VBA.Parser.Grammar
 {
     [ComVisible(false)]
     public interface ISyntax
@@ -21,7 +15,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         /// Returns a node representing the specified instruction, 
         /// or <c>null</c> if specified instruction can't be parsed.
         /// </returns>
-        SyntaxTreeNode ToNode(string publicScope, string localScope, Instruction instruction);
+        SyntaxTreeNode Parse(string publicScope, string localScope, Instruction instruction);
 
         bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node);
 
@@ -32,5 +26,7 @@ namespace Rubberduck.Reflection.VBA.Grammar
         /// Implementations with this member set to <c>true</c> will not be considered as part of the general grammar.
         /// </remarks>
         bool IsChildNodeSyntax { get; }
+
+        SyntaxType Type { get; }
     }
 }
