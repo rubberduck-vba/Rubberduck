@@ -19,7 +19,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new ProcedureNode(instruction, scope, match, match.Groups["kind"].Value, new List<SyntaxTreeNode>());
+            return new ProcedureNode(instruction, scope, match, match.Groups["kind"].Value.Split(' ')[0], new List<SyntaxTreeNode>());
         }
     }
 }

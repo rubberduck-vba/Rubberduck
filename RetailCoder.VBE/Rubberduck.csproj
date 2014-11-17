@@ -74,6 +74,7 @@
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="VBA\Parser\CodeBlockNode.cs" />
     <Compile Include="VBA\Parser\ConstDeclarationNode.cs" />
+    <Compile Include="VBA\Parser\EnumMemberNode.cs" />
     <Compile Include="VBA\Parser\EnumNode.cs" />
     <Compile Include="VBA\Parser\Grammar\DeclarationSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumMemberSyntax.cs" />

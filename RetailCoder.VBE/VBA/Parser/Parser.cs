@@ -43,7 +43,7 @@ namespace Rubberduck.VBA.Parser
             var lines = content.Split('\n').Select(line => line.Replace("\r", string.Empty)).ToList();
 
             var logicalLine = new StringBuilder();
-            for (int index = 0; index < lines.Count; index++)
+            for (var index = 0; index < lines.Count; index++)
             {
                 var line = lines[index];
                 if (line.EndsWith(lineContinuationMarker))
@@ -105,7 +105,7 @@ namespace Rubberduck.VBA.Parser
         {
             var result = codeBlockNode;
             var grammar = result.ChildSyntaxType == null
-                ? VBAGrammar.GetGrammarSyntax().ToList()
+                ? VBAGrammar.GetGrammarSyntax().Where(syntax => !syntax.IsChildNodeSyntax).ToList()
                 : VBAGrammar.GetGrammarSyntax().Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == result.ChildSyntaxType).ToList();
 
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
@@ -148,9 +148,7 @@ namespace Rubberduck.VBA.Parser
         private SyntaxTreeNode ParseProcedure(string publicScope, string localScope, ProcedureNode procedureNode, IEnumerable<LogicalCodeLine> logicalLines, ref int index)
         {
             var result = procedureNode;
-            var grammar = result.ChildSyntaxType == null
-                ? VBAGrammar.GetGrammarSyntax().ToList()
-                : VBAGrammar.GetGrammarSyntax().Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == result.ChildSyntaxType).ToList();
+            var grammar = VBAGrammar.GetGrammarSyntax().Where(s => !s.IsChildNodeSyntax).ToList();
 
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();
