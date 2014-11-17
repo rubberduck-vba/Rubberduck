@@ -10,10 +10,6 @@ namespace Rubberduck.VBA.Parser
     [ComVisible(false)]
     public class Parser
     {
-        public Parser()
-        {
-        }
-
         /// <summary>
         /// Converts VBA code into a <see cref="SyntaxTreeNode"/>.
         /// </summary>
@@ -80,8 +76,11 @@ namespace Rubberduck.VBA.Parser
                                 if (node is ProcedureNode)
                                 {
                                     currentLocalScope = localScope + "." + (node as ProcedureNode).Identifier.Name;
+                                    yield return  ParseProcedure(publicScope, currentLocalScope, node as ProcedureNode, lines, ref index);
+                                    continue;
                                 }
-                                yield return ParseCodeBlock(publicScope, currentLocalScope, node as ProcedureNode ?? codeBlockNode, lines, ref index);
+
+                                yield return ParseCodeBlock(publicScope, currentLocalScope, codeBlockNode, lines, ref index);
                                 currentLocalScope = localScope;
                                 continue;
                             }
@@ -117,18 +116,10 @@ namespace Rubberduck.VBA.Parser
 
                         if (node.HasChildNodes)
                         {
-                            var procNode = node as ProcedureNode;
-                            if (procNode != null)
+                            var childNode = node as CodeBlockNode;
+                            if (childNode != null)
                             {
-                                node = ParseProcedure(publicScope, localScope, procNode, logicalCodeLines, ref index);
-                            }
-                            else
-                            {
-                                var childNode = node as CodeBlockNode;
-                                if (childNode != null)
-                                {
-                                    node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
-                                }
+                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
                             }
                         }
 
@@ -166,18 +157,10 @@ namespace Rubberduck.VBA.Parser
 
                         if (node.HasChildNodes)
                         {
-                            var procNode = node as ProcedureNode;
-                            if (procNode != null)
+                            var childNode = node as CodeBlockNode;
+                            if (childNode != null)
                             {
-                                node = ParseProcedure(publicScope, localScope, procNode, logicalCodeLines, ref index);
-                            }
-                            else
-                            {
-                                var childNode = node as CodeBlockNode;
-                                if (childNode != null)
-                                {
-                                    node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
-                                }
+                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
                             }
                         }
 
