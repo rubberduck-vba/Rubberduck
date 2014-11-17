@@ -76,6 +76,7 @@
     <Compile Include="VBA\Parser\ConstDeclarationNode.cs" />
     <Compile Include="VBA\Parser\EnumNode.cs" />
     <Compile Include="VBA\Parser\Grammar\DeclarationSyntax.cs" />
+    <Compile Include="VBA\Parser\Grammar\EnumMemberSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\LabelSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\ProcedureSyntax.cs" />

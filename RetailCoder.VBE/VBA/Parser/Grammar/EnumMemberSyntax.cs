@@ -2,21 +2,22 @@
 
 namespace Rubberduck.VBA.Parser.Grammar
 {
-    internal class EnumSyntax : SyntaxBase
+    internal class EnumMemberSyntax : SyntaxBase
     {
-        public EnumSyntax()
-            : base(SyntaxType.HasChildNodes)
-        { }
+        public EnumMemberSyntax()
+            : base(SyntaxType.IsChildNodeSyntax)
+        { 
+        }
 
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.EnumSyntax());
+            match = Regex.Match(instruction, VBAGrammar.EnumMemberSyntax());
             return match.Success;
         }
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new EnumNode(instruction, scope, match);
+            return new EnumMemberNode(instruction, scope, match);
         }
     }
 }

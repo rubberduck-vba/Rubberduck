@@ -28,7 +28,6 @@ namespace Rubberduck.VBA.Parser.Grammar
                                    return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
                                })
                                .Cast<ISyntax>()
-                               .Where(syntax => !syntax.IsChildNodeSyntax)
                                .ToList();
         }
 

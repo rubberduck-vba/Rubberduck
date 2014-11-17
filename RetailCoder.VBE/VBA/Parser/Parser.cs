@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -19,12 +20,20 @@ namespace Rubberduck.VBA.Parser
         /// <returns></returns>
         public SyntaxTreeNode Parse(string projectName, string componentName, string code)
         {
-            var content = SplitLogicalCodeLines(projectName, componentName, code);
-            var memberNodes = ParseModuleMembers(projectName, componentName, content).ToList();
+            try
+            {
+                var content = SplitLogicalCodeLines(projectName, componentName, code);
+                var memberNodes = ParseModuleMembers(projectName, componentName, content).ToList();
 
-            var result = new ModuleNode(projectName, componentName, memberNodes);
+                var result = new ModuleNode(projectName, componentName, memberNodes);
 
-            return result;
+                return result;
+
+            }
+            catch (Exception exception)
+            {             
+                throw;
+            }
         }
 
         private IEnumerable<LogicalCodeLine> SplitLogicalCodeLines(string projectName, string componentName, string content)
@@ -48,7 +57,7 @@ namespace Rubberduck.VBA.Parser
                     logicalLine.Clear();
                 }
             }
-        }        
+        }
 
         private IEnumerable<SyntaxTreeNode> ParseModuleMembers(string publicScope, string localScope, IEnumerable<LogicalCodeLine> logicalCodeLines)
         {
@@ -60,7 +69,7 @@ namespace Rubberduck.VBA.Parser
                 var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
-                    foreach (var syntax in VBAGrammar.GetGrammarSyntax())
+                    foreach (var syntax in VBAGrammar.GetGrammarSyntax().Where(s => !s.IsChildNodeSyntax))
                     {
                         SyntaxTreeNode node;
                         if (!syntax.IsMatch(publicScope, currentLocalScope, instruction, out node))
@@ -112,7 +121,10 @@ namespace Rubberduck.VBA.Parser
                     foreach (var syntax in grammar)
                     {
                         SyntaxTreeNode node;
-                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node)) continue;
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node))
+                        {
+                            continue;
+                        }
 
                         if (node.HasChildNodes)
                         {
