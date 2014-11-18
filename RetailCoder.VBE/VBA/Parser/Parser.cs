@@ -132,16 +132,17 @@ namespace Rubberduck.VBA.Parser
                             continue;
                         }
 
-                        if (node.HasChildNodes)
+                        if (syntax.Type.HasFlag(SyntaxType.HasChildNodes))
                         {
                             var childNode = node as CodeBlockNode;
                             if (childNode != null)
                             {
                                 node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
                             }
+
+                            result = result.AddNode<CodeBlockNode>(node);
                         }
 
-                        result = result.AddNode<CodeBlockNode>(node);
                         break;
                     }
                 }

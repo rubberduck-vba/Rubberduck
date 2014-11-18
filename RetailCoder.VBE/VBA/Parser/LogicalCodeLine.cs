@@ -62,7 +62,8 @@ namespace Rubberduck.VBA.Parser
             // return entire line if there's no separator or if LabelSyntax matches:
             if (!_content.Contains(separator) || Regex.Match(_content.StripTrailingComment(), VBAGrammar.LabelSyntax()).Success)
             {
-                return new[] { new Instruction(this, 1, _content.Length, _content) };
+                var indentation = _content.TakeWhile(char.IsWhiteSpace).Count() + 1;
+                return new[] { new Instruction(this, indentation, _content.Length, _content) };
             }
 
             var result = new List<Instruction>();

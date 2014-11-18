@@ -268,5 +268,18 @@ namespace RubberduckTests
             var procedures = result.ChildNodes.OfType<ProcedureNode>().ToList();
             Assert.AreEqual(2, procedures.Count);
         }
+
+        [TestMethod]
+        public void InstructionHasIndentation()
+        {
+            var parser = new Parser();
+            const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub";
+
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var declaration = result.ChildNodes.OfType<ProcedureNode>().First()
+                                    .ChildNodes.OfType<DeclarationNode>().First();
+
+            Assert.AreEqual(5, declaration.Instruction.StartColumn);
+        }
     }
 }
