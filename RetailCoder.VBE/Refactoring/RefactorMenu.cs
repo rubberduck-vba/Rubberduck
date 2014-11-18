@@ -1,11 +1,11 @@
 ﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Reflection.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UnitTesting.UI
 {
@@ -37,9 +37,19 @@ namespace Rubberduck.UnitTesting.UI
 
         private void OnParseModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
+
             try
             {
-                var tree = _parser.Parse(_vbe.ActiveCodePane.CodeModule);
+                var module = component.CodeModule;
+                if (module.CountOfLines < 1)
+                {
+                    return;
+                }
+
+                var code = module.Lines[1, module.CountOfLines];
+                var tree = _parser.Parse(project.Name, component.Name, code);
             }
             catch(Exception exception)
             {
