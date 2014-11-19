@@ -13,13 +13,16 @@ namespace Rubberduck.UnitTesting.UI
 
         //private readonly VBE _vbe;
         private readonly TestEngine _engine;
-        private Window toolWindow;
+        private Window _toolWindow;
 
         public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
         {
             TestExplorerWindow testExplorer = new TestExplorerWindow();
-            toolWindow = CreateToolWindow("Test Explorer", testExplorer);
-            _engine = new TestEngine(vbe, testExplorer, toolWindow);
+            _toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+            _engine = new TestEngine(vbe, testExplorer, _toolWindow);
+
+            //hack: to keep testexplorer from being visible when testmenu is added
+            _toolWindow.Visible = false;
         }
 
         private CommandBarButton _runAllTestsButton;
@@ -30,9 +33,7 @@ namespace Rubberduck.UnitTesting.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menuBarControls = this.IDE.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
-            var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);
@@ -58,7 +59,7 @@ namespace Rubberduck.UnitTesting.UI
             _engine.ShowExplorer();
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             _engine.Dispose();
             base.Dispose();

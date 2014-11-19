@@ -26,7 +26,6 @@ namespace Rubberduck
         public void Dispose()
         {
             _testMenu.Dispose();
-            _todoItemsMenu.Dispose();
             _refactorMenu.Dispose();
         }
 
