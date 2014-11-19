@@ -44,18 +44,19 @@ namespace Rubberduck.ToDoItems
         private void InitializeWindow()
         {
             var control = new ToDoItemsControl(_vbe);
-            _toolWindow = CreateToolWindow("ToDo Items", "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}", control);
+            _toolWindow = CreateToolWindow("ToDo Items", control);
         }
 
-        private Window CreateToolWindow(string toolWindowCaption, string toolWindowGUID, UserControl toolWindowUserControl)
+        private Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
         {
             //todo: create base class to expose this. Will need to be *protected*.
             Object userControlObject = null;
             DockableWindowHost userControlHost;
             Window toolWindow;
-            const string progId = "Rubberduck.DockableWindowHost"; //DockableWindowHost progId
+            const string progId = "Rubberduck.DockableWindowHost";
+            const string dockableHostGuid = "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}";
 
-            toolWindow = _vbe.Windows.CreateToolWindow(_addIn, progId, toolWindowCaption, toolWindowGUID, ref userControlObject);
+            toolWindow = _vbe.Windows.CreateToolWindow(_addIn, progId, toolWindowCaption, dockableHostGuid, ref userControlObject);
 
             userControlHost = (DockableWindowHost)userControlObject;
             toolWindow.Visible = true;
