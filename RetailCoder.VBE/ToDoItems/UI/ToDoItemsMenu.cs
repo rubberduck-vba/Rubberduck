@@ -5,11 +5,10 @@ using System.Windows.Forms;
 
 namespace Rubberduck.ToDoItems
 {
-    internal class ToDoItemsMenu : IDisposable
+    internal class ToDoItemsMenu 
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private readonly DockableWindowHost _controlHost;
         private Window _toolWindow;
 
         private CommandBarButton _todoItemsButton;
@@ -19,8 +18,6 @@ namespace Rubberduck.ToDoItems
         {
             _vbe = vbe;
             _addIn = addInInstance;
-            _controlHost = new DockableWindowHost();
-
         }
 
         public void Initialize(CommandBarControls menuControls)
@@ -67,11 +64,6 @@ namespace Rubberduck.ToDoItems
 
             return toolWindow;
 
-        }
-
-        public void Dispose()
-        {
-            _controlHost.Dispose();
         }
     }
 }
