@@ -10,7 +10,6 @@ namespace Rubberduck
     {
         private VBE vbe;
         protected AddIn addInInstance;
-        private DockableWindowHost userControlHost;
 
         protected VBE IDE { get { return this.vbe; } }
 
@@ -18,7 +17,6 @@ namespace Rubberduck
         {
             this.vbe = vbe;
             this.addInInstance = addInInstance;
-            this.userControlHost = new DockableWindowHost();
         }
 
         protected CommandBarButton AddMenuButton(CommandBarPopup menu)
@@ -63,7 +61,6 @@ namespace Rubberduck
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
 
             userControlHost = (DockableWindowHost)userControlObject;
-            toolWindow.Visible = true;
 
             userControlHost.AddUserControl(toolWindowUserControl);
 
@@ -71,9 +68,6 @@ namespace Rubberduck
 
         }
 
-        public void Dispose()
-        {
-            this.userControlHost.Dispose();
-        }
+        public void Dispose() { }
     }
 }
