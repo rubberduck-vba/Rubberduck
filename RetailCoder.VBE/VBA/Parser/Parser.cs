@@ -66,9 +66,15 @@ namespace Rubberduck.VBA.Parser
             for (var index = 0; index < lines.Length; index++)
             {
                 var line = lines[index];
+                if (string.IsNullOrWhiteSpace(line.Content))
+                {
+                    continue;
+                }
+
                 var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
+                    var parsed = false;
                     foreach (var syntax in VBAGrammar.GetGrammarSyntax().Where(s => !s.IsChildNodeSyntax))
                     {
                         SyntaxTreeNode node;
@@ -86,16 +92,24 @@ namespace Rubberduck.VBA.Parser
                                 {
                                     currentLocalScope = localScope + "." + (node as ProcedureNode).Identifier.Name;
                                     yield return  ParseProcedure(publicScope, currentLocalScope, node as ProcedureNode, lines, ref index);
-                                    continue;
+                                    parsed = true;
+                                    break;
                                 }
 
                                 yield return ParseCodeBlock(publicScope, currentLocalScope, codeBlockNode, lines, ref index);
                                 currentLocalScope = localScope;
-                                continue;
+                                parsed = true;
+                                break;
                             }
                         }
-
+                        
                         yield return node;
+                        parsed = true;
+                    }
+
+                    if (!parsed)
+                    {
+                        yield return new ExpressionNode(instruction, currentLocalScope);
                     }
                 }
             }
@@ -104,7 +118,7 @@ namespace Rubberduck.VBA.Parser
         private SyntaxTreeNode ParseCodeBlock(string publicScope, string localScope, CodeBlockNode codeBlockNode, IEnumerable<LogicalCodeLine> logicalLines, ref int index)
         {
             var ifBlockNode = codeBlockNode as IfBlockNode;
-            if (ifBlockNode != null && string.IsNullOrEmpty(ifBlockNode.Expression.Value))
+            if (ifBlockNode != null && !string.IsNullOrEmpty(ifBlockNode.Expression.Value))
             {
                 return codeBlockNode;
             }
@@ -116,14 +130,21 @@ namespace Rubberduck.VBA.Parser
 
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();
-            index++;
 
+            index++;
             while (index < lines.Length && !result.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
             {
                 var line = lines[index];
+                if (string.IsNullOrWhiteSpace(line.Content))
+                {
+                    index++;
+                    continue;
+                }
+
                 var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
+                    var parsed = false;
                     foreach (var syntax in grammar)
                     {
                         SyntaxTreeNode node;
@@ -141,9 +162,14 @@ namespace Rubberduck.VBA.Parser
                             }
 
                             result = result.AddNode<CodeBlockNode>(node);
+                            parsed = true;
+                            break;
                         }
+                    }
 
-                        break;
+                    if (!parsed)
+                    {
+                        result = result.AddNode<CodeBlockNode>(new ExpressionNode(instruction, localScope));
                     }
                 }
                 index++;
@@ -159,18 +185,28 @@ namespace Rubberduck.VBA.Parser
 
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();
-            index++;
 
+            index++;
             while (index < lines.Length && !result.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
             {
                 var line = lines[index];
+                if (string.IsNullOrWhiteSpace(line.Content))
+                {
+                    index++;
+                    continue;
+                }
+
                 var instructions = line.SplitInstructions();
                 foreach (var instruction in instructions)
                 {
+                    var parsed = false;
                     foreach (var syntax in grammar)
                     {
                         SyntaxTreeNode node;
-                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node)) continue;
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node))
+                        {
+                            continue;
+                        }
 
                         if (node.HasChildNodes)
                         {
@@ -182,7 +218,13 @@ namespace Rubberduck.VBA.Parser
                         }
 
                         result = result.AddNode<ProcedureNode>(node);
+                        parsed = true;
                         break;
+                    }
+
+                    if (!parsed)
+                    {
+                        result = result.AddNode<ProcedureNode>(new ExpressionNode(instruction, localScope));
                     }
                 }
                 index++;

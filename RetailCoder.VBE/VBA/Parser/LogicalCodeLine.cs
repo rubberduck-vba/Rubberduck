@@ -60,23 +60,24 @@ namespace Rubberduck.VBA.Parser
 
             // LabelSyntax uses instruction separator; 
             // return entire line if there's no separator or if LabelSyntax matches:
-            if (!_content.Contains(separator) || Regex.Match(_content.StripTrailingComment(), VBAGrammar.LabelSyntax()).Success)
+            var stripped = _content.StripTrailingComment();
+            if (!stripped.Contains(separator) || Regex.Match(stripped, VBAGrammar.LabelSyntax()).Success)
             {
-                var indentation = _content.TakeWhile(char.IsWhiteSpace).Count() + 1;
-                return new[] { new Instruction(this, indentation, _content.Length, _content) };
+                var indentation = stripped.TakeWhile(char.IsWhiteSpace).Count() + 1;
+                return new[] { new Instruction(this, indentation, stripped.Length, stripped) };
             }
 
             var result = new List<Instruction>();
-            var instructionsCount = _content.Count(c => c == separator) + 1;
+            var instructionsCount = stripped.Count(c => c == separator) + 1;
             var startIndex = 0;
             var endIndex = 0;
-            for (int instruction = 0; instruction < instructionsCount; instruction++)
+            for (var instruction = 0; instruction < instructionsCount; instruction++)
             {
                 endIndex = instruction == instructionsCount - 1 
-                    ? _content.Length
-                    : _content.IndexOf(separator, endIndex);
+                    ? stripped.Length
+                    : stripped.IndexOf(separator, endIndex);
 
-                result.Add(new Instruction(this, startIndex, endIndex, _content.Substring(startIndex, endIndex - startIndex)));
+                result.Add(new Instruction(this, startIndex, endIndex, stripped.Substring(startIndex, endIndex - startIndex)));
                 startIndex = endIndex;
             }
 
