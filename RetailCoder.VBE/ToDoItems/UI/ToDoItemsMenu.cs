@@ -59,7 +59,7 @@ namespace Rubberduck.ToDoItems
             toolWindow = _vbe.Windows.CreateToolWindow(_addIn, progId, toolWindowCaption, dockableHostGuid, ref userControlObject);
 
             userControlHost = (DockableWindowHost)userControlObject;
-            toolWindow.Visible = true;
+            toolWindow.Visible = true; //window resizing doesn't work without this
 
             userControlHost.AddUserControl(toolWindowUserControl);
 

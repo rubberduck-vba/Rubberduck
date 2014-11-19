@@ -61,6 +61,7 @@ namespace Rubberduck
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
 
             userControlHost = (DockableWindowHost)userControlObject;
+            toolWindow.Visible = true; //window resizing doesn't work without this
 
             userControlHost.AddUserControl(toolWindowUserControl);
 
