@@ -13,13 +13,13 @@ namespace Rubberduck.UnitTesting.UI
 
         //private readonly VBE _vbe;
         private readonly TestEngine _engine;
-        private Window toolWindow;
+        private Window _toolWindow;
 
         public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
         {
             TestExplorerWindow testExplorer = new TestExplorerWindow();
-            toolWindow = CreateToolWindow("Test Explorer", testExplorer);
-            _engine = new TestEngine(vbe, testExplorer, toolWindow);
+            _toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+            _engine = new TestEngine(vbe, testExplorer, _toolWindow);
         }
 
         private CommandBarButton _runAllTestsButton;
@@ -58,7 +58,7 @@ namespace Rubberduck.UnitTesting.UI
             _engine.ShowExplorer();
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             _engine.Dispose();
             base.Dispose();
