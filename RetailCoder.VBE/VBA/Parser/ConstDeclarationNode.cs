@@ -29,7 +29,7 @@ namespace Rubberduck.VBA.Parser
             foreach (var identifier in identifiers)
             {
                 var declaration = match.Groups["keywords"].Value + ' ' + identifier;
-                var subMatch = Regex.Match(declaration, VBAGrammar.DeclarationKeywordsSyntax() + VBAGrammar.IdentifierDeclarationSyntax());
+                var subMatch = Regex.Match(declaration, VBAGrammar.DeclarationKeywordsSyntax + VBAGrammar.IdentifierDeclarationSyntax);
                 yield return new IdentifierNode(instruction, scope, subMatch);
             }
         }

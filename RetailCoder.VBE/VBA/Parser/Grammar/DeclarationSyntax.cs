@@ -21,7 +21,7 @@ namespace Rubberduck.VBA.Parser.Grammar
                 ReservedKeywords.Declare
             };
 
-            match = Regex.Match(instruction, VBAGrammar.GeneralDeclarationSyntax());
+            match = Regex.Match(instruction, VBAGrammar.GeneralDeclarationSyntax);
             var m = match; // out parameter cannot be used in anonymous method body
 
             return m.Success 

@@ -31,49 +31,73 @@ namespace Rubberduck.VBA.Parser.Grammar
                                .ToList();
         }
 
-        public static string IdentifierDeclarationSyntax()
+        public static string IdentifierDeclarationSyntax
         {
-            return "(?<declarations>(?:" + IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(([0-9]+)\,?\s?)*|([0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(\s(?<initializer>New))?\s" + ReferenceSyntax + @")?)(?:\,\s)?)+";
+            get
+            {
+                return "(?<declarations>(?:" + IdentifierSyntax +
+                       @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(([0-9]+)\,?\s?)*|([0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(\s(?<initializer>New))?\s" +
+                       ReferenceSyntax + @")?)(?:\,\s)?)+";
+            }
         }
 
-        public static string DeclarationKeywordsSyntax()
+        public static string DeclarationKeywordsSyntax
         {
-            return @"^(?:(?:(?<keywords>(?:(?:(?<accessibility>Private|Public|Global)\s)|(?<accessibility>Private|Public|Global)\s)?(?:(?<keyword>Private|Public|Friend|Global|Dim|Const|Static|Sub|Function|Property\sGet|Property\sLet|Property\sSet|Enum|Type|Declare\sFunction)))\s)?)";
+            get
+            {
+                return
+                    @"^(?:(?:(?<keywords>(?:(?:(?<accessibility>Private|Public|Global)\s)|(?<accessibility>Private|Public|Global)\s)?(?:(?<keyword>Private|Public|Friend|Global|Dim|Const|Static|Sub|Function|Property\sGet|Property\sLet|Property\sSet|Enum|Type|Declare\sFunction)))\s)?)";
+            }
         }
 
-        public static string GeneralDeclarationSyntax()
+        public static string GeneralDeclarationSyntax
         {
-            return DeclarationKeywordsSyntax() + "(?<expression>.*)?";
+            get { return DeclarationKeywordsSyntax + "(?<expression>.*)?"; }
         }
 
-        public static string LabelSyntax()
+        public static string LabelSyntax
         {
-            return @"^(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)\:$";
+            get { return @"^(?<identifier>[a-zA-Z][a-zA-Z0-9_]*)\:$"; }
         }
 
-        public static string EnumSyntax()
+        public static string EnumSyntax
         {
-            return @"^((Private|Public|Global)\s)?Enum\s" + IdentifierSyntax;
+            get { return @"^((Private|Public|Global)\s)?Enum\s" + IdentifierSyntax; }
         }
 
-        public static string EnumMemberSyntax()
+        public static string EnumMemberSyntax
         {
-            return @"^" + IdentifierSyntax + @"(\s\=\s(?<value>.*))?$";
+            get { return @"^" + IdentifierSyntax + @"(\s\=\s(?<value>.*))?$"; }
         }
 
-        public static string ProcedureSyntax()
+        public static string ProcedureSyntax
         {
-            return @"^(?<accessibility>(Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s" + IdentifierSyntax + @"\((?<parameters>.*)\)(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\])))?";
+            get
+            {
+                return @"^(?<accessibility>(Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s" +
+                       IdentifierSyntax +
+                       @"\((?<parameters>.*)\)(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\])))?";
+            }
         }
 
-        public static string ParameterSyntax()
+        public static string ParameterSyntax
         {
-            return @"(?:(?:(?:\s?(?<optional>Optional)\s)?(?<by>ByRef|ByVal|ParamArray)?\s))?(?:" + IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(?:(?:[0-9]+)\,?\s?)*|(?:[0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(?:\s" + ReferenceSyntax + @")?))";
+            get
+            {
+                return @"(?:(?:(?:\s?(?<optional>Optional)\s)?(?<by>ByRef|ByVal|ParamArray)?\s))?(?:" + IdentifierSyntax +
+                       @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(?:(?:[0-9]+)\,?\s?)*|(?:[0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(?:\s" +
+                       ReferenceSyntax + @")?))";
+            }
         }
 
-        public static string IfBlockSyntax()
+        public static string IfBlockSyntax
         {
-            return @"If\s(?<condition>.*)\sThen(?:\s(?<expression>.*))?";
+            get { return @"If\s(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
+        }
+
+        public static string TypeConversionSyntax
+        {
+            get { return @"(?<keyword>CBool|CByte|CCur|CDate|CDbl|CInt|CLng|CSng|CStr|CVar)\((?<expression>.*)\)"; }
         }
     }
 }

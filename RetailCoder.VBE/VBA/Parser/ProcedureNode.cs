@@ -36,7 +36,7 @@ namespace Rubberduck.VBA.Parser
         private IEnumerable<ParameterNode> CreateParameters(string scope, Match match)
         {
             var parameters = match.Groups["parameters"].Value.Split(',');
-            var pattern = VBAGrammar.ParameterSyntax();
+            var pattern = VBAGrammar.ParameterSyntax;
             foreach (var parameter in parameters)
             {
                 var subMatch = Regex.Match(parameter, pattern);

@@ -23,7 +23,7 @@ namespace Rubberduck.VBA.Parser
         /// </example>
         public static IEnumerable<IdentifierNode> ParseChildNodes(Instruction instruction, string scope, Match match)
         {
-            var identifiers = Regex.Match(match.Groups["expression"].Value, VBAGrammar.IdentifierDeclarationSyntax());
+            var identifiers = Regex.Match(match.Groups["expression"].Value, VBAGrammar.IdentifierDeclarationSyntax);
 
             foreach (var identifier in identifiers.Groups["declarations"].Captures)
             {
@@ -34,7 +34,7 @@ namespace Rubberduck.VBA.Parser
                 }
 
                 var declaration = match.Groups["keywords"].Value + ' ' + value;
-                var pattern = VBAGrammar.DeclarationKeywordsSyntax() + VBAGrammar.IdentifierDeclarationSyntax();
+                var pattern = VBAGrammar.DeclarationKeywordsSyntax + VBAGrammar.IdentifierDeclarationSyntax;
                 var subMatch = Regex.Match(declaration, pattern);
                 yield return new IdentifierNode(instruction, scope, subMatch);
             }

@@ -13,7 +13,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.ProcedureSyntax());
+            match = Regex.Match(instruction, VBAGrammar.ProcedureSyntax);
             return match.Success;
         }
 

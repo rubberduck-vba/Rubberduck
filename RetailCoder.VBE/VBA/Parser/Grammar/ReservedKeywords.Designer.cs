@@ -196,6 +196,24 @@ namespace Rubberduck.VBA.Parser.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CBool.
+        /// </summary>
+        internal static string CBool {
+            get {
+                return ResourceManager.GetString("CBool", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CByte.
+        /// </summary>
+        internal static string CByte {
+            get {
+                return ResourceManager.GetString("CByte", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CCur.
         /// </summary>
         internal static string CCur {
@@ -205,11 +223,29 @@ namespace Rubberduck.VBA.Parser.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CDate.
+        /// </summary>
+        internal static string CDate {
+            get {
+                return ResourceManager.GetString("CDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CDbl.
         /// </summary>
         internal static string CDbl {
             get {
                 return ResourceManager.GetString("CDbl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CDec.
+        /// </summary>
+        internal static string CDec {
+            get {
+                return ResourceManager.GetString("CDec", resourceCulture);
             }
         }
         
@@ -255,6 +291,24 @@ namespace Rubberduck.VBA.Parser.Grammar {
         internal static string CLng {
             get {
                 return ResourceManager.GetString("CLng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CLngLng.
+        /// </summary>
+        internal static string CLngLng {
+            get {
+                return ResourceManager.GetString("CLngLng", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CLngPtr.
+        /// </summary>
+        internal static string CLngPtr {
+            get {
+                return ResourceManager.GetString("CLngPtr", resourceCulture);
             }
         }
         
@@ -336,6 +390,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         internal static string CVar {
             get {
                 return ResourceManager.GetString("CVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CVErr.
+        /// </summary>
+        internal static string CVErr {
+            get {
+                return ResourceManager.GetString("CVErr", resourceCulture);
             }
         }
         
@@ -556,6 +619,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fix.
+        /// </summary>
+        internal static string Fix {
+            get {
+                return ResourceManager.GetString("Fix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For.
         /// </summary>
         internal static string For {
@@ -705,6 +777,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         internal static string InStr {
             get {
                 return ResourceManager.GetString("InStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Int.
+        /// </summary>
+        internal static string Int {
+            get {
+                return ResourceManager.GetString("Int", resourceCulture);
             }
         }
         
@@ -867,6 +948,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         internal static string Long {
             get {
                 return ResourceManager.GetString("Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LongLong.
+        /// </summary>
+        internal static string LongLong {
+            get {
+                return ResourceManager.GetString("LongLong", resourceCulture);
             }
         }
         

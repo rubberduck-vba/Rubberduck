@@ -15,7 +15,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.IfBlockSyntax());
+            match = Regex.Match(instruction, VBAGrammar.IfBlockSyntax);
             return match.Success;
         }
 

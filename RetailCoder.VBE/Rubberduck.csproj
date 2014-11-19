@@ -85,6 +85,7 @@
     <Compile Include="VBA\Parser\Grammar\LabelSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\ProcedureSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\SyntaxType.cs" />
+    <Compile Include="VBA\Parser\Grammar\TypeConversionSyntax.cs" />
     <Compile Include="VBA\Parser\IdentifierNode.cs" />
     <Compile Include="VBA\Parser\IfBlockNode.cs" />
     <Compile Include="VBA\Parser\Instruction.cs" />
@@ -108,6 +109,7 @@
     </Compile>
     <Compile Include="VBA\Parser\Grammar\SyntaxBase.cs" />
     <Compile Include="VBA\Parser\SyntaxTreeNode.cs" />
+    <Compile Include="VBA\Parser\TypeConversionNode.cs" />
     <Compile Include="VBA\Parser\VariableDeclarationNode.cs" />
     <Compile Include="RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />

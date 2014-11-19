@@ -627,4 +627,34 @@
   <data name="TypeOf" xml:space="preserve">
     <value>TypeOf</value>
   </data>
+  <data name="CBool" xml:space="preserve">
+    <value>CBool</value>
+  </data>
+  <data name="CByte" xml:space="preserve">
+    <value>CByte</value>
+  </data>
+  <data name="CDate" xml:space="preserve">
+    <value>CDate</value>
+  </data>
+  <data name="CDec" xml:space="preserve">
+    <value>CDec</value>
+  </data>
+  <data name="CLngLng" xml:space="preserve">
+    <value>CLngLng</value>
+  </data>
+  <data name="CLngPtr" xml:space="preserve">
+    <value>CLngPtr</value>
+  </data>
+  <data name="CVErr" xml:space="preserve">
+    <value>CVErr</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>Fix</value>
+  </data>
+  <data name="Int" xml:space="preserve">
+    <value>Int</value>
+  </data>
+  <data name="LongLong" xml:space="preserve">
+    <value>LongLong</value>
+  </data>
 </root>

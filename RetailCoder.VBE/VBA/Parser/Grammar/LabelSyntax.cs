@@ -6,7 +6,7 @@ namespace Rubberduck.VBA.Parser.Grammar
     {
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.LabelSyntax());
+            match = Regex.Match(instruction, VBAGrammar.LabelSyntax);
             return match.Success;
         }
 
