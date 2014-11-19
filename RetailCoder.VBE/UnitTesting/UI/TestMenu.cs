@@ -20,6 +20,9 @@ namespace Rubberduck.UnitTesting.UI
             TestExplorerWindow testExplorer = new TestExplorerWindow();
             _toolWindow = CreateToolWindow("Test Explorer", testExplorer);
             _engine = new TestEngine(vbe, testExplorer, _toolWindow);
+
+            //hack: to keep testexplorer from being visible when testmenu is added
+            _toolWindow.Visible = false;
         }
 
         private CommandBarButton _runAllTestsButton;
