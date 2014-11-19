@@ -30,9 +30,7 @@ namespace Rubberduck.UnitTesting.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menuBarControls = this.IDE.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
-            var menu = menuBarControls.Add(Type: MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);
