@@ -149,8 +149,7 @@ namespace Rubberduck.VBA.Parser
                     foreach (var syntax in grammar)
                     {
                         SyntaxTreeNode node;
-                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node) 
-                         || !syntax.Type.HasFlag(SyntaxType.HasChildNodes))
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node))
                         {
                             continue;
                         }
