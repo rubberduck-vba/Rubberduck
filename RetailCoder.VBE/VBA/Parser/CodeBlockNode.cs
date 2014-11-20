@@ -21,15 +21,5 @@ namespace Rubberduck.VBA.Parser
 
         private readonly Type _childSyntaxType;
         public Type ChildSyntaxType { get { return _childSyntaxType; } }
-
-        /// <summary>
-        /// Returns a new <see cref="CodeBlockNode"/> with the specified node appended to its child nodes collection.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public virtual TNode AddNode<TNode>(SyntaxTreeNode node) where TNode : CodeBlockNode
-        {
-            return new CodeBlockNode(node.Instruction, Scope, RegexMatch, _endingMarkers, _childSyntaxType, ChildNodes.Concat(new[] { node })) as TNode;
-        }
     }
 }

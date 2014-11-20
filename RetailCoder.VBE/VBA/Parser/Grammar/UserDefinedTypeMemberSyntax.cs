@@ -1,24 +1,24 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser.Grammar
 {
     [ComVisible(false)]
-    public class EnumSyntax : SyntaxBase
+    public class UserDefinedTypeMemberSyntax : SyntaxBase
     {
-        public EnumSyntax()
-            : base(SyntaxType.HasChildNodes)
+        public UserDefinedTypeMemberSyntax()
+            : base(SyntaxType.IsChildNodeSyntax)
         { }
 
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
-            match = Regex.Match(instruction, VBAGrammar.EnumSyntax);
+            match = Regex.Match(instruction, VBAGrammar.IdentifierDeclarationSyntax);
             return match.Success;
         }
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            return new EnumNode(instruction, scope, match);
+            return new UserDefinedTypeMemberNode(instruction, scope, match);
         }
     }
 }

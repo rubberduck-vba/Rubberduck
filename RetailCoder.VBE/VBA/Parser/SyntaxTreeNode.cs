@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -13,7 +13,10 @@ namespace Rubberduck.VBA.Parser
             _instruction = instruction;
             _scope = scope;
             _match = match;
-            _childNodes = childNodes;
+            if (childNodes != null)
+            {
+                _childNodes = childNodes as IList<SyntaxTreeNode> ?? childNodes.ToList();
+            }
         }
 
         private readonly Instruction _instruction;
@@ -22,8 +25,13 @@ namespace Rubberduck.VBA.Parser
         private readonly string _scope;
         public string Scope { get { return _scope; } }
 
-        private readonly IEnumerable<SyntaxTreeNode> _childNodes;
+        private readonly IList<SyntaxTreeNode> _childNodes;
         public IEnumerable<SyntaxTreeNode> ChildNodes { get { return _childNodes; } }
+
+        public void AddNode(SyntaxTreeNode node)
+        {
+            _childNodes.Add(node);
+        }
 
         public bool HasChildNodes { get { return _childNodes != null; } }
 

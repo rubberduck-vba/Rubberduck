@@ -12,7 +12,6 @@ namespace Rubberduck.VBA.Parser
         public ProcedureNode(Instruction instruction, string scope, Match match, string keyword, IEnumerable<SyntaxTreeNode> nodes)
             : base(instruction, scope, match, new[] {ReservedKeywords.End + " " + keyword}, null, nodes)
         {
-            _keyword = keyword;
             _identifier = CreateIdentifier(scope, match);
             _parameters = CreateParameters(scope + '.' +  _identifier.Name, match).ToList();
         }
@@ -53,11 +52,5 @@ namespace Rubberduck.VBA.Parser
 
         private readonly IEnumerable<ParameterNode> _parameters;
         public IEnumerable<ParameterNode> Parameters { get { return _parameters; } }
-
-        private readonly string _keyword;
-        public override TNode AddNode<TNode>(SyntaxTreeNode node)
-        {
-            return new ProcedureNode(node.Instruction, Scope, RegexMatch, _keyword, ChildNodes.Concat(new[] { node })) as TNode;
-        }
     }
 }

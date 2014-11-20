@@ -61,11 +61,6 @@
     </Compile>
     <Compile Include="Refactoring\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactoring\IRefactoring.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Reflection\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
@@ -86,6 +81,8 @@
     <Compile Include="VBA\Parser\Grammar\ProcedureSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\SyntaxType.cs" />
     <Compile Include="VBA\Parser\Grammar\TypeConversionSyntax.cs" />
+    <Compile Include="VBA\Parser\Grammar\UserDefinedTypeMemberSyntax.cs" />
+    <Compile Include="VBA\Parser\Grammar\UserDefinedTypeSyntax.cs" />
     <Compile Include="VBA\Parser\IdentifierNode.cs" />
     <Compile Include="VBA\Parser\IfBlockNode.cs" />
     <Compile Include="VBA\Parser\Instruction.cs" />
@@ -110,6 +107,8 @@
     <Compile Include="VBA\Parser\Grammar\SyntaxBase.cs" />
     <Compile Include="VBA\Parser\SyntaxTreeNode.cs" />
     <Compile Include="VBA\Parser\TypeConversionNode.cs" />
+    <Compile Include="VBA\Parser\UserDefinedTypeMemberNode.cs" />
+    <Compile Include="VBA\Parser\UserDefinedTypeNode.cs" />
     <Compile Include="VBA\Parser\VariableDeclarationNode.cs" />
     <Compile Include="RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
@@ -195,10 +194,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Resources\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>

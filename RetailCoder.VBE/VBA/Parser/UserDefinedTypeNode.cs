@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Rubberduck.VBA.Parser.Grammar;
@@ -7,12 +6,11 @@ using Rubberduck.VBA.Parser.Grammar;
 namespace Rubberduck.VBA.Parser
 {
     [ComVisible(false)]
-    public class EnumNode : CodeBlockNode
+    public class UserDefinedTypeNode : CodeBlockNode
     {
-        public EnumNode(Instruction instruction, string scope, Match match)
-            : base(instruction, scope, match, new[] {string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Enum)}, typeof(EnumMemberSyntax), new List<EnumMemberNode>())
+        public UserDefinedTypeNode(Instruction instruction, string scope, Match match) 
+            : base(instruction, scope, match, new []{string.Concat(ReservedKeywords.End, " ", ReservedKeywords.Type)}, typeof(UserDefinedTypeMemberSyntax), new List<UserDefinedTypeMemberNode>())
         {
-
         }
 
         public Identifier Identifier

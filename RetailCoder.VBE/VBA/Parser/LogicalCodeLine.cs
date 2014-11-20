@@ -64,7 +64,7 @@ namespace Rubberduck.VBA.Parser
             if (!stripped.Contains(separator) || Regex.Match(stripped, VBAGrammar.LabelSyntax).Success)
             {
                 var indentation = stripped.TakeWhile(char.IsWhiteSpace).Count() + 1;
-                return new[] { new Instruction(this, indentation, stripped.Length, stripped) };
+                return new[] { new Instruction(this, indentation, stripped.Length, _content) };
             }
 
             var result = new List<Instruction>();
@@ -73,11 +73,11 @@ namespace Rubberduck.VBA.Parser
             var endIndex = 0;
             for (var instruction = 0; instruction < instructionsCount; instruction++)
             {
-                endIndex = instruction == instructionsCount - 1 
-                    ? stripped.Length
-                    : stripped.IndexOf(separator, endIndex);
+                endIndex = instruction == instructionsCount - 1
+                    ? _content.Length
+                    : _content.IndexOf(separator, endIndex);
 
-                result.Add(new Instruction(this, startIndex, endIndex, stripped.Substring(startIndex, endIndex - startIndex)));
+                result.Add(new Instruction(this, startIndex, endIndex, _content.Substring(startIndex, endIndex - startIndex)));
                 startIndex = endIndex;
             }
 

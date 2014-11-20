@@ -33,7 +33,7 @@ namespace Rubberduck.VBA.Parser.Grammar
         private readonly SyntaxType _syntaxType;
         public SyntaxType Type { get { return _syntaxType; } }
 
-        public SyntaxTreeNode Parse(string publicScope, string localScope, Instruction instruction)
+        public virtual SyntaxTreeNode Parse(string publicScope, string localScope, Instruction instruction)
         {
             Match match;
             if (!MatchesSyntax(instruction.Value.Trim(), out match))

@@ -92,6 +92,7 @@ namespace Rubberduck.VBA.Parser
                                 {
                                     currentLocalScope = localScope + "." + (node as ProcedureNode).Identifier.Name;
                                     yield return  ParseProcedure(publicScope, currentLocalScope, node as ProcedureNode, lines, ref index);
+                                    currentLocalScope = localScope; 
                                     parsed = true;
                                     break;
                                 }
@@ -148,28 +149,26 @@ namespace Rubberduck.VBA.Parser
                     foreach (var syntax in grammar)
                     {
                         SyntaxTreeNode node;
-                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node))
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node) 
+                         || !syntax.Type.HasFlag(SyntaxType.HasChildNodes))
                         {
                             continue;
                         }
 
-                        if (syntax.Type.HasFlag(SyntaxType.HasChildNodes))
+                        var childNode = node as CodeBlockNode;
+                        if (childNode != null)
                         {
-                            var childNode = node as CodeBlockNode;
-                            if (childNode != null)
-                            {
-                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
-                            }
-
-                            result = result.AddNode<CodeBlockNode>(node);
-                            parsed = true;
-                            break;
+                            node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
                         }
+
+                        result.AddNode(node);
+                        parsed = true;
+                        break;
                     }
 
                     if (!parsed)
                     {
-                        result = result.AddNode<CodeBlockNode>(new ExpressionNode(instruction, localScope));
+                        result.AddNode(new ExpressionNode(instruction, localScope));
                     }
                 }
                 index++;
@@ -217,14 +216,14 @@ namespace Rubberduck.VBA.Parser
                             }
                         }
 
-                        result = result.AddNode<ProcedureNode>(node);
+                        result.AddNode(node);
                         parsed = true;
                         break;
                     }
 
                     if (!parsed)
                     {
-                        result = result.AddNode<ProcedureNode>(new ExpressionNode(instruction, localScope));
+                        result.AddNode(new ExpressionNode(instruction, localScope));
                     }
                 }
                 index++;

@@ -65,9 +65,15 @@ namespace Rubberduck.VBA.Parser.Grammar
             get { return @"^((Private|Public|Global)\s)?Enum\s" + IdentifierSyntax; }
         }
 
+
         public static string EnumMemberSyntax
         {
             get { return @"^" + IdentifierSyntax + @"(\s\=\s(?<value>.*))?$"; }
+        }
+
+        public static string UserDefinedTypeSyntax
+        {
+            get { return @"^((Private|Public|Global)\s)?Type\s" + IdentifierSyntax; }
         }
 
         public static string ProcedureSyntax
