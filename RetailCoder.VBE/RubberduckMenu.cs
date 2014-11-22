@@ -18,11 +18,11 @@ namespace Rubberduck
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly RefactorMenu _refactorMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn)
+        public RubberduckMenu(VBE vbe, AddIn addIn, Config.Configuration config)
         {
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);
-            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn);
+            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings);
             _refactorMenu = new RefactorMenu(_vbe);
         }
 
