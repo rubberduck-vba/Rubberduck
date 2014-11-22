@@ -7,38 +7,11 @@ A COM Add-In for the VBA IDE that makes VBA development even more enjoyable:
  - Refactoring
  - ...
 
-##Registry Keys
 
-    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}]
-     ~> [@] ("Rubberduck.Extension")
-     
-    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
-     ~> [@] ("mscoree.dll")
-     ~> [ThreadingModel] ("Both")
-     ~> [Class] ("Rubberduck.Extension")
-     ~> [Assembly] ("Rubberduck")
-     ~> [RuntimeVersion] ("v2.0.50727")
-     ~> [CodeBase] ("file:///C:\Dev\RetailCoder\RetailCoder.VBE\RetailCoder.VBE\bin\Debug\Rubberduck.dll")
+###Installation 
+There is currently not an installer, but we do plan on creating one in the future. In the meantime, [information for installing Rubberduck][install] can be found on our wiki. 
    
-    [HKEY_CLASSES_ROOT\CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32]
-     ~> [@] ("Rubberduck.Extension")
-
-###Office x64
-
-    [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins64\Rubberduck]
-     ~> [CommandLineSafe] (DWORD:00000000)
-     ~> [Description] ("Rubberduck add-in for VBA IDE.")
-     ~> [LoadBehavior] (DWORD:00000003)
-     ~> [FriendlyName] ("Rubberduck")
-   
-###Office x86
-
-    [HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck]
-     ~> [CommandLineSafe] (DWORD:00000000)
-     ~> [Description] ("Rubberduck add-in for VBA IDE.")
-     ~> [LoadBehavior] (DWORD:00000003)
-     ~> [FriendlyName] ("Rubberduck")
-   
+[install]:https://github.com/retailcoder/Rubberduck/wiki/Building-Installation
 ---   
 
 ###Icons attribution

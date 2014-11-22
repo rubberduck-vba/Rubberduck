@@ -132,13 +132,13 @@ namespace Rubberduck.VBA.Parser
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();
 
-            index++;
-            while (index < lines.Length && !result.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
+            var currentIndex = ++index;
+            while (currentIndex < lines.Length && !result.EndOfBlockMarkers.Any(marker => lines[currentIndex].Content.Trim().StartsWith(marker)))
             {
-                var line = lines[index];
+                var line = lines[currentIndex];
                 if (string.IsNullOrWhiteSpace(line.Content))
                 {
-                    index++;
+                    currentIndex++;
                     continue;
                 }
 
@@ -157,7 +157,7 @@ namespace Rubberduck.VBA.Parser
                         var childNode = node as CodeBlockNode;
                         if (childNode != null)
                         {
-                            node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
+                            node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref currentIndex);
                         }
 
                         result.AddNode(node);
@@ -170,9 +170,10 @@ namespace Rubberduck.VBA.Parser
                         result.AddNode(new ExpressionNode(instruction, localScope));
                     }
                 }
-                index++;
+                currentIndex++;
             }
 
+            index = currentIndex;
             return result;
         }
 
@@ -184,13 +185,13 @@ namespace Rubberduck.VBA.Parser
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();
 
-            index++;
-            while (index < lines.Length && !result.EndOfBlockMarkers.Contains(lines[index].Content.Trim()))
+            var currentIndex = ++index;
+            while (currentIndex < lines.Length && !result.EndOfBlockMarkers.Any(marker => lines[currentIndex].Content.Trim().StartsWith(marker)))
             {
-                var line = lines[index];
+                var line = lines[currentIndex];
                 if (string.IsNullOrWhiteSpace(line.Content))
                 {
-                    index++;
+                    currentIndex++;
                     continue;
                 }
 
@@ -211,7 +212,7 @@ namespace Rubberduck.VBA.Parser
                             var childNode = node as CodeBlockNode;
                             if (childNode != null)
                             {
-                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref index);
+                                node = ParseCodeBlock(publicScope, localScope, childNode, logicalCodeLines, ref currentIndex);
                             }
                         }
 
@@ -225,9 +226,10 @@ namespace Rubberduck.VBA.Parser
                         result.AddNode(new ExpressionNode(instruction, localScope));
                     }
                 }
-                index++;
+                currentIndex++;
             }
 
+            index = currentIndex;
             return result;
         }
     }

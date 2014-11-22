@@ -100,6 +100,16 @@ namespace Rubberduck.VBA.Parser.Grammar
             get { return @"If\s(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
         }
 
+        public static string ForLoopSyntax
+        {
+            get { return @"For\s" + IdentifierSyntax + @"\s=\s(?<lower>.*)\sTo\s(?<upper>.*)(?:\sStep\s(?<step>.*))?"; }
+        }
+
+        public static string ForEachLoopSyntax
+        {
+            get { return @"For\sEach\s" + IdentifierSyntax + @"\sIn\s" + ReferenceSyntax; }
+        }
+
         public static string TypeConversionSyntax
         {
             get { return @"(?<keyword>CBool|CByte|CCur|CDate|CDbl|CInt|CLng|CSng|CStr|CVar)\((?<expression>.*)\)"; }
