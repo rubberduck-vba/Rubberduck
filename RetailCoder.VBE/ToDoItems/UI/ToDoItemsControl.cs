@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using System.Collections.Generic;
 
 namespace Rubberduck.ToDoItems
 {
@@ -10,10 +11,12 @@ namespace Rubberduck.ToDoItems
     {
         private VBE vbe;
         private BindingList<ToDoItem> taskList;
+        private List<Config.ToDoMarker> markers;
 
-        public ToDoItemsControl(VBE vbe)
+        public ToDoItemsControl(VBE vbe, List<Config.ToDoMarker> markers)
         {
             this.vbe = vbe;
+            this.markers = markers;
 
             InitializeComponent();
             
@@ -62,35 +65,30 @@ namespace Rubberduck.ToDoItems
                 for (var i = 1; i <= module.CountOfLines; i++)
                 {
                     string line = module.get_Lines(i, 1);
-                    if (IsTaskComment(line))
+                    Config.ToDoMarker marker;
+
+                    if (TryGetMarker(line, out marker))
                     {
-                        var priority = GetTaskPriority(line);
+                        var priority = (TaskPriority)marker.priority;
                         this.taskList.Add(new ToDoItem(priority, line, module, i));
                     }
                 }
             }
         }
 
-        private TaskPriority GetTaskPriority(string line)
-        {
-            //todo: Create xml config file to allow user customization of tags
-            var upCasedLine = line.ToUpper();
-            if (upCasedLine.Contains("'BUG:"))
-            {
-                return TaskPriority.High;
-            }
-            if(upCasedLine.Contains("'TODO:"))
-            {
-                return TaskPriority.Medium;
-            }
-            //must be a "NOTE:"
-            return TaskPriority.Low;
-        }
-
-        private bool IsTaskComment(string line)
+        private bool TryGetMarker(string line, out Config.ToDoMarker result)
         {
             var upCasedLine = line.ToUpper();
-            return (upCasedLine.Contains("'TODO:") || upCasedLine.Contains("'BUG:") || upCasedLine.Contains("'NOTE:"));
+            foreach (var marker in this.markers)
+            {
+                if (upCasedLine.Contains(marker.text))
+                {
+                    result = marker;
+                    return true;
+                }
+            }
+            result = null;
+            return false;
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
