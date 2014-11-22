@@ -8,12 +8,11 @@ namespace Rubberduck
     public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;
-        private Config.Configuration _config;
 
         public App(VBE vbe, AddIn addInInst)
         {
-            _config = Config.ConfigurationLoader.LoadConfiguration();
-            _menu = new RubberduckMenu(vbe, addInInst, _config);
+            var config = Config.ConfigurationLoader.LoadConfiguration();
+            _menu = new RubberduckMenu(vbe, addInInst, config);
         }
 
         public void Dispose()
