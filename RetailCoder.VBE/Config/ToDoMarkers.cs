@@ -20,5 +20,13 @@ namespace Rubberduck.Config
 
         [XmlAttributeAttribute()]
         public byte priority { get; set; }
+
+        public ToDoMarker() { }
+
+        public ToDoMarker(string text, byte priority)
+        {
+            this.text = text;
+            this.priority = priority;
+        }
     }
 }

@@ -5,7 +5,8 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UnitTesting.UI
 {
-    internal class TestMenu : Rubberduck.Menu
+    [ComVisible(false)]
+    public class TestMenu : Rubberduck.Menu
     {
         // 2743: play icon with stopwatch
         // 3039: module icon || 3119 || 621 || 589 || 472
@@ -13,16 +14,15 @@ namespace Rubberduck.UnitTesting.UI
 
         //private readonly VBE _vbe;
         private readonly TestEngine _engine;
-        private Window _toolWindow;
 
         public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
         {
-            TestExplorerWindow testExplorer = new TestExplorerWindow();
-            _toolWindow = CreateToolWindow("Test Explorer", testExplorer);
-            _engine = new TestEngine(vbe, testExplorer, _toolWindow);
+            var testExplorer = new TestExplorerWindow();
+            var toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+            _engine = new TestEngine(vbe, testExplorer, toolWindow);
 
             //hack: to keep testexplorer from being visible when testmenu is added
-            _toolWindow.Visible = false;
+            toolWindow.Visible = false;
         }
 
         private CommandBarButton _runAllTestsButton;
@@ -33,7 +33,7 @@ namespace Rubberduck.UnitTesting.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);

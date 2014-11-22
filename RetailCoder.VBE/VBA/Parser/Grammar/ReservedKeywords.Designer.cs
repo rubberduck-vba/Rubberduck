@@ -1258,6 +1258,15 @@ namespace Rubberduck.VBA.Parser.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rem.
+        /// </summary>
+        internal static string Rem {
+            get {
+                return ResourceManager.GetString("Rem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resume.
         /// </summary>
         internal static string Resume {

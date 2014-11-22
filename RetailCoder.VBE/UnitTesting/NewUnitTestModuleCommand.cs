@@ -11,24 +11,6 @@ namespace Rubberduck.UnitTesting
             "Private Assert As New Rubberduck.AssertClass\n\n"
             );
 
-        private static readonly string TestModuleTemplate = string.Concat(
-            TestModuleEmptyTemplate,
-            "'test explorer searches in standard code modules, for all\n",
-            "'public parameterless procedures with a name that starts with \"Test\".\n",
-            "Public Sub TestMethod1()\n",
-            "    Assert.Inconclusive\n",
-            "End Sub\n\n",
-            "'...or public parameterless procedures with a @TestMethod marker:\n",
-            "'@TestMethod\n",
-            "Public Sub TestMethod2()\n",
-            "    Assert.Inconclusive\n",
-            "End Sub\n\n",
-            "'test methods that make no assertions will succeed:\n",
-            "'@TestMethod\n",
-            "Public Sub TestMethod3()\n",
-            "End Sub\n\n"
-            );
-
         private static readonly string TestModuleBaseName = "TestModule";
 
         public static void NewUnitTestModule(VBE vbe)
@@ -44,18 +26,10 @@ namespace Rubberduck.UnitTesting
             {
                 hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
             }
-            module.CodeModule.AddFromString((hasOptionExplicit ? string.Empty : "Option Explicit\n") + TestModuleEmptyTemplate);
-            module.Activate();
-        }
 
-        public static void NewUnitTestModuleTemplate(VBE vbe)
-        {
-            var project = vbe.ActiveVBProject;
-            project.EnsureReferenceToAddInLibrary();
+            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
-            var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
-            module.Name = GetNextTestModuleName(project);
-            module.CodeModule.AddFromString(TestModuleTemplate);
+            module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
             module.Activate();
         }
 

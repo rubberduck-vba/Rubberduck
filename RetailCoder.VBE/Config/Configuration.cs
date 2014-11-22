@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace Rubberduck.Config
 {
@@ -9,13 +10,37 @@ namespace Rubberduck.Config
     {
         public static Configuration LoadConfiguration()
         {
-            string configFile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Rubberduck\rubberduck.config";
-
-            using (StreamReader reader = new StreamReader(configFile))
+            try
             {
-                var deserializer = new XmlSerializer(typeof(Configuration));
-                return (Configuration)deserializer.Deserialize(reader);
+                string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
+
+                using (StreamReader reader = new StreamReader(configFile))
+                {
+                    var deserializer = new XmlSerializer(typeof(Configuration));
+                    return (Configuration)deserializer.Deserialize(reader);
+                }
             }
+            catch (IOException)
+            {
+                return GetDefaultConfiguration();
+            }
+        }
+
+        private static Configuration GetDefaultConfiguration()
+        {
+            var config = new Configuration();
+            var userSettings = new UserSettings();
+            var todoListSettings = new ToDoListSettings();
+
+            var note = new ToDoMarker("'NOTE:",0);
+            var todo = new ToDoMarker("'TODO:", 1);
+            var bug = new ToDoMarker("'BUG:", 2);
+
+            todoListSettings.ToDoMarkers = new ToDoMarker[]{note,todo,bug};
+            userSettings.ToDoListSettings = todoListSettings;
+            config.UserSettings = userSettings;
+
+            return config;
         }
     }
 
