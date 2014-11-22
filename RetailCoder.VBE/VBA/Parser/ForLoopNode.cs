@@ -17,4 +17,16 @@ namespace Rubberduck.VBA.Parser
         public Expression Upper { get { return new Expression(RegexMatch.Groups["upper"].Value); } }
         public Expression Step { get { return new Expression(RegexMatch.Groups["step"].Value); } }
     }
+
+    [ComVisible(false)]
+    public class ForEachLoopNode : CodeBlockNode
+    {
+        public ForEachLoopNode(Instruction instruction, string scope, Match match, IEnumerable<SyntaxTreeNode> nodes)
+            : base(instruction, scope, match, new[] {ReservedKeywords.Next}, null, nodes)
+        {
+            
+        }
+
+
+    }
 }
