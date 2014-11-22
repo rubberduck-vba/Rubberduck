@@ -19,25 +19,14 @@ namespace Rubberduck.Config
         }
     }
 
-    //todo: remove noise; use default setters/getters
     [System.Runtime.InteropServices.ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     [XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public  class Configuration
+    public class Configuration
     {
-        private UserSettings userSettingsField;
 
         public UserSettings UserSettings
-        {
-            get
-            {
-                return this.userSettingsField;
-            }
-            set
-            {
-                this.userSettingsField = value;
-            }
-        }
+        { get; set; }
     }
 
     [System.Runtime.InteropServices.ComVisible(false)]
@@ -45,18 +34,7 @@ namespace Rubberduck.Config
     public class UserSettings
     {
 
-        private ToDoListSettings toDoListSettingsField;
-
         public ToDoListSettings ToDoListSettings
-        {
-            get
-            {
-                return this.toDoListSettingsField;
-            }
-            set
-            {
-                this.toDoListSettingsField = value;
-            }
-        }
+        { get; set; }
     }
 }
