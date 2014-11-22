@@ -11,7 +11,8 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addInInst)
         {
-            _menu = new RubberduckMenu(vbe, addInInst);
+            var config = Config.ConfigurationLoader.LoadConfiguration();
+            _menu = new RubberduckMenu(vbe, addInInst, config);
         }
 
         public void Dispose()

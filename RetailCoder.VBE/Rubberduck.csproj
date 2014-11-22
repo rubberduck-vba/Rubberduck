@@ -53,6 +53,8 @@
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -200,6 +202,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>
