@@ -24,6 +24,4 @@ namespace Rubberduck.ToDoItems
             this.LineNumber = lineNumber;
         }
     }
-
-
 }
