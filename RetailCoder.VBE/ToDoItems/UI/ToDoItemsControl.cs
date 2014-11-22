@@ -46,7 +46,7 @@ namespace Rubberduck.ToDoItems
             VBComponent component = vbe.ActiveVBProject.VBComponents.Item(task.Module);
 
             component.CodeModule.CodePane.Show();
-            component.CodeModule.CodePane.SetSelection(task.LineNumber, 1, task.LineNumber, 1);
+            component.CodeModule.CodePane.SetSelection(task.LineNumber);
         }
 
         private void RefreshGridView()

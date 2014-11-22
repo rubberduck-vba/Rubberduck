@@ -65,7 +65,7 @@
     <Compile Include="Refactoring\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactoring\IRefactoring.cs" />
     <Compile Include="Reflection\Attributes.cs" />
-    <Compile Include="Reflection\CodePaneExtensions.cs" />
+    <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="Reflection\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />

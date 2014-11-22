@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Rubberduck.Reflection;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.Refactoring
 {
