@@ -6,7 +6,8 @@ using System.Windows.Forms;
 
 namespace Rubberduck
 {
-    class Menu : IDisposable
+    [ComVisible(false)]
+    public class Menu : IDisposable
     {
         private VBE vbe;
         protected AddIn addInInstance;
@@ -33,7 +34,7 @@ namespace Rubberduck
         /// <returns></returns>
         protected int FindMenuInsertionIndex(CommandBarControls controls, string beforeControl)
         {
-            for (int i = 1; i <= controls.Count; i++)
+            for (var i = 1; i <= controls.Count; i++)
             {
                 if (controls[i].BuiltIn && controls[i].Caption == beforeControl)
                 {

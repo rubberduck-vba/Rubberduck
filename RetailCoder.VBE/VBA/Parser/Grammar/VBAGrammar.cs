@@ -44,8 +44,7 @@ namespace Rubberduck.VBA.Parser.Grammar
         {
             get
             {
-                return
-                    @"^(?:(?:(?<keywords>(?:(?:(?<accessibility>Private|Public|Global)\s)|(?<accessibility>Private|Public|Global)\s)?(?:(?<keyword>Private|Public|Friend|Global|Dim|Const|Static|Sub|Function|Property\sGet|Property\sLet|Property\sSet|Enum|Type|Declare\sFunction)))\s)?)";
+                return @"^(?:(?:(?<keywords>(?:(?:(?<accessibility>Private|Public|Global)\s)|(?<accessibility>Private|Public|Global)\s)?(?:(?<keyword>WithEvents|Private|Public|Friend|Global|Dim|Const|Static|Sub|Function|Property\sGet|Property\sLet|Property\sSet|Enum|Type|Declare\sFunction)))\s)?)";
             }
         }
 
@@ -107,12 +106,22 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string ForEachLoopSyntax
         {
-            get { return @"For\sEach\s" + IdentifierSyntax + @"\sIn\s" + ReferenceSyntax; }
+            get { return @"For\sEach\s" + IdentifierSyntax + @"\sIn\s(?<expression>.*)"; }
+        }
+
+        public static string DoLoopSyntax
+        {
+            get { return @"(?<keyword>Do|Loop|Do\sLoop|Do\sUnTil|Do\sWhile|While)(?:\s(?<expression>.*))?"; }
         }
 
         public static string TypeConversionSyntax
         {
             get { return @"(?<keyword>CBool|CByte|CCur|CDate|CDbl|CInt|CLng|CSng|CStr|CVar)\((?<expression>.*)\)"; }
+        }
+
+        public static string OptionSyntax
+        {
+            get { return @"Option\s(?<option>:Base|Compare|Explicit|Private\sModule)(?:\s(?<value>)0|1|Binary|Text|Database)?"; }
         }
     }
 }

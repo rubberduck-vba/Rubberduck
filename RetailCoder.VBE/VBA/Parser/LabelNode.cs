@@ -19,4 +19,15 @@ namespace Rubberduck.VBA.Parser
             } 
         }
     }
+
+    [ComVisible(false)]
+    public class OptionNode : SyntaxTreeNode
+    {
+        public OptionNode(Instruction instruction, string scope, Match match)
+            : base(instruction, scope, match)
+        {
+        }
+
+        public string Value { get { return RegexMatch.Groups["value"].Value; } }
+    }
 }

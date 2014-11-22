@@ -657,4 +657,7 @@
   <data name="LongLong" xml:space="preserve">
     <value>LongLong</value>
   </data>
+  <data name="Rem" xml:space="preserve">
+    <value>Rem</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Rubberduck.VBA.Parser.Grammar
@@ -36,9 +37,11 @@ namespace Rubberduck.VBA.Parser.Grammar
             index = -1;
             var instruction = line.StripStringLiterals();
 
-            for (int cursor = 0; cursor < instruction.Length - 1; cursor++)
+            for (var cursor = 0; cursor < instruction.Length - 1; cursor++)
             {
-                if (instruction[cursor] == CommentMarker)
+                if (instruction[cursor] == CommentMarker 
+                    || (cursor == ReservedKeywords.Rem.Length 
+                        && instruction.TrimStart().Substring(0, ReservedKeywords.Rem.Length) == ReservedKeywords.Rem))
                 {
                     index = cursor;
                     return true;
@@ -58,7 +61,7 @@ namespace Rubberduck.VBA.Parser.Grammar
         {
             var builder = new StringBuilder(line.Length);
             var isInsideString = false;
-            for (int cursor = 0; cursor < line.Length; cursor++)
+            for (var cursor = 0; cursor < line.Length; cursor++)
             {
                 if (line[cursor] == StringDelimiter)
                 {

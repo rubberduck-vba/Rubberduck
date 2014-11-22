@@ -14,7 +14,14 @@ namespace Rubberduck.VBA.Parser
         {
         }
 
+        /// <summary>
+        /// Gets a <c>Boolean</c> <see cref="Expression"/>.
+        /// </summary>
         public Expression Condition { get { return new Expression(RegexMatch.Groups["condition"].Value); } }
+
+        /// <summary>
+        /// Gets an <see cref="Expression"/>
+        /// </summary>
         public Expression Expression { get { return new Expression(RegexMatch.Groups["expression"].Value); } }
     }
 }

@@ -20,5 +20,17 @@ namespace Rubberduck.VBA.Parser
 
         private readonly string _typeName;
         public string TypeName { get { return _typeName; } }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Identifier;
+            return other != null 
+                && (other.Scope == _scope && other.Name == _name);
+        }
+
+        public override int GetHashCode()
+        {
+            return string.Concat(_scope, ".", _name).GetHashCode();
+        }
     }
 }
