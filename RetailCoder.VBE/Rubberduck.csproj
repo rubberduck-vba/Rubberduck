@@ -55,6 +55,7 @@
     <Compile Include="App.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
