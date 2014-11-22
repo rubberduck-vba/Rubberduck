@@ -2,6 +2,7 @@
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Rubberduck.ToDoItems
 {
@@ -10,14 +11,16 @@ namespace Rubberduck.ToDoItems
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private Window _toolWindow;
+        private Config.ToDoListSettings _settings;
 
         private CommandBarButton _todoItemsButton;
         public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }
 
-        public ToDoItemsMenu(VBE vbe, AddIn addInInstance)
+        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, Config.ToDoListSettings settings)
         {
             _vbe = vbe;
             _addIn = addInInstance;
+            _settings = settings;
         }
 
         public void Initialize(CommandBarControls menuControls)
@@ -43,7 +46,8 @@ namespace Rubberduck.ToDoItems
 
         private void InitializeWindow()
         {
-            var control = new ToDoItemsControl(_vbe);
+            var markers = new List<Config.ToDoMarker>(_settings.ToDoMarkers);
+            var control = new ToDoItemsControl(_vbe, markers);
             _toolWindow = CreateToolWindow("ToDo Items", control);
         }
 
