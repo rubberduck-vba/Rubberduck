@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
-using System.Collections.Generic;
-using Rubberduck.Extensions;
 
 namespace Rubberduck.ToDoItems
 {
