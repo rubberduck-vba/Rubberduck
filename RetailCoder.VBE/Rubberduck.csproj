@@ -71,6 +71,7 @@
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
+    <Compile Include="ToDoItems\ToDoList.cs" />
     <Compile Include="UnitTesting\ExcelApplicationExtensions.cs" />
     <Compile Include="UnitTesting\UI\SelectedTestEventArgs.cs" />
     <Compile Include="UnitTesting\UI\TestExplorerItem.cs" />

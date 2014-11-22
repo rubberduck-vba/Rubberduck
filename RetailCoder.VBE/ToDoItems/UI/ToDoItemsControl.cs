@@ -11,24 +11,19 @@ namespace Rubberduck.ToDoItems
     public partial class ToDoItemsControl : UserControl
     {
         private VBE vbe;
-        private BindingList<ToDoItem> taskList;
-        private List<Config.ToDoMarker> markers;
+        private ToDoList todoList;
 
         public ToDoItemsControl(VBE vbe, List<Config.ToDoMarker> markers)
         {
             this.vbe = vbe;
-            this.markers = markers;
-
+            this.todoList = new ToDoList(vbe, markers);
             InitializeComponent();
-            
-            RefreshTaskList();
             InitializeGrid();
-
         }
 
         private void InitializeGrid()
         {
-            todoItemsGridView.DataSource = taskList;
+            todoItemsGridView.DataSource = this.todoList;
             var descriptionColumn = todoItemsGridView.Columns["Description"];
             if (descriptionColumn != null)
             {
@@ -42,7 +37,7 @@ namespace Rubberduck.ToDoItems
 
         void taskListGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            ToDoItem task = taskList.ElementAt(e.RowIndex);
+            ToDoItem task = this.todoList.ElementAt(e.RowIndex);
             VBComponent component = vbe.ActiveVBProject.VBComponents.Item(task.Module);
 
             component.CodeModule.CodePane.Show();
@@ -51,44 +46,8 @@ namespace Rubberduck.ToDoItems
 
         private void RefreshGridView()
         {
-            RefreshTaskList();
-            todoItemsGridView.DataSource = taskList;
+            this.todoList.Refresh();
             todoItemsGridView.Refresh();
-        }
-
-        public void RefreshTaskList()
-        {
-            this.taskList = new BindingList<ToDoItem>();
-
-            foreach (VBComponent component in this.vbe.ActiveVBProject.VBComponents)
-            {
-                CodeModule module = component.CodeModule;
-                for (var i = 1; i <= module.CountOfLines; i++)
-                {
-                    string line = module.get_Lines(i, 1);
-                    Config.ToDoMarker marker;
-
-                    if (TryGetMarker(line, out marker))
-                    {
-                        var priority = (TaskPriority)marker.priority;
-                        this.taskList.Add(new ToDoItem(priority, line, module, i));
-                    }
-                }
-            }
-        }
-
-        private bool TryGetMarker(string line, out Config.ToDoMarker result)
-        {
-            foreach (var marker in this.markers)
-            {
-                if (line.Contains(marker.text,StringComparison.OrdinalIgnoreCase))
-                {
-                    result = marker;
-                    return true;
-                }
-            }
-            result = null;
-            return false;
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
