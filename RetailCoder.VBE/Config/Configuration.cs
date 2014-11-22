@@ -12,7 +12,7 @@ namespace Rubberduck.Config
         {
             try
             {
-                string configFile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Rubberduck\rubberduck.config";
+                string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
 
                 using (StreamReader reader = new StreamReader(configFile))
                 {
@@ -20,7 +20,7 @@ namespace Rubberduck.Config
                     return (Configuration)deserializer.Deserialize(reader);
                 }
             }
-            catch (FileNotFoundException)
+            catch (IOException)
             {
                 return GetDefaultConfiguration();
             }
