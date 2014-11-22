@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser.Grammar
@@ -20,7 +21,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
         {
-            
+            return new ForLoopNode(instruction, scope, match, new List<SyntaxTreeNode>());
         }
     }
 }

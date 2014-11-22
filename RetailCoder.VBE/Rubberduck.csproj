@@ -80,6 +80,7 @@
     <Compile Include="VBA\Parser\EnumNode.cs" />
     <Compile Include="VBA\Parser\Expression.cs" />
     <Compile Include="VBA\Parser\ExpressionNode.cs" />
+    <Compile Include="VBA\Parser\ForLoopNode.cs" />
     <Compile Include="VBA\Parser\Grammar\DeclarationSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumMemberSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumSyntax.cs" />
