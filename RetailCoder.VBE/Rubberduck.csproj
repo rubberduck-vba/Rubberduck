@@ -81,6 +81,7 @@
     <Compile Include="VBA\Parser\Grammar\DeclarationSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumMemberSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\EnumSyntax.cs" />
+    <Compile Include="VBA\Parser\Grammar\ForLoopSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\IfBlockSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\LabelSyntax.cs" />
     <Compile Include="VBA\Parser\Grammar\ProcedureSyntax.cs" />
