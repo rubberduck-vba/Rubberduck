@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using System.Collections.Generic;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.ToDoItems
 {
@@ -78,10 +79,9 @@ namespace Rubberduck.ToDoItems
 
         private bool TryGetMarker(string line, out Config.ToDoMarker result)
         {
-            var upCasedLine = line.ToUpper();
             foreach (var marker in this.markers)
             {
-                if (upCasedLine.Contains(marker.text))
+                if (line.Contains(marker.text,StringComparison.OrdinalIgnoreCase))
                 {
                     result = marker;
                     return true;
