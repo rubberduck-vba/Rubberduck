@@ -8,11 +8,11 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace Rubberduck.UnitTesting
 {
-    internal class TestMethod : IEquatable<TestMethod>
+    [ComVisible(false)]
+    public class TestMethod : IEquatable<TestMethod>
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
 
@@ -90,19 +90,6 @@ namespace Rubberduck.UnitTesting
         public override int GetHashCode()
         {
             return this.QualifiedName.GetHashCode();
-        }
-    }
-
-    internal static class ExcelApplicationExtensions
-    {
-        public static long TimedMethodCall(this Excel.Application application, string projectName, string moduleName, string methodName)
-        {
-            var stopwatch = Stopwatch.StartNew();
-
-            application.Run(string.Concat(projectName, ".", moduleName, ".", methodName));
-            stopwatch.Stop();
-            
-            return stopwatch.ElapsedMilliseconds;
         }
     }
 }

@@ -1,15 +1,13 @@
-﻿using Microsoft.Office.Core;
+﻿using System;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.VBA.Parser;
 
-namespace Rubberduck.UnitTesting.UI
+namespace Rubberduck.Refactoring
 {
-    internal class RefactorMenu : IDisposable
+    [ComVisible(false)]
+    public class RefactorMenu : IDisposable
     {
         private readonly VBE _vbe;
         private readonly Parser _parser;

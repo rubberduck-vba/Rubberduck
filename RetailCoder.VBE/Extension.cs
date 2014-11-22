@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Linq;
 using Extensibility;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Rubberduck
 {
     [ComVisible(true)]
-    [Guid("8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66")]
-    [ProgId("Rubberduck.Extension")]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public class Extension : IDTExtensibility2, IDisposable
     {
+        public const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
+        public const string ProgId = "Rubberduck.Extension";
+
         private App _app;
 
         public void OnAddInsUpdate(ref Array custom)
@@ -31,14 +32,16 @@ namespace Rubberduck
             }
             catch(Exception exception)
             {
-                MessageBox.Show(exception.Message.ToString());
+                MessageBox.Show(exception.Message);
             }
         }
 
         public void OnStartupComplete(ref Array custom)
         {
-            //bug: if OnConnection doesn't complete, _app == null
-            _app.CreateExtUi(); 
+            if (_app != null)
+            {
+                _app.CreateExtUi();
+            }
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)

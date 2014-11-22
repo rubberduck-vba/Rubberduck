@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser.Grammar
 {
-    internal class EnumMemberSyntax : SyntaxBase
+    [ComVisible(false)]
+    public class EnumMemberSyntax : SyntaxBase
     {
         public EnumMemberSyntax()
             : base(SyntaxType.IsChildNodeSyntax)

@@ -1,13 +1,16 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Refactoring;
 using Rubberduck.ToDoItems;
 using Rubberduck.UnitTesting.UI;
 
 namespace Rubberduck
 {
-    internal class RubberduckMenu : IDisposable
+    [ComVisible(false)]
+    public class RubberduckMenu : IDisposable
     {
         private readonly VBE _vbe;
 

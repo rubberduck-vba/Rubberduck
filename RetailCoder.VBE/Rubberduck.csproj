@@ -67,6 +67,11 @@
     <Compile Include="Reflection\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
+    <Compile Include="SubClassingWindowEventArgs.cs" />
+    <Compile Include="UnitTesting\ExcelApplicationExtensions.cs" />
+    <Compile Include="UnitTesting\UI\SelectedTestEventArgs.cs" />
+    <Compile Include="UnitTesting\UI\TestExplorerItem.cs" />
+    <Compile Include="UnitTesting\UI\TestResultExtensions.cs" />
     <Compile Include="VBA\Parser\CodeBlockNode.cs" />
     <Compile Include="VBA\Parser\ConstDeclarationNode.cs" />
     <Compile Include="VBA\Parser\EnumMemberNode.cs" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ using Rubberduck.Reflection;
 
 namespace Rubberduck.Refactoring
 {
-    internal class ExtractMethodRefactoring : IRefactoring
+    [ComVisible(false)]
+    public class ExtractMethodRefactoring : IRefactoring
     {
         public void Refactor(CodeModule module)
         {

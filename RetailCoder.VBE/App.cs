@@ -1,9 +1,11 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
 using System;
 
 namespace Rubberduck
 {
-    internal class App : IDisposable
+    [ComVisible(false)]
+    public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;
 

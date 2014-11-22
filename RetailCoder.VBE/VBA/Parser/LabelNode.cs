@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser
 {
-    internal class LabelNode : SyntaxTreeNode
+    [ComVisible(false)]
+    public class LabelNode : SyntaxTreeNode
     {
         public LabelNode(Instruction instruction, string scope, Match match)
             : base(instruction, scope, match)

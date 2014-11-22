@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser.Grammar
 {
-    internal class ProcedureSyntax : SyntaxBase
+    [ComVisible(false)]
+    public class ProcedureSyntax : SyntaxBase
     {
         public ProcedureSyntax()
             : base(SyntaxType.HasChildNodes)

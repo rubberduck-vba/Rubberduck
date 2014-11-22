@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBA.Parser.Grammar
 {
-    internal class LabelSyntax : SyntaxBase
+    [ComVisible(false)]
+    public class LabelSyntax : SyntaxBase
     {
         protected override bool MatchesSyntax(string instruction, out Match match)
         {

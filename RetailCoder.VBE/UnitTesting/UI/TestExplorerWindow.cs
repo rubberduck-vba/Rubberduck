@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -11,7 +10,8 @@ using System.Threading;
 
 namespace Rubberduck.UnitTesting.UI
 {
-    internal partial class TestExplorerWindow : UserControl
+    [ComVisible(false)]
+    public partial class TestExplorerWindow : UserControl
     {
         private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
@@ -243,76 +243,5 @@ namespace Rubberduck.UnitTesting.UI
             UpdateProgress();
             testOutputGridView.Refresh();
         }    
-    }
-
-    internal class SelectedTestEventArgs : EventArgs
-    {
-        public SelectedTestEventArgs(IEnumerable<TestExplorerItem> items)
-        {
-            _selection = items.Select(item => item.GetTestMethod());
-        }
-
-        public SelectedTestEventArgs(TestExplorerItem item)
-            : this(new[] { item })
-        { }
-
-        private readonly IEnumerable<TestMethod> _selection;
-        public IEnumerable<TestMethod> Selection { get { return _selection; } }
-    }
-
-    internal class TestExplorerItem
-    {
-        public TestExplorerItem(TestMethod test, TestResult result)
-        {
-            _test = test;
-            _result = result;
-        }
-
-        private readonly TestMethod _test;
-        public TestMethod GetTestMethod()
-        {
-            return _test;
-        }
-
-        private TestResult _result;
-        public void SetResult(TestResult result)
-        {
-            _result = result;
-        }
-
-        public Image Result { get { return _result.Icon(); } }
-        public string ProjectName { get { return _test.ProjectName; } }
-        public string ModuleName { get { return _test.ModuleName; } }
-        public string MethodName { get { return _test.MethodName; } }
-        public string Outcome { get { return _result == null ? string.Empty : _result.Outcome.ToString(); } }
-        public string Message { get { return _result == null ? string.Empty : _result.Output; } }
-        public string Duration { get { return _result == null ? string.Empty : _result.Duration.ToString() + " ms"; } }
-    }
-
-    internal static class TestResultExtensions
-    {
-        public static Image Icon(this TestResult result)
-        {
-            var image = Rubberduck.Properties.Resources.question_white;
-            if (result != null)
-            {
-                switch (result.Outcome)
-                {
-                    case TestOutcome.Succeeded:
-                        image = Rubberduck.Properties.Resources.tick_circle;
-                        break;
-
-                    case TestOutcome.Failed:
-                        image = Rubberduck.Properties.Resources.minus_circle;
-                        break;
-
-                    case TestOutcome.Inconclusive:
-                        image = Rubberduck.Properties.Resources.exclamation_circle;
-                        break;
-                }
-            }
-
-            return image;
-        }
     }
 }

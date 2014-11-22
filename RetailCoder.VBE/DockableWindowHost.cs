@@ -5,86 +5,87 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck
 {
-    //todo: store GUID in a const so if it needs to be changed it can be changed once??
-    [ComVisible(true), Guid("9CF1392A-2DC9-48A6-AC0B-E601A9802608"), ProgId("Rubberduck.DockableWindowHost")]
+    [ComVisible(true)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public partial class DockableWindowHost : UserControl
     {
+        public const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
+        public const string ProgId = "Rubberduck.DockableWindowHost";
+
         [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
+        private struct Rect
         {
-            internal int Left;
-            internal int Top;
-            internal int Right;
-            internal int Bottom;
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
         }
 
         [DllImport("User32.dll")]
         static extern IntPtr GetParent(IntPtr hWnd);
 
         [DllImport("User32.dll", EntryPoint = "GetClientRect")]
-        static extern int GetClientRect(IntPtr hWnd, ref RECT lpRect);
+        static extern int GetClientRect(IntPtr hWnd, ref Rect lpRect);
 
-        private IntPtr parentHandle;
-        private SubClassingWindow subClassingWindow;
+        private IntPtr _parentHandle;
+        private SubClassingWindow _subClassingWindow;
 
         internal void AddUserControl(UserControl control)
         {
-            parentHandle = GetParent(this.Handle);
-            subClassingWindow = new SubClassingWindow(parentHandle);
-            subClassingWindow.CallBackEvent += OnCallBackEvent;
+            _parentHandle = GetParent(Handle);
+            _subClassingWindow = new SubClassingWindow(_parentHandle);
+            _subClassingWindow.CallBackEvent += OnCallBackEvent;
 
             control.Dock = DockStyle.Fill;
-            this.Controls.Add(control);
+            Controls.Add(control);
 
             AdjustSize();
-
         }
 
-        void OnCallBackEvent(object sender, SubClassingWindowEventArgs e)
+        private void OnCallBackEvent(object sender, SubClassingWindowEventArgs e)
         {
             AdjustSize();
         }
 
         private void AdjustSize()
         {
-            RECT tRect = new RECT();
-            if (GetClientRect(parentHandle,ref tRect) != 0)
+            var rect = new Rect();
+            if (GetClientRect(_parentHandle, ref rect) != 0)
             {
-                this.Size = new Size(tRect.Right - tRect.Left, tRect.Bottom - tRect.Top);
+                Size = new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
             }
         }
 
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            const int WM_KEYDOWN = 0x100;
-            bool result = false;
-            Keys pressedKey;
-            UserControl hostedUserControl;
-            Button activeButton;
+            const int wmKeydown = 0x100;
+            var result = false;
 
-            hostedUserControl = (UserControl)this.Controls[0];
+            var hostedUserControl = (UserControl)Controls[0];
 
-            if (m.Msg == WM_KEYDOWN)
+            if (m.Msg == wmKeydown)
             {
-                pressedKey = (Keys)m.WParam;
+                var pressedKey = (Keys)m.WParam;
                 switch(pressedKey)
                 {
                     case Keys.Tab:
-                        if (Control.ModifierKeys == Keys.None) //just tab
+                        switch (ModifierKeys)
                         {
-                            this.SelectNextControl(hostedUserControl.ActiveControl, true, true, true, true);
-                            result = true;
-                        }
-                        else if (Control.ModifierKeys == Keys.Shift) //shift + tab
-                        {
-                            this.SelectNextControl(hostedUserControl.ActiveControl, false, true, true, true);
-                            result = true;
+                            case Keys.None:
+                                SelectNextControl(hostedUserControl.ActiveControl, true, true, true, true);
+                                result = true;
+                                break;
+                            case Keys.Shift:
+                                SelectNextControl(hostedUserControl.ActiveControl, false, true, true, true);
+                                result = true;
+                                break;
                         }
                         break;
                     case Keys.Return:
-                        if (hostedUserControl.ActiveControl.GetType().Equals(typeof(Button)))
+                        if (hostedUserControl.ActiveControl.GetType() == typeof(Button))
                         {
-                            activeButton = (Button)hostedUserControl.ActiveControl;
+                            var activeButton = (Button)hostedUserControl.ActiveControl;
                             activeButton.PerformClick();
                         }
                         break;
@@ -98,57 +99,39 @@ namespace Rubberduck
             return result;
         }
 
-        private class SubClassingWindow : System.Windows.Forms.NativeWindow
+        [ComVisible(false)]
+        public class SubClassingWindow : NativeWindow
         {
-
             public event SubClassingWindowEventHandler CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
-            protected virtual void OnCallBackEvent(SubClassingWindowEventArgs e)
+            private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
                 CallBackEvent(this, e);
             }
-
-
+            
             public SubClassingWindow(IntPtr handle)
             {
-                base.AssignHandle(handle);
+                AssignHandle(handle);
             }
 
             protected override void WndProc(ref Message msg)
             {
-                const int WM_SIZE = 0x5;
+                const int wmSize = 0x5;
 
-                if (msg.Msg == WM_SIZE)
+                if (msg.Msg == wmSize)
                 {
-                    SubClassingWindowEventArgs args = new SubClassingWindowEventArgs(msg);
+                    var args = new SubClassingWindowEventArgs(msg);
                     OnCallBackEvent(args);
                 }
 
                 base.WndProc(ref msg);
             }
 
-            //destructor
             ~SubClassingWindow()
             {
-                this.ReleaseHandle();
+                ReleaseHandle();
             }
-
-        }
-    }
-
-    internal class SubClassingWindowEventArgs : EventArgs
-    {
-        private Message msg;
-
-        public Message Message
-        {
-            get { return this.msg; }
-        }
-
-        public SubClassingWindowEventArgs(System.Windows.Forms.Message msg)
-        {
-            this.msg = msg;
         }
     }
 }
