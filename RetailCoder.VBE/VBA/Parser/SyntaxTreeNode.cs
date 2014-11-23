@@ -37,5 +37,28 @@ namespace Rubberduck.VBA.Parser
 
         private readonly Match _match;
         protected Match RegexMatch { get { return _match; } }
+
+        public IEnumerable<Instruction> FindAllComments()
+        {
+            return FindAllComments(this);
+        }
+
+        public static IEnumerable<Instruction> FindAllComments(SyntaxTreeNode node)
+        {
+            if (!string.IsNullOrEmpty(node.Instruction.Comment))
+            {
+                yield return node.Instruction;
+            }
+
+            if (node.ChildNodes == null) yield break;
+            foreach (var childNode in node.ChildNodes.ToList())
+            {
+                var instructions = FindAllComments(childNode);
+                foreach (var instruction in instructions)
+                {
+                    yield return instruction;
+                }
+            }
+        }
     }
 }

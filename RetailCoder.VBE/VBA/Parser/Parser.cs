@@ -26,7 +26,7 @@ namespace Rubberduck.VBA.Parser
                 var memberNodes = ParseModuleMembers(projectName, componentName, content).ToList();
 
                 var result = new ModuleNode(projectName, componentName, memberNodes);
-
+                var comments = result.FindAllComments().ToList();
                 return result;
 
             }
