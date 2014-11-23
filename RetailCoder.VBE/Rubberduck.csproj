@@ -53,6 +53,14 @@
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
+    <Compile Include="CodeExplorer\UI\CodeExplorerDockablePresenter.cs" />
+    <Compile Include="CodeExplorer\UI\CodeExplorerWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodeExplorer\UI\CodeExplorerWindow.Designer.cs">
+      <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -193,6 +201,9 @@
     <EmbeddedResource Include="AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CodeExplorer\UI\CodeExplorerWindow.resx">
+      <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -260,6 +271,89 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus-circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
+    <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
+    <Content Include="Resources\Microsoft\AddMethod_5562_32.bmp" />
+    <Content Include="Resources\Microsoft\AddModule_368_32.bmp" />
+    <Content Include="Resources\Microsoft\AddProperty_5538_32.bmp" />
+    <Content Include="Resources\Microsoft\AddVariable_5541_32.bmp" />
+    <Content Include="Resources\Microsoft\Class-Private_493_24.bmp" />
+    <Content Include="Resources\Microsoft\Class_5893_24.bmp" />
+    <Content Include="Resources\Microsoft\ClosedFolder_6423_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant-Friend_497_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant-Private_519_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant-Protected_508_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant-Sealed_496_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant-Shortcut_7229_24.bmp" />
+    <Content Include="Resources\Microsoft\Constant_495_24.bmp" />
+    <Content Include="Resources\Microsoft\DocumentsLibrary_9001_32.bmp" />
+    <Content Include="Resources\Microsoft\EncapsulateField_6787_32.bmp" />
+    <Content Include="Resources\Microsoft\Enum-Friend_584_24.bmp" />
+    <Content Include="Resources\Microsoft\Enum-Private_586_24.bmp" />
+    <Content Include="Resources\Microsoft\Enum-Protected_585_24.bmp" />
+    <Content Include="Resources\Microsoft\Enum-Sealed_583_24.bmp" />
+    <Content Include="Resources\Microsoft\EnumItem-Friend_590_24.bmp" />
+    <Content Include="Resources\Microsoft\EnumItem-Private_592_24.bmp" />
+    <Content Include="Resources\Microsoft\EnumItem-Protected_591_24.bmp" />
+    <Content Include="Resources\Microsoft\EnumItem-Sealed_589_24.bmp" />
+    <Content Include="Resources\Microsoft\EnumItem_588_24.bmp" />
+    <Content Include="Resources\Microsoft\Enum_582_24.bmp" />
+    <Content Include="Resources\Microsoft\Event-Friend_596_24.bmp" />
+    <Content Include="Resources\Microsoft\Event-Private_598_24.bmp" />
+    <Content Include="Resources\Microsoft\Event-Protected_597_24.bmp" />
+    <Content Include="Resources\Microsoft\Event-Sealed_595_24.bmp" />
+    <Content Include="Resources\Microsoft\Event-Shortcut_599_24.bmp" />
+    <Content Include="Resources\Microsoft\ExtractInterface_6778_32.bmp" />
+    <Content Include="Resources\Microsoft\ExtractMethod_6786_32.bmp" />
+    <Content Include="Resources\Microsoft\Field-Private_545_24.bmp" />
+    <Content Include="Resources\Microsoft\Field-Protected_544_24.bmp" />
+    <Content Include="Resources\Microsoft\Field-Shortcut_546_24.bmp" />
+    <Content Include="Resources\Microsoft\Field_editedicon.bmp" />
+    <Content Include="Resources\Microsoft\Field_Friend_editedicon.bmp" />
+    <Content Include="Resources\Microsoft\FolderOpen_7140_24.bmp" />
+    <Content Include="Resources\Microsoft\HiddenFolder_427_24.bmp" />
+    <Content Include="Resources\Microsoft\HiddenFolder_428_24.bmp" />
+    <Content Include="Resources\Microsoft\ImplementInterface_5540_32.bmp" />
+    <Content Include="Resources\Microsoft\Method-Friend_638_24.bmp" />
+    <Content Include="Resources\Microsoft\Method-Private_640_24.bmp" />
+    <Content Include="Resources\Microsoft\Method-Protected_639_24.bmp" />
+    <Content Include="Resources\Microsoft\Method-Sealed_637_24.bmp" />
+    <Content Include="Resources\Microsoft\Method-Shortcut_641_24.bmp" />
+    <Content Include="Resources\Microsoft\Method.bmp" />
+    <Content Include="Resources\Microsoft\Module-Friend_650_24.bmp" />
+    <Content Include="Resources\Microsoft\Module-Private_652_24.bmp" />
+    <Content Include="Resources\Microsoft\Module-Protected_651_24.bmp" />
+    <Content Include="Resources\Microsoft\Module-Sealed_649_24.bmp" />
+    <Content Include="Resources\Microsoft\Module-Shortcut_653_24.bmp" />
+    <Content Include="Resources\Microsoft\Module_editedicon.bmp" />
+    <Content Include="Resources\Microsoft\NewField_6862_32.bmp" />
+    <Content Include="Resources\Microsoft\Operator-Public_10530_24.bmp" />
+    <Content Include="Resources\Microsoft\Parameter.bmp" />
+    <Content Include="Resources\Microsoft\PromoteLocal_6784_32.bmp" />
+    <Content Include="Resources\Microsoft\Property-Friend_503_24.bmp" />
+    <Content Include="Resources\Microsoft\Property-Private_505_24.bmp" />
+    <Content Include="Resources\Microsoft\Property-Protected_504_24.bmp" />
+    <Content Include="Resources\Microsoft\Property-Sealed_502_24.bmp" />
+    <Content Include="Resources\Microsoft\Property-Shortcut_506_24.bmp" />
+    <Content Include="Resources\Microsoft\Property_edited.bmp" />
+    <Content Include="Resources\Microsoft\Services.bmp" />
+    <Content Include="Resources\Microsoft\Type-Friend_530_24.bmp" />
+    <Content Include="Resources\Microsoft\Type-Private_532_24.bmp" />
+    <Content Include="Resources\Microsoft\Type-Protected_531_24.bmp" />
+    <Content Include="Resources\Microsoft\Type-Sealed_528_24.bmp" />
+    <Content Include="Resources\Microsoft\Type-Shortcut_533_24.bmp" />
+    <Content Include="Resources\Microsoft\Type_527_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType-Friend_549_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType-Private_552_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType-Protected_550_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType-Sealed_548_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType-Shortcut_553_24.bmp" />
+    <Content Include="Resources\Microsoft\ValueType_547_24.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

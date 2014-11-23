@@ -22,7 +22,7 @@ namespace Rubberduck
 
         protected CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
-            return menu.Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            return menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
         }
 
         /// <summary>

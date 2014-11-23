@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 using Rubberduck.VBA.Parser.Grammar;
 
@@ -11,6 +12,25 @@ namespace Rubberduck.VBA.Parser
     [ComVisible(false)]
     public class Parser
     {
+        public SyntaxTreeNode Parse(VBProject project)
+        {
+            var components = project.VBComponents.Cast<VBComponent>().ToList();
+            var nodes = new List<SyntaxTreeNode>();
+            foreach (var component in components)
+            {
+                var lineCount = component.CodeModule.CountOfLines;
+                if (lineCount <= 0)
+                {
+                    continue;
+                }
+
+                var code = component.CodeModule.Lines[1, lineCount];
+                nodes.Add(Parse(project.Name, component.Name, code));
+            }
+
+            return new ProjectNode(project, nodes);
+        }
+
         /// <summary>
         /// Converts VBA code into a <see cref="SyntaxTreeNode"/>.
         /// </summary>
@@ -43,18 +63,27 @@ namespace Rubberduck.VBA.Parser
             var lines = content.Split('\n').Select(line => line.Replace("\r", string.Empty)).ToList();
 
             var logicalLine = new StringBuilder();
+            var startLine = 0;
+            var isContinuing = false;
             for (var index = 0; index < lines.Count; index++)
             {
+                if (!isContinuing)
+                {
+                    startLine = index + 1;
+                }
+
                 var line = lines[index];
                 if (line.EndsWith(lineContinuationMarker))
                 {
+                    isContinuing = true;
                     logicalLine.Append(line.Remove(line.Length - 1));
                 }
                 else
                 {
                     logicalLine.Append(line);
-                    yield return new LogicalCodeLine(projectName, componentName, index + 1, logicalLine.ToString());
+                    yield return new LogicalCodeLine(projectName, componentName, startLine, index + 1, logicalLine.ToString());
                     logicalLine.Clear();
+                    isContinuing = false;
                 }
             }
         }
