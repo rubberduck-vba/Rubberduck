@@ -2,8 +2,9 @@
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UnitTesting.UI
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class TestMenu : Rubberduck.Menu

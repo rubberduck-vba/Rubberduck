@@ -1,12 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
-using Rubberduck.UnitTesting.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
