@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\ToDoListSettings.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Menu.cs" />
