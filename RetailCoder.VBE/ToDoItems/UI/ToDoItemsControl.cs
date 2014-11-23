@@ -37,10 +37,10 @@ namespace Rubberduck.ToDoItems
         void taskListGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             ToDoItem task = this.todoList.ElementAt(e.RowIndex);
-            VBComponent component = vbe.ActiveVBProject.VBComponents.Item(task.Module);
+            CodePane codePane = vbe.ActiveVBProject.VBComponents.Item(task.Module).CodeModule.CodePane;
 
-            component.CodeModule.CodePane.Show();
-            component.CodeModule.CodePane.SetSelection(task.LineNumber);
+            codePane.Show();
+            codePane.SetSelection(task.LineNumber);
         }
 
         private void RefreshGridView()
