@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.Extensions;
 
 namespace RubberduckTests
 {
@@ -54,6 +55,22 @@ namespace RubberduckTests
 
             Assert.IsTrue(result);
             Assert.AreEqual(comment, instruction.Substring(index));
+        }
+
+        [TestMethod]
+        public void CaseInsensitiveContainsShouldReturnTrue()
+        {
+            var searchFor = "tExt";
+            var textToSearch = "I contain some text in here.";
+            Assert.IsTrue(textToSearch.Contains(searchFor, StringComparison.OrdinalIgnoreCase));
+        }
+
+        [TestMethod]
+        public void CaseInsensitiveContainsShouldReturnFalse()
+        {
+            var searchFor = "tExt";
+            var textToSearch = "I don't have it.";
+            Assert.IsFalse(textToSearch.Contains(searchFor, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
