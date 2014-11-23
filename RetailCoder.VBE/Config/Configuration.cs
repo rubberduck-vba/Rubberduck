@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.Config
@@ -33,15 +32,20 @@ namespace Rubberduck.Config
             var userSettings = new UserSettings();
             var todoListSettings = new ToDoListSettings();
 
-            var note = new ToDoMarker("'NOTE:",0);
-            var todo = new ToDoMarker("'TODO:", 1);
-            var bug = new ToDoMarker("'BUG:", 2);
-
-            todoListSettings.ToDoMarkers = new ToDoMarker[]{note,todo,bug};
+            todoListSettings.ToDoMarkers = GetDefaultTodoMarkers();
             userSettings.ToDoListSettings = todoListSettings;
             config.UserSettings = userSettings;
 
             return config;
+        }
+
+        public static ToDoMarker[] GetDefaultTodoMarkers()
+        {
+            var note = new ToDoMarker("'NOTE:", 0);
+            var todo = new ToDoMarker("'TODO:", 1);
+            var bug = new ToDoMarker("'BUG:", 2);
+
+            return new ToDoMarker[] { note, todo, bug };
         }
     }
 
