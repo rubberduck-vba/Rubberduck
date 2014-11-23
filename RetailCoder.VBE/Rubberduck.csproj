@@ -46,10 +46,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutWindow.cs">
+    <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutWindow.Designer.cs">
+    <Compile Include="UI\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Config\ToDoListSettings.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="UI\Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -71,12 +71,12 @@
     <Compile Include="Reflection\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
-    <Compile Include="SubClassingWindowEventArgs.cs" />
+    <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="ToDoItems\ToDoList.cs" />
     <Compile Include="UnitTesting\ExcelApplicationExtensions.cs" />
-    <Compile Include="UnitTesting\UI\SelectedTestEventArgs.cs" />
-    <Compile Include="UnitTesting\UI\TestExplorerItem.cs" />
-    <Compile Include="UnitTesting\UI\TestResultExtensions.cs" />
+    <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
+    <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
     <Compile Include="VBA\Parser\CodeBlockNode.cs" />
     <Compile Include="VBA\Parser\ConstDeclarationNode.cs" />
     <Compile Include="VBA\Parser\DoLoopNode.cs" />
@@ -127,19 +127,19 @@
     <Compile Include="VBA\Parser\UserDefinedTypeMemberNode.cs" />
     <Compile Include="VBA\Parser\UserDefinedTypeNode.cs" />
     <Compile Include="VBA\Parser\VariableDeclarationNode.cs" />
-    <Compile Include="RubberduckMenu.cs" />
+    <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
-    <Compile Include="ToDoItems\UI\ToDoItemsMenu.cs" />
-    <Compile Include="ToDoItems\UI\ToDoItemsControl.cs">
+    <Compile Include="UI\ToDoList\ToDoItemsMenu.cs" />
+    <Compile Include="UI\ToDoList\ToDoItemsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToDoItems\UI\ToDoItemsControl.Designer.cs">
+    <Compile Include="UI\ToDoList\ToDoItemsControl.Designer.cs">
       <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockableWindowHost.cs">
+    <Compile Include="UI\DockableWindowHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DockableWindowHost.Designer.cs">
+    <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
     <Compile Include="UnitTesting\Assert.cs" />
@@ -150,16 +150,16 @@
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="Refactoring\RefactorMenu.cs" />
-    <Compile Include="UnitTesting\UI\TestExplorerWindow.cs">
+    <Compile Include="UI\RefactorMenu.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UnitTesting\UI\TestExplorerWindow.Designer.cs">
+    <Compile Include="UI\UnitTesting\TestExplorerWindow.Designer.cs">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTesting\UI\TestMenu.cs" />
+    <Compile Include="UI\UnitTesting\TestMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -191,7 +191,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AboutWindow.resx">
+    <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -203,10 +203,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ToDoItems\UI\ToDoItemsControl.resx">
+    <EmbeddedResource Include="UI\ToDoList\ToDoItemsControl.resx">
       <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UnitTesting\UI\TestExplorerWindow.resx">
+    <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
