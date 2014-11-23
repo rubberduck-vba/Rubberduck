@@ -4,7 +4,7 @@ using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace Rubberduck.ToDoItems
+namespace Rubberduck.UI
 {
     internal class ToDoItemsMenu 
     {

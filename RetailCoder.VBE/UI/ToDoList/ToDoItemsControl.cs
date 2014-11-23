@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.ToDoItems;
 
-namespace Rubberduck.ToDoItems
+namespace Rubberduck.UI
 {
     public partial class ToDoItemsControl : UserControl
     {
