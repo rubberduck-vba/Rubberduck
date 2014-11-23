@@ -1,7 +1,8 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UnitTesting.UI
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public static class TestResultExtensions

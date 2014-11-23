@@ -7,8 +7,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
+using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UnitTesting.UI
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public partial class TestExplorerWindow : UserControl

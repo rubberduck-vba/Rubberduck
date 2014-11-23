@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UnitTesting.UI
+﻿namespace Rubberduck.UI
 {
     partial class TestExplorerWindow
     {

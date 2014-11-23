@@ -1,4 +1,4 @@
-﻿namespace Rubberduck
+﻿namespace Rubberduck.UI
 {
     partial class DockableWindowHost
     {

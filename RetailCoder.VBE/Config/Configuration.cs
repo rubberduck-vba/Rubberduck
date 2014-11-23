@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Config
 {
-    [System.Runtime.InteropServices.ComVisible(false)]
+    [ComVisible(false)]
     public static class ConfigurationLoader
     {
         public static Configuration LoadConfiguration()
@@ -26,25 +26,30 @@ namespace Rubberduck.Config
             }
         }
 
-        private static Configuration GetDefaultConfiguration()
+        public static Configuration GetDefaultConfiguration()
         {
             var config = new Configuration();
             var userSettings = new UserSettings();
             var todoListSettings = new ToDoListSettings();
 
-            var note = new ToDoMarker("'NOTE:",0);
-            var todo = new ToDoMarker("'TODO:", 1);
-            var bug = new ToDoMarker("'BUG:", 2);
-
-            todoListSettings.ToDoMarkers = new ToDoMarker[]{note,todo,bug};
+            todoListSettings.ToDoMarkers = GetDefaultTodoMarkers();
             userSettings.ToDoListSettings = todoListSettings;
             config.UserSettings = userSettings;
 
             return config;
         }
+
+        public static ToDoMarker[] GetDefaultTodoMarkers()
+        {
+            var note = new ToDoMarker("'NOTE:", 0);
+            var todo = new ToDoMarker("'TODO:", 1);
+            var bug = new ToDoMarker("'BUG:", 2);
+
+            return new ToDoMarker[] { note, todo, bug };
+        }
     }
 
-    [System.Runtime.InteropServices.ComVisible(false)]
+    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     [XmlRootAttribute(Namespace = "", IsNullable = false)]
     public class Configuration
@@ -54,7 +59,7 @@ namespace Rubberduck.Config
         { get; set; }
     }
 
-    [System.Runtime.InteropServices.ComVisible(false)]
+    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class UserSettings
     {

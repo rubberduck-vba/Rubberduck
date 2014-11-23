@@ -1,18 +1,17 @@
 ﻿using System.Xml.Serialization;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Config
 {
-    [System.Runtime.InteropServices.ComVisible(false)]
-    [XmlTypeAttribute(AnonymousType = true)]
-    public class ToDoListSettings
+    interface IToDoMarker
     {
-        [XmlArrayItemAttribute("ToDoMarker", IsNullable = false)]
-        public ToDoMarker[] ToDoMarkers { get; set; }
+        byte priority { get; set; }
+        string text { get; set; }
     }
 
-    [System.Runtime.InteropServices.ComVisible(false)]
+    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
-    public class ToDoMarker
+    public class ToDoMarker : IToDoMarker
     {
         [XmlAttributeAttribute()]
         public string text { get; set; }

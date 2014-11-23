@@ -5,9 +5,8 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Refactoring;
 using Rubberduck.ToDoItems;
-using Rubberduck.UnitTesting.UI;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class RubberduckMenu : IDisposable

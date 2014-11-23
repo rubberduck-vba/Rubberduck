@@ -4,7 +4,7 @@ using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace Rubberduck.ToDoItems
+namespace Rubberduck.UI
 {
     internal class ToDoItemsMenu 
     {
@@ -57,7 +57,7 @@ namespace Rubberduck.ToDoItems
             Object userControlObject = null;
             DockableWindowHost userControlHost;
             Window toolWindow;
-            const string progId = "Rubberduck.DockableWindowHost";
+            const string progId = "Rubberduck.UI.DockableWindowHost";
             const string dockableHostGuid = "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}";
 
             toolWindow = _vbe.Windows.CreateToolWindow(_addIn, progId, toolWindowCaption, dockableHostGuid, ref userControlObject);

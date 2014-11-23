@@ -4,7 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class Menu : IDisposable
@@ -56,7 +56,7 @@ namespace Rubberduck
             Object userControlObject = null;
             DockableWindowHost userControlHost;
             Window toolWindow;
-            const string dockableWindowHostProgId = "Rubberduck.DockableWindowHost"; //DockableWindowHost progId
+            const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost"; //DockableWindowHost progId
             const string dockableWindowHostGUID = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
