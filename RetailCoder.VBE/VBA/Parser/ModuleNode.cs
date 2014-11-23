@@ -7,10 +7,14 @@ namespace Rubberduck.VBA.Parser
     [ComVisible(false)]
     public class ModuleNode : SyntaxTreeNode
     {
-        public ModuleNode(string projectName, string componentName, IEnumerable<SyntaxTreeNode> nodes)
+        public ModuleNode(string projectName, string componentName, IEnumerable<SyntaxTreeNode> nodes, bool isClassModule)
             : base(Instruction.Empty(new LogicalCodeLine(projectName, componentName, 0, 0, string.Empty)), projectName, null, nodes)
         {
+            _isClassModule = isClassModule;
         }
+
+        private readonly bool _isClassModule;
+        public bool IsClassModule { get { return _isClassModule; } }
     }
 
     [ComVisible(false)]

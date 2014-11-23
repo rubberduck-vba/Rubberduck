@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.CodeExplorer.UI
+﻿namespace Rubberduck.UI.CodeExplorer
 {
     partial class CodeExplorerWindow
     {

@@ -14,7 +14,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo As Integer\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -33,7 +33,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo() As Integer\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -53,7 +53,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo(1 To 10) As Integer\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -73,7 +73,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo(1 To 10, 1 To 5) As Integer\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -94,7 +94,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo$\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -113,7 +113,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo As New Collection\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -133,7 +133,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo As ADODB.Recordset\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -154,7 +154,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo, bar As String\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -175,7 +175,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Dim foo() As Integer, bar As String\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -195,7 +195,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Const foo As String = \"test\"\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
             Assert.IsNotNull(declaration);
@@ -212,7 +212,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo()\n\rEnd Sub\n\r";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var procedure = result.ChildNodes.FirstOrDefault() as ProcedureNode;
             Assert.IsNotNull(procedure);
@@ -224,7 +224,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo(bar)\n\rEnd Sub\n\r";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var procedure = (ProcedureNode)result.ChildNodes.First();
             Assert.AreEqual(1, procedure.Parameters.Count());
@@ -236,7 +236,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo(ByVal a As Integer, ByRef b As Integer)\n\rEnd Sub\n\r";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var procedure = (ProcedureNode)result.ChildNodes.First();
             var parameters = procedure.Parameters.ToList();
@@ -251,7 +251,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\r";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var procedure = result.ChildNodes.First();
             Assert.IsTrue(procedure.ChildNodes.OfType<VariableDeclarationNode>().Count() == 1);
@@ -263,7 +263,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\rPublic Function Bar()\n\r    Dim foo As String\n\rEnd Function\n\r";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var procedures = result.ChildNodes.OfType<ProcedureNode>().ToList();
             Assert.AreEqual(2, procedures.Count);
@@ -275,7 +275,7 @@ namespace RubberduckTests
             var parser = new Parser();
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code);
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
             var declaration = result.ChildNodes.OfType<ProcedureNode>().First()
                                     .ChildNodes.OfType<DeclarationNode>().First();
 

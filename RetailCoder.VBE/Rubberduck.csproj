@@ -53,14 +53,14 @@
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
-    <Compile Include="CodeExplorer\UI\CodeExplorerDockablePresenter.cs" />
-    <Compile Include="CodeExplorer\UI\CodeExplorerWindow.cs">
+    <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CodeExplorer\UI\CodeExplorerWindow.Designer.cs">
+    <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DockablePresenterBase.cs" />
+    <Compile Include="UI\DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoListSettings.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
@@ -202,7 +202,7 @@
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CodeExplorer\UI\CodeExplorerWindow.resx">
+    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

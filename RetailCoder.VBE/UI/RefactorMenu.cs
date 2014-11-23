@@ -47,7 +47,11 @@ namespace Rubberduck.UI
                 }
 
                 var code = module.Lines[1, module.CountOfLines];
-                var tree = _parser.Parse(project.Name, component.Name, code);
+                var isClassModule = component.Type == vbext_ComponentType.vbext_ct_ClassModule
+                                    || component.Type == vbext_ComponentType.vbext_ct_Document
+                                    || component.Type == vbext_ComponentType.vbext_ct_MSForm;
+
+                var tree = _parser.Parse(project.Name, component.Name, code, isClassModule);
             }
             catch(Exception exception)
             {

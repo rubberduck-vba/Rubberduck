@@ -25,7 +25,11 @@ namespace Rubberduck.VBA.Parser
                 }
 
                 var code = component.CodeModule.Lines[1, lineCount];
-                nodes.Add(Parse(project.Name, component.Name, code));
+                var isClassModule = component.Type == vbext_ComponentType.vbext_ct_ClassModule
+                                    || component.Type == vbext_ComponentType.vbext_ct_Document
+                                    || component.Type == vbext_ComponentType.vbext_ct_MSForm;
+
+                nodes.Add(Parse(project.Name, component.Name, code, isClassModule));
             }
 
             return new ProjectNode(project, nodes);
@@ -38,22 +42,13 @@ namespace Rubberduck.VBA.Parser
         /// <param name="componentName">The name of the module, used for scoping private nodes.</param>
         /// <param name="code">The code to parse.</param>
         /// <returns></returns>
-        public SyntaxTreeNode Parse(string projectName, string componentName, string code)
+        public SyntaxTreeNode Parse(string projectName, string componentName, string code, bool isClassModule)
         {
-            try
-            {
-                var content = SplitLogicalCodeLines(projectName, componentName, code);
-                var memberNodes = ParseModuleMembers(projectName, componentName, content).ToList();
+            var content = SplitLogicalCodeLines(projectName, componentName, code);
+            var memberNodes = ParseModuleMembers(projectName, componentName, content).ToList();
 
-                var result = new ModuleNode(projectName, componentName, memberNodes);
-                var comments = result.FindAllComments().ToList();
-                return result;
-
-            }
-            catch (Exception exception)
-            {             
-                throw;
-            }
+            var result = new ModuleNode(projectName, componentName, memberNodes, isClassModule);
+            return result;
         }
 
         private IEnumerable<LogicalCodeLine> SplitLogicalCodeLines(string projectName, string componentName, string content)

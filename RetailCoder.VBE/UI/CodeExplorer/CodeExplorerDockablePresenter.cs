@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser;
 
-namespace Rubberduck.CodeExplorer.UI
+namespace Rubberduck.UI.CodeExplorer
 {
     [ComVisible(false)]
     public class CodeExplorerDockablePresenter : DockablePresenterBase
@@ -26,6 +23,7 @@ namespace Rubberduck.CodeExplorer.UI
             {
                 _control.RefreshTreeView += RefreshExplorerTreeView;
                 _control.NavigateTreeNode += NavigateExplorerTreeNode;
+                _control.SolutionTree.BeforeExpand += TreeViewBeforeExpandProjectNode;
             }
         }
 
@@ -59,8 +57,44 @@ namespace Rubberduck.CodeExplorer.UI
 
         private void AddProjectNode(SyntaxTreeNode node)
         {
-            var tree = _control.SolutionTree;
+            var treeView = _control.SolutionTree;
             var projectNode = new TreeNode(node.Scope);
+            projectNode.Tag = node as ProjectNode;
+            projectNode.ImageKey = "ClosedFolder";
+
+            
+
+            treeView.Nodes.Add(projectNode);
+        }
+
+        private void TreeViewBeforeExpandProjectNode(object sender, TreeViewCancelEventArgs e)
+        {
+            if (!(e.Node.Tag is ProjectNode))
+            {
+                return;
+            }
+
+            switch (e.Action)
+            {
+                case TreeViewAction.Collapse:
+                    e.Node.ImageKey = "ClosedFolder";
+                    break;
+                case TreeViewAction.Expand:
+                    e.Node.ImageKey = "OpenedFolder";
+                    break;
+            }
+        }
+
+        private string GetImageKeyForNode(SyntaxTreeNode node)
+        {
+            if (node is ModuleNode)
+            {
+            }
+
+            if (node is OptionNode)
+            {
+                return "Option";
+            }
         }
     }
 }

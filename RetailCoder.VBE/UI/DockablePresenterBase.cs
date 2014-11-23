@@ -2,9 +2,8 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public abstract class DockablePresenterBase
