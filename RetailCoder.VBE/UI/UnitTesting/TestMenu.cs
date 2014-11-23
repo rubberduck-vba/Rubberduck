@@ -7,7 +7,7 @@ using Rubberduck.UnitTesting;
 namespace Rubberduck.UI
 {
     [ComVisible(false)]
-    public class TestMenu : Rubberduck.Menu
+    public class TestMenu : Menu
     {
         // 2743: play icon with stopwatch
         // 3039: module icon || 3119 || 621 || 589 || 472

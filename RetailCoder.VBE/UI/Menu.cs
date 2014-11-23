@@ -4,7 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class Menu : IDisposable

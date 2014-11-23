@@ -1,6 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using System;
+using Rubberduck.UI;
+using Rubberduck.Config;
 
 namespace Rubberduck
 {
@@ -11,7 +13,7 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addInInst)
         {
-            var config = Config.ConfigurationLoader.LoadConfiguration();
+            var config = ConfigurationLoader.LoadConfiguration();
             _menu = new RubberduckMenu(vbe, addInInst, config);
         }
 

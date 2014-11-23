@@ -4,7 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Parser;
 
-namespace Rubberduck.Refactoring
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class RefactorMenu : IDisposable

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(true)]
     [Guid(ClassId)]
@@ -11,7 +11,7 @@ namespace Rubberduck
     public partial class DockableWindowHost : UserControl
     {
         public const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
-        public const string ProgId = "Rubberduck.DockableWindowHost";
+        public const string ProgId = "Rubberduck.UI.DockableWindowHost";
 
         [StructLayout(LayoutKind.Sequential)]
         private struct Rect

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
     public class SubClassingWindowEventArgs : EventArgs

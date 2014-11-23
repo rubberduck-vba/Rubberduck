@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Rubberduck
+namespace Rubberduck.UI
 {
     public partial class AboutWindow : Form
     {
