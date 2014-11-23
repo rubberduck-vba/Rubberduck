@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
 
-namespace Rubberduck.Reflection
+namespace Rubberduck.VBA.Parser
 {
     [ComVisible(false)]
     public class ModuleNode : SyntaxTreeNode
