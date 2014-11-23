@@ -7,6 +7,9 @@
 *.sln.docstates
 *.csproj.user
 
+# External NuGet Packages
+[Pp]ackages/
+
 # Build results
 
 [Dd]ebug/
@@ -155,3 +158,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Workbook for debugging
+*.xlsm

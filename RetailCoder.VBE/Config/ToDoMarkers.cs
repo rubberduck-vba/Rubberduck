@@ -6,7 +6,6 @@ namespace Rubberduck.Config
     [XmlTypeAttribute(AnonymousType = true)]
     public class ToDoListSettings
     {
-
         [XmlArrayItemAttribute("ToDoMarker", IsNullable = false)]
         public ToDoMarker[] ToDoMarkers { get; set; }
     }

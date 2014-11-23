@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Reflection
+namespace Rubberduck.Extensions
 {
     internal static class CodePaneExtensions
     {
@@ -28,6 +28,16 @@ namespace Rubberduck.Reflection
             var endLine = startLine + code.CodeModule.get_ProcCountLines(procedure, kind) + 1;
 
             return new Selection(startLine, 1, endLine, 1);
+        }
+
+        /// <summary>
+        /// Sets the cursor to the first position of the given line.
+        /// </summary>
+        /// <param name="codePane"></param>
+        /// <param name="lineNumber"></param>
+        public static void SetSelection(this CodePane codePane, int lineNumber)
+        {
+            codePane.SetSelection(lineNumber, 1, lineNumber, 1);
         }
     }
 

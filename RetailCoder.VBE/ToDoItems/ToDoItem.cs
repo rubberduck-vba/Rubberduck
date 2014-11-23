@@ -2,14 +2,16 @@
 
 namespace Rubberduck.ToDoItems
 {
-    internal enum TaskPriority
+    [System.Runtime.InteropServices.ComVisible(false)]
+    public enum TaskPriority
     {
         Low,
         Medium,
         High
     }
 
-    internal class ToDoItem
+    [System.Runtime.InteropServices.ComVisible(false)]
+    public class ToDoItem
     {
         public TaskPriority Priority{ get; set; }
         public string Description { get; set; }
@@ -24,6 +26,4 @@ namespace Rubberduck.ToDoItems
             this.LineNumber = lineNumber;
         }
     }
-
-
 }
