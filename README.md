@@ -32,7 +32,7 @@ The comments are also configurable, so you can decide what comments to add to yo
 
 ###Code Explorer
 
-Get a 30,000 foot view of your project with the Code Explorer.
+Get a bird's eye view of your project with the Code Explorer.
 
 ![Code Explorer Window](https://cloud.githubusercontent.com/assets/5751684/5161266/3f88a9d6-7372-11e4-9ff5-19eaa0cfa562.png)
 
@@ -40,6 +40,33 @@ Get a 30,000 foot view of your project with the Code Explorer.
 There is currently not an installer, but we do plan on creating one in the future. In the meantime, [information for installing Rubberduck][install] can be found on our wiki. 
    
 [install]:https://github.com/retailcoder/Rubberduck/wiki/Building-Installation
+
+---
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Mathieu Guindon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ---   
 
 ##Icons attribution
