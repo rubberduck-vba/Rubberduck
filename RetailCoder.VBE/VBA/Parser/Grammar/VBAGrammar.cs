@@ -78,7 +78,7 @@ namespace Rubberduck.VBA.Parser.Grammar
         {
             get
             {
-                return @"^(?<accessibility>(Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s" +
+                return @"^(?:(?<accessibility>Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s" +
                        IdentifierSyntax +
                        @"\((?<parameters>.*)\)(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\])))?";
             }
