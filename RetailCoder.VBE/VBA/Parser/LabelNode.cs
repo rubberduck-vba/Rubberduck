@@ -28,6 +28,8 @@ namespace Rubberduck.VBA.Parser
         {
         }
 
+        public string Option { get { return RegexMatch.Groups["option"].Value; } }
+
         public string Value { get { return RegexMatch.Groups["value"].Value; } }
     }
 }

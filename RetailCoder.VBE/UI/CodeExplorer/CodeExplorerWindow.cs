@@ -13,6 +13,10 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
             RefreshButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
+            SolutionTree.ShowLines = false;
+            SolutionTree.ImageList = TreeNodeIcons;
+            SolutionTree.ShowNodeToolTips = true;
+            SolutionTree.LabelEdit = false;
         }
 
         public event EventHandler<SyntaxTreeNodeClickEventArgs> NavigateTreeNode;
@@ -24,8 +28,8 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            var node = e.Node.Tag as SyntaxTreeNode;
-            handler(this, new SyntaxTreeNodeClickEventArgs(node));
+            var instruction = (Instruction)e.Node.Tag;
+            handler(this, new SyntaxTreeNodeClickEventArgs(instruction));
         }
 
 
@@ -44,12 +48,12 @@ namespace Rubberduck.UI.CodeExplorer
 
     public class SyntaxTreeNodeClickEventArgs : EventArgs
     {
-        public SyntaxTreeNodeClickEventArgs(SyntaxTreeNode node)
+        public SyntaxTreeNodeClickEventArgs(Instruction instruction)
         {
-            _node = node;
+            _instruction = instruction;
         }
 
-        private readonly SyntaxTreeNode _node;
-        public SyntaxTreeNode Node { get { return _node; } }
+        private readonly Instruction _instruction;
+        public Instruction Instruction { get { return _instruction; } }
     }
 }

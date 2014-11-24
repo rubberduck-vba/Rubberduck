@@ -17,5 +17,19 @@ namespace Rubberduck.VBA.Parser
         {
 
         }
+
+        public string Accessibility
+        {
+            get
+            {
+                var specified = RegexMatch.Groups["accessibility"].Value;
+                if (string.IsNullOrEmpty(specified))
+                {
+                    return ReservedKeywords.Private;
+                }
+
+                return specified;
+            }
+        }
     }
 }

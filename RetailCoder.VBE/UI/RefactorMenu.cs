@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI
@@ -10,11 +11,13 @@ namespace Rubberduck.UI
     public class RefactorMenu : IDisposable
     {
         private readonly VBE _vbe;
+        private readonly AddIn _addin;
         private readonly Parser _parser;
 
-        public RefactorMenu(VBE vbe)
+        public RefactorMenu(VBE vbe, AddIn addin)
         {
             _vbe = vbe;
+            _addin = addin;
             _parser = new Parser();
         }
 
@@ -35,28 +38,8 @@ namespace Rubberduck.UI
 
         private void OnParseModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var project = _vbe.ActiveVBProject;
-            var component = _vbe.SelectedVBComponent;
-
-            try
-            {
-                var module = component.CodeModule;
-                if (module.CountOfLines < 1)
-                {
-                    return;
-                }
-
-                var code = module.Lines[1, module.CountOfLines];
-                var isClassModule = component.Type == vbext_ComponentType.vbext_ct_ClassModule
-                                    || component.Type == vbext_ComponentType.vbext_ct_Document
-                                    || component.Type == vbext_ComponentType.vbext_ct_MSForm;
-
-                var tree = _parser.Parse(project.Name, component.Name, code, isClassModule);
-            }
-            catch(Exception exception)
-            {
-
-            }
+            var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin);
+            presenter.Show();
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

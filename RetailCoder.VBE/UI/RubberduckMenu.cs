@@ -22,7 +22,7 @@ namespace Rubberduck.UI
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);
             _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings);
-            _refactorMenu = new RefactorMenu(_vbe);
+            _refactorMenu = new RefactorMenu(_vbe, addIn);
         }
 
         public void Dispose()

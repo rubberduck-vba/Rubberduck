@@ -11,9 +11,15 @@ namespace Rubberduck.VBA.Parser
             : base(Instruction.Empty(new LogicalCodeLine(projectName, componentName, 0, 0, string.Empty)), projectName, null, nodes)
         {
             _isClassModule = isClassModule;
+            _projectName = projectName;
+            _componentName = componentName;
         }
 
+        public Identifier Identifier { get {  return new Identifier(_projectName, _componentName, _componentName);} }
+
         private readonly bool _isClassModule;
+        private readonly string _projectName;
+        private readonly string _componentName;
         public bool IsClassModule { get { return _isClassModule; } }
     }
 

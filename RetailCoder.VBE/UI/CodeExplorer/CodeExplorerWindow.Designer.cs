@@ -31,10 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeExplorerWindow));
             this.CodeExplorerToolbar = new System.Windows.Forms.ToolStrip();
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SolutionTree = new System.Windows.Forms.TreeView();
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -50,6 +50,15 @@
             this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Refresh";
             // 
             // toolStripSeparator1
             // 
@@ -72,15 +81,6 @@
             this.SolutionTree.Name = "SolutionTree";
             this.SolutionTree.Size = new System.Drawing.Size(297, 343);
             this.SolutionTree.TabIndex = 0;
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Refresh";
             // 
             // TreeNodeIcons
             // 
@@ -112,7 +112,7 @@
             this.TreeNodeIcons.Images.SetKeyName(23, "PublicEnumItem");
             this.TreeNodeIcons.Images.SetKeyName(24, "FriendEnumItem");
             this.TreeNodeIcons.Images.SetKeyName(25, "PrivateEnumItem");
-            this.TreeNodeIcons.Images.SetKeyName(26, "PublicType.bmp");
+            this.TreeNodeIcons.Images.SetKeyName(26, "PublicType");
             this.TreeNodeIcons.Images.SetKeyName(27, "FriendType");
             this.TreeNodeIcons.Images.SetKeyName(28, "PrivateType");
             // 

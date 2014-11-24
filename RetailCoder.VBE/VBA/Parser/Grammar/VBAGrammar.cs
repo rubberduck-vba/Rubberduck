@@ -71,7 +71,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string UserDefinedTypeSyntax
         {
-            get { return @"^((Private|Public|Global)\s)?Type\s" + IdentifierSyntax; }
+            get { return @"^(?:(?<accessibility>Private|Public|Global)\s)?Type\s" + IdentifierSyntax; }
         }
 
         public static string ProcedureSyntax

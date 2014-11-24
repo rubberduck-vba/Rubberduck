@@ -46,6 +46,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Selection.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +124,7 @@
     <Compile Include="VBA\Parser\OperatorType.cs" />
     <Compile Include="VBA\Parser\ParameterNode.cs" />
     <Compile Include="VBA\Parser\Parser.cs" />
+    <Compile Include="VBA\Parser\ProcedureKind.cs" />
     <Compile Include="VBA\Parser\ProcedureNode.cs" />
     <Compile Include="VBA\Parser\Grammar\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
