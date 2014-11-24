@@ -45,6 +45,11 @@ namespace Rubberduck.VBA.Parser
         /// </summary>
         public int StartLineNumber { get { return _startLineNumber; } }
 
+        /// <summary>
+        /// Gets a value indicating whether logical code line spans multiple lines in a code file.
+        /// </summary>
+        public bool IsMultiline { get { return _endLineNumber != _startLineNumber; } }
+
         private readonly string _content;
         /// <summary>
         /// The integral content of the logical code line, including line continuations.
