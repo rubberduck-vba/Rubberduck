@@ -87,9 +87,9 @@ namespace Rubberduck.VBA.Parser
             {
                 endIndex = instruction == instructionsCount - 1
                     ? _content.Length
-                    : _content.IndexOf(separator, endIndex);
+                    : _content.IndexOf(separator, endIndex) + 1;
 
-                result.Add(new Instruction(this, startIndex, endIndex + 1, _content.Substring(startIndex, endIndex - startIndex)));
+                result.Add(new Instruction(this, startIndex, endIndex, _content.Substring(startIndex, endIndex - startIndex)));
                 startIndex = endIndex;
             }
 

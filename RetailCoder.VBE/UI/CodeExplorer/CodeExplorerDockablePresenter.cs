@@ -59,7 +59,7 @@ namespace Rubberduck.UI.CodeExplorer
             if (selection.StartLine != 0)
             {
                 vbComponent.CodeModule.CodePane
-                    .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                    .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
             }
 
             vbComponent.CodeModule.CodePane.Show();
