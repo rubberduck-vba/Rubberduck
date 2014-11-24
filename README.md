@@ -1,12 +1,38 @@
 ![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
-A COM Add-In for the VBA IDE that makes VBA development even more enjoyable:
+Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable. 
 
- - Unit testing
- - To-do items
- - Refactoring
- - ...
+##Features:
+###Unit testing
 
+Fully integrated unit testing with minimal (read: next to none) boiler plate code. Just add a reference to Rubberduck and create a new module scoped `Assert` class and you're ready to start writing tests. 
+
+    '@TestModule
+    Private Assert As New Rubberduck.AssertClass
+    
+    
+    '@TestMethod
+    Public Sub OnePlusOneIsTwo()
+        Const expected As Long = 2
+        
+        Assert.AreEqual expected, Add(1, 1)
+    End Sub
+
+Rubberduck will find the Module and Procedure attributes and display your test methods for you in the Test Explorer.
+
+![Test Explorer Window](http://i.imgur.com/qpCrN30.png)
+
+###To-do items
+
+Ever wish you had a task list built into the VBA IDE? You don't have to wish anymore. It's here. Rubberduck searches your code for `TODO:` comments and displays them all in one convenient location. Double-click on an item in the Todo List and jump to that location in the code. 
+
+![Todo List Window](http://i.stack.imgur.com/3ej9b.png)
+
+The comments are also configurable, so you can decide what comments to add to your Todo List and what Priority level they should be.
+
+###Code Explorer
+
+Get a 30,000 foot view of your project with the Code Explorer.
 
 ##Installation 
 There is currently not an installer, but we do plan on creating one in the future. In the meantime, [information for installing Rubberduck][install] can be found on our wiki. 
