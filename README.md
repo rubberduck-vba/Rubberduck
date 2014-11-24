@@ -47,7 +47,7 @@ There is currently not an installer, but we do plan on creating one in the futur
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Mathieu Guindon
+Copyright (c) 2014 Mathieu Guindon & Christopher McClellan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
