@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UnitTesting;
@@ -34,6 +35,8 @@ namespace Rubberduck.UI.UnitTesting
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            Debug.Assert(menu != null);
+
             menu.Caption = "Te&st";
 
             _windowsTestExplorerButton = AddMenuButton(menu);

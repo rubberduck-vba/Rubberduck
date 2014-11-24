@@ -14,7 +14,7 @@ namespace Rubberduck.UI
     {
         private readonly VBE _vbe;
 
-        private readonly TestMenu _testMenu;
+        private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly RefactorMenu _refactorMenu;
 
