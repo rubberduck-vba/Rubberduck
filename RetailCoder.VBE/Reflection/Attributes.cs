@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,8 @@ namespace Rubberduck.Reflection
     /// <summary>
     /// A base class for all member attributes.
     /// </summary>
-    internal abstract class MemberAttributeBase
+    [ComVisible(false)]
+    public abstract class MemberAttributeBase
     {
         public string Name { get { return GetType().Name.Replace("Attribute", string.Empty); } }
     }
@@ -17,20 +19,24 @@ namespace Rubberduck.Reflection
     /// <summary>
     /// An attribute that marks a code module as a test module.
     /// </summary>
-    internal class TestModuleAttribute : MemberAttributeBase { }
+    [ComVisible(false)]
+    public class TestModuleAttribute : MemberAttributeBase { }
 
     /// <summary>
     /// An attribute that marks a public procedure as a test method.
     /// </summary>
-    internal class TestMethodAttribute : MemberAttributeBase { }
+    [ComVisible(false)]
+    public class TestMethodAttribute : MemberAttributeBase { }
 
     /// <summary>
     /// An attribute that marks a public procedure as a method to execute before each test is executed.
     /// </summary>
-    internal class TestInitializeAttribute : MemberAttributeBase { }
+    [ComVisible(false)]
+    public class TestInitializeAttribute : MemberAttributeBase { }
 
     /// <summary>
     /// An attribute that marks a public procedure as a method to execute after each test is executed.
     /// </summary>
-    internal class TestCleanupAttribute : MemberAttributeBase { }
+    [ComVisible(false)]
+    public class TestCleanupAttribute : MemberAttributeBase { }
 }

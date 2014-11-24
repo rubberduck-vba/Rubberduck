@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
@@ -7,7 +8,8 @@ using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    internal class ToDoItemsMenu 
+    [ComVisible(false)]
+    public class ToDoItemsMenu 
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;

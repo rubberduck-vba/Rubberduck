@@ -1,16 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace Rubberduck.UnitTesting
+﻿namespace Rubberduck.UnitTesting
 {
-    public enum TestOutcome
-    {
-        Unknown,
-        Inconclusive,
-        Failed,
-        Succeeded
-    }
-
     public class TestResult
     {
         public static TestResult Unknown()
@@ -48,17 +37,5 @@ namespace Rubberduck.UnitTesting
 
         private readonly string _output;
         public string Output { get { return _output; } }
-    }
-
-    [ComVisible(false)]
-    internal class AssertCompletedEventArgs : EventArgs
-    {
-        public AssertCompletedEventArgs(TestResult result)
-        {
-            _result = result;
-        }
-
-        private readonly TestResult _result;
-        public TestResult Result { get { return _result; } }
     }
 }
