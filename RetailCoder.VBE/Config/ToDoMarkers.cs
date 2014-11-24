@@ -14,6 +14,7 @@ namespace Rubberduck.Config
     [XmlTypeAttribute(AnonymousType = true)]
     public class ToDoMarker : IToDoMarker
     {
+        //either the code can be properly case, or the XML can be, but the xml attributes must here *exactly* match the xml
         [XmlAttribute]
         public string Text { get; set; }
 
