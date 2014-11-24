@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.ToDoItems
 {
-    partial class ToDoItemsControl
+    partial class ToDoExplorerWindow
     {
         /// <summary> 
         /// Required designer variable.
@@ -69,7 +69,7 @@
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClicked);
             // 
             // toolStripSeparator1
             // 

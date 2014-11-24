@@ -8,44 +8,41 @@ namespace Rubberduck.UI
     [ComVisible(false)]
     public abstract class DockablePresenterBase
     {
-        public const string DockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost";
-        public const string DockableWindowHostClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
-
         private readonly AddIn _addin;
-        protected readonly Window Window;
+        private readonly Window _window;
         protected readonly UserControl UserControl;
 
-        protected DockablePresenterBase(VBE vbe, AddIn addin, string caption, UserControl control)
+        protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
         {
             _vbe = vbe;
             _addin = addin;
-            UserControl = control;
-            Window = CreateToolWindow(caption, control);
+            UserControl = control as UserControl;
+            _window = CreateToolWindow(control);
         }
 
         private readonly VBE _vbe;
         protected VBE VBE { get { return _vbe; } }
 
-        private Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
+        private Window CreateToolWindow(IDockableUserControl control)
         {
-            Object userControlObject = null;
-            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, DockableWindowHostProgId, toolWindowCaption, DockableWindowHostClassId, ref userControlObject);
+            object userControlObject = null;
+            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
 
             var userControlHost = (DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 
-            userControlHost.AddUserControl(toolWindowUserControl);
+            userControlHost.AddUserControl(control as UserControl);
             return toolWindow;
         }
 
         public void Show()
         {
-            Window.Visible = true;
+            _window.Visible = true;
         }
 
         public void Close()
         {
-            Window.Close();
+            _window.Close();
         }
     }
 }

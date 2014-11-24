@@ -10,7 +10,7 @@ namespace Rubberduck.UI
     public class Menu : IDisposable
     {
         private VBE vbe;
-        protected AddIn addInInstance;
+        protected readonly AddIn addInInstance;
 
         protected VBE IDE { get { return this.vbe; } }
 

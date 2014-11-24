@@ -1,30 +1,34 @@
 ﻿using System.Xml.Serialization;
 using System.Runtime.InteropServices;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.Config
 {
     interface IToDoMarker
     {
-        byte priority { get; set; }
-        string text { get; set; }
+        int Priority { get; set; }
+        string Text { get; set; }
     }
 
     [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class ToDoMarker : IToDoMarker
     {
-        [XmlAttributeAttribute()]
-        public string text { get; set; }
+        [XmlAttribute]
+        public string Text { get; set; }
 
-        [XmlAttributeAttribute()]
-        public byte priority { get; set; }
+        [XmlAttribute]
+        public int Priority { get; set; }
 
-        public ToDoMarker() { }
-
-        public ToDoMarker(string text, byte priority)
+        public ToDoMarker()
         {
-            this.text = text;
-            this.priority = priority;
+            // default constructor required for serialization
+        }
+
+        public ToDoMarker(string text, int priority)
+        {
+            Text = text;
+            Priority = priority;
         }
     }
 }

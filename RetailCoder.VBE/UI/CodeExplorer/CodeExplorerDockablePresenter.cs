@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
 
@@ -12,26 +11,31 @@ namespace Rubberduck.UI.CodeExplorer
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
         private readonly Parser _parser;
-        private readonly CodeExplorerWindow _control;
+        private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
         public CodeExplorerDockablePresenter(Parser parser, VBE vbe, AddIn addIn)
-            : base(vbe, addIn, "Code Explorer", new CodeExplorerWindow())
+            : base(vbe, addIn, new CodeExplorerWindow())
         {
             _parser = parser;
-            _control = base.UserControl as CodeExplorerWindow;
-            if (_control != null)
+            RegisterControlEvents();
+        }
+
+        private void RegisterControlEvents()
+        {
+            if (Control == null)
             {
-                _control.RefreshTreeView += RefreshExplorerTreeView;
-                _control.NavigateTreeNode += NavigateExplorerTreeNode;
-                _control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-                _control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
+                return;
             }
+
+            Control.RefreshTreeView += RefreshExplorerTreeView;
+            Control.NavigateTreeNode += NavigateExplorerTreeNode;
+            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
+            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
         {
             var instruction = e.Instruction;
-            var selection = new Selection(instruction.Line.EndLineNumber, instruction.StartColumn, instruction.Line.EndLineNumber, instruction.EndColumn);
 
             var project = instruction.Line.ProjectName;
             var component = instruction.Line.ComponentName;
@@ -51,9 +55,11 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
+            var selection = instruction.Selection;
             if (selection.StartLine != 0)
             {
-                vbComponent.CodeModule.CodePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                vbComponent.CodeModule.CodePane
+                    .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
             }
 
             vbComponent.CodeModule.CodePane.Show();
@@ -61,7 +67,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void RefreshExplorerTreeView(object sender, System.EventArgs e)
         {
-            _control.SolutionTree.Nodes.Clear();
+            Control.SolutionTree.Nodes.Clear();
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var project in projects)
             {
@@ -71,7 +77,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void AddProjectNode(SyntaxTreeNode node)
         {
-            var treeView = _control.SolutionTree;
+            var treeView = Control.SolutionTree;
             var projectNode = new TreeNode();
             projectNode.Text = node.Instruction.Line.ProjectName;
             projectNode.Tag = node.Instruction;

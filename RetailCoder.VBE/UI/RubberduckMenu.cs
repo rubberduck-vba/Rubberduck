@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Refactoring;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI
 {
@@ -23,7 +22,7 @@ namespace Rubberduck.UI
         {
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);
-            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings);
+            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings, new Parser());
             _refactorMenu = new RefactorMenu(_vbe, addIn);
         }
 

@@ -6,8 +6,12 @@ using Rubberduck.VBA.Parser;
 namespace Rubberduck.UI.CodeExplorer
 {
     [ComVisible(false)]
-    public partial class CodeExplorerWindow : UserControl
+    public partial class CodeExplorerWindow : UserControl, IDockableUserControl
     {
+        private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D809";
+        string IDockableUserControl.ClassId { get { return ClassId; } }
+        string IDockableUserControl.Caption { get { return "Code Explorer"; } }
+
         public CodeExplorerWindow()
         {
             InitializeComponent();
@@ -44,16 +48,5 @@ namespace Rubberduck.UI.CodeExplorer
 
             handler(this, EventArgs.Empty);
         }
-    }
-
-    public class SyntaxTreeNodeClickEventArgs : EventArgs
-    {
-        public SyntaxTreeNodeClickEventArgs(Instruction instruction)
-        {
-            _instruction = instruction;
-        }
-
-        private readonly Instruction _instruction;
-        public Instruction Instruction { get { return _instruction; } }
     }
 }

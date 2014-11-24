@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Selection.cs" />
+    <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,11 +62,13 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\SyntaxTreeNodeClickEventArgs.cs" />
     <Compile Include="UI\DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoListSettings.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="UI\IDockableUserControl.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -77,11 +80,12 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
+    <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
-    <Compile Include="ToDoItems\ToDoList.cs" />
     <Compile Include="UnitTesting\ExcelApplicationExtensions.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
@@ -140,11 +144,11 @@
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
-    <Compile Include="UI\ToDoItems\ToDoItemsControl.cs">
+    <Compile Include="UI\ToDoItems\ToDoExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ToDoItems\ToDoItemsControl.Designer.cs">
-      <DependentUpon>ToDoItemsControl.cs</DependentUpon>
+    <Compile Include="UI\ToDoItems\ToDoExplorerWindow.Designer.cs">
+      <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\DockableWindowHost.cs">
       <SubType>UserControl</SubType>
@@ -216,8 +220,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ToDoItems\ToDoItemsControl.resx">
-      <DependentUpon>ToDoItemsControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
+      <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>

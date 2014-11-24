@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -10,22 +11,25 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private Window _toolWindow;
-        private readonly Config.ToDoListSettings _settings;
+        private readonly ToDoListSettings _settings;
+        private readonly Parser _parser;
 
         private CommandBarButton _todoItemsButton;
         public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }
 
-        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, Config.ToDoListSettings settings)
+        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, Parser parser)
         {
             _vbe = vbe;
             _addIn = addInInstance;
             _settings = settings;
+            _parser = parser;
         }
 
         public void Initialize(CommandBarControls menuControls)
         {
-            _todoItemsButton = menuControls.Add(Type: MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            _todoItemsButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            Debug.Assert(_todoItemsButton != null);
+
             _todoItemsButton.Caption = "&ToDo Items";
             _todoItemsButton.BeginGroup = true;
 
@@ -34,41 +38,11 @@ namespace Rubberduck.UI.ToDoItems
             _todoItemsButton.Click += OnShowTaskListButtonClick;
         }
 
-        void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
+        private void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
-            if (_toolWindow == null)
-            {
-                InitializeWindow();
-            }
-
-            _toolWindow.Visible = true;
-        }
-
-        private void InitializeWindow()
-        {
-            var markers = new List<Config.ToDoMarker>(_settings.ToDoMarkers);
-            var control = new ToDoItemsControl(_vbe, markers);
-            _toolWindow = CreateToolWindow("ToDo Items", control);
-        }
-
-        private Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
-        {
-            //todo: create base class to expose this. Will need to be *protected*.
-            Object userControlObject = null;
-            DockableWindowHost userControlHost;
-            Window toolWindow;
-            const string progId = "Rubberduck.UI.DockableWindowHost";
-            const string dockableHostGuid = "{9CF1392A-2DC9-48A6-AC0B-E601A9802608}";
-
-            toolWindow = _vbe.Windows.CreateToolWindow(_addIn, progId, toolWindowCaption, dockableHostGuid, ref userControlObject);
-
-            userControlHost = (DockableWindowHost)userControlObject;
-            toolWindow.Visible = true; //window resizing doesn't work without this
-
-            userControlHost.AddUserControl(toolWindowUserControl);
-
-            return toolWindow;
-
+            var markers = _settings.ToDoMarkers;
+            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, _vbe, _addIn);
+            presenter.Show();
         }
     }
 }

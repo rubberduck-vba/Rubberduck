@@ -11,9 +11,9 @@ namespace RubberduckTests
         public void GetDefaultTodoMarkersTest()
         {
             ToDoMarker[] markers = ConfigurationLoader.GetDefaultTodoMarkers();
-            Assert.AreEqual("'NOTE:", markers[0].text,"Note failed to load.");
-            Assert.AreEqual("'TODO:", markers[1].text,"Todo failed to load.");
-            Assert.AreEqual("'BUG:", markers[2].text,"Bug failed to load.");
+            Assert.AreEqual("'NOTE:", markers[0].Text,"Note failed to load.");
+            Assert.AreEqual("'TODO:", markers[1].Text,"Todo failed to load.");
+            Assert.AreEqual("'BUG:", markers[2].Text,"Bug failed to load.");
         }
     }
 }

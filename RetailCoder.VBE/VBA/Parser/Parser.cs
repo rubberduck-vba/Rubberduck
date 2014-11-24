@@ -76,7 +76,7 @@ namespace Rubberduck.VBA.Parser
                 else
                 {
                     logicalLine.Append(line);
-                    yield return new LogicalCodeLine(projectName, componentName, startLine, index, logicalLine.ToString());
+                    yield return new LogicalCodeLine(projectName, componentName, startLine, index + 1, logicalLine.ToString());
                     logicalLine.Clear();
                     isContinuing = false;
                 }

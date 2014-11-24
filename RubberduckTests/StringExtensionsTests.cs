@@ -61,7 +61,7 @@ namespace RubberduckTests
         public void CaseInsensitiveContainsShouldReturnTrue()
         {
             var searchFor = "tExt";
-            var textToSearch = "I contain some text in here.";
+            var textToSearch = "I contain some Text in here.";
             Assert.IsTrue(textToSearch.Contains(searchFor, StringComparison.OrdinalIgnoreCase));
         }
 
