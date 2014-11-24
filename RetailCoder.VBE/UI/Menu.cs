@@ -10,7 +10,7 @@ namespace Rubberduck.UI
     public class Menu : IDisposable
     {
         private VBE vbe;
-        protected AddIn addInInstance;
+        protected readonly AddIn addInInstance;
 
         protected VBE IDE { get { return this.vbe; } }
 
@@ -22,7 +22,7 @@ namespace Rubberduck.UI
 
         protected CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
-            return menu.Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            return menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
         }
 
         /// <summary>

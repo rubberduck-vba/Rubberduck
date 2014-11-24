@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.UnitTesting
 {
     [ComVisible(false)]
     public class SelectedTestEventArgs : EventArgs

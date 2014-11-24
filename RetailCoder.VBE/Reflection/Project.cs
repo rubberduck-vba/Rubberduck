@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using IDE = Microsoft.Vbe.Interop.VBE;
-using System.Windows.Forms;
 
 namespace Rubberduck.Reflection
 {
-    internal static class ProjectExtensions
+    [ComVisible(false)]
+    public static class ProjectExtensions
     {
         public static IEnumerable<string> ComponentNames(this VBProject project)
         {
@@ -23,7 +19,7 @@ namespace Rubberduck.Reflection
         public static void EnsureReferenceToAddInLibrary(this VBProject project)
         {
             var referencePath = System.IO.Path.ChangeExtension(System.Reflection.Assembly.GetExecutingAssembly().Location, ".tlb");
-            if (!project.References.Cast<Reference>().Any(r => r.FullPath == referencePath))
+            if (project.References.Cast<Reference>().All(r => r.FullPath != referencePath))
             {
                 project.References.AddFromFile(referencePath);
             }

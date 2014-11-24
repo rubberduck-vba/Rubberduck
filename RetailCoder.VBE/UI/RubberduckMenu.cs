@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Refactoring;
-using Rubberduck.ToDoItems;
+using Rubberduck.UI.ToDoItems;
+using Rubberduck.UI.UnitTesting;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI
 {
@@ -13,7 +14,7 @@ namespace Rubberduck.UI
     {
         private readonly VBE _vbe;
 
-        private readonly TestMenu _testMenu;
+        private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly RefactorMenu _refactorMenu;
 
@@ -21,8 +22,8 @@ namespace Rubberduck.UI
         {
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);
-            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings);
-            _refactorMenu = new RefactorMenu(_vbe);
+            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings, new Parser());
+            _refactorMenu = new RefactorMenu(_vbe, addIn);
         }
 
         public void Dispose()

@@ -5,13 +5,16 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
+    [ComVisible(true)]
     public partial class DockableWindowHost : UserControl
     {
-        public const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
-        public const string ProgId = "Rubberduck.UI.DockableWindowHost";
+        private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
+        public static string RegisteredClassId { get { return ClassId; } }
+
+        private const string ProgId = "Rubberduck.UI.DockableWindowHost";
+        public static string RegisteredProgId { get { return ProgId; } }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct Rect

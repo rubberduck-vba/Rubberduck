@@ -1,10 +1,12 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 
 namespace Rubberduck.UnitTesting
 {
-    internal static class NewUnitTestModuleCommand
+    [ComVisible(false)]
+    public static class NewUnitTestModuleCommand
     {
         private static readonly string TestModuleEmptyTemplate = string.Concat(
             "'@TestModule\n",
@@ -42,7 +44,8 @@ namespace Rubberduck.UnitTesting
         }
     }
 
-    internal static class NewTestMethodCommand
+    [ComVisible(false)]
+    public static class NewTestMethodCommand
     {
         private static readonly string NamePlaceholder = "%METHODNAME%";
         private static readonly string TestMethodBaseName = "TestMethod";

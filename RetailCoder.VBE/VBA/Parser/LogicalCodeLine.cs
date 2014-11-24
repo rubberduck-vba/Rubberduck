@@ -12,11 +12,12 @@ namespace Rubberduck.VBA.Parser
     [ComVisible(false)]
     public struct LogicalCodeLine
     {
-        public LogicalCodeLine(string projectName, string componentName, int lineNumber, string content)
+        public LogicalCodeLine(string projectName, string componentName, int startLineNumber, int endLineNumber, string content)
         {
             _projectName = projectName;
             _componentName = componentName;
-            _lineNumber = lineNumber;
+            _startLineNumber = startLineNumber;
+            _endLineNumber = endLineNumber;
             _content = content;
         }
 
@@ -32,11 +33,22 @@ namespace Rubberduck.VBA.Parser
         /// </summary>
         public string ComponentName { get { return _componentName; } }
 
-        private readonly int _lineNumber;
+        private readonly int _endLineNumber;
+        /// <summary>
+        /// The code pane line number where this logical code line ends.
+        /// </summary>
+        public int EndLineNumber { get { return _endLineNumber; } }
+
+        private readonly int _startLineNumber;
         /// <summary>
         /// The code pane line number where this logical code line begins.
         /// </summary>
-        public int LineNumber { get { return _lineNumber; } }
+        public int StartLineNumber { get { return _startLineNumber; } }
+
+        /// <summary>
+        /// Gets a value indicating whether logical code line spans multiple lines in a code file.
+        /// </summary>
+        public bool IsMultiline { get { return _endLineNumber != _startLineNumber; } }
 
         private readonly string _content;
         /// <summary>
@@ -75,7 +87,7 @@ namespace Rubberduck.VBA.Parser
             {
                 endIndex = instruction == instructionsCount - 1
                     ? _content.Length
-                    : _content.IndexOf(separator, endIndex);
+                    : _content.IndexOf(separator, endIndex) + 1;
 
                 result.Add(new Instruction(this, startIndex, endIndex, _content.Substring(startIndex, endIndex - startIndex)));
                 startIndex = endIndex;

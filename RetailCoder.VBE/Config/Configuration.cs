@@ -41,9 +41,9 @@ namespace Rubberduck.Config
 
         public static ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker("'NOTE:", 0);
-            var todo = new ToDoMarker("'TODO:", 1);
-            var bug = new ToDoMarker("'BUG:", 2);
+            var note = new ToDoMarker("NOTE:", 0);
+            var todo = new ToDoMarker("TODO:", 1);
+            var bug = new ToDoMarker("BUG:", 2);
 
             return new ToDoMarker[] { note, todo, bug };
         }

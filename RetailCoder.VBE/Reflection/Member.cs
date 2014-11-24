@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection
 {
-    internal enum MemberType
+    [ComVisible(false)]
+    public enum MemberType
     {
         Field,
         Sub,
@@ -17,14 +19,16 @@ namespace Rubberduck.Reflection
         PropertySet
     }
 
-    internal enum MemberVisibility
+    [ComVisible(false)]
+    public enum MemberVisibility
     {
         Public,
         Private,
         Friend
     }
 
-    internal class Member
+    [ComVisible(false)]
+    public class Member
     {
         public Member(MemberVisibility visibility, 
                       MemberType memberType, 
@@ -168,7 +172,8 @@ namespace Rubberduck.Reflection
         }
     }
 
-    internal class MemberAttribute
+    [ComVisible(false)]
+    public class MemberAttribute
     {
         private const string AttributeSyntax = 
             @"\'\@(?<AttributeName>\w+)(?<Parameters>\(((?<Parameter>(\""[a-zA-Z][a-zA-Z_0-9]*\"")|([0-9]+(\.[0-9]+)?))(\,\s*)?)+\))?";

@@ -63,6 +63,26 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddClass_5561_32 {
+            get {
+                object obj = ResourceManager.GetObject("AddClass_5561_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddModule_368_32 {
+            get {
+                object obj = ResourceManager.GetObject("AddModule_368_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_circle_double {
             get {
                 object obj = ResourceManager.GetObject("arrow-circle-double", resourceCulture);
@@ -176,6 +196,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap minus_circle {
             get {
                 object obj = ResourceManager.GetObject("minus-circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap plus_circle {
+            get {
+                object obj = ResourceManager.GetObject("plus-circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

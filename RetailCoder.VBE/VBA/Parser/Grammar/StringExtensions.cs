@@ -39,9 +39,10 @@ namespace Rubberduck.VBA.Parser.Grammar
 
             for (var cursor = 0; cursor < instruction.Length - 1; cursor++)
             {
-                if (instruction[cursor] == CommentMarker 
+                if (!string.IsNullOrWhiteSpace(instruction.Trim()) 
+                    &&(instruction[cursor] == CommentMarker 
                     || (cursor == ReservedKeywords.Rem.Length 
-                        && instruction.TrimStart().Substring(0, ReservedKeywords.Rem.Length) == ReservedKeywords.Rem))
+                        && instruction.TrimStart().Substring(0, ReservedKeywords.Rem.Length) == ReservedKeywords.Rem)))
                 {
                     index = cursor;
                     return true;

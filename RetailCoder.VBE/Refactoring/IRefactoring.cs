@@ -1,13 +1,10 @@
-﻿using Microsoft.Vbe.Interop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Refactoring
 {
-    internal interface IRefactoring
+    [ComVisible(false)]
+    public interface IRefactoring
     {
         void Refactor(CodeModule module);
     }

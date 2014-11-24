@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.VBA.Parser
@@ -64,6 +65,11 @@ namespace Rubberduck.VBA.Parser
         /// The trailing comment, if any.
         /// </summary>
         public string Comment { get { return _comment; } }
+
+        public Selection Selection 
+        {
+            get { return new Selection(_line.StartLineNumber, _startColumn, _line.EndLineNumber, _endColumn); }
+        }
 
         public static Instruction Empty(LogicalCodeLine line)
         {

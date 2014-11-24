@@ -50,6 +50,27 @@ namespace Rubberduck.VBA.Parser
         private readonly Identifier _identifier;
         public Identifier Identifier { get { return _identifier; } }
 
+        public string Accessibility { get { return GetAccessibility(); } }
+
+        private string GetAccessibility()
+        {
+            var keywords = new[] {ReservedKeywords.Public, ReservedKeywords.Private, ReservedKeywords.Friend};
+            var value = RegexMatch.Groups["accessibility"].Value;
+
+            return (keywords.Contains(value)) ? value : ReservedKeywords.Public; // VBA procs are public by default
+        }
+
+        public ProcedureKind Kind
+        {
+            get
+            {
+                var kind = RegexMatch.Groups["kind"].Value;
+                return kind.StartsWith(ReservedKeywords.Property)
+                    ? ProcedureKind.Property
+                    : kind == ReservedKeywords.Sub ? ProcedureKind.Sub : ProcedureKind.Function;
+            }
+        }
+
         private readonly IEnumerable<ParameterNode> _parameters;
         public IEnumerable<ParameterNode> Parameters { get { return _parameters; } }
     }

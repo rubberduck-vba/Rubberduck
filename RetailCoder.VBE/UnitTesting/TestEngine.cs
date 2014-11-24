@@ -1,12 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Reflection;
+using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.UI;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -14,8 +12,8 @@ namespace Rubberduck.UnitTesting
     public class TestEngine : IDisposable
     {
         private readonly VBE _vbe;
-        private TestExplorerWindow _explorer;
-        private Window _hostWindow;
+        private readonly TestExplorerWindow _explorer;
+        private readonly Window _hostWindow;
 
         public TestEngine(VBE vbe, TestExplorerWindow explorer, Window hostWindow)
         {
