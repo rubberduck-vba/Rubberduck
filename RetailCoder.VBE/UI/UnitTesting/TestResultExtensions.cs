@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.UnitTesting
 {
     [ComVisible(false)]
     public static class TestResultExtensions
@@ -15,15 +15,15 @@ namespace Rubberduck.UI
                 switch (result.Outcome)
                 {
                     case TestOutcome.Succeeded:
-                        image = Rubberduck.Properties.Resources.tick_circle;
+                        image = Properties.Resources.tick_circle;
                         break;
 
                     case TestOutcome.Failed:
-                        image = Rubberduck.Properties.Resources.minus_circle;
+                        image = Properties.Resources.minus_circle;
                         break;
 
                     case TestOutcome.Inconclusive:
-                        image = Rubberduck.Properties.Resources.exclamation_circle;
+                        image = Properties.Resources.exclamation_circle;
                         break;
                 }
             }

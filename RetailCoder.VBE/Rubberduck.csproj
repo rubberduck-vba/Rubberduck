@@ -139,11 +139,11 @@
     <Compile Include="VBA\Parser\VariableDeclarationNode.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
-    <Compile Include="UI\ToDoList\ToDoItemsMenu.cs" />
-    <Compile Include="UI\ToDoList\ToDoItemsControl.cs">
+    <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
+    <Compile Include="UI\ToDoItems\ToDoItemsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ToDoList\ToDoItemsControl.Designer.cs">
+    <Compile Include="UI\ToDoItems\ToDoItemsControl.Designer.cs">
       <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\DockableWindowHost.cs">
@@ -216,7 +216,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ToDoList\ToDoItemsControl.resx">
+    <EmbeddedResource Include="UI\ToDoItems\ToDoItemsControl.resx">
       <DependentUpon>ToDoItemsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">

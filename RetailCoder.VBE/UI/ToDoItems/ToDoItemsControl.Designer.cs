@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI
+﻿namespace Rubberduck.UI.ToDoItems
 {
     partial class ToDoItemsControl
     {

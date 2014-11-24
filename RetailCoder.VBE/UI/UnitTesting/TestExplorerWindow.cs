@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Threading;
 using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.UnitTesting
 {
     [ComVisible(false)]
     public partial class TestExplorerWindow : UserControl

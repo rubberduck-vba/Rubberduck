@@ -1,10 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.UnitTesting
 {
     [ComVisible(false)]
     public class TestMenu : Menu

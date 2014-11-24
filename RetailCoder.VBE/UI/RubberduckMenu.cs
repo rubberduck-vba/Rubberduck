@@ -5,6 +5,8 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Refactoring;
 using Rubberduck.ToDoItems;
+using Rubberduck.UI.ToDoItems;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI
 {

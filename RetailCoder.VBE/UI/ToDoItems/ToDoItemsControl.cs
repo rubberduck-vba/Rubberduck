@@ -1,13 +1,15 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.ToDoItems
 {
+    [ComVisible(false)]
     public partial class ToDoItemsControl : UserControl
     {
         private VBE vbe;

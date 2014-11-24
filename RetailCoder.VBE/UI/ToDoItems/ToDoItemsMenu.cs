@@ -1,17 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using System.Windows.Forms;
-using System.Collections.Generic;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.ToDoItems
 {
     internal class ToDoItemsMenu 
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private Window _toolWindow;
-        private Config.ToDoListSettings _settings;
+        private readonly Config.ToDoListSettings _settings;
 
         private CommandBarButton _todoItemsButton;
         public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }

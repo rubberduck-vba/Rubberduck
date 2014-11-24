@@ -4,6 +4,7 @@ using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {

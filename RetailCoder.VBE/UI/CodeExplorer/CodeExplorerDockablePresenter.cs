@@ -1,6 +1,4 @@
-﻿using System.Drawing.Printing;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -15,7 +13,6 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private readonly Parser _parser;
         private readonly CodeExplorerWindow _control;
-        private readonly Window _window;
 
         public CodeExplorerDockablePresenter(Parser parser, VBE vbe, AddIn addIn)
             : base(vbe, addIn, "Code Explorer", new CodeExplorerWindow())

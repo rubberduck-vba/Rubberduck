@@ -8,11 +8,11 @@ namespace Rubberduck.UI
     [ComVisible(false)]
     public abstract class DockablePresenterBase
     {
-        public const string DockableWindowHostProgId = "Rubberduck.DockableWindowHost";
+        public const string DockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost";
         public const string DockableWindowHostClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
         private readonly AddIn _addin;
-        private readonly Window _window;
+        protected readonly Window Window;
         protected readonly UserControl UserControl;
 
         protected DockablePresenterBase(VBE vbe, AddIn addin, string caption, UserControl control)
@@ -20,7 +20,7 @@ namespace Rubberduck.UI
             _vbe = vbe;
             _addin = addin;
             UserControl = control;
-            _window = CreateToolWindow(caption, control);
+            Window = CreateToolWindow(caption, control);
         }
 
         private readonly VBE _vbe;
@@ -40,12 +40,12 @@ namespace Rubberduck.UI
 
         public void Show()
         {
-            _window.Visible = true;
+            Window.Visible = true;
         }
 
         public void Close()
         {
-            _window.Close();
+            Window.Close();
         }
     }
 }
