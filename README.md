@@ -71,17 +71,6 @@ SOFTWARE.
 
 ##Icons attribution
 
-###Fugue Icons
-
-(C) 2012 Yusuke Kamiyamane. All rights reserved.
-These icons are licensed under a Creative Commons
-Attribution 3.0 License.
-<http://creativecommons.org/licenses/by/3.0/>
-
-If you can't or don't want to provide attribution, please
-purchase a royalty-free license.
-<http://p.yusukekamiyamane.com/>
-
 ###Microsoft Visual Studio Image Library
 
 The image files in the ./Resources/Microsoft/ directory are licensed under Microsoft's Software License Terms.
