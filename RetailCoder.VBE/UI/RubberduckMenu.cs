@@ -41,7 +41,7 @@ namespace Rubberduck.UI
             var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             Debug.Assert(menu != null, "menu != null");
 
-            menu.Caption = "Rubber&duck";
+            menu.Caption = "Ru&bberduck";
 
             _testMenu.Initialize(menu.Controls);
             _refactorMenu.Initialize(menu.Controls);
