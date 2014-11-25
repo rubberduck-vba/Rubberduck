@@ -289,6 +289,11 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Warning.bmp" />
+    <None Include="Resources\Serious.bmp" />
+    <None Include="Resources\OK.bmp" />
+    <None Include="Resources\GoLtrHS.bmp" />
+    <None Include="Resources\Critical.bmp" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

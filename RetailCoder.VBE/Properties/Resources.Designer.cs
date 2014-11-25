@@ -83,9 +83,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_circle_double {
+        internal static System.Drawing.Bitmap AddModule_368_321 {
             get {
-                object obj = ResourceManager.GetObject("arrow-circle-double", resourceCulture);
+                object obj = ResourceManager.GetObject("AddModule_368_321", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_repeat {
+        internal static System.Drawing.Bitmap AllLoadedTests_8644_24 {
             get {
-                object obj = ResourceManager.GetObject("arrow-repeat", resourceCulture);
+                object obj = ResourceManager.GetObject("AllLoadedTests_8644_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap control {
+        internal static System.Drawing.Bitmap Critical {
             get {
-                object obj = ResourceManager.GetObject("control", resourceCulture);
+                object obj = ResourceManager.GetObject("Critical", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,69 +113,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap exclamation_circle {
+        internal static System.Drawing.Bitmap GoLtrHS {
             get {
-                object obj = ResourceManager.GetObject("exclamation-circle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask {
-            get {
-                object obj = ResourceManager.GetObject("flask", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask__arrow {
-            get {
-                object obj = ResourceManager.GetObject("flask--arrow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask__exclamation {
-            get {
-                object obj = ResourceManager.GetObject("flask--exclamation", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask__pencil {
-            get {
-                object obj = ResourceManager.GetObject("flask--pencil", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask__plus {
-            get {
-                object obj = ResourceManager.GetObject("flask--plus", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flask_empty {
-            get {
-                object obj = ResourceManager.GetObject("flask-empty", resourceCulture);
+                object obj = ResourceManager.GetObject("GoLtrHS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +133,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap magnifier__arrow {
+        internal static System.Drawing.Bitmap OK {
             get {
-                object obj = ResourceManager.GetObject("magnifier--arrow", resourceCulture);
+                object obj = ResourceManager.GetObject("OK", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,29 +143,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap minus_circle {
+        internal static System.Drawing.Bitmap Play {
             get {
-                object obj = ResourceManager.GetObject("minus-circle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap plus_circle {
-            get {
-                object obj = ResourceManager.GetObject("plus-circle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap question_white {
-            get {
-                object obj = ResourceManager.GetObject("question-white", resourceCulture);
+                object obj = ResourceManager.GetObject("Play", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,9 +173,29 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap tick_circle {
+        internal static System.Drawing.Bitmap Serious {
             get {
-                object obj = ResourceManager.GetObject("tick-circle", resourceCulture);
+                object obj = ResourceManager.GetObject("Serious", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TestMethod {
+            get {
+                object obj = ResourceManager.GetObject("TestMethod", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Warning {
+            get {
+                object obj = ResourceManager.GetObject("Warning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

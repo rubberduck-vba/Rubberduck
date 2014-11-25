@@ -156,18 +156,19 @@ namespace Rubberduck.UI.CodeExplorer
 
             if (node is ProcedureNode)
             {
+                var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
                 var procNode = (node as ProcedureNode);
                 if (procNode.Accessibility == ReservedKeywords.Public)
                 {
-                    return procNode.Kind == ProcedureKind.Property ? "PublicProperty" : "PublicMethod";
+                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
                 }
                 if (procNode.Accessibility == ReservedKeywords.Friend)
                 {
-                    return procNode.Kind == ProcedureKind.Property ? "FriendProperty" : "FriendMethod";
+                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
                 }
                 if (procNode.Accessibility == ReservedKeywords.Private)
                 {
-                    return procNode.Kind == ProcedureKind.Property ? "PrivateProperty" : "PrivateMethod";
+                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
                 }
             }
 
@@ -242,7 +243,19 @@ namespace Rubberduck.UI.CodeExplorer
         {
             if (node is ProcedureNode)
             {
-                return ((ProcedureNode) node).Identifier.Name;
+                var procNode = node as ProcedureNode;
+                var propertyTypes = new[] { ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet };
+                if (propertyTypes.Any(pt => pt == procNode.Kind))
+                {
+                    var kind = procNode.Kind == ProcedureKind.PropertyGet
+                        ? ReservedKeywords.Get
+                        : procNode.Kind == ProcedureKind.PropertyLet
+                            ? ReservedKeywords.Let
+                            : ReservedKeywords.Set;
+
+                    return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
+                }
+                return procNode.Identifier.Name;
             }
 
             if (node is OptionNode)

@@ -7,6 +7,8 @@ namespace Rubberduck.VBA.Parser
     {
         Sub,
         Function,
-        Property
+        PropertyGet,
+        PropertyLet,
+        PropertySet
     }
 }

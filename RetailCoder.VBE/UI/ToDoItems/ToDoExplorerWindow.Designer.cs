@@ -38,7 +38,7 @@
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // taskListGridView
+            // todoItemsGridView
             // 
             this.todoItemsGridView.AllowUserToAddRows = false;
             this.todoItemsGridView.AllowUserToDeleteRows = false;
@@ -46,7 +46,7 @@
             this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.todoItemsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.todoItemsGridView.Location = new System.Drawing.Point(0, 0);
-            this.todoItemsGridView.Name = "taskListGridView";
+            this.todoItemsGridView.Name = "todoItemsGridView";
             this.todoItemsGridView.ReadOnly = true;
             this.todoItemsGridView.Size = new System.Drawing.Size(319, 206);
             this.todoItemsGridView.TabIndex = 0;
@@ -65,7 +65,7 @@
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.refreshButton.Image = global::Rubberduck.Properties.Resources.Refresh;
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
@@ -85,13 +85,13 @@
             this.panel1.Size = new System.Drawing.Size(319, 206);
             this.panel1.TabIndex = 3;
             // 
-            // TaskListControl
+            // ToDoExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
-            this.Name = "TaskListControl";
+            this.Name = "ToDoExplorerWindow";
             this.Size = new System.Drawing.Size(319, 231);
             ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).EndInit();
             this.toolStrip1.ResumeLayout(false);

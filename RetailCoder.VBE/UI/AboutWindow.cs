@@ -19,7 +19,6 @@ namespace Rubberduck.UI
             retailcoderLinkLabel.LinkClicked += retailcoderLinkLabel_LinkClicked;
             ckuhn203LinkLabel.LinkClicked += ckuhn203LinkLabel_LinkClicked;
 
-            fugueiconsLinkLabel.LinkClicked += fugueiconsLinkLabel_LinkClicked;
             codereviewLinkLabel.LinkClicked += codereviewLinkLabel_LinkClicked;
             mztoolsLinkLabel.LinkClicked += mztoolsLinkLabel_LinkClicked;
 
@@ -39,11 +38,6 @@ namespace Rubberduck.UI
         void codereviewLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             VisitLink("http://www.codereview.stackexchange.com");
-        }
-
-        void fugueiconsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            VisitLink("http://p.yusukekamiyamane.com");
         }
 
         void ckuhn203LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

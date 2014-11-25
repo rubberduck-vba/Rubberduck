@@ -66,7 +66,11 @@ namespace Rubberduck.VBA.Parser
             {
                 var kind = RegexMatch.Groups["kind"].Value;
                 return kind.StartsWith(ReservedKeywords.Property)
-                    ? ProcedureKind.Property
+                    ? kind.EndsWith(ReservedKeywords.Get)
+                        ? ProcedureKind.PropertyGet
+                        : kind.EndsWith(ReservedKeywords.Let)
+                            ? ProcedureKind.PropertyLet
+                            : ProcedureKind.PropertySet
                     : kind == ReservedKeywords.Sub ? ProcedureKind.Sub : ProcedureKind.Function;
             }
         }

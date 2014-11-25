@@ -30,7 +30,6 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.CloseButton = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.titleLabel = new System.Windows.Forms.Label();
             this.versionLabel = new System.Windows.Forms.Label();
@@ -39,12 +38,12 @@
             this.retailcoderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.ckuhn203LinkLabel = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.mztoolsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.codereviewLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.fugueiconsLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.mztoolsLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -76,18 +75,6 @@
             this.CloseButton.Text = "Close";
             this.CloseButton.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.rubberduck_adsize;
-            this.pictureBox1.Location = new System.Drawing.Point(2, 2);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(229, 258);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
@@ -98,7 +85,6 @@
             this.flowLayoutPanel1.Controls.Add(this.retailcoderLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.ckuhn203LinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.label1);
-            this.flowLayoutPanel1.Controls.Add(this.fugueiconsLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.codereviewLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.mztoolsLinkLabel);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -192,25 +178,12 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Special thanks";
             // 
-            // mztoolsLinkLabel
-            // 
-            this.mztoolsLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.mztoolsLinkLabel.AutoSize = true;
-            this.mztoolsLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.mztoolsLinkLabel.Location = new System.Drawing.Point(6, 186);
-            this.mztoolsLinkLabel.Name = "mztoolsLinkLabel";
-            this.mztoolsLinkLabel.Size = new System.Drawing.Size(104, 17);
-            this.mztoolsLinkLabel.TabIndex = 7;
-            this.mztoolsLinkLabel.TabStop = true;
-            this.mztoolsLinkLabel.Text = "MZ-Tools Articles";
-            this.mztoolsLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
             // codereviewLinkLabel
             // 
             this.codereviewLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
             this.codereviewLinkLabel.AutoSize = true;
             this.codereviewLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.codereviewLinkLabel.Location = new System.Drawing.Point(6, 169);
+            this.codereviewLinkLabel.Location = new System.Drawing.Point(6, 152);
             this.codereviewLinkLabel.Name = "codereviewLinkLabel";
             this.codereviewLinkLabel.Size = new System.Drawing.Size(170, 17);
             this.codereviewLinkLabel.TabIndex = 8;
@@ -218,18 +191,30 @@
             this.codereviewLinkLabel.Text = "Code Review Stack Exchange";
             this.codereviewLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
             // 
-            // fugueiconsLinkLabel
+            // mztoolsLinkLabel
             // 
-            this.fugueiconsLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.fugueiconsLinkLabel.AutoSize = true;
-            this.fugueiconsLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.fugueiconsLinkLabel.Location = new System.Drawing.Point(6, 152);
-            this.fugueiconsLinkLabel.Name = "fugueiconsLinkLabel";
-            this.fugueiconsLinkLabel.Size = new System.Drawing.Size(199, 17);
-            this.fugueiconsLinkLabel.TabIndex = 10;
-            this.fugueiconsLinkLabel.TabStop = true;
-            this.fugueiconsLinkLabel.Text = "Yusuke Kamiyamane (Fugue Icons)";
-            this.fugueiconsLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
+            this.mztoolsLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
+            this.mztoolsLinkLabel.AutoSize = true;
+            this.mztoolsLinkLabel.LinkColor = System.Drawing.Color.Blue;
+            this.mztoolsLinkLabel.Location = new System.Drawing.Point(6, 169);
+            this.mztoolsLinkLabel.Name = "mztoolsLinkLabel";
+            this.mztoolsLinkLabel.Size = new System.Drawing.Size(104, 17);
+            this.mztoolsLinkLabel.TabIndex = 7;
+            this.mztoolsLinkLabel.TabStop = true;
+            this.mztoolsLinkLabel.Text = "MZ-Tools Articles";
+            this.mztoolsLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.rubberduck_adsize;
+            this.pictureBox1.Location = new System.Drawing.Point(2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(229, 258);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
             // 
             // AboutWindow
             // 
@@ -247,9 +232,9 @@
             this.Text = "About";
             this.TopMost = true;
             this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -267,7 +252,6 @@
         private System.Windows.Forms.LinkLabel retailcoderLinkLabel;
         private System.Windows.Forms.LinkLabel ckuhn203LinkLabel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.LinkLabel fugueiconsLinkLabel;
         private System.Windows.Forms.LinkLabel codereviewLinkLabel;
         private System.Windows.Forms.LinkLabel mztoolsLinkLabel;
     }
