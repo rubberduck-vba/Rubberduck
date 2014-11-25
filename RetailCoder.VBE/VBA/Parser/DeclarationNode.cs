@@ -22,7 +22,7 @@ namespace Rubberduck.VBA.Parser
         {
             get
             {
-                var specified = RegexMatch.Groups["accessibility"].Value;
+                var specified = RegexMatch.Groups["keywords"].Value;
                 if (string.IsNullOrEmpty(specified))
                 {
                     return ReservedKeywords.Private;

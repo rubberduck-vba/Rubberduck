@@ -92,8 +92,14 @@ namespace Rubberduck.UI.CodeExplorer
 
                 foreach (var member in module.ChildNodes)
                 {
+                    if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+                    {
+                        // don't make a tree node for comments
+                        continue;
+                    }
+
                     var memberNode = new TreeNode(GetNodeText(member));
-                    memberNode.ToolTipText = string.Format("Line {0}", member.Instruction.Line.StartLineNumber);
+                    memberNode.ToolTipText = string.Format("{0} (line {1})", member.GetType().Name, member.Instruction.Line.StartLineNumber);
                     memberNode.ImageKey = GetImageKeyForNode(member);
                     memberNode.SelectedImageKey = memberNode.ImageKey;
                     memberNode.Tag = member.Instruction;
@@ -113,7 +119,7 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            e.Node.ImageKey = "OpenedFolder";
+            e.Node.ImageKey = "OpenFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
         }
 

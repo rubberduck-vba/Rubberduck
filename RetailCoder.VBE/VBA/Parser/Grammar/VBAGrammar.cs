@@ -111,7 +111,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string DoLoopSyntax
         {
-            get { return @"(?<keyword>Do|Loop|Do\sLoop|Do\sUnTil|Do\sWhile|While)(?:\s(?<expression>.*))?"; }
+            get { return @"(?:(?<keyword>Do|Loop|Do\sLoop|Do\sUnTil|Do\sWhile|While)\s)(?<expression>.*)?"; }
         }
 
         public static string TypeConversionSyntax

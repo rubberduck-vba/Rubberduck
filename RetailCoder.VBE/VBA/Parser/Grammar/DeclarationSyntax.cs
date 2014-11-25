@@ -26,7 +26,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
             return m.Success 
                 && m.Groups["keywords"].Success
-                && !reserved.Any(keyword => m.Groups["expression"].Value.Contains(keyword));
+                && !reserved.Any(keyword => m.Groups["expression"].Value.StartsWith(keyword));
         }
 
         private static readonly IDictionary<string, Func<Instruction, string, Match, SyntaxTreeNode>> Factory = 

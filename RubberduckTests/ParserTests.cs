@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBA.Parser;
+using Rubberduck.VBA.Parser.Grammar;
 
 namespace RubberduckTests
 {
@@ -25,6 +27,29 @@ namespace RubberduckTests
             Assert.AreEqual("foo", identifier.Name);
             Assert.AreEqual("Integer", identifier.TypeName);
             Assert.IsTrue(identifier.IsTypeSpecified);
+        }
+
+        [TestMethod]
+        public void TestDeclarationWithAssignment()
+        {
+            var parser = new Parser();
+            const string code = "Private Strings As New StringType\n";
+
+            var match = Regex.Match(code, VBAGrammar.GeneralDeclarationSyntax);
+            Assert.IsTrue(match.Success);
+
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+
+            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
+            Assert.IsNotNull(declaration);
+
+            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
+            Assert.IsNotNull(identifier);
+
+            Assert.AreEqual("Strings", identifier.Name);
+            Assert.AreEqual("StringType", identifier.TypeName);
+            Assert.IsTrue(identifier.IsTypeSpecified);
+            Assert.IsTrue(identifier.IsInitialized);
         }
 
         [TestMethod]

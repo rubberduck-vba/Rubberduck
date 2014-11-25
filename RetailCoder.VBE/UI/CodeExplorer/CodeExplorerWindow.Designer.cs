@@ -31,11 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeExplorerWindow));
             this.CodeExplorerToolbar = new System.Windows.Forms.ToolStrip();
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SolutionTree = new System.Windows.Forms.TreeView();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -50,15 +50,6 @@
             this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Refresh";
             // 
             // toolStripSeparator1
             // 
@@ -85,36 +76,47 @@
             // TreeNodeIcons
             // 
             this.TreeNodeIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeNodeIcons.ImageStream")));
-            this.TreeNodeIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.TreeNodeIcons.TransparentColor = System.Drawing.Color.Fuchsia;
             this.TreeNodeIcons.Images.SetKeyName(0, "ClosedFolder");
             this.TreeNodeIcons.Images.SetKeyName(1, "OpenFolder");
-            this.TreeNodeIcons.Images.SetKeyName(2, "ClassModule");
-            this.TreeNodeIcons.Images.SetKeyName(3, "PrivateClass");
-            this.TreeNodeIcons.Images.SetKeyName(4, "Option");
-            this.TreeNodeIcons.Images.SetKeyName(5, "Implements");
-            this.TreeNodeIcons.Images.SetKeyName(6, "StandardModule");
-            this.TreeNodeIcons.Images.SetKeyName(7, "PrivateModule");
-            this.TreeNodeIcons.Images.SetKeyName(8, "PublicField");
-            this.TreeNodeIcons.Images.SetKeyName(9, "PrivateField");
-            this.TreeNodeIcons.Images.SetKeyName(10, "FriendField");
-            this.TreeNodeIcons.Images.SetKeyName(11, "PublicMethod");
-            this.TreeNodeIcons.Images.SetKeyName(12, "FriendMethod");
-            this.TreeNodeIcons.Images.SetKeyName(13, "PrivateMethod");
-            this.TreeNodeIcons.Images.SetKeyName(14, "PublicProperty");
-            this.TreeNodeIcons.Images.SetKeyName(15, "FriendProperty");
-            this.TreeNodeIcons.Images.SetKeyName(16, "PrivateProperty");
-            this.TreeNodeIcons.Images.SetKeyName(17, "PublicConst");
-            this.TreeNodeIcons.Images.SetKeyName(18, "FriendConst");
-            this.TreeNodeIcons.Images.SetKeyName(19, "PrivateConst");
-            this.TreeNodeIcons.Images.SetKeyName(20, "PublicEnum");
-            this.TreeNodeIcons.Images.SetKeyName(21, "FriendEnum");
-            this.TreeNodeIcons.Images.SetKeyName(22, "PrivateEnum");
-            this.TreeNodeIcons.Images.SetKeyName(23, "PublicEnumItem");
-            this.TreeNodeIcons.Images.SetKeyName(24, "FriendEnumItem");
-            this.TreeNodeIcons.Images.SetKeyName(25, "PrivateEnumItem");
-            this.TreeNodeIcons.Images.SetKeyName(26, "PublicType");
-            this.TreeNodeIcons.Images.SetKeyName(27, "FriendType");
-            this.TreeNodeIcons.Images.SetKeyName(28, "PrivateType");
+            this.TreeNodeIcons.Images.SetKeyName(2, "Form");
+            this.TreeNodeIcons.Images.SetKeyName(3, "ClassModule");
+            this.TreeNodeIcons.Images.SetKeyName(4, "PrivateClass");
+            this.TreeNodeIcons.Images.SetKeyName(5, "Option");
+            this.TreeNodeIcons.Images.SetKeyName(6, "Implements");
+            this.TreeNodeIcons.Images.SetKeyName(7, "StandardModule");
+            this.TreeNodeIcons.Images.SetKeyName(8, "PrivateModule");
+            this.TreeNodeIcons.Images.SetKeyName(9, "PublicField");
+            this.TreeNodeIcons.Images.SetKeyName(10, "PrivateField");
+            this.TreeNodeIcons.Images.SetKeyName(11, "FriendField");
+            this.TreeNodeIcons.Images.SetKeyName(12, "PublicMethod");
+            this.TreeNodeIcons.Images.SetKeyName(13, "FriendMethod");
+            this.TreeNodeIcons.Images.SetKeyName(14, "PrivateMethod");
+            this.TreeNodeIcons.Images.SetKeyName(15, "TestMethod");
+            this.TreeNodeIcons.Images.SetKeyName(16, "PublicProperty");
+            this.TreeNodeIcons.Images.SetKeyName(17, "FriendProperty");
+            this.TreeNodeIcons.Images.SetKeyName(18, "PrivateProperty");
+            this.TreeNodeIcons.Images.SetKeyName(19, "PublicConst");
+            this.TreeNodeIcons.Images.SetKeyName(20, "FriendConst");
+            this.TreeNodeIcons.Images.SetKeyName(21, "PrivateConst");
+            this.TreeNodeIcons.Images.SetKeyName(22, "PublicEnum");
+            this.TreeNodeIcons.Images.SetKeyName(23, "FriendEnum");
+            this.TreeNodeIcons.Images.SetKeyName(24, "PrivateEnum");
+            this.TreeNodeIcons.Images.SetKeyName(25, "PublicEvent");
+            this.TreeNodeIcons.Images.SetKeyName(26, "FriendEvent");
+            this.TreeNodeIcons.Images.SetKeyName(27, "PrivateEvent");
+            this.TreeNodeIcons.Images.SetKeyName(28, "PublicType");
+            this.TreeNodeIcons.Images.SetKeyName(29, "FriendType");
+            this.TreeNodeIcons.Images.SetKeyName(30, "PrivateType");
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.Refresh;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Refresh";
             // 
             // CodeExplorerWindow
             // 

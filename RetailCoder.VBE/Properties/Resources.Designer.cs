@@ -183,6 +183,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap GroupBy_284_32 {
+            get {
+                object obj = ResourceManager.GetObject("GroupBy_284_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap magnifier__arrow {
             get {
                 object obj = ResourceManager.GetObject("magnifier--arrow", resourceCulture);
@@ -216,6 +226,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap question_white {
             get {
                 object obj = ResourceManager.GetObject("question-white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Refresh {
+            get {
+                object obj = ResourceManager.GetObject("Refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
