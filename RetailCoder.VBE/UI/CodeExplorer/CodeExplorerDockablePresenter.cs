@@ -18,6 +18,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser = parser;
             RegisterControlEvents();
+            RefreshExplorerTreeView();
         }
 
         private void RegisterControlEvents()
@@ -65,7 +66,7 @@ namespace Rubberduck.UI.CodeExplorer
             vbComponent.CodeModule.CodePane.Show();
         }
 
-        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        private void RefreshExplorerTreeView()
         {
             Control.SolutionTree.Nodes.Clear();
             var projects = VBE.VBProjects.Cast<VBProject>();
@@ -73,6 +74,11 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 AddProjectNode(_parser.Parse(project));
             }
+        }
+
+        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        {
+            RefreshExplorerTreeView();
         }
 
         private void AddProjectNode(SyntaxTreeNode node)
