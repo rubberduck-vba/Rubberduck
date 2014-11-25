@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>true</RegisterForComInterop>
+    <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,6 +58,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerDockablePresenter.cs" />
+    <Compile Include="UI\CodeExplorer\CodeExplorerMenu.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,6 +233,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
   </ItemGroup>

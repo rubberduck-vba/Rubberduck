@@ -33,7 +33,6 @@ namespace Rubberduck.UI.ToDoItems
             Debug.Assert(_todoItemsButton != null);
 
             _todoItemsButton.Caption = "&ToDo Items";
-            _todoItemsButton.BeginGroup = true;
 
             const int clipboardWithCheck = 837;
             _todoItemsButton.FaceId = clipboardWithCheck;
