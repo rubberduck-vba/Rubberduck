@@ -23,7 +23,7 @@ namespace Rubberduck.UI
 
         private CommandBarButton _parseModuleButton;
         public CommandBarButton ParseModuleButton { get { return _parseModuleButton; } }
-
+        
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;

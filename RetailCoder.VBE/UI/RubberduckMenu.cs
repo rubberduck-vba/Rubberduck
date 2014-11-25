@@ -5,6 +5,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI
@@ -16,20 +17,22 @@ namespace Rubberduck.UI
 
         private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
         private readonly ToDoItemsMenu _todoItemsMenu;
-        private readonly RefactorMenu _refactorMenu;
+        private readonly CodeExplorerMenu _codeExplorerMenu;
+        //private readonly RefactorMenu _refactorMenu; // todo: implement refactoring
 
         public RubberduckMenu(VBE vbe, AddIn addIn, Config.Configuration config)
         {
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);
+            _codeExplorerMenu = new CodeExplorerMenu(_vbe, addIn);
             _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings, new Parser());
-            _refactorMenu = new RefactorMenu(_vbe, addIn);
+            //_refactorMenu = new RefactorMenu(_vbe, addIn);
         }
 
         public void Dispose()
         {
             _testMenu.Dispose();
-            _refactorMenu.Dispose();
+            //_refactorMenu.Dispose();
         }
 
         private CommandBarButton _about;
@@ -44,7 +47,8 @@ namespace Rubberduck.UI
             menu.Caption = "Ru&bberduck";
 
             _testMenu.Initialize(menu.Controls);
-            _refactorMenu.Initialize(menu.Controls);
+            _codeExplorerMenu.Initialize(menu.Controls);
+            //_refactorMenu.Initialize(menu.Controls);
             _todoItemsMenu.Initialize(menu.Controls);
 
             _about = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
