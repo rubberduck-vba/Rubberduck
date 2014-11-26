@@ -59,11 +59,15 @@ namespace Rubberduck.UI.CodeExplorer
             var selection = instruction.Selection;
             if (selection.StartLine != 0)
             {
+                vbComponent.CodeModule.CodePane.Window.Visible = false;
                 vbComponent.CodeModule.CodePane
                     .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
             }
 
+            //bug: focus issue with selection
             vbComponent.CodeModule.CodePane.Show();
+            //vbComponent.CodeModule.CodePane.Window.SetFocus();
+           
         }
 
         private void RefreshExplorerTreeView()
