@@ -242,6 +242,7 @@ namespace Rubberduck.UnitTesting
             {
                 codeModule.CodePane.SetSelection(startLine, startColumn, endLine, endColumn);
                 codeModule.CodePane.Show();
+                codeModule.CodePane.Window.SetFocus();
             }
         }
 

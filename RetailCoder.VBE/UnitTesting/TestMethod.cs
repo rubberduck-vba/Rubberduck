@@ -44,7 +44,6 @@ namespace Rubberduck.UnitTesting
                 
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
                 duration = instance.TimedMethodCall(_projectName, _moduleName, _methodName);
-                instance.Run(string.Concat(_projectName, ".", _moduleName, ".", _methodName));
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
 
                 Marshal.ReleaseComObject(instance);

@@ -64,6 +64,7 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             vbComponent.CodeModule.CodePane.Show();
+            vbComponent.CodeModule.CodePane.Window.SetFocus();
         }
 
         private void RefreshExplorerTreeView()

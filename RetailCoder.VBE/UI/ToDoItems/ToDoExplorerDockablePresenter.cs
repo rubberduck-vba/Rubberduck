@@ -69,6 +69,7 @@ namespace Rubberduck.UI.ToDoItems
 
             codePane.Show();
             codePane.SetSelection(e.Selection.LineNumber);
+            codePane.Window.SetFocus();
         }
     }
 }

@@ -207,7 +207,7 @@ namespace Rubberduck.UI.UnitTesting
         private void GridCellDoubleClicked(object sender, DataGridViewCellEventArgs e)
         {
             var handler = OnGoToSelectedTest;
-            if (handler != null)
+            if (handler != null && e.RowIndex >= 0)
             {
                 handler(this, new SelectedTestEventArgs(_allTests[e.RowIndex]));
             }
