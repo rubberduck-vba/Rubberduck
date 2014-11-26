@@ -103,6 +103,10 @@ namespace Rubberduck.UnitTesting
         /// </remarks>
         public void AreEqual(object expected, object actual, string message = null)
         {
+            // vbNullString is marshaled as a null. assume value semantics:
+            expected = expected ?? string.Empty;
+            actual = actual ?? string.Empty;
+
             if (expected.GetType() != actual.GetType())
             {
                 AssertHandler.OnAssertInconclusive("[expected] and [actual] values are not the same type.");
@@ -130,6 +134,10 @@ namespace Rubberduck.UnitTesting
         /// </remarks>
         public void AreNotEqual(object expected, object actual, string message = null)
         {
+            // vbNullString is marshaled as a null. assume value semantics:
+            expected = expected ?? string.Empty;
+            actual = actual ?? string.Empty;
+
             if (expected.GetType() != actual.GetType())
             {
                 AssertHandler.OnAssertInconclusive("[expected] and [actual] values are not the same type.");
@@ -154,6 +162,17 @@ namespace Rubberduck.UnitTesting
         /// <param name="message">An optional message to display if the assertion fails.</param>
         public void AreSame(object expected, object actual, string message = null)
         {
+            if (expected == null && actual != null)
+            {
+                AssertHandler.OnAssertFailed("AreSame", string.Concat("expected: Nothing; actual: ", actual.GetHashCode(), ". ", message));
+                return;
+            }
+            if (actual == null && expected != null)
+            {
+                AssertHandler.OnAssertFailed("AreSame", string.Concat("expected: ", expected.GetHashCode(), "; actual: Nothing. ", message));
+                return;
+            }
+            
             if (ReferenceEquals(expected, actual))
             {
                 AssertHandler.OnAssertSucceeded();
@@ -172,14 +191,24 @@ namespace Rubberduck.UnitTesting
         /// <param name="message">An optional message to display if the assertion fails.</param>
         public void AreNotSame(object expected, object actual, string message = null)
         {
+            if (expected == null && actual == null)
+            {
+                AssertHandler.OnAssertFailed("AreNotSame", string.Concat("expected: Nothing; actual: Nothing. ", message));
+                return;
+            }
+            if (expected == null || actual == null)
+            {
+                AssertHandler.OnAssertSucceeded();
+                return;
+            }
+            
             if (!ReferenceEquals(expected, actual))
             {
                 AssertHandler.OnAssertSucceeded();
+                return;
             }
-            else
-            {
-                AssertHandler.OnAssertFailed("AreNotSame", string.Concat("expected: ", expected.GetHashCode(), "; actual: ", actual.GetHashCode(), ". ", message));
-            }
+
+            AssertHandler.OnAssertFailed("AreNotSame", string.Concat("expected: ", expected.GetHashCode(), "; actual: ", actual.GetHashCode(), ". ", message));
         }
     }
 }
