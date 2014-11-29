@@ -70,7 +70,7 @@ namespace Rubberduck.UI.CodeExplorer
             codePane.Show();
 
             IntPtr mainWindowHandle = this.VBE.MainWindow.Handle();
-            var childWindowFinder = new ChildWindowFinder(codePane.Window.Caption);
+            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(codePane.Window.Caption);
 
             NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             IntPtr handle = childWindowFinder.ResultHandle;

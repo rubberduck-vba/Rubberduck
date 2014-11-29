@@ -8,23 +8,56 @@ using System.Runtime.InteropServices;
 namespace Rubberduck.UI
 {
     [ComVisible(false)]
+    /// <summary>   Collection of WinAPI methods and extensions to handle native windows. </summary>
     public static class NativeWindowMethods
     {
+        /// <summary>   Sends a message to the OS. </summary>
+        ///
+        /// <param name="hWnd">     The window handle. </param>
+        /// <param name="wMsg">     The message. </param>
+        /// <param name="wParam">   The parameter. </param>
+        /// <param name="lParam">   The parameter. </param>
+        /// <returns>   An IntPtr handle. </returns>
         [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-        //todo: fix the delegate...
-        public delegate int CallBackEnumWindowsDelegate(IntPtr hwnd, IntPtr lParam);
+        /// <summary>   EnumChildWindows delegate. </summary>
+        ///
+        /// <param name="hwnd"> Main Window Handle</param>
+        /// <param name="lParam"> Application defined parameter. Unused. </param>
+        /// <returns>   An int. </returns>
+        public delegate int EnumChildWindowsDelegate(IntPtr hwnd, IntPtr lParam);
+
+        /// <summary>   WinAPI method to Enumerate Child Windows </summary>
+        ///
+        /// <param name="parentWindowHandle">   Handle of the parent window. </param>
+        /// <param name="lpEnumFunction">       The enum delegate function. </param>
+        /// <param name="lParam">               The parameter. </param>
+        /// <returns>   An int. </returns>
         [DllImport("user32", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        private static extern int EnumChildWindows(IntPtr parentWindowHandle, CallBackEnumWindowsDelegate lpEnumFunction, IntPtr lParam);
+        public static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
 
+        /// <summary>   Gets window text. </summary>
+        ///
+        /// <param name="hWnd">         The window handle. </param>
+        /// <param name="lpString">     The return string. </param>
+        /// <param name="nMaxCount">    Number of maximums. </param>
+        /// <returns>   Integer Success Code </returns>
         [DllImport("user32", EntryPoint = "GetWindowTextW", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
+        /// <summary>   Gets the parent window of this item. </summary>
+        ///
+        /// <param name="hWnd"> The window handle. </param>
+        /// <returns>   The parent window IntPtr handle. </returns>
         [DllImport("User32.dll")]
-        static extern IntPtr GetParent(IntPtr hWnd);
+        public static extern IntPtr GetParent(IntPtr hWnd);
 
-        internal static string GetWindowTextByHwnd(IntPtr windowHandle)
+        /// <summary>   Gets window caption text by handle. </summary>
+        ///
+        /// <param name="windowHandle"> Handle of the window to be activated. </param>
+        /// <returns>   The window caption text. </returns>
+        public static string GetWindowTextByHwnd(IntPtr windowHandle)
         {
             const int MAX_BUFFER = 300;
 
@@ -43,7 +76,11 @@ namespace Rubberduck.UI
             return result;
         }
 
-        internal static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
+        /// <summary>Activates the window by simulating a click.</summary>
+        ///
+        /// <param name="windowHandle">         Handle of the window to be activated. </param>
+        /// <param name="parentWindowHandle">   Handle of the parent window. </param>
+        public static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
         {
             const int WM_MOUSEACTIVATE = 0x21;
             const int HTCAPTION = 2;
@@ -52,7 +89,7 @@ namespace Rubberduck.UI
             SendMessage(windowHandle, WM_MOUSEACTIVATE, parentWindowHandle, new IntPtr(HTCAPTION + WM_LBUTTONDOWN * 0x10000));
         }
 
-        internal static void EnumChildWindows(IntPtr parentWindowHandle, CallBackEnumWindowsDelegate callBackEnumWindows)
+        internal static void EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate callBackEnumWindows)
         {
             int result;
 
@@ -64,45 +101,44 @@ namespace Rubberduck.UI
             }
         }
 
-    }
-
-    internal class ChildWindowFinder
-    {
-        private IntPtr m_resultHandle = IntPtr.Zero;
-        private string m_caption;
-
-        internal ChildWindowFinder(string caption)
+        internal class ChildWindowFinder
         {
-            m_caption = caption;
-        }
+            private IntPtr _resultHandle = IntPtr.Zero;
+            private string _caption;
 
-        public int EnumWindowsProcToChildWindowByCaption(IntPtr windowHandle, IntPtr param)
-        {
-            string caption;
-            int result;
-
-            // By default it will continue enumeration after this call
-            result = 1;
-
-            caption = NativeWindowMethods.GetWindowTextByHwnd(windowHandle);
-
-
-            if (m_caption == caption)
+            internal ChildWindowFinder(string caption)
             {
-                // Found
-                m_resultHandle = windowHandle;
-
-                // Stop enumeration after this call
-                result = 0;
+                _caption = caption;
             }
-            return result;
-        }
 
-        public IntPtr ResultHandle
-        {
-            get
+            public int EnumWindowsProcToChildWindowByCaption(IntPtr windowHandle, IntPtr param)
             {
-                return m_resultHandle;
+                string caption;
+                int result;
+
+                // By default it will continue enumeration after this call
+                result = 1;
+
+                caption = NativeWindowMethods.GetWindowTextByHwnd(windowHandle);
+
+
+                if (_caption == caption)
+                {
+                    // Found
+                    _resultHandle = windowHandle;
+
+                    // Stop enumeration after this call
+                    result = 0;
+                }
+                return result;
+            }
+
+            public IntPtr ResultHandle
+            {
+                get
+                {
+                    return _resultHandle;
+                }
             }
         }
     }
