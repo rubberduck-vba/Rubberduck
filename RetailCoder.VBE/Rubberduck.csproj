@@ -83,8 +83,10 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="UI\NativeWindowMethods.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
+    <Compile Include="UI\WindowExtensions.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />

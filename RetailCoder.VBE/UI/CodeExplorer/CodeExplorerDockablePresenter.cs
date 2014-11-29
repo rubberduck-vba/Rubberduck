@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
+using System;
+using Rubberduck.UI;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -56,19 +58,33 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
+            var codePane = vbComponent.CodeModule.CodePane;
             var selection = instruction.Selection;
+
             if (selection.StartLine != 0)
             {
-                vbComponent.CodeModule.CodePane.Window.Visible = false;
-                vbComponent.CodeModule.CodePane
-                    .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+               codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
             }
 
-            //bug: focus issue with selection
-            vbComponent.CodeModule.CodePane.Show();
-            //vbComponent.CodeModule.CodePane.Window.SetFocus();
-           
+            //todo: abstract the set selection patch so it can be applied to other areas
+            codePane.Show();
+
+            IntPtr mainWindowHandle = this.VBE.MainWindow.Handle();
+            var childWindowFinder = new ChildWindowFinder(codePane.Window.Caption);
+
+            NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
+            IntPtr handle = childWindowFinder.ResultHandle;
+
+            if (handle != IntPtr.Zero)
+            {
+                NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
+            }
+            
+
         }
+
+        [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         private void RefreshExplorerTreeView()
         {
