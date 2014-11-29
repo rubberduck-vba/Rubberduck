@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
@@ -241,7 +242,7 @@ namespace Rubberduck.UnitTesting
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {
                 codeModule.CodePane.SetSelection(startLine, startColumn, endLine, endColumn);
-                codeModule.CodePane.Show();
+                codeModule.CodePane.ForceFocus();
             }
         }
 
