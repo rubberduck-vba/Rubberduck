@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Properties;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -38,7 +40,11 @@ namespace Rubberduck.UI.UnitTesting
 
             _windowsTestExplorerButton = AddMenuButton(menu);
             _windowsTestExplorerButton.Caption = "&Test Explorer";
-            _windowsTestExplorerButton.FaceId = 3170;
+            _windowsTestExplorerButton.FaceId = 0;
+
+            Clipboard.SetDataObject(Resources.TestManager_8590_32, true);
+            _windowsTestExplorerButton.PasteFace();
+
             _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
 
             _runAllTestsButton = AddMenuButton(menu);

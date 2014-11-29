@@ -56,6 +56,11 @@
     <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
+    <Compile Include="Refactoring\MenuIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MenuIcons.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
@@ -227,6 +232,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Refactoring\MenuIcons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MenuIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>

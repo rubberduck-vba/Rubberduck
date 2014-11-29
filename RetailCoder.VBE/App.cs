@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -37,7 +36,11 @@ namespace Rubberduck
             _inspections = Assembly.GetExecutingAssembly()
                                    .GetTypes()
                                    .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
-                                   .Select(type => type.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes))
+                                   .Select(type =>
+                                   {
+                                       var constructor = type.GetConstructor(Type.EmptyTypes);
+                                       return constructor != null ? constructor.Invoke(Type.EmptyTypes) : null;
+                                   })
                                    .Cast<IInspection>()
                                    .ToList();
 
