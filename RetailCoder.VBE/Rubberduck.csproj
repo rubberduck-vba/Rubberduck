@@ -262,7 +262,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
   </ItemGroup>
