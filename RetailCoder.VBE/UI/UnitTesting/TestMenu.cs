@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
@@ -38,19 +39,11 @@ namespace Rubberduck.UI.UnitTesting
 
             menu.Caption = "Te&st";
 
-            _windowsTestExplorerButton = AddMenuButton(menu);
-            _windowsTestExplorerButton.Caption = "&Test Explorer";
-            _windowsTestExplorerButton.FaceId = 0;
-
-            Clipboard.SetDataObject(Resources.TestManager_8590_32, true);
-            _windowsTestExplorerButton.PasteFace();
-
+            _windowsTestExplorerButton = AddMenuButton(menu, "&Test Explorer", Resources.TestManager_8590_32);
             _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
 
-            _runAllTestsButton = AddMenuButton(menu);
+            _runAllTestsButton = AddMenuButton(menu, "&Run All Tests", Resources.AllLoadedTests_8644_24);
             _runAllTestsButton.BeginGroup = true;
-            _runAllTestsButton.Caption = "&Run All Tests";
-            _runAllTestsButton.FaceId = 186; // a "play" icon
             _runAllTestsButton.Click += OnRunAllTestsButtonClick;
         }
 

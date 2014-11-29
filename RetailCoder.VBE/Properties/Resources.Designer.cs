@@ -133,6 +133,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ListsofTests_8643_24 {
+            get {
+                object obj = ResourceManager.GetObject("ListsofTests_8643_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap OK {
             get {
                 object obj = ResourceManager.GetObject("OK", resourceCulture);
@@ -176,6 +186,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap Serious {
             get {
                 object obj = ResourceManager.GetObject("Serious", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Step_RunTest_8814_32 {
+            get {
+                object obj = ResourceManager.GetObject("Step_RunTest_8814_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

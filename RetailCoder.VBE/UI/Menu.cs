@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI
 {
@@ -20,9 +22,31 @@ namespace Rubberduck.UI
             this.addInInstance = addInInstance;
         }
 
-        protected CommandBarButton AddMenuButton(CommandBarPopup menu)
+        protected CommandBarButton AddMenuButton(CommandBarPopup menu, string caption, Bitmap image)
         {
-            return menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            var result = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            if (result == null)
+            {
+                throw new InvalidOperationException("Failed to create menu control.");
+            }
+
+            result.Caption = caption;
+            SetButtonImage(result, image);
+
+            return result;
+        }
+
+
+
+        private static void SetButtonImage(CommandBarButton result, Bitmap image)
+        {
+            result.FaceId = 0;
+
+            if (image != null)
+            {
+                Clipboard.SetDataObject(image, true);
+                result.PasteFace();
+            }
         }
 
         /// <summary>
