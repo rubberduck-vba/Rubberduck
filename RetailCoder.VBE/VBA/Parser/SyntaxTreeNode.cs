@@ -28,7 +28,7 @@ namespace Rubberduck.VBA.Parser
         private readonly IList<SyntaxTreeNode> _childNodes;
         public IEnumerable<SyntaxTreeNode> ChildNodes { get { return _childNodes; } }
 
-        public void AddNode(SyntaxTreeNode node)
+        internal void AddNode(SyntaxTreeNode node)
         {
             _childNodes.Add(node);
         }
@@ -43,6 +43,11 @@ namespace Rubberduck.VBA.Parser
             return FindAllComments(this);
         }
 
+        /// <summary>
+        /// Gets all <see cref="Instruction"/> objects in the specified node, that contain a comment.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static IEnumerable<Instruction> FindAllComments(SyntaxTreeNode node)
         {
             if (!string.IsNullOrEmpty(node.Instruction.Comment))
@@ -58,6 +63,21 @@ namespace Rubberduck.VBA.Parser
                 {
                     yield return instruction;
                 }
+            }
+        }
+
+        public static IEnumerable<ProcedureNode> FindAllProcedures(SyntaxTreeNode node, ProcedureKind kind)
+        {
+            if (node.ChildNodes == null || !node.ChildNodes.OfType<ProcedureNode>().Any())
+            {
+                yield break;
+            }
+
+            foreach (var procNode in node.ChildNodes.OfType<ProcedureNode>()
+                                                    .Where(procNode => procNode.Kind == kind)
+                                                    .ToList())
+            {
+                yield return procNode;
             }
         }
     }

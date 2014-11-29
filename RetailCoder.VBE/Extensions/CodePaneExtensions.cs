@@ -34,7 +34,20 @@ namespace Rubberduck.Extensions
         /// <param name="lineNumber"></param>
         public static void SetSelection(this CodePane codePane, int lineNumber)
         {
-            codePane.SetSelection(lineNumber, 1, lineNumber, 1);
+            var line = codePane.CodeModule.Lines[lineNumber, 1];
+            var selection = new Selection(lineNumber, 1, lineNumber, line.Length);
+            codePane.SetSelection(selection);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codePane"></param>
+        /// <param name="selection"></param>
+        public static void SetSelection(this CodePane codePane, Selection selection)
+        {
+            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            codePane.Window.SetFocus();
         }
     }
 }

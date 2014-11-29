@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Reflection;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.VBA.Parser
@@ -12,6 +10,13 @@ namespace Rubberduck.VBA.Parser
     [ComVisible(false)]
     public class Parser
     {
+        private readonly IEnumerable<ISyntax> _grammar;
+
+        public Parser(IEnumerable<ISyntax> grammar)
+        {
+            _grammar = grammar;
+        }
+
         public SyntaxTreeNode Parse(VBProject project)
         {
             var components = project.VBComponents.Cast<VBComponent>().ToList();
@@ -99,7 +104,7 @@ namespace Rubberduck.VBA.Parser
                 foreach (var instruction in instructions)
                 {
                     var parsed = false;
-                    foreach (var syntax in VBAGrammar.GetGrammarSyntax().Where(s => !s.IsChildNodeSyntax))
+                    foreach (var syntax in _grammar.Where(s => !s.IsChildNodeSyntax))
                     {
                         SyntaxTreeNode node;
                         if (!syntax.IsMatch(publicScope, currentLocalScope, instruction, out node))
@@ -150,8 +155,8 @@ namespace Rubberduck.VBA.Parser
 
             var result = codeBlockNode;
             var grammar = result.ChildSyntaxType == null
-                ? VBAGrammar.GetGrammarSyntax().Where(syntax => !syntax.IsChildNodeSyntax).ToList()
-                : VBAGrammar.GetGrammarSyntax().Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == result.ChildSyntaxType).ToList();
+                ? _grammar.Where(syntax => !syntax.IsChildNodeSyntax).ToList()
+                : _grammar.Where(syntax => syntax.IsChildNodeSyntax && syntax.GetType() == result.ChildSyntaxType).ToList();
 
             var logicalCodeLines = logicalLines as LogicalCodeLine[] ?? logicalLines.ToArray();
             var lines = logicalCodeLines.ToArray();

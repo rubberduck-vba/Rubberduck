@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

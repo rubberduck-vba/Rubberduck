@@ -17,7 +17,6 @@ namespace Rubberduck.UI.ToDoItems
         private readonly Parser _parser;
 
         private CommandBarButton _todoItemsButton;
-        public CommandBarButton ToDoItemsButton { get { return _todoItemsButton; } }
 
         public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, Parser parser)
         {

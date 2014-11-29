@@ -47,7 +47,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="Extensions\Selection.cs" />
+    <Compile Include="Extensions\VbeExtensions.cs" />
+    <Compile Include="Inspections\CodeInspectionResultBase.cs" />
+    <Compile Include="Inspections\CodeInspectionSeverity.cs" />
+    <Compile Include="Inspections\CodeInspectionType.cs" />
+    <Compile Include="Inspections\IInspection.cs" />
+    <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
+    <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Reflection\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
@@ -66,6 +74,14 @@
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeExplorer\SyntaxTreeNodeClickEventArgs.cs" />
+    <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
+    <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
+    <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\CodeInspections\CodeInspectionsWindow.Designer.cs">
+      <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoListSettings.cs" />
@@ -85,6 +101,7 @@
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />
@@ -220,6 +237,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
+      <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Parser\Grammar\ReservedKeywords.resx">
       <Generator>ResXFileCodeGenerator</Generator>

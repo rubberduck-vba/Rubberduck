@@ -1,0 +1,49 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
+using Rubberduck.VBA.Parser;
+
+namespace Rubberduck.Extensions
+{
+    [ComVisible(false)]
+    public static class VbeExtensions
+    {
+        /// <summary>
+        /// Finds all code modules that match the specified project and component names.
+        /// </summary>
+        /// <param name="vbe"></param>
+        /// <param name="projectName"></param>
+        /// <param name="componentName"></param>
+        /// <returns></returns>
+        public static IEnumerable<CodeModule> FindCodeModules(this VBE vbe, string projectName, string componentName)
+        {
+            var matches = 
+                vbe.VBProjects.Cast<VBProject>()
+                              .Where(project => project.Name == projectName)
+                              .SelectMany(project => project.VBComponents.Cast<VBComponent>()
+                                                                         .Where(component => component.Name == componentName))
+                              .Select(component => component.CodeModule);
+            return matches;
+        }
+
+        public static CodeModuleSelection FindInstruction(this VBE vbe, Instruction instruction)
+        {
+            var projectName = instruction.Line.ProjectName;
+            var componentName = instruction.Line.ComponentName;
+
+            var modules = FindCodeModules(vbe, projectName, componentName);
+            foreach (var module in modules)
+            {
+                if (module.Lines[instruction.Selection.StartLine, instruction.Selection.LineCount]
+                         .Replace("_", string.Empty)
+                         .Replace("\n\r", string.Empty) == instruction.Content)
+                {
+                    return new CodeModuleSelection(module, instruction.Selection);
+                }
+            }
+
+            return null;
+        }
+    }
+}

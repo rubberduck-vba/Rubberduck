@@ -1,8 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using System;
+using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.Config;
+using Rubberduck.VBA.Parser;
+using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck
 {
@@ -10,11 +17,43 @@ namespace Rubberduck
     public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;
+        private readonly IList<IInspection> _inspections;
 
-        public App(VBE vbe, AddIn addInInst)
+        public App(VBE vbe, AddIn addIn)
         {
             var config = ConfigurationLoader.LoadConfiguration();
-            _menu = new RubberduckMenu(vbe, addInInst, config);
+
+            var grammar = Assembly.GetExecutingAssembly()
+                                  .GetTypes()
+                                  .Where(type => type.BaseType == typeof(SyntaxBase))
+                                  .Select(type =>
+                                  {
+                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
+                                  })
+                                  .Cast<ISyntax>()
+                                  .ToList();
+
+            _inspections = Assembly.GetExecutingAssembly()
+                                   .GetTypes()
+                                   .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
+                                   .Select(type => type.GetConstructor(Type.EmptyTypes).Invoke(Type.EmptyTypes))
+                                   .Cast<IInspection>()
+                                   .ToList();
+
+            EnableCodeInspections();
+            var parser = new Parser(grammar);
+
+            _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
+        }
+
+        private void EnableCodeInspections()
+        {
+            foreach (var inspection in _inspections)
+            {
+                // todo: fetch value from configuration
+                inspection.IsEnabled = true;
+            }
         }
 
         public void Dispose()

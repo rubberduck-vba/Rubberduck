@@ -14,11 +14,11 @@ namespace Rubberduck.UI
         private readonly AddIn _addin;
         private readonly Parser _parser;
 
-        public RefactorMenu(VBE vbe, AddIn addin)
+        public RefactorMenu(VBE vbe, AddIn addin, Parser parser)
         {
             _vbe = vbe;
             _addin = addin;
-            _parser = new Parser();
+            _parser = parser;
         }
 
         private CommandBarButton _parseModuleButton;
@@ -38,13 +38,15 @@ namespace Rubberduck.UI
 
         private void OnParseModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin);
-            presenter.Show();
+            using (var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin))
+            {
+                presenter.Show();
+            }
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
-            return menu.Controls.Add(Type: MsoControlType.msoControlButton) as CommandBarButton;
+            return menu.Controls.Add(MsoControlType.msoControlButton) as CommandBarButton;
         }
 
         public void Dispose()

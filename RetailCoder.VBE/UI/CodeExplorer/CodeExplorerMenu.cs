@@ -1,31 +1,33 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    class CodeExplorerMenu
+    [ComVisible(false)]
+    public class CodeExplorerMenu
     {
         private readonly VBE _vbe;
         private readonly AddIn _addin;
         private readonly Parser _parser;
 
-        public CodeExplorerMenu(VBE vbe, AddIn addin)
+        public CodeExplorerMenu(VBE vbe, AddIn addin, Parser parser)
         {
             _vbe = vbe;
             _addin = addin;
-            _parser = new Parser();
+            _parser = parser;
         }
 
         private CommandBarButton _codeExplorerButton;
-        public CommandBarButton CodeExplorerButton { get { return _codeExplorerButton; } }
 
         public void Initialize(CommandBarControls menuControls)
         {
-            _codeExplorerButton = menuControls.Add(Type: MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            _codeExplorerButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            Debug.Assert(_codeExplorerButton != null);
+
             _codeExplorerButton.Caption = "&Code Explorer";
             _codeExplorerButton.BeginGroup = true;
 
@@ -33,7 +35,7 @@ namespace Rubberduck.UI.CodeExplorer
             _codeExplorerButton.Click += OnCodeExplorerButtonClick;
         }
 
-        private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool CancelDefault)
+        private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool cancelDefault)
         {
             var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin);
             presenter.Show();

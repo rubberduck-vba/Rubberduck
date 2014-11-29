@@ -6,7 +6,7 @@ using Microsoft.Vbe.Interop;
 namespace Rubberduck.UI
 {
     [ComVisible(false)]
-    public abstract class DockablePresenterBase
+    public abstract class DockablePresenterBase : IDisposable
     {
         private readonly AddIn _addin;
         private readonly Window _window;
@@ -43,6 +43,11 @@ namespace Rubberduck.UI
         public void Close()
         {
             _window.Close();
+        }
+
+        public void Dispose()
+        {
+            UserControl.Dispose();
         }
     }
 }

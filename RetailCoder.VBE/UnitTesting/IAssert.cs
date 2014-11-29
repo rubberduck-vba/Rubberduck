@@ -83,5 +83,4 @@ namespace Rubberduck.UnitTesting
         /// <param name="message">An optional message to display if the assertion fails.</param>
         void AreNotSame(object expected, object actual, string message = null);
     }
-
 }

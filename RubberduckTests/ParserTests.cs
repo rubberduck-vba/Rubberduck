@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBA.Parser;
@@ -10,10 +13,22 @@ namespace RubberduckTests
     [TestClass]
     public class ParserTests
     {
+        private readonly IEnumerable<ISyntax> _grammar = Assembly.GetAssembly(typeof(ISyntax))
+                                  .GetTypes()
+                                  .Where(type => type.BaseType == typeof(SyntaxBase))
+                                  .Select(type =>
+                                  {
+                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
+                                  })
+                                  .Cast<ISyntax>()
+                                  .ToList();
+
+
         [TestMethod]
         public void TestSimpleDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo As Integer\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -32,7 +47,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestDeclarationWithAssignment()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Private Strings As New StringType\n";
 
             var match = Regex.Match(code, VBAGrammar.GeneralDeclarationSyntax);
@@ -55,7 +70,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestSimpleArrayDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo() As Integer\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -75,7 +90,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestInitializedArrayDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo(1 To 10) As Integer\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -95,7 +110,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestMultiDimArrayDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo(1 To 10, 1 To 5) As Integer\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -116,7 +131,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestTypeSpecifierSimpleDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo$\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -135,7 +150,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestInitializerDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo As New Collection\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -155,7 +170,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestLibraryReferenceDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo As ADODB.Recordset\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -176,7 +191,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestMultipleDeclarations()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo, bar As String\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -197,7 +212,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestMultipleDeclarationsWithArray()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Dim foo() As Integer, bar As String\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -217,7 +232,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestConstDeclaration()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Const foo As String = \"test\"\n";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -234,7 +249,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestPublicSubIsProcedureNode()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo()\n\rEnd Sub\n\r";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -246,7 +261,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestProcedureNodeTakesParameter()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo(bar)\n\rEnd Sub\n\r";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -258,7 +273,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TestProcedureNodeTakesParameters()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo(ByVal a As Integer, ByRef b As Integer)\n\rEnd Sub\n\r";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -273,7 +288,7 @@ namespace RubberduckTests
         [TestMethod]
         public void ProcedureNodeHasChildren()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\r";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -285,7 +300,7 @@ namespace RubberduckTests
         [TestMethod]
         public void ModuleHasProcedures()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\rPublic Function Bar()\n\r    Dim foo As String\n\rEnd Function\n\r";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
@@ -297,7 +312,7 @@ namespace RubberduckTests
         [TestMethod]
         public void InstructionHasIndentation()
         {
-            var parser = new Parser();
+            var parser = new Parser(_grammar);
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);

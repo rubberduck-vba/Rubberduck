@@ -27,10 +27,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         private CommandBarButton _runAllTestsButton;
-        public CommandBarButton RunAllTestsButton { get { return _runAllTestsButton; } }
-
         private CommandBarButton _windowsTestExplorerButton;
-        public CommandBarButton WindowsTestExplorerButton { get { return _windowsTestExplorerButton; } }
 
         public void Initialize(CommandBarControls menuControls)
         {

@@ -28,7 +28,7 @@ namespace Rubberduck.UI.UnitTesting
         private void InitializeGrid()
         {
             testOutputGridView.DataSource = _allTests;
-            var messageColumn = testOutputGridView.Columns["Message"];
+            var messageColumn = testOutputGridView.Columns["QuickFixMessage"];
             if (messageColumn != null)
             {
                 messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
