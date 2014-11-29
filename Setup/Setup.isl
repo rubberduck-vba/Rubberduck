@@ -342,7 +342,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{CB8B93B7-7689-4F73-B627-903C2CB3F17E}</td><td>RUBBERDUCK2</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{FB175C5D-369B-49B0-A981-82EA6C6770DB}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td>{036A2888-9A33-416E-A512-5B3925F6CB64}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Debug_Symbols1</td><td>{A7315917-CD5F-4E92-AEA2-C7BEAE9CB237}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output</td><td>{8C675A63-5375-40F9-8773-DD0666DC606C}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Primary_output1</td><td>{43D7FBDD-0B19-4B3B-89EB-934287FA00D1}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.tlb</td><td>{CF035B5D-6B55-4B57-90AB-F7FBAA61DDB9}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1867,7 +1869,9 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols1</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output1</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.tlb</td></row>
 	</table>
 
@@ -1883,9 +1887,9 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>rubberduck.config</td><td>ISX_DEFAULTCOMPONENT</td><td>RUBBER~1.CON|rubberduck.config</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Christopher\Source\Repos\RetailCoderVBE\RetailCoder.VBE\Resources\rubberduck.config</td><td>1</td><td/></row>
-		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
-		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
+		<row><td>rubberduck.config</td><td>ISX_DEFAULTCOMPONENT</td><td>RUBBER~1.CON|rubberduck.config</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Christopher\Documents\GitHub\Rubberduck\RetailCoder.VBE\Resources\rubberduck.config</td><td>1</td><td/></row>
+		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols1</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
+		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
 		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Christopher\Source\Repos\RetailCoderVBE\RetailCoder.VBE\bin\Debug\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
@@ -2033,7 +2037,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_C8580B4B_2761_4D0A_8FAB_381450534C5E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_146E9999_EAF8_4401_9A6C_7161DC76C375_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td/><td/><td>_91B39E05_306F_42B1_89CF_688A2434054F_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Debug_Symbols1</td><td/><td/><td>_A28E6422_A7C3_4561_81BB_2BB6C3AC1B43_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_6EC40060_2550_42DD_B081_9A1860784FD7_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_F6910218_65F1_46BF_BC53_E5BECBE58622_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.tlb</td><td/><td/><td>_72B90266_1690_4144_80FC_1FD9371524BA_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
@@ -3753,7 +3759,7 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1033</td><td>The processor is not adequate for running [ProductName].</td><td>0</td><td/><td>-1113443856</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>-1113443856</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>-1113443856</td></row>
-		<row><td>ID_STRING1</td><td>1033</td><td>http://www.Rubberduck.com</td><td>0</td><td/><td>-979238444</td></row>
+		<row><td>ID_STRING1</td><td>1033</td><td>https://github.com/retailcoder/Rubberduck</td><td>0</td><td/><td>-308144622</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>Rubberduck</td><td>0</td><td/><td>-979238444</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>-1113443856</td></row>
 	</table>
@@ -4369,7 +4375,7 @@ QwBEAF8AUgBPAE0AAQBFAHgAcAByAGUAcwBzAA==
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{9AC1C35D-3375-4C71-B8F4-48EEC2AEE326}</td><td/></row>
 		<row><td>ProductName</td><td>Rubberduck</td><td/></row>
-		<row><td>ProductVersion</td><td>0.01.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>1.0.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

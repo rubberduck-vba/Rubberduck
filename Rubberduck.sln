@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "RubberduckTests\RubberduckTests.csproj", "{10B55A38-F43B-47ED-8DEA-8435647DA2D5}"
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Setup", "Setup\Setup.isproj", "{ADE5DF01-4203-4F93-9BCE-6BDC2D950068}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20589DE8-432E-4359-9232-69EB070B7185} = {20589DE8-432E-4359-9232-69EB070B7185}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
