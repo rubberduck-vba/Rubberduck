@@ -6,6 +6,7 @@ using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
 using System;
 using Rubberduck.UI;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -64,27 +65,9 @@ namespace Rubberduck.UI.CodeExplorer
             if (selection.StartLine != 0)
             {
                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+               codePane.ForceFocus();
             }
-
-            //todo: abstract the set selection patch so it can be applied to other areas
-            codePane.Show();
-
-            IntPtr mainWindowHandle = this.VBE.MainWindow.Handle();
-            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(codePane.Window.Caption);
-
-            NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
-            IntPtr handle = childWindowFinder.ResultHandle;
-
-            if (handle != IntPtr.Zero)
-            {
-                NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
-            }
-            
-
         }
-
-        [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         private void RefreshExplorerTreeView()
         {
