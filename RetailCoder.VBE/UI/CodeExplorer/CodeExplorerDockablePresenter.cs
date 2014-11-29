@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
+using System;
+using Rubberduck.UI;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -56,15 +59,14 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
+            var codePane = vbComponent.CodeModule.CodePane;
             var selection = instruction.Selection;
+
             if (selection.StartLine != 0)
             {
-                vbComponent.CodeModule.CodePane
-                    .SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+               codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+               codePane.ForceFocus();
             }
-
-            vbComponent.CodeModule.CodePane.Show();
-            vbComponent.CodeModule.CodePane.Window.SetFocus();
         }
 
         private void RefreshExplorerTreeView()
