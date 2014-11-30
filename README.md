@@ -20,13 +20,13 @@ Fully integrated unit testing with minimal (read: next to none) boiler plate cod
 
 Rubberduck will find the Module and Procedure attributes and display your test methods for you in the Test Explorer.
 
-![Test Explorer Window](http://i.imgur.com/qpCrN30.png)
+![Test Explorer Window](http://imgur.com/NepssQ8.png)
 
 ###To-do items
 
 Ever wish you had a task list built into the VBA IDE? You don't have to wish anymore. It's here. Rubberduck searches your code for `TODO:` comments and displays them all in one convenient location. Double-click on an item in the Todo List and jump to that location in the code. 
 
-![Todo List Window](http://i.stack.imgur.com/3ej9b.png)
+![Todo List Window](http://imgur.com/Xl1hfcQ.png)
 
 The comments are also configurable, so you can decide what comments to add to your Todo List and what Priority level they should be.
 
@@ -37,9 +37,10 @@ Get a bird's eye view of your project with the Code Explorer.
 ![Code Explorer Window](https://cloud.githubusercontent.com/assets/5751684/5161266/3f88a9d6-7372-11e4-9ff5-19eaa0cfa562.png)
 
 ##Installation 
-There is currently not an installer, but we do plan on creating one in the future. In the meantime, [information for installing Rubberduck][install] can be found on our wiki. 
-   
-[install]:https://github.com/retailcoder/Rubberduck/wiki/Building-Installation
+Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.0), and run the Setup.exe. 
+
+Please note that this software has only been tested on Office 2007 & 2010.
+Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
 
 ---
 
