@@ -22,7 +22,7 @@ namespace Rubberduck.UI
         private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
-        //private readonly CodeInspectionsMenu _codeInspectionsMenu;
+        private readonly CodeInspectionsMenu _codeInspectionsMenu;
         //private readonly RefactorMenu _refactorMenu; // todo: implement refactoring
 
         public RubberduckMenu(VBE vbe, AddIn addIn, Configuration config, Parser parser, IEnumerable<IInspection> inspections)
@@ -31,7 +31,7 @@ namespace Rubberduck.UI
             _testMenu = new TestMenu(_vbe, addIn);
             _codeExplorerMenu = new CodeExplorerMenu(_vbe, addIn, parser);
             _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, config.UserSettings.ToDoListSettings, parser);
-            //_codeInspectionsMenu = new CodeInspectionsMenu(_vbe, addIn, parser, inspections);
+            _codeInspectionsMenu = new CodeInspectionsMenu(_vbe, addIn, parser, inspections);
             //_refactorMenu = new RefactorMenu(_vbe, addIn);
 
         }
@@ -57,7 +57,7 @@ namespace Rubberduck.UI
             _codeExplorerMenu.Initialize(menu.Controls);
             //_refactorMenu.Initialize(menu.Controls);
             _todoItemsMenu.Initialize(menu.Controls);
-            //_codeInspectionsMenu.Initialize(menu.Controls);
+            _codeInspectionsMenu.Initialize(menu.Controls);
 
             _about = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
             Debug.Assert(_about != null, "_about != null");
