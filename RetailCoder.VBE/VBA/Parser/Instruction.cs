@@ -21,8 +21,8 @@ namespace Rubberduck.VBA.Parser
             int index;
             if (_content.HasComment(out index))
             {
-                _comment = _content.TrimStart().Substring(index);
-                _instruction = _content.Trim().Substring(0, index);
+                _comment = _content.TrimStart().Substring(index - _content.TakeWhile(c => c == ' ').Count()).Trim();
+                _instruction = _content.TrimStart().Substring(0, index - _content.TakeWhile(c => c == ' ').Count());
             }
             else
             {

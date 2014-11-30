@@ -51,8 +51,9 @@ namespace Rubberduck.UI.CodeInspections
 
             foreach (var result in results.OrderBy(r => r.Severity))
             {
-                var node = new TreeNode(result.Message);
-
+                var node = new TreeNode(result.Name);
+                node.ToolTipText = result.Instruction.Content;
+                
                 tree.Nodes.Add(result.Message);
             }
         }

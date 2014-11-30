@@ -45,7 +45,7 @@ namespace Rubberduck.VBA.Parser.Grammar
                     || (cursor == ReservedKeywords.Rem.Length 
                         && instruction.Trim().Substring(0, ReservedKeywords.Rem.Length) == ReservedKeywords.Rem)))
                 {
-                    index = cursor;
+                    index = cursor + 1;
                     return true;
                 }
             }
