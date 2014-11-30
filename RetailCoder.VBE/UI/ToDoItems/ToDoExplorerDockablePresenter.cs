@@ -10,6 +10,7 @@ using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.ToDoItems
 {
+    /// <summary>   (Not COM visible) Presenter for the Todo Explorer.  </summary>
     [ComVisible(false)]
     public class ToDoExplorerDockablePresenter : DockablePresenterBase
     {
@@ -67,9 +68,8 @@ namespace Rubberduck.UI.ToDoItems
 
             var codePane = component.CodeModule.CodePane;
 
-            codePane.Show();
             codePane.SetSelection(e.Selection.LineNumber);
-            codePane.Window.SetFocus();
+            codePane.ForceFocus();
         }
     }
 }

@@ -105,8 +105,10 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="UI\NativeWindowMethods.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
+    <Compile Include="UI\WindowExtensions.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
@@ -263,7 +265,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
   </ItemGroup>

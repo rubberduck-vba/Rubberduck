@@ -1,11 +1,16 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using System;
+using Rubberduck.UI;
 
 namespace Rubberduck.Extensions
 {
+    /// <summary>   VBE Code Pane extensions. </summary>
     [ComVisible(false)]
     public static class CodePaneExtensions
     {
+        /// <summary>   A CodePane extension method that gets the current selection. </summary>
+        /// <returns>   The selection. </returns>
         public static Selection GetSelection(this CodePane code)
         {
             int startLine;
@@ -17,6 +22,10 @@ namespace Rubberduck.Extensions
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
+        /// <summary>   A CodePane extension method that selected procedure. </summary>
+        ///
+        /// <param name="selection">    The selection. </param>
+        /// <returns>   A Selection object representing the procedure the cursor is currently in. </returns>
         public static Selection SelectedProcedure(this CodePane code, Selection selection)
         {
             vbext_ProcKind kind;
@@ -48,6 +57,24 @@ namespace Rubberduck.Extensions
         {
             codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
             codePane.Window.SetFocus();
+        }
+
+        /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
+        public static void ForceFocus(this CodePane codePane)
+        {
+            codePane.Show();
+
+            IntPtr mainWindowHandle =  codePane.VBE.MainWindow.Handle();
+            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(codePane.Window.Caption);
+
+            NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
+            IntPtr handle = childWindowFinder.ResultHandle;
+
+            if (handle != IntPtr.Zero)
+            {
+                NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
+            }
+
         }
     }
 }
