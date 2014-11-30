@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser.Grammar;
 
@@ -20,7 +21,7 @@ namespace Rubberduck.VBA.Parser
             int index;
             if (_content.HasComment(out index))
             {
-                _comment = _content.Substring(index);
+                _comment = _content.TrimStart().Substring(index);
                 _instruction = _content.Trim().Substring(0, index);
             }
             else
