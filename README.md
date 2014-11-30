@@ -20,13 +20,13 @@ Fully integrated unit testing with minimal (read: next to none) boiler plate cod
 
 Rubberduck will find the Module and Procedure attributes and display your test methods for you in the Test Explorer.
 
-![Test Explorer Window](http://imgur.com/NepssQ8)
+![Test Explorer Window](http://imgur.com/NepssQ8.png)
 
 ###To-do items
 
 Ever wish you had a task list built into the VBA IDE? You don't have to wish anymore. It's here. Rubberduck searches your code for `TODO:` comments and displays them all in one convenient location. Double-click on an item in the Todo List and jump to that location in the code. 
 
-![Todo List Window](http://imgur.com/Xl1hfcQ)
+![Todo List Window](http://imgur.com/Xl1hfcQ.png)
 
 The comments are also configurable, so you can decide what comments to add to your Todo List and what Priority level they should be.
 
