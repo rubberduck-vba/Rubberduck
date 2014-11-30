@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Parser;
 
@@ -26,8 +27,15 @@ namespace Rubberduck.UI.CodeInspections
             _inspections = inspections.ToList();
 
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
+            Control.NavigateCodeIssue += OnNavigateCodeIssue;
         }
-        
+
+        private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
+        {
+            var location = VBE.FindInstruction(e.Instruction);
+            location.CodeModule.CodePane.SetSelection(location.Selection);
+        }
+
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
             var code = _parser.Parse(VBE.ActiveVBProject);
@@ -53,8 +61,8 @@ namespace Rubberduck.UI.CodeInspections
             {
                 var node = new TreeNode(result.Name);
                 node.ToolTipText = result.Instruction.Content;
-                
-                tree.Nodes.Add(result.Message);
+                node.Tag = result.Instruction;
+                tree.Nodes.Add(node);
             }
         }
     }

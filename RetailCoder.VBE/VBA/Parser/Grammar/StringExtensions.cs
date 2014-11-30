@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -20,7 +21,9 @@ namespace Rubberduck.VBA.Parser.Grammar
             int index;
             if (line.HasComment(out index))
             {
-                return line.Substring(0, index).TrimEnd();
+                return line.EndsWith(":") 
+                    ? line.Substring(0, index - 2) 
+                    : line.Substring(0, index).TrimEnd();
             }
 
             return line;
@@ -34,23 +37,16 @@ namespace Rubberduck.VBA.Parser.Grammar
         /// <returns></returns>
         public static bool HasComment(this string line, out int index)
         {
-            index = -1;
             var instruction = line.StripStringLiterals();
 
-            var firstIndex = instruction.TakeWhile(c => c == ' ').Count();
-            for (var cursor = firstIndex; cursor < instruction.Length - 1; cursor++)
+            index = instruction.IndexOf(CommentMarker);
+            if (index >= 0)
             {
-                if (!string.IsNullOrWhiteSpace(instruction.Trim()) 
-                    &&(instruction[cursor] == CommentMarker 
-                    || (cursor == ReservedKeywords.Rem.Length 
-                        && instruction.Trim().Substring(0, ReservedKeywords.Rem.Length) == ReservedKeywords.Rem)))
-                {
-                    index = cursor + 1;
-                    return true;
-                }
+                return true;
             }
 
-            return false;
+            index = instruction.IndexOf(ReservedKeywords.Rem, StringComparison.InvariantCulture);
+            return index >= 0;
         }
 
         /// <summary>

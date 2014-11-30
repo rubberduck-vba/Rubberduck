@@ -14,8 +14,8 @@ namespace Rubberduck.VBA.Parser
         public Instruction(LogicalCodeLine line, int startColumn, int endColumn, string content)
         {
             _line = line;
-            _startColumn = startColumn;
-            _endColumn = endColumn;
+            _startColumn = startColumn == 0 ? 1 : startColumn;
+            _endColumn = endColumn == 0 ? startColumn : endColumn;
             _content = content;
 
             int index;
@@ -27,7 +27,7 @@ namespace Rubberduck.VBA.Parser
             else
             {
                 _comment = string.Empty;
-                _instruction = _content;
+                _instruction = _content.TrimEnd().EndsWith(":") ? _content.TrimEnd().Substring(0, _content.TrimEnd().Length - 1) : _content;
             }
         }
 

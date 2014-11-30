@@ -37,7 +37,7 @@ namespace Rubberduck.Extensions
             {
                 if (module.Lines[instruction.Selection.StartLine, instruction.Selection.LineCount]
                          .Replace("_", string.Empty)
-                         .Replace("\n\r", string.Empty) == instruction.Content)
+                         .Replace("\n\r", string.Empty).Contains(instruction.Content))
                 {
                     return new CodeModuleSelection(module, instruction.Selection);
                 }

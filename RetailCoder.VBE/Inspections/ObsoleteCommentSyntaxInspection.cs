@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<CodeInspectionResultBase> Inspect(SyntaxTreeNode node)
         {
             var comments = node.FindAllComments();
-            var remComments = comments.Where(instruction => instruction.Value.Trim().StartsWith(ReservedKeywords.Rem));
+            var remComments = comments.Where(instruction => instruction.Comment.StartsWith(ReservedKeywords.Rem));
             return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction, Severity, QuickFixMessage));
         }
     }

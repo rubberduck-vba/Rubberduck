@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.UI.CodeInspections
             CodeInspectionResultsTree.NodeMouseDoubleClick += TreeNodeMouseDoubleClicked;
         }
 
-        public event EventHandler NavigateCodeIssue;
+        public event EventHandler<NavigateCodeIssueEventArgs> NavigateCodeIssue;
         private void TreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
             var handler = NavigateCodeIssue;
@@ -34,7 +35,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            handler(this, EventArgs.Empty);
+            handler(this, new NavigateCodeIssueEventArgs((Instruction)e.Node.Tag));
         }
 
         public event EventHandler RefreshCodeInspections;
@@ -48,5 +49,17 @@ namespace Rubberduck.UI.CodeInspections
 
             handler(this, EventArgs.Empty);
         }
+    }
+
+    [ComVisible(false)]
+    public class NavigateCodeIssueEventArgs : EventArgs
+    {
+        public NavigateCodeIssueEventArgs(Instruction instruction)
+        {
+            _instruction = instruction;
+        }
+
+        private readonly Instruction _instruction;
+        public Instruction Instruction { get { return _instruction; } }
     }
 }
