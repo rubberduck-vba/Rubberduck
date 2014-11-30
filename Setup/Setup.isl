@@ -342,10 +342,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{CB8B93B7-7689-4F73-B627-903C2CB3F17E}</td><td>RUBBERDUCK2</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{FB175C5D-369B-49B0-A981-82EA6C6770DB}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td>{036A2888-9A33-416E-A512-5B3925F6CB64}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.Debug_Symbols1</td><td>{A7315917-CD5F-4E92-AEA2-C7BEAE9CB237}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Debug_Symbols1</td><td>{384C7707-3BA9-49E0-9B68-CD225082738D}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output</td><td>{8C675A63-5375-40F9-8773-DD0666DC606C}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.Primary_output1</td><td>{43D7FBDD-0B19-4B3B-89EB-934287FA00D1}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.tlb</td><td>{CF035B5D-6B55-4B57-90AB-F7FBAA61DDB9}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Primary_output1</td><td>{E0A8BAF8-6466-4349-9F96-F52330BFC5C5}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.tlb</td><td>{F4FD0B77-626C-4AFC-A991-5E87DF4B0AFD}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -925,7 +925,7 @@
 		<row><td>DatabaseFolder</td><td>ChangeFolder</td><td>SpawnDialog</td><td>InstallChangeFolder</td><td>1</td><td>1</td></row>
 		<row><td>DatabaseFolder</td><td>ChangeFolder</td><td>[_BrowseProperty]</td><td>DATABASEDIR</td><td>1</td><td>2</td></row>
 		<row><td>DatabaseFolder</td><td>Next</td><td>NewDialog</td><td>SetupType</td><td>1</td><td>1</td></row>
-		<row><td>DestinationFolder</td><td>Back</td><td>NewDialog</td><td>LicenseAgreement</td><td>NOT Installed</td><td>0</td></row>
+		<row><td>DestinationFolder</td><td>Back</td><td>NewDialog</td><td>InstallWelcome</td><td>NOT Installed</td><td>0</td></row>
 		<row><td>DestinationFolder</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>1</td></row>
 		<row><td>DestinationFolder</td><td>ChangeFolder</td><td>SpawnDialog</td><td>InstallChangeFolder</td><td>1</td><td>1</td></row>
 		<row><td>DestinationFolder</td><td>ChangeFolder</td><td>[_BrowseProperty]</td><td>INSTALLDIR</td><td>1</td><td>2</td></row>
@@ -942,7 +942,7 @@
 		<row><td>InstallChangeFolder</td><td>Up</td><td>DirectoryListUp</td><td>0</td><td>1</td><td>0</td></row>
 		<row><td>InstallWelcome</td><td>Back</td><td>NewDialog</td><td>SplashBitmap</td><td>Display_IsBitmapDlg</td><td>0</td></row>
 		<row><td>InstallWelcome</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
-		<row><td>InstallWelcome</td><td>Next</td><td>NewDialog</td><td>LicenseAgreement</td><td>1</td><td>0</td></row>
+		<row><td>InstallWelcome</td><td>Next</td><td>NewDialog</td><td>DestinationFolder</td><td>1</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>Back</td><td>NewDialog</td><td>InstallWelcome</td><td>NOT Installed</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>LicenseAgreement</td><td>ISPrintButton</td><td>DoAction</td><td>ISPrint</td><td>1</td><td>0</td></row>
@@ -1889,8 +1889,8 @@
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>rubberduck.config</td><td>ISX_DEFAULTCOMPONENT</td><td>RUBBER~1.CON|rubberduck.config</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Christopher\Documents\GitHub\Rubberduck\RetailCoder.VBE\Resources\rubberduck.config</td><td>1</td><td/></row>
 		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols1</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
-		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
-		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Christopher\Source\Repos\RetailCoderVBE\RetailCoder.VBE\bin\Debug\Rubberduck.tlb</td><td>1</td><td/></row>
+		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
+		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Christopher\Documents\GitHub\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -1908,6 +1908,7 @@
 		<col def="S255">Data</col>
 		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>AlwaysInstall</td></row>
 		<row><td>PROJECT_ASSISTANT_FEATURES</td><td>NonSelectable</td></row>
+		<row><td>RegistryPageEnabled</td><td>Yes</td></row>
 	</table>
 
 	<table name="ISBillBoard">
@@ -2037,10 +2038,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_C8580B4B_2761_4D0A_8FAB_381450534C5E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_146E9999_EAF8_4401_9A6C_7161DC76C375_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td/><td/><td>_91B39E05_306F_42B1_89CF_688A2434054F_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Rubberduck.Debug_Symbols1</td><td/><td/><td>_A28E6422_A7C3_4561_81BB_2BB6C3AC1B43_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Debug_Symbols1</td><td/><td/><td>_9CF0F461_19BC_47C3_A147_FDF1DC2DD3DE_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_6EC40060_2550_42DD_B081_9A1860784FD7_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_F6910218_65F1_46BF_BC53_E5BECBE58622_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Rubberduck.tlb</td><td/><td/><td>_72B90266_1690_4144_80FC_1FD9371524BA_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_0EC632DF_F38A_42B5_BED8_0B187B765ED8_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.tlb</td><td/><td/><td>_ED8BE1DB_E9F4_4B18_8E98_F04578C2889C_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -4443,79 +4444,93 @@ QwBEAF8AUgBPAE0AAQBFAHgAcAByAGUAcwBzAA==
 		<col def="s72">Component_</col>
 		<col def="I4">ISAttributes</col>
 		<row><td>_019BAC07A22585962B1EF8A1018B794E</td><td>1</td><td>Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck.Extension</td><td>LoadBehavior</td><td>#3</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_03AAE7CCE41B1A00978AC55ADF2AF965</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_04D1AF063709F7DB4BB940BC3DEC1B76</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_06C42F5B53660A805FAB60BC85D09417</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_0844F9D13EA7B844888BB31EDEC7ECB0</td><td>0</td><td>Rubberduck.UI.DockableWindowHost\CLSID</td><td/><td>{9CF1392A-2DC9-48A6-AC0B-E601A9802608}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_09CFA3E02D36680DF9616D30AEA851DD</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_0AECA1896F7017E5868DB82EA7036A2A</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}</td><td/><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_11BA90B54916785E5BCEE8CED776F8FC</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_0F834880E8F9882FEA047EADB6605DB6</td><td>0</td><td>Rubberduck.UnitTesting.AssertClass\CLSID</td><td/><td>{66374822-6316-38E0-8E0B-C1C9D5A86500}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_126ECA6E10D5CFE956945C83CEFF7B33</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_14E365D3874A803BB474EB8343EE9470</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>Class</td><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_15BE6A1E2B9BB24949DF6D957EA6230B</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_1898B8A27BED6D3C67763A4E68BF4800</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td>Class</td><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_1979C2FD7BF1BDA3A15E5C06499DDE5C</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5446.35749</td><td>Class</td><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_1ACFD3AB6573DDCAD6553D0D5BB6667B</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_1FB6AF73934E582DBCAB410E1E4CF5D5</td><td>0</td><td>Record\{28283ECB-7324-3DB2-8401-C28AC6D19911}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_21FD11F3A8010333F9BC6C885F9C92AC</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_23DA936DD79B6A3AE36D56ECCD67460B</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_275281195D822F7DAD74575183FAAD47</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_2627F14EF780009A7E0C9E4038BC84A6</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_2803184949AEA53D1A7AA02A11886DF3</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_290F212B8B8D16D48FD25F0B25051E2D</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_291EEEB52498658636B564D5BECC7D21</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_29E3C28D72E8755351B94A95A0BBBEA2</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_283658DB09D8D6787076AFB011907A88</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}</td><td/><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_2DBE05D5A8287B73C5D68B43E1938049</td><td>0</td><td>Rubberduck.UI.DockableWindowHost</td><td/><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_3333765725B4B464555E94F2F67A7A61</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_37B330A8FF8D495B19D69A0822A19CAB</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_3A399FD562C0C13CF683421AAFD48666</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_3A59003D99CFDBE651D4055CDE06E1E3</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_3B9939C27720A26BF0D8E1214F718733</td><td>0</td><td>Record\{A39FB8B7-81DA-3139-AFFF-38B47A97DF1A}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_317647684F0D79CFFB8F21DC8E452039</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_3A77C0C9AEFBE04F4391407C1196E62F</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5446.35749</td><td>Class</td><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_3D744667EA1C746D823BFF314E9C070B</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\ProgId</td><td/><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_3EB79D2B8CF1BC6025182BE131039D68</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}</td><td/><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_417ABD178AF11115B7AD5D8B06F31C96</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_4F1A63F612164EE09E633C41B3D28400</td><td>0</td><td>Record\{A39FB8B7-81DA-3139-AFFF-38B47A97DF1A}\1.0.5440.28269</td><td>Class</td><td>Microsoft.Office.Core.MsoControlType</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_5533493430484617E8CB34C2EF8EBE59</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5440.28269</td><td>Class</td><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_58EFB3C68524A70DDFE8411F81683ED6</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32\1.0.5440.28269</td><td>Class</td><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_5C67A2AD4AB3DF16655B306A59464B6F</td><td>0</td><td>Record\{9D1130AC-D460-3450-8A5F-3B034FFB7FCA}\1.0.5440.28269</td><td>Class</td><td>Rubberduck.UnitTesting.TestOutcome</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_409F2AC30B4207AFD23B3ACAA9F8B41F</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_4A0D27755A75B8E7681E86DD46227666</td><td>0</td><td>Record\{6A6A1023-055E-37EB-9B76-48E8A121D67C}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_4B26E9C7A765F8F1D58ECFA3FF037668</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5446.35749</td><td>Class</td><td>Microsoft.Vbe.Interop.vbext_ComponentType</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_4E67147FF24B6927455E5664AFC4104C</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_4E8A817A76E4DE53283848A0D72FCD55</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\ProgId</td><td/><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_4FD12F29965BB986170781F9A91AE16B</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_5B7D6EF96ACB0C6C323BE332CF6B9F8E</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_5C9BDC4FFAA8641763196BEA432162CB</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_60521EBE6A6F7717049400B6606CC54C</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_619F8F456602AC9CB40E5AEA03739C1F</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32</td><td>Class</td><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_6EC9201487FCCF6CDFC6A23DDF3D3F28</td><td>0</td><td>Record\{A39FB8B7-81DA-3139-AFFF-38B47A97DF1A}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_642AB12ED12ACFE2EF6EF9082B432D75</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_6586AA2226357F9CA8F8E91160039704</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}</td><td/><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_6B7C57A8A36AA4A2AF5453231596B498</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_7150904C828CD264EF67DF90EE120EC9</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_71C7645AC2FFD4901829BC096BCE3953</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_72299AF1D89C7118B1D81564C41E1435</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_7E5C05A1748224C05D76B41E427E259D</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\ProgId</td><td/><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_812BA1EB19D1008803DA46143EE95D87</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_864005BBAF057FE2E56DA9AA53C86B87</td><td>0</td><td>Record\{15E73938-192E-3E92-8C40-9D4F89B5C0AE}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_7756C39C2ACEC756CA9B0C540E055287</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_805B044AABF42D7DB1AF8AF6DFB769D0</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>Class</td><td>Extensibility.ext_DisconnectMode</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_80CCED21F4BBE942629D4F9102191593</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\ProgId</td><td/><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_81A8292152A49B981679D6836A9265BE</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_81F5BDE0937EA8F82921B89C32AD387C</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td>Class</td><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_824E1A3B1FFE5F27F647DA0D0309139D</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_8258086A95518B819F03CF4B48521618</td><td>0</td><td>Record\{8AEC8C89-BE21-3D05-9E7B-3B4D24BED531}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_83EF3DF0771E2DC09DC1D825821CE327</td><td>0</td><td>Record\{6A6A1023-055E-37EB-9B76-48E8A121D67C}\1.0.5446.35749</td><td>Class</td><td>Microsoft.Office.Core.MsoControlType</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_8624335B20A484415E69E38179B5A4F7</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32\1.0.5446.35749</td><td>Class</td><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_86C7F2ED301C44278F25217B9CCFFB12</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_883B9BB2C926AE515A05738D2AD5526C</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_88AA5B10FD9943BD952A65571B8DB2BC</td><td>0</td><td>Rubberduck.UI.AboutWindow\CLSID</td><td/><td>{AE1A8982-0D9C-3093-823A-082EAB8B5250}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_8A8C4C2870AB13955FDEB55C5D1D011C</td><td>0</td><td>Rubberduck.Extension</td><td/><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_921B550A212F282B89C2E5B14924830F</td><td>0</td><td>Record\{15E73938-192E-3E92-8C40-9D4F89B5C0AE}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_95EB54D71BED3A5601F948DFAE12B6BD</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\ProgId</td><td/><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_9886089810F318E341F82E9AE3AC4D58</td><td>0</td><td>Record\{15E73938-192E-3E92-8C40-9D4F89B5C0AE}\1.0.5440.28269</td><td>Class</td><td>Microsoft.Vbe.Interop.vbext_ProcKind</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_9E09CF9723EE7559BE74A41C1D60EB8D</td><td>0</td><td>Rubberduck.UnitTesting.AssertClass\CLSID</td><td/><td>{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_8FF8E34FAD785F90A4DA5B20FA1EA43A</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_90DFF58A5FA44DBB18C31AAC6B944287</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_937349149B9383EE361B8963CFC61F81</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_93EC3BCA4334501577C3BBFCC7D21588</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_9484C2EEB6F1F83367DA5014B3C62D53</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_9504927646471032EDBBD2051ABD423B</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>Class</td><td>Extensibility.ext_ConnectMode</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_9516464366B829D342AFFA21E26CFFE7</td><td>0</td><td>Record\{28283ECB-7324-3DB2-8401-C28AC6D19911}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_9ABF1C9DCFD8FE49FB4AD80FCB1765A3</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_9F41389C941412D45ECE589801105D02</td><td>0</td><td>Rubberduck.UnitTesting.AssertClass</td><td/><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_9F99FFCB76FB83A27D28B26B073981DA</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>Class</td><td>Extensibility.ext_ConnectMode</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_A04CEF9637F181E8D13786AA5F80A33C</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td/><td>mscoree.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_A1A8238D64685E14F742CF2C3BCDC85A</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_A5CBC0D410D3808482C00D5D235D32F6</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_A62E9F74D394680E57A5EEB2760CA444</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\1.0.5440.28269</td><td>Class</td><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_A6845C0152C6C769D7A5FD1AC03F32FE</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_A89C914981983FB9CC0A20675B2F60B5</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5440.28269</td><td>Class</td><td>Extensibility.ext_DisconnectMode</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_A3614B08819331FC57DCD214288BCC4A</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32\1.0.5446.35749</td><td>Class</td><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_AA1F1E755DFB348CEC532486352B1C6C</td><td>1</td><td>Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck.Extension</td><td>FriendlyName</td><td>Rubberduck</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_AE46E6323A3F6B868DC86EC035F545F9</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32\1.0.5440.28269</td><td>Class</td><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_ABA012ECFC3377E5FED898A99D780FD1</td><td>0</td><td>Record\{8AEC8C89-BE21-3D05-9E7B-3B4D24BED531}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_AEEFA87782CD2BD503D251A244D7A55C</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}</td><td/><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_B0D8FC7C8BB2C9D05761D5263FBB29D2</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_B0F43CADC3E67DC4A26AAB97052CFE07</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_B1C57F436AED937138762CF6438E3B75</td><td>0</td><td>Record\{6A6A1023-055E-37EB-9B76-48E8A121D67C}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_B27D5676071DDA854780370284DCCAA7</td><td>0</td><td>Rubberduck.UI.AboutWindow</td><td/><td>Rubberduck.UI.AboutWindow</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_C101F39CAEDB0AB6AEDC3C34831A188B</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_C42B400AE71BB6BA6BF699ADD2FB6317</td><td>0</td><td>Record\{9D1130AC-D460-3450-8A5F-3B034FFB7FCA}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_B595166A59FD21F8A59C0E94FC9C61F9</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_BA54FD41A98B21BD15DE1CA4054A4A4D</td><td>0</td><td>Record\{8AEC8C89-BE21-3D05-9E7B-3B4D24BED531}\1.0.5446.35749</td><td>Class</td><td>Rubberduck.UnitTesting.TestOutcome</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_BD0F9C19C81823A918983B589ED4A327</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_C77B21745A3AC5BC17FDD65FB115DA81</td><td>0</td><td>Record\{289E9AF1-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_C9CD94E9AEF1F96DC657D2181167938D</td><td>1</td><td>Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck.Extension</td><td>Description</td><td>Rubberduck add-in for VBA IDE.</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_CAB9586F4EB2736196D281F558F2330C</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_CD40B55E82ACAD0B5DABA4944A874E2B</td><td>0</td><td>Rubberduck.UI.AboutWindow\CLSID</td><td/><td>{68C79320-E23C-3F76-81B5-031B791F66A7}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_CFD8014200A3A5FCD8DA7A4EF3E032AF</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5440.28269</td><td>Class</td><td>Microsoft.Vbe.Interop.vbext_ComponentType</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_D8042518CB1402FAC72FBAD0EA327348</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5440.28269</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CBB2927919B1FEE6AA3A9F4826A0C633</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CBCDCC09EC41BEDB6249ECCAE0B9AFAC</td><td>0</td><td>Record\{8AEC8C89-BE21-3D05-9E7B-3B4D24BED531}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CC6A11F6C0445762ADA0E88851074772</td><td>0</td><td>Record\{28283ECB-7324-3DB2-8401-C28AC6D19911}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CEE6945D4BF5AE173E93C8BD7B8C9075</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CFD0128D5A9C12BD5DD959D15D4A2D0F</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}</td><td>*</td><td/><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_CFFE9EA9027283140D272BEDB0556C4F</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_D77C4874DBE77AB68100B83A33EF2CA2</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_D796DF3875F30EAA6B05FD4D0F93A0D0</td><td>0</td><td>Record\{28283ECB-7324-3DB2-8401-C28AC6D19911}\1.0.5446.35749</td><td>Class</td><td>Microsoft.Vbe.Interop.vbext_ProcKind</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_D9D04E243B0CC776FD443F9F529DF41B</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\ProgId</td><td/><td>Rubberduck.UI.DockableWindowHost</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_DEF514E04D8957EF63240E1EC67491D1</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32</td><td>Class</td><td>Rubberduck.UnitTesting.AssertClass</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_DA2811A5DD617FAD59893B1E6EBCAA5B</td><td>0</td><td>Record\{289E9AF2-4973-11D1-AE81-00A0C90F26F4}\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_DF2BADD40ADD775E1D4106C84A65D0CB</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32</td><td>Class</td><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_E05302EDAEEC1FF181727EA94672A6CE</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_E0763D064BD8F6070492BCB286087AE1</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32\1.0.5446.35749</td><td>CodeBase</td><td>file:///C:/Users/Christopher/Documents/GitHub/Rubberduck/RetailCoder.VBE/bin/Release/Rubberduck.dll</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_E2C88ECAE08FDC333E9B1FFA5054C4A6</td><td>0</td><td>Rubberduck.Extension\CLSID</td><td/><td>{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_E47137C0ED9963ADF544A779015E3977</td><td>0</td><td>CLSID\{68C79320-E23C-3F76-81B5-031B791F66A7}\InprocServer32</td><td>ThreadingModel</td><td>Both</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_E7F9D4CCC064DB29557E20E5A7C55DDC</td><td>0</td><td>CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32</td><td>Assembly</td><td>Rubberduck, Version=1.0.5440.28269, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_E2DBFC6D58A55C1D9D88EA5FB500BE66</td><td>0</td><td>Record\{BE39F3D5-1B13-11D0-887F-00A0C90F2744}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_E891B9A8A5640AF28E263A305BC33E51</td><td>1</td><td>Software\Microsoft\VBA\VBE\6.0\Addins\Rubberduck.Extension</td><td>CommandLineSafe</td><td>#0</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 		<row><td>_ECF7BC616A16C0F51FB7E91CB6E3E398</td><td>0</td><td>CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}</td><td/><td>Rubberduck.Extension</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_F717B597F2040C186E0AD89A4242EB9C</td><td>0</td><td>CLSID\{9010EBF3-8A2D-3781-BD4D-B446C8BACB72}\InprocServer32\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
-		<row><td>_FA5779F3F030E0533193CB1871C08B95</td><td>0</td><td>Record\{9D1130AC-D460-3450-8A5F-3B034FFB7FCA}\1.0.5440.28269</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_F07609BE9A65422F0B1539FF9E8F62BF</td><td>0</td><td>CLSID\{66374822-6316-38E0-8E0B-C1C9D5A86500}\InprocServer32\1.0.5446.35749</td><td>RuntimeVersion</td><td>v4.0.30319</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_F20B341103D9FC184CD2882A78EB5293</td><td>0</td><td>Record\{6A6A1023-055E-37EB-9B76-48E8A121D67C}\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
+		<row><td>_FD89A92902653D381DFD27291CA81D0F</td><td>0</td><td>CLSID\{AE1A8982-0D9C-3093-823A-082EAB8B5250}\InprocServer32\1.0.5446.35749</td><td>Assembly</td><td>Rubberduck, Version=1.0.5446.35749, Culture=neutral, PublicKeyToken=null</td><td>ISX_DEFAULTCOMPONENT1</td><td/></row>
 	</table>
 
 	<table name="RemoveFile">
