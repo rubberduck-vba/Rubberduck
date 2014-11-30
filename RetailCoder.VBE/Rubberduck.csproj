@@ -57,6 +57,8 @@
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
     <Compile Include="Inspections\IInspection.cs" />
+    <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
+    <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Refactoring\MenuIcons.Designer.cs">

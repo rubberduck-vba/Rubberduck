@@ -1,10 +1,12 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.Inspections
 {
+    [ComVisible(false)]
     public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteCommentSyntaxInspectionResult(string inspection, Instruction instruction, CodeInspectionSeverity type, string message) 

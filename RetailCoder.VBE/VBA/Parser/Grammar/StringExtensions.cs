@@ -45,7 +45,7 @@ namespace Rubberduck.VBA.Parser.Grammar
                 return true;
             }
 
-            index = instruction.IndexOf(ReservedKeywords.Rem, StringComparison.InvariantCulture);
+            index = instruction.IndexOf(ReservedKeywords.Rem + " ", StringComparison.InvariantCulture);
             return index >= 0;
         }
 

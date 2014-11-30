@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets a value indicating the severity level of the code inspection.
         /// </summary>
-        CodeInspectionSeverity Severity { get; }
+        CodeInspectionSeverity Severity { get; set; }
 
         /// <summary>
         /// Gets/sets a valud indicating whether the inspection is enabled or not.
