@@ -30,17 +30,19 @@ namespace Rubberduck
                                       var constructorInfo = type.GetConstructor(Type.EmptyTypes);
                                       return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
                                   })
+                                  .Where(syntax => syntax != null)
                                   .Cast<ISyntax>()
                                   .ToList();
 
             _inspections = Assembly.GetExecutingAssembly()
                                    .GetTypes()
-                                   .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
+                                   .Where(type => type.BaseType ==  typeof(CodeInspection))
                                    .Select(type =>
                                    {
                                        var constructor = type.GetConstructor(Type.EmptyTypes);
                                        return constructor != null ? constructor.Invoke(Type.EmptyTypes) : null;
                                    })
+                                  .Where(inspection => inspection != null)
                                    .Cast<IInspection>()
                                    .ToList();
 

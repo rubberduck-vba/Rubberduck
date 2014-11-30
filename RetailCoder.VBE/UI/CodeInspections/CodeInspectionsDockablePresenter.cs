@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Parser;
@@ -33,7 +34,11 @@ namespace Rubberduck.UI.CodeInspections
             var results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.IsEnabled))
             {
-                results.AddRange(inspection.Inspect(code));
+                var result = inspection.Inspect(code).ToArray();
+                if (result.Length != 0)
+                {
+                    results.AddRange(result);
+                }
             }
 
             DrawResultTree(results);
@@ -44,8 +49,10 @@ namespace Rubberduck.UI.CodeInspections
             var tree = Control.CodeInspectionResultsTree;
             tree.Nodes.Clear();
 
-            foreach (var result in results)
+            foreach (var result in results.OrderBy(r => r.Severity))
             {
+                var node = new TreeNode(result.Message);
+
                 tree.Nodes.Add(result.Message);
             }
         }

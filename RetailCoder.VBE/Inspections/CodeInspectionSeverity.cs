@@ -5,7 +5,10 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public enum CodeInspectionSeverity
     {
+        DoNotShow,
+        Hint,
         Suggestion,
-        Warning
+        Warning,
+        Error
     }
 }

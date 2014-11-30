@@ -21,7 +21,7 @@ namespace Rubberduck.VBA.Parser
             if (_content.HasComment(out index))
             {
                 _comment = _content.Substring(index);
-                _instruction = _content.Substring(0, index);
+                _instruction = _content.Trim().Substring(0, index);
             }
             else
             {

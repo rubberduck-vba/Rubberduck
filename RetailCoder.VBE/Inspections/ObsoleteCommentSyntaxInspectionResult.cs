@@ -6,8 +6,8 @@ namespace Rubberduck.Inspections
 {
     public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
     {
-        public ObsoleteCommentSyntaxInspectionResult(Instruction instruction, CodeInspectionSeverity type, string message) 
-            : base(instruction, type, message)
+        public ObsoleteCommentSyntaxInspectionResult(string inspection, Instruction instruction, CodeInspectionSeverity type, string message) 
+            : base(inspection, instruction, type, message)
         {
         }
 
