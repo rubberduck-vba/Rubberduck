@@ -7,12 +7,19 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(Instruction instruction, CodeInspectionSeverity type, string message)
+        public CodeInspectionResultBase(string inspection, Instruction instruction, CodeInspectionSeverity type, string message)
         {
+            _name = inspection;
             _instruction = instruction;
             _type = type;
             _message = message;
         }
+
+        private readonly string _name;
+        /// <summary>
+        /// Gets a string containing the name of the code inspection.
+        /// </summary>
+        public string Name { get { return _name; } }
 
         private readonly Instruction _instruction;
         /// <summary>

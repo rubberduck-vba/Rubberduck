@@ -52,6 +52,7 @@
     <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="Extensions\Selection.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
+    <Compile Include="Inspections\CodeInspection.cs" />
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
@@ -321,11 +322,13 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Step-RunTest_8814_32.bmp" />
     <None Include="Resources\Warning.bmp" />
     <None Include="Resources\Serious.bmp" />
     <None Include="Resources\OK.bmp" />
     <None Include="Resources\GoLtrHS.bmp" />
     <None Include="Resources\Critical.bmp" />
+    <None Include="Resources\ListsofTests_8643_24.bmp" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

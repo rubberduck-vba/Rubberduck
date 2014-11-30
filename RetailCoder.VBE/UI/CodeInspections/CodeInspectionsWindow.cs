@@ -22,6 +22,19 @@ namespace Rubberduck.UI.CodeInspections
         {
             InitializeComponent();
             RefreshButton.Click += RefreshButtonClicked;
+            CodeInspectionResultsTree.NodeMouseDoubleClick += TreeNodeMouseDoubleClicked;
+        }
+
+        public event EventHandler NavigateCodeIssue;
+        private void TreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            var handler = NavigateCodeIssue;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, EventArgs.Empty);
         }
 
         public event EventHandler RefreshCodeInspections;
@@ -35,7 +48,5 @@ namespace Rubberduck.UI.CodeInspections
 
             handler(this, EventArgs.Empty);
         }
-
-        public event EventHandler NavigateCodeIssue;
     }
 }
