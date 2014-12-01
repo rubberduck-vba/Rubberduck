@@ -18,11 +18,13 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
-            {
-                {"Replace Rem reserved keyword with single quote.", ReplaceWithSingleQuote},
-                {"Remove comment.", RemoveComment}
-            };
+            return !Handled
+                ? new Dictionary<string, Action<VBE>>
+                {
+                    {"Replace Rem reserved keyword with single quote.", ReplaceWithSingleQuote},
+                    {"Remove comment.", RemoveComment}
+                }
+                : new Dictionary<string, Action<VBE>>();
         }
 
         private void ReplaceWithSingleQuote(VBE vbe)
@@ -43,6 +45,8 @@ namespace Rubberduck.Inspections
 
             var line = Instruction.Line.Content.Substring(0, index);
             location.CodeModule.ReplaceLine(location.Selection.StartLine, line);
+
+            Handled = true;
         }
     }
 }

@@ -16,11 +16,13 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
-            {
-                { "Pass parameter by reference explicitly.", PassParameterByRef },
-                { "Pass parameter by value.", PassParameterByVal }
-            };
+            return !Handled
+                ? new Dictionary<string, Action<VBE>>
+                {
+                    {"Pass parameter by reference explicitly.", PassParameterByRef},
+                    {"Pass parameter by value.", PassParameterByVal}
+                }
+                : new Dictionary<string, Action<VBE>>();
         }
 
         private void PassParameterByRef(VBE vbe)
