@@ -36,7 +36,7 @@ namespace Rubberduck
 
             _inspections = Assembly.GetExecutingAssembly()
                                    .GetTypes()
-                                   .Where(type => type.BaseType ==  typeof(CodeInspection))
+                                   .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
                                    .Select(type =>
                                    {
                                        var constructor = type.GetConstructor(Type.EmptyTypes);
@@ -57,7 +57,7 @@ namespace Rubberduck
             foreach (var inspection in _inspections)
             {
                 // todo: fetch value from configuration
-                inspection.IsEnabled = true;
+                // inspection.Severity = ??;
             }
         }
 

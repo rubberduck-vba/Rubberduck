@@ -40,9 +40,9 @@ namespace Rubberduck.UI.CodeInspections
         {
             var code = _parser.Parse(VBE.ActiveVBProject);
             var results = new List<CodeInspectionResultBase>();
-            foreach (var inspection in _inspections.Where(inspection => inspection.IsEnabled))
+            foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {
-                var result = inspection.Inspect(code).ToArray();
+                var result = inspection.GetInspectionResults(code).ToArray();
                 if (result.Length != 0)
                 {
                     results.AddRange(result);

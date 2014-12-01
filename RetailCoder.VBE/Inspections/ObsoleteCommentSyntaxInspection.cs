@@ -7,24 +7,25 @@ using Rubberduck.VBA.Parser.Grammar;
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
-    public class ObsoleteCommentSyntaxInspection : CodeInspection
+    public class ObsoleteCommentSyntaxInspection : IInspection
     {
         /// <summary>
         /// Parameterless constructor required for discovery of implemented code inspections.
         /// </summary>
         public ObsoleteCommentSyntaxInspection()
-            : base("Use of obsolete Rem comment syntax", 
-                   "Replace Rem reserved keyword with single quote.", 
-                   CodeInspectionType.MaintainabilityAndReadabilityIssues, 
-                   CodeInspectionSeverity.Suggestion)
         {
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public override IEnumerable<CodeInspectionResultBase> Inspect(SyntaxTreeNode node)
+        public string Name { get { return "Use of obsolete Rem comment syntax"; } }
+        public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public CodeInspectionSeverity Severity { get; set; }
+
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node)
         {
             var comments = node.FindAllComments();
             var remComments = comments.Where(instruction => instruction.Comment.StartsWith(ReservedKeywords.Rem));
-            return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction, Severity, QuickFixMessage));
+            return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction, Severity));
         }
     }
 }
