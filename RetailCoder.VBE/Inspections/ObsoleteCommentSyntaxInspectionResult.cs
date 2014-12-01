@@ -20,10 +20,10 @@ namespace Rubberduck.Inspections
         {
             return !Handled
                 ? new Dictionary<string, Action<VBE>>
-                {
-                    {"Replace Rem reserved keyword with single quote.", ReplaceWithSingleQuote},
-                    {"Remove comment.", RemoveComment}
-                }
+                    {
+                        {"Replace Rem reserved keyword with single quote.", ReplaceWithSingleQuote},
+                        {"Remove comment.", RemoveComment}
+                    }
                 : new Dictionary<string, Action<VBE>>();
         }
 
@@ -35,6 +35,8 @@ namespace Rubberduck.Inspections
             
             var line = Instruction.Line.Content.Substring(0, index) + "'" + Instruction.Comment.Substring(ReservedKeywords.Rem.Length);
             location.CodeModule.ReplaceLine(location.Selection.StartLine, line);
+
+            Handled = true;
         }
 
         private void RemoveComment(VBE vbe)

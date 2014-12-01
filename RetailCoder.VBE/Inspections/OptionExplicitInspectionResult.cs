@@ -20,9 +20,9 @@ namespace Rubberduck.Inspections
         {
             return !Handled
                 ? new Dictionary<string, Action<VBE>>
-                {
-                    {"Specify Option Explicit.", SpecifyOptionExplicit}
-                }
+                    {
+                        {"Specify Option Explicit.", SpecifyOptionExplicit}
+                    }
                 : new Dictionary<string, Action<VBE>>();
         }
 

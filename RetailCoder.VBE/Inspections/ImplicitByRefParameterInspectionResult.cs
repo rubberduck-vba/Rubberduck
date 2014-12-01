@@ -18,10 +18,10 @@ namespace Rubberduck.Inspections
         {
             return !Handled
                 ? new Dictionary<string, Action<VBE>>
-                {
-                    {"Pass parameter by reference explicitly.", PassParameterByRef},
-                    {"Pass parameter by value.", PassParameterByVal}
-                }
+                    {
+                        {"Pass parameter by reference explicitly.", PassParameterByRef},
+                        {"Pass parameter by value.", PassParameterByVal}
+                    }
                 : new Dictionary<string, Action<VBE>>();
         }
 

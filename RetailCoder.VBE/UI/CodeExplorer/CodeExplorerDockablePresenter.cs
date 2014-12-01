@@ -1,5 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Parser;
@@ -73,9 +79,9 @@ namespace Rubberduck.UI.CodeExplorer
         {
             Control.SolutionTree.Nodes.Clear();
             var projects = VBE.VBProjects.Cast<VBProject>();
-            foreach (var project in projects)
+            foreach (var vbProject in projects)
             {
-                AddProjectNode(_parser.Parse(project));
+                AddProjectNode(_parser.Parse(vbProject));
             }
         }
 
@@ -92,7 +98,8 @@ namespace Rubberduck.UI.CodeExplorer
             projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
 
-            foreach (var module in node.ChildNodes)
+            var moduleNodes = new ConcurrentBag<TreeNode>();
+            foreach(var module in node.ChildNodes)
             {
                 var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
                 moduleNode.ImageKey = GetImageKeyForNode(module);
@@ -107,18 +114,60 @@ namespace Rubberduck.UI.CodeExplorer
                         continue;
                     }
 
-                    var memberNode = new TreeNode(GetNodeText(member));
-                    memberNode.ToolTipText = string.Format("{0} (line {1})", member.GetType().Name, member.Instruction.Line.StartLineNumber);
-                    memberNode.ImageKey = GetImageKeyForNode(member);
-                    memberNode.SelectedImageKey = memberNode.ImageKey;
-                    memberNode.Tag = member.Instruction;
-                    moduleNode.Nodes.Add(memberNode);
+                    if (member.ChildNodes != null)
+                    {
+                        moduleNode.Nodes.Add(AddCodeBlockNode(member));
+                    }
+                }
+                moduleNodes.Add(moduleNode);
+            }
+
+            projectNode.Nodes.AddRange(moduleNodes.ToArray());
+            treeView.Nodes.Add(projectNode);
+        }
+
+        private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
+        {
+            var codeBlockNode = new TreeNode(GetNodeText(node));
+            codeBlockNode.ImageKey = GetImageKeyForNode(node);
+            codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
+            codeBlockNode.Tag = node.Instruction;
+
+            if (node.ChildNodes == null)
+            {
+                return codeBlockNode;
+            }
+
+            foreach (var member in node.ChildNodes)
+            {
+                if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+                {
+                    // don't make a tree node for comments
+                    continue;
                 }
 
-                projectNode.Nodes.Add(moduleNode);
-            }            
+                var memberNode = new TreeNode(GetNodeText(member));
+                
+                memberNode.ToolTipText = string.Format("{0} (line {1})", 
+                                                member.GetType().Name,
+                                                member.Instruction.Line.StartLineNumber);
 
-            treeView.Nodes.Add(projectNode);
+                memberNode.ImageKey = GetImageKeyForNode(member);
+                memberNode.SelectedImageKey = memberNode.ImageKey;
+                memberNode.Tag = member.Instruction;
+
+                if (member.ChildNodes != null)
+                {
+                    foreach (var child in member.ChildNodes)
+                    {
+                        memberNode.Nodes.Add(AddCodeBlockNode(child));
+                    }
+                }
+
+                codeBlockNode.Nodes.Add(memberNode);
+            }
+
+            return codeBlockNode;
         }
 
         private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
@@ -148,7 +197,11 @@ namespace Rubberduck.UI.CodeExplorer
             if (node is ModuleNode)
             {
                 return (node as ModuleNode).IsClassModule
-                    ? "ClassModule"
+                    ? (node.ChildNodes != null 
+                        && node.ChildNodes.OfType<ProcedureNode>().Any()
+                        && node.ChildNodes.OfType<ProcedureNode>().All(childNode => childNode.ChildNodes != null && !childNode.ChildNodes.Any()))
+                        ? "PublicInterface"
+                        : "ClassModule"
                     : "StandardModule";
             }
 
@@ -239,7 +292,42 @@ namespace Rubberduck.UI.CodeExplorer
                 return "PublicField";
             }
 
-            return "ClassModule"; // todo: find a better default.
+            if (node is CodeBlockNode)
+            {
+                return "CodeBlock";
+            }
+
+            if (node is IdentifierNode)
+            {
+                return "Identifier";
+            }
+
+            if (node is ParameterNode)
+            {
+                return "Parameter";
+            }
+
+            if (node is AssignmentNode)
+            {
+                return "Assignment";
+            }
+
+            if (node is UserDefinedTypeMemberNode)
+            {
+                return "PublicField";
+            }
+
+            if (node is EnumMemberNode)
+            {
+                return "EnumItem";
+            }
+
+            if (node is LabelNode)
+            {
+                return "Label";
+            }
+
+            return "Operation";
         }
 
         private string GetNodeText(SyntaxTreeNode node)
@@ -261,11 +349,6 @@ namespace Rubberduck.UI.CodeExplorer
                 return procNode.Identifier.Name;
             }
 
-            if (node is OptionNode)
-            {
-                return node.Instruction.Value;
-            }
-
             if (node is UserDefinedTypeNode)
             {
                 return ((UserDefinedTypeNode) node).Identifier.Name;
@@ -276,19 +359,17 @@ namespace Rubberduck.UI.CodeExplorer
                 return ((EnumNode) node).Identifier.Name;
             }
 
-            if (node is DeclarationNode)
+            if (node is DeclarationNode && node.ChildNodes.Count() == 1)
             {
-                if (node.ChildNodes.Count() == 1)
-                {
-                    return ((IdentifierNode) node.ChildNodes.First()).Name;
-                }
-                else
-                {
-                    return node.Instruction.Value;
-                }
+                return ((IdentifierNode)node.ChildNodes.First()).Name;
             }
 
-            return node.Instruction.Value;
+            if (node is IdentifierNode)
+            {
+                return ((IdentifierNode) node).Name;
+            }
+
+            return node.Instruction.Value.Trim();
         }
     }
 }

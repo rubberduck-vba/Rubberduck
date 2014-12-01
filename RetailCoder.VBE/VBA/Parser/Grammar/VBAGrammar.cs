@@ -10,7 +10,7 @@ namespace Rubberduck.VBA.Parser.Grammar
     public static class VBAGrammar
     {
         private static string IdentifierSyntax { get { return @"(?<identifier>(?:[a-zA-Z][a-zA-Z0-9_]*)|(?:\[[a-zA-Z0-9_]*\]))"; } }
-        private static string ReferenceSyntax { get { return @"(?<reference>(?:(?:(?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?" + IdentifierSyntax + ")"; } }
+        private static string ReferenceSyntax { get { return @"(?:(?<reference>(?:(?:(?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)*)?" + IdentifierSyntax + ")"; } }
 
         /// <summary>
         /// Finds all implementations of <see cref="SyntaxBase"/> in the Rubberduck assembly.
@@ -96,7 +96,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string IfBlockSyntax
         {
-            get { return @"If\s(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
+            get { return @"(?<!End\s)(?:If|Else\sIf\s)(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
         }
 
         public static string ForLoopSyntax
@@ -122,6 +122,11 @@ namespace Rubberduck.VBA.Parser.Grammar
         public static string OptionSyntax
         {
             get { return @"Option\s(?<option>:Base|Compare|Explicit|Private\sModule)(?:\s(?<value>)0|1|Binary|Text|Database)?"; }
+        }
+
+        public static string AssignmentSyntax
+        {
+            get { return ReferenceSyntax + @"\s=\s(?<expression>.*)"; }
         }
     }
 }
