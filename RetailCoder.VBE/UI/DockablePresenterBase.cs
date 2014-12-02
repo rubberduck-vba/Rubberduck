@@ -35,17 +35,17 @@ namespace Rubberduck.UI
             return toolWindow;
         }
 
-        public void Show()
+        public virtual void Show()
         {
             _window.Visible = true;
         }
 
-        public void Close()
+        public virtual void Close()
         {
             _window.Close();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             UserControl.Dispose();
         }

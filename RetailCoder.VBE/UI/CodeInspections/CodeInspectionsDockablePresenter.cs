@@ -30,10 +30,24 @@ namespace Rubberduck.UI.CodeInspections
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
         }
 
+        public override void Show()
+        {
+            if (VBE.ActiveVBProject != null)
+            {
+                OnRefreshCodeInspections(this, EventArgs.Empty);
+            }
+            base.Show();
+        }
+
         private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
         {
             var location = VBE.FindInstruction(e.Instruction);
             location.CodeModule.CodePane.SetSelection(location.Selection);
+
+            var codePane = location.CodeModule.CodePane;
+            var selection = location.Selection;
+            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            codePane.ForceFocus();
         }
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)

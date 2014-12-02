@@ -70,8 +70,7 @@ namespace Rubberduck.UI.CodeExplorer
 
             if (selection.StartLine != 0)
             {
-               codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
-               codePane.ForceFocus();
+               codePane.SetSelection(selection);
             }
         }
 

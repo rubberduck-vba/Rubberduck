@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -19,22 +20,30 @@ namespace Rubberduck.VBA.Parser
 
         public SyntaxTreeNode Parse(VBProject project)
         {
-            var components = project.VBComponents.Cast<VBComponent>().ToList();
             var nodes = new List<SyntaxTreeNode>();
-            foreach (var component in components)
+            try
             {
-                var lineCount = component.CodeModule.CountOfLines;
-                if (lineCount <= 0)
+                var components = project.VBComponents.Cast<VBComponent>().ToList();
+                foreach (var component in components)
                 {
-                    continue;
+                    var lineCount = component.CodeModule.CountOfLines;
+                    if (lineCount <= 0)
+                    {
+                        continue;
+                    }
+
+                    var code = component.CodeModule.Lines[1, lineCount];
+                    var isClassModule = component.Type == vbext_ComponentType.vbext_ct_ClassModule
+                                        || component.Type == vbext_ComponentType.vbext_ct_Document
+                                        || component.Type == vbext_ComponentType.vbext_ct_MSForm;
+
+                    nodes.Add(Parse(project.Name, component.Name, code, isClassModule));
                 }
-
-                var code = component.CodeModule.Lines[1, lineCount];
-                var isClassModule = component.Type == vbext_ComponentType.vbext_ct_ClassModule
-                                    || component.Type == vbext_ComponentType.vbext_ct_Document
-                                    || component.Type == vbext_ComponentType.vbext_ct_MSForm;
-
-                nodes.Add(Parse(project.Name, component.Name, code, isClassModule));
+            }
+            catch
+            {
+                // todo: handle exception like a chief
+                Debug.Assert(false);
             }
 
             return new ProjectNode(project, nodes);
