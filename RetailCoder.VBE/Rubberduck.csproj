@@ -279,6 +279,9 @@
     <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
       <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\TodoListSettingsControl.resx">
       <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </EmbeddedResource>

@@ -78,8 +78,10 @@ namespace Rubberduck.UI
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            //todo: open settings dialog
-            throw new NotImplementedException();
+            using (var window = new Settings.SettingsDialog())
+            {
+                window.ShowDialog();
+            }
         }
 
         void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)

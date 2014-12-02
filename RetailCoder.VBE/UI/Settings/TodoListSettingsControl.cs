@@ -14,10 +14,14 @@ namespace Rubberduck.UI.Settings
     {
         private TodoSettingView _view;
 
-        public TodoListSettingsControl(TodoSettingView view)
+        public TodoListSettingsControl()
         {
+            //parameterless constructor required for designer
             InitializeComponent();
+        }
 
+        public TodoListSettingsControl(TodoSettingView view):this()
+        {
             _view = view;
             this.tokenListBox.DataSource = _view.Markers;
         }

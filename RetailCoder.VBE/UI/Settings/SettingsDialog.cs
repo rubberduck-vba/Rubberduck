@@ -16,5 +16,10 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
         }
+
+        private void configurationTreeView1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

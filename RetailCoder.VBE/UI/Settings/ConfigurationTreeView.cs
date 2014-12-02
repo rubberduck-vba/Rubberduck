@@ -16,10 +16,14 @@ namespace Rubberduck.UI.Settings
 
         private Configuration _config;
 
-        public ConfigurationTreeView(Configuration config)
+        public ConfigurationTreeView()
         {
+            //parameterless constructor required for designer; use default config for designing
             InitializeComponent();
+        }
 
+        public ConfigurationTreeView(Configuration config) : this()
+        {
             _config = config;
         }
 
