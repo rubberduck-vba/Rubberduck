@@ -36,6 +36,7 @@
             this.addButton = new System.Windows.Forms.Button();
             this.editButton = new System.Windows.Forms.Button();
             this.removeButton = new System.Windows.Forms.Button();
+            this.tokenListLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tokenListBox
@@ -64,7 +65,7 @@
             // priorityLabel
             // 
             this.priorityLabel.AutoSize = true;
-            this.priorityLabel.Location = new System.Drawing.Point(352, 24);
+            this.priorityLabel.Location = new System.Drawing.Point(352, 23);
             this.priorityLabel.Name = "priorityLabel";
             this.priorityLabel.Size = new System.Drawing.Size(41, 13);
             this.priorityLabel.TabIndex = 3;
@@ -73,7 +74,7 @@
             // tokenLabel
             // 
             this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(352, 82);
+            this.tokenLabel.Location = new System.Drawing.Point(352, 81);
             this.tokenLabel.Name = "tokenLabel";
             this.tokenLabel.Size = new System.Drawing.Size(68, 13);
             this.tokenLabel.TabIndex = 4;
@@ -106,10 +107,21 @@
             this.removeButton.Text = "Remove";
             this.removeButton.UseVisualStyleBackColor = true;
             // 
+            // tokenListLabel
+            // 
+            this.tokenListLabel.AutoSize = true;
+            this.tokenListLabel.Location = new System.Drawing.Point(12, 4);
+            this.tokenListLabel.Name = "tokenListLabel";
+            this.tokenListLabel.Size = new System.Drawing.Size(60, 13);
+            this.tokenListLabel.TabIndex = 8;
+            this.tokenListLabel.Text = "Token List:";
+            this.tokenListLabel.Click += new System.EventHandler(this.label1_Click);
+            // 
             // TodoListSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.tokenListLabel);
             this.Controls.Add(this.removeButton);
             this.Controls.Add(this.editButton);
             this.Controls.Add(this.addButton);
@@ -136,5 +148,6 @@
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button editButton;
         private System.Windows.Forms.Button removeButton;
+        private System.Windows.Forms.Label tokenListLabel;
     }
 }

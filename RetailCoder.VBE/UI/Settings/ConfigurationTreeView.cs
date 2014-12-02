@@ -33,7 +33,9 @@ namespace Rubberduck.UI.Settings
             var rootNode = new TreeNode("Rubberduck");
             var todoNode = rootNode.Nodes.Add("Todo List");
             var codeinspectionNode = rootNode.Nodes.Add("Code Inpsections");   
+
             this.settingsTreeView.Nodes.Add(rootNode);
+            this.settingsTreeView.Nodes[0].ExpandAll();
         }
 
         private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
