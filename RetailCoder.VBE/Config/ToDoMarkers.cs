@@ -5,6 +5,14 @@ using Rubberduck.VBA.Parser;
 namespace Rubberduck.Config
 {
     [ComVisible(false)]
+    public enum TodoPriority
+    {
+        Low, 
+        Normal,
+        High
+    }
+
+    [ComVisible(false)]
     public interface IToDoMarker
     {
         int Priority { get; set; }
@@ -22,6 +30,7 @@ namespace Rubberduck.Config
         [XmlAttribute]
         public int Priority { get; set; }
 
+        /// <summary>   Default constructor is required for serialization. DO NOT USE. </summary>
         public ToDoMarker()
         {
             // default constructor required for serialization
@@ -31,6 +40,13 @@ namespace Rubberduck.Config
         {
             Text = text;
             Priority = priority;
+        }
+
+        /// <summary>   Convert this object into a string representation. Over-riden for easy databinding.</summary>
+        /// <returns>   The Text property. </returns>
+        public override string ToString()
+        {
+            return this.Text;
         }
     }
 }

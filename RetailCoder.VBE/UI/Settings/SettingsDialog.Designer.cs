@@ -28,41 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.configurationTreeView1 = new Rubberduck.UI.Settings.ConfigurationTreeView();
-            this.todoListSettingsControl1 = new Rubberduck.UI.Settings.TodoListSettingsControl();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // configurationTreeView1
+            // splitContainer1
             // 
-            this.configurationTreeView1.Location = new System.Drawing.Point(12, 12);
-            this.configurationTreeView1.Name = "configurationTreeView1";
-            this.configurationTreeView1.Size = new System.Drawing.Size(259, 256);
-            this.configurationTreeView1.TabIndex = 0;
-            this.configurationTreeView1.Load += new System.EventHandler(this.configurationTreeView1_Load);
-            // 
-            // todoListSettingsControl1
-            // 
-            this.todoListSettingsControl1.Location = new System.Drawing.Point(277, 2);
-            this.todoListSettingsControl1.Name = "todoListSettingsControl1";
-            this.todoListSettingsControl1.Size = new System.Drawing.Size(530, 294);
-            this.todoListSettingsControl1.TabIndex = 1;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Size = new System.Drawing.Size(799, 297);
+            this.splitContainer1.SplitterDistance = 266;
+            this.splitContainer1.TabIndex = 0;
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(805, 291);
-            this.Controls.Add(this.todoListSettingsControl1);
-            this.Controls.Add(this.configurationTreeView1);
+            this.ClientSize = new System.Drawing.Size(799, 297);
+            this.Controls.Add(this.splitContainer1);
             this.Name = "SettingsDialog";
             this.Text = "SettingsDialog";
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private ConfigurationTreeView configurationTreeView1;
-        private TodoListSettingsControl todoListSettingsControl1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+
+
+
     }
 }

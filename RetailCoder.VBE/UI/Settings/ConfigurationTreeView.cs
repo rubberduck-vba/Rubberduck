@@ -16,15 +16,16 @@ namespace Rubberduck.UI.Settings
 
         private Configuration _config;
 
+        /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
         public ConfigurationTreeView()
         {
-            //parameterless constructor required for designer; use default config for designing
             InitializeComponent();
         }
 
         public ConfigurationTreeView(Configuration config) : this()
         {
             _config = config;
+            InitializeTreeView();
         }
 
         private void InitializeTreeView()
@@ -32,6 +33,7 @@ namespace Rubberduck.UI.Settings
             var rootNode = new TreeNode("Rubberduck");
             var todoNode = rootNode.Nodes.Add("Todo List");
             var codeinspectionNode = rootNode.Nodes.Add("Code Inpsections");   
+            this.settingsTreeView.Nodes.Add(rootNode);
         }
 
         private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e)

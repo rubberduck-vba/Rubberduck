@@ -14,9 +14,9 @@ namespace Rubberduck.UI.Settings
     {
         private TodoSettingView _view;
 
+        /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
         public TodoListSettingsControl()
         {
-            //parameterless constructor required for designer
             InitializeComponent();
         }
 
