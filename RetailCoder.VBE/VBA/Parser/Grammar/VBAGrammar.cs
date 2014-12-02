@@ -103,7 +103,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string IfBlockSyntax
         {
-            get { return @"(?<!End\s)(?:If|Else|Else\sIf?\s)(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
+            get { return @"(?<!End\s)(?:If|Else|ElseIf?\s)(?<condition>.*)\sThen(?:\s(?<expression>.*))?"; }
         }
 
         public static string ForLoopSyntax

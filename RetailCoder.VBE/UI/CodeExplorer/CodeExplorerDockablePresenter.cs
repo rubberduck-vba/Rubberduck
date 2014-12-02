@@ -358,11 +358,6 @@ namespace Rubberduck.UI.CodeExplorer
                 return ((EnumNode) node).Identifier.Name;
             }
 
-            if (node is DeclarationNode && node.ChildNodes.Count() == 1)
-            {
-                return ((IdentifierNode)node.ChildNodes.First()).Name;
-            }
-
             if (node is IdentifierNode)
             {
                 return ((IdentifierNode) node).Name;

@@ -208,6 +208,12 @@ namespace Rubberduck.VBA.Parser
                         result.AddNode(new ExpressionNode(instruction, localScope));
                     }
                 }
+
+                if (lines[currentIndex + 1].Content.Trim().StartsWith(ReservedKeywords.Else))
+                {
+                    break;
+                }
+
                 currentIndex++;
             }
 
