@@ -4,7 +4,8 @@ using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.Config
 {
-    interface IToDoMarker
+    [ComVisible(false)]
+    public interface IToDoMarker
     {
         int Priority { get; set; }
         string Text { get; set; }

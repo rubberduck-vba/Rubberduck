@@ -109,6 +109,7 @@
     <Compile Include="Reflection\Attributes.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
+    <Compile Include="UI\NativeWindowMethods.cs" />
     <Compile Include="UI\Settings\ConfigurationTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
