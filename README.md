@@ -20,7 +20,7 @@ Fully integrated unit testing with minimal (read: next to none) boiler plate cod
 
 Rubberduck will find the Module and Procedure attributes and display your test methods for you in the Test Explorer.
 
-![Test Explorer Window](http://imgur.com/NepssQ8.png)
+![Test Explorer Window](http://imgur.com/bkDOB4w)
 
 ###To-do items
 
@@ -34,7 +34,7 @@ The comments are also configurable, so you can decide what comments to add to yo
 
 Get a bird's eye view of your project with the Code Explorer.
 
-![Code Explorer Window](https://cloud.githubusercontent.com/assets/5751684/5161266/3f88a9d6-7372-11e4-9ff5-19eaa0cfa562.png)
+![Code Explorer Window](http://i.imgur.com/bkDOB4w.png)
 
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.0), and run the Setup.exe. 
