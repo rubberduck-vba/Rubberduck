@@ -43,6 +43,7 @@ namespace Rubberduck.UI
         }
 
         private CommandBarButton _about;
+        private CommandBarButton _settings;
 
         public void Initialize()
         {
@@ -59,12 +60,26 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
+            AddSettingsButton(menu);
+            AddAboutButton(menu);
+        }
+
+        private void AddAboutButton(CommandBarPopup menu)
+        {
             _about = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
             Debug.Assert(_about != null, "_about != null");
 
             _about.Caption = "&About...";
             _about.BeginGroup = true;
             _about.Click += OnAboutClick;
+        }
+
+        private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, Delegate clickHandler)
+        {
+            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            button.Caption = caption;
+            button.BeginGroup = beginGroup;
+            button.Click += clickHandler;
         }
 
         void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
