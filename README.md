@@ -20,7 +20,7 @@ Fully integrated unit testing with minimal (read: next to none) boiler plate cod
 
 Rubberduck will find the Module and Procedure attributes and display your test methods for you in the Test Explorer.
 
-![Test Explorer Window](http://imgur.com/bkDOB4w)
+![Test Explorer Window](http://imgur.com/NepssQ8.png)
 
 ###To-do items
 
