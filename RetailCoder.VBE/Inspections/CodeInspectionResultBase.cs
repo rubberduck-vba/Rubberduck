@@ -1,4 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Parser;
 
@@ -7,12 +11,11 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(string inspection, Instruction instruction, CodeInspectionSeverity type, string message)
+        public CodeInspectionResultBase(string inspection, Instruction instruction, CodeInspectionSeverity type)
         {
             _name = inspection;
             _instruction = instruction;
             _type = type;
-            _message = message;
         }
 
         private readonly string _name;
@@ -33,16 +36,10 @@ namespace Rubberduck.Inspections
         /// </summary>
         public CodeInspectionSeverity Severity { get { return _type; } }
 
-        private readonly string _message;
         /// <summary>
-        /// Gets a short message that describes how the code issue can be fixed.
+        /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
-        public string Message { get { return _message; } }
-
-        /// <summary>
-        /// Addresses the issue by making changes to the code.
-        /// </summary>
-        /// <param name="vbe"></param>
-        public abstract void QuickFix(VBE vbe);
+        /// <returns></returns>
+        public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
     }
 }

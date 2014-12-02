@@ -56,7 +56,7 @@ namespace Rubberduck.Extensions
         public static void SetSelection(this CodePane codePane, Selection selection)
         {
             codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-            codePane.Window.SetFocus();
+            codePane.ForceFocus();
         }
 
         /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
@@ -64,17 +64,16 @@ namespace Rubberduck.Extensions
         {
             codePane.Show();
 
-            IntPtr mainWindowHandle =  codePane.VBE.MainWindow.Handle();
+            var mainWindowHandle =  codePane.VBE.MainWindow.Handle();
             var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(codePane.Window.Caption);
 
             NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
-            IntPtr handle = childWindowFinder.ResultHandle;
+            var handle = childWindowFinder.ResultHandle;
 
             if (handle != IntPtr.Zero)
             {
                 NativeWindowMethods.ActivateWindow(handle, mainWindowHandle);
             }
-
         }
     }
 }

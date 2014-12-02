@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser.Grammar;
 
@@ -13,20 +14,20 @@ namespace Rubberduck.VBA.Parser
         public Instruction(LogicalCodeLine line, int startColumn, int endColumn, string content)
         {
             _line = line;
-            _startColumn = startColumn;
-            _endColumn = endColumn;
+            _startColumn = startColumn == 0 ? 1 : startColumn;
+            _endColumn = endColumn == 0 ? startColumn : endColumn;
             _content = content;
 
             int index;
             if (_content.HasComment(out index))
             {
-                _comment = _content.Substring(index);
-                _instruction = _content.Trim().Substring(0, index);
+                _comment = _content.TrimStart().Substring(index - _content.TakeWhile(c => c == ' ').Count()).Trim();
+                _instruction = _content.TrimStart().Substring(0, index - _content.TakeWhile(c => c == ' ').Count());
             }
             else
             {
                 _comment = string.Empty;
-                _instruction = _content;
+                _instruction = _content.TrimEnd().EndsWith(":") ? _content.TrimEnd().Substring(0, _content.TrimEnd().Length - 1) : _content;
             }
         }
 

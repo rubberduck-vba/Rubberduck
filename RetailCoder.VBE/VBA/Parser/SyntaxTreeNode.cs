@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -66,18 +67,28 @@ namespace Rubberduck.VBA.Parser
             }
         }
 
-        public static IEnumerable<ProcedureNode> FindAllProcedures(SyntaxTreeNode node, ProcedureKind kind)
+        public IEnumerable<ProcedureNode> FindAllProcedures(ProcedureKind? kind = null)
         {
-            if (node.ChildNodes == null || !node.ChildNodes.OfType<ProcedureNode>().Any())
+            var result = FindAllProcedures(this);
+            return kind.HasValue ? result.Where(e => e.Kind == kind) : result;
+        }
+
+        public static IEnumerable<ProcedureNode> FindAllProcedures(SyntaxTreeNode node)
+        {
+            if (node.ChildNodes == null)
             {
                 yield break;
             }
 
-            foreach (var procNode in node.ChildNodes.OfType<ProcedureNode>()
-                                                    .Where(procNode => procNode.Kind == kind)
-                                                    .ToList())
+            foreach (var procNode in node.ChildNodes)
             {
-                yield return procNode;
+                if (procNode.HasChildNodes && procNode.ChildNodes.Any())
+                {
+                    foreach (var childNode in procNode.ChildNodes.OfType<ProcedureNode>())
+                    {
+                        yield return childNode;
+                    }
+                }
             }
         }
     }
