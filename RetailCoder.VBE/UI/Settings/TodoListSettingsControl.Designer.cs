@@ -46,6 +46,7 @@
             this.tokenListBox.Name = "tokenListBox";
             this.tokenListBox.Size = new System.Drawing.Size(331, 238);
             this.tokenListBox.TabIndex = 0;
+            this.tokenListBox.SelectedIndexChanged += new System.EventHandler(this.tokenListBox_SelectedIndexChanged);
             // 
             // tokenTextBox
             // 
@@ -61,6 +62,7 @@
             this.priorityComboBox.Name = "priorityComboBox";
             this.priorityComboBox.Size = new System.Drawing.Size(152, 21);
             this.priorityComboBox.TabIndex = 2;
+            this.priorityComboBox.SelectedIndexChanged += new System.EventHandler(this.priorityComboBox_SelectedIndexChanged);
             // 
             // priorityLabel
             // 
