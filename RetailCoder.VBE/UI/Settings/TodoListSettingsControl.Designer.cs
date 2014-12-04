@@ -34,7 +34,7 @@
             this.priorityLabel = new System.Windows.Forms.Label();
             this.tokenLabel = new System.Windows.Forms.Label();
             this.addButton = new System.Windows.Forms.Button();
-            this.editButton = new System.Windows.Forms.Button();
+            this.saveChangesButton = new System.Windows.Forms.Button();
             this.removeButton = new System.Windows.Forms.Button();
             this.tokenListLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -54,6 +54,7 @@
             this.tokenTextBox.Name = "tokenTextBox";
             this.tokenTextBox.Size = new System.Drawing.Size(152, 20);
             this.tokenTextBox.TabIndex = 1;
+            this.tokenTextBox.TextChanged += new System.EventHandler(this.tokenTextBox_TextChanged);
             // 
             // priorityComboBox
             // 
@@ -91,14 +92,15 @@
             this.addButton.Text = "Add";
             this.addButton.UseVisualStyleBackColor = true;
             // 
-            // editButton
+            // saveChangesButton
             // 
-            this.editButton.Location = new System.Drawing.Point(355, 187);
-            this.editButton.Name = "editButton";
-            this.editButton.Size = new System.Drawing.Size(152, 31);
-            this.editButton.TabIndex = 6;
-            this.editButton.Text = "Edit";
-            this.editButton.UseVisualStyleBackColor = true;
+            this.saveChangesButton.Location = new System.Drawing.Point(355, 187);
+            this.saveChangesButton.Name = "saveChangesButton";
+            this.saveChangesButton.Size = new System.Drawing.Size(152, 31);
+            this.saveChangesButton.TabIndex = 6;
+            this.saveChangesButton.Text = "Change";
+            this.saveChangesButton.UseVisualStyleBackColor = true;
+            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
             // 
             // removeButton
             // 
@@ -125,7 +127,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tokenListLabel);
             this.Controls.Add(this.removeButton);
-            this.Controls.Add(this.editButton);
+            this.Controls.Add(this.saveChangesButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.tokenLabel);
             this.Controls.Add(this.priorityLabel);
@@ -148,7 +150,7 @@
         private System.Windows.Forms.Label priorityLabel;
         private System.Windows.Forms.Label tokenLabel;
         private System.Windows.Forms.Button addButton;
-        private System.Windows.Forms.Button editButton;
+        private System.Windows.Forms.Button saveChangesButton;
         private System.Windows.Forms.Button removeButton;
         private System.Windows.Forms.Label tokenListLabel;
     }

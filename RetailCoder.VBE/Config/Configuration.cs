@@ -8,12 +8,21 @@ namespace Rubberduck.Config
     [ComVisible(false)]
     public static class ConfigurationLoader
     {
+        private static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
+
+        public static void SaveConfiguration<T>(T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+            using (TextWriter textWriter = new StreamWriter(configFile))
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+            }
+        }
+
         public static Configuration LoadConfiguration()
         {
             try
             {
-                string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
-
                 using (StreamReader reader = new StreamReader(configFile))
                 {
                     var deserializer = new XmlSerializer(typeof(Configuration));

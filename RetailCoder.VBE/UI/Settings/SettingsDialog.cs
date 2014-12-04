@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Settings
 
             _config = ConfigurationLoader.GetDefaultConfiguration(); //todo: get actual config
             _treeview = new ConfigurationTreeView(_config);
-            _settingsControl = new TodoListSettingsControl(new TodoSettingView(new List<IToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers)));
+            _settingsControl = new TodoListSettingsControl(new TodoSettingModel(new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers)));
             
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             this.splitContainer1.Panel2.Controls.Add(_settingsControl);

@@ -128,7 +128,7 @@
     <Compile Include="UI\Settings\TodoListSettingsControl.Designer.cs">
       <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoSettingView.cs" />
+    <Compile Include="UI\Settings\TodoSettingModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />

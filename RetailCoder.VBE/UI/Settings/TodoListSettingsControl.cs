@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Settings
 {
     public partial class TodoListSettingsControl : UserControl
     {
-        private TodoSettingView _view;
+        private TodoSettingModel _model;
         private IToDoMarker _activeMarker;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
@@ -22,17 +22,14 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public TodoListSettingsControl(TodoSettingView view):this()
+        public TodoListSettingsControl(TodoSettingModel view):this()
         {
-            _view = view;
-            this.tokenListBox.DataSource = _view.Markers;
+            _model = view;
+            this.tokenListBox.DataSource = _model.Markers;
             this.tokenListBox.SelectedIndex = 0;
             this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
 
-            //todo: disable combo and text box until edit button is clicked
-
             SetActiveMarker();
-            
         }
 
         private void TodoListSettingsControl_Load(object sender, EventArgs e)
@@ -64,6 +61,19 @@ namespace Rubberduck.UI.Settings
         private void tokenListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetActiveMarker();
+        }
+
+        private void saveChangesButton_Click(object sender, EventArgs e)
+        {
+            var index = this.tokenListBox.SelectedIndex;
+            _model.Markers[index].Text = tokenTextBox.Text;
+            _model.Markers[index].Priority = priorityComboBox.SelectedIndex;
+            _model.Save();
+        }
+
+        private void tokenTextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.saveChangesButton.Enabled = true;
         }
 
     }
