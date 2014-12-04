@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
 
-            _config = ConfigurationLoader.GetDefaultConfiguration(); //todo: get actual config
+            _config = ConfigurationLoader.LoadConfiguration();
             _treeview = new ConfigurationTreeView(_config);
             _settingsControl = new TodoListSettingsControl(new TodoSettingModel(new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers)));
             
