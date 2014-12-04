@@ -61,6 +61,8 @@
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
+    <Compile Include="Inspections\OptionExplicitInspection.cs" />
+    <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Refactoring\MenuIcons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -135,6 +137,7 @@
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="VBA\Parser\AssignmentNode.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />

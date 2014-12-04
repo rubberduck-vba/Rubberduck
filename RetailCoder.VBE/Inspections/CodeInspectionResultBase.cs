@@ -41,5 +41,18 @@ namespace Rubberduck.Inspections
         /// </summary>
         /// <returns></returns>
         public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
+
+        /// <summary>
+        /// Gets/sets a value indicating whether inspection result has been handled/fixed.
+        /// </summary>
+        protected bool Handled { get; set; }
+
+        /// <summary>
+        /// Sets <see cref="Handled"/> flag to <c>true</c> without applying any fix.
+        /// </summary>
+        public void Ignore()
+        {
+            Handled = true;
+        }
     }
 }

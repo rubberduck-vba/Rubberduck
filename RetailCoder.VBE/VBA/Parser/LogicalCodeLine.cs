@@ -16,8 +16,8 @@ namespace Rubberduck.VBA.Parser
         {
             _projectName = projectName;
             _componentName = componentName;
-            _startLineNumber = startLineNumber;
-            _endLineNumber = endLineNumber;
+            _startLineNumber = startLineNumber == 0 ? 1 : startLineNumber;
+            _endLineNumber = endLineNumber == 0 ? 1 : endLineNumber;
             _content = content;
         }
 

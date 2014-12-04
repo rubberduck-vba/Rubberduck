@@ -35,7 +35,9 @@ namespace Rubberduck.Extensions
             var modules = FindCodeModules(vbe, projectName, componentName);
             foreach (var module in modules)
             {
-                if (module.Lines[instruction.Selection.StartLine, instruction.Selection.LineCount]
+                var startLine = instruction.Selection.StartLine == 0 ? 1 : instruction.Selection.StartLine;
+
+                if (module.Lines[startLine, instruction.Selection.LineCount]
                          .Replace("_", string.Empty)
                          .Replace("\n\r", string.Empty).Contains(instruction.Content))
                 {

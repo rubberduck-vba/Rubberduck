@@ -34,7 +34,7 @@ The comments are also configurable, so you can decide what comments to add to yo
 
 Get a bird's eye view of your project with the Code Explorer.
 
-![Code Explorer Window](https://cloud.githubusercontent.com/assets/5751684/5161266/3f88a9d6-7372-11e4-9ff5-19eaa0cfa562.png)
+![Code Explorer Window](http://i.imgur.com/bkDOB4w.png)
 
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.0), and run the Setup.exe. 

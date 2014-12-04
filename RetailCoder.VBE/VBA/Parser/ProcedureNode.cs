@@ -16,6 +16,9 @@ namespace Rubberduck.VBA.Parser
             _parameters = CreateParameters(scope + '.' +  _identifier.Name, match).ToList();
         }
 
+        private readonly IEnumerable<ParameterNode> _parameters;
+        public IEnumerable<ParameterNode> Parameters { get { return _parameters; } }
+
         private Identifier CreateIdentifier(string scope, Match match)
         {
             var name = match.Groups["identifier"].Captures[0].Value;
@@ -34,13 +37,16 @@ namespace Rubberduck.VBA.Parser
 
         private IEnumerable<ParameterNode> CreateParameters(string scope, Match match)
         {
-            var parameters = match.Groups["parameters"].Value.Split(',');
+            var parameters = match.Groups["parameter"].Captures.Cast<Capture>();
             var pattern = VBAGrammar.ParameterSyntax;
-            foreach (var parameter in parameters)
+            var caret = 0;
+            foreach (var parameter in parameters.Where(p => !string.IsNullOrEmpty(p.Value)).OrderBy(p => p.Index))
             {
-                var subMatch = Regex.Match(parameter, pattern);
-                var startColumn = Instruction.Value.IndexOf('(') + 1 + subMatch.Index;
-                var endColumn = startColumn + subMatch.Length;
+                // todo: stop assuming the instruction sits on a single line of code _
+                var subMatch = Regex.Match(parameter.Value, pattern);
+                var startColumn = caret + Instruction.Value.IndexOf('(') + 2; // 1 to move after '(', 1 because we want 1-based column number
+                var endColumn = startColumn + subMatch.Value.Length;
+                caret = endColumn + ", ".Length - startColumn;
                 var instruction = new Instruction(Instruction.Line, startColumn, endColumn, subMatch.Value.Replace(",", string.Empty));
 
                 yield return new ParameterNode(instruction, scope, subMatch);
@@ -74,8 +80,5 @@ namespace Rubberduck.VBA.Parser
                     : kind == ReservedKeywords.Sub ? ProcedureKind.Sub : ProcedureKind.Function;
             }
         }
-
-        private readonly IEnumerable<ParameterNode> _parameters;
-        public IEnumerable<ParameterNode> Parameters { get { return _parameters; } }
     }
 }

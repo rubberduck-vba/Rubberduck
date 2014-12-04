@@ -31,11 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeExplorerWindow));
             this.CodeExplorerToolbar = new System.Windows.Forms.ToolStrip();
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SolutionTree = new System.Windows.Forms.TreeView();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -50,6 +50,15 @@
             this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.Refresh;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Refresh";
             // 
             // toolStripSeparator1
             // 
@@ -102,21 +111,21 @@
             this.TreeNodeIcons.Images.SetKeyName(22, "PublicEnum");
             this.TreeNodeIcons.Images.SetKeyName(23, "FriendEnum");
             this.TreeNodeIcons.Images.SetKeyName(24, "PrivateEnum");
-            this.TreeNodeIcons.Images.SetKeyName(25, "PublicEvent");
-            this.TreeNodeIcons.Images.SetKeyName(26, "FriendEvent");
-            this.TreeNodeIcons.Images.SetKeyName(27, "PrivateEvent");
-            this.TreeNodeIcons.Images.SetKeyName(28, "PublicType");
-            this.TreeNodeIcons.Images.SetKeyName(29, "FriendType");
-            this.TreeNodeIcons.Images.SetKeyName(30, "PrivateType");
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.Refresh;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Refresh";
+            this.TreeNodeIcons.Images.SetKeyName(25, "EnumItem");
+            this.TreeNodeIcons.Images.SetKeyName(26, "PublicEvent");
+            this.TreeNodeIcons.Images.SetKeyName(27, "FriendEvent");
+            this.TreeNodeIcons.Images.SetKeyName(28, "PrivateEvent");
+            this.TreeNodeIcons.Images.SetKeyName(29, "PublicType");
+            this.TreeNodeIcons.Images.SetKeyName(30, "FriendType");
+            this.TreeNodeIcons.Images.SetKeyName(31, "PrivateType");
+            this.TreeNodeIcons.Images.SetKeyName(32, "Operation");
+            this.TreeNodeIcons.Images.SetKeyName(33, "CodeBlock");
+            this.TreeNodeIcons.Images.SetKeyName(34, "Identifier");
+            this.TreeNodeIcons.Images.SetKeyName(35, "Parameter");
+            this.TreeNodeIcons.Images.SetKeyName(36, "Assignment");
+            this.TreeNodeIcons.Images.SetKeyName(37, "PublicInterface");
+            this.TreeNodeIcons.Images.SetKeyName(38, "PrivateInterface");
+            this.TreeNodeIcons.Images.SetKeyName(39, "Label");
             // 
             // CodeExplorerWindow
             // 

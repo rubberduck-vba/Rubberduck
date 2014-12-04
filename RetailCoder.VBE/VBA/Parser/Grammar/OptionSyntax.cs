@@ -17,4 +17,19 @@ namespace Rubberduck.VBA.Parser.Grammar
             return new OptionNode(instruction, scope, match);
         }
     }
+
+    [ComVisible(true)]
+    public class AssignmentSyntax : SyntaxBase
+    {
+        protected override bool MatchesSyntax(string instruction, out Match match)
+        {
+            match = Regex.Match(instruction, VBAGrammar.AssignmentSyntax);
+            return match.Success;
+        }
+
+        protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)
+        {
+            return new AssignmentNode(instruction, scope, match);
+        }
+    }
 }
