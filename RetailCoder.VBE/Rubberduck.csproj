@@ -49,6 +49,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="Extensions\Selection.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
@@ -111,6 +112,25 @@
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="UI\NativeWindowMethods.cs" />
+    <Compile Include="UI\Settings\ConfigurationTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\ConfigurationTreeView.Designer.cs">
+      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\TodoListSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\TodoListSettingsControl.Designer.cs">
+      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\TodoSettingModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />
@@ -258,6 +278,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
+      <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\TodoListSettingsControl.resx">
+      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Parser\Grammar\ReservedKeywords.resx">
       <Generator>ResXFileCodeGenerator</Generator>

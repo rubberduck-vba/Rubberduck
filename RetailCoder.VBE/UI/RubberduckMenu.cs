@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
@@ -43,6 +44,7 @@ namespace Rubberduck.UI
         }
 
         private CommandBarButton _about;
+        private CommandBarButton _settings;
 
         public void Initialize()
         {
@@ -59,12 +61,27 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
-            _about = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            Debug.Assert(_about != null, "_about != null");
+            _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
+            _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));
+            
+        }
 
-            _about.Caption = "&About...";
-            _about.BeginGroup = true;
-            _about.Click += OnAboutClick;
+        private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler)
+        {
+            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            button.Caption = caption;
+            button.BeginGroup = beginGroup;
+            button.Click += buttonClickHandler;
+
+            return button;
+        }
+
+        private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            using (var window = new Settings.SettingsDialog())
+            {
+                window.ShowDialog();
+            }
         }
 
         void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
