@@ -63,7 +63,6 @@
             this.priorityComboBox.Name = "priorityComboBox";
             this.priorityComboBox.Size = new System.Drawing.Size(152, 21);
             this.priorityComboBox.TabIndex = 2;
-            this.priorityComboBox.SelectedIndexChanged += new System.EventHandler(this.priorityComboBox_SelectedIndexChanged);
             // 
             // priorityLabel
             // 
@@ -121,7 +120,6 @@
             this.tokenListLabel.Size = new System.Drawing.Size(60, 13);
             this.tokenListLabel.TabIndex = 8;
             this.tokenListLabel.Text = "Token List:";
-            this.tokenListLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // TodoListSettingsControl
             // 
@@ -138,7 +136,6 @@
             this.Controls.Add(this.tokenListBox);
             this.Name = "TodoListSettingsControl";
             this.Size = new System.Drawing.Size(530, 294);
-            this.Load += new System.EventHandler(this.TodoListSettingsControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -22,29 +22,14 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public TodoListSettingsControl(TodoSettingModel view):this()
+        public TodoListSettingsControl(TodoSettingModel model):this()
         {
-            _model = view;
-            this.tokenListBox.DataSource = new BindingList<ToDoMarker>(_model.Markers);
+            _model = model;
+            this.tokenListBox.DataSource = _model.Markers;
             this.tokenListBox.SelectedIndex = 0;
             this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
 
             SetActiveMarker();
-        }
-
-        private void TodoListSettingsControl_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void priorityComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void SetActiveMarker()
@@ -82,7 +67,7 @@ namespace Rubberduck.UI.Settings
             _model.Markers.Add(marker);
             _model.Save();
 
-            this.tokenListBox.DataSource = new BindingList<ToDoMarker>(_model.Markers);
+            this.tokenListBox.DataSource = _model.Markers;
         }
 
         private void removeButton_Click(object sender, EventArgs e)

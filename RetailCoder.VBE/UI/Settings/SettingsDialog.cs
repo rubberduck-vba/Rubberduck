@@ -32,15 +32,5 @@ namespace Rubberduck.UI.Settings
             _settingsControl.Dock = DockStyle.Fill;
 
         }
-
-        private void configurationTreeView1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void todoListSettingsControl1_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

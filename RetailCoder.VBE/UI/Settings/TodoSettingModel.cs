@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rubberduck.Config;
+using System.ComponentModel;
 
 namespace Rubberduck.UI.Settings
 {
     public class TodoSettingModel
     {
-        private List<ToDoMarker> _markers;
-        public List<ToDoMarker> Markers { get { return _markers; } }
+        private BindingList<ToDoMarker> _markers;
+        public BindingList<ToDoMarker> Markers { get { return _markers; } }
 
         public TodoSettingModel(List<ToDoMarker> markers)
         {
-            _markers = markers;
+            _markers = new BindingList<ToDoMarker>(markers);
         }
 
         public void Save()
