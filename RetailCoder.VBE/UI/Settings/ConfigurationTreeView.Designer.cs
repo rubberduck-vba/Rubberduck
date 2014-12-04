@@ -33,8 +33,11 @@
             // 
             // settingsTreeView
             // 
+            this.settingsTreeView.BackColor = System.Drawing.SystemColors.Control;
+            this.settingsTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.settingsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.settingsTreeView.Location = new System.Drawing.Point(0, 0);
+            this.settingsTreeView.Margin = new System.Windows.Forms.Padding(10);
             this.settingsTreeView.Name = "settingsTreeView";
             this.settingsTreeView.Size = new System.Drawing.Size(302, 314);
             this.settingsTreeView.TabIndex = 0;
