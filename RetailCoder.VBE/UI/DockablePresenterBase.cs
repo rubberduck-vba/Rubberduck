@@ -27,12 +27,33 @@ namespace Rubberduck.UI
         {
             object userControlObject = null;
             var toolWindow = _vbe.Windows.CreateToolWindow(_addin, DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
-
+            
             var userControlHost = (DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 
+            EnsureMinimumWindowSize(toolWindow);
+
             userControlHost.AddUserControl(control as UserControl);
             return toolWindow;
+        }
+
+        private void EnsureMinimumWindowSize(Window window)
+        {
+            const int defaultWidth = 350;
+            const int defaultHeight = 200;
+
+            if (window.Visible && window.LinkedWindows == null) //checking these conditions prevents errors
+            {
+                if (window.Width < defaultWidth)
+                {
+                    window.Width = defaultWidth;
+                }
+
+                if (window.Height < defaultHeight)
+                {
+                    window.Height = defaultHeight;
+                }
+            }
         }
 
         public virtual void Show()
