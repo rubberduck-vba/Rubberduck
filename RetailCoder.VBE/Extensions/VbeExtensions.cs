@@ -47,5 +47,22 @@ namespace Rubberduck.Extensions
 
             return null;
         }
+
+        public enum HostApp {Unknown, Excel, Access, Word}
+
+        public static HostApp HostApplication(this VBE vbe)
+        {
+            foreach (Reference reference in vbe.ActiveVBProject.References)
+            {
+                if (reference.BuiltIn && reference.Name != "VBA")
+                {
+                    if (reference.Name == "Excel") return HostApp.Excel;
+                    if (reference.Name == "Access") return HostApp.Access;
+                    if (reference.Name == "Word") return HostApp.Word;
+                }
+            }
+
+            return HostApp.Unknown;
+        }
     }
 }

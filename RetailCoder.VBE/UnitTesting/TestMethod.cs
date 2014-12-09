@@ -41,7 +41,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 var instance = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
-                
+
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
                 duration = instance.TimedMethodCall(_projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;

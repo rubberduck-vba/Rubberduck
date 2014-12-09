@@ -11,6 +11,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
 		Debug|Any CPU = Debug|Any CPU
+		DebugAccess|Any CPU = DebugAccess|Any CPU
 		DVD-5|Any CPU = DVD-5|Any CPU
 		Release|Any CPU = Release|Any CPU
 		SingleImage|Any CPU = SingleImage|Any CPU
@@ -20,6 +21,8 @@ Global
 		{20589DE8-432E-4359-9232-69EB070B7185}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
 		{20589DE8-432E-4359-9232-69EB070B7185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20589DE8-432E-4359-9232-69EB070B7185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20589DE8-432E-4359-9232-69EB070B7185}.DebugAccess|Any CPU.ActiveCfg = DebugAccess|Any CPU
+		{20589DE8-432E-4359-9232-69EB070B7185}.DebugAccess|Any CPU.Build.0 = DebugAccess|Any CPU
 		{20589DE8-432E-4359-9232-69EB070B7185}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
 		{20589DE8-432E-4359-9232-69EB070B7185}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
 		{20589DE8-432E-4359-9232-69EB070B7185}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,6 +33,8 @@ Global
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.DebugAccess|Any CPU.ActiveCfg = DebugAccess|Any CPU
+		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.DebugAccess|Any CPU.Build.0 = DebugAccess|Any CPU
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
 		{10B55A38-F43B-47ED-8DEA-8435647DA2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
