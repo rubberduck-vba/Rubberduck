@@ -19,6 +19,14 @@ namespace Rubberduck.Reflection
         public static void EnsureReferenceToAddInLibrary(this VBProject project)
         {
             var referencePath = System.IO.Path.ChangeExtension(System.Reflection.Assembly.GetExecutingAssembly().Location, ".tlb");
+            //var existing = project.References.Cast<Reference>().Any(r => r.Name == "Rubberduck");
+
+            List<Reference> existing = project.References.Cast<Reference>().Where(r => r.Name == "Rubberduck").ToList();
+            foreach (Reference reference in existing)
+            {
+                project.References.Remove(reference);
+            }
+
             if (project.References.Cast<Reference>().All(r => r.FullPath != referencePath))
             {
                 project.References.AddFromFile(referencePath);
