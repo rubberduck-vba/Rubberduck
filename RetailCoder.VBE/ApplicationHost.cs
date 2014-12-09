@@ -10,25 +10,28 @@ using Microsoft.Vbe.Interop;
 namespace Rubberduck
 {
 
-    public enum HostApp {Unknown, Excel, Access, Word}
+    public enum HostApplicationType { Unknown, Excel, Access, Word }
 
     [ComVisible(false)]
-    public static class ApplicationHost
+    public static class HostApplication
     {
-        public static HostApp Type { get; set; }
+        public static HostApplicationType Type { get; set; }
 
-        public static string Name()
+        public static string Name
         {
-            switch (Type)
+            get
             {
-                case HostApp.Access:
-                    return "Access";
-                case HostApp.Excel:
-                    return "Excel";
-                case HostApp.Word:
-                    return "Word";
-                default:
-                    return "Unknown";
+                switch (Type)
+                {
+                    case HostApplicationType.Access:
+                        return "Access";
+                    case HostApplicationType.Excel:
+                        return "Excel";
+                    case HostApplicationType.Word:
+                        return "Word";
+                    default:
+                        return "Unknown";
+                }
             }
         }
     }

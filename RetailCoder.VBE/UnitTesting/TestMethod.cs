@@ -42,13 +42,13 @@ namespace Rubberduck.UnitTesting
             long duration = 0;
             try
             {
-                object instance = Marshal.GetActiveObject(ApplicationHost.Name() + ".Application");
+                object hostApp = Marshal.GetActiveObject(HostApplication.Name + ".Application");
 
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = TimedMethodCall(instance, _projectName, _moduleName, _methodName);
+                duration = TimedMethodCall(hostApp, _projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
 
-                Marshal.ReleaseComObject(instance);
+                Marshal.ReleaseComObject(hostApp);
                 
                 result = EvaluateResults();
             }
@@ -64,19 +64,19 @@ namespace Rubberduck.UnitTesting
         {
             var stopwatch = Stopwatch.StartNew();
 
-            switch (ApplicationHost.Type)
+            switch (HostApplication.Type)
             {
-                case HostApp.Excel:
+                case HostApplicationType.Excel:
                     var excelApp = (Excel.Application)application;
                     excelApp.Run(string.Concat(projectName, ".", moduleName, ".", methodName));
                     break;
-                case HostApp.Access:
+                case HostApplicationType.Access:
                     var accessApp = (Access.Application)application;
                     accessApp.Run(methodName); //Access blows up with a com exception if passes a fully quantified procedure call
                     break;
-                case HostApp.Word:
+                case HostApplicationType.Word:
                     var wordApp = (Word.Application)application;
-                    wordApp.Run(string.Concat(moduleName, ".", methodName));
+                    wordApp.Run(string.Concat(moduleName, ".", methodName)); //Word takes module.procedure syntax
                     break;
                 default:
                     throw new InvalidOperationException("Unit Testing is not supported in this application.");
