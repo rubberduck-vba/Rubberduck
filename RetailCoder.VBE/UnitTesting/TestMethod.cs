@@ -62,23 +62,21 @@ namespace Rubberduck.UnitTesting
 
         public static long TimedMethodCall(object application, string projectName, string moduleName, string methodName)
         {
-            var procedureToRun = string.Concat(projectName, ".", moduleName, ".", methodName);
-
             var stopwatch = Stopwatch.StartNew();
 
             switch (ApplicationHost.Type)
             {
                 case HostApp.Excel:
                     var excelApp = (Excel.Application)application;
-                    excelApp.Run(procedureToRun);
+                    excelApp.Run(string.Concat(projectName, ".", moduleName, ".", methodName));
                     break;
                 case HostApp.Access:
                     var accessApp = (Access.Application)application;
-                    accessApp.Run(methodName);
+                    accessApp.Run(methodName); //Access blows up with a com exception if passes a fully quantified procedure call
                     break;
                 case HostApp.Word:
                     var wordApp = (Word.Application)application;
-                    wordApp.Run(procedureToRun);
+                    wordApp.Run(string.Concat(moduleName, ".", methodName));
                     break;
                 default:
                     throw new InvalidOperationException("Unit Testing is not supported in this application.");
