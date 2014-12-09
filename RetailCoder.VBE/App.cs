@@ -9,6 +9,7 @@ using Rubberduck.UI;
 using Rubberduck.Config;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.Extensions;
 
 namespace Rubberduck
 {
@@ -20,6 +21,8 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addIn)
         {
+            ApplicationHost.HostApplicationType = vbe.HostApplication();
+
             var config = ConfigurationLoader.LoadConfiguration();
 
             var grammar = Assembly.GetExecutingAssembly()

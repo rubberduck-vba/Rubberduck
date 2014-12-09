@@ -60,6 +60,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationHost.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="Extensions\Selection.cs" />
