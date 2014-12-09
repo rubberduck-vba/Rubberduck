@@ -15,6 +15,21 @@ namespace Rubberduck
     [ComVisible(false)]
     public static class ApplicationHost
     {
-        public static HostApp HostApplicationType { get; set; }
+        public static HostApp Type { get; set; }
+
+        public static string Name()
+        {
+            switch (Type)
+            {
+                case HostApp.Access:
+                    return "Access";
+                case HostApp.Excel:
+                    return "Excel";
+                case HostApp.Word:
+                    return "Word";
+                default:
+                    return "Unknown";
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addIn)
         {
-            ApplicationHost.HostApplicationType = vbe.HostApplication();
+            ApplicationHost.Type = vbe.HostApplication();
 
             var config = ConfigurationLoader.LoadConfiguration();
 

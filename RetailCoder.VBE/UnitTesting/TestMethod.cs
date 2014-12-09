@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Excel = Microsoft.Office.Interop.Excel;
+using Access = Microsoft.Office.Interop.Access;
+using Word = Microsoft.Office.Interop.Word;
 using System.Windows.Forms;
 
 namespace Rubberduck.UnitTesting
@@ -40,10 +42,10 @@ namespace Rubberduck.UnitTesting
             long duration = 0;
             try
             {
-                var instance = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+                object instance = Marshal.GetActiveObject(ApplicationHost.Name() + ".Application");
 
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = instance.TimedMethodCall(_projectName, _moduleName, _methodName);
+                duration = TimedMethodCall(instance, _projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
 
                 Marshal.ReleaseComObject(instance);
@@ -56,6 +58,35 @@ namespace Rubberduck.UnitTesting
             }
             
             return new TestResult(result, duration);
+        }
+
+        public static long TimedMethodCall(object application, string projectName, string moduleName, string methodName)
+        {
+            var procedureToRun = string.Concat(projectName, ".", moduleName, ".", methodName);
+
+            var stopwatch = Stopwatch.StartNew();
+
+            switch (ApplicationHost.Type)
+            {
+                case HostApp.Excel:
+                    var excelApp = (Excel.Application)application;
+                    excelApp.Run(procedureToRun);
+                    break;
+                case HostApp.Access:
+                    var accessApp = (Access.Application)application;
+                    accessApp.Run(methodName);
+                    break;
+                case HostApp.Word:
+                    var wordApp = (Word.Application)application;
+                    wordApp.Run(procedureToRun);
+                    break;
+                default:
+                    throw new InvalidOperationException("Unit Testing is not supported in this application.");
+            }
+
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)

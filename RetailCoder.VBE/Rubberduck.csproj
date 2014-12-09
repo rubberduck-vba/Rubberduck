@@ -154,7 +154,6 @@
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
-    <Compile Include="UnitTesting\ExcelApplicationExtensions.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
@@ -284,6 +283,15 @@
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>6</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Word">
+      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>8</VersionMajor>
+      <VersionMinor>4</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
