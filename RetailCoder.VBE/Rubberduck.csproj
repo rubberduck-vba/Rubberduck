@@ -59,6 +59,8 @@
     <Compile Include="Inspections\IInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Inspections\OptionExplicitInspection.cs" />
@@ -86,6 +88,7 @@
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeExplorer\SyntaxTreeNodeClickEventArgs.cs" />
+    <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
@@ -94,6 +97,8 @@
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.Designer.cs">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeInspections\NavigateCodeIssueEventArgs.cs" />
+    <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoListSettings.cs" />
@@ -362,6 +367,13 @@
     <None Include="Resources\GoLtrHS.bmp" />
     <None Include="Resources\Critical.bmp" />
     <None Include="Resources\ListsofTests_8643_24.bmp" />
+    <None Include="Resources\applycodechanges_6548_321.bmp" />
+    <None Include="Resources\Alert.bmp" />
+    <None Include="Resources\Information.bmp" />
+    <None Include="Resources\Collapse_large.bmp" />
+    <None Include="Resources\Expand_large.bmp" />
+    <None Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
+    <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

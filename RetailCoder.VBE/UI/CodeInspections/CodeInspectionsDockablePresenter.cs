@@ -28,6 +28,13 @@ namespace Rubberduck.UI.CodeInspections
 
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
+            Control.QuickFix += OnQuickFix;
+        }
+
+        private void OnQuickFix(object sender, QuickFixEventArgs e)
+        {
+            e.QuickFix(VBE);
+            OnRefreshCodeInspections(null, EventArgs.Empty);
         }
 
         public override void Show()
@@ -41,13 +48,20 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
         {
-            var location = VBE.FindInstruction(e.Instruction);
-            location.CodeModule.CodePane.SetSelection(location.Selection);
+            try
+            {
+                var location = VBE.FindInstruction(e.Instruction);
+                location.CodeModule.CodePane.SetSelection(location.Selection);
 
-            var codePane = location.CodeModule.CodePane;
-            var selection = location.Selection;
-            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-            codePane.ForceFocus();
+                var codePane = location.CodeModule.CodePane;
+                var selection = location.Selection;
+                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                codePane.ForceFocus();
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.Assert(false);
+            }
         }
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
@@ -63,21 +77,7 @@ namespace Rubberduck.UI.CodeInspections
                 }
             }
 
-            DrawResultTree(results);
-        }
-
-        private void DrawResultTree(IEnumerable<CodeInspectionResultBase> results)
-        {
-            var tree = Control.CodeInspectionResultsTree;
-            tree.Nodes.Clear();
-
-            foreach (var result in results.OrderBy(r => r.Severity))
-            {
-                var node = new TreeNode(result.Name);
-                node.ToolTipText = result.Instruction.Content;
-                node.Tag = result.Instruction;
-                tree.Nodes.Add(node);
-            }
+            Control.SetContent(results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
         }
     }
 }
