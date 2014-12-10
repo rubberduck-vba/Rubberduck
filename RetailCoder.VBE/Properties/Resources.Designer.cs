@@ -63,6 +63,26 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _112_LeftArrowLong_Blue_16x16_72 {
+            get {
+                object obj = ResourceManager.GetObject("112_LeftArrowLong_Blue_16x16_72", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _112_RightArrowLong_Blue_16x16_72 {
+            get {
+                object obj = ResourceManager.GetObject("112_RightArrowLong_Blue_16x16_72", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AddClass_5561_32 {
             get {
                 object obj = ResourceManager.GetObject("AddClass_5561_32", resourceCulture);
@@ -93,6 +113,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Alert {
+            get {
+                object obj = ResourceManager.GetObject("Alert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AllLoadedTests_8644_24 {
             get {
                 object obj = ResourceManager.GetObject("AllLoadedTests_8644_24", resourceCulture);
@@ -103,9 +133,39 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap applycodechanges_6548_32 {
+            get {
+                object obj = ResourceManager.GetObject("applycodechanges_6548_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Collapse_large {
+            get {
+                object obj = ResourceManager.GetObject("Collapse_large", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Critical {
             get {
                 object obj = ResourceManager.GetObject("Critical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Expand_large {
+            get {
+                object obj = ResourceManager.GetObject("Expand_large", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -126,6 +186,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap GroupBy_284_32 {
             get {
                 object obj = ResourceManager.GetObject("GroupBy_284_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Information {
+            get {
+                object obj = ResourceManager.GetObject("Information", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -21,8 +21,8 @@ namespace Rubberduck.Inspections
             return !Handled
                 ? new Dictionary<string, Action<VBE>>
                     {
-                        {"Replace Rem reserved keyword with single quote.", ReplaceWithSingleQuote},
-                        {"Remove comment.", RemoveComment}
+                        {"Replace Rem reserved keyword with single quote", ReplaceWithSingleQuote},
+                        {"Remove comment", RemoveComment}
                     }
                 : new Dictionary<string, Action<VBE>>();
         }

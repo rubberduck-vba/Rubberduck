@@ -14,6 +14,12 @@ namespace Rubberduck.VBA.Parser
         {
             _identifier = CreateIdentifier(scope, match);
             _parameters = CreateParameters(scope + '.' +  _identifier.Name, match).ToList();
+
+            var kind = match.Groups["kind"].Value;
+            _hasReturnType = kind == ReservedKeywords.Function ||
+                             (kind == ReservedKeywords.Property && kind.EndsWith(ReservedKeywords.Get));
+
+            _specifiedReturnType = match.Groups["reference"].Value;
         }
 
         private readonly IEnumerable<ParameterNode> _parameters;
@@ -23,13 +29,8 @@ namespace Rubberduck.VBA.Parser
         {
             var name = match.Groups["identifier"].Captures[0].Value;
 
-            var kind = match.Groups["kind"].Value;
-            var hasReturnType = kind == ReservedKeywords.Function ||
-                                (kind == ReservedKeywords.Property && kind.EndsWith(ReservedKeywords.Get));
-
-            var specifiedType = match.Groups["reference"];
-            var returnType = hasReturnType
-                ? specifiedType.Success ? specifiedType.Value : ReservedKeywords.Variant
+            var returnType = HasReturnType
+                ? string.IsNullOrEmpty(SpecifiedReturnType) ? ReservedKeywords.Variant : SpecifiedReturnType
                 : null;
 
             return new Identifier(scope, name, returnType);
@@ -52,6 +53,9 @@ namespace Rubberduck.VBA.Parser
                 yield return new ParameterNode(instruction, scope, subMatch);
             }
         }
+
+        private bool _hasReturnType;
+        private string _specifiedReturnType;
 
         private readonly Identifier _identifier;
         public Identifier Identifier { get { return _identifier; } }
@@ -79,6 +83,16 @@ namespace Rubberduck.VBA.Parser
                             : ProcedureKind.PropertySet
                     : kind == ReservedKeywords.Sub ? ProcedureKind.Sub : ProcedureKind.Function;
             }
+        }
+
+        public bool HasReturnType
+        {
+            get { return _hasReturnType; }
+        }
+
+        public string SpecifiedReturnType
+        {
+            get { return _specifiedReturnType; }
         }
     }
 }
