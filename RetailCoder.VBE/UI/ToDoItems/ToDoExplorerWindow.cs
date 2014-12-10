@@ -31,12 +31,10 @@ namespace Rubberduck.UI.ToDoItems
         private void InitializeGrid()
         {
             todoItemsGridView.DataSource = _todoItems;
-            var descriptionColumn = todoItemsGridView.Columns["Description"];
-            if (descriptionColumn != null)
-            {
-                descriptionColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
 
+            todoItemsGridView.Columns["Description"].FillWeight = 150;
+            todoItemsGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            
             todoItemsGridView.CellDoubleClick += ToDoGridViewCellDoubleClicked;
             refreshButton.Click += RefreshButtonClicked;
         }
