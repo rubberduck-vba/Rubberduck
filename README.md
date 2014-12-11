@@ -32,9 +32,15 @@ The comments are also configurable, so you can decide what comments to add to yo
 
 ###Code Explorer
 
-Get a bird's eye view of your project with the Code Explorer.
+Get a bird's eye view of your project and navigate anywhere, with the Code Explorer.
 
 ![Code Explorer Window](http://i.imgur.com/bkDOB4w.png)
+
+###Code Inspections
+
+Find code issues in your code - and fix them, with just a few clicks!
+
+![Code Inspections window](http://i.imgur.com/djvt8H5.png)
 
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.0), and run the Setup.exe. 
