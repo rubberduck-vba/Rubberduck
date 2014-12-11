@@ -38,7 +38,7 @@ namespace Rubberduck.UI
 
 
 
-        private static void SetButtonImage(CommandBarButton result, Bitmap image)
+        public static void SetButtonImage(CommandBarButton result, Bitmap image)
         {
             result.FaceId = 0;
 

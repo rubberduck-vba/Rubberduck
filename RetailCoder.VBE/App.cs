@@ -7,6 +7,7 @@ using System;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.Config;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
 
@@ -16,6 +17,7 @@ namespace Rubberduck
     public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;
+        private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
 
         public App(VBE vbe, AddIn addIn)
@@ -50,6 +52,7 @@ namespace Rubberduck
             var parser = new Parser(grammar);
 
             _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, addIn, parser, _inspections);
         }
 
         private void EnableCodeInspections()
@@ -69,6 +72,7 @@ namespace Rubberduck
         public void CreateExtUi()
         {
             _menu.Initialize();
+            _codeInspectionsToolbar.Initialize();
         }
     }
 }

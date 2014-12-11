@@ -23,7 +23,7 @@ namespace Rubberduck.UnitTesting
             return project.VBComponents
                           .Cast<VBComponent>()
                           .Where(component => component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
-                          .Select(component => new { Component = component, Members = component.GetMembers().Where(member => IsTestMethod(member))})
+                          .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => new TestMethod(project.Name, component.Component.Name, method.Name)));
         }
 
@@ -31,7 +31,7 @@ namespace Rubberduck.UnitTesting
         {
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
             {
-                return component.GetMembers().Where(member => IsTestMethod(member))
+                return component.GetMembers().Where(IsTestMethod)
                                 .Select(member => new TestMethod(component.Collection.Parent.Name, component.Name, member.Name));
             }
 

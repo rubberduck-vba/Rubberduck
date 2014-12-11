@@ -73,6 +73,7 @@
             this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Run code inspections";
             // 
             // toolStripSeparator3
             // 
@@ -96,7 +97,7 @@
             this.QuickFixButton.Name = "QuickFixButton";
             this.QuickFixButton.Size = new System.Drawing.Size(53, 22);
             this.QuickFixButton.Text = "Fix";
-            this.QuickFixButton.ToolTipText = "Address the issue.";
+            this.QuickFixButton.ToolTipText = "Address the issue";
             // 
             // toolStripSeparator1
             // 
