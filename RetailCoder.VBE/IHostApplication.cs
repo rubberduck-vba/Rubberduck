@@ -80,8 +80,9 @@ namespace Rubberduck
         public long TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
-            //access supports only single project; I would think it could handle Module.Procedure syntax, but it blows up with a com exception if I try.
-            _application.Run(methodName);
+            //Access only supports Project.Procedure syntax. Error occurs if there are naming conflicts.
+            // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx
+            _application.Run(string.Concat(projectName, ".", methodName));
 
             stopwatch.Stop();
 
