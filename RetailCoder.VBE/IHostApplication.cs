@@ -82,6 +82,7 @@ namespace Rubberduck
             var stopwatch = Stopwatch.StartNew();
             //Access only supports Project.Procedure syntax. Error occurs if there are naming conflicts.
             // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx
+            // https://github.com/retailcoder/Rubberduck/issues/109
             _application.Run(string.Concat(projectName, ".", methodName));
 
             stopwatch.Stop();
