@@ -6,7 +6,6 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace Rubberduck
 {
-    //todo implement disposable and call Marshal.ReleaseComObject() to let go of the application
     [ComVisible(false)]
     public interface IHostApplication
     {
@@ -33,6 +32,13 @@ namespace Rubberduck
             _application.Run(target);
         }
 
+        /// <summary>   Timed call to Application.Run </summary>
+        ///
+        /// <param name="projectName">  Name of the project containing the method to be run. </param>
+        /// <param name="moduleName">   Name of the module containing the method to be run. </param>
+        /// <param name="methodName">   Name of the method run. </param>
+        ///
+        /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
         public long TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -64,6 +70,13 @@ namespace Rubberduck
             _application.Run(target);
         }
 
+        /// <summary>   Timed call to Application.Run </summary>
+        ///
+        /// <param name="projectName">  Name of the project containing the method to be run. </param>
+        /// <param name="moduleName">   Name of the module containing the method to be run. </param>
+        /// <param name="methodName">   Name of the method run. </param>
+        ///
+        /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
         public long TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -95,6 +108,13 @@ namespace Rubberduck
             _application.Run(target);
         }
 
+        /// <summary>   Timed call to Application.Run </summary>
+        ///
+        /// <param name="projectName">  Name of the project containing the method to be run. </param>
+        /// <param name="moduleName">   Name of the module containing the method to be run. </param>
+        /// <param name="methodName">   Name of the method run. </param>
+        ///
+        /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
         public long TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
