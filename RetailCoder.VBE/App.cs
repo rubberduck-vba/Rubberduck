@@ -21,8 +21,6 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addIn)
         {
-            HostApplication.Type = vbe.HostApplication();
-
             var config = ConfigurationLoader.LoadConfiguration();
 
             var grammar = GetImplementedSyntax();

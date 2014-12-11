@@ -49,19 +49,20 @@ namespace Rubberduck.Extensions
         }
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
-        public static HostApplicationType HostApplication(this VBE vbe)
+        /// <returns> Returns null if Unit Testing does not support Host Application.</returns>
+        public static IHostApplication HostApplication(this VBE vbe)
         {
             foreach (Reference reference in vbe.ActiveVBProject.References)
             {
                 if (reference.BuiltIn && reference.Name != "VBA")
                 {
-                    if (reference.Name == "Excel") return HostApplicationType.Excel;
-                    if (reference.Name == "Access") return HostApplicationType.Access;
-                    if (reference.Name == "Word") return HostApplicationType.Word;
+                    if (reference.Name == "Excel") return new ExcelApp();
+                    if (reference.Name == "Access") return new AccessApp();
+                    if (reference.Name == "Word") return new WordApp();
                 }
             }
 
-            return HostApplicationType.Unknown;
+            return null;
         }
     }
 }

@@ -17,12 +17,14 @@ namespace Rubberduck.UnitTesting
     public class TestMethod : IEquatable<TestMethod>
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
+        private readonly IHostApplication _hostApp;
 
-        public TestMethod(string projectName, string moduleName, string methodName)
+        public TestMethod(string projectName, string moduleName, string methodName, IHostApplication hostApp)
         {
             _projectName = projectName;
             _moduleName = moduleName;
             _methodName = methodName;
+            _hostApp = hostApp;
         }
 
         private readonly string _projectName;
@@ -42,13 +44,9 @@ namespace Rubberduck.UnitTesting
             long duration = 0;
             try
             {
-                object hostApp = Marshal.GetActiveObject(HostApplication.Name + ".Application");
-
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = TimedMethodCall(hostApp, _projectName, _moduleName, _methodName);
+                duration =_hostApp.TimedMethodCall( _projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
-
-                Marshal.ReleaseComObject(hostApp);
                 
                 result = EvaluateResults();
             }
@@ -58,33 +56,6 @@ namespace Rubberduck.UnitTesting
             }
             
             return new TestResult(result, duration);
-        }
-
-        public static long TimedMethodCall(object application, string projectName, string moduleName, string methodName)
-        {
-            var stopwatch = Stopwatch.StartNew();
-
-            switch (HostApplication.Type)
-            {
-                case HostApplicationType.Excel:
-                    var excelApp = (Excel.Application)application;
-                    excelApp.Run(string.Concat(projectName, ".", moduleName, ".", methodName));
-                    break;
-                case HostApplicationType.Access:
-                    var accessApp = (Access.Application)application;
-                    accessApp.Run(methodName); //Access blows up with a com exception if passes a fully quantified procedure call
-                    break;
-                case HostApplicationType.Word:
-                    var wordApp = (Word.Application)application;
-                    wordApp.Run(string.Concat(moduleName, ".", methodName)); //Word takes module.procedure syntax
-                    break;
-                default:
-                    throw new InvalidOperationException("Unit Testing is not supported in this application.");
-            }
-
-            stopwatch.Stop();
-
-            return stopwatch.ElapsedMilliseconds;
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)

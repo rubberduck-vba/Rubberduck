@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.Extensions;
 
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
@@ -20,19 +21,23 @@ namespace Rubberduck.UnitTesting
 
         public static IEnumerable<TestMethod> TestMethods(this VBProject project)
         {
+            IHostApplication hostApp = project.VBE.HostApplication();
+
             return project.VBComponents
                           .Cast<VBComponent>()
                           .Where(component => component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(member => IsTestMethod(member))})
-                          .SelectMany(component => component.Members.Select(method => new TestMethod(project.Name, component.Component.Name, method.Name)));
+                          .SelectMany(component => component.Members.Select(method => new TestMethod(project.Name, component.Component.Name, method.Name, hostApp)));
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
+            IHostApplication hostApp = component.VBE.HostApplication();
+
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
             {
                 return component.GetMembers().Where(member => IsTestMethod(member))
-                                .Select(member => new TestMethod(component.Collection.Parent.Name, component.Name, member.Name));
+                                .Select(member => new TestMethod(component.Collection.Parent.Name, component.Name, member.Name, hostApp));
             }
 
             return new List<TestMethod>();
