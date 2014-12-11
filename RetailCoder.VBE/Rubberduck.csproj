@@ -103,6 +103,7 @@
     <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
+    <Compile Include="UI\CodeInspections\CodeInspectionsToolbar.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,6 +153,7 @@
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
+    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="VBA\Parser\AssignmentNode.cs" />
