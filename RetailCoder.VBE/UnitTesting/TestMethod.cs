@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Excel = Microsoft.Office.Interop.Excel;
+using Access = Microsoft.Office.Interop.Access;
+using Word = Microsoft.Office.Interop.Word;
 using System.Windows.Forms;
 
 namespace Rubberduck.UnitTesting
@@ -15,12 +17,14 @@ namespace Rubberduck.UnitTesting
     public class TestMethod : IEquatable<TestMethod>
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
+        private readonly IHostApplication _hostApp;
 
-        public TestMethod(string projectName, string moduleName, string methodName)
+        public TestMethod(string projectName, string moduleName, string methodName, IHostApplication hostApp)
         {
             _projectName = projectName;
             _moduleName = moduleName;
             _methodName = methodName;
+            _hostApp = hostApp;
         }
 
         private readonly string _projectName;
@@ -40,13 +44,9 @@ namespace Rubberduck.UnitTesting
             long duration = 0;
             try
             {
-                var instance = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
-                
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = instance.TimedMethodCall(_projectName, _moduleName, _methodName);
+                duration =_hostApp.TimedMethodCall( _projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
-
-                Marshal.ReleaseComObject(instance);
                 
                 result = EvaluateResults();
             }
