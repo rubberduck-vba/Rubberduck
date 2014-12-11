@@ -66,80 +66,38 @@ namespace Rubberduck
     }
 
     [ComVisible(false)]
-    public class AccessApp : IHostApplication
+    public class AccessApp : HostApplicationBase<Access.Application>
     {
-        Access.Application _application;
-        public AccessApp()
+        public AccessApp() : base("Access") { }
+
+        public override void Run(string target)
         {
-            _application = (Access.Application)Marshal.GetActiveObject("Access.Application");
+            base._application.Run(target);
         }
 
-        ~AccessApp()
+        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
         {
-            Marshal.ReleaseComObject(_application);
-        }
-
-        public void Run(string target)
-        {
-            _application.Run(target);
-        }
-
-        /// <summary>   Timed call to Application.Run </summary>
-        ///
-        /// <param name="projectName">  Name of the project containing the method to be run. </param>
-        /// <param name="moduleName">   Name of the module containing the method to be run. </param>
-        /// <param name="methodName">   Name of the method run. </param>
-        ///
-        /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
-        public long TimedMethodCall(string projectName, string moduleName, string methodName)
-        {
-            var stopwatch = Stopwatch.StartNew();
             //Access only supports Project.Procedure syntax. Error occurs if there are naming conflicts.
             // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx
             // https://github.com/retailcoder/Rubberduck/issues/109
-            _application.Run(string.Concat(projectName, ".", methodName));
-
-            stopwatch.Stop();
-
-            return stopwatch.ElapsedMilliseconds;
+            
+            return string.Concat(projectName, ".", methodName);
         }
     }
 
     [ComVisible(false)]
-    public class WordApp : IHostApplication
+    public class WordApp : HostApplicationBase<Word.Application>
     {
-        Word.Application _application;
-        public WordApp()
+        public WordApp() : base("Word") { }
+
+        public override void Run(string target)
         {
-            _application = (Word.Application)Marshal.GetActiveObject("Word.Application");
+            base._application.Run(target);
         }
 
-        ~WordApp()
+        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
         {
-            Marshal.ReleaseComObject(_application);
-        }
-
-        public void Run(string target)
-        {
-            _application.Run(target);
-        }
-
-        /// <summary>   Timed call to Application.Run </summary>
-        ///
-        /// <param name="projectName">  Name of the project containing the method to be run. </param>
-        /// <param name="moduleName">   Name of the module containing the method to be run. </param>
-        /// <param name="methodName">   Name of the method run. </param>
-        ///
-        /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
-        public long TimedMethodCall(string projectName, string moduleName, string methodName)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            //Word supports single projects only
-            _application.Run(string.Concat(moduleName, ".", methodName));
-
-            stopwatch.Stop();
-
-            return stopwatch.ElapsedMilliseconds;
+            return string.Concat(moduleName, ".", methodName);
         }
     }
 }
