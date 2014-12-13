@@ -75,5 +75,7 @@ namespace Rubberduck.Config
 
         public ToDoListSettings ToDoListSettings
         { get; set; }
+
+        //todo: add CodeInspectionSettings
     }
 }

@@ -74,7 +74,17 @@ namespace Rubberduck
             foreach (var inspection in _inspections)
             {
                 // todo: fetch value from configuration
-                // inspection.Severity = ??;
+                
+                /*
+                foreach (var setting in config.CodeInspectionSettings.CodeInspections)
+                {
+                    if (inspection.Name == setting.Name)
+                    {
+                        inspection.Severity = setting.Severity;
+                        inspection.InspectionType = settings.InspectionType;
+                    }
+                } 
+                 */
             }
         }
 

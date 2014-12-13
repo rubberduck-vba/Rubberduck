@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "Parameter is passed ByRef implicitly"; } }
+        public string Name { get { return InspectionNames.ImplicitByRef; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
         
