@@ -41,11 +41,11 @@ namespace Rubberduck.UnitTesting
         public TestResult Run()
         {
             TestResult result;
-            long duration = 0;
+            TimeSpan duration = new TimeSpan();
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration =_hostApp.TimedMethodCall( _projectName, _moduleName, _methodName);
+                duration = _hostApp.TimedMethodCall(_projectName, _moduleName, _methodName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
@@ -55,7 +55,7 @@ namespace Rubberduck.UnitTesting
                 result = TestResult.Inconclusive("Test raised an error. " + exception.Message);
             }
             
-            return new TestResult(result, duration);
+            return new TestResult(result, duration.Milliseconds);
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)

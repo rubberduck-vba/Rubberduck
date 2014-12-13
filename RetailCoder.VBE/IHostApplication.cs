@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Excel = Microsoft.Office.Interop.Excel;
 using Access = Microsoft.Office.Interop.Access;
 using Word = Microsoft.Office.Interop.Word;
+using System;
 
 namespace Rubberduck
 {
@@ -18,7 +19,7 @@ namespace Rubberduck
         /// <param name="moduleName">   Name of the module containing the method to be run. </param>
         /// <param name="methodName">   Name of the method run. </param>
         /// <returns>   Number of milliseconds it took to run the VBA procedure. </returns>
-        long TimedMethodCall(string projectName, string moduleName, string methodName);
+        TimeSpan TimedMethodCall(string projectName, string moduleName, string methodName);
     }
 
     [ComVisible(false)]
@@ -38,14 +39,14 @@ namespace Rubberduck
         public abstract void Run(string target);
         protected abstract string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName);
 
-        public long TimedMethodCall(string projectName, string moduleName, string methodName)
+        public TimeSpan TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
 
             Run(GenerateFullyQualifiedName(projectName, moduleName, methodName));
 
             stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
+            return stopwatch.Elapsed;
         }
     }
 
