@@ -23,6 +23,7 @@ namespace Rubberduck.UI.Settings
 
             _config = ConfigurationLoader.LoadConfiguration();
             _treeview = new ConfigurationTreeView(_config);
+            //Smell: many nested news
             _settingsControl = new TodoListSettingsControl(new TodoSettingModel(new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers)));
             
             this.splitContainer1.Panel1.Controls.Add(_treeview);

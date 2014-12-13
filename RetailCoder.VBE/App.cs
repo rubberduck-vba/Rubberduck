@@ -29,7 +29,7 @@ namespace Rubberduck
 
             _inspections = GetImplementedCodeInspections();
 
-            EnableCodeInspections();
+            EnableCodeInspections(config);
             var parser = new Parser(grammar);
 
             _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
@@ -69,22 +69,17 @@ namespace Rubberduck
             return grammar;
         }
 
-        private void EnableCodeInspections()
+        private void EnableCodeInspections(Configuration config)
         {
             foreach (var inspection in _inspections)
-            {
-                // todo: fetch value from configuration
-                
-                /*
-                foreach (var setting in config.CodeInspectionSettings.CodeInspections)
+            {           
+                foreach (var setting in config.UserSettings.CodeInspectinSettings.CodeInspections)
                 {
                     if (inspection.Name == setting.Name)
                     {
-                        inspection.Severity = setting.Severity;
-                        inspection.InspectionType = settings.InspectionType;
+                        inspection.Severity = (CodeInspectionSeverity)setting.Severity;
                     }
                 } 
-                 */
             }
         }
 
