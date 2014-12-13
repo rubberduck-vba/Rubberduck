@@ -37,15 +37,12 @@ namespace Rubberduck.Config
 
         public static Configuration GetDefaultConfiguration()
         {
-            var config = new Configuration();
-            var userSettings = new UserSettings();
-            var todoListSettings = new ToDoListSettings();
+            var userSettings = new UserSettings(
+                                    new ToDoListSettings(GetDefaultTodoMarkers()),
+                                    new CodeInspectionSettings(GetDefaultCodeInspections())
+                               );
 
-            todoListSettings.ToDoMarkers = GetDefaultTodoMarkers();
-            userSettings.ToDoListSettings = todoListSettings;
-            config.UserSettings = userSettings;
-
-            return config;
+            return new Configuration(userSettings);
         }
 
         public static ToDoMarker[] GetDefaultTodoMarkers()
@@ -56,6 +53,19 @@ namespace Rubberduck.Config
 
             return new ToDoMarker[] { note, todo, bug };
         }
+
+        public static CodeInspection[] GetDefaultCodeInspections()
+        {
+            // note: any additional inspection settings added in the future need to be added here
+            var optionExplicit = new Config.CodeInspection(InspectionNames.OptionExplicit, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Warning);
+            var implicitVariantReturn = new Config.CodeInspection(InspectionNames.ImplicitVariantReturnType, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Suggestion);
+            var implicitByRef = new Config.CodeInspection(InspectionNames.ImplicitByRef, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Warning);
+            var obsoleteComment = new Config.CodeInspection(InspectionNames.ObsoleteComment, Inspections.CodeInspectionType.MaintainabilityAndReadabilityIssues, Inspections.CodeInspectionSeverity.Suggestion);
+            
+            return new CodeInspection[] { optionExplicit, implicitVariantReturn, implicitByRef, obsoleteComment};
+        }
+
+
     }
 
     [ComVisible(false)]
@@ -63,19 +73,35 @@ namespace Rubberduck.Config
     [XmlRootAttribute(Namespace = "", IsNullable = false)]
     public class Configuration
     {
+        public UserSettings UserSettings { get; set; }
 
-        public UserSettings UserSettings
-        { get; set; }
+        public Configuration()
+        {
+            //default constructor required for serialization
+        }
+
+        public Configuration(UserSettings userSettings)
+        {
+            this.UserSettings = userSettings;
+        }
     }
 
     [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class UserSettings
     {
+        public ToDoListSettings ToDoListSettings { get; set; }
+        public CodeInspectionSettings CodeInspectinSettings { get; set; }
 
-        public ToDoListSettings ToDoListSettings
-        { get; set; }
+        public UserSettings()
+        {
+            //default constructor required for serialization
+        }
 
-        //todo: add CodeInspectionSettings
+        public UserSettings(ToDoListSettings todoSettings, CodeInspectionSettings codeInspectionSettings)
+        {
+            this.ToDoListSettings = todoSettings;
+            this.CodeInspectinSettings = codeInspectionSettings;
+        }
     }
 }

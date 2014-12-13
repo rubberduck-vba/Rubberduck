@@ -38,5 +38,17 @@ namespace Rubberduck.Config
 
         [XmlAttribute]
         public int InspectionType { get; set; }
+
+        public CodeInspection()
+        {
+            //default constructor required for serialization
+        }
+
+        public CodeInspection(string name, CodeInspectionType type, CodeInspectionSeverity severity)
+        {
+            this.Name = name;
+            this.InspectionType = (int)type;
+            this.Severity = (int)severity;
+        }
     }
 }
