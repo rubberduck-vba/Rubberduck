@@ -60,6 +60,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ConfigurationLoader.cs" />
+    <Compile Include="Config\UserSettings.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="Extensions\Selection.cs" />
