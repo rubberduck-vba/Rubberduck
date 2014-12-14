@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.VBA.Parser
@@ -36,19 +37,34 @@ namespace Rubberduck.VBA.Parser
             return new Identifier(scope, name, returnType);
         }
 
+        private static readonly string[] NotParamIdentifiers = {ReservedKeywords.ByRef, ReservedKeywords.ByVal, ReservedKeywords.ParamArray, ReservedKeywords.Optional};
+
         private IEnumerable<ParameterNode> CreateParameters(string scope, Match match)
         {
-            var parameters = match.Groups["parameter"].Captures.Cast<Capture>();
-            var pattern = VBAGrammar.ParameterSyntax;
-            var caret = 0;
-            foreach (var parameter in parameters.Where(p => !string.IsNullOrEmpty(p.Value)).OrderBy(p => p.Index))
+            var parametersPart = match.Groups["parameters"].Value;
+            if (string.IsNullOrEmpty(parametersPart) || parametersPart.EndsWith(")"))
             {
-                // todo: stop assuming the instruction sits on a single line of code _
-                var subMatch = Regex.Match(parameter.Value, pattern);
-                var startColumn = caret + Instruction.Value.IndexOf('(') + 2; // 1 to move after '(', 1 because we want 1-based column number
+                yield break;
+            }
+
+            var parameters = parametersPart.Split(',');
+
+            // +2: 1 to move after '(', 1 because we want 1-based column number:
+            var caret = Instruction.Value.IndexOf('(') + 2; 
+            foreach (var parameter in parameters)
+            {
+                var pattern = VBAGrammar.ParameterSyntax;
+                var subMatch = Regex.Match(parameter.Trim(), pattern);
+
+                if (!subMatch.Success || NotParamIdentifiers.Any(keyword => keyword == subMatch.Groups["identifier"].Captures[0].Value.Trim()))
+                {
+                    continue;
+                }
+
+                var startColumn = caret;
                 var endColumn = startColumn + subMatch.Value.Length;
-                caret = endColumn + ", ".Length - startColumn;
-                var instruction = new Instruction(Instruction.Line, startColumn, endColumn, subMatch.Value.Replace(",", string.Empty));
+                caret = endColumn + 2;
+                var instruction = new Instruction(Instruction.Line, startColumn, endColumn, subMatch.Value);
 
                 yield return new ParameterNode(instruction, scope, subMatch);
             }
