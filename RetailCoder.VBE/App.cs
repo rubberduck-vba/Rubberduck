@@ -10,6 +10,7 @@ using Rubberduck.Config;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.Extensions;
 
 namespace Rubberduck
 {
@@ -24,19 +25,20 @@ namespace Rubberduck
         {
             var config = ConfigurationLoader.LoadConfiguration();
 
-            var grammar = Assembly.GetExecutingAssembly()
-                                  .GetTypes()
-                                  .Where(type => type.BaseType == typeof(SyntaxBase))
-                                  .Select(type =>
-                                  {
-                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
-                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
-                                  })
-                                  .Where(syntax => syntax != null)
-                                  .Cast<ISyntax>()
-                                  .ToList();
+            var grammar = GetImplementedSyntax();
 
-            _inspections = Assembly.GetExecutingAssembly()
+            _inspections = GetImplementedCodeInspections();
+
+            EnableCodeInspections();
+            var parser = new Parser(grammar);
+
+            _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, addIn, parser, _inspections);
+        }
+
+        private IList<IInspection> GetImplementedCodeInspections()
+                                  {
+             var inspections = Assembly.GetExecutingAssembly()
                                    .GetTypes()
                                    .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
                                    .Select(type =>
@@ -48,11 +50,23 @@ namespace Rubberduck
                                    .Cast<IInspection>()
                                    .ToList();
 
-            EnableCodeInspections();
-            var parser = new Parser(grammar);
+             return inspections;
+        }
 
-            _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, addIn, parser, _inspections);
+        private static List<ISyntax> GetImplementedSyntax()
+        {
+            var grammar = Assembly.GetExecutingAssembly()
+                                  .GetTypes()
+                                  .Where(type => type.BaseType == typeof(SyntaxBase))
+                                  .Select(type =>
+                                  {
+                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
+                                  })
+                                  .Where(syntax => syntax != null)
+                                  .Cast<ISyntax>()
+                                  .ToList();
+            return grammar;
         }
 
         private void EnableCodeInspections()
