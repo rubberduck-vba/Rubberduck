@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.VBA.Parser
@@ -42,7 +41,7 @@ namespace Rubberduck.VBA.Parser
         private IEnumerable<ParameterNode> CreateParameters(string scope, Match match)
         {
             var parametersPart = match.Groups["parameters"].Value;
-            if (string.IsNullOrEmpty(parametersPart) || parametersPart.EndsWith(")"))
+            if (string.IsNullOrEmpty(parametersPart) || parametersPart.EndsWith("("))
             {
                 yield break;
             }

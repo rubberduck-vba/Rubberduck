@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
-using Excel = Microsoft.Office.Interop.Excel;
-using Access = Microsoft.Office.Interop.Access;
-using Word = Microsoft.Office.Interop.Word;
-using System.Windows.Forms;
 
 namespace Rubberduck.UnitTesting
 {
@@ -36,12 +28,12 @@ namespace Rubberduck.UnitTesting
         private readonly string _methodName;
         public string MethodName { get { return _methodName; } }
 
-        public string QualifiedName { get { return string.Concat(this.ProjectName, ".", this.ModuleName, ".", this.MethodName); } }
+        public string QualifiedName { get { return string.Concat(ProjectName, ".", ModuleName, ".", MethodName); } }
 
         public TestResult Run()
         {
             TestResult result;
-            TimeSpan duration = new TimeSpan();
+            var duration = new TimeSpan();
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
@@ -77,18 +69,18 @@ namespace Rubberduck.UnitTesting
 
         public bool Equals(TestMethod other)
         {
-            return this.QualifiedName == other.QualifiedName;
+            return QualifiedName == other.QualifiedName;
         }
 
         public override bool Equals(object obj)
         {
             return obj is TestMethod
-                && ((TestMethod)obj).QualifiedName == this.QualifiedName;
+                && ((TestMethod)obj).QualifiedName == QualifiedName;
         }
 
         public override int GetHashCode()
         {
-            return this.QualifiedName.GetHashCode();
+            return QualifiedName.GetHashCode();
         }
     }
 }
