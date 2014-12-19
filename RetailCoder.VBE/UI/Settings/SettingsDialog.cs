@@ -9,13 +9,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Config;
 
+//todo: this class needs serious clean up
+
 namespace Rubberduck.UI.Settings
 {
     public partial class SettingsDialog : Form
     {
         private Configuration _config;
         private ConfigurationTreeViewControl _treeview;
-        private Control _settingsControl;
+        private Control _todoList;
+        private Control _inspections;
 
         public SettingsDialog()
         {
@@ -25,13 +28,13 @@ namespace Rubberduck.UI.Settings
             _treeview = new ConfigurationTreeViewControl(_config);
 
             var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-            _settingsControl = new TodoListSettingsControl(new TodoSettingModel(markers));
+            _todoList = new TodoListSettingsControl(new TodoSettingModel(markers));
            
             this.splitContainer1.Panel1.Controls.Add(_treeview);
-            this.splitContainer1.Panel2.Controls.Add(_settingsControl);
+            this.splitContainer1.Panel2.Controls.Add(_todoList);
 
             _treeview.Dock = DockStyle.Fill;
-            _settingsControl.Dock = DockStyle.Fill;
+            _todoList.Dock = DockStyle.Fill;
 
             RegisterEvents();   
         }
@@ -51,16 +54,27 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                //todo: activate todolist control in Panel2
-                return;
+                if (_todoList == null)
+                {
+                    var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
+                    _todoList = new TodoListSettingsControl(new TodoSettingModel(markers));
+                }
+
+                this.splitContainer1.Panel2.Controls.Clear();
+                this.splitContainer1.Panel2.Controls.Add(_todoList);
             }
 
             if (e.Node.Text == "Code Inpsections")
             {
-                //todo: activate inspection control in Panel2
-                return;
+                if (_inspections == null)
+                {
+                    //todo: get inspection config from file
+                    _inspections = new CodeInspectionControl();
+                }
+
+                this.splitContainer1.Panel2.Controls.Clear();
+                this.splitContainer1.Panel2.Controls.Add(_inspections);
             }
-            throw new NotImplementedException();
         }
 
 
