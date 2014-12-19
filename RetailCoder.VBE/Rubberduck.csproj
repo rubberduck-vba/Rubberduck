@@ -137,6 +137,12 @@
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="UI\NativeWindowMethods.cs" />
+    <Compile Include="UI\Settings\CodeInspectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\CodeInspectionControl.Designer.cs">
+      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Settings\ConfigurationTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -343,6 +349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
+      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
       <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
