@@ -67,6 +67,7 @@
     <Compile Include="ParserTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="AssertTests.cs" />
+    <Compile Include="CodeInspectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
