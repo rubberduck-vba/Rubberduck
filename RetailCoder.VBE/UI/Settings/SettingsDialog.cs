@@ -69,7 +69,8 @@ namespace Rubberduck.UI.Settings
                 if (_inspections == null)
                 {
                     //todo: get inspection config from file
-                    _inspections = new CodeInspectionControl();
+                    //note: might want to just pass an enumerable instead
+                    _inspections = new CodeInspectionControl(_config);
                 }
 
                 this.splitContainer1.Panel2.Controls.Clear();
