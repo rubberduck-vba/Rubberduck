@@ -321,5 +321,16 @@ namespace RubberduckTests
 
             Assert.AreEqual(5, declaration.Instruction.StartColumn);
         }
+
+        [TestMethod]
+        public void CommentWithTrailingColonTest()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "' this is a test:\n";
+
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+
+            var node = result.ChildNodes.First();
+        }
     }
 }
