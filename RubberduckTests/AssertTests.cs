@@ -207,6 +207,15 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        public void NullAndEmptyStringAreEqual()
+        {
+            var assert = new AssertClass();
+            assert.AreEqual(null, string.Empty);
+
+            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+        }
+
+        [TestMethod]
         public void NullIsNotComparableWithValues()
         {
             var assert = new AssertClass();
