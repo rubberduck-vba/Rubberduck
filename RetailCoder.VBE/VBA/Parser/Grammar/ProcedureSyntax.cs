@@ -10,7 +10,6 @@ namespace Rubberduck.VBA.Parser.Grammar
         public ProcedureSyntax()
             : base(SyntaxType.HasChildNodes)
         {
-
         }
 
         protected override bool MatchesSyntax(string instruction, out Match match)

@@ -159,6 +159,7 @@
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="VBA\Parser\AssignmentNode.cs" />
+    <Compile Include="VBA\Parser\Grammar\AssignmentSyntax.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
