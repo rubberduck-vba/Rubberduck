@@ -84,6 +84,8 @@
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Inspections\OptionExplicitInspection.cs" />
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
+    <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
+    <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
     <Compile Include="Refactoring\MenuIcons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -170,6 +172,7 @@
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="VBA\Parser\AssignmentNode.cs" />
+    <Compile Include="VBA\Parser\Grammar\AssignmentSyntax.cs" />
     <Compile Include="VBA\Parser\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
@@ -267,15 +270,6 @@
       <Guid>{00000205-0000-0010-8000-00AA006D2EA4}</Guid>
       <VersionMajor>2</VersionMajor>
       <VersionMinor>5</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="DAO">
-      <Guid>{00025E01-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>

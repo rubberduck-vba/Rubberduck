@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    internal static class AssertHandler
+    [ComVisible(false)]
+    public static class AssertHandler
     {
-        internal static event EventHandler<AssertCompletedEventArgs> OnAssertCompleted;
+        public static event EventHandler<AssertCompletedEventArgs> OnAssertCompleted;
 
         public static void OnAssertSucceeded()
         {

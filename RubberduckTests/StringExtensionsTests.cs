@@ -15,12 +15,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void TestAssertAreNotSameNullNull()
-        {
-            Assert.AreNotSame(null, null);
-        }
-
-        [TestMethod]
         public void StripsStringLiteral()
         {
             var value = "\"Hello, World!\"";

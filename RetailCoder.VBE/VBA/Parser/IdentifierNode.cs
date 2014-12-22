@@ -63,9 +63,13 @@ namespace Rubberduck.VBA.Parser
         {
             get
             {
-                return RegexMatch.Groups["reference"].Success
-                    ? RegexMatch.Groups["reference"].Value
+                var library = string.IsNullOrEmpty(Library) ? string.Empty : Library + ".";
+                return RegexMatch.Groups["identifier"].Success 
+                    ? library + RegexMatch.Groups["identifier"].Captures[RegexMatch.Groups["identifier"].Captures.Count - 1].Value 
                     : string.Empty;
+                //return RegexMatch.Groups["reference"].Success
+                //    ? RegexMatch.Groups["reference"].Value
+                //    : string.Empty;
             }
         }
 

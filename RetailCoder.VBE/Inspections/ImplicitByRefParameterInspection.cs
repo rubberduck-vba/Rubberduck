@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node)
         {
-            var procedures = node.FindAllProcedures().Where(procedure => procedure.Parameters.Any(parameter => !string.IsNullOrEmpty(parameter.Instruction.Value)));
+            var procedures = node.FindAllProcedures().Where(procedure => procedure.Parameters.Any());
             var targets = procedures.Where(procedure => procedure.Parameters.Any(parameter => parameter.IsImplicitByRef)
                                                     && !procedure.Instruction.Line.IsMultiline);
 

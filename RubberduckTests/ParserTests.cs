@@ -237,7 +237,7 @@ namespace RubberduckTests
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
+            var declaration = result.ChildNodes.FirstOrDefault(node => node as DeclarationNode != null);
             Assert.IsNotNull(declaration);
 
             var identifiers = declaration.ChildNodes.Select(node => node as IdentifierNode).ToList();
@@ -320,6 +320,17 @@ namespace RubberduckTests
                                     .ChildNodes.OfType<DeclarationNode>().First();
 
             Assert.AreEqual(5, declaration.Instruction.StartColumn);
+        }
+
+        [TestMethod]
+        public void CommentWithTrailingColonTest()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "' this is a test:\n";
+
+            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+
+            var node = result.ChildNodes.First();
         }
     }
 }

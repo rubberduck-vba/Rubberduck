@@ -10,7 +10,7 @@ namespace Rubberduck.VBA.Parser.Grammar
     public static class VBAGrammar
     {
         private static string IdentifierSyntax { get { return @"(?<identifier>(?:[a-zA-Z][a-zA-Z0-9_]*)|(?:\[[a-zA-Z0-9_]*\]))"; } }
-        private static string ReferenceSyntax { get { return @"(?:(?<reference>(?:(?:(?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)*)?" + IdentifierSyntax + ")"; } }
+        private static string ReferenceSyntax { get { return @"((?:(?<reference>(?:(?:(?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)*)?" + IdentifierSyntax + "))"; } }
 
         /// <summary>
         /// Finds all implementations of <see cref="SyntaxBase"/> in the Rubberduck assembly.
@@ -79,10 +79,7 @@ namespace Rubberduck.VBA.Parser.Grammar
             get
             {
                 return
-                    @"(?:(?<accessibility>Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s(?<identifier>(?:[a-zA-Z][a-zA-Z0-9_]*)|(?:\[[a-zA-Z0-9_]*\]))\((?<parameters>(?:(?<parameter>(?:[^,)]*)(?:\,\s)?))*)?\)(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\])))?";
-                return @"^(?:(?<accessibility>Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s" +
-                       IdentifierSyntax + @"\(" + ParameterSyntax + @"\)" +
-                       @"(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\])))?";
+                    @"(?:(?<accessibility>Friend|Private|Public)\s)?(?:(?<kind>Sub|Function|Property\s(Get|Let|Set)))\s(?<identifier>(?:[a-zA-Z][a-zA-Z0-9_]*)|(?:\[[a-zA-Z0-9_]*\]))\((?<parameters>(?:\(\)|[^()])*)?\)(?:\sAs\s(?<reference>(((?<library>[a-zA-Z][a-zA-Z0-9_]*))\.)?(?<identifier1>([a-zA-Z][a-zA-Z0-9_]*)|\[[a-zA-Z0-9_]*\]))(?<array>\(\))?)?";
             }
         }
 
@@ -90,12 +87,11 @@ namespace Rubberduck.VBA.Parser.Grammar
         {
             get
             {
-                var syntax =
-                    @"(?:(?<parameter>(?:\s?(?<optional>Optional)\s)?(?<by>ByRef|ByVal|ParamArray)?\s)?(?:" +
-                    IdentifierSyntax +
-                    @")(?<specifier>[%&@!#$])?(?<array>\((?<size>(?:(?:[0-9]+)\,?\s?)*|(?:[0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs(?:\s" +
-                    ReferenceSyntax +
-                    @")?)*)";
+                var identifierPart =IdentifierSyntax + @"(?<specifier>[%&@!#$])?(?<array>\((?<size>(([0-9]+)\,?\s?)*|([0-9]+\sTo\s[0-9]+\,?\s?)+)\))?(?<as>\sAs\s" + ReferenceSyntax + @")?";
+
+                var syntax = @"(?<parameter>(?:((?<optional>Optional)\s)?(?<by>ByRef|ByVal|ParamArray)?\s?)*"
+                    + identifierPart + @")";
+
 
                 return syntax;
             }

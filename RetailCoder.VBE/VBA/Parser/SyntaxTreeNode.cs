@@ -91,5 +91,28 @@ namespace Rubberduck.VBA.Parser
                 }
             }
         }
+
+        public IEnumerable<DeclarationNode> FindAllDeclarations()
+        {
+            return FindAllDeclarations(this);
+        }
+
+        public static IEnumerable<DeclarationNode> FindAllDeclarations(SyntaxTreeNode node)
+        {
+            if (node is DeclarationNode)
+            {
+                yield return node as DeclarationNode;
+            }
+
+            if (node.ChildNodes == null) yield break;
+            foreach (var childNode in node.ChildNodes.ToList())
+            {
+                var declarations = FindAllDeclarations(childNode);
+                foreach (var declaration in declarations)
+                {
+                    yield return declaration;
+                }
+            }
+        }
     }
 }

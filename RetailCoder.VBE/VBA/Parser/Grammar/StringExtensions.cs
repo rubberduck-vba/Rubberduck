@@ -21,6 +21,11 @@ namespace Rubberduck.VBA.Parser.Grammar
             int index;
             if (line.HasComment(out index))
             {
+                if (index == 0)
+                {
+                    return line;
+                }
+
                 return line.EndsWith(":") 
                     ? line.Substring(0, index - 2) 
                     : line.Substring(0, index).TrimEnd();

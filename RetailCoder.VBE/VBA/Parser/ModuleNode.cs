@@ -27,7 +27,12 @@ namespace Rubberduck.VBA.Parser
     public class ProjectNode : SyntaxTreeNode
     {
         public ProjectNode(VBProject project, IEnumerable<SyntaxTreeNode> nodes)
-            : base(Instruction.Empty(new LogicalCodeLine(project.Name, project.Name, 0, 0, string.Empty)), string.Empty, null, nodes)
+            : this(project.Name, nodes)
+        {
+        }
+
+        public ProjectNode(string projectName, IEnumerable<SyntaxTreeNode> nodes)
+            : base(Instruction.Empty(new LogicalCodeLine(projectName, projectName, 0, 0, string.Empty)), string.Empty, null, nodes)
         {
         }
     }
