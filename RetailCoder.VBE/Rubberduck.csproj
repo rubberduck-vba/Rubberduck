@@ -82,6 +82,8 @@
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionResult.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspection.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Inspections\OptionExplicitInspection.cs" />
