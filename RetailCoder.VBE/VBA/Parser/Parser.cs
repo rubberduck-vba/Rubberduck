@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -12,7 +12,6 @@ namespace Rubberduck.VBA.Parser
     public class Parser
     {
         private readonly IEnumerable<ISyntax> _grammar;
-
         public Parser(IEnumerable<ISyntax> grammar)
         {
             _grammar = grammar;
@@ -99,7 +98,6 @@ namespace Rubberduck.VBA.Parser
 
         private IEnumerable<SyntaxTreeNode> ParseModuleMembers(string publicScope, string localScope, IEnumerable<LogicalCodeLine> logicalCodeLines)
         {
-            var currentLocalScope = localScope;
             var lines = logicalCodeLines.ToArray();
             for (var index = 0; index < lines.Length; index++)
             {
@@ -116,7 +114,7 @@ namespace Rubberduck.VBA.Parser
                     foreach (var syntax in _grammar.Where(s => !s.IsChildNodeSyntax))
                     {
                         SyntaxTreeNode node;
-                        if (!syntax.IsMatch(publicScope, currentLocalScope, instruction, out node))
+                        if (!syntax.IsMatch(publicScope, localScope, instruction, out node))
                         {
                             continue;
                         }
@@ -128,15 +126,12 @@ namespace Rubberduck.VBA.Parser
                             {
                                 if (node is ProcedureNode)
                                 {
-                                    currentLocalScope = localScope + "." + (node as ProcedureNode).Identifier.Name;
-                                    yield return  ParseProcedure(publicScope, currentLocalScope, node as ProcedureNode, lines, ref index);
-                                    currentLocalScope = localScope; 
+                                    yield return ParseProcedure(publicScope, localScope + "." + (node as ProcedureNode).Identifier.Name, node as ProcedureNode, lines, ref index);
                                     parsed = true;
                                     break;
                                 }
 
-                                yield return ParseCodeBlock(publicScope, currentLocalScope, codeBlockNode, lines, ref index);
-                                currentLocalScope = localScope;
+                                yield return ParseCodeBlock(publicScope, localScope, codeBlockNode, lines, ref index);
                                 parsed = true;
                                 break;
                             }
@@ -148,7 +143,7 @@ namespace Rubberduck.VBA.Parser
 
                     if (!parsed)
                     {
-                        yield return new ExpressionNode(instruction, currentLocalScope);
+                        yield return new ExpressionNode(instruction, localScope);
                     }
                 }
             }
