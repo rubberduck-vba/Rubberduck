@@ -13,7 +13,6 @@ namespace Rubberduck.UI.Settings
 {
     public partial class CodeInspectionControl : UserControl
     {
-        private Configuration _config;
         private BindingList<CodeInspection> _inspections;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
@@ -22,12 +21,10 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        //todo: only require a code inspection list
-        public CodeInspectionControl(Configuration config)
+        public CodeInspectionControl(List<CodeInspection> inspections)
             : this()
         {
-            _config = config;
-            _inspections = new BindingList<CodeInspection>(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
+            _inspections = new BindingList<CodeInspection>(inspections);
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.DataSource = _inspections;
 

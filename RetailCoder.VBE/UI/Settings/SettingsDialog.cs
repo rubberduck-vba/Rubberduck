@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
                 if (_inspections == null)
                 {
                     //note: might want to just pass an enumerable instead
-                    _inspections = new CodeInspectionControl(_config);
+                    _inspections = new CodeInspectionControl(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
                     _inspections.Dock = DockStyle.Fill;
                 }
 
