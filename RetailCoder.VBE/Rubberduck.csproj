@@ -69,6 +69,7 @@
     <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="ExcelApp.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
+    <Compile Include="Extensions\OutlookApp.cs" />
     <Compile Include="Extensions\Selection.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="HostApplicationBase.cs" />
@@ -87,6 +88,8 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
+    <Compile Include="PowerPointApp.cs" />
+    <Compile Include="PublisherApp.cs" />
     <Compile Include="Refactoring\MenuIcons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

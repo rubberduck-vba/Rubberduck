@@ -59,9 +59,9 @@ namespace Rubberduck.Extensions
                     if (reference.Name == "Excel") return new ExcelApp();
                     if (reference.Name == "Access") return new AccessApp();
                     if (reference.Name == "Word") return new WordApp();
-                    //if (reference.Name == "PowerPoint") return new PowerPointApp();
-                    //if (reference.Name == "Outlook") return new OutlookApp();
-                    //if (reference.Name == "Publisher") return new PublisherApp();
+                    if (reference.Name == "PowerPoint") return new PowerPointApp();
+                    if (reference.Name == "Outlook") return new OutlookApp();
+                    if (reference.Name == "Publisher") return new PublisherApp();
                 }
             }
 
