@@ -63,6 +63,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.PowerPoint\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.PowerPoint.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Publisher, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Publisher\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Publisher.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -91,6 +96,8 @@
     <Compile Include="Inspections\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionResult.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspection.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspection.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionResult.cs" />
     <Compile Include="Inspections\OptionExplicitInspection.cs" />

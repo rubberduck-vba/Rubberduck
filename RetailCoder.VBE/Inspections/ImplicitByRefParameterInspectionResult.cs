@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser;
@@ -22,6 +21,7 @@ namespace Rubberduck.Inspections
         {
             if ((Node as ParameterNode).Identifier.IsArray)
             {
+                // array parameters must be passed by reference
                 return new Dictionary<string, Action<VBE>>
                 {
                     {"Pass parameter by reference explicitly", PassParameterByRef}
