@@ -19,6 +19,7 @@ namespace Rubberduck.UI.CodeInspections
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
         private readonly IList<IInspection> _inspections;
+        private List<CodeInspectionResultBase> _results;
 
         public CodeInspectionsDockablePresenter(Parser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin) 
             : base(vbe, addin, new CodeInspectionsWindow())
@@ -35,6 +36,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             e.QuickFix(VBE);
             OnRefreshCodeInspections(null, EventArgs.Empty);
+            Control.FindNextIssue();
         }
 
         public override void Show()
@@ -50,7 +52,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var location = VBE.FindInstruction(e.Instruction);
+                var location = VBE.FindInstruction(e.Node.Instruction);
                 location.CodeModule.CodePane.SetSelection(location.Selection);
 
                 var codePane = location.CodeModule.CodePane;
@@ -67,17 +69,17 @@ namespace Rubberduck.UI.CodeInspections
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
             var code = _parser.Parse(VBE.ActiveVBProject);
-            var results = new List<CodeInspectionResultBase>();
+            _results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {
                 var result = inspection.GetInspectionResults(code).ToArray();
                 if (result.Length != 0)
                 {
-                    results.AddRange(result);
+                    _results.AddRange(result);
                 }
             }
 
-            Control.SetContent(results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+            Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
         }
     }
 }

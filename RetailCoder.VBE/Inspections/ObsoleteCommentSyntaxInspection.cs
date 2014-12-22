@@ -24,7 +24,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node)
         {
             var comments = node.FindAllComments();
-            var remComments = comments.Where(instruction => instruction.Comment.StartsWith(ReservedKeywords.Rem));
+            var remComments = comments.Where(instruction => instruction.Comment.StartsWith(ReservedKeywords.Rem))
+                                      .Select(instruction => new CommentNode(instruction, node.Scope));
             return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction, Severity));
         }
     }

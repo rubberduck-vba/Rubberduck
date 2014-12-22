@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
                 && !procedure.Instruction.Content.EndsWith(string.Concat(" ", ReservedKeywords.As, " ", ReservedKeywords.Variant))
                 && !procedure.Instruction.Line.IsMultiline);
 
-            return targets.Select(procedure => new ImplicitVariantReturnTypeInspectionResult(Name, procedure.Instruction, Severity));
+            return targets.Select(procedure => new ImplicitVariantReturnTypeInspectionResult(Name, procedure, Severity));
         }
     }
 }
