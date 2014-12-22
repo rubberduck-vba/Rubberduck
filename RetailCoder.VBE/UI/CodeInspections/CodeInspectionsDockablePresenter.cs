@@ -52,7 +52,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var location = VBE.FindInstruction(e.Instruction);
+                var location = VBE.FindInstruction(e.Node.Instruction);
                 location.CodeModule.CodePane.SetSelection(location.Selection);
 
                 var codePane = location.CodeModule.CodePane;

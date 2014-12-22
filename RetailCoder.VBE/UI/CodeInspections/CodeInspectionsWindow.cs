@@ -163,7 +163,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            handler(this, new NavigateCodeIssueEventArgs(item.GetInspectionResultItem().Instruction));
+            handler(this, new NavigateCodeIssueEventArgs(item.GetInspectionResultItem().Node));
         }
 
         public event EventHandler RefreshCodeInspections;

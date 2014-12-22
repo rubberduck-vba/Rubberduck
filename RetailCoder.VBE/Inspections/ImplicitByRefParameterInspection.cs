@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
                                                     && !procedure.Instruction.Line.IsMultiline);
 
             return targets.SelectMany(procedure => procedure.Parameters.Where(parameter => parameter.IsImplicitByRef)
-                .Select(parameter => new ImplicitByRefParameterInspectionResult(Name, parameter.Instruction, Severity)));
+                .Select(parameter => new ImplicitByRefParameterInspectionResult(Name, parameter, Severity)));
         }
     }
 }

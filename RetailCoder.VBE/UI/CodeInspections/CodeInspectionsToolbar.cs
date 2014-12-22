@@ -90,7 +90,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue++;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Instruction));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
         }
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -106,14 +106,14 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue--;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Instruction));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
         {
             try
             {
-                var location = _vbe.FindInstruction(e.Instruction);
+                var location = _vbe.FindInstruction(e.Node.Instruction);
                 location.CodeModule.CodePane.SetSelection(location.Selection);
 
                 var codePane = location.CodeModule.CodePane;

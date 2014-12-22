@@ -11,10 +11,10 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(string inspection, Instruction instruction, CodeInspectionSeverity type)
+        public CodeInspectionResultBase(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type)
         {
             _name = inspection;
-            _instruction = instruction;
+            _node = node;
             _type = type;
         }
 
@@ -24,11 +24,11 @@ namespace Rubberduck.Inspections
         /// </summary>
         public string Name { get { return _name; } }
 
-        private readonly Instruction _instruction;
+        private readonly SyntaxTreeNode _node;
         /// <summary>
-        /// Gets the <see cref="Instruction"/> containing a code issue.
+        /// Gets the <see cref="Node"/> containing a code issue.
         /// </summary>
-        public Instruction Instruction { get { return _instruction; } }
+        public SyntaxTreeNode Node { get { return _node; } }
 
         private readonly CodeInspectionSeverity _type;
         /// <summary>

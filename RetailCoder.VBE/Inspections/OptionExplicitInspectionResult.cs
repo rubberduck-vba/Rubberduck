@@ -11,8 +11,8 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public class OptionExplicitInspectionResult : CodeInspectionResultBase
     {
-        public OptionExplicitInspectionResult(string inspection, Instruction instruction, CodeInspectionSeverity type) 
-            : base(inspection, instruction, type)
+        public OptionExplicitInspectionResult(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type) 
+            : base(inspection, node, type)
         {
         }
 
@@ -28,7 +28,8 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            var modules = vbe.FindCodeModules(Instruction.Line.ProjectName, Instruction.Line.ComponentName);
+            var instruction = Node.Instruction;
+            var modules = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName);
             foreach (var codeModule in modules)
             {
                 codeModule.InsertLines(1, string.Concat(ReservedKeywords.Option, " ", ReservedKeywords.Explicit));
