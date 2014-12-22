@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA.Parser;
@@ -19,42 +20,37 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return !Handled
-                ? new Dictionary<string, Action<VBE>>
-                    {
-                        {"Pass parameter by value", PassParameterByVal},
-                        {"Pass parameter by reference explicitly", PassParameterByRef}
-                    }
-                : new Dictionary<string, Action<VBE>>();
+            if ((Node as ParameterNode).Identifier.IsArray)
+            {
+                return new Dictionary<string, Action<VBE>>
+                {
+                    {"Pass parameter by reference explicitly", PassParameterByRef}
+                };
+            }
+
+            return new Dictionary<string, Action<VBE>>
+                {
+                    {"Pass parameter by value", PassParameterByVal},
+                    {"Pass parameter by reference explicitly", PassParameterByRef}
+                };
         }
 
         private void PassParameterByRef(VBE vbe)
         {
-            var instruction = Node.Instruction;
-            if (!instruction.Line.IsMultiline)
-            {
-                var newContent = string.Concat(ReservedKeywords.ByRef, " ", instruction.Value);
-                var oldContent = instruction.Content;
-
-                var result = oldContent.Replace(instruction.Value, newContent);
-
-                var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
-                module.ReplaceLine(instruction.Line.StartLineNumber, result);
-                Handled = true;
-            }
-            else
-            {
-                // todo: implement for multiline
-                throw new NotImplementedException("This method is not [yet] implemented for multiline instructions.");
-            }
+            ChangeParameterPassing(vbe, ReservedKeywords.ByRef);
         }
 
         private void PassParameterByVal(VBE vbe)
         {
+            ChangeParameterPassing(vbe, ReservedKeywords.ByVal);
+        }
+
+        private void ChangeParameterPassing(VBE vbe, string newValue)
+        {
             var instruction = Node.Instruction;
             if (!instruction.Line.IsMultiline)
             {
-                var newContent = string.Concat(ReservedKeywords.ByVal, " ", instruction.Value);
+                var newContent = string.Concat(newValue, " ", instruction.Value);
                 var oldContent = instruction.Line.Content;
 
                 var result = oldContent.Replace(instruction.Value, newContent);
