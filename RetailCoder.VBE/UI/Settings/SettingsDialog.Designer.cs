@@ -50,6 +50,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "SettingsDialog";
             this.Text = "SettingsDialog";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsDialog_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
