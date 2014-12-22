@@ -8,7 +8,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBA.Parser;
 
 namespace Rubberduck.UI.CodeInspections
@@ -17,17 +16,15 @@ namespace Rubberduck.UI.CodeInspections
     public class CodeInspectionsToolbar
     {
         private readonly VBE _vbe;
-        private readonly AddIn _addin;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly Parser _parser;
 
         private CodeInspectionResultBase[] _issues;
-        private int _currentIssue = 0;
+        private int _currentIssue;
 
-        public CodeInspectionsToolbar(VBE vbe, AddIn addin, Parser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsToolbar(VBE vbe, Parser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
-            _addin = addin;
             _parser = parser;
             _inspections = inspections;
         }
@@ -82,6 +79,11 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            if (_issues.Length == 0)
+            {
+                return;
+            }
+
             if (_currentIssue == _issues.Length - 1)
             {
                 _currentIssue = - 1;
@@ -93,6 +95,11 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            if (_issues.Length == 0)
+            {
+                return;
+            }
+
             if (_currentIssue == 0)
             {
                 _currentIssue = _issues.Length;
@@ -131,6 +138,7 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     fix.Value(_vbe);
                     _refreshButton_Click(null, ref CancelDefault);
+                    _navigateNextButton_Click(null, ref CancelDefault);
                 }
             }
             catch (Exception exception)
