@@ -31,16 +31,21 @@ namespace Rubberduck.UI.Settings
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.DataSource = _inspections;
 
+            this.dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             var nameColumn = new DataGridViewTextBoxColumn();
             nameColumn.Name = "InspectionName";
             nameColumn.DataPropertyName = "Name";
-            nameColumn.HeaderText = "Inspection Name";
+            nameColumn.HeaderText = "Name";
+            nameColumn.FillWeight = 150;
+            nameColumn.ReadOnly = true;
             this.dataGridView1.Columns.Add(nameColumn);
 
             var typeColumn = new DataGridViewTextBoxColumn();
             typeColumn.Name = "InspectionType";
             typeColumn.DataPropertyName = "InspectionType";
             typeColumn.HeaderText = "Type";
+            typeColumn.ReadOnly = true;
             this.dataGridView1.Columns.Add(typeColumn);
 
             var severityColumn = new DataGridViewComboBoxColumn();
@@ -50,7 +55,6 @@ namespace Rubberduck.UI.Settings
             severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
             this.dataGridView1.Columns.Add(severityColumn);
 
-            //todo: sexify form
         }
     }
 }

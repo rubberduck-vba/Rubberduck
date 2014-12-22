@@ -58,6 +58,7 @@ namespace Rubberduck.UI.Settings
                 {
                     var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
                     _todoList = new TodoListSettingsControl(new TodoSettingModel(markers));
+                    _todoList.Dock = DockStyle.Fill;
                 }
 
                 this.splitContainer1.Panel2.Controls.Clear();
@@ -70,10 +71,12 @@ namespace Rubberduck.UI.Settings
                 {
                     //note: might want to just pass an enumerable instead
                     _inspections = new CodeInspectionControl(_config);
+                    _inspections.Dock = DockStyle.Fill;
                 }
 
                 this.splitContainer1.Panel2.Controls.Clear();
                 this.splitContainer1.Panel2.Controls.Add(_inspections);
+                
             }
         }
 
