@@ -17,8 +17,7 @@ namespace Rubberduck.UI.Settings
     {
         private Configuration _config;
         private ConfigurationTreeViewControl _treeview;
-        private Control _todoList;
-        private Control _inspections;
+        private Control _activeControl;
 
         public SettingsDialog()
         {
@@ -27,57 +26,51 @@ namespace Rubberduck.UI.Settings
             _config = ConfigurationLoader.LoadConfiguration();
             _treeview = new ConfigurationTreeViewControl(_config);
 
-            var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-            _todoList = new TodoListSettingsControl(new TodoSettingModel(markers));
-           
             this.splitContainer1.Panel1.Controls.Add(_treeview);
-            this.splitContainer1.Panel2.Controls.Add(_todoList);
-
             _treeview.Dock = DockStyle.Fill;
-            _todoList.Dock = DockStyle.Fill;
 
-            RegisterEvents();   
+            var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
+            ActivateControl(new TodoListSettingsControl(new TodoSettingModel(markers)));
+
+            RegisterEvents();
         }
 
         private void RegisterEvents()
         {
             _treeview.NodeSelected += _treeview_NodeSelected;
-           
+
         }
 
         private void _treeview_NodeSelected(object sender, TreeViewEventArgs e)
         {
+            Control controlToActivate = null;
+
             if (e.Node.Text == "Rubberduck")
             {
-                return;
+                return; //do nothing
             }
 
             if (e.Node.Text == "Todo List")
             {
-                if (_todoList == null)
-                {
-                    var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-                    _todoList = new TodoListSettingsControl(new TodoSettingModel(markers));
-                    _todoList.Dock = DockStyle.Fill;
-                }
-
-                this.splitContainer1.Panel2.Controls.Clear();
-                this.splitContainer1.Panel2.Controls.Add(_todoList);
+                var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
+                controlToActivate = new TodoListSettingsControl(new TodoSettingModel(markers));
             }
 
             if (e.Node.Text == "Code Inpsections")
             {
-                if (_inspections == null)
-                {
-                    //note: might want to just pass an enumerable instead
-                    _inspections = new CodeInspectionControl(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
-                    _inspections.Dock = DockStyle.Fill;
-                }
 
-                this.splitContainer1.Panel2.Controls.Clear();
-                this.splitContainer1.Panel2.Controls.Add(_inspections);
-                
+                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
             }
+
+            ActivateControl(controlToActivate);
+        }
+
+        private void ActivateControl(Control control)
+        {
+            control.Dock = DockStyle.Fill;
+            this.splitContainer1.Panel2.Controls.Clear();
+            this.splitContainer1.Panel2.Controls.Add(control);
+            _activeControl = control;
         }
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
