@@ -30,13 +30,24 @@ namespace Rubberduck.UI.Settings
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.DataSource = _inspections;
 
-            var comboBoxCol = new DataGridViewComboBoxColumn();
-            comboBoxCol.Name = "Severity";
-            comboBoxCol.DataPropertyName = "Severity";
-            comboBoxCol.HeaderText = "Severity";
-            comboBoxCol.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
+            var nameColumn = new DataGridViewTextBoxColumn();
+            nameColumn.Name = "InspectionName";
+            nameColumn.DataPropertyName = "Name";
+            nameColumn.HeaderText = "Inspection Name";
+            this.dataGridView1.Columns.Add(nameColumn);
 
-            this.dataGridView1.Columns.Add(comboBoxCol);
+            var typeColumn = new DataGridViewTextBoxColumn();
+            typeColumn.Name = "InspectionType";
+            typeColumn.DataPropertyName = "InspectionType";
+            typeColumn.HeaderText = "Type";
+            this.dataGridView1.Columns.Add(typeColumn);
+
+            var severityColumn = new DataGridViewComboBoxColumn();
+            severityColumn.Name = "InspectionSeverity";
+            severityColumn.DataPropertyName = "Severity";
+            severityColumn.HeaderText = "Severity";
+            severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
+            this.dataGridView1.Columns.Add(severityColumn);
 
             //todo: change severity to combo box
         }
