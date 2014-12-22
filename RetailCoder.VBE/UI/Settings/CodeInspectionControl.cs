@@ -27,12 +27,18 @@ namespace Rubberduck.UI.Settings
         {
             _config = config;
             _inspections = new BindingList<CodeInspection>(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
-            //this.dataGridView1.AutoGenerateColumns = true;
+            this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.DataSource = _inspections;
 
+            var comboBoxCol = new DataGridViewComboBoxColumn();
+            comboBoxCol.Name = "Severity";
+            comboBoxCol.DataPropertyName = "Severity";
+            comboBoxCol.HeaderText = "Severity";
+            comboBoxCol.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
+
+            this.dataGridView1.Columns.Add(comboBoxCol);
+
             //todo: change severity to combo box
-
-
         }
     }
 }
