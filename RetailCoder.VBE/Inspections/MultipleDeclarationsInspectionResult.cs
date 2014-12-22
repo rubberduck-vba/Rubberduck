@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections
         {
             var instruction = Node.Instruction;
             var newContent = new StringBuilder();
-            var indent = new string(' ', instruction.StartColumn);
+            var indent = new string(' ', instruction.StartColumn - 1);
             foreach (var node in Node.ChildNodes.Cast<IdentifierNode>())
             {
                 newContent.AppendLine(indent + node);
