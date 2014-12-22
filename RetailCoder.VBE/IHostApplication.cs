@@ -4,6 +4,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Access = Microsoft.Office.Interop.Access;
 using Word = Microsoft.Office.Interop.Word;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+using Outlook = Microsoft.Office.Interop.Outlook;
+using Publisher = Microsoft.Office.Interop.Publisher;
 using System;
 
 namespace Rubberduck
@@ -110,7 +112,38 @@ namespace Rubberduck
 
         public override void Run(string target)
         {
-            base._application.Run(target);
+            object[] o = {};
+            base._application.Run(target, o);
+        }
+
+        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
+        {
+            return string.Concat(moduleName, ".", methodName);
+        }
+    }
+
+    [ComVisible(false)]
+    public class OutlookApp : HostApplicationBase<Outlook.Application>
+    {
+        public OutlookApp() : base("Outlook") { }
+
+        public override void Run(string target)
+        {
+        }
+
+        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
+        {
+            return string.Concat(moduleName, ".", methodName);
+        }
+    }
+
+    [ComVisible(false)]
+    public class PublisherApp : HostApplicationBase<Publisher.Application>
+    {
+        public PublisherApp() : base("Publisher") { }
+
+        public override void Run(string target)
+        {
         }
 
         protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
