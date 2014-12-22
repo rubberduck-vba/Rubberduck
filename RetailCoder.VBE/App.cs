@@ -77,7 +77,7 @@ namespace Rubberduck
                 {
                     if (inspection.Name == setting.Name)
                     {
-                        inspection.Severity = (CodeInspectionSeverity)setting.Severity;
+                        inspection.Severity = setting.Severity;
                     }
                 } 
             }

@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
+        //todo: only require a code inspection list
         public CodeInspectionControl(Configuration config)
             : this()
         {
@@ -49,7 +50,7 @@ namespace Rubberduck.UI.Settings
             severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
             this.dataGridView1.Columns.Add(severityColumn);
 
-            //todo: change severity to combo box
+            //todo: sexify form
         }
     }
 }
