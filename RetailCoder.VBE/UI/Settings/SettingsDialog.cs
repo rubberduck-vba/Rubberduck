@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Config;
 
-//todo: this class needs serious clean up
-
 namespace Rubberduck.UI.Settings
 {
     public partial class SettingsDialog : Form
