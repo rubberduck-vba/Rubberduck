@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -26,8 +29,10 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, new CodeExplorerWindow())
         {
             _parser = parser;
+            Control.SolutionTree.Font = new Font(Control.SolutionTree.Font, FontStyle.Bold);
             RegisterControlEvents();
             RefreshExplorerTreeView();
+            Control.SolutionTree.Refresh();
         }
 
         private void RegisterControlEvents()
@@ -77,7 +82,7 @@ namespace Rubberduck.UI.CodeExplorer
         private void RefreshExplorerTreeView()
         {
             Control.SolutionTree.Nodes.Clear();
-            var projects = VBE.VBProjects.Cast<VBProject>();
+            var projects = VBE.VBProjects.Cast<VBProject>().OrderBy(project => project.Name);
             foreach (var vbProject in projects)
             {
                 AddProjectNode(_parser.Parse(vbProject));
@@ -93,14 +98,16 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var treeView = Control.SolutionTree;
             var projectNode = new TreeNode();
-            projectNode.Text = node.Instruction.Line.ProjectName;
+            projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
             projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
+            treeView.BackColor = treeView.BackColor;
 
             var moduleNodes = new ConcurrentBag<TreeNode>();
             foreach(var module in node.ChildNodes)
             {
                 var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
+                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
                 moduleNode.ImageKey = GetImageKeyForNode(module);
                 moduleNode.SelectedImageKey = moduleNode.ImageKey;
                 moduleNode.Tag = module.Instruction;
@@ -128,6 +135,7 @@ namespace Rubberduck.UI.CodeExplorer
         private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
         {
             var codeBlockNode = new TreeNode(GetNodeText(node));
+            codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
             codeBlockNode.ImageKey = GetImageKeyForNode(node);
             codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
             codeBlockNode.Tag = node.Instruction;
@@ -151,6 +159,7 @@ namespace Rubberduck.UI.CodeExplorer
                                                 member.GetType().Name,
                                                 member.Instruction.Line.StartLineNumber);
 
+                memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
                 memberNode.ImageKey = GetImageKeyForNode(member);
                 memberNode.SelectedImageKey = memberNode.ImageKey;
                 memberNode.Tag = member.Instruction;
