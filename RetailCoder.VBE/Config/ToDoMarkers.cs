@@ -15,7 +15,7 @@ namespace Rubberduck.Config
     [ComVisible(false)]
     public interface IToDoMarker
     {
-        int Priority { get; set; }
+        TodoPriority Priority { get; set; }
         string Text { get; set; }
     }
 
@@ -28,7 +28,7 @@ namespace Rubberduck.Config
         public string Text { get; set; }
 
         [XmlAttribute]
-        public int Priority { get; set; }
+        public TodoPriority Priority { get; set; }
 
         /// <summary>   Default constructor is required for serialization. DO NOT USE. </summary>
         public ToDoMarker()
@@ -36,7 +36,7 @@ namespace Rubberduck.Config
             // default constructor required for serialization
         }
 
-        public ToDoMarker(string text, int priority)
+        public ToDoMarker(string text, TodoPriority priority)
         {
             Text = text;
             Priority = priority;

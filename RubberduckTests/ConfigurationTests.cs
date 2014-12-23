@@ -26,5 +26,13 @@ namespace RubberduckTests
                 Assert.IsNotNull(marker.Text);
             }
         }
+
+        [TestMethod]
+        public void DefaultCodeInspectionsIsNotNull()
+        {
+            var config = ConfigurationLoader.GetDefaultCodeInspections();
+
+            Assert.IsNotNull(config);
+        }
     }
 }

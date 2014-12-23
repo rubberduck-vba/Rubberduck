@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Settings
             _activeMarker = (IToDoMarker)this.tokenListBox.SelectedItem;
             if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
             {
-                this.priorityComboBox.SelectedIndex = _activeMarker.Priority;
+                this.priorityComboBox.SelectedIndex = (int)_activeMarker.Priority;
             }
 
             this.tokenTextBox.Text = _activeMarker.Text;
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Settings
         {
             var index = this.tokenListBox.SelectedIndex;
             _model.Markers[index].Text = tokenTextBox.Text;
-            _model.Markers[index].Priority = priorityComboBox.SelectedIndex;
+            _model.Markers[index].Priority = (TodoPriority)priorityComboBox.SelectedIndex;
             _model.Save();
         }
 
@@ -63,7 +63,7 @@ namespace Rubberduck.UI.Settings
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            var marker = new ToDoMarker(this.tokenTextBox.Text, this.priorityComboBox.SelectedIndex);
+            var marker = new ToDoMarker(this.tokenTextBox.Text, (TodoPriority)this.priorityComboBox.SelectedIndex);
             _model.Markers.Add(marker);
             _model.Save();
 

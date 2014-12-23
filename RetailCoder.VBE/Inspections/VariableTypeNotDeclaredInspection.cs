@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return "Variable type is implicitly Variant"; } }
+        public string Name { get { return InspectionNames.VariableTypeNotDeclared; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
