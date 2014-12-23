@@ -331,6 +331,43 @@ namespace RubberduckTests
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
             var node = result.ChildNodes.First();
+            Assert.AreEqual(node.Instruction.Comment, "' this is a test:");
+        }
+
+        [TestMethod]
+        public void PrivateFieldsAreScopedToModule()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Dim foo As Integer";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.First();
+            Assert.AreEqual("TestModule", node.Scope);
+        }
+
+        [TestMethod]
+        public void MethodsAreScopedToModule()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Sub DoSomething()\n\nEnd Sub\n";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.First();
+            Assert.AreEqual("TestModule", node.Scope);
+        }
+
+        [TestMethod]
+        public void LocalsAreScopedToMethod()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Public Sub DoSomething()\nDim foo As Integer\nEnd Sub\n";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.First().ChildNodes.First();
+            Assert.AreEqual("TestModule.DoSomething", node.Scope);
         }
     }
 }
