@@ -28,7 +28,7 @@ namespace Rubberduck.Config
 
     [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
-    public class CodeInspection : Inspections.IInspection
+    public class CodeInspection
     {
         [XmlAttribute]
         public string Name { get; set; }
@@ -38,11 +38,6 @@ namespace Rubberduck.Config
 
         [XmlAttribute]
         public CodeInspectionType InspectionType { get; set; }
-
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBA.Parser.SyntaxTreeNode node)
-        {
-            throw new NotImplementedException("Config.CodeInspection doesn't implement a run method.");
-        }
 
         public CodeInspection()
         {
