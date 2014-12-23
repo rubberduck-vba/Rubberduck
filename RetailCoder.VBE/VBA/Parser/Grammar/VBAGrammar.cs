@@ -129,7 +129,7 @@ namespace Rubberduck.VBA.Parser.Grammar
 
         public static string AssignmentSyntax
         {
-            get { return ReferenceSyntax + @"\s=\s(?<expression>.*)"; }
+            get { return @"(?:(?<keyword>Let|Set)\s)?" + ReferenceSyntax + @"\s=\s(?<expression>.*)"; }
         }
     }
 }

@@ -370,7 +370,7 @@
       <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Parser\Grammar\ReservedKeywords.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
