@@ -72,7 +72,8 @@ namespace Rubberduck.VBA.Parser
 
             // LabelSyntax uses instruction separator; 
             // return entire line if there's no separator or if LabelSyntax matches:
-            var stripped = _content.StripTrailingComment();
+            var stripped = _content.StripTrailingComment()
+                                   .StripStringLiterals();
             if (!stripped.Contains(separator) || Regex.Match(stripped, VBAGrammar.LabelSyntax).Success)
             {
                 var indentation = stripped.TakeWhile(char.IsWhiteSpace).Count() + 1;
@@ -87,7 +88,7 @@ namespace Rubberduck.VBA.Parser
             {
                 endIndex = instruction == instructionsCount - 1
                     ? _content.Length
-                    : _content.IndexOf(separator, endIndex) + 1; // +1 because it's 0-based, +1 because there's always a space after a ":".
+                    : _content.StripStringLiterals().IndexOf(separator, endIndex) + 1; // +1 because VBE index is 1-based, +1 because there's always a space after a ":".
 
                 result.Add(new Instruction(this, startIndex, endIndex, _content.Substring(startIndex, endIndex - startIndex)));
                 startIndex = endIndex;

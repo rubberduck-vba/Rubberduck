@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
                 var options = module.ChildNodes.OfType<OptionNode>().ToList();
                 if (!options.Any() || options.All(option => option.Option != ReservedKeywords.Explicit))
                 {
-                    yield return new OptionExplicitInspectionResult(Name, module.Instruction, Severity);
+                    yield return new OptionExplicitInspectionResult(Name, module, Severity);
                 }
             }
         }

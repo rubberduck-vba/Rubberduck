@@ -316,8 +316,7 @@ namespace RubberduckTests
             const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub";
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-            var declaration = result.ChildNodes.OfType<ProcedureNode>().First()
-                                    .ChildNodes.OfType<DeclarationNode>().First();
+            var declaration = result.ChildNodes.Single().ChildNodes.Single();
 
             Assert.AreEqual(5, declaration.Instruction.StartColumn);
         }
@@ -330,7 +329,61 @@ namespace RubberduckTests
 
             var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
 
-            var node = result.ChildNodes.First();
+            var node = result.ChildNodes.Single();
+            Assert.AreEqual(node.Instruction.Comment, "' this is a test:");
+        }
+
+        [TestMethod]
+        public void PrivateFieldsAreScopedToModule()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Dim foo As Integer";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.Single();
+            Assert.AreEqual("TestModule", node.Scope);
+        }
+
+        [TestMethod]
+        public void MethodsAreScopedToModule()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Sub DoSomething()\n\nEnd Sub\n";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.Single();
+            Assert.AreEqual("TestModule", node.Scope);
+        }
+
+        [TestMethod]
+        public void LocalsAreScopedToMethod()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Public Sub DoSomething()\nDim foo As Integer\nEnd Sub\n";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.Single().ChildNodes.Single();
+            Assert.AreEqual("TestModule.DoSomething", node.Scope);
+        }
+
+        [TestMethod]
+        public void MethodsArePublicByDefault()
+        {
+            var parser = new Parser(_grammar);
+            const string code = "Sub DoSomething()\nEnd Sub\n";
+
+            var result = parser.Parse("ParserTests", "TestModule", code, false);
+
+            var node = result.ChildNodes.Single() as ProcedureNode;
+            if (node == null)
+            {
+                Assert.Inconclusive();
+            }
+
+            Assert.AreEqual(ReservedKeywords.Public, node.Accessibility);
         }
     }
 }

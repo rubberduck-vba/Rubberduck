@@ -10,8 +10,8 @@ namespace Rubberduck.Inspections
 {
     public class ImplicitVariantReturnTypeInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitVariantReturnTypeInspectionResult(string name, Instruction instruction, CodeInspectionSeverity severity)
-            : base(name, instruction, severity)
+        public ImplicitVariantReturnTypeInspectionResult(string name, SyntaxTreeNode node, CodeInspectionSeverity severity)
+            : base(name, node, severity)
         {
         }
 
@@ -27,15 +27,16 @@ namespace Rubberduck.Inspections
 
         private void ReturnExplicitVariant(VBE vbe)
         {
-            if (!Instruction.Line.IsMultiline)
+            var instruction = Node.Instruction;
+            if (!instruction.Line.IsMultiline)
             {
-                var newContent = string.Concat(Instruction.Value, " ", ReservedKeywords.As, " ", ReservedKeywords.Variant);
-                var oldContent = Instruction.Line.Content;
+                var newContent = string.Concat(instruction.Value, " ", ReservedKeywords.As, " ", ReservedKeywords.Variant);
+                var oldContent = instruction.Line.Content;
 
-                var result = oldContent.Replace(Instruction.Value, newContent);
+                var result = oldContent.Replace(instruction.Value, newContent);
 
-                var module = vbe.FindCodeModules(Instruction.Line.ProjectName, Instruction.Line.ComponentName).First();
-                module.ReplaceLine(Instruction.Line.StartLineNumber, result);
+                var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
+                module.ReplaceLine(instruction.Line.StartLineNumber, result);
                 Handled = true;
             }
             else

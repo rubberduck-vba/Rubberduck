@@ -9,7 +9,7 @@ namespace Rubberduck.VBA.Parser.Grammar
         protected override bool MatchesSyntax(string instruction, out Match match)
         {
             match = Regex.Match(instruction, VBAGrammar.AssignmentSyntax);
-            return !Regex.IsMatch(instruction, VBAGrammar.GeneralDeclarationSyntax) && match.Success;
+            return !instruction.StartsWith(ReservedKeywords.Const + " ") && match.Success;
         }
 
         protected override SyntaxTreeNode CreateNode(Instruction instruction, string scope, Match match)

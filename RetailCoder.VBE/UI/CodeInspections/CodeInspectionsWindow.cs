@@ -55,8 +55,18 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(item);
         }
 
+        public void FindNextIssue()
+        {
+            NextButton_Click(this, EventArgs.Empty);
+        }
+
         private void NextButton_Click(object sender, EventArgs e)
         {
+            if (CodeIssuesGridView.Rows.Count == 0)
+            {
+                return;
+            }
+
             var nextIssueIndex = (CodeIssuesGridView.SelectedRows[0].Index == CodeIssuesGridView.Rows.Count - 1)
                 ? 0
                 : CodeIssuesGridView.SelectedRows[0].Index + 1;
@@ -153,7 +163,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            handler(this, new NavigateCodeIssueEventArgs(item.GetInspectionResultItem().Instruction));
+            handler(this, new NavigateCodeIssueEventArgs(item.GetInspectionResultItem().Node));
         }
 
         public event EventHandler RefreshCodeInspections;

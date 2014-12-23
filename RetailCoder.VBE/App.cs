@@ -33,7 +33,7 @@ namespace Rubberduck
             var parser = new Parser(grammar);
 
             _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, addIn, parser, _inspections);
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, parser, _inspections);
         }
 
         private IList<IInspection> GetImplementedCodeInspections()

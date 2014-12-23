@@ -16,14 +16,14 @@ namespace Rubberduck.Inspections
 
         public VariableTypeNotDeclaredInspectionResult(string inspection, IdentifierNode identifier,
             CodeInspectionSeverity type)
-            : this(inspection, identifier.Instruction, type)
+            : this(inspection, identifier as SyntaxTreeNode, type)
         {
             _identifier = identifier;
         }
 
-        private VariableTypeNotDeclaredInspectionResult(string inspection, Instruction instruction,
+        private VariableTypeNotDeclaredInspectionResult(string inspection, SyntaxTreeNode node,
             CodeInspectionSeverity type)
-            : base(inspection, instruction, type)
+            : base(inspection, node, type)
         {
         }
 
@@ -39,12 +39,13 @@ namespace Rubberduck.Inspections
 
         private void DeclareAsExplicitVariant(VBE vbe)
         {
+            var instruction = Node.Instruction;
             var newContent = string.Concat(_identifier.Name, " ", ReservedKeywords.As, " ", ReservedKeywords.Variant);
-            var oldContent = Instruction.Line.Content;
+            var oldContent = instruction.Line.Content;
 
             var result = oldContent.Replace(_identifier.Name, newContent);
-            var module = vbe.FindCodeModules(Instruction.Line.ProjectName, Instruction.Line.ComponentName).First();
-            module.ReplaceLine(Instruction.Line.StartLineNumber, result);
+            var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
+            module.ReplaceLine(instruction.Line.StartLineNumber, result);
             Handled = true;
         }
     }

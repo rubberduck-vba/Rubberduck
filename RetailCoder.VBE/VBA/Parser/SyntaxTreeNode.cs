@@ -114,5 +114,10 @@ namespace Rubberduck.VBA.Parser
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return RegexMatch.Value;
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Rubberduck.VBA.Parser.Grammar
             {
                 if (index == 0)
                 {
-                    return line;
+                    return string.Empty;// line;
                 }
 
                 return line.EndsWith(":") 

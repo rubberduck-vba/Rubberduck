@@ -17,9 +17,9 @@ namespace Rubberduck.UI.CodeInspections
         {
             _item = result;
             _severity = GetSeverityIcon(result.Severity);
-            _project = result.Instruction.Line.ProjectName;
-            _component = result.Instruction.Line.ComponentName;
-            _selection = result.Instruction.Selection;
+            _project = result.Node.Instruction.Line.ProjectName;
+            _component = result.Node.Instruction.Line.ComponentName;
+            _selection = result.Node.Instruction.Selection;
             _issue = result.Name;
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
         }
