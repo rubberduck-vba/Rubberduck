@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using System;
@@ -9,8 +7,6 @@ using Rubberduck.UI;
 using Rubberduck.Config;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
-using Rubberduck.Extensions;
 
 namespace Rubberduck
 {

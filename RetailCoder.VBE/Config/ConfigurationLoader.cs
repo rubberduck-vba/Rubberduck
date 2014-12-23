@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Runtime.InteropServices;
 using System.IO;
 using Rubberduck.Inspections;
 using System.Reflection;
-using Rubberduck.Reflection;
-using Rubberduck.VBA.Parser;
 using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.Config
@@ -19,6 +15,7 @@ namespace Rubberduck.Config
     {
         private static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
 
+        /// <summary>   Saves a Configuration to Rubberduck.config XML file via Serialization.</summary>
         public static void SaveConfiguration<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
@@ -28,6 +25,8 @@ namespace Rubberduck.Config
             }
         }
 
+        /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
+        /// <remarks> If an IOException occurs returns a default configuration.</remarks>
         public static Configuration LoadConfiguration()
         {
             try
