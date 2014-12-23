@@ -50,5 +50,9 @@ namespace Rubberduck.Config
             this.InspectionType = type;
             this.Severity = severity;
         }
+
+        public CodeInspection(Inspections.IInspection inspection)
+            : this(inspection.Name, inspection.InspectionType, inspection.Severity)
+        { }
     }
 }

@@ -63,17 +63,20 @@ namespace Rubberduck.Config
             return new ToDoMarker[] { note, todo, bug };
         }
 
+        /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
+        /// <returns>   An array of Config.CodeInspection. </returns>
         public static CodeInspection[] GetDefaultCodeInspections()
         {
             var configInspections = new List<CodeInspection>();
             foreach (var inspection in GetImplementedCodeInspections())
             {
-                configInspections.Add(new CodeInspection(inspection.Name, inspection.InspectionType, inspection.Severity));
+                configInspections.Add(new CodeInspection(inspection));
             }
 
             return configInspections.ToArray();
         }
 
+        /// <summary>   Gets all implemented code inspections via reflection </summary>
         public static IList<IInspection> GetImplementedCodeInspections()
         {
             var inspections = Assembly.GetExecutingAssembly()
@@ -91,6 +94,7 @@ namespace Rubberduck.Config
             return inspections;
         }
 
+        /// <summary>   Gets all implemented syntax via reflection. </summary>
         public static List<ISyntax> GetImplementedSyntax()
         {
             var grammar = Assembly.GetExecutingAssembly()
