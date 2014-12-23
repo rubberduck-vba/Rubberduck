@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Runtime.InteropServices;
 using System.IO;
+using Rubberduck.Inspections;
+using System.Reflection;
+using Rubberduck.Reflection;
+using Rubberduck.VBA.Parser;
+using Rubberduck.VBA.Parser.Grammar;
 
 namespace Rubberduck.Config
 {
@@ -60,13 +65,46 @@ namespace Rubberduck.Config
 
         public static CodeInspection[] GetDefaultCodeInspections()
         {
-            // note: any additional inspection settings added in the future need to be added here
-            var optionExplicit = new Config.CodeInspection(InspectionNames.OptionExplicit, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Warning);
-            var implicitVariantReturn = new Config.CodeInspection(InspectionNames.ImplicitVariantReturnType, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Suggestion);
-            var implicitByRef = new Config.CodeInspection(InspectionNames.ImplicitByRef, Inspections.CodeInspectionType.CodeQualityIssues, Inspections.CodeInspectionSeverity.Warning);
-            var obsoleteComment = new Config.CodeInspection(InspectionNames.ObsoleteComment, Inspections.CodeInspectionType.MaintainabilityAndReadabilityIssues, Inspections.CodeInspectionSeverity.Suggestion);
+            var configInspections = new List<CodeInspection>();
+            foreach (var inspection in GetImplementedCodeInspections())
+            {
+                configInspections.Add(new CodeInspection(inspection.Name, inspection.InspectionType, inspection.Severity));
+            }
 
-            return new CodeInspection[] { optionExplicit, implicitVariantReturn, implicitByRef, obsoleteComment };
+            return configInspections.ToArray();
+        }
+
+        public static IList<IInspection> GetImplementedCodeInspections()
+        {
+            var inspections = Assembly.GetExecutingAssembly()
+                                  .GetTypes()
+                                  .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
+                                  .Select(type =>
+                                  {
+                                      var constructor = type.GetConstructor(Type.EmptyTypes);
+                                      return constructor != null ? constructor.Invoke(Type.EmptyTypes) : null;
+                                  })
+                                 .Where(inspection => inspection != null)
+                                  .Cast<IInspection>()
+                                  .ToList();
+
+            return inspections;
+        }
+
+        public static List<ISyntax> GetImplementedSyntax()
+        {
+            var grammar = Assembly.GetExecutingAssembly()
+                                  .GetTypes()
+                                  .Where(type => type.BaseType == typeof(SyntaxBase))
+                                  .Select(type =>
+                                  {
+                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
+                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
+                                  })
+                                  .Where(syntax => syntax != null)
+                                  .Cast<ISyntax>()
+                                  .ToList();
+            return grammar;
         }
     }
 }
