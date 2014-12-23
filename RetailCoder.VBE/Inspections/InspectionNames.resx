@@ -123,10 +123,16 @@
   <data name="ImplicitVariantReturnType" xml:space="preserve">
     <value>Function returns an implicit Variant</value>
   </data>
+  <data name="MultipleDeclarations" xml:space="preserve">
+    <value>Instruction contains multiple declarations</value>
+  </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Use of obsolete Rem comment syntax</value>
   </data>
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>
+  </data>
+  <data name="VariableTypeNotDeclared" xml:space="preserve">
+    <value>Variable type is implicitly Variant</value>
   </data>
 </root>

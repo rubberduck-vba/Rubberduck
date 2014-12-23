@@ -76,7 +76,7 @@
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="HostApplicationBase.cs" />
     <Compile Include="IHostApplication.cs" />
-    <Compile Include="InspectionNames.Designer.cs">
+    <Compile Include="Inspections\InspectionNames.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionNames.resx</DependentUpon>
@@ -355,7 +355,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="InspectionNames.resx">
+    <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>

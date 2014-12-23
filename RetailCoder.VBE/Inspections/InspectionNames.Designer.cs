@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck {
+namespace Rubberduck.Inspections {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Rubberduck {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.InspectionNames", typeof(InspectionNames).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Inspections.InspectionNames", typeof(InspectionNames).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,6 +79,15 @@ namespace Rubberduck {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instruction contains multiple declarations.
+        /// </summary>
+        internal static string MultipleDeclarations {
+            get {
+                return ResourceManager.GetString("MultipleDeclarations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of obsolete Rem comment syntax.
         /// </summary>
         internal static string ObsoleteComment {
@@ -93,6 +102,15 @@ namespace Rubberduck {
         internal static string OptionExplicit {
             get {
                 return ResourceManager.GetString("OptionExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable type is implicitly Variant.
+        /// </summary>
+        internal static string VariableTypeNotDeclared {
+            get {
+                return ResourceManager.GetString("VariableTypeNotDeclared", resourceCulture);
             }
         }
     }
