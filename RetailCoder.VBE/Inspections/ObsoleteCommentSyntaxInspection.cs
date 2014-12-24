@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "Use of obsolete Rem comment syntax"; } }
+        public string Name { get { return InspectionNames.ObsoleteComment; } }
         public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 

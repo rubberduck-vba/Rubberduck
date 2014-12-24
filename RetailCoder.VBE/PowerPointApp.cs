@@ -10,7 +10,7 @@ namespace Rubberduck
 
         public override void Run(string target)
         {
-            object[] o = { };
+            object[] o = { }; //powerpoint requires a paramarray, so we pass it an empty array.
             base._application.Run(target, o);
         }
 

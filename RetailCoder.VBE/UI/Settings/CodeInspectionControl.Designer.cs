@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Settings
 {
-    partial class ConfigurationTreeViewControl
+    partial class CodeInspectionControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,35 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.settingsTreeView = new System.Windows.Forms.TreeView();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
-            // settingsTreeView
+            // dataGridView1
             // 
-            this.settingsTreeView.BackColor = System.Drawing.SystemColors.Control;
-            this.settingsTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.settingsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.settingsTreeView.Location = new System.Drawing.Point(0, 0);
-            this.settingsTreeView.Margin = new System.Windows.Forms.Padding(10);
-            this.settingsTreeView.Name = "settingsTreeView";
-            this.settingsTreeView.Size = new System.Drawing.Size(302, 314);
-            this.settingsTreeView.TabIndex = 0;
-            this.settingsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.settingsTreeView_AfterSelect);
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(476, 333);
+            this.dataGridView1.TabIndex = 0;
             // 
-            // ConfigurationTreeView
+            // CodeInspectionControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.settingsTreeView);
-            this.Name = "ConfigurationTreeView";
-            this.Size = new System.Drawing.Size(302, 314);
+            this.Controls.Add(this.dataGridView1);
+            this.Name = "CodeInspectionControl";
+            this.Size = new System.Drawing.Size(476, 333);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TreeView settingsTreeView;
+        private System.Windows.Forms.DataGridView dataGridView1;
 
     }
 }

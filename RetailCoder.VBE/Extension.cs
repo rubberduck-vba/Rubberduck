@@ -32,7 +32,7 @@ namespace Rubberduck
             }
             catch(Exception exception)
             {
-                MessageBox.Show(exception.Message);
+                MessageBox.Show(exception.Message, "Rubberduck Add-In Could Not Be Loaded",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
 
@@ -51,7 +51,10 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _app.Dispose();
+            if (_app != null)
+            {
+                _app.Dispose();
+            }
         }
     }
 }

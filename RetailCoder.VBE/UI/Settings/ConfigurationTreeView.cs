@@ -11,18 +11,18 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    public partial class ConfigurationTreeView : UserControl
+    public partial class ConfigurationTreeViewControl : UserControl
     {
 
         private Configuration _config;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public ConfigurationTreeView()
+        public ConfigurationTreeViewControl()
         {
             InitializeComponent();
         }
 
-        public ConfigurationTreeView(Configuration config) : this()
+        public ConfigurationTreeViewControl(Configuration config) : this()
         {
             _config = config;
             InitializeTreeView();
@@ -36,11 +36,14 @@ namespace Rubberduck.UI.Settings
 
             this.settingsTreeView.Nodes.Add(rootNode);
             this.settingsTreeView.Nodes[0].ExpandAll();
+            
         }
 
+        public event EventHandler<TreeViewEventArgs> NodeSelected;
         private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-
+            //re-raise event
+            NodeSelected(sender, e);
         }
     }
 }

@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessApp.cs" />
+    <Compile Include="Config\ConfigurationLoader.cs" />
+    <Compile Include="Config\UserSettings.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="ExcelApp.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
@@ -74,6 +76,11 @@
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="HostApplicationBase.cs" />
     <Compile Include="IHostApplication.cs" />
+    <Compile Include="Inspections\InspectionNames.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionNames.resx</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
@@ -145,6 +152,12 @@
     <Compile Include="Extensions\CodePaneExtensions.cs" />
     <Compile Include="Reflection\Member.cs" />
     <Compile Include="UI\NativeWindowMethods.cs" />
+    <Compile Include="UI\Settings\CodeInspectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\CodeInspectionControl.Designer.cs">
+      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Settings\ConfigurationTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -342,6 +355,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Inspections\InspectionNames.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Refactoring\MenuIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MenuIcons.Designer.cs</LastGenOutput>
@@ -359,6 +376,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
+      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
       <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
