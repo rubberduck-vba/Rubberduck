@@ -51,7 +51,10 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _app.Dispose();
+            if (_app != null)
+            {
+                _app.Dispose();
+            }
         }
     }
 }
