@@ -7,6 +7,7 @@ using System.IO;
 using Rubberduck.Inspections;
 using System.Reflection;
 using Rubberduck.VBA.Parser.Grammar;
+using System.Windows.Forms;
 
 namespace Rubberduck.Config
 {
@@ -40,6 +41,26 @@ namespace Rubberduck.Config
             catch (IOException)
             {
                 return GetDefaultConfiguration();
+            }
+            catch (InvalidOperationException ex)
+            {
+                var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
+                        configFile + System.Environment.NewLine + System.Environment.NewLine +
+                        "Would you like to restore default configuration?" + System.Environment.NewLine + 
+                        "Warning: All customized settings will be lost.";
+
+                DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
+                {
+                    var config = GetDefaultConfiguration();
+                    SaveConfiguration<Configuration>(config);
+                    return config;
+                }
+                else
+                {
+                    throw ex;
+                }
             }
         }
 
