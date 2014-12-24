@@ -11,7 +11,8 @@ namespace Rubberduck
 
         public override void Run(string target)
         {
-            throw new NotImplementedException("Unit Testing not supported in Publisher");
+            //Publisher does not support the Run method
+            throw new NotImplementedException("Unit Testing not supported for Publisher");
         }
 
         protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
