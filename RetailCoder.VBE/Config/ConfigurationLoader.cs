@@ -49,7 +49,7 @@ namespace Rubberduck.Config
                         "Would you like to restore default configuration?" + System.Environment.NewLine + 
                         "Warning: All customized settings will be lost.";
 
-                DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
 
                 if (result == DialogResult.Yes)
                 {
