@@ -36,7 +36,7 @@ namespace Rubberduck
         {
             foreach (var inspection in _inspections)
             {           
-                foreach (var setting in config.UserSettings.CodeInspectinSettings.CodeInspections)
+                foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
                 {
                     if (inspection.Name == setting.Name)
                     {

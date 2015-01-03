@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Settings
             if (e.Node.Text == "Code Inpsections")
             {
 
-                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
+                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 
             ActivateControl(controlToActivate);
