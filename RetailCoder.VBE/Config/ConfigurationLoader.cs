@@ -14,7 +14,7 @@ namespace Rubberduck.Config
     [ComVisible(false)]
     public static class ConfigurationLoader
     {
-        private static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
+        private static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
 
         /// <summary>   Saves a Configuration to Rubberduck.config XML file via Serialization.</summary>
         public static void SaveConfiguration<T>(T toSerialize)
