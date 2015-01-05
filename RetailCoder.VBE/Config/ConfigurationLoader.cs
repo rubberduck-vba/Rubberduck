@@ -35,7 +35,21 @@ namespace Rubberduck.Config
                 using (StreamReader reader = new StreamReader(configFile))
                 {
                     var deserializer = new XmlSerializer(typeof(Configuration));
-                    return (Configuration)deserializer.Deserialize(reader);
+                    var config = (Configuration)deserializer.Deserialize(reader);
+
+                    //deserialization can silently fail for just parts of the config, 
+                    //  so we null check and return defaults if necessary.
+                    if (config.UserSettings.ToDoListSettings == null)
+                    {
+                        config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
+                    }
+
+                    if (config.UserSettings.CodeInspectionSettings == null)
+                    {
+                        config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+                    }
+
+                    return config;
                 }
             }
             catch (IOException)
