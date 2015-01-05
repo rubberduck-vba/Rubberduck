@@ -16,19 +16,22 @@ namespace Rubberduck
         private readonly RubberduckMenu _menu;
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
+        private readonly IConfigurationService _configService;
 
         public App(VBE vbe, AddIn addIn)
         {
-            var config = ConfigurationLoader.LoadConfiguration();
+            _configService = new ConfigurationLoader();
 
-            var grammar = ConfigurationLoader.GetImplementedSyntax();
+            var grammar = _configService.GetImplementedSyntax();
 
-            _inspections = ConfigurationLoader.GetImplementedCodeInspections();
+            _inspections = _configService.GetImplementedCodeInspections();
 
+            var config = _configService.LoadConfiguration();
             EnableCodeInspections(config);
+
             var parser = new Parser(grammar);
 
-            _menu = new RubberduckMenu(vbe, addIn, config, parser, _inspections);
+            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, _inspections);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, parser, _inspections);
         }
 

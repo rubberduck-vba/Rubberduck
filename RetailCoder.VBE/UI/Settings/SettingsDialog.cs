@@ -14,21 +14,30 @@ namespace Rubberduck.UI.Settings
     public partial class SettingsDialog : Form
     {
         private Configuration _config;
+        private IConfigurationService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
+        /// <summary>
+        ///  Default constructor for GUI Designer. DO NOT USE.
+        /// </summary>
         public SettingsDialog()
         {
             InitializeComponent();
+        }
 
-            _config = ConfigurationLoader.LoadConfiguration();
+        public SettingsDialog(IConfigurationService configService)
+            : this()
+        {
+            _configService = configService;
+            _config = _configService.LoadConfiguration();
             _treeview = new ConfigurationTreeViewControl(_config);
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
             var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-            ActivateControl(new TodoListSettingsControl(new TodoSettingModel(_config)));
+            ActivateControl(new TodoListSettingsControl(new TodoSettingModel(_configService ,_config)));
 
             RegisterEvents();
         }
@@ -36,7 +45,6 @@ namespace Rubberduck.UI.Settings
         private void RegisterEvents()
         {
             _treeview.NodeSelected += _treeview_NodeSelected;
-
         }
 
         private void _treeview_NodeSelected(object sender, TreeViewEventArgs e)
@@ -50,7 +58,7 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                controlToActivate = new TodoListSettingsControl(new TodoSettingModel(_config));
+                controlToActivate = new TodoListSettingsControl(new TodoSettingModel(_configService, _config));
             }
 
             if (e.Node.Text == "Code Inpsections")
@@ -72,9 +80,7 @@ namespace Rubberduck.UI.Settings
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ConfigurationLoader.SaveConfiguration<Configuration>(_config);
+            _configService.SaveConfiguration<Configuration>(_config);
         }
-
-
     }
 }

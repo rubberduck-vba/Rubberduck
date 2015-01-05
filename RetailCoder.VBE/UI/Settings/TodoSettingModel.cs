@@ -11,21 +11,22 @@ namespace Rubberduck.UI.Settings
     public class TodoSettingModel
     {
         private Configuration _config;
+        private IConfigurationService _configService;
 
         private BindingList<ToDoMarker> _markers;
         public BindingList<ToDoMarker> Markers { get { return _markers; } }
 
-        public TodoSettingModel(Configuration config)
+        public TodoSettingModel(IConfigurationService configService, Configuration config)
         {
-            _config = config; //todo: set config from IConfigurationService
+            _configService = configService;
+            _config = config;
             _markers = new BindingList<ToDoMarker>(config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
         }
 
         public void Save()
         {
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _markers.ToArray();
-            ConfigurationLoader.SaveConfiguration<Configuration>(_config);
-            //todo: create IConfigurationService and inject one in lieu of ConfigurationLoader
+            _configService.SaveConfiguration<Configuration>(_config);
         }
     }
 }
