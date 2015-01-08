@@ -16,11 +16,11 @@ namespace Rubberduck.UI.Settings
         private BindingList<ToDoMarker> _markers;
         public BindingList<ToDoMarker> Markers { get { return _markers; } }
 
-        public TodoSettingModel(IConfigurationService configService, Configuration config)
+        public TodoSettingModel(IConfigurationService configService)
         {
             _configService = configService;
-            _config = config;
-            _markers = new BindingList<ToDoMarker>(config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
+            _config = _configService.LoadConfiguration();
+            _markers = new BindingList<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
         }
 
         public void Save()
