@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 using System.Runtime.InteropServices;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Config
 {

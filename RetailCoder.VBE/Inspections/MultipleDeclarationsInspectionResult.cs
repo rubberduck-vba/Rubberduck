@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
 {

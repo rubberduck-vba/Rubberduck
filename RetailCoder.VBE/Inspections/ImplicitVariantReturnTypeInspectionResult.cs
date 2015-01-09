@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {

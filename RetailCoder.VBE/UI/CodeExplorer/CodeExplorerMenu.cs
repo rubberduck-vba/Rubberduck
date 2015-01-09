@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {

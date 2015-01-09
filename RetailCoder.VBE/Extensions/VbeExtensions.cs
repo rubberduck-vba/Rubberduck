@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Extensions
 {

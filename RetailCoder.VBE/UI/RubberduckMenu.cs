@@ -11,7 +11,7 @@ using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UI.CodeExplorer;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI
 {

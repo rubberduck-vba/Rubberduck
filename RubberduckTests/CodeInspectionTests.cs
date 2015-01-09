@@ -5,8 +5,8 @@ using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
-using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace RubberduckTests
 {

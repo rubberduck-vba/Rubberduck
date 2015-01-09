@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {

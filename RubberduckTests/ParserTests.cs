@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBA.Parser;
-using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace RubberduckTests
 {

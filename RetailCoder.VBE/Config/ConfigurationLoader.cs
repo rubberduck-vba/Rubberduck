@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Rubberduck.Inspections;
 using System.Reflection;
-using Rubberduck.VBA.Parser.Grammar;
+using Rubberduck.VBA.Grammar;
 using System.Windows.Forms;
 
 namespace Rubberduck.Config

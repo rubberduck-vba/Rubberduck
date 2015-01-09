@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
 {
