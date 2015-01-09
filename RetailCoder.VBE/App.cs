@@ -6,7 +6,7 @@ using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.Config;
 using Rubberduck.UI.CodeInspections;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck
 {

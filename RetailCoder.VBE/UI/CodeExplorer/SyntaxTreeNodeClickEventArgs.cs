@@ -1,5 +1,5 @@
 using System;
-using Rubberduck.VBA.Parser;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {
