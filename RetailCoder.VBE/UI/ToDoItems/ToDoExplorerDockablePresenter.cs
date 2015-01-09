@@ -6,7 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
-using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.ToDoItems
 {

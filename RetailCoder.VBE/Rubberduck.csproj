@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +12,7 @@
     <AssemblyName>Rubberduck</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>7ca951c6</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +47,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime.net45">
+      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -52,6 +57,18 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Access\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Access.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Outlook, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.PowerPoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Publisher, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Visio, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,6 +82,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VBA\VBParser.cs" />
+    <Compile Include="VBA\VisualBasic6BaseListener.cs" />
+    <Compile Include="VBA\VisualBasic6Lexer.cs" />
+    <Compile Include="VBA\VisualBasic6Listener.cs" />
+    <Compile Include="VBA\VisualBasic6Parser.cs" />
+    <Compile Include="VBA\VisualBasic6Visitor.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
@@ -184,25 +207,25 @@
     <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="VBA\AssignmentNode.cs" />
-    <Compile Include="VBA\CommentNode.cs" />
+    <Compile Include="VBA\Grammar\AssignmentNode.cs" />
+    <Compile Include="VBA\Grammar\CommentNode.cs" />
     <Compile Include="VBA\Grammar\AssignmentSyntax.cs" />
-    <Compile Include="VBA\ModuleNode.cs" />
+    <Compile Include="VBA\Grammar\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="VBA\CodeBlockNode.cs" />
-    <Compile Include="VBA\ConstDeclarationNode.cs" />
-    <Compile Include="VBA\DoLoopNode.cs" />
-    <Compile Include="VBA\EnumMemberNode.cs" />
-    <Compile Include="VBA\EnumNode.cs" />
-    <Compile Include="VBA\Expression.cs" />
-    <Compile Include="VBA\ExpressionNode.cs" />
-    <Compile Include="VBA\ForEachLoopNode.cs" />
-    <Compile Include="VBA\ForLoopNode.cs" />
+    <Compile Include="VBA\Grammar\CodeBlockNode.cs" />
+    <Compile Include="VBA\Grammar\ConstDeclarationNode.cs" />
+    <Compile Include="VBA\Grammar\DoLoopNode.cs" />
+    <Compile Include="VBA\Grammar\EnumMemberNode.cs" />
+    <Compile Include="VBA\Grammar\EnumNode.cs" />
+    <Compile Include="VBA\Grammar\Expression.cs" />
+    <Compile Include="VBA\Grammar\ExpressionNode.cs" />
+    <Compile Include="VBA\Grammar\ForEachLoopNode.cs" />
+    <Compile Include="VBA\Grammar\ForLoopNode.cs" />
     <Compile Include="VBA\Grammar\DeclarationSyntax.cs" />
     <Compile Include="VBA\Grammar\DoLoopSyntax.cs" />
     <Compile Include="VBA\Grammar\EnumMemberSyntax.cs" />
@@ -217,34 +240,34 @@
     <Compile Include="VBA\Grammar\TypeConversionSyntax.cs" />
     <Compile Include="VBA\Grammar\UserDefinedTypeMemberSyntax.cs" />
     <Compile Include="VBA\Grammar\UserDefinedTypeSyntax.cs" />
-    <Compile Include="VBA\IdentifierNode.cs" />
-    <Compile Include="VBA\IfBlockNode.cs" />
-    <Compile Include="VBA\Instruction.cs" />
-    <Compile Include="VBA\LabelNode.cs" />
-    <Compile Include="VBA\LogicalCodeLine.cs" />
-    <Compile Include="VBA\DeclarationNode.cs" />
+    <Compile Include="VBA\Grammar\IdentifierNode.cs" />
+    <Compile Include="VBA\Grammar\IfBlockNode.cs" />
+    <Compile Include="VBA\Grammar\Instruction.cs" />
+    <Compile Include="VBA\Grammar\LabelNode.cs" />
+    <Compile Include="VBA\Grammar\LogicalCodeLine.cs" />
+    <Compile Include="VBA\Grammar\DeclarationNode.cs" />
     <Compile Include="VBA\Grammar\ISyntax.cs" />
     <Compile Include="VBA\Grammar\StringExtensions.cs" />
     <Compile Include="VBA\Grammar\VBAGrammar.cs" />
-    <Compile Include="VBA\Identifier.cs" />
-    <Compile Include="VBA\Operation.cs" />
-    <Compile Include="VBA\Operator.cs" />
-    <Compile Include="VBA\OperatorType.cs" />
-    <Compile Include="VBA\ParameterNode.cs" />
-    <Compile Include="VBA\Parser.cs" />
-    <Compile Include="VBA\ProcedureKind.cs" />
-    <Compile Include="VBA\ProcedureNode.cs" />
+    <Compile Include="VBA\Grammar\Identifier.cs" />
+    <Compile Include="VBA\Grammar\Operation.cs" />
+    <Compile Include="VBA\Grammar\Operator.cs" />
+    <Compile Include="VBA\Grammar\OperatorType.cs" />
+    <Compile Include="VBA\Grammar\ParameterNode.cs" />
+    <Compile Include="VBA\Grammar\Parser.cs" />
+    <Compile Include="VBA\Grammar\ProcedureKind.cs" />
+    <Compile Include="VBA\Grammar\ProcedureNode.cs" />
     <Compile Include="VBA\Grammar\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReservedKeywords.resx</DependentUpon>
     </Compile>
     <Compile Include="VBA\Grammar\SyntaxBase.cs" />
-    <Compile Include="VBA\SyntaxTreeNode.cs" />
-    <Compile Include="VBA\TypeConversionNode.cs" />
-    <Compile Include="VBA\UserDefinedTypeMemberNode.cs" />
-    <Compile Include="VBA\UserDefinedTypeNode.cs" />
-    <Compile Include="VBA\VariableDeclarationNode.cs" />
+    <Compile Include="VBA\Grammar\SyntaxTreeNode.cs" />
+    <Compile Include="VBA\Grammar\TypeConversionNode.cs" />
+    <Compile Include="VBA\Grammar\UserDefinedTypeMemberNode.cs" />
+    <Compile Include="VBA\Grammar\UserDefinedTypeNode.cs" />
+    <Compile Include="VBA\Grammar\VariableDeclarationNode.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
@@ -296,33 +319,6 @@
       <VersionMinor>6</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Outlook">
-      <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>9</VersionMajor>
-      <VersionMinor>5</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.PowerPoint">
-      <Guid>{91493440-5A91-11CF-8700-00AA0060263B}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>11</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Publisher">
-      <Guid>{0002123C-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>2</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
@@ -401,8 +397,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
+    <None Include="VBA\VisualBasic6.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.VBA</CustomToolNamespace>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\minus-circle.png" />
@@ -586,6 +587,14 @@
     <Content Include="Resources\Microsoft\VSProject_reference.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
+  </Target>
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

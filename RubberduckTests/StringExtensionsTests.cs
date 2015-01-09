@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.Extensions;
+using Rubberduck.VBA.Grammar;
 
 namespace RubberduckTests
 {

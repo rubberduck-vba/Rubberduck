@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.ToDoItems
 {
