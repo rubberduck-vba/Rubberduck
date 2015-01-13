@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\IConfigurationService.cs" />
+    <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
@@ -177,7 +178,7 @@
     <Compile Include="UI\Settings\TodoListSettingsControl.Designer.cs">
       <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoSettingModel.cs" />
+    <Compile Include="UI\Settings\TodoSettingController.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />

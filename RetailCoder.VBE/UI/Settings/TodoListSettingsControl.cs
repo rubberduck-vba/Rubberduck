@@ -11,10 +11,10 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    public partial class TodoListSettingsControl : UserControl
+    public partial class TodoListSettingsControl : UserControl, ITodoSettingsView
     {
-        private TodoSettingModel _model;
-        private IToDoMarker _activeMarker;
+        private BindingList<ToDoMarker> _markers;
+        private ToDoMarker _activeMarker;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
         public TodoListSettingsControl()
@@ -22,10 +22,11 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public TodoListSettingsControl(TodoSettingModel model):this()
+        public TodoListSettingsControl(List<ToDoMarker> markers)
+            : this()
         {
-            _model = model;
-            this.tokenListBox.DataSource = _model.Markers;
+            _markers = new BindingList<ToDoMarker>(markers.ToList());
+            this.tokenListBox.DataSource = _markers;
             this.tokenListBox.SelectedIndex = 0;
             this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
 
@@ -34,13 +35,21 @@ namespace Rubberduck.UI.Settings
 
         private void SetActiveMarker()
         {
-            _activeMarker = (IToDoMarker)this.tokenListBox.SelectedItem;
+            _activeMarker = (ToDoMarker)this.tokenListBox.SelectedItem;
             if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
             {
                 this.priorityComboBox.SelectedIndex = (int)_activeMarker.Priority;
             }
 
             this.tokenTextBox.Text = _activeMarker.Text;
+        }
+
+        private void SaveActiveMarker()
+        {
+            if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
+            {
+                _markers[this.tokenListBox.SelectedIndex] = _activeMarker;
+            }
         }
 
         private void tokenListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -51,9 +60,9 @@ namespace Rubberduck.UI.Settings
         private void saveChangesButton_Click(object sender, EventArgs e)
         {
             var index = this.tokenListBox.SelectedIndex;
-            _model.Markers[index].Text = tokenTextBox.Text;
-            _model.Markers[index].Priority = (TodoPriority)priorityComboBox.SelectedIndex;
-            _model.Save();
+            _markers[index].Text = tokenTextBox.Text;
+            _markers[index].Priority = (TodoPriority)priorityComboBox.SelectedIndex;
+            SaveActiveMarker(); //does this really need to happen? Changes still aren't being serialized.
         }
 
         private void tokenTextBox_TextChanged(object sender, EventArgs e)
@@ -64,19 +73,70 @@ namespace Rubberduck.UI.Settings
         private void addButton_Click(object sender, EventArgs e)
         {
             var marker = new ToDoMarker(this.tokenTextBox.Text, (TodoPriority)this.priorityComboBox.SelectedIndex);
-            _model.Markers.Add(marker);
-            _model.Save();
+            _markers.Add(marker);
 
-            this.tokenListBox.DataSource = _model.Markers;
+            this.tokenListBox.DataSource = _markers;
+
+            //todo: adding an item should shift the selected index of the listbox to the newly added item
         }
 
         private void removeButton_Click(object sender, EventArgs e)
         {
-            _model.Markers.RemoveAt(this.tokenListBox.SelectedIndex);
-            _model.Save();
+            _markers.RemoveAt(this.tokenListBox.SelectedIndex);
 
-            this.tokenListBox.DataSource = _model.Markers;
+            this.tokenListBox.DataSource = _markers;
         }
 
+        //interface implementation
+
+        public int SelectedIndex
+        {
+            get { return this.tokenListBox.SelectedIndex; }
+            set { this.tokenListBox.SelectedIndex = value; }
+        }
+
+        public TodoPriority ActiveMarkerPriority
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string ActiveMarkerText
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public BindingList<ToDoMarker> TodoMarkers
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public event EventHandler RemoveMarker;
+
+        public event EventHandler AddMarker;
+
+        public event EventHandler SaveMarker;
+
+        public event EventHandler SelectionChanged;
     }
 }

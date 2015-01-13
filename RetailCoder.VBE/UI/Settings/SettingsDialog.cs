@@ -36,8 +36,7 @@ namespace Rubberduck.UI.Settings
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-            ActivateControl(new TodoListSettingsControl(new TodoSettingModel(_configService)));
+            ActivateControl(new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList()));
 
             RegisterEvents();
         }
@@ -58,7 +57,7 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                controlToActivate = new TodoListSettingsControl(new TodoSettingModel(_configService));
+                controlToActivate = new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
             }
 
             if (e.Node.Text == "Code Inpsections")
