@@ -43,13 +43,6 @@ namespace Rubberduck.UI.Settings
             var index = _view.SelectedIndex;
             _view.TodoMarkers[index].Text = _view.ActiveMarkerText;
             _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
-
-            //old code behind implementation
-
-            //var index = this.tokenListBox.SelectedIndex;
-            //_markers[index].Text = tokenTextBox.Text;
-            //_markers[index].Priority = (TodoPriority)priorityComboBox.SelectedIndex;
-            //SaveActiveMarker(); //does this really need to happen? Changes still aren't being serialized.
         }
 
         private void RemoveMarker(object sender, EventArgs e)

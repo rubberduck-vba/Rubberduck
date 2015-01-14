@@ -29,32 +29,7 @@ namespace Rubberduck.UI.Settings
             this.tokenListBox.DataSource = _markers;
             this.tokenListBox.SelectedIndex = 0;
             this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
-            //todo: controller should set the active marker upon it's construction
-            //SetActiveMarker();
         }
-
-        [Obsolete]
-        private void SetActiveMarker()
-        {
-            _activeMarker = (ToDoMarker)this.tokenListBox.SelectedItem;
-            if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
-            {
-                this.priorityComboBox.SelectedIndex = (int)_activeMarker.Priority;
-            }
-
-            this.tokenTextBox.Text = _activeMarker.Text;
-        }
-
-        [Obsolete]
-        private void SaveActiveMarker()
-        {
-            if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
-            {
-                _markers[this.tokenListBox.SelectedIndex] = _activeMarker;
-            }
-        }
-
-        //interface implementation
 
         public int SelectedIndex
         {
