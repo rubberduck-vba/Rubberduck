@@ -102,5 +102,18 @@ namespace RubberduckTests
             Assert.AreEqual("Note:", view.ActiveMarkerText);
         }
 
+        [TestMethod]
+        public void SaveEnabledAfterTextChange()
+        {
+            var markers = GetTestMarkers();
+
+            ITodoSettingsView view = new MockTodoSettingsView();
+            var controller = new TodoSettingController(view, markers);
+
+            view.ActiveMarkerText = "SomeNewText";
+
+            Assert.IsTrue(view.SaveEnabled);
+        }
+
     }
 }

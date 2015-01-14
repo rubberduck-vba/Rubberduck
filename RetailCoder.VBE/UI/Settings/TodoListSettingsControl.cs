@@ -30,9 +30,10 @@ namespace Rubberduck.UI.Settings
             this.tokenListBox.SelectedIndex = 0;
             this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
 
-            SetActiveMarker();
+            //SetActiveMarker();
         }
 
+        [Obsolete]
         private void SetActiveMarker()
         {
             _activeMarker = (ToDoMarker)this.tokenListBox.SelectedItem;
@@ -44,47 +45,13 @@ namespace Rubberduck.UI.Settings
             this.tokenTextBox.Text = _activeMarker.Text;
         }
 
+        [Obsolete]
         private void SaveActiveMarker()
         {
             if (_activeMarker != null && this.priorityComboBox.Items.Count > 0)
             {
                 _markers[this.tokenListBox.SelectedIndex] = _activeMarker;
             }
-        }
-
-        private void tokenListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetActiveMarker();
-        }
-
-        private void saveChangesButton_Click(object sender, EventArgs e)
-        {
-            var index = this.tokenListBox.SelectedIndex;
-            _markers[index].Text = tokenTextBox.Text;
-            _markers[index].Priority = (TodoPriority)priorityComboBox.SelectedIndex;
-            SaveActiveMarker(); //does this really need to happen? Changes still aren't being serialized.
-        }
-
-        private void tokenTextBox_TextChanged(object sender, EventArgs e)
-        {
-            this.saveChangesButton.Enabled = true;
-        }
-
-        private void addButton_Click(object sender, EventArgs e)
-        {
-            var marker = new ToDoMarker(this.tokenTextBox.Text, (TodoPriority)this.priorityComboBox.SelectedIndex);
-            _markers.Add(marker);
-
-            this.tokenListBox.DataSource = _markers;
-
-            //todo: adding an item should shift the selected index of the listbox to the newly added item
-        }
-
-        private void removeButton_Click(object sender, EventArgs e)
-        {
-            _markers.RemoveAt(this.tokenListBox.SelectedIndex);
-
-            this.tokenListBox.DataSource = _markers;
         }
 
         //interface implementation
@@ -95,48 +62,65 @@ namespace Rubberduck.UI.Settings
             set { this.tokenListBox.SelectedIndex = value; }
         }
 
-        public TodoPriority ActiveMarkerPriority
+        public bool SaveEnabled
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return this.saveChangesButton.Enabled; }
+            set { this.saveChangesButton.Enabled = value; }
         }
 
-        public string ActiveMarkerText
+        public TodoPriority ActiveMarkerPriority
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (TodoPriority)this.priorityComboBox.SelectedIndex; }
+            set { this.priorityComboBox.SelectedIndex = (int)value; }
+        }
+        public string ActiveMarkerText 
+        {
+            get { return this.tokenTextBox.Text; }
+            set { this.tokenTextBox.Text = value; }
         }
 
         public BindingList<ToDoMarker> TodoMarkers
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (BindingList<ToDoMarker>)this.tokenListBox.DataSource; }
+            set { this.tokenListBox.DataSource = value; }
+        }
+
+        public event EventHandler SelectionChanged;
+        private void tokenListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RaiseEvent(this, e, SelectionChanged);
+        }
+
+        public event EventHandler SaveMarker;
+        private void saveChangesButton_Click(object sender, EventArgs e)
+        {
+            RaiseEvent(this, e, SaveMarker);
+        }
+
+        public event EventHandler TextChanged;
+        private void tokenTextBox_TextChanged(object sender, EventArgs e)
+        {
+            RaiseEvent(this, e, TextChanged);
+        }
+
+        public event EventHandler AddMarker;
+        private void addButton_Click(object sender, EventArgs e)
+        {
+            RaiseEvent(this, e, AddMarker);
         }
 
         public event EventHandler RemoveMarker;
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            RaiseEvent(this, e, RemoveMarker);
+        }
 
-        public event EventHandler AddMarker;
-
-        public event EventHandler SaveMarker;
-
-        public event EventHandler SelectionChanged;
+        private void RaiseEvent(object sender, EventArgs e, EventHandler handler)
+        {
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
     }
 }

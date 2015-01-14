@@ -8,23 +8,22 @@ namespace RubberduckTests.Mocks
 {
     class MockTodoSettingsView : Rubberduck.UI.Settings.ITodoSettingsView
     {
-        public Rubberduck.Config.TodoPriority ActiveMarkerPriority
-        {
-            get;
-            set;
-        }
+        public bool SaveEnabled { get; set; }
 
+        public Rubberduck.Config.TodoPriority ActiveMarkerPriority { get; set; }
+
+        private string activeMarkerText;
         public string ActiveMarkerText
         {
-            get;
-            set;
+            get { return activeMarkerText; }
+            set
+            {
+                activeMarkerText = value;
+                OnTextChanged(EventArgs.Empty);
+            }
         }
 
-        public System.ComponentModel.BindingList<Rubberduck.Config.ToDoMarker> TodoMarkers
-        {
-            get;
-            set;
-        }
+        public System.ComponentModel.BindingList<Rubberduck.Config.ToDoMarker> TodoMarkers { get; set; }
 
         private int selectedIndex;
         public int SelectedIndex
@@ -47,6 +46,16 @@ namespace RubberduckTests.Mocks
         protected virtual void OnSelectionChanged(EventArgs e)
         {
             EventHandler handler = SelectionChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler TextChanged;
+        protected virtual void OnTextChanged(EventArgs e)
+        {
+            EventHandler handler = TextChanged;
             if (handler != null)
             {
                 handler(this, e);

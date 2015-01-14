@@ -15,11 +15,13 @@ namespace Rubberduck.UI.Settings
         string ActiveMarkerText { get; set; }
         BindingList<ToDoMarker> TodoMarkers { get; set; }
         int SelectedIndex { get; set; }
+        bool SaveEnabled { get; set; }
 
         event EventHandler RemoveMarker;
         event EventHandler AddMarker;
         event EventHandler SaveMarker;
         event EventHandler SelectionChanged;
+        event EventHandler TextChanged;
 
     }
 }

@@ -18,6 +18,9 @@ namespace Rubberduck.UI.Settings
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
+        private TodoSettingController todoController;
+        private TodoListSettingsControl todoView;
+
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
         /// </summary>
@@ -35,8 +38,15 @@ namespace Rubberduck.UI.Settings
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
+            //todo: switch to controller here 
 
-            ActivateControl(new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList()));
+            var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
+
+            this.todoView = new TodoListSettingsControl(markers);
+
+            ActivateControl(this.todoView);
+
+            this.todoController = new TodoSettingController(this.todoView, markers);
 
             RegisterEvents();
         }
@@ -57,7 +67,8 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                controlToActivate = new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
+                //controlToActivate = new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
+                controlToActivate = this.todoView;
             }
 
             if (e.Node.Text == "Code Inpsections")
