@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Settings
 
             ActivateControl(this.todoView);
 
-            this.todoController = new TodoSettingController(this.todoView, markers);
+            this.todoController = new TodoSettingController(this.todoView);
 
             RegisterEvents();
         }

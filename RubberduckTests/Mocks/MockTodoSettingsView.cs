@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using Rubberduck.Config;
 
 namespace RubberduckTests.Mocks
 {
@@ -10,8 +12,16 @@ namespace RubberduckTests.Mocks
     {
         public bool SaveEnabled { get; set; }
 
-        public Rubberduck.Config.TodoPriority ActiveMarkerPriority { get; set; }
-
+        private TodoPriority activeMarkerPriority;
+        public TodoPriority ActiveMarkerPriority
+        {
+            get { return activeMarkerPriority; }
+            set
+            {
+                activeMarkerPriority = value;
+                OnPriorityChanged(EventArgs.Empty);
+            }
+        }
         private string activeMarkerText;
         public string ActiveMarkerText
         {
@@ -23,7 +33,7 @@ namespace RubberduckTests.Mocks
             }
         }
 
-        public System.ComponentModel.BindingList<Rubberduck.Config.ToDoMarker> TodoMarkers { get; set; }
+        public BindingList<ToDoMarker> TodoMarkers { get; set; }
 
         private int selectedIndex;
         public int SelectedIndex
@@ -34,6 +44,11 @@ namespace RubberduckTests.Mocks
                 selectedIndex = value;
                 OnSelectionChanged(EventArgs.Empty);
             }
+        }
+
+        public MockTodoSettingsView(List<ToDoMarker> markers)
+        {
+            this.TodoMarkers = new BindingList<ToDoMarker>(markers);
         }
 
         public event EventHandler RemoveMarker;
@@ -54,6 +69,16 @@ namespace RubberduckTests.Mocks
 
         public event EventHandler TextChanged;
         protected virtual void OnTextChanged(EventArgs e)
+        {
+            EventHandler handler = TextChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler PriorityChanged;
+        protected virtual void OnPriorityChanged(EventArgs e)
         {
             EventHandler handler = TextChanged;
             if (handler != null)

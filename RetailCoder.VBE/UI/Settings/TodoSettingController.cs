@@ -14,32 +14,37 @@ namespace Rubberduck.UI.Settings
         private IConfigurationService _configService;
         private ITodoSettingsView _view;
 
-        private BindingList<ToDoMarker> _markers;
-        public BindingList<ToDoMarker> Markers { get { return _markers; } }
         public ToDoMarker ActiveMarker
         {
-            get { return _markers[_view.SelectedIndex]; }
-
+            get { return _view.TodoMarkers[_view.SelectedIndex]; }
         }
 
-        public TodoSettingController(ITodoSettingsView view, List<ToDoMarker> markers)
+        public TodoSettingController(ITodoSettingsView view)
         {
-            _markers = new BindingList<ToDoMarker>(markers);
             _view = view;
+
+            if (_view.TodoMarkers != null)
+            {
+                _view.ActiveMarkerText = _view.TodoMarkers[0].Text;
+                _view.ActiveMarkerPriority = _view.TodoMarkers[0].Priority;
+            }
 
             _view.SelectionChanged += SelectionChanged;
             _view.TextChanged += TextChanged;
             _view.AddMarker += AddMarker;
             _view.RemoveMarker += RemoveMarker;
             _view.SaveMarker += SaveMarker;
+            _view.PriorityChanged += PriorityChanged;
         }
 
         private void SaveMarker(object sender, EventArgs e)
         {
-            //todo: implement
-            throw new NotImplementedException();
+            //todo: add test
+            var index = _view.SelectedIndex;
+            _view.TodoMarkers[index].Text = _view.ActiveMarkerText;
+            _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
 
-            //code behind implementation
+            //old code behind implementation
 
             //var index = this.tokenListBox.SelectedIndex;
             //_markers[index].Text = tokenTextBox.Text;
@@ -65,10 +70,17 @@ namespace Rubberduck.UI.Settings
             _view.SaveEnabled = true;
         }
 
+        private void PriorityChanged(object sender, EventArgs e)
+        {
+            _view.SaveEnabled = true;
+        }
+
         private void SelectionChanged(object sender, EventArgs e)
         {
             _view.ActiveMarkerPriority = this.ActiveMarker.Priority;
             _view.ActiveMarkerText = this.ActiveMarker.Text;
+
+            _view.SaveEnabled = false;
         }
 
         public void SetActiveItem(int index)
@@ -76,6 +88,7 @@ namespace Rubberduck.UI.Settings
             _view.SelectedIndex = index;
         }
 
+        [Obsolete]
         public void Save()
         {
             //_config.UserSettings.ToDoListSettings.ToDoMarkers = _markers.ToArray();

@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Settings
         event EventHandler SaveMarker;
         event EventHandler SelectionChanged;
         event EventHandler TextChanged;
+        event EventHandler PriorityChanged;
 
     }
 }

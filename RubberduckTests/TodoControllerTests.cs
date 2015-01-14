@@ -27,13 +27,29 @@ namespace RubberduckTests
         {
             //arrange
             Mock<ITodoSettingsView> view = new Mock<ITodoSettingsView>();
-            var markers = new List<ToDoMarker>();
 
             //act
-            var controller = new TodoSettingController(view.Object, markers );
+            var controller = new TodoSettingController(view.Object);
 
             //assert
             Assert.IsNotNull(controller);
+        }
+
+        [TestMethod]
+        public void ViewTextIsNotNullOrEmptyAfterControllerConstruction()
+        {
+            //arrange
+            var markers = new List<ToDoMarker>();
+            markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
+
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            
+            //act
+            var controller = new TodoSettingController(view);
+
+            //assert
+            Assert.AreEqual("Todo:", view.ActiveMarkerText);
+
         }
 
         [TestMethod]
@@ -42,9 +58,9 @@ namespace RubberduckTests
             //arrange
             var markers = GetTestMarkers();
 
-            ITodoSettingsView view = new MockTodoSettingsView();
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
 
-            var controller = new TodoSettingController(view, markers);
+            var controller = new TodoSettingController(view);
 
             //act
             controller.SetActiveItem(1);
@@ -59,9 +75,9 @@ namespace RubberduckTests
             //arrange
             var markers = GetTestMarkers();
 
-            ITodoSettingsView view = new MockTodoSettingsView();
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
 
-            var controller = new TodoSettingController(view, markers);
+            var controller = new TodoSettingController(view);
 
             //act
             controller.SetActiveItem(1);
@@ -77,8 +93,8 @@ namespace RubberduckTests
             markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
             markers.Add(new ToDoMarker("Bug:", TodoPriority.High));
 
-            ITodoSettingsView view = new MockTodoSettingsView();
-            var controller = new TodoSettingController(view, markers);
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var controller = new TodoSettingController(view);
 
             //act
             controller.SetActiveItem(2);
@@ -93,8 +109,8 @@ namespace RubberduckTests
             markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
             markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
 
-            ITodoSettingsView view = new MockTodoSettingsView();
-            var controller = new TodoSettingController(view, markers);
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var controller = new TodoSettingController(view);
 
             //act
             controller.SetActiveItem(1);
@@ -107,12 +123,38 @@ namespace RubberduckTests
         {
             var markers = GetTestMarkers();
 
-            ITodoSettingsView view = new MockTodoSettingsView();
-            var controller = new TodoSettingController(view, markers);
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var controller = new TodoSettingController(view);
 
             view.ActiveMarkerText = "SomeNewText";
 
             Assert.IsTrue(view.SaveEnabled);
+        }
+
+        [TestMethod]
+        public void SaveEnabledAfterPriorityChange()
+        {
+            var markers = GetTestMarkers();
+
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var controller = new TodoSettingController(view);
+
+            view.ActiveMarkerPriority = TodoPriority.High;
+
+            Assert.IsTrue(view.SaveEnabled);
+        }
+
+        [TestMethod]
+        public void SaveDisabledAfterSelectionChange()
+        {
+            var markers = GetTestMarkers();
+
+            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var controller = new TodoSettingController(view);
+
+            view.SelectedIndex = 2;
+
+            Assert.IsFalse(view.SaveEnabled);
         }
 
     }
