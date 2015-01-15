@@ -10,8 +10,6 @@ namespace Rubberduck.UI.Settings
 {
     public class TodoSettingController
     {
-        private Configuration _config;
-        private IConfigurationService _configService;
         private ITodoSettingsView _view;
 
         public ToDoMarker ActiveMarker
@@ -39,7 +37,7 @@ namespace Rubberduck.UI.Settings
 
         private void SaveMarker(object sender, EventArgs e)
         {
-            //todo: add test
+            //todo: add test; How? I can't click the save button. Code smell here.
             var index = _view.SelectedIndex;
             _view.TodoMarkers[index].Text = _view.ActiveMarkerText;
             _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
@@ -79,14 +77,6 @@ namespace Rubberduck.UI.Settings
         public void SetActiveItem(int index)
         {
             _view.SelectedIndex = index;
-        }
-
-        [Obsolete]
-        public void Save()
-        {
-            //_config.UserSettings.ToDoListSettings.ToDoMarkers = _markers.ToArray();
-            _config.UserSettings.ToDoListSettings.ToDoMarkers = _view.TodoMarkers.ToArray();
-            _configService.SaveConfiguration<Configuration>(_config);
         }
     }
 }
