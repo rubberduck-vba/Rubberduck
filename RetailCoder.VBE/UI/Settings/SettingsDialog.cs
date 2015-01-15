@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Settings
         private Control _activeControl;
 
         private TodoSettingController todoController;
-        private TodoListSettingsControl todoView;
+        private TodoListSettingsUserControl todoView;
 
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Settings
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
 
-            this.todoView = new TodoListSettingsControl(markers);
+            this.todoView = new TodoListSettingsUserControl(markers);
 
             ActivateControl(this.todoView);
 

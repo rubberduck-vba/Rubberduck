@@ -11,18 +11,18 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    public partial class TodoListSettingsControl : UserControl, ITodoSettingsView
+    public partial class TodoListSettingsUserControl : UserControl, ITodoSettingsView
     {
         private BindingList<ToDoMarker> _markers;
         private ToDoMarker _activeMarker;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public TodoListSettingsControl()
+        public TodoListSettingsUserControl()
         {
             InitializeComponent();
         }
 
-        public TodoListSettingsControl(List<ToDoMarker> markers)
+        public TodoListSettingsUserControl(List<ToDoMarker> markers)
             : this()
         {
             _markers = new BindingList<ToDoMarker>(markers.ToList());

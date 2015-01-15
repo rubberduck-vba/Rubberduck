@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Settings
 {
-    partial class TodoListSettingsControl
+    partial class TodoListSettingsUserControl
     {
         /// <summary> 
         /// Required designer variable.
