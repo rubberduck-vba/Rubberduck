@@ -18,8 +18,8 @@ namespace Rubberduck.UI.Settings
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
-        private TodoSettingController todoController;
-        private TodoListSettingsUserControl todoView;
+        private TodoSettingController _todoController;
+        private TodoListSettingsUserControl _todoView;
 
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
@@ -42,11 +42,11 @@ namespace Rubberduck.UI.Settings
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
 
-            this.todoView = new TodoListSettingsUserControl(markers);
+            this._todoView = new TodoListSettingsUserControl(markers);
 
-            ActivateControl(this.todoView);
+            ActivateControl(this._todoView);
 
-            this.todoController = new TodoSettingController(this.todoView);
+            this._todoController = new TodoSettingController(this._todoView);
 
             RegisterEvents();
         }
@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Settings
             if (e.Node.Text == "Todo List")
             {
                 //controlToActivate = new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
-                controlToActivate = this.todoView;
+                controlToActivate = this._todoView;
             }
 
             if (e.Node.Text == "Code Inpsections")
@@ -90,6 +90,12 @@ namespace Rubberduck.UI.Settings
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
+            SaveConfig();
+        }
+
+        private void SaveConfig()
+        {
+            _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             _configService.SaveConfiguration<Configuration>(_config);
         }
     }
