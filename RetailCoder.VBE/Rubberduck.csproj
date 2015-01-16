@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -65,6 +66,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\IConfigurationService.cs" />
+    <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
@@ -170,13 +173,13 @@
     <Compile Include="UI\Settings\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsControl.cs">
+    <Compile Include="UI\Settings\TodoListSettingsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsControl.Designer.cs">
-      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
+    <Compile Include="UI\Settings\TodoListSettingsUserControl.Designer.cs">
+      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoSettingModel.cs" />
+    <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />
@@ -386,8 +389,8 @@
     <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\TodoListSettingsControl.resx">
-      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
+      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Grammar\ReservedKeywords.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

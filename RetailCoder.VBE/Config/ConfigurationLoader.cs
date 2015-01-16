@@ -12,12 +12,12 @@ using System.Windows.Forms;
 namespace Rubberduck.Config
 {
     [ComVisible(false)]
-    public static class ConfigurationLoader
+    public class ConfigurationLoader : IConfigurationService
     {
-        private static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Rubberduck\rubberduck.config";
+        private static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
 
         /// <summary>   Saves a Configuration to Rubberduck.config XML file via Serialization.</summary>
-        public static void SaveConfiguration<T>(T toSerialize)
+        public void SaveConfiguration<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
             using (TextWriter textWriter = new StreamWriter(configFile))
@@ -28,14 +28,30 @@ namespace Rubberduck.Config
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
         /// <remarks> If an IOException occurs returns a default configuration.</remarks>
-        public static Configuration LoadConfiguration()
+        public Configuration LoadConfiguration()
         {
             try
             {
                 using (StreamReader reader = new StreamReader(configFile))
                 {
                     var deserializer = new XmlSerializer(typeof(Configuration));
-                    return (Configuration)deserializer.Deserialize(reader);
+                    var config = (Configuration)deserializer.Deserialize(reader);
+
+                    //deserialization can silently fail for just parts of the config, 
+                    //  so we null check and return defaults if necessary.
+                    if (config.UserSettings.ToDoListSettings == null)
+                    {
+                        config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
+                    }
+
+                    if (config.UserSettings.CodeInspectionSettings == null)
+                    {
+                        config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+                    }
+
+                    //todo: check for implemented inspections that aren't in config file
+
+                    return config;
                 }
             }
             catch (IOException)
@@ -64,7 +80,7 @@ namespace Rubberduck.Config
             }
         }
 
-        public static Configuration GetDefaultConfiguration()
+        public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
@@ -74,7 +90,7 @@ namespace Rubberduck.Config
             return new Configuration(userSettings);
         }
 
-        public static ToDoMarker[] GetDefaultTodoMarkers()
+        public ToDoMarker[] GetDefaultTodoMarkers()
         {
             var note = new ToDoMarker("NOTE:", TodoPriority.Low);
             var todo = new ToDoMarker("TODO:", TodoPriority.Normal);
@@ -85,7 +101,7 @@ namespace Rubberduck.Config
 
         /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
         /// <returns>   An array of Config.CodeInspection. </returns>
-        public static CodeInspection[] GetDefaultCodeInspections()
+        public CodeInspection[] GetDefaultCodeInspections()
         {
             var configInspections = new List<CodeInspection>();
             foreach (var inspection in GetImplementedCodeInspections())
@@ -97,7 +113,7 @@ namespace Rubberduck.Config
         }
 
         /// <summary>   Gets all implemented code inspections via reflection </summary>
-        public static IList<IInspection> GetImplementedCodeInspections()
+        public IList<IInspection> GetImplementedCodeInspections()
         {
             var inspections = Assembly.GetExecutingAssembly()
                                   .GetTypes()
@@ -115,7 +131,7 @@ namespace Rubberduck.Config
         }
 
         /// <summary>   Gets all implemented syntax via reflection. </summary>
-        public static List<ISyntax> GetImplementedSyntax()
+        public List<ISyntax> GetImplementedSyntax()
         {
             var grammar = Assembly.GetExecutingAssembly()
                                   .GetTypes()

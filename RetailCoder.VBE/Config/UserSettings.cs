@@ -13,7 +13,7 @@ namespace Rubberduck.Config
     public class UserSettings
     {
         public ToDoListSettings ToDoListSettings { get; set; }
-        public CodeInspectionSettings CodeInspectinSettings { get; set; }
+        public CodeInspectionSettings CodeInspectionSettings { get; set; }
 
         public UserSettings()
         {
@@ -23,7 +23,7 @@ namespace Rubberduck.Config
         public UserSettings(ToDoListSettings todoSettings, CodeInspectionSettings codeInspectionSettings)
         {
             this.ToDoListSettings = todoSettings;
-            this.CodeInspectinSettings = codeInspectionSettings;
+            this.CodeInspectionSettings = codeInspectionSettings;
         }
     }
 }
