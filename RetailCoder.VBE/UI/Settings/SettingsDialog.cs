@@ -11,6 +11,7 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
+    [System.Runtime.InteropServices.ComVisible(false)]
     public partial class SettingsDialog : Form
     {
         private Configuration _config;
@@ -43,7 +44,7 @@ namespace Rubberduck.UI.Settings
             _todoView = new TodoListSettingsUserControl(markers);
 
             ActivateControl(_todoView);
-            _todoController = new TodoSettingPresenter(this._todoView);
+            _todoController = new TodoSettingPresenter(_todoView);
 
             RegisterEvents();
         }
@@ -91,6 +92,7 @@ namespace Rubberduck.UI.Settings
         private void SaveConfig()
         {
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
+            // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
             _configService.SaveConfiguration<Configuration>(_config);
         }
     }
