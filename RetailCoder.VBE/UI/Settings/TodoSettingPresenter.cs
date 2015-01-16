@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace Rubberduck.UI.Settings
 {
     [System.Runtime.InteropServices.ComVisible(false)]
-    public class TodoSettingController
+    public class TodoSettingPresenter
     {
         private ITodoSettingsView _view;
 
@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
             get { return _view.TodoMarkers[_view.SelectedIndex]; }
         }
 
-        public TodoSettingController(ITodoSettingsView view)
+        public TodoSettingPresenter(ITodoSettingsView view)
         {
             _view = view;
 

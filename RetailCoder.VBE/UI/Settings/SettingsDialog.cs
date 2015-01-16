@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
-        private TodoSettingController _todoController;
+        private TodoSettingPresenter _todoController;
         private TodoListSettingsUserControl _todoView;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Settings
             _todoView = new TodoListSettingsUserControl(markers);
 
             ActivateControl(_todoView);
-            _todoController = new TodoSettingController(this._todoView);
+            _todoController = new TodoSettingPresenter(this._todoView);
 
             RegisterEvents();
         }
@@ -69,7 +69,6 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Code Inpsections")
             {
-
                 controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 

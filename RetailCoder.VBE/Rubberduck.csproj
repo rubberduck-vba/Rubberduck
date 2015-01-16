@@ -179,7 +179,7 @@
     <Compile Include="UI\Settings\TodoListSettingsUserControl.Designer.cs">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoSettingController.cs" />
+    <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\WindowExtensions.cs" />

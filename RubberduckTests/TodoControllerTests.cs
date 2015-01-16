@@ -29,7 +29,7 @@ namespace RubberduckTests
             Mock<ITodoSettingsView> view = new Mock<ITodoSettingsView>();
 
             //act
-            var controller = new TodoSettingController(view.Object);
+            var controller = new TodoSettingPresenter(view.Object);
 
             //assert
             Assert.IsNotNull(controller);
@@ -45,7 +45,7 @@ namespace RubberduckTests
             ITodoSettingsView view = new MockTodoSettingsView(markers);
             
             //act
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             //assert
             Assert.AreEqual("Todo:", view.ActiveMarkerText);
@@ -60,7 +60,7 @@ namespace RubberduckTests
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
 
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             //act
             controller.SetActiveItem(1);
@@ -77,7 +77,7 @@ namespace RubberduckTests
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
 
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             //act
             controller.SetActiveItem(1);
@@ -94,7 +94,7 @@ namespace RubberduckTests
             markers.Add(new ToDoMarker("Bug:", TodoPriority.High));
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             //act
             controller.SetActiveItem(2);
@@ -110,7 +110,7 @@ namespace RubberduckTests
             markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             //act
             controller.SetActiveItem(1);
@@ -124,7 +124,7 @@ namespace RubberduckTests
             var markers = GetTestMarkers();
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             view.ActiveMarkerText = "SomeNewText";
 
@@ -137,7 +137,7 @@ namespace RubberduckTests
             var markers = GetTestMarkers();
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             view.ActiveMarkerPriority = TodoPriority.High;
 
@@ -150,7 +150,7 @@ namespace RubberduckTests
             var markers = GetTestMarkers();
 
             ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingController(view);
+            var controller = new TodoSettingPresenter(view);
 
             view.SelectedIndex = 2;
 
