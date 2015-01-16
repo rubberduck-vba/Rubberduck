@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Rubberduck.Config;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
+    [ComVisible(false)]
     public partial class TodoListSettingsUserControl : UserControl, ITodoSettingsView
     {
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
