@@ -8,6 +8,7 @@ using System.ComponentModel;
 
 namespace Rubberduck.UI.Settings
 {
+    [System.Runtime.InteropServices.ComVisible(false)]
     public class TodoSettingController
     {
         private ITodoSettingsView _view;
