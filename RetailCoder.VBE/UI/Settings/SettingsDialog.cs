@@ -38,14 +38,12 @@ namespace Rubberduck.UI.Settings
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
-            //todo: switch to controller here 
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
+            _todoView = new TodoListSettingsUserControl(markers);
 
-            this._todoView = new TodoListSettingsUserControl(markers);
-
-            ActivateControl(this._todoView);
-            this._todoController = new TodoSettingController(this._todoView);
+            ActivateControl(_todoView);
+            _todoController = new TodoSettingController(this._todoView);
 
             RegisterEvents();
         }
@@ -66,8 +64,7 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                //controlToActivate = new TodoListSettingsControl(_config.UserSettings.ToDoListSettings.ToDoMarkers.ToList());
-                controlToActivate = this._todoView;
+                controlToActivate = _todoView;
             }
 
             if (e.Node.Text == "Code Inpsections")
