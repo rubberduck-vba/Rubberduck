@@ -173,11 +173,11 @@
     <Compile Include="UI\Settings\SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsControl.cs">
+    <Compile Include="UI\Settings\TodoListSettingsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Settings\TodoListSettingsControl.Designer.cs">
-      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
+    <Compile Include="UI\Settings\TodoListSettingsUserControl.Designer.cs">
+      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\TodoSettingController.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
@@ -389,8 +389,8 @@
     <EmbeddedResource Include="UI\Settings\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\TodoListSettingsControl.resx">
-      <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
+      <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Parser\Grammar\ReservedKeywords.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
