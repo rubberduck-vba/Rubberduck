@@ -24,7 +24,12 @@ namespace Rubberduck.UI.Settings
         public CodeInspectionControl(List<CodeInspection> inspections)
             : this()
         {
-            _inspections = new BindingList<CodeInspection>(inspections);
+            _inspections = new BindingList<CodeInspection>(inspections
+                                                            .OrderBy(c => c.InspectionType.ToString())
+                                                            .ThenBy(c => c.Name)
+                                                            .ToList()
+                                                            );
+            
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.DataSource = _inspections;
 
