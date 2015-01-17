@@ -27,7 +27,7 @@ namespace Rubberduck.Config
         }
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
-        /// <remarks> If an IOException occurs returns a default configuration.</remarks>
+        /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
         public Configuration LoadConfiguration()
         {
             try
