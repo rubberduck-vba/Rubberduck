@@ -27,7 +27,7 @@ namespace Rubberduck.Config
         }
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
-        /// <remarks> If an IOException occurs returns a default configuration.</remarks>
+        /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
         public Configuration LoadConfiguration()
         {
             try
@@ -49,7 +49,11 @@ namespace Rubberduck.Config
                         config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
                     }
 
-                    //todo: check for implemented inspections that aren't in config file
+                    var implementedInspections = GetImplementedCodeInspections();
+                    var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+                    
+                    configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+                    config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
                     return config;
                 }
@@ -78,6 +82,29 @@ namespace Rubberduck.Config
                     throw ex;
                 }
             }
+        }
+
+        private List<CodeInspection> MergeImplementedInspectionsNotInConfig(List<CodeInspection> configInspections, IList<IInspection> implementedInspections)
+        {
+            bool found;
+            foreach (var implementedInspection in implementedInspections)
+            {
+                found = false;
+                foreach (var configInspection in configInspections)
+                {
+                    if (implementedInspection.Name == configInspection.Name)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    configInspections.Add(new CodeInspection(implementedInspection));
+                }
+            }
+            return configInspections;
         }
 
         public Configuration GetDefaultConfiguration()

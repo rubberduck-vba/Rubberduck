@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Rubberduck.Config
 {
@@ -9,8 +10,8 @@ namespace Rubberduck.Config
         CodeInspection[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
-        System.Collections.Generic.IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
-        System.Collections.Generic.List<Rubberduck.VBA.Parser.Grammar.ISyntax> GetImplementedSyntax();
+        IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
+        List<Rubberduck.VBA.Parser.Grammar.ISyntax> GetImplementedSyntax();
         Configuration LoadConfiguration();
         void SaveConfiguration<T>(T toSerialize);
     }
