@@ -49,7 +49,10 @@ namespace Rubberduck.Config
                         config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
                     }
 
-                    var configInspections = AddImplementedInspectionsNotInConfig(config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                    var implementedInspections = GetImplementedCodeInspections();
+                    var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+                    
+                    configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
                     config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
                     return config;
@@ -81,11 +84,9 @@ namespace Rubberduck.Config
             }
         }
 
-        private List<CodeInspection> AddImplementedInspectionsNotInConfig(List<CodeInspection> configInspections)
+        private List<CodeInspection> MergeImplementedInspectionsNotInConfig(List<CodeInspection> configInspections, IList<IInspection> implementedInspections)
         {
-            var implementedInspections = GetImplementedCodeInspections();
             bool found;
-
             foreach (var implementedInspection in implementedInspections)
             {
                 found = false;
