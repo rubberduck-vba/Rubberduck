@@ -87,6 +87,7 @@ namespace Rubberduck.UI.Settings
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveConfig();
+            MessageBox.Show("Changes to settings will take affect next time the application is started.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void SaveConfig()
