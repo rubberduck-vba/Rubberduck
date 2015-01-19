@@ -47,13 +47,14 @@
 * v1.0 Initial revision
 */
 
+/*
+ Changes for VBA:
+	- Added "Option Compare Database"
+*/
+
 grammar VisualBasic6;
 
 // module ----------------------------------
-
-options {
-  output=AST;
-}
 
 startRule : module EOF;
 
@@ -81,7 +82,7 @@ moduleOptions : (moduleOption NEWLINE+)+;
 
 moduleOption : 
 	OPTION_BASE WS INTEGERLITERAL # optionBaseStmt
-	| OPTION_COMPARE WS (BINARY | TEXT) # optionCompareStmt
+	| OPTION_COMPARE WS (BINARY | TEXT | DATABASE) # optionCompareStmt
 	| OPTION_EXPLICIT # optionExplicitStmt
 	| OPTION_PRIVATE_MODULE # optionPrivateModuleStmt
 ;
@@ -637,7 +638,7 @@ ambiguousKeyword :
 	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
 	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
 	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
-	DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFDEC | DEFINT | DEFLNG | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
+	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFDEC | DEFINT | DEFLNG | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
 	EACH | ELSE | ELSEIF | END | ENUM | EQV | ERASE | ERROR | EVENT | 
 	FALSE | FILECOPY | FRIEND | FOR | FUNCTION | 
 	GET | GLOBAL | GOSUB | GOTO | 
@@ -685,6 +686,7 @@ CLASS : C L A S S;
 CLOSE : C L O S E;
 COLLECTION : C O L L E C T I O N;
 CONST : C O N S T;
+DATABASE : D A T A B A S E;
 DATE : D A T E;
 DECLARE : D E C L A R E;
 DEFBOOL : D E F B O O L; 
@@ -871,7 +873,7 @@ IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...
 LINE_CONTINUATION : ' ' '_' '\r'? '\n' -> skip;
 NEWLINE : WS? ('\r'? '\n' | ':' ' ') WS?;
-COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))*; //-> skip;
+COMMENT : WS? ('\'' | ':'? REM ' ') (LINE_CONTINUATION | ~('\n' | '\r'))* -> skip;
 WS : [ \t]+;
 
 

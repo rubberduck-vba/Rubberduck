@@ -82,8 +82,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VBA\Nodes\Node.cs" />
+    <Compile Include="VBA\Nodes\OptionNode.cs" />
+    <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\VBParser.cs" />
+    <Compile Include="VBA\VBTreeListener.cs" />
     <Compile Include="VBA\VisualBasic6BaseListener.cs" />
+    <Compile Include="VBA\VisualBasic6BaseVisitor.cs" />
     <Compile Include="VBA\VisualBasic6Lexer.cs" />
     <Compile Include="VBA\VisualBasic6Listener.cs" />
     <Compile Include="VBA\VisualBasic6Parser.cs" />

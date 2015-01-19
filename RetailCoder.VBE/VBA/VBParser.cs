@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -14,7 +13,11 @@ namespace Rubberduck.VBA
         public SyntaxTreeNode Parse(string projectName, string componentName, string code)
         {
             var result = ParseInternal(code);
+            var walker = new ParseTreeWalker();
 
+            var listener = new VBTreeListener(projectName, componentName);
+            walker.Walk(listener, result);
+            
             return new ModuleNode(projectName, componentName, null, false);
         }
 
