@@ -11,16 +11,20 @@ namespace Rubberduck.VBA
     {
         private readonly string _project;
         private readonly string _module;
-        private readonly IList<Node> _options = new List<Node>(); 
         private readonly IList<Node> _members = new List<Node>();
 
+        private string _currentScope;
+        private Node _currentNode;
         private IList<Node> _children;
 
         public VBTreeListener(string project, string module)
         {
             _project = project;
             _module = module;
+            _currentScope = project + "." + module;
         }
+
+        public Node Root { get { return new ModuleNode(Selection.Empty, _project, _module, _members); } }
 
         private Selection GetSelection(ParserRuleContext context)
         {
@@ -33,42 +37,52 @@ namespace Rubberduck.VBA
 
         public override void EnterOptionExplicitStmt(VisualBasic6Parser.OptionExplicitStmtContext context)
         {
-            _options.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Explicit));
+            _members.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Explicit));
         }
 
         public override void EnterOptionBaseStmt(VisualBasic6Parser.OptionBaseStmtContext context)
         {
-            _options.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Base, context.INTEGERLITERAL().Symbol.Text));
+            _members.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Base, context.INTEGERLITERAL().Symbol.Text));
         }
 
         public override void EnterOptionCompareStmt(VisualBasic6Parser.OptionCompareStmtContext context)
         {
-            _options.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Compare, context.children.Last().GetText()));
+            _members.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Compare, context.children.Last().GetText()));
         }
 
         public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
         {
+            _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.Sub);
             _children = new List<Node>();
+            _currentScope = _project + "." + _module + "." + ((ProcedureNode) _currentNode).Name;
         }
 
         public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
         {
+            _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.Function);
             _children = new List<Node>();
+            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
         {
+            _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyGet);
             _children = new List<Node>();
+            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
         {
+            _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyLet);
             _children = new List<Node>();
+            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
         {
+            _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertySet);
             _children = new List<Node>();
+            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         private ProcedureNode GetProcedureNode(dynamic context, ProcedureNode.VBProcedureKind kind, string returnType = null)
@@ -103,8 +117,7 @@ namespace Rubberduck.VBA
 
                     var isOptional = arg.OPTIONAL() != null;
 
-                    var param = new ParameterNode(GetSelection(arg), _project, _module, parameterType, name, type,
-                        isOptional);
+                    var param = new ParameterNode(GetSelection(arg), _project, _module, parameterType, name, type, isOptional);
                     node.Children.Add(param);
                 }
             }
@@ -117,31 +130,35 @@ namespace Rubberduck.VBA
             return node;
         }
 
+        private void AddCurrentMember()
+        {
+            _members.Add(_currentNode);
+            _currentNode = null;
+        }
+
         public override void ExitSubStmt(VisualBasic6Parser.SubStmtContext context)
         {
-            _members.Add(GetProcedureNode(context, ProcedureNode.VBProcedureKind.Sub));
+            AddCurrentMember();
         }
 
         public override void ExitFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
         {
-            var returnType = context.asTypeClause().type().GetText();
-            _members.Add(GetProcedureNode(context, ProcedureNode.VBProcedureKind.Function, returnType));
+            AddCurrentMember();
         }
 
         public override void ExitPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
         {
-            var returnType = context.asTypeClause().type().GetText();
-            _members.Add(GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyGet, returnType));
+            AddCurrentMember();
         }
 
         public override void ExitPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
         {
-            _members.Add(GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyLet));
+            AddCurrentMember();
         }
 
         public override void ExitPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
         {
-            _members.Add(GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertySet));
+            AddCurrentMember();
         }
     }
 }

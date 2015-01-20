@@ -17,7 +17,6 @@ namespace Rubberduck.VBA
 
             var listener = new VBTreeListener(projectName, componentName);
             walker.Walk(listener, result);
-            
             return new ModuleNode(projectName, componentName, null, false);
         }
 
