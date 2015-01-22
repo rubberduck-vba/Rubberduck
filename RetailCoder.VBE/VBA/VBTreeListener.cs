@@ -15,7 +15,7 @@ namespace Rubberduck.VBA
 
         private string _currentScope;
         private Node _currentNode;
-        private IList<Node> _children;
+        private IList<Node> _currentNodeChildren;
 
         public VBTreeListener(string project, string module)
         {
@@ -24,15 +24,25 @@ namespace Rubberduck.VBA
             _currentScope = project + "." + module;
         }
 
-        public Node Root { get { return new ModuleNode(Selection.Empty, _project, _module, _members); } }
+        public Node Root
+        {
+            get { return new ModuleNode(Selection.Empty, _project, _module, _members); }
+        }
 
         private Selection GetSelection(ParserRuleContext context)
         {
+            // adding +1 because ANTLR indexes are 0-based, but VBE's are 1-based.
             return new Selection(
                 context.Start.Line + 1, 
-                context.Start.StartIndex + 1, 
+                context.Start.StartIndex + 1, // todo: figure out why this is off and how to fix it
                 context.Stop.Line + 1, 
-                context.Stop.StopIndex + 1);
+                context.Stop.StopIndex + 1); // todo: figure out why this is off and how to fix it
+        }
+
+        private void AddCurrentMember()
+        {
+            _members.Add(_currentNode);
+            _currentNode = null;
         }
 
         public override void EnterOptionExplicitStmt(VisualBasic6Parser.OptionExplicitStmtContext context)
@@ -50,38 +60,43 @@ namespace Rubberduck.VBA
             _members.Add(new OptionNode(GetSelection(context), _project, _module, OptionNode.VBOption.Compare, context.children.Last().GetText()));
         }
 
+        public override void EnterEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        {
+            _members.Add(new EnumNode(GetSelection(context), _project, _module, _currentScope, context));
+        }
+
         public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
         {
             _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.Sub);
-            _children = new List<Node>();
+            _currentNodeChildren = new List<Node>();
             _currentScope = _project + "." + _module + "." + ((ProcedureNode) _currentNode).Name;
         }
 
         public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
         {
             _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.Function);
-            _children = new List<Node>();
+            _currentNodeChildren = new List<Node>();
             _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
         {
             _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyGet);
-            _children = new List<Node>();
+            _currentNodeChildren = new List<Node>();
             _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
         {
             _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertyLet);
-            _children = new List<Node>();
+            _currentNodeChildren = new List<Node>();
             _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
         {
             _currentNode = GetProcedureNode(context, ProcedureNode.VBProcedureKind.PropertySet);
-            _children = new List<Node>();
+            _currentNodeChildren = new List<Node>();
             _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
@@ -122,18 +137,12 @@ namespace Rubberduck.VBA
                 }
             }
 
-            foreach (var child in _children)
+            foreach (var child in _currentNodeChildren)
             {
                 node.Children.Add(child);
             }
 
             return node;
-        }
-
-        private void AddCurrentMember()
-        {
-            _members.Add(_currentNode);
-            _currentNode = null;
         }
 
         public override void ExitSubStmt(VisualBasic6Parser.SubStmtContext context)
