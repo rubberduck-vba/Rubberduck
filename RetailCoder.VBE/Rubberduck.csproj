@@ -191,7 +191,7 @@
     <Compile Include="VBA\CommentNode.cs" />
     <Compile Include="VBA\Grammar\AssignmentSyntax.cs" />
     <Compile Include="VBA\ModuleNode.cs" />
-    <Compile Include="Reflection\Project.cs" />
+    <Compile Include="Reflection\VbProjectExtensions.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
