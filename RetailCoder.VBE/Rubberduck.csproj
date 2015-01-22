@@ -107,7 +107,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MenuIcons.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reflection\VBComponentExtensions.cs" />
+    <Compile Include="Extensions\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
