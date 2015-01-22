@@ -11,7 +11,7 @@ namespace Rubberduck.Config
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
         IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
-        List<Rubberduck.VBA.Parser.Grammar.ISyntax> GetImplementedSyntax();
+        List<Rubberduck.VBA.Grammar.ISyntax> GetImplementedSyntax();
         Configuration LoadConfiguration();
         void SaveConfiguration<T>(T toSerialize);
     }
