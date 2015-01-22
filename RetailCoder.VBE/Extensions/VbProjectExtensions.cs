@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
-namespace Rubberduck.Reflection
+namespace Rubberduck.Extensions
 {
     [ComVisible(false)]
     public static class ProjectExtensions
