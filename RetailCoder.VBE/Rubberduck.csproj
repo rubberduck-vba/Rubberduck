@@ -458,6 +458,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="UI\SourceControl\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />

@@ -31,5 +31,14 @@ namespace Rubberduck.Extensions
                 project.References.AddFromFile(referencePath);
             }
         }
+
+        public void ExportAll(this VBProject project, string directoryPath)
+        {
+            foreach (VBComponent component in project.VBComponents)
+            {
+                string filePath = System.IO.Path.Combine(directoryPath, component.Name, component.Type.FileExtension());
+                component.Export(filePath);
+            }
+        }
     }
 }
