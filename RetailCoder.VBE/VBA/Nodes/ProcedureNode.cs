@@ -13,13 +13,9 @@ namespace Rubberduck.VBA.Nodes
             PropertySet
         }
 
-        public ProcedureNode(Selection selection, string project, string module, VBProcedureKind kind, string name, string returnType = null, VBAccessibility accessibility = VBAccessibility.Public)
-            : base(selection, project, module)
+        public ProcedureNode(VisualBasic6Parser.SubStmtContext context, string scope, string localScope)
+            : base(context, scope, localScope)
         {
-            _name = name;
-            _returnType = returnType;
-            _kind = kind;
-            _accessibility = accessibility;
         }
 
         private readonly string _name;

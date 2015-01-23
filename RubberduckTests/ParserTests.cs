@@ -16,8 +16,8 @@ namespace RubberduckTests
         [TestMethod]
         public void TestAntlr()
         {
-            var parser = new VBParser();
-            parser.Parse("project", "component", "Option Compare Database\n\nPrivate foobar As Long\n\nPrivate Function Foo(ByVal bar As String) As Boolean\n    Beep\nEnd Function"); // place breakpoint in this method
+            IRubberduckParser parser = new VBParser();
+            var result = parser.Parse("project", "component", "Option Compare Database\n\nPrivate foobar As Long\n\nPrivate Function Foo(ByVal bar As String) As Boolean\n    Beep\nEnd Function"); // place breakpoint in this method
         }
 
         private readonly IEnumerable<ISyntax> _grammar = Assembly.GetAssembly(typeof(ISyntax))

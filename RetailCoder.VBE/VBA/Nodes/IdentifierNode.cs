@@ -7,16 +7,14 @@ namespace Rubberduck.VBA.Nodes
         private readonly VisualBasic6Parser.CertainIdentifierContext _certainContext;
         private readonly VisualBasic6Parser.AmbiguousIdentifierContext _ambiguousContext;
 
-        public IdentifierNode(Selection location, string project, string module, string scope,
-            VisualBasic6Parser.CertainIdentifierContext context)
-            : base(location, project, module, scope)
+        public IdentifierNode(VisualBasic6Parser.CertainIdentifierContext context, string scope)
+            : base(context, scope)
         {
             _certainContext = context;
         }
 
-        public IdentifierNode(Selection location, string project, string module, string scope,
-            VisualBasic6Parser.AmbiguousIdentifierContext context)
-            : base(location, project, module, scope)
+        public IdentifierNode(VisualBasic6Parser.AmbiguousIdentifierContext context, string scope)
+            : base(context, scope)
         {
             _ambiguousContext = context;
         }

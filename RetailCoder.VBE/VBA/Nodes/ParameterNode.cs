@@ -11,13 +11,9 @@ namespace Rubberduck.VBA.Nodes
             ByVal
         }
 
-        public ParameterNode(Selection selection, string project, string module, VBParameterType passedBy, string name, string type, bool isOptional = false)
-            : base(selection, project, module)
+        public ParameterNode(VisualBasic6Parser.ArgContext context, string scope)
+            : base(context, scope)
         {
-            _passedBy = passedBy;
-            _name = name;
-            _type = type;
-            _isOptional = isOptional;
         }
 
         private readonly VBParameterType _passedBy;

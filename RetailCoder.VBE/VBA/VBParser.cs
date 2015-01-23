@@ -8,7 +8,19 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public class VBParser
+    public interface IRubberduckParser
+    {
+        /// <summary>
+        /// Parses specified code into a code tree.
+        /// </summary>
+        /// <param name="projectName">The name of the VBA project the code belongs to.</param>
+        /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>
+        /// <param name="code">The code fragment or to be parsed.</param>
+        /// <returns></returns>
+        Node Parse(string projectName, string componentName, string code);
+    }
+
+    public class VBParser : IRubberduckParser
     {
         public Node Parse(string projectName, string componentName, string code)
         {
