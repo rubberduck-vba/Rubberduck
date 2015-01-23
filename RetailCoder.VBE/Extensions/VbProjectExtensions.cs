@@ -32,7 +32,7 @@ namespace Rubberduck.Extensions
             }
         }
 
-        public void ExportAll(this VBProject project, string directoryPath)
+        public void ExportSourceFiles(this VBProject project, string directoryPath)
         {
             foreach (VBComponent component in project.VBComponents)
             {
