@@ -58,6 +58,13 @@ namespace Rubberduck.Extensions
             }
         }
 
+        /// <summary>
+        /// Returns the proper file extension for the Component Type.
+        /// </summary>
+        /// <remarks>Document classes should properly have a ".cls" file extension.
+        /// However, because they cannot be removed and imported like other component types, we need to make a distinction.</remarks>
+        /// <param name="componentType"></param>
+        /// <returns>File extension that includes a preceeding "dot" (.) </returns>
         public static string FileExtension(this vbext_ComponentType componentType)
         {
             switch (componentType)
@@ -69,6 +76,8 @@ namespace Rubberduck.Extensions
                 case vbext_ComponentType.vbext_ct_StdModule:
                     return ".bas";
                 case vbext_ComponentType.vbext_ct_Document:
+                    // documents should technically be a ".cls", but we need to be able to tell them apart.
+                    return ".doccls";
                 case vbext_ComponentType.vbext_ct_ActiveXDesigner:
                 default:
                     return string.Empty;

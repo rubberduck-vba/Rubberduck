@@ -75,5 +75,7 @@ namespace Rubberduck.Extensions
                 }
             }
         }
+
+        //todo: Implement ImportSourceFiles. Don't import .frx files. DocClasses need to imported by writing to module from file.
     }
 }
