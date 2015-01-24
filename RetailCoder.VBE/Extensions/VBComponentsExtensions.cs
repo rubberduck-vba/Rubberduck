@@ -27,11 +27,33 @@ namespace Rubberduck.Extensions
                     break;
                 case vbext_ComponentType.vbext_ct_ActiveXDesigner:
                 case vbext_ComponentType.vbext_ct_Document:
-                    CodeModule module = component.CodeModule;
-                    module.DeleteLines(1, module.CountOfLines);
+                    component.CodeModule.Clear();
                     break;
                 default:
                     break;
+            }
+        }
+
+        public static void ImportSourceFile(this VBComponents components, string filePath)
+        {
+            var ext = System.IO.Path.GetExtension(filePath);
+            var fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+
+            if (ext == VBComponentExtensions.DocClassExtension)
+            {
+                var component = components.Item(fileName);
+                if (component != null)
+                {
+                    component.CodeModule.Clear();
+
+                    var text = System.IO.File.ReadAllText(filePath);
+                    component.CodeModule.AddFromString(text);
+                }
+
+            }
+            else if(ext != VBComponentExtensions.FormBinaryExtension)
+            {
+                components.Import(filePath);
             }
         }
     }

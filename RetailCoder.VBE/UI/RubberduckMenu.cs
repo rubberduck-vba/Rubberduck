@@ -57,6 +57,7 @@ namespace Rubberduck.UI
         //todo: remove these temporary testing buttons
         private CommandBarButton _removeAll;
         private CommandBarButton _exportAll;
+        private CommandBarButton _importAll;
 
         public void Initialize()
         {
@@ -79,7 +80,20 @@ namespace Rubberduck.UI
             //todo: remove rapid prototyping buttons
             _removeAll = AddButton(menu, "RemoveAll", false, new CommandBarButtonClickEvent(OnRemoveClick));
             _exportAll = AddButton(menu, "ExportAll", false, new CommandBarButtonClickEvent(OnExportClick));
+            _exportAll = AddButton(menu, "ImportAll", false, new CommandBarButtonClickEvent(OnImportClick));
             
+        }
+
+        //todo: remove
+        private void OnImportClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var importDir = @"C:\Users\Christopher\Documents\SourceControlTest";
+            var dirInfo = new System.IO.DirectoryInfo(importDir);
+
+            foreach (var file in dirInfo.EnumerateFiles())
+            {
+                this._vbe.ActiveVBProject.VBComponents.ImportSourceFile(file.FullName);
+            }
         }
 
         //todo: remove

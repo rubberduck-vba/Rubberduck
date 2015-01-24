@@ -9,6 +9,12 @@ namespace Rubberduck.Extensions
     [ComVisible(false)]
     public static class VBComponentExtensions
     {
+        internal const string ClassExtesnion = ".cls";
+        internal const string FormExtension = ".frm";
+        internal const string StandardExtension = ".bas";
+        internal const string FormBinaryExtension = ".frx";
+        internal const string DocClassExtension = ".doccls";
+
         public static bool HasAttribute<TAttribute>(this CodeModule code) where TAttribute : MemberAttributeBase, new()
         {
             return HasAttribute(code, new TAttribute().Name);
@@ -66,7 +72,15 @@ namespace Rubberduck.Extensions
         public static void ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
             string filePath = System.IO.Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
-            component.Export(filePath);
+            if (component.Type == vbext_ComponentType.vbext_ct_Document)
+            {
+                var text = component.CodeModule.get_Lines(1, component.CodeModule.CountOfLines);
+                System.IO.File.WriteAllText(filePath, text);
+            }
+            else 
+            { 
+                component.Export(filePath); 
+            }
         }
 
         /// <summary>
@@ -81,14 +95,14 @@ namespace Rubberduck.Extensions
             switch (componentType)
             {
                 case vbext_ComponentType.vbext_ct_ClassModule:
-                    return ".cls";
+                    return ClassExtesnion;
                 case vbext_ComponentType.vbext_ct_MSForm:
-                    return ".frm";
+                    return FormExtension;
                 case vbext_ComponentType.vbext_ct_StdModule:
-                    return ".bas";
+                    return StandardExtension;
                 case vbext_ComponentType.vbext_ct_Document:
                     // documents should technically be a ".cls", but we need to be able to tell them apart.
-                    return ".doccls";
+                    return DocClassExtension;
                 case vbext_ComponentType.vbext_ct_ActiveXDesigner:
                 default:
                     return string.Empty;
