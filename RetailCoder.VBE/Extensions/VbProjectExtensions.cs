@@ -37,12 +37,11 @@ namespace Rubberduck.Extensions
         /// </summary>
         /// <param name="project">The <see cref="VbProject"/> to be exported to source files.</param>
         /// <param name="directoryPath">The destination directory path.</param>
-        public void ExportSourceFiles(this VBProject project, string directoryPath)
+        public static void ExportSourceFiles(this VBProject project, string directoryPath)
         {
             foreach (VBComponent component in project.VBComponents)
             {
-                string filePath = System.IO.Path.Combine(directoryPath, component.Name, component.Type.FileExtension());
-                component.Export(filePath);
+                component.ExportAsSourceFile(directoryPath);
             }
         }
 
@@ -54,25 +53,11 @@ namespace Rubberduck.Extensions
         /// Instead, the code will simply be deleted from the code module.
         /// </remarks>
         /// <param name="project"></param>
-        public void RemoveAllComponents(this VBProject project)
+        public static void RemoveAllComponents(this VBProject project)
         {
             foreach (VBComponent component in project.VBComponents)
             {
-                switch (component.Type)
-                {
-                    case vbext_ComponentType.vbext_ct_ClassModule:
-                    case vbext_ComponentType.vbext_ct_StdModule:
-                    case vbext_ComponentType.vbext_ct_MSForm:
-                        project.VBComponents.Remove(component);
-                        break;
-                    case vbext_ComponentType.vbext_ct_ActiveXDesigner:
-                    case vbext_ComponentType.vbext_ct_Document:
-                        CodeModule module = component.CodeModule;
-                        module.DeleteLines(1, module.CountOfLines);
-                        break;
-                    default:
-                        break;
-                }
+                project.VBComponents.RemoveSafely(component);
             }
         }
 

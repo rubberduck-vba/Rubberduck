@@ -59,6 +59,17 @@ namespace Rubberduck.Extensions
         }
 
         /// <summary>
+        /// Exports the component to the directoryPath. The file is name matches the component name and file extension is based on the component's type.
+        /// </summary>
+        /// <param name="component">The component to be exported to the file system.</param>
+        /// <param name="directoryPath">Destination Path for the resulting source file.</param>
+        public static void ExportAsSourceFile(this VBComponent component, string directoryPath)
+        {
+            string filePath = System.IO.Path.Combine(directoryPath, component.Name, component.Type.FileExtension());
+            component.Export(filePath);
+        }
+
+        /// <summary>
         /// Returns the proper file extension for the Component Type.
         /// </summary>
         /// <remarks>Document classes should properly have a ".cls" file extension.
