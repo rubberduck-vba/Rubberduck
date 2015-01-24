@@ -65,7 +65,7 @@ namespace Rubberduck.Extensions
         /// <param name="directoryPath">Destination Path for the resulting source file.</param>
         public static void ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
-            string filePath = System.IO.Path.Combine(directoryPath, component.Name, component.Type.FileExtension());
+            string filePath = System.IO.Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
             component.Export(filePath);
         }
 
