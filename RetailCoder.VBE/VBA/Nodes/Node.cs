@@ -8,7 +8,7 @@ namespace Rubberduck.VBA.Nodes
     /// <summary>
     /// The base class for all nodes in a Rubberduck code tree.
     /// </summary>
-    public abstract class Node
+    public abstract class Node : INode
     {
         private readonly ParserRuleContext _context;
         private readonly Selection _selection;

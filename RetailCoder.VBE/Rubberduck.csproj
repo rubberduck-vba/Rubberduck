@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
+    <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\ModuleNode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\OptionNode.cs" />
