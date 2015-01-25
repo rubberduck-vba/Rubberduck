@@ -13,7 +13,7 @@ namespace Rubberduck.Extensions
             _endColumn = endColumn;
         }
 
-        public static Selection Empty { get { return new Selection(); } }
+        public static Selection Empty { get { return new Selection(1, 1, 1, 1); } }
 
         private readonly int _startLine;
         public int StartLine { get { return _startLine; } }
