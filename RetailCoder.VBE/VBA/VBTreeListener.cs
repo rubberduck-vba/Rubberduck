@@ -11,6 +11,9 @@ namespace Rubberduck.VBA
     {
         public static Selection GetSelection(this ParserRuleContext context)
         {
+            if (context == null)
+                return Selection.Empty;
+
             // adding +1 because ANTLR indexes are 0-based, but VBE's are 1-based.
             return new Selection(
                 context.Start.Line + 1,
@@ -50,31 +53,26 @@ namespace Rubberduck.VBA
         public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
-            _currentScope = _project + "." + _module + "." + ((ProcedureNode) _currentNode).Name;
         }
 
         public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
-            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
-            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
-            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
-            _currentScope = _project + "." + _module + "." + ((ProcedureNode)_currentNode).Name;
         }
 
         private ProcedureNode CreateProcedureNode(dynamic context)
@@ -91,6 +89,7 @@ namespace Rubberduck.VBA
                 }
             }
 
+            _currentScope = _project + "." + _module + "." + node.Name;
             return node;
         }
 

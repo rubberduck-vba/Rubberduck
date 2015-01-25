@@ -13,6 +13,26 @@ namespace Rubberduck.VBA.Nodes
             PropertySet
         }
 
+        public ProcedureNode(VisualBasic6Parser.PropertySetStmtContext context, string scope, string localScope)
+            : base(context, scope, localScope)
+        {
+        }
+
+        public ProcedureNode(VisualBasic6Parser.PropertyLetStmtContext context, string scope, string localScope)
+            : base(context, scope, localScope)
+        {
+        }
+
+        public ProcedureNode(VisualBasic6Parser.PropertyGetStmtContext context, string scope, string localScope)
+            : base(context, scope, localScope)
+        {
+        }
+
+        public ProcedureNode(VisualBasic6Parser.FunctionStmtContext context, string scope, string localScope)
+            : base(context, scope, localScope)
+        {
+        }
+
         public ProcedureNode(VisualBasic6Parser.SubStmtContext context, string scope, string localScope)
             : base(context, scope, localScope)
         {
