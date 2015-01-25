@@ -2,6 +2,7 @@
 {
     public enum VBAccessibility
     {
+        Implicit,
         Public,
         Private,
         Global,
