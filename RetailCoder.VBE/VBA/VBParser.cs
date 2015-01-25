@@ -17,12 +17,12 @@ namespace Rubberduck.VBA
         /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>
         /// <param name="code">The code fragment or to be parsed.</param>
         /// <returns></returns>
-        Node Parse(string projectName, string componentName, string code);
+        INode Parse(string projectName, string componentName, string code);
     }
 
     public class VBParser : IRubberduckParser
     {
-        public Node Parse(string projectName, string componentName, string code)
+        public INode Parse(string projectName, string componentName, string code)
         {
             var result = ParseInternal(code);
             var walker = new ParseTreeWalker();
