@@ -1,6 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
@@ -26,12 +27,12 @@ namespace Rubberduck.VBA.Nodes
         }
 
         public ProcedureNode(VisualBasic6Parser.PropertyGetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause())
+            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
         {
         }
 
         public ProcedureNode(VisualBasic6Parser.FunctionStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause())
+            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
         {
         }
 
@@ -42,25 +43,23 @@ namespace Rubberduck.VBA.Nodes
 
         private ProcedureNode(ParserRuleContext context, string scope, string localScope, 
                               VBProcedureKind kind, 
-                              IParseTree visibility, 
+                              VisualBasic6Parser.VisibilityContext visibility, 
                               VisualBasic6Parser.AmbiguousIdentifierContext name, 
-                              VisualBasic6Parser.AsTypeClauseContext asType)
+                              Func<VisualBasic6Parser.AsTypeClauseContext> asType)
             : base(context, scope, localScope)
         {
             _kind = kind;
             _name = name.GetText();
-            if (visibility == null || string.IsNullOrEmpty(visibility.GetText()))
-            {
-                _accessibility = VBAccessibility.Implicit;
-            }
-            else
-            {
-                _accessibility = (VBAccessibility) Enum.Parse(typeof (VBAccessibility), visibility.GetText());
-            }
+            _accessibility = visibility.GetAccessibility();
 
             if (asType != null)
             {
-                _returnType = asType.type().GetText();
+                var returnTypeClause = asType();
+                _isImplicitReturnType = returnTypeClause == null;
+
+                _returnType = returnTypeClause == null 
+                                ? ReservedKeywords.Variant 
+                                : returnTypeClause.type().GetText();
             }
         }
 
@@ -69,6 +68,9 @@ namespace Rubberduck.VBA.Nodes
 
         private readonly string _returnType;
         public string ReturnType { get { return _returnType; } }
+
+        private readonly bool _isImplicitReturnType;
+        public bool IsImplicitReturnType { get { return _isImplicitReturnType; } }
 
         private readonly VBProcedureKind _kind;
         public VBProcedureKind Kind { get { return _kind; } }

@@ -92,6 +92,7 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\VariableNode.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
+    <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\VBParser.cs" />
     <Compile Include="VBA\VBTreeListener.cs" />
     <Compile Include="VBA\VisualBasic6BaseListener.cs" />

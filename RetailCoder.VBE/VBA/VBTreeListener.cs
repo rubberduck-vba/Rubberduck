@@ -1,28 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Extensions;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public static class ParserRuleContextExtensions
-    {
-        public static Selection GetSelection(this ParserRuleContext context)
-        {
-            if (context == null)
-                return Selection.Empty;
-
-            // adding +1 because ANTLR indexes are 0-based, but VBE's are 1-based.
-            return new Selection(
-                context.Start.Line + 1,
-                context.Start.StartIndex + 1, // todo: figure out why this is off and how to fix it
-                context.Stop.Line + 1,
-                context.Stop.StopIndex + 1); // todo: figure out why this is off and how to fix it
-        }
-    }
-
     public partial class VBTreeListener : VisualBasic6BaseListener
     {
         private readonly string _project;
@@ -137,6 +118,18 @@ namespace Rubberduck.VBA
         {
             AddCurrentMember();
         }
- 
+
+        public override void ExitVariableStmt(VisualBasic6Parser.VariableStmtContext context)
+        {
+            var node = new VariableDeclarationNode(context, _currentScope);
+            if (_currentNode == null)
+            {
+                _members.Add(node);
+            }
+            else
+            {
+                _currentNode.AddChild(node);
+            }
+        }
     }
 }
