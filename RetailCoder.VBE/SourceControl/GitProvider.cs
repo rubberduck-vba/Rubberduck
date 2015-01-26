@@ -12,31 +12,34 @@ namespace Rubberduck.SourceControl
     //todo: I need a way to get to the branch status...
     class GitProvider : SourceControlProviderBase
     {
-        public GitProvider(VBProject project, Repository repository)
-            :base(project, repository) {}
+        private LibGit2Sharp.Repository repo;
 
-        public override string CurrentBranch 
-        { 
-            get 
+        public GitProvider(VBProject project, Repository repository)
+            : base(project, repository)
+        {
+            repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+        }
+
+        ~GitProvider()
+        {
+            repo.Dispose();
+        }
+
+        public override string CurrentBranch
+        {
+            get
             {
-                using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
-                {
-                    LibGit2Sharp.Branch branch = repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead).First();
-                    return branch.Name;
-                }
-            } 
+                LibGit2Sharp.Branch branch = repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead).First();
+                return branch.Name;
+            }
         }
 
         public override IEnumerable<string> Branches
         {
-            get 
+            get
             {
-                using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
-                {
-                    return repo.Branches.Where(b => !b.IsRemote)
-                                        .Select(b => b.Name);
-                }
-
+                return repo.Branches.Where(b => !b.IsRemote)
+                                    .Select(b => b.Name);
             }
         }
 
@@ -60,93 +63,70 @@ namespace Rubberduck.SourceControl
 
         public override void Push()
         {
-            using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
-            {
-                repo.Network.Push(repo.Branches[this.CurrentBranch]);
-            }
+            repo.Network.Push(repo.Branches[this.CurrentBranch]);
         }
 
         public override void Fetch()
         {
-            using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
-            {
-                //todo: break dependency on origin remote
-                //todo: document the fact that git integration only works on remotes named "origin"
-                var remote = repo.Network.Remotes["origin"];
-                repo.Network.Fetch(remote);
-            }
+            //todo: break dependency on origin remote
+            //todo: document the fact that git integration only works on remotes named "origin"
+            var remote = repo.Network.Remotes["origin"];
+            repo.Network.Fetch(remote);
         }
 
         public override void Pull()
         {
-            using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
+            var options = new PullOptions()
             {
-                var options = new PullOptions()
+                MergeOptions = new MergeOptions()
                 {
-                    MergeOptions = new MergeOptions()
-                    {
-                        FastForwardStrategy = FastForwardStrategy.Default
-                    }
-                };
+                    FastForwardStrategy = FastForwardStrategy.Default
+                }
+            };
 
-                var signature = GetSignature();
-                repo.Network.Pull(signature, options);
+            var signature = GetSignature();
+            repo.Network.Pull(signature, options);
 
-                base.Pull();
-            }
+            base.Pull();
         }
 
         public override void Commit(string message)
         {
             base.Commit(message);
 
-            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
-            {
-                RepositoryStatus status = repo.RetrieveStatus();
-                List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-                repo.Stage(filePaths);
-                repo.Commit(message);
-            }
+            RepositoryStatus status = repo.RetrieveStatus();
+            List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
+            repo.Stage(filePaths);
+            repo.Commit(message);
         }
 
         public override void Merge(string sourceBranch, string destinationBranch)
         {
-            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
-            {
-                repo.Checkout(repo.Branches[destinationBranch]);
-                Signature signature = GetSignature();
-                repo.Merge(repo.Branches[sourceBranch], signature);
-            }
+            repo.Checkout(repo.Branches[destinationBranch]);
+
+            Signature signature = GetSignature();
+            repo.Merge(repo.Branches[sourceBranch], signature);
         }
 
         public override void Checkout(string branch)
         {
-            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
-            {
-                repo.Checkout(repo.Branches[branch]);
-            }
+            repo.Checkout(repo.Branches[branch]);
 
             base.Checkout(branch);
         }
 
         public override void Revert()
         {
-            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
-            {
-                //todo: investigate revert results class
-                repo.Revert(repo.Head.Tip, GetSignature());
-            }
+            //todo: investigate revert results class
+            repo.Revert(repo.Head.Tip, GetSignature());
 
             base.Revert();
         }
 
         public override void AddFile(string filePath)
         {
-            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
-            {
-                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
-                repo.Stage(filePath);
-            }
+            // https://github.com/libgit2/libgit2sharp/wiki/Git-add
+            repo.Stage(filePath);
         }
 
         public override void RemoveFile(string filePath)
