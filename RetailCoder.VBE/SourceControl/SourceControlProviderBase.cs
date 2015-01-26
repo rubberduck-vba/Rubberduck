@@ -32,8 +32,7 @@ namespace Rubberduck.SourceControl
         public virtual Repository Init(string directory)
         {
             this.project.ExportSourceFiles(directory);
-
-            return new Repository(project.Name, directory, null);
+            return new Repository(project.Name, directory, String.Empty);
         }
 
         public virtual void Pull()
@@ -58,11 +57,16 @@ namespace Rubberduck.SourceControl
 
         public virtual void Undo(string filePath)
         {
-            // I'll need to parse the component name from the file name
-            // Remove the component from the project
-            // then reload it from the file system
+            //GetFileNameWithoutExtension returns empty string if it's not a file
+            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
+            var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
 
-            throw new NotImplementedException();
+            if (componentName != String.Empty)
+            {
+                var component = this.project.VBComponents.Item(componentName);
+                this.project.VBComponents.RemoveSafely(component);
+                this.project.VBComponents.ImportSourceFile(filePath);
+            }
         }
 
         public virtual void Revert()

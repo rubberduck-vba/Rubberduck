@@ -29,8 +29,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                LibGit2Sharp.Branch branch = repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead).First();
-                return branch.Name;
+                return repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead).First().Name;
             }
         }
 
