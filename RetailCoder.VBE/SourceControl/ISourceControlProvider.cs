@@ -8,7 +8,7 @@ namespace Rubberduck.SourceControl
 {
     public interface ISourceControlProvider
     {
-        Repository CurrentRepository { get; set; }
+        Repository CurrentRepository { get; }
         string CurrentBranch { get; }
         IEnumerable<string> Branches { get; }
 

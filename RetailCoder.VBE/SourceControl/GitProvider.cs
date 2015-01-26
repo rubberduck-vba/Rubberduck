@@ -9,17 +9,12 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.SourceControl
 {
-    class GitProvider: ISourceControlProvider
+    class GitProvider : SourceControlProviderBase
     {
-        private VBProject project;
-        public GitProvider(VBProject project) 
-        {
-            this.project = project;
-            CurrentRepository = new Repository(project.Name, @"C:\Users\Christopher\Documents\SourceControlTest", @"https://github.com/ckuhn203/SourceControlTest.git");
-        }
+        public GitProvider(VBProject project, Repository repository)
+            :base(project, repository) {}
 
-        public Repository CurrentRepository { get; private set; }
-        public string CurrentBranch 
+        public override string CurrentBranch 
         { 
             get 
             {
@@ -31,7 +26,7 @@ namespace Rubberduck.SourceControl
             } 
         }
 
-        public IEnumerable<string> Branches
+        public override IEnumerable<string> Branches
         {
             get 
             {
@@ -44,19 +39,19 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public static Repository Clone(string remotePathOrUrl, string workingDirectory)
+        public override Repository Clone(string remotePathOrUrl, string workingDirectory)
         {
             LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
             //todo: parse name from remote path
             return new Repository(String.Empty, workingDirectory, remotePathOrUrl);
         }
 
-        public static Repository Init(string directory, Microsoft.Vbe.Interop.VBProject project)
+        public override Repository Init(string directory, Microsoft.Vbe.Interop.VBProject project)
         {
             throw new NotImplementedException();
         }
 
-        public void Push()
+        public override void Push()
         {
             using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
             {
@@ -64,19 +59,19 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public void Fetch()
+        public override void Fetch()
         {
             throw new NotImplementedException();
         }
 
-        public void Pull()
+        public override void Pull()
         {
             throw new NotImplementedException();
         }
 
-        public void Commit(string message)
+        public override void Commit(string message)
         {
-            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            base.Commit(message);
 
             using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
             {
@@ -87,7 +82,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public void Merge(string sourceBranch, string destinationBranch)
+        public override void Merge(string sourceBranch, string destinationBranch)
         {
             using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
             {
@@ -98,41 +93,33 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public void Checkout(string branch)
+        public override void Checkout(string branch)
         {
             using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
             {
                 repo.Checkout(repo.Branches[branch]);
             }
 
-            this.project.RemoveAllComponents();
-
-            var dirInfo = new System.IO.DirectoryInfo(this.CurrentRepository.LocalLocation);
-            foreach(var file in dirInfo.EnumerateFiles())
-            {
-                this.project.VBComponents.ImportSourceFile(file.FullName);
-            }
+            base.Checkout(branch);
         }
 
-        public void Undo(string filePath)
-        {
-            // I'll need to parse the component name from the file name
-            // Remove the component from the project
-            // then reload it from the file system
-            throw new NotImplementedException();
-        }
+        //public void Undo(string filePath)
+        //{
 
-        public void Revert()
+        //    throw new NotImplementedException();
+        //}
+
+        public override void Revert()
         {
             throw new NotImplementedException();
         }
 
-        public void AddFile(string filePath)
+        public override void AddFile(string filePath)
         {
             throw new NotImplementedException();
         }
 
-        public void RemoveFile(string filePath)
+        public override void RemoveFile(string filePath)
         {
             throw new NotImplementedException();
         }

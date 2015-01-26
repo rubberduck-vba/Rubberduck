@@ -74,12 +74,11 @@
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
-    <Compile Include="SourceControl\ActionResult.cs" />
     <Compile Include="SourceControl\Class1.cs" />
     <Compile Include="SourceControl\GitProvider.cs" />
     <Compile Include="SourceControl\ISourceControlProvider.cs" />
-    <Compile Include="SourceControl\RubberduckRepository.cs" />
-    <Compile Include="SourceControl\FileMediator.cs" />
+    <Compile Include="SourceControl\Repository.cs" />
+    <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />

@@ -18,6 +18,10 @@ namespace Rubberduck.SourceControl
             
             //repo.CreateBranch()
             //repo.Branches.Where(x => x.IsRemote == false);
+            ISourceControlProvider git = new GitProvider(new Microsoft.Vbe.Interop.VBProject(),
+                                        new Repository("SourceControlTest", @"C:\Users\Christopher\Documents\SourceControlTest", @"https://github.com/ckuhn203/SourceControlTest.git")
+                                        );
+            
         }
     }
 }
