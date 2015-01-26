@@ -25,6 +25,7 @@ namespace Rubberduck.SourceControl
         /// <returns>Newly created repository.</returns>
         Repository Init(string directory);
 
+        //todo: document
         void Push();
         void Fetch();
         void Pull();

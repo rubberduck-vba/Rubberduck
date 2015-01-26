@@ -45,9 +45,9 @@ namespace Rubberduck.SourceControl
         //note: should we really have a clone method? I don't think we'll use it, but could be useful in an API.
         public override Repository Clone(string remotePathOrUrl, string workingDirectory)
         {
-            LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
             //todo: parse name from remote path
-            return new Repository(String.Empty, workingDirectory, remotePathOrUrl);
+            var name = String.Empty;
+            return new Repository(name, workingDirectory, remotePathOrUrl);
         }
 
         public override Repository Init(string directory)
@@ -130,13 +130,15 @@ namespace Rubberduck.SourceControl
 
         public override void RemoveFile(string filePath)
         {
+            //todo: implement
             throw new NotImplementedException();
         }
 
-        private static Signature GetSignature()
+        private Signature GetSignature()
         {
-            //todo: get an actual signature at runtime
-            return new Signature("ckuhn203", "ckuhn203@gmail.com", System.DateTimeOffset.Now);
+            return this.repo.Config.BuildSignature(DateTimeOffset.Now);
+            //todo: clean up dead code
+            // return new Signature("ckuhn203", "ckuhn203@gmail.com", DateTimeOffset.Now);
         }
     }
 }

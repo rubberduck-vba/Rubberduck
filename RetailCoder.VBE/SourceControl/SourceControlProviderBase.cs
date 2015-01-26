@@ -11,12 +11,16 @@ namespace Rubberduck.SourceControl
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
         private VBProject project;
-        public SourceControlProviderBase(VBProject project, Repository repository)
+
+        public SourceControlProviderBase(VBProject project)
         {
             this.project = project;
-            //CurrentRepository = new Repository(project.Name, @"C:\Users\Christopher\Documents\SourceControlTest", @"https://github.com/ckuhn203/SourceControlTest.git");
-            this.CurrentRepository = repository;
+        }
 
+        public SourceControlProviderBase(VBProject project, Repository repository)
+            :this(project)
+        {
+            this.CurrentRepository = repository;
         }
 
         public Repository CurrentRepository { get; private set; }
@@ -32,7 +36,8 @@ namespace Rubberduck.SourceControl
         public virtual Repository Init(string directory)
         {
             this.project.ExportSourceFiles(directory);
-            return new Repository(project.Name, directory, String.Empty);
+            this.CurrentRepository = new Repository(project.Name, directory, String.Empty);
+            return this.CurrentRepository;
         }
 
         public virtual void Pull()
