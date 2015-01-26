@@ -26,6 +26,19 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        public void DeclarationSectionConst()
+        {
+            IRubberduckParser parser = new VBParser();
+            var code = "Const foo As Integer = 42\n\nOption Explicit\n\n";
+
+            var module = parser.Parse("project", "component", code);
+            var declaration = (ConstDeclarationNode)module.Children.First();
+            var constant = (DeclaredIdentifierNode)declaration.Children.First();
+
+            Assert.AreEqual(constant.Name, "foo");
+        }
+
+        [TestMethod]
         public void UnspecifiedReturnTypeGetsFlagged()
         {
             IRubberduckParser parser = new VBParser();
@@ -33,7 +46,7 @@ namespace RubberduckTests
 
             var module = parser.Parse("project", "component", code);
             var procedure = (ProcedureNode)module.Children.First();
-
+            
             Assert.AreEqual(procedure.ReturnType, "Variant");            
             Assert.IsTrue(procedure.IsImplicitReturnType);
         }
@@ -47,7 +60,7 @@ namespace RubberduckTests
             var module = parser.Parse("project", "component", code);
             var procedure = module.Children.First();
             var declaration = procedure.Children.First();
-            var variable = (VariableNode)declaration.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
             Assert.AreEqual(variable.Accessibility, VBAccessibility.Private);
         }
@@ -61,8 +74,9 @@ namespace RubberduckTests
             var module = parser.Parse("project", "component", code);
             var procedure = module.Children.First();
             var declaration = procedure.Children.First();
-            var variable = (VariableNode)declaration.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
+            Assert.AreEqual(variable.TypeName, "String");
             Assert.IsTrue(variable.IsUsingTypeHint);
         }
 
@@ -75,7 +89,7 @@ namespace RubberduckTests
             var module = parser.Parse("project", "component", code);
             var procedure = module.Children.First();
             var declaration = procedure.Children.First();
-            var variable = (VariableNode)declaration.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
             Assert.IsTrue(variable.IsImplicitlyTyped);
         }

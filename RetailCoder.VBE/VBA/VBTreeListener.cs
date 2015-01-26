@@ -131,5 +131,18 @@ namespace Rubberduck.VBA
                 _currentNode.AddChild(node);
             }
         }
+
+        public override void ExitConstStmt(VisualBasic6Parser.ConstStmtContext context)
+        {
+            var node = new ConstDeclarationNode(context, _currentScope);
+            if (_currentNode == null)
+            {
+                _members.Add(node);
+            }
+            else
+            {
+                _currentNode.AddChild(node);
+            }
+        }
     }
 }
