@@ -9,6 +9,7 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.SourceControl
 {
+    //todo: I need a way to get to the branch status...
     class GitProvider : SourceControlProviderBase
     {
         public GitProvider(VBProject project, Repository repository)
@@ -39,6 +40,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        //note: should we really have a clone method? I don't think we'll use it, but could be useful in an API.
         public override Repository Clone(string remotePathOrUrl, string workingDirectory)
         {
             LibGit2Sharp.Repository.Clone(remotePathOrUrl, workingDirectory);
@@ -46,9 +48,14 @@ namespace Rubberduck.SourceControl
             return new Repository(String.Empty, workingDirectory, remotePathOrUrl);
         }
 
-        public override Repository Init(string directory, Microsoft.Vbe.Interop.VBProject project)
+        public override Repository Init(string directory)
         {
+            //todo: implement
+            var repository = base.Init(directory);
+
             throw new NotImplementedException();
+
+            return repository;
         }
 
         public override void Push()
@@ -61,12 +68,32 @@ namespace Rubberduck.SourceControl
 
         public override void Fetch()
         {
-            throw new NotImplementedException();
+            using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
+            {
+                //todo: break dependency on origin remote
+                //todo: document the fact that git integration only works on remotes named "origin"
+                var remote = repo.Network.Remotes["origin"];
+                repo.Network.Fetch(remote);
+            }
         }
 
         public override void Pull()
         {
-            throw new NotImplementedException();
+            using (var repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation))
+            {
+                var options = new PullOptions()
+                {
+                    MergeOptions = new MergeOptions()
+                    {
+                        FastForwardStrategy = FastForwardStrategy.Default
+                    }
+                };
+
+                var signature = GetSignature();
+                repo.Network.Pull(signature, options);
+
+                base.Pull();
+            }
         }
 
         public override void Commit(string message)
@@ -87,9 +114,8 @@ namespace Rubberduck.SourceControl
             using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
             {
                 repo.Checkout(repo.Branches[destinationBranch]);
-                //todo: find a way to grab this info from git config
-                Signature sig = new Signature("ckuhn203", "ckuhn203@gmail.com", System.DateTimeOffset.Now);
-                repo.Merge(repo.Branches[sourceBranch], sig);
+                Signature signature = GetSignature();
+                repo.Merge(repo.Branches[sourceBranch], signature);
             }
         }
 
@@ -103,25 +129,35 @@ namespace Rubberduck.SourceControl
             base.Checkout(branch);
         }
 
-        //public void Undo(string filePath)
-        //{
-
-        //    throw new NotImplementedException();
-        //}
-
         public override void Revert()
         {
-            throw new NotImplementedException();
+            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
+            {
+                //todo: investigate revert results class
+                repo.Revert(repo.Head.Tip, GetSignature());
+            }
+
+            base.Revert();
         }
 
         public override void AddFile(string filePath)
         {
-            throw new NotImplementedException();
+            using (var repo = new LibGit2Sharp.Repository(this.CurrentRepository.LocalLocation))
+            {
+                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
+                repo.Stage(filePath);
+            }
         }
 
         public override void RemoveFile(string filePath)
         {
             throw new NotImplementedException();
+        }
+
+        private static Signature GetSignature()
+        {
+            //todo: get an actual signature at runtime
+            return new Signature("ckuhn203", "ckuhn203@gmail.com", System.DateTimeOffset.Now);
         }
     }
 }

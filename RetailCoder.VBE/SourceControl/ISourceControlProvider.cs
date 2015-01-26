@@ -23,7 +23,7 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="directory">The directory where the new repository will be created.</param>
         /// <returns>Newly created repository.</returns>
-        Repository Init(string directory, Microsoft.Vbe.Interop.VBProject project);
+        Repository Init(string directory);
 
         void Push();
         void Fetch();

@@ -23,11 +23,18 @@ namespace Rubberduck.SourceControl
         public abstract string CurrentBranch { get; }
         public abstract IEnumerable<string> Branches { get; }
         public abstract Repository Clone(string remotePathOrUrl, string workingDirectory);
-        public abstract Repository Init(string directory, Microsoft.Vbe.Interop.VBProject project);
         public abstract void Push();
         public abstract void Fetch();
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
+
+
+        public virtual Repository Init(string directory)
+        {
+            this.project.ExportSourceFiles(directory);
+
+            return new Repository(project.Name, directory, null);
+        }
 
         public virtual void Pull()
         {
