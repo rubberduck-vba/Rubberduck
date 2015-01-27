@@ -80,6 +80,12 @@
     <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
+    <Compile Include="UI\SourceControl\GitView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\GitView.Designer.cs">
+      <DependentUpon>GitView.cs</DependentUpon>
+    </Compile>
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
@@ -404,6 +410,9 @@
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\GitView.resx">
+      <DependentUpon>GitView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VBA\Grammar\ReservedKeywords.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
@@ -464,7 +473,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="UI\SourceControl\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />

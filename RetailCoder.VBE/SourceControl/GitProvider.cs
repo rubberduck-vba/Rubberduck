@@ -62,7 +62,22 @@ namespace Rubberduck.SourceControl
 
         public override void Push()
         {
-            repo.Network.Push(repo.Branches[this.CurrentBranch]);
+            //todo: put this someplace safe and preferably encrypted
+            var creds = new UsernamePasswordCredentials()
+            {
+                Username = "ckuhn203",
+                Password = ""
+            };
+            
+            LibGit2Sharp.Handlers.CredentialsHandler credHandler = (url, user, cred) => creds;
+
+            var options = new PushOptions()
+            {
+                CredentialsProvider = credHandler
+            };
+
+            var branch = repo.Branches[this.CurrentBranch];
+            repo.Network.Push(branch, options);
         }
 
         public override void Fetch()
