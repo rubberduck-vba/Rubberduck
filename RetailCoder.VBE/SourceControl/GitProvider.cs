@@ -73,13 +73,20 @@ namespace Rubberduck.SourceControl
 
         public override void Push()
         {
-            var options = new PushOptions()
+            try
             {
-                CredentialsProvider = credHandler
-            };
+                var options = new PushOptions()
+                {
+                    CredentialsProvider = credHandler
+                };
 
-            var branch = repo.Branches[this.CurrentBranch];
-            repo.Network.Push(branch, options);
+                var branch = repo.Branches[this.CurrentBranch];
+                repo.Network.Push(branch, options);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Push Failed.", ex);
+            }
         }
 
         public override void Fetch()
@@ -118,12 +125,19 @@ namespace Rubberduck.SourceControl
 
         public override void Commit(string message)
         {
-            base.Commit(message);
+            try
+            {
+                base.Commit(message);
 
-            RepositoryStatus status = repo.RetrieveStatus();
-            List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-            repo.Stage(filePaths);
-            repo.Commit(message);
+                RepositoryStatus status = repo.RetrieveStatus();
+                List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
+                repo.Stage(filePaths);
+                repo.Commit(message);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Commit Failed.", ex);
+            }
         }
 
         public override void Merge(string sourceBranch, string destinationBranch)
