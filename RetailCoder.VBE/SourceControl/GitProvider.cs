@@ -13,11 +13,22 @@ namespace Rubberduck.SourceControl
     class GitProvider : SourceControlProviderBase
     {
         private LibGit2Sharp.Repository repo;
+        //todo: put this someplace safe and preferably encrypted
+        private Credentials creds;
+        private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
 
-        public GitProvider(VBProject project, Repository repository)
+        public GitProvider(VBProject project, Repository repository, string userName, string passWord)
             : base(project, repository)
         {
             repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+
+            this.creds = new UsernamePasswordCredentials()
+            {
+                Username = userName,
+                Password = passWord
+            };
+
+            this.credHandler = (url, user, cred) => creds;
         }
 
         ~GitProvider()
@@ -62,15 +73,6 @@ namespace Rubberduck.SourceControl
 
         public override void Push()
         {
-            //todo: put this someplace safe and preferably encrypted
-            var creds = new UsernamePasswordCredentials()
-            {
-                Username = "ckuhn203",
-                Password = "Macc2232"
-            };
-            
-            LibGit2Sharp.Handlers.CredentialsHandler credHandler = (url, user, cred) => creds;
-
             var options = new PushOptions()
             {
                 CredentialsProvider = credHandler
@@ -93,7 +95,7 @@ namespace Rubberduck.SourceControl
             catch (LibGit2SharpException ex)
             {
                 //todo: all actions will require this pattern; 
-                throw new SourceControlException(ex.Message, ex);
+                throw new SourceControlException("Fetch failed.", ex);
             }
 
         }
