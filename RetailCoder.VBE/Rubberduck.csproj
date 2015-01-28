@@ -78,6 +78,7 @@
     <Compile Include="SourceControl\GitProvider.cs" />
     <Compile Include="SourceControl\ISourceControlProvider.cs" />
     <Compile Include="SourceControl\Repository.cs" />
+    <Compile Include="SourceControl\SourceControlException.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="UI\SourceControl\GitView.cs">

@@ -40,5 +40,10 @@ namespace Rubberduck.UI.SourceControl
         {
             git.Pull();
         }
+
+        private void Fetch_Click(object sender, EventArgs e)
+        {
+            git.Fetch();
+        }
     }
 }

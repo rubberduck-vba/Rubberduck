@@ -66,7 +66,7 @@ namespace Rubberduck.SourceControl
             var creds = new UsernamePasswordCredentials()
             {
                 Username = "ckuhn203",
-                Password = ""
+                Password = "Macc2232"
             };
             
             LibGit2Sharp.Handlers.CredentialsHandler credHandler = (url, user, cred) => creds;
@@ -84,8 +84,18 @@ namespace Rubberduck.SourceControl
         {
             //todo: break dependency on origin remote
             //todo: document the fact that git integration only works on remotes named "origin"
-            var remote = repo.Network.Remotes["origin"];
-            repo.Network.Fetch(remote);
+
+            try
+            {
+                var remote = repo.Network.Remotes["origin"];
+                repo.Network.Fetch(remote);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                //todo: all actions will require this pattern; 
+                throw new SourceControlException(ex.Message, ex);
+            }
+
         }
 
         public override void Pull()

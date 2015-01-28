@@ -31,6 +31,7 @@
             this.Commit = new System.Windows.Forms.Button();
             this.Push = new System.Windows.Forms.Button();
             this.Pull = new System.Windows.Forms.Button();
+            this.Fetch = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Commit
@@ -63,11 +64,22 @@
             this.Pull.UseVisualStyleBackColor = true;
             this.Pull.Click += new System.EventHandler(this.Pull_Click);
             // 
+            // Fetch
+            // 
+            this.Fetch.Location = new System.Drawing.Point(37, 124);
+            this.Fetch.Name = "Fetch";
+            this.Fetch.Size = new System.Drawing.Size(75, 23);
+            this.Fetch.TabIndex = 3;
+            this.Fetch.Text = "Fetch";
+            this.Fetch.UseVisualStyleBackColor = true;
+            this.Fetch.Click += new System.EventHandler(this.Fetch_Click);
+            // 
             // GitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.Fetch);
             this.Controls.Add(this.Pull);
             this.Controls.Add(this.Push);
             this.Controls.Add(this.Commit);
@@ -82,5 +94,6 @@
         private System.Windows.Forms.Button Commit;
         private System.Windows.Forms.Button Push;
         private System.Windows.Forms.Button Pull;
+        private System.Windows.Forms.Button Fetch;
     }
 }
