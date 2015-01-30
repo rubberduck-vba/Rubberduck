@@ -27,9 +27,8 @@ namespace Rubberduck.Inspections
         CodeInspectionSeverity Severity { get; set; }
 
         /// <summary>
-        /// Runs code inspection on specified tree nodes (and child nodes).
+        /// Runs code inspection on specified parse trees.
         /// </summary>
-        /// <param name="nodes">The <see cref="SyntaxTreeNode"/> to analyze.</param>
         /// <returns>Returns inspection results, if any.</returns>
         IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName,IParseTree> nodes);
     }

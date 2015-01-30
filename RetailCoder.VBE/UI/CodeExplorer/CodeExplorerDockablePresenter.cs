@@ -46,8 +46,8 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
-            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
+            //Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
+            //Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
@@ -134,247 +134,247 @@ namespace Rubberduck.UI.CodeExplorer
             //treeView.Nodes.Add(projectNode);
         }
 
-        private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
-        {
-            var codeBlockNode = new TreeNode(GetNodeText(node));
-            codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-            codeBlockNode.ImageKey = GetImageKeyForNode(node);
-            codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
-            codeBlockNode.Tag = node.Instruction;
+        //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
+        //{
+        //    var codeBlockNode = new TreeNode(GetNodeText(node));
+        //    codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
+        //    codeBlockNode.ImageKey = GetImageKeyForNode(node);
+        //    codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
+        //    codeBlockNode.Tag = node.Instruction;
 
-            if (node.ChildNodes == null)
-            {
-                return codeBlockNode;
-            }
+        //    if (node.ChildNodes == null)
+        //    {
+        //        return codeBlockNode;
+        //    }
 
-            foreach (var member in node.ChildNodes)
-            {
-                if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-                {
-                    // don't make a tree context for comments
-                    continue;
-                }
+        //    foreach (var member in node.ChildNodes)
+        //    {
+        //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+        //        {
+        //            // don't make a tree context for comments
+        //            continue;
+        //        }
 
-                var memberNode = new TreeNode(GetNodeText(member));
+        //        var memberNode = new TreeNode(GetNodeText(member));
                 
-                memberNode.ToolTipText = string.Format("{0} (line {1})", 
-                                                member.GetType().Name,
-                                                member.Instruction.Line.StartLineNumber);
+        //        memberNode.ToolTipText = string.Format("{0} (line {1})", 
+        //                                        member.GetType().Name,
+        //                                        member.Instruction.Line.StartLineNumber);
 
-                memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-                memberNode.ImageKey = GetImageKeyForNode(member);
-                memberNode.SelectedImageKey = memberNode.ImageKey;
-                memberNode.Tag = member.Instruction;
+        //        memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
+        //        memberNode.ImageKey = GetImageKeyForNode(member);
+        //        memberNode.SelectedImageKey = memberNode.ImageKey;
+        //        memberNode.Tag = member.Instruction;
 
-                if (member.ChildNodes != null)
-                {
-                    foreach (var child in member.ChildNodes)
-                    {
-                        memberNode.Nodes.Add(AddCodeBlockNode(child));
-                    }
-                }
+        //        if (member.ChildNodes != null)
+        //        {
+        //            foreach (var child in member.ChildNodes)
+        //            {
+        //                memberNode.Nodes.Add(AddCodeBlockNode(child));
+        //            }
+        //        }
 
-                codeBlockNode.Nodes.Add(memberNode);
-            }
+        //        codeBlockNode.Nodes.Add(memberNode);
+        //    }
 
-            return codeBlockNode;
-        }
+        //    return codeBlockNode;
+        //}
 
-        private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
-        {
-            if (!e.Node.ImageKey.Contains("Folder"))
-            {
-                return;
-            }
+        //private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
+        //{
+        //    if (!e.Node.ImageKey.Contains("Folder"))
+        //    {
+        //        return;
+        //    }
 
-            e.Node.ImageKey = "OpenFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
-        }
+        //    e.Node.ImageKey = "OpenFolder";
+        //    e.Node.SelectedImageKey = e.Node.ImageKey;
+        //}
 
-        private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
-        {
-            if (!e.Node.ImageKey.Contains("Folder"))
-            {
-                return;
-            }
+        //private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
+        //{
+        //    if (!e.Node.ImageKey.Contains("Folder"))
+        //    {
+        //        return;
+        //    }
 
-            e.Node.ImageKey = "ClosedFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
-        }
+        //    e.Node.ImageKey = "ClosedFolder";
+        //    e.Node.SelectedImageKey = e.Node.ImageKey;
+        //}
 
-        private string GetImageKeyForNode(SyntaxTreeNode node)
-        {
-            if (node is ModuleNode)
-            {
-                return (node as ModuleNode).IsClassModule
-                    ? (node.ChildNodes != null 
-                        && node.ChildNodes.OfType<ProcedureNode>().Any()
-                        && node.ChildNodes.OfType<ProcedureNode>().All(childNode => childNode.ChildNodes != null && !childNode.ChildNodes.Any()))
-                        ? "PublicInterface"
-                        : "ClassModule"
-                    : "StandardModule";
-            }
+        //private string GetImageKeyForNode(SyntaxTreeNode node)
+        //{
+        //    if (node is ModuleNode)
+        //    {
+        //        return (node as ModuleNode).IsClassModule
+        //            ? (node.ChildNodes != null 
+        //                && node.ChildNodes.OfType<ProcedureNode>().Any()
+        //                && node.ChildNodes.OfType<ProcedureNode>().All(childNode => childNode.ChildNodes != null && !childNode.ChildNodes.Any()))
+        //                ? "PublicInterface"
+        //                : "ClassModule"
+        //            : "StandardModule";
+        //    }
 
-            if (node is OptionNode)
-            {
-                return "Option";
-            }
+        //    if (node is OptionNode)
+        //    {
+        //        return "Option";
+        //    }
 
-            if (node is ProcedureNode)
-            {
-                var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
-                var procNode = (node as ProcedureNode);
-                if (procNode.Accessibility == ReservedKeywords.Public)
-                {
-                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
-                }
-                if (procNode.Accessibility == ReservedKeywords.Friend)
-                {
-                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
-                }
-                if (procNode.Accessibility == ReservedKeywords.Private)
-                {
-                    return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
-                }
-            }
+        //    if (node is ProcedureNode)
+        //    {
+        //        var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
+        //        var procNode = (node as ProcedureNode);
+        //        if (procNode.Accessibility == ReservedKeywords.Public)
+        //        {
+        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
+        //        }
+        //        if (procNode.Accessibility == ReservedKeywords.Friend)
+        //        {
+        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
+        //        }
+        //        if (procNode.Accessibility == ReservedKeywords.Private)
+        //        {
+        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
+        //        }
+        //    }
 
-            if (node is UserDefinedTypeNode)
-            {
-                var typeNode = (node as UserDefinedTypeNode);
-                if (typeNode.Accessibility == ReservedKeywords.Public)
-                {
-                    return "PublicType";
-                }
-                if (typeNode.Accessibility == ReservedKeywords.Friend)
-                {
-                    return "FriendType";
-                }
-                if (typeNode.Accessibility == ReservedKeywords.Private)
-                {
-                    return "PrivateType";
-                }
-            }
+        //    if (node is UserDefinedTypeNode)
+        //    {
+        //        var typeNode = (node as UserDefinedTypeNode);
+        //        if (typeNode.Accessibility == ReservedKeywords.Public)
+        //        {
+        //            return "PublicType";
+        //        }
+        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
+        //        {
+        //            return "FriendType";
+        //        }
+        //        if (typeNode.Accessibility == ReservedKeywords.Private)
+        //        {
+        //            return "PrivateType";
+        //        }
+        //    }
 
-            if (node is EnumNode)
-            {
-                var typeNode = (node as EnumNode);
-                if (typeNode.Accessibility == ReservedKeywords.Public)
-                {
-                    return "PublicEnum";
-                }
-                if (typeNode.Accessibility == ReservedKeywords.Friend)
-                {
-                    return "FriendEnum";
-                }
-                if (typeNode.Accessibility == ReservedKeywords.Private)
-                {
-                    return "PrivateEnum";
-                }
-            }
+        //    if (node is EnumNode)
+        //    {
+        //        var typeNode = (node as EnumNode);
+        //        if (typeNode.Accessibility == ReservedKeywords.Public)
+        //        {
+        //            return "PublicEnum";
+        //        }
+        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
+        //        {
+        //            return "FriendEnum";
+        //        }
+        //        if (typeNode.Accessibility == ReservedKeywords.Private)
+        //        {
+        //            return "PrivateEnum";
+        //        }
+        //    }
 
-            if (node is ConstDeclarationNode)
-            {
-                var accessbility = (node as DeclarationNode).Accessibility;
-                if (accessbility == ReservedKeywords.Private)
-                {
-                    return "PrivateConst";
-                }
-                if (accessbility == ReservedKeywords.Friend)
-                {
-                    return "FriendConst";
-                }
+        //    if (node is ConstDeclarationNode)
+        //    {
+        //        var accessbility = (node as DeclarationNode).Accessibility;
+        //        if (accessbility == ReservedKeywords.Private)
+        //        {
+        //            return "PrivateConst";
+        //        }
+        //        if (accessbility == ReservedKeywords.Friend)
+        //        {
+        //            return "FriendConst";
+        //        }
 
-                return "PublicConst";
-            }
+        //        return "PublicConst";
+        //    }
 
-            if (node is VariableDeclarationNode)
-            {
-                var accessbility = (node as DeclarationNode).Accessibility;
-                if (accessbility == ReservedKeywords.Private)
-                {
-                    return "PrivateField";
-                }
-                if (accessbility == ReservedKeywords.Friend)
-                {
-                    return "FriendField";
-                }
+        //    if (node is VariableDeclarationNode)
+        //    {
+        //        var accessbility = (node as DeclarationNode).Accessibility;
+        //        if (accessbility == ReservedKeywords.Private)
+        //        {
+        //            return "PrivateField";
+        //        }
+        //        if (accessbility == ReservedKeywords.Friend)
+        //        {
+        //            return "FriendField";
+        //        }
 
-                return "PublicField";
-            }
+        //        return "PublicField";
+        //    }
 
-            if (node is CodeBlockNode)
-            {
-                return "CodeBlock";
-            }
+        //    if (node is CodeBlockNode)
+        //    {
+        //        return "CodeBlock";
+        //    }
 
-            if (node is IdentifierNode)
-            {
-                return "Identifier";
-            }
+        //    if (node is IdentifierNode)
+        //    {
+        //        return "Identifier";
+        //    }
 
-            if (node is ParameterNode)
-            {
-                return "Parameter";
-            }
+        //    if (node is ParameterNode)
+        //    {
+        //        return "Parameter";
+        //    }
 
-            if (node is AssignmentNode)
-            {
-                return "Assignment";
-            }
+        //    if (node is AssignmentNode)
+        //    {
+        //        return "Assignment";
+        //    }
 
-            if (node is UserDefinedTypeMemberNode)
-            {
-                return "PublicField";
-            }
+        //    if (node is UserDefinedTypeMemberNode)
+        //    {
+        //        return "PublicField";
+        //    }
 
-            if (node is EnumMemberNode)
-            {
-                return "EnumItem";
-            }
+        //    if (node is EnumMemberNode)
+        //    {
+        //        return "EnumItem";
+        //    }
 
-            if (node is LabelNode)
-            {
-                return "Label";
-            }
+        //    if (node is LabelNode)
+        //    {
+        //        return "Label";
+        //    }
 
-            return "Operation";
-        }
+        //    return "Operation";
+        //}
 
-        private string GetNodeText(SyntaxTreeNode node)
-        {
-            if (node is ProcedureNode)
-            {
-                var procNode = node as ProcedureNode;
-                var propertyTypes = new[] { ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet };
-                if (propertyTypes.Any(pt => pt == procNode.Kind))
-                {
-                    var kind = procNode.Kind == ProcedureKind.PropertyGet
-                        ? ReservedKeywords.Get
-                        : procNode.Kind == ProcedureKind.PropertyLet
-                            ? ReservedKeywords.Let
-                            : ReservedKeywords.Set;
+        //private string GetNodeText(SyntaxTreeNode node)
+        //{
+        //    if (node is ProcedureNode)
+        //    {
+        //        var procNode = node as ProcedureNode;
+        //        var propertyTypes = new[] { ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet };
+        //        if (propertyTypes.Any(pt => pt == procNode.Kind))
+        //        {
+        //            var kind = procNode.Kind == ProcedureKind.PropertyGet
+        //                ? ReservedKeywords.Get
+        //                : procNode.Kind == ProcedureKind.PropertyLet
+        //                    ? ReservedKeywords.Let
+        //                    : ReservedKeywords.Set;
 
-                    return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
-                }
-                return procNode.Identifier.Name;
-            }
+        //            return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
+        //        }
+        //        return procNode.Identifier.Name;
+        //    }
 
-            if (node is UserDefinedTypeNode)
-            {
-                return ((UserDefinedTypeNode) node).Identifier.Name;
-            }
+        //    if (node is UserDefinedTypeNode)
+        //    {
+        //        return ((UserDefinedTypeNode) node).Identifier.Name;
+        //    }
 
-            if (node is EnumNode)
-            {
-                return ((EnumNode) node).Identifier.Name;
-            }
+        //    if (node is EnumNode)
+        //    {
+        //        return ((EnumNode) node).Identifier.Name;
+        //    }
 
-            if (node is IdentifierNode)
-            {
-                return ((IdentifierNode) node).Name;
-            }
+        //    if (node is IdentifierNode)
+        //    {
+        //        return ((IdentifierNode) node).Name;
+        //    }
 
-            return node.Instruction.Value.Trim();
-        }
+        //    return node.Instruction.Value.Trim();
+        //}
     }
 }

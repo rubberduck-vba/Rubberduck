@@ -269,7 +269,6 @@
     <Compile Include="VBA\Grammar\Operator.cs" />
     <Compile Include="VBA\Grammar\OperatorType.cs" />
     <Compile Include="VBA\Grammar\ParameterNode.cs" />
-    <Compile Include="VBA\Grammar\Parser.cs" />
     <Compile Include="VBA\Grammar\ProcedureKind.cs" />
     <Compile Include="VBA\Grammar\ProcedureNode.cs" />
     <Compile Include="VBA\Grammar\ReservedKeywords.Designer.cs">
