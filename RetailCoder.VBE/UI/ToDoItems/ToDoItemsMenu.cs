@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.ToDoItems
@@ -14,11 +15,11 @@ namespace Rubberduck.UI.ToDoItems
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private readonly ToDoListSettings _settings;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
         private CommandBarButton _todoItemsButton;
 
-        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, Parser parser)
+        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, IRubberduckParser parser)
         {
             _vbe = vbe;
             _addIn = addInInstance;

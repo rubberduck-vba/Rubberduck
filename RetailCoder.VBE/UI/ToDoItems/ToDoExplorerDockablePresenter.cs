@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 using Rubberduck.ToDoItems;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.ToDoItems
@@ -14,11 +17,11 @@ namespace Rubberduck.UI.ToDoItems
     [ComVisible(false)]
     public class ToDoExplorerDockablePresenter : DockablePresenterBase
     {
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
         private ToDoExplorerWindow Control { get { return UserControl as ToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(Parser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
             : base(vbe, addin, new ToDoExplorerWindow())
         {
             _parser = parser;
@@ -35,17 +38,22 @@ namespace Rubberduck.UI.ToDoItems
             foreach (var project in VBE.VBProjects.Cast<VBProject>())
             {
                 var tree = _parser.Parse(project);
-                items.AddRange(tree.FindAllComments().SelectMany(GetToDoMarkers));
+                var modules = tree.Keys;
+                foreach (var qualifiedModuleName in modules)
+                {
+                    items.AddRange(tree[qualifiedModuleName].GetComments()
+                        .SelectMany(comment => GetToDoMarkers(qualifiedModuleName, comment)));
+                }
             }
 
             Control.SetItems(items);
         }
 
-        private IEnumerable<ToDoItem> GetToDoMarkers(Instruction instruction)
+        private IEnumerable<ToDoItem> GetToDoMarkers(QualifiedModuleName key, ParserRuleContext context)
         {
-            return _markers.Where(marker => instruction.Comment.ToLowerInvariant()
+            return _markers.Where(marker => context.GetText().ToLowerInvariant()
                                                    .Contains(marker.Text.ToLowerInvariant()))
-                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, instruction));
+                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, context, key.ProjectName, key.ModuleName));
         }
 
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)

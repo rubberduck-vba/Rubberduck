@@ -7,7 +7,7 @@ using Rubberduck.VBA.Grammar;
 namespace Rubberduck.VBA.Grammar
 {
     /// <summary>
-    /// Base class for a declaration node.
+    /// Base class for a declaration context.
     /// </summary>
     [ComVisible(false)]
     public abstract class DeclarationNode : SyntaxTreeNode

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime.Tree;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
@@ -17,14 +19,13 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName, IParseTree> nodes)
         {
-            var identifiers = node.FindAllDeclarations()
-                .Where(declaration => !declaration.Instruction.Line.IsMultiline)
-                .SelectMany(declaration => declaration.ChildNodes.Cast<IdentifierNode>())
-                .Where(identifier => !identifier.IsTypeSpecified);
+            var targets = nodes.SelectMany(kvp => kvp.Value.GetDeclarations()
+                                                           .Select(declaration => new { Key = kvp.Key, Declaration = declaration })
+                               .Where(identifier => ((dynamic)identifier.Declaration).asTypeClause() == null));
 
-            return identifiers.Select(identifier => new VariableTypeNotDeclaredInspectionResult(Name, identifier, Severity));
+            return targets.Select(target => new VariableTypeNotDeclaredInspectionResult(Name, target.Declaration, Severity, target.Key.ProjectName, target.Key.ModuleName));
         }
     }
 }

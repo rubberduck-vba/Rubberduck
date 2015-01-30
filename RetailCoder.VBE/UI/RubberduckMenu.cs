@@ -11,6 +11,7 @@ using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI
@@ -26,7 +27,7 @@ namespace Rubberduck.UI
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         //private readonly RefactorMenu _refactorMenu; // todo: implement refactoring
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, Configuration config, Parser parser, IEnumerable<IInspection> inspections)
+        public RubberduckMenu(VBE vbe, AddIn addIn, Configuration config, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _testMenu = new TestMenu(_vbe, addIn);

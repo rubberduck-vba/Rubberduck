@@ -14,6 +14,22 @@ namespace RubberduckTests
     public class ParserTests
     {
         [TestMethod]
+        public void GetPublicProceduresReturnsPublicSubs()
+        {
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\nEnd Sub\n\nPrivate Sub FooBar()\nEnd Sub\n\nPublic Sub Bar()\nEnd Sub\n\nPublic Sub BarFoo(ByVal fb As Long)\nEnd Sub\n\nFunction GetFoo() As Bar\nEnd Function";
+
+            var module = parser.Parse(code);
+            var procedures = module.GetPublicProcedures().ToList();
+
+            var parameterless = procedures
+                .Where(p => p.argList().arg().Count == 0);
+
+            Assert.AreEqual(3, procedures.Count);
+            Assert.AreEqual(2, parameterless.Count());
+        }
+
+        [TestMethod]
         public void UnspecifiedProcedureVisibilityIsImplicit()
         {
             IRubberduckParser parser = new VBParser();

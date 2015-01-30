@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
+using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
@@ -11,20 +15,33 @@ namespace Rubberduck.VBA
     public interface IRubberduckParser
     {
         /// <summary>
-        /// Parses specified code into a code tree.
+        /// Parses specified code into a COM-visible code tree.
         /// </summary>
         /// <param name="projectName">The name of the VBA project the code belongs to.</param>
         /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>
-        /// <param name="code">The code fragment or to be parsed.</param>
-        /// <returns></returns>
+        /// <param name="code">The code fragment or module content to be parsed.</param>
+        /// <returns>Returns a COM-visible code tree.</returns>
         INode Parse(string projectName, string componentName, string code);
+
+        /// <summary>
+        /// Parses specified code into a parse tree.
+        /// </summary>
+        /// <param name="code">The code fragment or module content to be parsed.</param>
+        /// <returns>Returns a parse tree representing the parsed code.</returns>
+        IParseTree Parse(string code);
+
+        /// <summary>
+        /// Parses all code modules in specified project.
+        /// </summary>
+        /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
+        IDictionary<QualifiedModuleName,IParseTree> Parse(VBProject vbProject);
     }
 
     public class VBParser : IRubberduckParser
     {
         public INode Parse(string projectName, string componentName, string code)
         {
-            var result = ParseInternal(code);
+            var result = Parse(code);
             var walker = new ParseTreeWalker();
             
             var listener = new VBTreeListener(projectName, componentName);
@@ -33,7 +50,7 @@ namespace Rubberduck.VBA
             return listener.Root;
         }
 
-        private IParseTree ParseInternal(string code)
+        public IParseTree Parse(string code)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VisualBasic6Lexer(input);
@@ -41,6 +58,13 @@ namespace Rubberduck.VBA
             var parser = new VisualBasic6Parser(tokens);
             
             return parser.startRule();
+        }
+
+        public IDictionary<QualifiedModuleName,IParseTree> Parse(VBProject project)
+        {
+            return project.VBComponents.Cast<VBComponent>()
+                          .ToDictionary(component => new QualifiedModuleName(project.Name, component.Name), 
+                                        component => Parse(component.CodeModule.ToString()));
         }
     }
 }

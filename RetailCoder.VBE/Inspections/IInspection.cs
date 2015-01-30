@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
@@ -26,10 +27,10 @@ namespace Rubberduck.Inspections
         CodeInspectionSeverity Severity { get; set; }
 
         /// <summary>
-        /// Runs code inspection on specified tree node (and child nodes).
+        /// Runs code inspection on specified tree nodes (and child nodes).
         /// </summary>
-        /// <param name="node">The <see cref="SyntaxTreeNode"/> to analyze.</param>
+        /// <param name="nodes">The <see cref="SyntaxTreeNode"/> to analyze.</param>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node);
+        IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName,IParseTree> nodes);
     }
 }

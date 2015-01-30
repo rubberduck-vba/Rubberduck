@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Excel;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Grammar;
 
@@ -11,12 +11,20 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type)
+        public CodeInspectionResultBase(string inspection, ParserRuleContext context, CodeInspectionSeverity type, string project, string module)
         {
             _name = inspection;
-            _node = node;
+            _context = context;
             _type = type;
+            _project = project;
+            _module = module;
         }
+
+        private readonly string _project;
+        public string ProjectName { get { return _project; } }
+
+        private readonly string _module;
+        public string ModuleName { get { return _module; } }
 
         private readonly string _name;
         /// <summary>
@@ -24,11 +32,11 @@ namespace Rubberduck.Inspections
         /// </summary>
         public string Name { get { return _name; } }
 
-        private readonly SyntaxTreeNode _node;
+        private readonly ParserRuleContext _context;
         /// <summary>
-        /// Gets the <see cref="Node"/> containing a code issue.
+        /// Gets the <see cref="Context"/> containing a code issue.
         /// </summary>
-        public SyntaxTreeNode Node { get { return _node; } }
+        public ParserRuleContext Context { get { return _context; } }
 
         private readonly CodeInspectionSeverity _type;
         /// <summary>
@@ -43,18 +51,5 @@ namespace Rubberduck.Inspections
         /// where the keys are descriptions for each quick fix, and
         /// each value is a method returning <c>void</c> and taking a <c>VBE</c> parameter.</returns>
         public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
-
-        /// <summary>
-        /// Gets/sets a value indicating whether inspection result has been handled/fixed.
-        /// </summary>
-        protected bool Handled { get; set; }
-
-        /// <summary>
-        /// Sets <see cref="Handled"/> flag to <c>true</c> without applying any fix.
-        /// </summary>
-        public void Ignore()
-        {
-            Handled = true;
-        }
     }
 }

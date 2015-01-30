@@ -8,20 +8,20 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeInspections
 {
     [ComVisible(false)]
     public class CodeInspectionsDockablePresenter : DockablePresenterBase
     {
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
         private readonly IList<IInspection> _inspections;
         private List<CodeInspectionResultBase> _results;
 
-        public CodeInspectionsDockablePresenter(Parser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin) 
+        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin) 
             : base(vbe, addin, new CodeInspectionsWindow())
         {
             _parser = parser;
@@ -52,13 +52,14 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var location = VBE.FindInstruction(e.Node.Instruction);
-                location.CodeModule.CodePane.SetSelection(location.Selection);
+                // todo: encapsulate the notion of a QualifiedModuleName and of a ParserRuleContext.
+                //var location = VBE.FindInstruction(e.Context);
+                //location.CodeModule.CodePane.SetSelection(location.Selection);
 
-                var codePane = location.CodeModule.CodePane;
-                var selection = location.Selection;
-                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                codePane.ForceFocus();
+                //var codePane = location.CodeModule.CodePane;
+                //var selection = location.Selection;
+                //codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                //codePane.ForceFocus();
             }
             catch (Exception exception)
             {

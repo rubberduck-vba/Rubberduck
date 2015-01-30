@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
@@ -12,14 +12,21 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type)
-            : base(inspection, node, type)
+        public ImplicitByRefParameterInspectionResult(string inspection, VisualBasic6Parser.ArgContext context, CodeInspectionSeverity type,string project, string module, string procedure)
+            : base(inspection, context, type, project, module)
         {
+            _project = project;
+            _module = module;
         }
+
+        private readonly string _project;
+        private readonly string _module;
+
+        private new VisualBasic6Parser.ArgContext Context { get { return base.Context as VisualBasic6Parser.ArgContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            if ((Node as ParameterNode).Identifier.IsArray)
+            if (Context.LPAREN() != null && Context.RPAREN() != null)
             {
                 // array parameters must be passed by reference
                 return new Dictionary<string, Action<VBE>>
@@ -47,23 +54,13 @@ namespace Rubberduck.Inspections
 
         private void ChangeParameterPassing(VBE vbe, string newValue)
         {
-            var instruction = Node.Instruction;
-            if (!instruction.Line.IsMultiline)
-            {
-                var newContent = string.Concat(newValue, " ", instruction.Value);
-                var oldContent = instruction.Line.Content;
+            var oldContent = Context.GetText();
+            var newContent = string.Concat(newValue, " ", Context.GetText());
 
-                var result = oldContent.Replace(instruction.Value, newContent);
+            var result = oldContent.Replace(oldContent, newContent);
 
-                var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
-                module.ReplaceLine(instruction.Line.StartLineNumber, result);
-                Handled = true;
-            }
-            else
-            {
-                // todo: implement for multiline
-                throw new NotImplementedException("This method is not yet implemented for multiline instructions.");
-            }
+            var module = vbe.FindCodeModules(_project, _module).First();
+            module.ReplaceLine(Context.GetSelection().StartLine, result);
         }
     }
 }

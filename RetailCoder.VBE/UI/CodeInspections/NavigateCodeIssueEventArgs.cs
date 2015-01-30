@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.VBA.Grammar;
+using Antlr4.Runtime;
 
 namespace Rubberduck.UI.CodeInspections
 {
     [ComVisible(false)]
     public class NavigateCodeIssueEventArgs : EventArgs
     {
-        public NavigateCodeIssueEventArgs(SyntaxTreeNode node)
+        public NavigateCodeIssueEventArgs(ParserRuleContext context)
         {
-            _node = node;
+            _context = context;
         }
 
-        private readonly SyntaxTreeNode _node;
-        public SyntaxTreeNode Node { get { return _node; } }
+        private readonly ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
     }
 }

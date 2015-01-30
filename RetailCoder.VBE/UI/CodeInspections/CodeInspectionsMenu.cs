@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -18,9 +14,9 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly AddIn _addin;
         private readonly IEnumerable<IInspection> _inspections;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
-        public CodeInspectionsMenu(VBE vbe, AddIn addin, Parser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _addin = addin;

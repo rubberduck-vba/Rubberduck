@@ -45,7 +45,7 @@ namespace Rubberduck.VBA.Grammar
         }
 
         /// <summary>
-        /// Gets all <see cref="Instruction"/> objects in the specified node, that contain a comment.
+        /// Gets all <see cref="Instruction"/> objects in the specified context, that contain a comment.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>

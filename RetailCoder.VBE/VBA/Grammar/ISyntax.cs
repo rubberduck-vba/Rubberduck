@@ -6,13 +6,13 @@ namespace Rubberduck.VBA.Grammar
     public interface ISyntax
     {
         /// <summary>
-        /// Parses an instruction into a syntax node, if possible.
+        /// Parses an instruction into a syntax context, if possible.
         /// </summary>
         /// <param name="publicScope">The fully-qualified scope of the specified instruction, when the instruction is publicly scoped.</param>.
         /// <param name="localScope">The fully-qualified scope of the specified instruction, when the instruction is locally scoped.</param>
         /// <param name="instruction">An instruction.</param>
         /// <returns>
-        /// Returns a node representing the specified instruction, 
+        /// Returns a context representing the specified instruction, 
         /// or <c>null</c> if specified instruction can't be parsed.
         /// </returns>
         SyntaxTreeNode Parse(string publicScope, string localScope, Instruction instruction);
@@ -20,7 +20,7 @@ namespace Rubberduck.VBA.Grammar
         bool IsMatch(string publicScope, string localScope, Instruction instruction, out SyntaxTreeNode node);
 
         /// <summary>
-        /// Gets a value indicating whether syntax is specific to a particular parent node.
+        /// Gets a value indicating whether syntax is specific to a particular parent context.
         /// </summary>
         /// <remarks>
         /// Implementations with this member set to <c>true</c> will not be considered as part of the general grammar.

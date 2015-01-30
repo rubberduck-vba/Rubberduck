@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using Antlr4.Runtime;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.ToDoItems
@@ -21,18 +23,19 @@ namespace Rubberduck.ToDoItems
         private readonly int _lineNumber;
         public int LineNumber { get { return _lineNumber; } }
 
-        public ToDoItem(TaskPriority priority, string description, string projectName, string moduleName,  int lineNumber)
+        // todo: 
+        public ToDoItem(TaskPriority priority, ParserRuleContext context, string projectName, string moduleName)
+            : this(priority, context.GetText(), projectName, moduleName, context.GetSelection().StartLine)
+        {
+        }
+
+        public ToDoItem(TaskPriority priority, string description, string projectName, string moduleName, int lineNumber)
         {
             _priority = priority;
             _description = description;
             _projectName = projectName;
             _moduleName = moduleName;
             _lineNumber = lineNumber;
-        }
-
-        public ToDoItem(TaskPriority priority, Instruction instruction)
-            : this(priority, instruction.Comment, instruction.Line.ProjectName, instruction.Line.ComponentName, instruction.Line.StartLineNumber)
-        {
         }
     }
 }

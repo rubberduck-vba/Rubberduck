@@ -13,18 +13,21 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Grammar;
 using System;
+using Antlr4.Runtime.Tree;
 using Rubberduck.UI;
 using Rubberduck.Extensions;
+using Rubberduck.Inspections;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {
     [ComVisible(false)]
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(Parser parser, VBE vbe, AddIn addIn)
+        public CodeExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addIn)
             : base(vbe, addIn, new CodeExplorerWindow())
         {
             _parser = parser;
@@ -93,42 +96,42 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void AddProjectNode(SyntaxTreeNode node)
+        private void AddProjectNode(IDictionary<QualifiedModuleName, IParseTree> node)
         {
             var treeView = Control.SolutionTree;
-            var projectNode = new TreeNode();
-            projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
-            projectNode.Tag = node.Instruction;
-            projectNode.ImageKey = "ClosedFolder";
-            treeView.BackColor = treeView.BackColor;
+            //var projectNode = new TreeNode();
+            //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
+            //projectNode.Tag = node.Instruction;
+            //projectNode.ImageKey = "ClosedFolder";
+            //treeView.BackColor = treeView.BackColor;
 
-            var moduleNodes = new ConcurrentBag<TreeNode>();
-            foreach(var module in node.ChildNodes)
-            {
-                var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
-                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
-                moduleNode.ImageKey = GetImageKeyForNode(module);
-                moduleNode.SelectedImageKey = moduleNode.ImageKey;
-                moduleNode.Tag = module.Instruction;
+            //var moduleNodes = new ConcurrentBag<TreeNode>();
+            //foreach(var module in node.ChildNodes)
+            //{
+            //    var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
+            //    moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+            //    moduleNode.ImageKey = GetImageKeyForNode(module);
+            //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
+            //    moduleNode.Tag = module.Instruction;
 
-                foreach (var member in module.ChildNodes)
-                {
-                    if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-                    {
-                        // don't make a tree node for comments
-                        continue;
-                    }
+            //    foreach (var member in module.ChildNodes)
+            //    {
+            //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+            //        {
+            //            // don't make a tree context for comments
+            //            continue;
+            //        }
 
-                    if (member.ChildNodes != null)
-                    {
-                        moduleNode.Nodes.Add(AddCodeBlockNode(member));
-                    }
-                }
-                moduleNodes.Add(moduleNode);
-            }
+            //        if (member.ChildNodes != null)
+            //        {
+            //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
+            //        }
+            //    }
+            //    moduleNodes.Add(moduleNode);
+            //}
 
-            projectNode.Nodes.AddRange(moduleNodes.ToArray());
-            treeView.Nodes.Add(projectNode);
+            //projectNode.Nodes.AddRange(moduleNodes.ToArray());
+            //treeView.Nodes.Add(projectNode);
         }
 
         private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
@@ -148,7 +151,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
                 {
-                    // don't make a tree node for comments
+                    // don't make a tree context for comments
                     continue;
                 }
 

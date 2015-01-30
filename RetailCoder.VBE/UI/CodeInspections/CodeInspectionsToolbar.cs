@@ -8,6 +8,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.CodeInspections
@@ -17,12 +18,12 @@ namespace Rubberduck.UI.CodeInspections
     {
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
         private CodeInspectionResultBase[] _issues;
         private int _currentIssue;
 
-        public CodeInspectionsToolbar(VBE vbe, Parser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _parser = parser;
@@ -90,7 +91,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue++;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Context));
         }
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -106,21 +107,22 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue--;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Context));
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
         {
             try
             {
-                var location = _vbe.FindInstruction(e.Node.Instruction);
-                location.CodeModule.CodePane.SetSelection(location.Selection);
+                // todo: encapsulate the notion of a QualifiedModuleName and of a ParserRuleContext.
+                //var location = _vbe.FindInstruction(e.Context);
+                //location.CodeModule.CodePane.SetSelection(location.Selection);
 
-                var codePane = location.CodeModule.CodePane;
-                var selection = location.Selection;
-                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                codePane.ForceFocus();
-                SetQuickFixTooltip();
+                //var codePane = location.CodeModule.CodePane;
+                //var selection = location.Selection;
+                //codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                //codePane.ForceFocus();
+                //SetQuickFixTooltip();
             }
             catch (Exception exception)
             {
