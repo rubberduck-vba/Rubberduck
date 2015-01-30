@@ -32,8 +32,9 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            var instruction = (Instruction)e.Node.Tag;
-            handler(this, new SyntaxTreeNodeClickEventArgs(instruction));
+            // todo: make this work without an Instruction class:
+            //var instruction = (Instruction)e.Node.Tag;
+            //handler(this, new SyntaxTreeNodeClickEventArgs(instruction));
         }
 
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
 {

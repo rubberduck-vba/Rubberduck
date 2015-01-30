@@ -222,66 +222,18 @@
     <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="VBA\Grammar\AssignmentNode.cs" />
-    <Compile Include="VBA\Grammar\CommentNode.cs" />
-    <Compile Include="VBA\Grammar\AssignmentSyntax.cs" />
-    <Compile Include="VBA\Grammar\ModuleNode.cs" />
     <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="VBA\Grammar\CodeBlockNode.cs" />
-    <Compile Include="VBA\Grammar\ConstDeclarationNode.cs" />
-    <Compile Include="VBA\Grammar\DoLoopNode.cs" />
-    <Compile Include="VBA\Grammar\EnumMemberNode.cs" />
-    <Compile Include="VBA\Grammar\EnumNode.cs" />
-    <Compile Include="VBA\Grammar\Expression.cs" />
-    <Compile Include="VBA\Grammar\ExpressionNode.cs" />
-    <Compile Include="VBA\Grammar\ForEachLoopNode.cs" />
-    <Compile Include="VBA\Grammar\ForLoopNode.cs" />
-    <Compile Include="VBA\Grammar\DeclarationSyntax.cs" />
-    <Compile Include="VBA\Grammar\DoLoopSyntax.cs" />
-    <Compile Include="VBA\Grammar\EnumMemberSyntax.cs" />
-    <Compile Include="VBA\Grammar\EnumSyntax.cs" />
-    <Compile Include="VBA\Grammar\ForEachLoopSyntax.cs" />
-    <Compile Include="VBA\Grammar\ForLoopSyntax.cs" />
-    <Compile Include="VBA\Grammar\IfBlockSyntax.cs" />
-    <Compile Include="VBA\Grammar\LabelSyntax.cs" />
-    <Compile Include="VBA\Grammar\OptionSyntax.cs" />
-    <Compile Include="VBA\Grammar\ProcedureSyntax.cs" />
-    <Compile Include="VBA\Grammar\SyntaxType.cs" />
-    <Compile Include="VBA\Grammar\TypeConversionSyntax.cs" />
-    <Compile Include="VBA\Grammar\UserDefinedTypeMemberSyntax.cs" />
-    <Compile Include="VBA\Grammar\UserDefinedTypeSyntax.cs" />
-    <Compile Include="VBA\Grammar\IdentifierNode.cs" />
-    <Compile Include="VBA\Grammar\IfBlockNode.cs" />
-    <Compile Include="VBA\Grammar\Instruction.cs" />
-    <Compile Include="VBA\Grammar\LabelNode.cs" />
-    <Compile Include="VBA\Grammar\LogicalCodeLine.cs" />
-    <Compile Include="VBA\Grammar\DeclarationNode.cs" />
-    <Compile Include="VBA\Grammar\ISyntax.cs" />
-    <Compile Include="VBA\Grammar\StringExtensions.cs" />
-    <Compile Include="VBA\Grammar\VBAGrammar.cs" />
-    <Compile Include="VBA\Grammar\Identifier.cs" />
-    <Compile Include="VBA\Grammar\Operation.cs" />
-    <Compile Include="VBA\Grammar\Operator.cs" />
-    <Compile Include="VBA\Grammar\OperatorType.cs" />
-    <Compile Include="VBA\Grammar\ParameterNode.cs" />
-    <Compile Include="VBA\Grammar\ProcedureKind.cs" />
-    <Compile Include="VBA\Grammar\ProcedureNode.cs" />
-    <Compile Include="VBA\Grammar\ReservedKeywords.Designer.cs">
+    <Compile Include="VBA\StringExtensions.cs" />
+    <Compile Include="VBA\ReservedKeywords.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReservedKeywords.resx</DependentUpon>
     </Compile>
-    <Compile Include="VBA\Grammar\SyntaxBase.cs" />
-    <Compile Include="VBA\Grammar\SyntaxTreeNode.cs" />
-    <Compile Include="VBA\Grammar\TypeConversionNode.cs" />
-    <Compile Include="VBA\Grammar\UserDefinedTypeMemberNode.cs" />
-    <Compile Include="VBA\Grammar\UserDefinedTypeNode.cs" />
-    <Compile Include="VBA\Grammar\VariableDeclarationNode.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
@@ -399,7 +351,7 @@
     <EmbeddedResource Include="UI\Settings\TodoListSettingsControl.resx">
       <DependentUpon>TodoListSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VBA\Grammar\ReservedKeywords.resx">
+    <EmbeddedResource Include="VBA\ReservedKeywords.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
     </EmbeddedResource>

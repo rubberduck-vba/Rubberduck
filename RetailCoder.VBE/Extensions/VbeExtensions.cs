@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Extensions
@@ -27,21 +30,20 @@ namespace Rubberduck.Extensions
             return matches;
         }
 
-        public static CodeModuleSelection FindInstruction(this VBE vbe, Instruction instruction)
+        public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, ParserRuleContext context)
         {
-            var projectName = instruction.Line.ProjectName;
-            var componentName = instruction.Line.ComponentName;
+            var projectName = qualifiedModuleName.ProjectName;
+            var componentName = qualifiedModuleName.ModuleName;
 
             var modules = FindCodeModules(vbe, projectName, componentName);
             foreach (var module in modules)
             {
-                var startLine = instruction.Selection.StartLine == 0 ? 1 : instruction.Selection.StartLine;
+                var selection = context.GetSelection();
 
-                if (module.Lines[startLine, instruction.Selection.LineCount]
-                         .Replace(" _", string.Empty)
-                         .Replace("\n\r", string.Empty).Contains(instruction.Content))
+                if (module.Lines[selection.StartLine, selection.LineCount]
+                    .Replace(" _\n", " ").Contains(context.GetText()))
                 {
-                    return new CodeModuleSelection(module, instruction.Selection);
+                    return new CodeModuleSelection(module, selection);
                 }
             }
 

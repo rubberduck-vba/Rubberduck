@@ -52,33 +52,33 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
         {
-            var instruction = e.Instruction;
+            //var instruction = e.Instruction;
 
-            var project = instruction.Line.ProjectName;
-            var component = instruction.Line.ComponentName;
+            //var project = instruction.Line.ProjectName;
+            //var component = instruction.Line.ComponentName;
 
-            var vbProject = VBE.VBProjects.Cast<VBProject>()
-                               .FirstOrDefault(p => p.Name == project);
+            //var vbProject = VBE.VBProjects.Cast<VBProject>()
+            //                   .FirstOrDefault(p => p.Name == project);
 
-            VBComponent vbComponent = null;
-            if (vbProject != null)
-            {
-                vbComponent = vbProject.VBComponents.Cast<VBComponent>()
-                                       .FirstOrDefault(c => c.Name == component);
-            }
+            //VBComponent vbComponent = null;
+            //if (vbProject != null)
+            //{
+            //    vbComponent = vbProject.VBComponents.Cast<VBComponent>()
+            //                           .FirstOrDefault(c => c.Name == component);
+            //}
 
-            if (vbComponent == null)
-            {
-                return;
-            }
+            //if (vbComponent == null)
+            //{
+            //    return;
+            //}
 
-            var codePane = vbComponent.CodeModule.CodePane;
-            var selection = instruction.Selection;
+            //var codePane = vbComponent.CodeModule.CodePane;
+            //var selection = instruction.Selection;
 
-            if (selection.StartLine != 0)
-            {
-               codePane.SetSelection(selection);
-            }
+            //if (selection.StartLine != 0)
+            //{
+            //   codePane.SetSelection(selection);
+            //}
         }
 
         private void RefreshExplorerTreeView()

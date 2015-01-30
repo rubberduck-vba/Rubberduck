@@ -21,9 +21,6 @@ namespace Rubberduck
         public App(VBE vbe, AddIn addIn)
         {
             var config = ConfigurationLoader.LoadConfiguration();
-
-            var grammar = ConfigurationLoader.GetImplementedSyntax();
-
             _inspections = ConfigurationLoader.GetImplementedCodeInspections();
 
             EnableCodeInspections(config);
