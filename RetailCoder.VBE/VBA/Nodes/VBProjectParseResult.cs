@@ -22,6 +22,8 @@ namespace Rubberduck.VBA.Nodes
             get { return _results[qualifiedName]; }
         }
 
+        public IEnumerable<QualifiedModuleName> QualifiedModuleNames { get { return _results.Keys; } } 
+
         public void AddParseTree(QualifiedModuleName qualifiedName, IParseTree parseTree)
         {
             _results.Add(qualifiedName, parseTree);
