@@ -11,24 +11,40 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
+    [System.Runtime.InteropServices.ComVisible(false)]
     public partial class SettingsDialog : Form
     {
         private Configuration _config;
+        private IConfigurationService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
+        private TodoSettingPresenter _todoController;
+        private TodoListSettingsUserControl _todoView;
+
+        /// <summary>
+        ///  Default constructor for GUI Designer. DO NOT USE.
+        /// </summary>
         public SettingsDialog()
         {
             InitializeComponent();
+        }
 
-            _config = ConfigurationLoader.LoadConfiguration();
+        public SettingsDialog(IConfigurationService configService)
+            : this()
+        {
+            _configService = configService;
+            _config = _configService.LoadConfiguration();
             _treeview = new ConfigurationTreeViewControl(_config);
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-            ActivateControl(new TodoListSettingsControl(new TodoSettingModel(markers)));
+            var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
+            _todoView = new TodoListSettingsUserControl(markers);
+
+            ActivateControl(_todoView);
+            _todoController = new TodoSettingPresenter(_todoView);
 
             RegisterEvents();
         }
@@ -36,7 +52,6 @@ namespace Rubberduck.UI.Settings
         private void RegisterEvents()
         {
             _treeview.NodeSelected += _treeview_NodeSelected;
-
         }
 
         private void _treeview_NodeSelected(object sender, TreeViewEventArgs e)
@@ -50,14 +65,12 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Todo List")
             {
-                var markers = new List<ToDoMarker>(_config.UserSettings.ToDoListSettings.ToDoMarkers);
-                controlToActivate = new TodoListSettingsControl(new TodoSettingModel(markers));
+                controlToActivate = _todoView;
             }
 
             if (e.Node.Text == "Code Inpsections")
             {
-
-                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectinSettings.CodeInspections.ToList());
+                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 
             ActivateControl(controlToActivate);
@@ -73,9 +86,15 @@ namespace Rubberduck.UI.Settings
 
         private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ConfigurationLoader.SaveConfiguration<Configuration>(_config);
+            SaveConfig();
+            MessageBox.Show("Changes to settings will take affect next time the application is started.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
+        private void SaveConfig()
+        {
+            _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
+            // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
+            _configService.SaveConfiguration<Configuration>(_config);
+        }
     }
 }

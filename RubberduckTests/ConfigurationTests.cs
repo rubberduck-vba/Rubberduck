@@ -10,7 +10,9 @@ namespace RubberduckTests
         [TestMethod]
         public void GetDefaultTodoMarkersTest()
         {
-            ToDoMarker[] markers = ConfigurationLoader.GetDefaultTodoMarkers();
+            var configService = new ConfigurationLoader();
+
+            ToDoMarker[] markers = configService.GetDefaultTodoMarkers();
             Assert.AreEqual("NOTE:", markers[0].Text,"Note failed to load.");
             Assert.AreEqual("TODO:", markers[1].Text,"Todo failed to load.");
             Assert.AreEqual("BUG:", markers[2].Text,"Bug failed to load.");
@@ -19,7 +21,8 @@ namespace RubberduckTests
         [TestMethod]
         public void ToDoMarkersTextIsNotNull()
         {
-            ToDoMarker[] markers = ConfigurationLoader.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            var configService = new ConfigurationLoader();
+            ToDoMarker[] markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
 
             foreach (var marker in markers)
             {
@@ -30,7 +33,8 @@ namespace RubberduckTests
         [TestMethod]
         public void DefaultCodeInspectionsIsNotNull()
         {
-            var config = ConfigurationLoader.GetDefaultCodeInspections();
+            var configService = new ConfigurationLoader();
+            var config = configService.GetDefaultCodeInspections();
 
             Assert.IsNotNull(config);
         }
