@@ -5,22 +5,16 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, VisualBasic6Parser.ArgContext context, CodeInspectionSeverity type,string project, string module, string procedure)
-            : base(inspection, context, type, project, module)
+        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VisualBasic6Parser.ArgContext> qualifiedContext)
+            : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
-            _project = project;
-            _module = module;
         }
-
-        private readonly string _project;
-        private readonly string _module;
 
         private new VisualBasic6Parser.ArgContext Context { get { return base.Context as VisualBasic6Parser.ArgContext; } }
 
@@ -59,7 +53,7 @@ namespace Rubberduck.Inspections
 
             var result = oldContent.Replace(oldContent, newContent);
 
-            var module = vbe.FindCodeModules(_project, _module).First();
+            var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
             module.ReplaceLine(Context.GetSelection().StartLine, result);
         }
     }

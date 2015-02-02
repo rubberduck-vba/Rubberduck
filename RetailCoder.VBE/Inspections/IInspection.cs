@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime.Tree;
-using Rubberduck.VBA.Grammar;
+using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -9,7 +11,7 @@ namespace Rubberduck.Inspections
     /// An interface that abstracts a code inspection.
     /// </summary>
     [ComVisible(false)]
-    public interface IInspection
+    public interface IInspection 
     {
         /// <summary>
         /// Gets a short description for the code inspection.
@@ -30,6 +32,6 @@ namespace Rubberduck.Inspections
         /// Runs code inspection on specified parse trees.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName,IParseTree> nodes);
+        IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult);
     }
 }

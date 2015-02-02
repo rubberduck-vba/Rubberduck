@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -19,16 +20,15 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName, IParseTree> nodes)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult)
         {
-            foreach (var module in nodes)
+            foreach (var module in parseResult)
             {
-                var options = module.Value.GetModuleOptions().Select(
-                    option => new {Key = module.Key, Option = option}).ToList();
+                var options = module.ParseTree.GetModuleOptions().ToList();
 
-                if (!options.Any() || options.All(option => option.Option.children.Last().GetText() != ReservedKeywords.Explicit))
+                if (!options.Any() || options.All(option => option.children.Last().GetText() != ReservedKeywords.Explicit))
                 {
-                    yield return new OptionExplicitInspectionResult(Name, null, Severity, module.Key.ProjectName, module.Key.ModuleName);
+                    yield return new OptionExplicitInspectionResult(Name, Severity, module.QualifiedName);
                 }
             }
         }

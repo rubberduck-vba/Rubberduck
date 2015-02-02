@@ -5,21 +5,16 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
     public class ImplicitVariantReturnTypeInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitVariantReturnTypeInspectionResult(string name, ParserRuleContext context, CodeInspectionSeverity severity, string project, string module, string procedure)
-            : base(name, context, severity, project, module)
+        public ImplicitVariantReturnTypeInspectionResult(string name, CodeInspectionSeverity severity, 
+            QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(name, severity, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
-            _project = project;
-            _module = module;
         }
-
-        private readonly string _project;
-        private readonly string _module;
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
@@ -38,7 +33,7 @@ namespace Rubberduck.Inspections
 
             var result = oldContent.Replace(instruction, newContent);
 
-            var module = vbe.FindCodeModules(_project, _module).First();
+            var module = vbe.FindCodeModules(QualifiedName).First();
             module.ReplaceLine(Context.GetSelection().StartLine, result);
         }
     }

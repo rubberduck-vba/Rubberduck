@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -39,11 +40,6 @@ namespace Rubberduck.VBA
         public static IEnumerable<ParserRuleContext> GetProcedures(this IParseTree parseTree)
         {
             return parseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
-        }
-
-        public static IEnumerable<ParserRuleContext> GetComments(this IParseTree parseTree)
-        {
-            return new List<ParserRuleContext>(); // todo: find a way to modify grammar to pick up comments
         }
 
         public static IEnumerable<VisualBasic6Parser.ModuleOptionContext> GetModuleOptions(this IParseTree parseTree)
@@ -91,6 +87,21 @@ namespace Rubberduck.VBA
             }
 
             public override void EnterConstStmt(VisualBasic6Parser.ConstStmtContext context)
+            {
+                _members.Add(context);
+            }
+
+            public override void EnterTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+            {
+                _members.Add(context);
+            }
+
+            public override void EnterDeclareStmt(VisualBasic6Parser.DeclareStmtContext context)
+            {
+                _members.Add(context);
+            }
+
+            public override void EnterEventStmt(VisualBasic6Parser.EventStmtContext context)
             {
                 _members.Add(context);
             }

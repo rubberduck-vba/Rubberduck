@@ -6,12 +6,18 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Extensions
 {
     [ComVisible(false)]
     public static class VbeExtensions
     {
+        public static IEnumerable<CodeModule> FindCodeModules(this VBE vbe, QualifiedModuleName qualifiedName)
+        {
+            return FindCodeModules(vbe, qualifiedName.ProjectName, qualifiedName.ModuleName);
+        }
+
         /// <summary>
         /// Finds all code modules that match the specified project and component names.
         /// </summary>
@@ -28,6 +34,23 @@ namespace Rubberduck.Extensions
                                                                          .Where(component => component.Name == componentName))
                               .Select(component => component.CodeModule);
             return matches;
+        }
+
+        public static CodeModuleSelection FindInstruction(this VBE vbe, CommentNode comment)
+        {
+            var modules = FindCodeModules(vbe, comment.QualifiedSelection.QualifiedName);
+            foreach (var module in modules)
+            {
+                var selection = comment.QualifiedSelection.Selection;
+
+                if (module.Lines[selection.StartLine, selection.LineCount]
+                    .Replace(" _\n", " ").Contains(comment.Comment))
+                {
+                    return new CodeModuleSelection(module, selection);
+                }
+            }
+
+            return null;
         }
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, ParserRuleContext context)

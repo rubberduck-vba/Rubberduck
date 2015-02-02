@@ -11,15 +11,10 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public class OptionExplicitInspectionResult : CodeInspectionResultBase
     {
-        public OptionExplicitInspectionResult(string inspection, ParserRuleContext context, CodeInspectionSeverity type, string project, string module) 
-            : base(inspection, context, type, project, module)
+        public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
+            : base(inspection, type, qualifiedName, null)
         {
-            _project = project;
-            _module = module;
         }
-
-        private readonly string _project;
-        private readonly string _module;
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
@@ -32,11 +27,7 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            var modules = vbe.FindCodeModules(_project, _module);
-            foreach (var codeModule in modules)
-            {
-                codeModule.InsertLines(1, ReservedKeywords.Option + " " + ReservedKeywords.Explicit);
-            }
+            throw new NotImplementedException();
         }
     }
 }

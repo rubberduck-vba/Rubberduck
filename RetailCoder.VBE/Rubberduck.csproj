@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
@@ -93,9 +94,10 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
-    <Compile Include="VBA\Nodes\VBProjectParseResult.cs" />
+    <Compile Include="VBA\Nodes\VbModuleParseResult.cs" />
     <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
+    <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\VBParser.cs" />
     <Compile Include="VBA\VBTreeListener.cs" />
     <Compile Include="VBA\VisualBasic6BaseListener.cs" />

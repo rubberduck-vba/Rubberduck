@@ -7,7 +7,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
-using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -18,9 +17,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             _item = result;
             _severity = GetSeverityIcon(result.Severity);
-            _project = result.ProjectName;
-            _component = result.ModuleName;
-            _selection = result.Context.GetSelection();
+            _selection = result.QualifiedSelection;
             _issue = result.Name;
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
         }
@@ -72,10 +69,10 @@ namespace Rubberduck.UI.CodeInspections
             get { return _component; }
         }
 
-        private readonly Selection _selection;
+        private readonly QualifiedSelection _selection;
         public int Line
         {
-            get { return _selection.StartLine; }
+            get { return _selection.Selection.StartLine; }
         }
 
         private readonly string _issue;

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -22,14 +22,16 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName, IParseTree> nodes)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult)
         {
-            var remComments =
-                nodes.SelectMany(
-                    node => node.Value.GetComments().Select(comment => new {Key = node.Key, Comment = comment}))
-                    .Where(comment => comment.Comment.GetText().StartsWith(ReservedKeywords.Rem + " "));
- 
-            return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction.Comment, Severity, instruction.Key.ProjectName, instruction.Key.ModuleName));
+            var modules = parseResult.ToList();
+            foreach (var comment in modules.SelectMany(module => module.Comments))
+            {
+                if (comment.Marker == ReservedKeywords.Rem)
+                {
+                    yield return new ObsoleteCommentSyntaxInspectionResult(Name, Severity, comment);
+                }
+            }
         }
     }
 }

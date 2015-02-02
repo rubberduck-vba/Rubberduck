@@ -10,6 +10,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Properties;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -91,7 +92,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue++;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Context));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -107,29 +108,27 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue--;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Context));
+            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
         {
             try
             {
-                // todo: encapsulate the notion of a QualifiedModuleName and of a ParserRuleContext.
-                //var location = _vbe.FindInstruction(e.Context);
-                //location.CodeModule.CodePane.SetSelection(location.Selection);
+                var location = _vbe.FindInstruction(e.QualifiedName, e.Context);
+                location.CodeModule.CodePane.SetSelection(location.Selection);
 
-                //var codePane = location.CodeModule.CodePane;
-                //var selection = location.Selection;
-                //codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                //codePane.ForceFocus();
-                //SetQuickFixTooltip();
+                var codePane = location.CodeModule.CodePane;
+                var selection = location.Selection;
+                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                codePane.ForceFocus();
+                SetQuickFixTooltip();
             }
             catch (Exception exception)
             {
                 System.Diagnostics.Debug.Assert(false);
             }
         }
-
 
         private void _quickFixButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
@@ -151,7 +150,8 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var code = _parser.Parse(_vbe.ActiveVBProject);
+            var code = _parser.Parse(_vbe.ActiveVBProject).ToList();
+
             var results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {

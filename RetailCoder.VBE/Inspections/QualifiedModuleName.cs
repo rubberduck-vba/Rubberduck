@@ -11,6 +11,8 @@ namespace Rubberduck.Inspections
             _module = module;
         }
 
+        public static QualifiedModuleName Empty { get { return new QualifiedModuleName(string.Empty, string.Empty); } }
+
         private readonly string _project;
         public string ProjectName { get { return _project; } }
 

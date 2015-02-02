@@ -25,7 +25,7 @@ namespace Rubberduck.Extensions
         /// <summary>   A CodePane extension method that selected procedure. </summary>
         ///
         /// <param name="selection">    The selection. </param>
-        /// <returns>   A Selection object representing the procedure the cursor is currently in. </returns>
+        /// <returns>   A QualifiedSelection object representing the procedure the cursor is currently in. </returns>
         public static Selection SelectedProcedure(this CodePane code, Selection selection)
         {
             vbext_ProcKind kind;

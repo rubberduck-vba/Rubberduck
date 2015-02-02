@@ -1,30 +1,38 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.Extensions;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(string inspection, ParserRuleContext context, CodeInspectionSeverity type, string project, string module)
+        /// <summary>
+        /// Creates a comment inspection result.
+        /// </summary>
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, CommentNode comment)
+            : this(inspection, type, comment.QualifiedSelection.QualifiedName, null, comment)
+        { }
+
+        /// <summary>
+        /// Creates an inspection result.
+        /// </summary>
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
+            if (context == null && comment == null)
+                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
+
             _name = inspection;
-            _context = context;
             _type = type;
-            _project = project;
-            _module = module;
+            _qualifiedName = qualifiedName;
+            _context = context;
+            _comment = comment;
         }
-
-        private readonly string _project;
-        public string ProjectName { get { return _project; } }
-
-        private readonly string _module;
-        public string ModuleName { get { return _module; } }
 
         private readonly string _name;
         /// <summary>
@@ -32,17 +40,33 @@ namespace Rubberduck.Inspections
         /// </summary>
         public string Name { get { return _name; } }
 
-        private readonly ParserRuleContext _context;
-        /// <summary>
-        /// Gets the <see cref="Context"/> containing a code issue.
-        /// </summary>
-        public ParserRuleContext Context { get { return _context; } }
-
         private readonly CodeInspectionSeverity _type;
         /// <summary>
         /// Gets the severity of the code issue.
         /// </summary>
         public CodeInspectionSeverity Severity { get { return _type; } }
+
+        private readonly QualifiedModuleName _qualifiedName;
+        protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+
+        private readonly ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
+
+        private readonly CommentNode _comment;
+        public CommentNode Comment { get { return _comment; } }
+
+        /// <summary>
+        /// Gets the information needed to select the target instruction in the VBE.
+        /// </summary>
+        public QualifiedSelection QualifiedSelection
+        {
+            get
+            {
+                return _context == null 
+                    ? _comment.QualifiedSelection 
+                    : new QualifiedSelection(_qualifiedName, _context.GetSelection());
+            }
+        }
 
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.

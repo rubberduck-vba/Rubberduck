@@ -9,6 +9,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -52,14 +53,12 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                // todo: encapsulate the notion of a QualifiedModuleName and of a ParserRuleContext.
-                //var location = VBE.FindInstruction(e.Context);
-                //location.CodeModule.CodePane.SetSelection(location.Selection);
+                var location = VBE.FindInstruction(e.QualifiedName, e.Context);
+                location.CodeModule.CodePane.SetSelection(location.Selection);
 
-                //var codePane = location.CodeModule.CodePane;
-                //var selection = location.Selection;
-                //codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                //codePane.ForceFocus();
+                var codePane = location.CodeModule.CodePane;
+                var selection = location.Selection;
+                codePane.SetSelection(selection);
             }
             catch (Exception exception)
             {
@@ -69,7 +68,8 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            var code = _parser.Parse(VBE.ActiveVBProject);
+            var code = _parser.Parse(VBE.ActiveVBProject).ToList();
+
             _results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {

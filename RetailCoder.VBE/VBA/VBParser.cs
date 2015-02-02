@@ -34,7 +34,9 @@ namespace Rubberduck.VBA
         /// Parses all code modules in specified project.
         /// </summary>
         /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
-        IDictionary<QualifiedModuleName,IParseTree> Parse(VBProject vbProject);
+        IEnumerable<VbModuleParseResult> Parse(VBProject vbProject);
+
+        IEnumerable<CommentNode> ParseComments(VBComponent vbComponent);
     }
 
     public class VBParser : IRubberduckParser
@@ -57,14 +59,21 @@ namespace Rubberduck.VBA
             var tokens = new CommonTokenStream(lexer);
             var parser = new VisualBasic6Parser(tokens);
             
-            return parser.startRule();
+            var result = parser.startRule();
+            return result;
         }
 
-        public IDictionary<QualifiedModuleName,IParseTree> Parse(VBProject project)
+        public IEnumerable<VbModuleParseResult> Parse(VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>()
-                          .ToDictionary(component => new QualifiedModuleName(project.Name, component.Name), 
-                                        component => Parse(component.CodeModule.ToString()));
+                          .Select(component => new VbModuleParseResult(new QualifiedModuleName(project.Name, component.Name), 
+                                               Parse(component.CodeModule.ToString()), ParseComments(component)));
+        }
+
+        public IEnumerable<CommentNode> ParseComments(VBComponent component)
+        {
+            return new List<CommentNode>();
+            //todo: implement
         }
     }
 }

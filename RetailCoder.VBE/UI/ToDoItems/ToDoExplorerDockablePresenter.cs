@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -37,23 +35,21 @@ namespace Rubberduck.UI.ToDoItems
             var items = new List<ToDoItem>();
             foreach (var project in VBE.VBProjects.Cast<VBProject>())
             {
-                var tree = _parser.Parse(project);
-                var modules = tree.Keys;
-                foreach (var qualifiedModuleName in modules)
+                var modules = _parser.Parse(project);
+                foreach (var module in modules)
                 {
-                    items.AddRange(tree[qualifiedModuleName].GetComments()
-                        .SelectMany(comment => GetToDoMarkers(qualifiedModuleName, comment)));
+                    items.AddRange(module.Comments.SelectMany(GetToDoMarkers));
                 }
             }
 
             Control.SetItems(items);
         }
 
-        private IEnumerable<ToDoItem> GetToDoMarkers(QualifiedModuleName key, ParserRuleContext context)
+        private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            return _markers.Where(marker => context.GetText().ToLowerInvariant()
+            return _markers.Where(marker => comment.Comment.ToLowerInvariant()
                                                    .Contains(marker.Text.ToLowerInvariant()))
-                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, context, key.ProjectName, key.ModuleName));
+                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, comment));
         }
 
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)

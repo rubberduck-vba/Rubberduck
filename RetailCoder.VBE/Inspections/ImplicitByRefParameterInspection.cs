@@ -1,16 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
+using Antlr4.Runtime;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
-    public class ImplicitByRefParameterInspection : IInspection
+    public class ImplicitByRefSubParameterInspection : IInspection
     {
-        public ImplicitByRefParameterInspection()
+        public ImplicitByRefSubParameterInspection()
         {
             Severity = CodeInspectionSeverity.Warning;
         }
@@ -18,24 +19,73 @@ namespace Rubberduck.Inspections
         public string Name { get { return InspectionNames.ImplicitByRef; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
-        
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IDictionary<QualifiedModuleName,IParseTree> nodes)
+
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult) 
         {
-            var signatures = nodes.SelectMany(node =>
-                node.Value.GetPublicProcedures()
-                    .Select(procedure => new
+            foreach (var module in parseResult)
+            {
+                var procedures = module.ParseTree.GetProcedures();
+                foreach (var procedure in procedures)
+                {
+                    var args = GetArguments(procedure);
+                    foreach (var arg in args.Where(arg => arg.BYREF() == null && arg.BYVAL() == null))
                     {
-                        QualifiedName = node.Key,
-                        ProcedureName = procedure.ambiguousIdentifier().GetText(),
-                        Parameters = procedure.argList()
-                    }));
+                        var context = new QualifiedContext<VisualBasic6Parser.ArgContext>(module.QualifiedName, arg);
+                        yield return new ImplicitByRefParameterInspectionResult(Name, Severity, context);
+                    }
+                }
+            }
+        }
 
-            var targets =
-                signatures.SelectMany(
-                    signature => signature.Parameters.arg().Where(arg => arg.BYREF() == null && arg.BYVAL() == null)
-                        .Select(arg => new {signature.QualifiedName, signature.ProcedureName, arg}));
+        private static readonly IEnumerable<Func<ParserRuleContext, VisualBasic6Parser.ArgListContext>> Converters =
+            new List<Func<ParserRuleContext, VisualBasic6Parser.ArgListContext>>
+            {
+                GetSubArgsList,
+                GetFunctionArgsList,
+                GetPropertyGetArgsList,
+                GetPropertyLetArgsList,
+                GetPropertySetArgsList
+            };
 
-            return targets.Select(parameter => new ImplicitByRefParameterInspectionResult(Name, parameter.arg, Severity, parameter.QualifiedName.ProjectName, parameter.QualifiedName.ModuleName, parameter.ProcedureName));
+        private IEnumerable<VisualBasic6Parser.ArgContext> GetArguments(ParserRuleContext procedureContext)
+        {
+            var argsList = Converters.Select(converter => converter(procedureContext)).FirstOrDefault(args => args != null);
+            if (argsList == null)
+            {
+                return new List<VisualBasic6Parser.ArgContext>();
+            }
+
+            return argsList.arg();
+        }
+
+        private static VisualBasic6Parser.ArgListContext GetSubArgsList(ParserRuleContext procedureContext)
+        {
+            var context = procedureContext as VisualBasic6Parser.SubStmtContext;
+            return context == null ? null : context.argList();
+        }
+
+        private static VisualBasic6Parser.ArgListContext GetFunctionArgsList(ParserRuleContext procedureContext)
+        {
+            var context = procedureContext as VisualBasic6Parser.FunctionStmtContext;
+            return context == null ? null : context.argList();
+        }
+
+        private static VisualBasic6Parser.ArgListContext GetPropertyGetArgsList(ParserRuleContext procedureContext)
+        {
+            var context = procedureContext as VisualBasic6Parser.PropertyGetStmtContext;
+            return context == null ? null : context.argList();
+        }
+
+        private static VisualBasic6Parser.ArgListContext GetPropertyLetArgsList(ParserRuleContext procedureContext)
+        {
+            var context = procedureContext as VisualBasic6Parser.PropertyLetStmtContext;
+            return context == null ? null : context.argList();
+        }
+
+        private static VisualBasic6Parser.ArgListContext GetPropertySetArgsList(ParserRuleContext procedureContext)
+        {
+            var context = procedureContext as VisualBasic6Parser.PropertySetStmtContext;
+            return context == null ? null : context.argList();
         }
     }
 }

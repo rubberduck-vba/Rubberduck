@@ -18,6 +18,7 @@ using Rubberduck.UI;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -73,7 +74,7 @@ namespace Rubberduck.UI.CodeExplorer
             //}
 
             //var codePane = vbComponent.CodeModule.CodePane;
-            //var selection = instruction.Selection;
+            //var selection = instruction.QualifiedSelection;
 
             //if (selection.StartLine != 0)
             //{
@@ -96,9 +97,11 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void AddProjectNode(IDictionary<QualifiedModuleName, IParseTree> node)
+        private void AddProjectNode(IEnumerable<VbModuleParseResult> modules)
         {
             var treeView = Control.SolutionTree;
+            // todo: [re-]implement
+
             //var projectNode = new TreeNode();
             //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
             //projectNode.Tag = node.Instruction;
