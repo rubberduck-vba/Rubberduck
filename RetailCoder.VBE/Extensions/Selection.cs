@@ -52,7 +52,7 @@ namespace Rubberduck.Extensions
 
         public override string ToString()
         {
-            return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endLine);
+            return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endColumn);
         }
     }
 }
