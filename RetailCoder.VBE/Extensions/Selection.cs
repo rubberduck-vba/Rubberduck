@@ -16,6 +16,11 @@ namespace Rubberduck.Extensions
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
+
+        public override string ToString()
+        {
+            return string.Concat(QualifiedName, Selection);
+        }
     }
 
     [ComVisible(false)]
@@ -44,5 +49,10 @@ namespace Rubberduck.Extensions
         public int EndColumn { get { return _endColumn; } }
 
         public int LineCount { get { return _endLine - _startLine + 1; } }
+
+        public override string ToString()
+        {
+            return string.Format("Start: L{0}C{1} End: L{2}C{3}", _startLine, _startColumn, _endLine, _endLine);
+        }
     }
 }
