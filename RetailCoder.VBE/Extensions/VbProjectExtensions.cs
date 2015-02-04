@@ -61,6 +61,29 @@ namespace Rubberduck.Extensions
             }
         }
 
-        //todo: Implement ImportSourceFiles. Don't import .frx files. DocClasses need to imported by writing to module from file.
+        /// <summary>
+        /// Imports all source code files from target directory into project.
+        /// </summary>
+        /// <remarks>
+        /// Only files with extensions "cls", "bas, "frm", and "doccls" are imported.
+        /// It is the callers responsibility to remove any existing components prior to importing.
+        /// </remarks>
+        /// <param name="project"></param>
+        /// <param name="filePath">Directory path containing the source files.</param>
+        public static void ImportSourceFiles(this VBProject project, string filePath)
+        {
+            var dirInfo = new System.IO.DirectoryInfo(filePath);
+
+            var files = dirInfo.EnumerateFiles()
+                                .Where(f => f.Extension == VBComponentExtensions.StandardExtension ||
+                                            f.Extension == VBComponentExtensions.ClassExtesnion ||
+                                            f.Extension == VBComponentExtensions.DocClassExtension ||
+                                            f.Extension == VBComponentExtensions.FormExtension
+                                            );
+            foreach (var file in files)
+            {
+                project.VBComponents.ImportSourceFile(file.FullName);
+            }
+        }
     }
 }

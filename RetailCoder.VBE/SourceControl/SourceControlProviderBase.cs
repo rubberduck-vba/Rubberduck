@@ -82,19 +82,7 @@ namespace Rubberduck.SourceControl
         private void Refresh()
         {
             this.project.RemoveAllComponents();
-
-            var dirInfo = new System.IO.DirectoryInfo(this.CurrentRepository.LocalLocation);
-
-            var files = dirInfo.EnumerateFiles()
-                                .Where(f => f.Extension == VBComponentExtensions.StandardExtension||
-                                            f.Extension == VBComponentExtensions.ClassExtesnion ||
-                                            f.Extension == VBComponentExtensions.DocClassExtension ||
-                                            f.Extension == VBComponentExtensions.FormExtension 
-                                            );
-            foreach (var file in files)
-            {
-                this.project.VBComponents.ImportSourceFile(file.FullName);
-            }
+            this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
         }
     }
 }
