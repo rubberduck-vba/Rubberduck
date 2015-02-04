@@ -90,20 +90,23 @@ namespace Rubberduck.VBA
                 if (continuing || line.HasComment(out index))
                 {
                     startLine = continuing ? startLine : i;
-                    startColumn = index + 1; // VBE positions are 1-based
+                    startColumn = index;
+
+                    var commentLength = line.Length - index;
 
                     continuing = line.EndsWith("_");
                     if (!continuing)
                     {
-                        commentBuilder.Append(line);
-                        var selection = new Selection(startLine, startColumn, i, line.Length);
+                        commentBuilder.Append(line.Substring(startColumn, commentLength).Trim());
+                        var selection = new Selection(startLine + 1, startColumn + 1, i, line.Length);
                         yield return new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();
                     }
                     else
                     {
                         // ignore line continuations in comment text:
-                        commentBuilder.Append(line.Remove(line.Length - 1)); 
+
+                        commentBuilder.Append(line.Remove(line.Length - 1).TrimStart()); 
                     }
                 }
             }
