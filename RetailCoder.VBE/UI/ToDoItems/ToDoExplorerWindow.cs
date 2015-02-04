@@ -42,6 +42,11 @@ namespace Rubberduck.UI.ToDoItems
         public event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;
         private void ToDoGridViewCellDoubleClicked(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
             var handler = NavigateToDoItem;
             if (handler == null)
             {
