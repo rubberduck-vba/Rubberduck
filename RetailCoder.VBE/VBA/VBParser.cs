@@ -92,7 +92,7 @@ namespace Rubberduck.VBA
                     startLine = continuing ? startLine : i;
                     startColumn = continuing ? startColumn : index;
 
-                    var commentLength = line.Length - index - 1;
+                    var commentLength = line.Length - index;
 
                     continuing = line.EndsWith("_");
                     if (!continuing)
