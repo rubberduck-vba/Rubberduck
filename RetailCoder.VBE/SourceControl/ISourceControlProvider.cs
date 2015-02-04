@@ -32,6 +32,7 @@ namespace Rubberduck.SourceControl
         void Commit(string message);
         void Merge(string sourceBranch, string destinationBranch);
         void Checkout(string branch);
+        void CreateBranch(string branch);
         void Undo(string filePath);
         void Revert();
         void AddFile(string filePath);

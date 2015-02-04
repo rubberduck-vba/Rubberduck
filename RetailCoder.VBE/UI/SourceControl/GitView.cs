@@ -45,5 +45,15 @@ namespace Rubberduck.UI.SourceControl
         {
             git.Fetch();
         }
+
+        private void NewBranch_Click(object sender, EventArgs e)
+        {
+            git.CreateBranch("testbranch");
+        }
+
+        private void Checkout_Click(object sender, EventArgs e)
+        {
+            git.Checkout("master");
+        }
     }
 }

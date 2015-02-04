@@ -164,6 +164,18 @@ namespace Rubberduck.SourceControl
             base.Checkout(branch);
         }
 
+        public override void CreateBranch(string branch)
+        {
+            try
+            {
+                repo.CreateBranch(branch);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Branch creation failed.", ex);
+            }
+        }
+
         public override void Revert()
         {
             //todo: investigate revert results class

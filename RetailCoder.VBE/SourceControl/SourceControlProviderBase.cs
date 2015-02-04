@@ -31,7 +31,7 @@ namespace Rubberduck.SourceControl
         public abstract void Fetch();
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
-
+        public abstract void CreateBranch(string branch);
 
         public virtual Repository Init(string directory)
         {

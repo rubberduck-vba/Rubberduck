@@ -32,6 +32,8 @@
             this.Push = new System.Windows.Forms.Button();
             this.Pull = new System.Windows.Forms.Button();
             this.Fetch = new System.Windows.Forms.Button();
+            this.NewBranch = new System.Windows.Forms.Button();
+            this.Checkout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Commit
@@ -74,11 +76,33 @@
             this.Fetch.UseVisualStyleBackColor = true;
             this.Fetch.Click += new System.EventHandler(this.Fetch_Click);
             // 
+            // NewBranch
+            // 
+            this.NewBranch.Location = new System.Drawing.Point(37, 154);
+            this.NewBranch.Name = "NewBranch";
+            this.NewBranch.Size = new System.Drawing.Size(75, 23);
+            this.NewBranch.TabIndex = 4;
+            this.NewBranch.Text = "New Branch";
+            this.NewBranch.UseVisualStyleBackColor = true;
+            this.NewBranch.Click += new System.EventHandler(this.NewBranch_Click);
+            // 
+            // Checkout
+            // 
+            this.Checkout.Location = new System.Drawing.Point(37, 184);
+            this.Checkout.Name = "Checkout";
+            this.Checkout.Size = new System.Drawing.Size(75, 23);
+            this.Checkout.TabIndex = 5;
+            this.Checkout.Text = "Checkout";
+            this.Checkout.UseVisualStyleBackColor = true;
+            this.Checkout.Click += new System.EventHandler(this.Checkout_Click);
+            // 
             // GitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.Checkout);
+            this.Controls.Add(this.NewBranch);
             this.Controls.Add(this.Fetch);
             this.Controls.Add(this.Pull);
             this.Controls.Add(this.Push);
@@ -95,5 +119,7 @@
         private System.Windows.Forms.Button Push;
         private System.Windows.Forms.Button Pull;
         private System.Windows.Forms.Button Fetch;
+        private System.Windows.Forms.Button NewBranch;
+        private System.Windows.Forms.Button Checkout;
     }
 }
