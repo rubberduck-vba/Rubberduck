@@ -40,7 +40,8 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead).First().Name;
+                return repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead)
+                                    .First().Name;
             }
         }
 
@@ -109,18 +110,26 @@ namespace Rubberduck.SourceControl
 
         public override void Pull()
         {
-            var options = new PullOptions()
+            try
             {
-                MergeOptions = new MergeOptions()
+
+                var options = new PullOptions()
                 {
-                    FastForwardStrategy = FastForwardStrategy.Default
-                }
-            };
+                    MergeOptions = new MergeOptions()
+                    {
+                        FastForwardStrategy = FastForwardStrategy.Default
+                    }
+                };
 
-            var signature = GetSignature();
-            repo.Network.Pull(signature, options);
+                var signature = GetSignature();
+                repo.Network.Pull(signature, options);
 
-            base.Pull();
+                base.Pull();
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Pull Failed.", ex);
+            }
         }
 
         public override void Commit(string message)
