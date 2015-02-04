@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -72,8 +73,40 @@ namespace Rubberduck.VBA
 
         public IEnumerable<CommentNode> ParseComments(VBComponent component)
         {
-            return new List<CommentNode>();
-            //todo: implement
+            var code = component.CodeModule.Code();
+            var qualifiedName = new QualifiedModuleName(component.Collection.Parent.Name, component.Name);
+
+            var commentBuilder = new StringBuilder();
+            var continuing = false;
+
+            var startLine = 0;
+            int startColumn;
+
+            for (var i = 0; i < code.Length; i++)
+            {
+                var line = code[i];                
+                var index = 0;
+
+                if (continuing || line.HasComment(out index))
+                {
+                    startLine = continuing ? startLine : i;
+                    startColumn = index + 1; // VBE positions are 1-based
+
+                    continuing = line.EndsWith("_");
+                    if (!continuing)
+                    {
+                        commentBuilder.Append(line);
+                        var selection = new Selection(startLine, startColumn, i, line.Length);
+                        yield return new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
+                        commentBuilder.Clear();
+                    }
+                    else
+                    {
+                        // ignore line continuations in comment text:
+                        commentBuilder.Append(line.Remove(line.Length - 1)); 
+                    }
+                }
+            }
         }
     }
 }

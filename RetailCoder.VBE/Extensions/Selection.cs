@@ -15,7 +15,7 @@ namespace Rubberduck.Extensions
         public QualifiedModuleName QualifiedName { get {return _qualifiedName; } }
 
         private readonly Selection _selection;
-        public Selection Selection { get { return Selection; } }
+        public Selection Selection { get { return _selection; } }
     }
 
     [ComVisible(false)]
