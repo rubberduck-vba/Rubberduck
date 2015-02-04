@@ -57,7 +57,7 @@ namespace Rubberduck.UI.ToDoItems
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
         {
             var project = VBE.VBProjects.Cast<VBProject>()
-                .FirstOrDefault(p => p.Name == e.Selection.ProjectName);
+                .FirstOrDefault(p => p.Name == e.SelectedItem.Selection.QualifiedName.ProjectName);
 
             if (project == null)
             {
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var component = project.VBComponents.Cast<VBComponent>()
-                .FirstOrDefault(c => c.Name == e.Selection.ModuleName);
+                .FirstOrDefault(c => c.Name == e.SelectedItem.Selection.QualifiedName.ModuleName);
 
             if (component == null)
             {
@@ -74,7 +74,7 @@ namespace Rubberduck.UI.ToDoItems
 
             var codePane = component.CodeModule.CodePane;
 
-            codePane.SetSelection(e.Selection.LineNumber);
+            codePane.SetSelection(e.SelectedItem.Selection.Selection);
             codePane.ForceFocus();
         }
     }

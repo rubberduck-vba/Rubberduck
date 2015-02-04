@@ -13,14 +13,8 @@ namespace Rubberduck.ToDoItems
         private readonly string _description;
         public string Description { get { return _description; } }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
-
-        private readonly string _moduleName;
-        public string ModuleName { get { return _moduleName; } }
-
-        private readonly int _lineNumber;
-        public int LineNumber { get { return _lineNumber; } }
+        private readonly QualifiedSelection _selection;
+        public QualifiedSelection Selection { get { return _selection; } }
 
         public ToDoItem(TaskPriority priority, CommentNode comment)
             : this(priority, comment.Comment, comment.QualifiedSelection)
@@ -31,9 +25,7 @@ namespace Rubberduck.ToDoItems
         {
             _priority = priority;
             _description = description;
-            _projectName = qualifiedSelection.QualifiedName.ProjectName;
-            _moduleName = qualifiedSelection.QualifiedName.ModuleName;
-            _lineNumber = qualifiedSelection.Selection.StartLine;
+            _selection = qualifiedSelection;
         }
     }
 }

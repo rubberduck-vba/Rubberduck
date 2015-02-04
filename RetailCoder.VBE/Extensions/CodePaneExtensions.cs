@@ -5,7 +5,9 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Extensions
 {
-    /// <summary>   VBE Code Pane extensions. </summary>
+    /// <summary>
+    /// VBE Code Pane extension methods. 
+    /// </summary>
     [ComVisible(false)]
     public static class CodePaneExtensions
     {
