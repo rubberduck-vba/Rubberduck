@@ -80,7 +80,6 @@ namespace Rubberduck.VBA
             var continuing = false;
 
             var startLine = 0;
-            int startColumn;
 
             for (var i = 0; i < code.Length; i++)
             {
@@ -90,23 +89,25 @@ namespace Rubberduck.VBA
                 if (continuing || line.HasComment(out index))
                 {
                     startLine = continuing ? startLine : i;
-                    startColumn = index;
 
+                    var startColumn = index;
                     var commentLength = line.Length - index;
 
                     continuing = line.EndsWith("_");
                     if (!continuing)
                     {
-                        commentBuilder.Append(line.Substring(startColumn, commentLength).Trim());
-                        var selection = new Selection(startLine + 1, startColumn + 1, i, line.Length);
-                        yield return new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
+                        commentBuilder.Append(line.Substring(startColumn, commentLength).TrimStart());
+                        var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length);
+
+                        var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();
+                        
+                        yield return result;
                     }
                     else
                     {
-                        // ignore line continuations in comment text:
-
-                        commentBuilder.Append(line.Remove(line.Length - 1).TrimStart()); 
+                        // ignore line continuations in comment text; take commentLength - 1:
+                        commentBuilder.Append(line.Substring(startColumn, commentLength - 1).TrimStart()); 
                     }
                 }
             }

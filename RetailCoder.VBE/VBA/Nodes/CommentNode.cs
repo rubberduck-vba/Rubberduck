@@ -17,5 +17,13 @@ namespace Rubberduck.VBA.Nodes
 
         private readonly QualifiedSelection _qualifiedSelection;
         public QualifiedSelection QualifiedSelection { get { return _qualifiedSelection; } }
+
+        /// <summary>
+        /// Returns the comment text.
+        /// </summary>
+        public override string ToString()
+        {
+            return _comment;
+        }
     }
 }

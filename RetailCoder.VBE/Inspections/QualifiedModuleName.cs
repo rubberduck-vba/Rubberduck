@@ -18,5 +18,10 @@ namespace Rubberduck.Inspections
 
         private readonly string _module;
         public string ModuleName { get { return _module; } }
+
+        public override string ToString()
+        {
+            return _project + "." + _module;
+        }
     }
 }

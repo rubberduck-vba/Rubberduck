@@ -11,7 +11,9 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    /// <summary>   (Not COM visible) Presenter for the Todo Explorer.  </summary>
+    /// <summary>
+    /// Presenter for the todo-items explorer.
+    /// </summary>
     [ComVisible(false)]
     public class ToDoExplorerDockablePresenter : DockablePresenterBase
     {
