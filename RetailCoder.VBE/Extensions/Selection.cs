@@ -19,7 +19,7 @@ namespace Rubberduck.Extensions
 
         public override string ToString()
         {
-            return string.Concat(QualifiedName, Selection);
+            return string.Concat(QualifiedName, " ", Selection);
         }
     }
 
