@@ -102,12 +102,12 @@
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\VBParser.cs" />
     <Compile Include="VBA\VBTreeListener.cs" />
-    <Compile Include="VBA\VisualBasic6BaseListener.cs" />
-    <Compile Include="VBA\VisualBasic6BaseVisitor.cs" />
-    <Compile Include="VBA\VisualBasic6Lexer.cs" />
-    <Compile Include="VBA\VisualBasic6Listener.cs" />
-    <Compile Include="VBA\VisualBasic6Parser.cs" />
-    <Compile Include="VBA\VisualBasic6Visitor.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6BaseListener.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6BaseVisitor.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6Lexer.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6Listener.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6Parser.cs" />
+    <Compile Include="VBA\Grammar\VisualBasic6Visitor.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
@@ -149,7 +149,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MenuIcons.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reflection\VBComponentExtensions.cs" />
+    <Compile Include="VBA\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
@@ -373,9 +373,9 @@
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
     <None Include="Resources\tick-circle.png" />
-    <None Include="VBA\VisualBasic6.g4">
+    <None Include="VBA\Grammar\VisualBasic6.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.VBA</CustomToolNamespace>
+      <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
     </None>
   </ItemGroup>
   <ItemGroup>

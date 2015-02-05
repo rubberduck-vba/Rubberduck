@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Rubberduck.Extensions;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {

@@ -1,6 +1,7 @@
 using System;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
+using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA

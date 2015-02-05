@@ -1,6 +1,5 @@
 ﻿using System;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
