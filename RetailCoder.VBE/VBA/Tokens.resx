@@ -660,4 +660,10 @@
   <data name="Rem" xml:space="preserve">
     <value>Rem</value>
   </data>
+  <data name="CommentMarker" xml:space="preserve">
+    <value>'</value>
+  </data>
+  <data name="LineContinuation" xml:space="preserve">
+    <value> _</value>
+  </data>
 </root>

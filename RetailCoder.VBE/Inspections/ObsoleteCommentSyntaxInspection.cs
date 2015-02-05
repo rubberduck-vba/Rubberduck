@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
             var modules = parseResult.ToList();
             foreach (var comment in modules.SelectMany(module => module.Comments))
             {
-                if (comment.Marker == ReservedKeywords.Rem)
+                if (comment.Marker == Tokens.Rem)
                 {
                     yield return new ObsoleteCommentSyntaxInspectionResult(Name, Severity, comment);
                 }

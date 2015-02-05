@@ -17,7 +17,7 @@ namespace Rubberduck.ToDoItems
         public QualifiedSelection Selection { get { return _selection; } }
 
         public ToDoItem(TaskPriority priority, CommentNode comment)
-            : this(priority, comment.Comment, comment.QualifiedSelection)
+            : this(priority, comment.CommentText, comment.QualifiedSelection)
         {
         }
 

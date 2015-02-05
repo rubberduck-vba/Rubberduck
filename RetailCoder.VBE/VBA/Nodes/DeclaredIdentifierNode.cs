@@ -31,12 +31,12 @@ namespace Rubberduck.VBA.Nodes
     {
         private static readonly IDictionary<string, string> TypeSpecifiers = new Dictionary<string, string>
         {
-            { "%", ReservedKeywords.Integer },
-            { "&", ReservedKeywords.Long },
-            { "@", ReservedKeywords.Decimal },
-            { "!", ReservedKeywords.Single },
-            { "#", ReservedKeywords.Double },
-            { "$", ReservedKeywords.String }
+            { "%", Tokens.Integer },
+            { "&", Tokens.Long },
+            { "@", Tokens.Decimal },
+            { "!", Tokens.Single },
+            { "#", Tokens.Double },
+            { "$", Tokens.String }
         };
 
         public DeclaredIdentifierNode(VisualBasic6Parser.ConstSubStmtContext context, string scope,
@@ -49,7 +49,7 @@ namespace Rubberduck.VBA.Nodes
                 if (context.typeHint() == null)
                 {
                     _isImplicitlyTyped = true;
-                    _typeName = ReservedKeywords.Variant;
+                    _typeName = Tokens.Variant;
                 }
                 else
                 {
@@ -76,7 +76,7 @@ namespace Rubberduck.VBA.Nodes
                 if (context.typeHint() == null)
                 {
                     _isImplicitlyTyped = true;
-                    _typeName = ReservedKeywords.Variant;
+                    _typeName = Tokens.Variant;
                 }
                 else
                 {

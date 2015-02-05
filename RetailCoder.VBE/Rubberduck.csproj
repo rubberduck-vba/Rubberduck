@@ -236,10 +236,10 @@
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
-    <Compile Include="VBA\ReservedKeywords.Designer.cs">
+    <Compile Include="VBA\Tokens.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ReservedKeywords.resx</DependentUpon>
+      <DependentUpon>Tokens.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
@@ -358,9 +358,9 @@
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VBA\ReservedKeywords.resx">
+    <EmbeddedResource Include="VBA\Tokens.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ReservedKeywords.Designer.cs</LastGenOutput>
+      <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>

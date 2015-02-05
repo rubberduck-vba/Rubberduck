@@ -38,12 +38,12 @@ namespace Rubberduck.Inspections
 
         private void PassParameterByRef(VBE vbe)
         {
-            ChangeParameterPassing(vbe, ReservedKeywords.ByRef);
+            ChangeParameterPassing(vbe, Tokens.ByRef);
         }
 
         private void PassParameterByVal(VBE vbe)
         {
-            ChangeParameterPassing(vbe, ReservedKeywords.ByVal);
+            ChangeParameterPassing(vbe, Tokens.ByVal);
         }
 
         private void ChangeParameterPassing(VBE vbe, string newValue)

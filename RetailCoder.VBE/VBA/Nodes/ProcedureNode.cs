@@ -58,7 +58,7 @@ namespace Rubberduck.VBA.Nodes
                 _isImplicitReturnType = returnTypeClause == null;
 
                 _returnType = returnTypeClause == null 
-                                ? ReservedKeywords.Variant 
+                                ? Tokens.Variant 
                                 : returnTypeClause.type().GetText();
             }
         }

@@ -227,15 +227,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    {
         //        var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
         //        var procNode = (node as ProcedureNode);
-        //        if (procNode.Accessibility == ReservedKeywords.Public)
+        //        if (procNode.Accessibility == Tokens.Public)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
         //        }
-        //        if (procNode.Accessibility == ReservedKeywords.Friend)
+        //        if (procNode.Accessibility == Tokens.Friend)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
         //        }
-        //        if (procNode.Accessibility == ReservedKeywords.Private)
+        //        if (procNode.Accessibility == Tokens.Private)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
         //        }
@@ -244,15 +244,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is UserDefinedTypeNode)
         //    {
         //        var typeNode = (node as UserDefinedTypeNode);
-        //        if (typeNode.Accessibility == ReservedKeywords.Public)
+        //        if (typeNode.Accessibility == Tokens.Public)
         //        {
         //            return "PublicType";
         //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
+        //        if (typeNode.Accessibility == Tokens.Friend)
         //        {
         //            return "FriendType";
         //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Private)
+        //        if (typeNode.Accessibility == Tokens.Private)
         //        {
         //            return "PrivateType";
         //        }
@@ -261,15 +261,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is EnumNode)
         //    {
         //        var typeNode = (node as EnumNode);
-        //        if (typeNode.Accessibility == ReservedKeywords.Public)
+        //        if (typeNode.Accessibility == Tokens.Public)
         //        {
         //            return "PublicEnum";
         //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
+        //        if (typeNode.Accessibility == Tokens.Friend)
         //        {
         //            return "FriendEnum";
         //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Private)
+        //        if (typeNode.Accessibility == Tokens.Private)
         //        {
         //            return "PrivateEnum";
         //        }
@@ -278,11 +278,11 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is ConstDeclarationNode)
         //    {
         //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == ReservedKeywords.Private)
+        //        if (accessbility == Tokens.Private)
         //        {
         //            return "PrivateConst";
         //        }
-        //        if (accessbility == ReservedKeywords.Friend)
+        //        if (accessbility == Tokens.Friend)
         //        {
         //            return "FriendConst";
         //        }
@@ -293,11 +293,11 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is VariableDeclarationNode)
         //    {
         //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == ReservedKeywords.Private)
+        //        if (accessbility == Tokens.Private)
         //        {
         //            return "PrivateField";
         //        }
-        //        if (accessbility == ReservedKeywords.Friend)
+        //        if (accessbility == Tokens.Friend)
         //        {
         //            return "FriendField";
         //        }
@@ -352,10 +352,10 @@ namespace Rubberduck.UI.CodeExplorer
         //        if (propertyTypes.Any(pt => pt == procNode.Kind))
         //        {
         //            var kind = procNode.Kind == ProcedureKind.PropertyGet
-        //                ? ReservedKeywords.Get
+        //                ? Tokens.Get
         //                : procNode.Kind == ProcedureKind.PropertyLet
-        //                    ? ReservedKeywords.Let
-        //                    : ReservedKeywords.Set;
+        //                    ? Tokens.Let
+        //                    : Tokens.Set;
 
         //            return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
         //        }
