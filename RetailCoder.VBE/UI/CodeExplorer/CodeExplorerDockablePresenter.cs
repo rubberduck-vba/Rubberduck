@@ -11,12 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Grammar;
 using System;
-using Antlr4.Runtime.Tree;
-using Rubberduck.UI;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 
@@ -47,8 +42,8 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
-            //Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-            //Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
+            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
+            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
@@ -137,73 +132,27 @@ namespace Rubberduck.UI.CodeExplorer
             //treeView.Nodes.Add(projectNode);
         }
 
-        //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
-        //{
-        //    var codeBlockNode = new TreeNode(GetNodeText(node));
-        //    codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-        //    codeBlockNode.ImageKey = GetImageKeyForNode(node);
-        //    codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
-        //    codeBlockNode.Tag = node.Instruction;
+        private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
 
-        //    if (node.ChildNodes == null)
-        //    {
-        //        return codeBlockNode;
-        //    }
+            e.Node.ImageKey = "OpenFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
 
-        //    foreach (var member in node.ChildNodes)
-        //    {
-        //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-        //        {
-        //            // don't make a tree context for comments
-        //            continue;
-        //        }
+        private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
 
-        //        var memberNode = new TreeNode(GetNodeText(member));
-                
-        //        memberNode.ToolTipText = string.Format("{0} (line {1})", 
-        //                                        member.GetType().Name,
-        //                                        member.Instruction.Line.StartLineNumber);
-
-        //        memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-        //        memberNode.ImageKey = GetImageKeyForNode(member);
-        //        memberNode.SelectedImageKey = memberNode.ImageKey;
-        //        memberNode.Tag = member.Instruction;
-
-        //        if (member.ChildNodes != null)
-        //        {
-        //            foreach (var child in member.ChildNodes)
-        //            {
-        //                memberNode.Nodes.Add(AddCodeBlockNode(child));
-        //            }
-        //        }
-
-        //        codeBlockNode.Nodes.Add(memberNode);
-        //    }
-
-        //    return codeBlockNode;
-        //}
-
-        //private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
-        //{
-        //    if (!e.Node.ImageKey.Contains("Folder"))
-        //    {
-        //        return;
-        //    }
-
-        //    e.Node.ImageKey = "OpenFolder";
-        //    e.Node.SelectedImageKey = e.Node.ImageKey;
-        //}
-
-        //private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
-        //{
-        //    if (!e.Node.ImageKey.Contains("Folder"))
-        //    {
-        //        return;
-        //    }
-
-        //    e.Node.ImageKey = "ClosedFolder";
-        //    e.Node.SelectedImageKey = e.Node.ImageKey;
-        //}
+            e.Node.ImageKey = "ClosedFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
 
         //private string GetImageKeyForNode(SyntaxTreeNode node)
         //{
