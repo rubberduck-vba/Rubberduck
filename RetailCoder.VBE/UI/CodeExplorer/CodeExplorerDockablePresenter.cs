@@ -11,7 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBA.Grammar;
 using System;
+using Antlr4.Runtime.Tree;
+using Rubberduck.UI;
+using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 
@@ -42,8 +47,8 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
-            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
+            //Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
+            //Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
@@ -97,62 +102,128 @@ namespace Rubberduck.UI.CodeExplorer
             var treeView = Control.SolutionTree;
             // todo: [re-]implement
 
-            //var projectNode = new TreeNode();
+            var projectNode = new TreeNode();
             //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
-            //projectNode.Tag = node.Instruction;
-            //projectNode.ImageKey = "ClosedFolder";
-            //treeView.BackColor = treeView.BackColor;
+            projectNode.Text = modules.First().QualifiedName.ProjectName;
 
-            //var moduleNodes = new ConcurrentBag<TreeNode>();
+            //projectNode.Tag = node.Instruction;
+            projectNode.ImageKey = "ClosedFolder";
+            treeView.BackColor = treeView.BackColor;
+
+            var moduleNodes = new ConcurrentBag<TreeNode>();
+
             //foreach(var module in node.ChildNodes)
             //{
-            //    var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
-            //    moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
-            //    moduleNode.ImageKey = GetImageKeyForNode(module);
-            //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
-            //    moduleNode.Tag = module.Instruction;
-
-            //    foreach (var member in module.ChildNodes)
-            //    {
-            //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-            //        {
-            //            // don't make a tree context for comments
-            //            continue;
-            //        }
-
-            //        if (member.ChildNodes != null)
-            //        {
-            //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
-            //        }
-            //    }
-            //    moduleNodes.Add(moduleNode);
-            //}
-
-            //projectNode.Nodes.AddRange(moduleNodes.ToArray());
-            //treeView.Nodes.Add(projectNode);
-        }
-
-        private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
-        {
-            if (!e.Node.ImageKey.Contains("Folder"))
+            foreach (var module in modules)
             {
-                return;
+                var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
+                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+                //todo: re-implement image & tag
+                //    moduleNode.ImageKey = GetImageKeyForNode(module);
+                //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
+                //    moduleNode.Tag = module.Instruction;
+
+                for (var i = 0; i < module.ParseTree.ChildCount; i++)
+                {
+                    var child = module.ParseTree.GetChild(i);
+                    if (child != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(child.GetText()))
+                        {
+                            //todo: find appropriate text from parse tree
+                            moduleNode.Nodes.Add(child.GetText());
+                        }
+                    }
+                }
+
+                //todo:remove  old implementation
+                //    foreach (var member in module.ChildNodes)
+                //    {
+                //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+                //        {
+                //            // don't make a tree context for comments
+                //            continue;
+                //        }
+
+                //        if (member.ChildNodes != null)
+                //        {
+                //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
+                //        }
+                //    }
+                moduleNodes.Add(moduleNode);
             }
 
-            e.Node.ImageKey = "OpenFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
+            projectNode.Nodes.AddRange(moduleNodes.ToArray());
+            treeView.Nodes.Add(projectNode);
         }
 
-        private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
-        {
-            if (!e.Node.ImageKey.Contains("Folder"))
-            {
-                return;
-            }
+        //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
+        //{
+        //    var codeBlockNode = new TreeNode(GetNodeText(node));
+        //    codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
+        //    codeBlockNode.ImageKey = GetImageKeyForNode(node);
+        //    codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
+        //    codeBlockNode.Tag = node.Instruction;
 
-            e.Node.ImageKey = "ClosedFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
-        }
+        //    if (node.ChildNodes == null)
+        //    {
+        //        return codeBlockNode;
+        //    }
+
+        //    foreach (var member in node.ChildNodes)
+        //    {
+        //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+        //        {
+        //            // don't make a tree context for comments
+        //            continue;
+        //        }
+
+        //        var memberNode = new TreeNode(GetNodeText(member));
+
+        //        memberNode.ToolTipText = string.Format("{0} (line {1})", 
+        //                                        member.GetType().Name,
+        //                                        member.Instruction.Line.StartLineNumber);
+
+        //        memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
+        //        memberNode.ImageKey = GetImageKeyForNode(member);
+        //        memberNode.SelectedImageKey = memberNode.ImageKey;
+        //        memberNode.Tag = member.Instruction;
+
+        //        if (member.ChildNodes != null)
+        //        {
+        //            foreach (var child in member.ChildNodes)
+        //            {
+        //                memberNode.Nodes.Add(AddCodeBlockNode(child));
+        //            }
+        //        }
+
+        //        codeBlockNode.Nodes.Add(memberNode);
+        //    }
+
+        //    return codeBlockNode;
+        //}
+
+        //private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
+        //{
+        //    if (!e.Node.ImageKey.Contains("Folder"))
+        //    {
+        //        return;
+        //    }
+
+        //    e.Node.ImageKey = "OpenFolder";
+        //    e.Node.SelectedImageKey = e.Node.ImageKey;
+        //}
+
+        //private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
+        //{
+        //    if (!e.Node.ImageKey.Contains("Folder"))
+        //    {
+        //        return;
+        //    }
+
+        //    e.Node.ImageKey = "ClosedFolder";
+        //    e.Node.SelectedImageKey = e.Node.ImageKey;
+        //}
 
         //private string GetImageKeyForNode(SyntaxTreeNode node)
         //{
@@ -176,15 +247,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    {
         //        var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
         //        var procNode = (node as ProcedureNode);
-        //        if (procNode.Accessibility == Tokens.Public)
+        //        if (procNode.Accessibility == ReservedKeywords.Public)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
         //        }
-        //        if (procNode.Accessibility == Tokens.Friend)
+        //        if (procNode.Accessibility == ReservedKeywords.Friend)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
         //        }
-        //        if (procNode.Accessibility == Tokens.Private)
+        //        if (procNode.Accessibility == ReservedKeywords.Private)
         //        {
         //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
         //        }
@@ -193,15 +264,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is UserDefinedTypeNode)
         //    {
         //        var typeNode = (node as UserDefinedTypeNode);
-        //        if (typeNode.Accessibility == Tokens.Public)
+        //        if (typeNode.Accessibility == ReservedKeywords.Public)
         //        {
         //            return "PublicType";
         //        }
-        //        if (typeNode.Accessibility == Tokens.Friend)
+        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
         //        {
         //            return "FriendType";
         //        }
-        //        if (typeNode.Accessibility == Tokens.Private)
+        //        if (typeNode.Accessibility == ReservedKeywords.Private)
         //        {
         //            return "PrivateType";
         //        }
@@ -210,15 +281,15 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is EnumNode)
         //    {
         //        var typeNode = (node as EnumNode);
-        //        if (typeNode.Accessibility == Tokens.Public)
+        //        if (typeNode.Accessibility == ReservedKeywords.Public)
         //        {
         //            return "PublicEnum";
         //        }
-        //        if (typeNode.Accessibility == Tokens.Friend)
+        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
         //        {
         //            return "FriendEnum";
         //        }
-        //        if (typeNode.Accessibility == Tokens.Private)
+        //        if (typeNode.Accessibility == ReservedKeywords.Private)
         //        {
         //            return "PrivateEnum";
         //        }
@@ -227,11 +298,11 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is ConstDeclarationNode)
         //    {
         //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == Tokens.Private)
+        //        if (accessbility == ReservedKeywords.Private)
         //        {
         //            return "PrivateConst";
         //        }
-        //        if (accessbility == Tokens.Friend)
+        //        if (accessbility == ReservedKeywords.Friend)
         //        {
         //            return "FriendConst";
         //        }
@@ -242,11 +313,11 @@ namespace Rubberduck.UI.CodeExplorer
         //    if (node is VariableDeclarationNode)
         //    {
         //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == Tokens.Private)
+        //        if (accessbility == ReservedKeywords.Private)
         //        {
         //            return "PrivateField";
         //        }
-        //        if (accessbility == Tokens.Friend)
+        //        if (accessbility == ReservedKeywords.Friend)
         //        {
         //            return "FriendField";
         //        }
@@ -301,10 +372,10 @@ namespace Rubberduck.UI.CodeExplorer
         //        if (propertyTypes.Any(pt => pt == procNode.Kind))
         //        {
         //            var kind = procNode.Kind == ProcedureKind.PropertyGet
-        //                ? Tokens.Get
+        //                ? ReservedKeywords.Get
         //                : procNode.Kind == ProcedureKind.PropertyLet
-        //                    ? Tokens.Let
-        //                    : Tokens.Set;
+        //                    ? ReservedKeywords.Let
+        //                    : ReservedKeywords.Set;
 
         //            return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
         //        }
