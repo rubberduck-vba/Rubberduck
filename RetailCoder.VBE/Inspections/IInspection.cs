@@ -32,6 +32,6 @@ namespace Rubberduck.Inspections
         /// Runs code inspection on specified parse trees.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult);
+        IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult);
     }
 }

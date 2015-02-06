@@ -96,7 +96,7 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
-    <Compile Include="VBA\Nodes\VbModuleParseResult.cs" />
+    <Compile Include="VBA\Nodes\VBComponentParseResult.cs" />
     <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />

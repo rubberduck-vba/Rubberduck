@@ -5,9 +5,9 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.VBA.Nodes
 {
-    public class VbModuleParseResult
+    public class VBComponentParseResult
     {
-        public VbModuleParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments)
         {
             _component = component;
             _qualifiedName = new QualifiedModuleName(component.Collection.Parent.Name, component.Name);
