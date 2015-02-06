@@ -120,34 +120,44 @@ namespace Rubberduck.UI.CodeExplorer
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
-                //procedures
-                foreach (var node in parserNode.Children.OfType<ProcedureNode>())
-                {
-                    var procNode = new TreeNode(node.LocalScope);
-                    string procKind = string.Empty; //initialize to empty to shut the compiler up
-                    switch (node.Kind)
-                    {
-                        case ProcedureNode.VBProcedureKind.Sub:
-                        case ProcedureNode.VBProcedureKind.Function:
-                            procKind = "Method";
-                            break;
-                        case ProcedureNode.VBProcedureKind.PropertyGet:
-                        case ProcedureNode.VBProcedureKind.PropertyLet:
-                        case ProcedureNode.VBProcedureKind.PropertySet:
-                            procKind = "Property";
-                            break;
-                    }
 
-                    procNode.ImageKey = node.Accessibility.ToString() + procKind;
-                    moduleNode.Nodes.Add(procNode);
-                }
+                AddProcedureNodes(moduleNode, parserNode);
 
                 moduleNodes.Add(moduleNode);
-                //todo: fix module images
             }
 
             projectNode.Nodes.AddRange(moduleNodes.ToArray());
             treeView.Nodes.Add(projectNode);
+        }
+
+        private void AddProcedureNodes(TreeNode moduleNode, INode parserNode)
+        {
+            foreach (var node in parserNode.Children.OfType<ProcedureNode>())
+            {
+                var procNode = new TreeNode(node.LocalScope);
+                procNode.ImageKey = GetProcedureImageKey(node);
+
+                moduleNode.Nodes.Add(procNode);
+            }
+        }
+
+        private string GetProcedureImageKey(ProcedureNode node)
+        {
+            string procKind = string.Empty; //initialize to empty to shut the compiler up
+            switch (node.Kind)
+            {
+                case ProcedureNode.VBProcedureKind.Sub:
+                case ProcedureNode.VBProcedureKind.Function:
+                    procKind = "Method";
+                    break;
+                case ProcedureNode.VBProcedureKind.PropertyGet:
+                case ProcedureNode.VBProcedureKind.PropertyLet:
+                case ProcedureNode.VBProcedureKind.PropertySet:
+                    procKind = "Property";
+                    break;
+            }
+
+            return node.Accessibility.ToString() + procKind;
         }
 
         private string GetComponentImageKey(vbext_ComponentType componentType)
