@@ -117,6 +117,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var moduleNode = new TreeNode(component.Name);
                 moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+                moduleNode.ImageKey = GetComponentImageKey(component.Type);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
                 //procedures
@@ -147,6 +148,23 @@ namespace Rubberduck.UI.CodeExplorer
 
             projectNode.Nodes.AddRange(moduleNodes.ToArray());
             treeView.Nodes.Add(projectNode);
+        }
+
+        private string GetComponentImageKey(vbext_ComponentType componentType)
+        {
+            //todo: figure out how to get to Interfaces; ImageKey = "PublicInterface"
+            switch (componentType)
+            {
+                case vbext_ComponentType.vbext_ct_ClassModule:
+                case vbext_ComponentType.vbext_ct_Document:
+                case vbext_ComponentType.vbext_ct_MSForm:
+                    return "ClassModule";
+                case vbext_ComponentType.vbext_ct_StdModule:
+                    return "StandardModule";
+                case vbext_ComponentType.vbext_ct_ActiveXDesigner:
+                default:
+                    return string.Empty;
+            }
         }
 
         //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
