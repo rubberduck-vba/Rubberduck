@@ -19,6 +19,7 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -88,7 +89,7 @@ namespace Rubberduck.UI.CodeExplorer
             var projects = VBE.VBProjects.Cast<VBProject>().OrderBy(project => project.Name);
             foreach (var vbProject in projects)
             {
-                AddProjectNode(_parser.Parse(vbProject));
+                AddProjectNode(vbProject);
             }
         }
 
@@ -97,14 +98,13 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void AddProjectNode(IEnumerable<VbModuleParseResult> modules)
+        private void AddProjectNode(VBProject project)
         {
             var treeView = Control.SolutionTree;
             // todo: [re-]implement
 
             var projectNode = new TreeNode();
-            //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
-            projectNode.Text = modules.First().QualifiedName.ProjectName;
+            projectNode.Text = project.Name;
 
             //projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
@@ -112,29 +112,27 @@ namespace Rubberduck.UI.CodeExplorer
 
             var moduleNodes = new ConcurrentBag<TreeNode>();
 
+
+            foreach (VBComponent component in project.VBComponents)
+            {
+                var moduleNode = new TreeNode(component.Name);
+                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+
+                var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
+                //todo: recurse through parserNode's children
+
+                moduleNodes.Add(moduleNode);
+            }
             //foreach(var module in node.ChildNodes)
             //{
-            foreach (var module in modules)
-            {
-                var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
-                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+            //foreach (var module in modules)
+            //{
+            //    var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
+
                 //todo: re-implement image & tag
                 //    moduleNode.ImageKey = GetImageKeyForNode(module);
                 //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
                 //    moduleNode.Tag = module.Instruction;
-
-                for (var i = 0; i < module.ParseTree.ChildCount; i++)
-                {
-                    var child = module.ParseTree.GetChild(i);
-                    if (child != null)
-                    {
-                        if (!string.IsNullOrWhiteSpace(child.GetText()))
-                        {
-                            //todo: find appropriate text from parse tree
-                            moduleNode.Nodes.Add(child.GetText());
-                        }
-                    }
-                }
 
                 //todo:remove  old implementation
                 //    foreach (var member in module.ChildNodes)
@@ -150,8 +148,8 @@ namespace Rubberduck.UI.CodeExplorer
                 //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
                 //        }
                 //    }
-                moduleNodes.Add(moduleNode);
-            }
+            //    moduleNodes.Add(moduleNode);
+            //}
 
             projectNode.Nodes.AddRange(moduleNodes.ToArray());
             treeView.Nodes.Add(projectNode);
