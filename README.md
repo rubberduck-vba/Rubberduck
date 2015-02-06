@@ -42,13 +42,13 @@ Find code issues in your code - and fix them, with just a few clicks!
 
 ![Code Inspections window](http://i.imgur.com/djvt8H5.png)
 
+---
+
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.01-alpha2), and run the Setup.exe. 
 
 Please note that this software has only been tested on Office 2007 & 2010.
 Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
-
-If you're **upgrading** from a previous version, you will need to completely uninstall it before installing the newest release. Be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
 
 ---
 
