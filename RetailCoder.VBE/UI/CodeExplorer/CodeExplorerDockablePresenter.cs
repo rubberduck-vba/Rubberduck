@@ -120,40 +120,30 @@ namespace Rubberduck.UI.CodeExplorer
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
                 //procedures
-                foreach(var node in parserNode.Children.OfType<ProcedureNode>())
+                foreach (var node in parserNode.Children.OfType<ProcedureNode>())
                 {
-                    moduleNode.Nodes.Add(node.LocalScope);
+                    var procNode = new TreeNode(node.LocalScope);
+                    string procKind = string.Empty; //initialize to empty to shut the compiler up
+                    switch (node.Kind)
+                    {
+                        case ProcedureNode.VBProcedureKind.Sub:
+                        case ProcedureNode.VBProcedureKind.Function:
+                            procKind = "Method";
+                            break;
+                        case ProcedureNode.VBProcedureKind.PropertyGet:
+                        case ProcedureNode.VBProcedureKind.PropertyLet:
+                        case ProcedureNode.VBProcedureKind.PropertySet:
+                            procKind = "Property";
+                            break;
+                    }
+
+                    procNode.ImageKey = node.Accessibility.ToString() + procKind;
+                    moduleNode.Nodes.Add(procNode);
                 }
 
                 moduleNodes.Add(moduleNode);
+                //todo: fix module images
             }
-            //foreach(var module in node.ChildNodes)
-            //{
-            //foreach (var module in modules)
-            //{
-            //    var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
-
-                //todo: re-implement image & tag
-                //    moduleNode.ImageKey = GetImageKeyForNode(module);
-                //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
-                //    moduleNode.Tag = module.Instruction;
-
-                //todo:remove  old implementation
-                //    foreach (var member in module.ChildNodes)
-                //    {
-                //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-                //        {
-                //            // don't make a tree context for comments
-                //            continue;
-                //        }
-
-                //        if (member.ChildNodes != null)
-                //        {
-                //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
-                //        }
-                //    }
-            //    moduleNodes.Add(moduleNode);
-            //}
 
             projectNode.Nodes.AddRange(moduleNodes.ToArray());
             treeView.Nodes.Add(projectNode);
