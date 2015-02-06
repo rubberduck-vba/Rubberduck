@@ -125,7 +125,8 @@ namespace Rubberduck.UI.CodeExplorer
 
                 AddOptionNodes(moduleNode, parserNode);
                 AddEnumNodes(moduleNode, parserNode);
-                AddProcedureNodes(moduleNode, parserNode);
+
+                AddNodes<ProcedureNode>(moduleNode, parserNode, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
             }
@@ -156,15 +157,23 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private void AddProcedureNodes(TreeNode moduleNode, INode parserNode)
-        {
-            foreach (var node in parserNode.Children.OfType<ProcedureNode>())
-            {
-                var procNode = new TreeNode(node.LocalScope);
-                procNode.ImageKey = GetProcedureImageKey(node);
 
-                moduleNode.Nodes.Add(procNode);
+        private delegate TreeNode CreateTreeNode(INode node);
+        private void AddNodes<T>(TreeNode moduleNode, INode parserNode, CreateTreeNode createTreeNodeDelegate)
+        {
+            foreach (INode node in parserNode.Children.OfType<T>())
+            {
+                var treeNode = createTreeNodeDelegate(node);
+                moduleNode.Nodes.Add(createTreeNodeDelegate(node));
             }
+        }
+
+        private TreeNode CreateProcedureNode(INode node)
+        {
+            var result = new TreeNode(node.LocalScope);
+            result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
+
+            return result;
         }
 
         private string GetProcedureImageKey(ProcedureNode node)
