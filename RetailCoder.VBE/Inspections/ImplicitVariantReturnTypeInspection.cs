@@ -25,6 +25,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
+                // bug: module.ParseTree.GetProcedures() returns 0 items, listener doesn't seem to work??
                 var procedures = module.ParseTree.GetProcedures().Where(HasExpectedReturnType);
                 foreach (var procedure in procedures)
                 {
