@@ -48,8 +48,8 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
-            //Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-            //Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
+            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
+            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
@@ -195,27 +195,27 @@ namespace Rubberduck.UI.CodeExplorer
         //    return codeBlockNode;
         //}
 
-        //private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
-        //{
-        //    if (!e.Node.ImageKey.Contains("Folder"))
-        //    {
-        //        return;
-        //    }
+        private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
 
-        //    e.Node.ImageKey = "OpenFolder";
-        //    e.Node.SelectedImageKey = e.Node.ImageKey;
-        //}
+            e.Node.ImageKey = "OpenFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
 
-        //private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
-        //{
-        //    if (!e.Node.ImageKey.Contains("Folder"))
-        //    {
-        //        return;
-        //    }
+        private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
 
-        //    e.Node.ImageKey = "ClosedFolder";
-        //    e.Node.SelectedImageKey = e.Node.ImageKey;
-        //}
+            e.Node.ImageKey = "ClosedFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
 
         //private string GetImageKeyForNode(SyntaxTreeNode node)
         //{
