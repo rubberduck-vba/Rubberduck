@@ -58,13 +58,13 @@ This feature will make it possible to push your VBA code to your GitHub reposito
 
 At first this COM-visible type library will *simply* let you write some VBA meta-code, that can iterate all opened projects and every code module a bit like the VBE API does, except you will also be able to iterate enum members, user-defined types, fields, properties, methods, functions, and every declared constant, variable, external function... without even needing to enable access to the VBE API in the macro security settings.
 
----
-
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.01-alpha2), and run the Setup.exe. 
 
 Please note that this software has only been tested on Office 2007 & 2010.
 Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
+
+If you're **upgrading** from a previous version, you will need to completely uninstall it before installing the newest release. Be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
 
 ---
 
