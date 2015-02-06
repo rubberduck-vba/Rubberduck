@@ -119,7 +119,11 @@ namespace Rubberduck.UI.CodeExplorer
                 moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
-                //todo: recurse through parserNode's children
+                //procedures
+                foreach(var node in parserNode.Children.OfType<ProcedureNode>())
+                {
+                    moduleNode.Nodes.Add(node.LocalScope);
+                }
 
                 moduleNodes.Add(moduleNode);
             }
