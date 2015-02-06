@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
@@ -28,7 +29,13 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            
+            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            if (module == null)
+            {
+                return;
+            }
+
+            module.InsertLines(1, Tokens.Option + " " + Tokens.Explicit);
         }
     }
 }
