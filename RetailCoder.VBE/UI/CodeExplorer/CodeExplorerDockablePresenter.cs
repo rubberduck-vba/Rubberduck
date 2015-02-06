@@ -105,51 +105,51 @@ namespace Rubberduck.UI.CodeExplorer
             var projectNode = new TreeNode();
             //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
             projectNode.Text = modules.First().QualifiedName.ProjectName;
-            
+
             //projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
             treeView.BackColor = treeView.BackColor;
 
             var moduleNodes = new ConcurrentBag<TreeNode>();
-            
+
             //foreach(var module in node.ChildNodes)
             //{
-            foreach(var module in modules)
-            { 
-            //    var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
+            foreach (var module in modules)
+            {
                 var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
                 moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
-            //    moduleNode.ImageKey = GetImageKeyForNode(module);
-            //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
-            //    moduleNode.Tag = module.Instruction;
+                //todo: re-implement image & tag
+                //    moduleNode.ImageKey = GetImageKeyForNode(module);
+                //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
+                //    moduleNode.Tag = module.Instruction;
 
-                for (var i = 0; i <= module.ParseTree.ChildCount; i++)
+                for (var i = 0; i < module.ParseTree.ChildCount; i++)
                 {
                     var child = module.ParseTree.GetChild(i);
-
                     if (child != null)
                     {
-                        if (string.IsNullOrWhiteSpace(child.GetText()))
+                        if (!string.IsNullOrWhiteSpace(child.GetText()))
                         {
-                            continue;
+                            //todo: find appropriate text from parse tree
+                            moduleNode.Nodes.Add(child.GetText());
                         }
-
-                        moduleNode.Nodes.Add(child.GetText());
                     }
                 }
-            //    foreach (var member in module.ChildNodes)
-            //    {
-            //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-            //        {
-            //            // don't make a tree context for comments
-            //            continue;
-            //        }
 
-            //        if (member.ChildNodes != null)
-            //        {
-            //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
-            //        }
-            //    }
+                //todo:remove  old implementation
+                //    foreach (var member in module.ChildNodes)
+                //    {
+                //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
+                //        {
+                //            // don't make a tree context for comments
+                //            continue;
+                //        }
+
+                //        if (member.ChildNodes != null)
+                //        {
+                //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
+                //        }
+                //    }
                 moduleNodes.Add(moduleNode);
             }
 
@@ -179,7 +179,7 @@ namespace Rubberduck.UI.CodeExplorer
         //        }
 
         //        var memberNode = new TreeNode(GetNodeText(member));
-                
+
         //        memberNode.ToolTipText = string.Format("{0} (line {1})", 
         //                                        member.GetType().Name,
         //                                        member.Instruction.Line.StartLineNumber);
