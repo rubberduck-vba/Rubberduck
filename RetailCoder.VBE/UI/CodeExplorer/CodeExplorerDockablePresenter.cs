@@ -102,21 +102,41 @@ namespace Rubberduck.UI.CodeExplorer
             var treeView = Control.SolutionTree;
             // todo: [re-]implement
 
-            //var projectNode = new TreeNode();
+            var projectNode = new TreeNode();
             //projectNode.Text = node.Instruction.Line.ProjectName + new string(' ', 2);
+            projectNode.Text = modules.First().QualifiedName.ProjectName;
+            
             //projectNode.Tag = node.Instruction;
-            //projectNode.ImageKey = "ClosedFolder";
-            //treeView.BackColor = treeView.BackColor;
+            projectNode.ImageKey = "ClosedFolder";
+            treeView.BackColor = treeView.BackColor;
 
-            //var moduleNodes = new ConcurrentBag<TreeNode>();
+            var moduleNodes = new ConcurrentBag<TreeNode>();
+            
             //foreach(var module in node.ChildNodes)
             //{
+            foreach(var module in modules)
+            { 
             //    var moduleNode = new TreeNode(((ModuleNode) module).Identifier.Name);
-            //    moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+                var moduleNode = new TreeNode(module.QualifiedName.ModuleName);
+                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
             //    moduleNode.ImageKey = GetImageKeyForNode(module);
             //    moduleNode.SelectedImageKey = moduleNode.ImageKey;
             //    moduleNode.Tag = module.Instruction;
 
+                for (var i = 0; i <= module.ParseTree.ChildCount; i++)
+                {
+                    var child = module.ParseTree.GetChild(i);
+
+                    if (child != null)
+                    {
+                        if (string.IsNullOrWhiteSpace(child.GetText()))
+                        {
+                            continue;
+                        }
+
+                        moduleNode.Nodes.Add(child.GetText());
+                    }
+                }
             //    foreach (var member in module.ChildNodes)
             //    {
             //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
@@ -130,11 +150,11 @@ namespace Rubberduck.UI.CodeExplorer
             //            moduleNode.Nodes.Add(AddCodeBlockNode(member));
             //        }
             //    }
-            //    moduleNodes.Add(moduleNode);
-            //}
+                moduleNodes.Add(moduleNode);
+            }
 
-            //projectNode.Nodes.AddRange(moduleNodes.ToArray());
-            //treeView.Nodes.Add(projectNode);
+            projectNode.Nodes.AddRange(moduleNodes.ToArray());
+            treeView.Nodes.Add(projectNode);
         }
 
         //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
