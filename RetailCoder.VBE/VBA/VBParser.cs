@@ -67,7 +67,7 @@ namespace Rubberduck.VBA
         public IEnumerable<VbModuleParseResult> Parse(VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>()
-                          .Select(component => new VbModuleParseResult(new QualifiedModuleName(project.Name, component.Name), 
+                          .Select(component => new VbModuleParseResult(component, 
                                                Parse(component.CodeModule.ToString()), ParseComments(component)));
         }
 
