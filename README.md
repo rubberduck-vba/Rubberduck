@@ -42,6 +42,22 @@ Find code issues in your code - and fix them, with just a few clicks!
 
 ![Code Inspections window](http://i.imgur.com/djvt8H5.png)
 
+##Coming Up
+
+The following features are currently under development:
+
+###ANTLR-Powered Parser
+
+Rubberduck's most powerful features will make extensive use of parse trees. We are currently working on re-implementing everything that needs a parser, to open the door to deeper code analysis, and... refactorings.
+
+###GitHub/Source Control Integration
+
+This feature will make it possible to push your VBA code to your GitHub repository in separate code files, and to pull commits into the IDE, straight from the IDE.
+
+###Rubberduck.Reflection
+
+At first this COM-visible type library will *simply* let you write some VBA meta-code, that can iterate all opened projects and every code module a bit like the VBE API does, except you will also be able to iterate enum members, user-defined types, fields, properties, methods, functions, and every declared constant, variable, external function... without even needing to enable access to the VBE API in the macro security settings.
+
 ##Installation 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.01-alpha2), and run the Setup.exe. 
 
