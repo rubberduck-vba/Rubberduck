@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
@@ -7,12 +8,13 @@ namespace Rubberduck.VBA.Nodes
 {
     public class VBComponentParseResult
     {
-        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ParserRuleContext context = null)
         {
             _component = component;
             _qualifiedName = new QualifiedModuleName(component.Collection.Parent.Name, component.Name);
             _parseTree = parseTree;
             _comments = comments;
+            _context = context;
         }
 
         private readonly VBComponent _component;
@@ -26,5 +28,8 @@ namespace Rubberduck.VBA.Nodes
 
         private IEnumerable<CommentNode> _comments;
         public IEnumerable<CommentNode> Comments { get { return _comments; } }
+
+        private ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
     }
 }

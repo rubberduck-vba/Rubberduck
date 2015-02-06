@@ -15,6 +15,7 @@ namespace Rubberduck.UI.CodeInspections
         private readonly AddIn _addin;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly IRubberduckParser _parser;
+        private readonly CodeInspectionsWindow _window;
 
         public CodeInspectionsMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
@@ -22,6 +23,7 @@ namespace Rubberduck.UI.CodeInspections
             _addin = addin;
             _parser = parser;
             _inspections = inspections;
+            _window = new CodeInspectionsWindow();
         }
 
         private CommandBarButton _codeInspectionsButton;
@@ -38,7 +40,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
         {
-            var presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, _vbe, _addin);
+            var presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, _vbe, _addin, _window);
             presenter.Show();
         }
     }

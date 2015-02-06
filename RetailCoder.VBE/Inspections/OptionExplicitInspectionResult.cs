@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections
     public class OptionExplicitInspectionResult : CodeInspectionResultBase
     {
         public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
-            : base(inspection, type, qualifiedName, null)
+            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Empty)))
         {
         }
 
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

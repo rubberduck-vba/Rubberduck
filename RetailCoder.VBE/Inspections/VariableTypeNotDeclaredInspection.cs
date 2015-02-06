@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
@@ -23,15 +24,26 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
-            foreach (var module in parseResult)
+            foreach (var result in parseResult)
             {
-                var declarations = module.ParseTree.GetDeclarations()
-                                         .Where(declaration => declaration is VisualBasic6Parser.ConstSubStmtContext
-                                                            || declaration is VisualBasic6Parser.VariableSubStmtContext);
-                // todo: get the ones without an asTypeClause
-            }
+                var declarations = result.ParseTree.GetDeclarations().ToList();
+                var module = result; // to avoid access to modified closure in below lambdas
 
-            throw new NotImplementedException();
+                var constants = declarations.Where(declaration => declaration is VisualBasic6Parser.ConstSubStmtContext)
+                                            .Cast<VisualBasic6Parser.ConstSubStmtContext>()
+                                            .Where(constant => constant.asTypeClause() == null)
+                                            .Select(constant => new VariableTypeNotDeclaredInspectionResult(Name, Severity, constant, module.QualifiedName));
+
+                var variables = declarations.Where(declaration => declaration is VisualBasic6Parser.VariableSubStmtContext)
+                                            .Cast<VisualBasic6Parser.VariableSubStmtContext>()
+                                            .Where(variable => variable.asTypeClause() == null)
+                                            .Select(variable => new VariableTypeNotDeclaredInspectionResult(Name, Severity, variable, module.QualifiedName));
+
+                foreach (var inspectionResult in constants.Concat(variables))
+                {
+                    yield return inspectionResult;
+                }
+            }
         }
     }
 }

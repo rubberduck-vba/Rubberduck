@@ -58,19 +58,29 @@ namespace Rubberduck.Extensions
             var projectName = qualifiedModuleName.ProjectName;
             var componentName = qualifiedModuleName.ModuleName;
 
-            var modules = FindCodeModules(vbe, projectName, componentName);
+            var modules = FindCodeModules(vbe, projectName, componentName).ToList();
             foreach (var module in modules)
             {
-                var selection = context.GetSelection();
+                Selection selection;
+                var text = " ";
+                if (context == null)
+                {
+                    selection = Selection.Empty;
+                }
+                else
+                {
+                    selection = context.GetSelection();
+                    text = context.GetText();
+                }
 
                 if (module.Lines[selection.StartLine, selection.LineCount]
-                    .Replace(" _\n", " ").Contains(context.GetText()))
+                    .Replace(" _\n", " ").Contains(text))
                 {
                     return new CodeModuleSelection(module, selection);
                 }
             }
 
-            return null;
+            return new CodeModuleSelection(modules.First(), Selection.Empty);
         }
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>

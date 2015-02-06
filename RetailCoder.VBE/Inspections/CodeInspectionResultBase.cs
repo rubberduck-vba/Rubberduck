@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
@@ -24,6 +25,9 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
+            if (context == null && comment == null)
+                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
+
             _name = inspection;
             _type = type;
             _qualifiedName = qualifiedName;
@@ -72,5 +76,15 @@ namespace Rubberduck.Inspections
         /// where the keys are descriptions for each quick fix, and
         /// each value is a method returning <c>void</c> and taking a <c>VBE</c> parameter.</returns>
         public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
+
+        public VBComponent FindComponent(VBE vbe)
+        {
+            return vbe.VBProjects.Cast<VBProject>()
+                      .Where(project => project.Name == QualifiedName.ProjectName)
+                      .SelectMany(project =>
+                                    project.VBComponents.Cast<VBComponent>()
+                                           .Where(component => component.Name == QualifiedName.ModuleName))
+                      .SingleOrDefault();
+        }
     }
 }

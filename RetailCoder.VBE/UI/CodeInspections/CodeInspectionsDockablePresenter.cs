@@ -22,8 +22,8 @@ namespace Rubberduck.UI.CodeInspections
         private readonly IList<IInspection> _inspections;
         private List<CodeInspectionResultBase> _results;
 
-        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin) 
-            : base(vbe, addin, new CodeInspectionsWindow())
+        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin, CodeInspectionsWindow window) 
+            : base(vbe, addin, window)
         {
             _parser = parser;
             _inspections = inspections.ToList();
@@ -62,7 +62,7 @@ namespace Rubberduck.UI.CodeInspections
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Debug.Assert(false);
+                System.Diagnostics.Debug.Assert(false, exception.ToString());
             }
         }
 

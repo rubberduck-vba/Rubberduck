@@ -33,7 +33,7 @@ namespace RubberduckTests
         public void UnspecifiedProcedureVisibilityIsImplicit()
         {
             IRubberduckParser parser = new VBParser();
-            var code = "Sub Foo()\n    Dim bar As Integer\nEnd Sub";
+            var code = "Sub Foo()\r\n    Dim bar As Integer\r\nEnd Sub";
 
             var module = parser.Parse("project", "component", code);
             var procedure = (ProcedureNode)module.Children.First();

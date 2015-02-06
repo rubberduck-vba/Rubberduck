@@ -22,12 +22,12 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                if (module.Component.CodeModule.CountOfLines == 0)
+                var declarationLines = module.Component.CodeModule.CountOfDeclarationLines;
+                if (declarationLines == 0)
                 {
-                    continue;
+                    declarationLines = 1;
                 }
 
-                var declarationLines = module.Component.CodeModule.CountOfDeclarationLines;
                 var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n');
                 if (!lines.Contains(Tokens.Option + " " + Tokens.Explicit))
                 {
