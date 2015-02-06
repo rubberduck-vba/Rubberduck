@@ -1,6 +1,5 @@
 ﻿using System;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
@@ -58,7 +57,7 @@ namespace Rubberduck.VBA.Nodes
                 _isImplicitReturnType = returnTypeClause == null;
 
                 _returnType = returnTypeClause == null 
-                                ? ReservedKeywords.Variant 
+                                ? Tokens.Variant 
                                 : returnTypeClause.type().GetText();
             }
         }

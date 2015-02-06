@@ -1,17 +1,22 @@
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.VBA.Nodes
 {
-    public class VbModuleParseResult
+    public class VBComponentParseResult
     {
-        public VbModuleParseResult(QualifiedModuleName qualifiedName, IParseTree parseTree, IEnumerable<CommentNode> comments)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments)
         {
-            _qualifiedName = qualifiedName;
+            _component = component;
+            _qualifiedName = new QualifiedModuleName(component.Collection.Parent.Name, component.Name);
             _parseTree = parseTree;
             _comments = comments;
         }
+
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
 
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
@@ -21,6 +26,5 @@ namespace Rubberduck.VBA.Nodes
 
         private IEnumerable<CommentNode> _comments;
         public IEnumerable<CommentNode> Comments { get { return _comments; } }
-
     }
 }

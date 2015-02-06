@@ -35,7 +35,7 @@ namespace Rubberduck.VBA
         /// Parses all code modules in specified project.
         /// </summary>
         /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
-        IEnumerable<VbModuleParseResult> Parse(VBProject vbProject);
+        IEnumerable<VBComponentParseResult> Parse(VBProject vbProject);
 
         IEnumerable<CommentNode> ParseComments(VBComponent vbComponent);
     }
@@ -64,10 +64,10 @@ namespace Rubberduck.VBA
             return result;
         }
 
-        public IEnumerable<VbModuleParseResult> Parse(VBProject project)
+        public IEnumerable<VBComponentParseResult> Parse(VBProject project)
         {
             return project.VBComponents.Cast<VBComponent>()
-                          .Select(component => new VbModuleParseResult(new QualifiedModuleName(project.Name, component.Name), 
+                          .Select(component => new VBComponentParseResult(component, 
                                                Parse(component.CodeModule.ToString()), ParseComments(component)));
         }
 

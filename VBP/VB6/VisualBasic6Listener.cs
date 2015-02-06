@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\RetailCoder.VBE\VBA\VisualBasic6.g4 by ANTLR 4.3
+// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\VBP\VisualBasic6.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.VBA {
+namespace VBP {
 using Antlr4.Runtime.Misc;
 using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
 using IToken = Antlr4.Runtime.IToken;
@@ -2111,4 +2111,4 @@ public interface IVisualBasic6Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSavepictureStmt([NotNull] VisualBasic6Parser.SavepictureStmtContext context);
 }
-} // namespace Rubberduck.VBA
+} // namespace VBP

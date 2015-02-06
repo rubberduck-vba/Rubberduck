@@ -22,14 +22,14 @@ namespace Rubberduck.VBA {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ReservedKeywords {
+    public class Tokens {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ReservedKeywords() {
+        internal Tokens() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Rubberduck.VBA {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.VBA.ReservedKeywords", typeof(ReservedKeywords).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.VBA.Tokens", typeof(Tokens).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -318,6 +318,15 @@ namespace Rubberduck.VBA {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;.
+        /// </summary>
+        public static string CommentMarker {
+            get {
+                return ResourceManager.GetString("CommentMarker", resourceCulture);
             }
         }
         
@@ -930,6 +939,15 @@ namespace Rubberduck.VBA {
         public static string Line {
             get {
                 return ResourceManager.GetString("Line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  _.
+        /// </summary>
+        public static string LineContinuation {
+            get {
+                return ResourceManager.GetString("LineContinuation", resourceCulture);
             }
         }
         

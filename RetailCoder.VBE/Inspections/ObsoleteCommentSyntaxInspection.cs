@@ -22,12 +22,12 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VbModuleParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
             var modules = parseResult.ToList();
             foreach (var comment in modules.SelectMany(module => module.Comments))
             {
-                if (comment.Marker == ReservedKeywords.Rem)
+                if (comment.Marker == Tokens.Rem)
                 {
                     yield return new ObsoleteCommentSyntaxInspectionResult(Name, Severity, comment);
                 }

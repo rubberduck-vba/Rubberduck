@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
         private void ReturnExplicitVariant(VBE vbe)
         {
             var instruction = Context.GetLine();
-            var newContent = instruction + " " + ReservedKeywords.As + " " + ReservedKeywords.Variant;
+            var newContent = instruction + " " + Tokens.As + " " + Tokens.Variant;
             var oldContent = instruction;
 
             var result = oldContent.Replace(instruction, newContent);

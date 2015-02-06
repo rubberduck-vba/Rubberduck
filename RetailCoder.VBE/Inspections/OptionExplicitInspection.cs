@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
             {
                 var options = module.ParseTree.GetModuleOptions().ToList();
 
-                if (!options.Any() || options.All(option => option.children.Last().GetText() != ReservedKeywords.Explicit))
+                if (!options.Any() || options.All(option => option.children.Last().GetText() != Tokens.Explicit))
                 {
                     yield return new OptionExplicitInspectionResult(Name, Severity, module.QualifiedName);
                 }
