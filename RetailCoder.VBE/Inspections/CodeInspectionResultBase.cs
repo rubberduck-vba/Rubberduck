@@ -24,9 +24,6 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
-            if (context == null && comment == null)
-                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
-
             _name = inspection;
             _type = type;
             _qualifiedName = qualifiedName;
