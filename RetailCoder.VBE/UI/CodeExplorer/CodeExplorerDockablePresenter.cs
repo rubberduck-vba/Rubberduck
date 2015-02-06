@@ -54,6 +54,8 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
         {
+            //todo: re-implement navigate to feature
+
             //var instruction = e.Instruction;
 
             //var project = instruction.Line.ProjectName;
@@ -121,6 +123,8 @@ namespace Rubberduck.UI.CodeExplorer
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
 
+                AddOptionNodes(moduleNode, parserNode);
+                AddEnumNodes(moduleNode, parserNode);
                 AddProcedureNodes(moduleNode, parserNode);
 
                 moduleNodes.Add(moduleNode);
@@ -128,6 +132,28 @@ namespace Rubberduck.UI.CodeExplorer
 
             projectNode.Nodes.AddRange(moduleNodes.ToArray());
             treeView.Nodes.Add(projectNode);
+        }
+
+        private void AddOptionNodes(TreeNode moduleNode, INode parserNode)
+        {
+            foreach (var node in parserNode.Children.OfType<OptionNode>())
+            {
+                var treeNode = new TreeNode("Option" + node.Option);
+                treeNode.ImageKey = "Option";
+
+                moduleNode.Nodes.Add(treeNode);
+            }
+        }
+
+        private void AddEnumNodes(TreeNode moduleNode, INode parserNode)
+        {
+            foreach (var node in parserNode.Children.OfType<EnumNode>())
+            {
+                var treeNode = new TreeNode(node.Identifier.Name);
+                treeNode.ImageKey = node.Accessibility.ToString() + "Enum";
+
+                moduleNode.Nodes.Add(treeNode);
+            }
         }
 
         private void AddProcedureNodes(TreeNode moduleNode, INode parserNode)
@@ -177,52 +203,6 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        //private TreeNode AddCodeBlockNode(SyntaxTreeNode node)
-        //{
-        //    var codeBlockNode = new TreeNode(GetNodeText(node));
-        //    codeBlockNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-        //    codeBlockNode.ImageKey = GetImageKeyForNode(node);
-        //    codeBlockNode.SelectedImageKey = codeBlockNode.ImageKey;
-        //    codeBlockNode.Tag = node.Instruction;
-
-        //    if (node.ChildNodes == null)
-        //    {
-        //        return codeBlockNode;
-        //    }
-
-        //    foreach (var member in node.ChildNodes)
-        //    {
-        //        if (string.IsNullOrEmpty(member.Instruction.Value.Trim()))
-        //        {
-        //            // don't make a tree context for comments
-        //            continue;
-        //        }
-
-        //        var memberNode = new TreeNode(GetNodeText(member));
-
-        //        memberNode.ToolTipText = string.Format("{0} (line {1})", 
-        //                                        member.GetType().Name,
-        //                                        member.Instruction.Line.StartLineNumber);
-
-        //        memberNode.NodeFont = new Font(Control.SolutionTree.Font, FontStyle.Regular);
-        //        memberNode.ImageKey = GetImageKeyForNode(member);
-        //        memberNode.SelectedImageKey = memberNode.ImageKey;
-        //        memberNode.Tag = member.Instruction;
-
-        //        if (member.ChildNodes != null)
-        //        {
-        //            foreach (var child in member.ChildNodes)
-        //            {
-        //                memberNode.Nodes.Add(AddCodeBlockNode(child));
-        //            }
-        //        }
-
-        //        codeBlockNode.Nodes.Add(memberNode);
-        //    }
-
-        //    return codeBlockNode;
-        //}
-
         private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
         {
             if (!e.Node.ImageKey.Contains("Folder"))
@@ -258,29 +238,6 @@ namespace Rubberduck.UI.CodeExplorer
         //            : "StandardModule";
         //    }
 
-        //    if (node is OptionNode)
-        //    {
-        //        return "Option";
-        //    }
-
-        //    if (node is ProcedureNode)
-        //    {
-        //        var propertyTypes = new[] {ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet};
-        //        var procNode = (node as ProcedureNode);
-        //        if (procNode.Accessibility == ReservedKeywords.Public)
-        //        {
-        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PublicProperty" : "PublicMethod";
-        //        }
-        //        if (procNode.Accessibility == ReservedKeywords.Friend)
-        //        {
-        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "FriendProperty" : "FriendMethod";
-        //        }
-        //        if (procNode.Accessibility == ReservedKeywords.Private)
-        //        {
-        //            return propertyTypes.Any(pt => pt == procNode.Kind) ? "PrivateProperty" : "PrivateMethod";
-        //        }
-        //    }
-
         //    if (node is UserDefinedTypeNode)
         //    {
         //        var typeNode = (node as UserDefinedTypeNode);
@@ -295,23 +252,6 @@ namespace Rubberduck.UI.CodeExplorer
         //        if (typeNode.Accessibility == ReservedKeywords.Private)
         //        {
         //            return "PrivateType";
-        //        }
-        //    }
-
-        //    if (node is EnumNode)
-        //    {
-        //        var typeNode = (node as EnumNode);
-        //        if (typeNode.Accessibility == ReservedKeywords.Public)
-        //        {
-        //            return "PublicEnum";
-        //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
-        //        {
-        //            return "FriendEnum";
-        //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Private)
-        //        {
-        //            return "PrivateEnum";
         //        }
         //    }
 
