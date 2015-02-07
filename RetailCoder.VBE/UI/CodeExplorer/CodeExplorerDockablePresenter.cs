@@ -41,9 +41,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, NavigateCodeEventArgs e)
         {
-            //todo: fix selection. It's way off.
-
-            var selection = e.Selection;
             var projectName = e.QualifiedName.ProjectName;
             var componentName = e.QualifiedName.ModuleName;
 
@@ -66,7 +63,10 @@ namespace Rubberduck.UI.CodeExplorer
 
             if (e.Selection.StartLine != 0)
             {
-                codePane.SetSelection(e.Selection);
+                //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
+                var selection = new Selection(e.Selection.StartLine, 1, e.Selection.EndLine, e.Selection.EndColumn);
+                codePane.SetSelection(selection);
+                //codePane.SetSelection(e.Selection);
             }
         }
 
