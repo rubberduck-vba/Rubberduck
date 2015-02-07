@@ -20,6 +20,7 @@ using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.Extensions;
+using Rubberduck.Reflection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -129,7 +130,7 @@ namespace Rubberduck.UI.CodeExplorer
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
 
-                var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
+                var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines());
 
                 AddNodes<OptionNode>(moduleNode, parserNode, CreateOptionNode);
                 AddNodes<EnumNode>(moduleNode, parserNode, CreateEnumNode);

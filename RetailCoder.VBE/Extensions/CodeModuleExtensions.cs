@@ -21,5 +21,13 @@ namespace Rubberduck.Extensions
 
             return module.get_Lines(1, lines).Replace("\r", string.Empty).Split('\n');
         }
+
+        /// <summary>
+        /// Returns all of the code in a module as a string.
+        /// </summary>
+        public static string Lines(this CodeModule module)
+        {
+            return module.Lines[1, module.CountOfLines];
+        }
     }
 }
