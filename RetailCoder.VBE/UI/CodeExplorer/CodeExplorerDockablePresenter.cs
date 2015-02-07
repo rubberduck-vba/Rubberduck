@@ -133,6 +133,14 @@ namespace Rubberduck.UI.CodeExplorer
 
                 AddNodes<OptionNode>(moduleNode, parserNode, CreateOptionNode);
                 AddNodes<EnumNode>(moduleNode, parserNode, CreateEnumNode);
+                //todo: implement these treeview nodes
+
+                //  enummember: imageKey = "EnumItem"
+                //types: imageKey = Accessibility + "Type"
+                //  typemember: imageKey = "PublicField"
+                //constants: imageKey = Accessibility + "Const"
+                //variables: imageKey = Accessibility + "Field"
+
                 AddNodes<ProcedureNode>(moduleNode, parserNode, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
@@ -141,21 +149,13 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private delegate TreeNode CreateTreeNode(INode node);
-        private void AddNodes<T>(TreeNode moduleNode, INode parserNode, CreateTreeNode createTreeNodeDelegate)
+        private void AddNodes<T>(TreeNode parentNode, INode parserNode, CreateTreeNode createTreeNodeDelegate)
         {
             foreach (INode node in parserNode.Children.OfType<T>())
             {
                 var treeNode = createTreeNodeDelegate(node);
-                moduleNode.Nodes.Add(createTreeNodeDelegate(node));
+                parentNode.Nodes.Add(createTreeNodeDelegate(node));
             }
-        }
-
-        private TreeNode CreateProcedureNode(INode node)
-        {
-            var result = new TreeNode(node.LocalScope);
-            result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
-
-            return result;
         }
 
         private TreeNode CreateEnumNode(INode node)
@@ -174,6 +174,14 @@ namespace Rubberduck.UI.CodeExplorer
             treeNode.ImageKey = "Option";
 
             return treeNode;
+        }
+
+        private TreeNode CreateProcedureNode(INode node)
+        {
+            var result = new TreeNode(node.LocalScope);
+            result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
+
+            return result;
         }
 
         private string GetProcedureImageKey(ProcedureNode node)
@@ -233,140 +241,5 @@ namespace Rubberduck.UI.CodeExplorer
             e.Node.ImageKey = "ClosedFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
         }
-
-        //private string GetImageKeyForNode(SyntaxTreeNode node)
-        //{
-        //    if (node is ModuleNode)
-        //    {
-        //        return (node as ModuleNode).IsClassModule
-        //            ? (node.ChildNodes != null 
-        //                && node.ChildNodes.OfType<ProcedureNode>().Any()
-        //                && node.ChildNodes.OfType<ProcedureNode>().All(childNode => childNode.ChildNodes != null && !childNode.ChildNodes.Any()))
-        //                ? "PublicInterface"
-        //                : "ClassModule"
-        //            : "StandardModule";
-        //    }
-
-        //    if (node is UserDefinedTypeNode)
-        //    {
-        //        var typeNode = (node as UserDefinedTypeNode);
-        //        if (typeNode.Accessibility == ReservedKeywords.Public)
-        //        {
-        //            return "PublicType";
-        //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Friend)
-        //        {
-        //            return "FriendType";
-        //        }
-        //        if (typeNode.Accessibility == ReservedKeywords.Private)
-        //        {
-        //            return "PrivateType";
-        //        }
-        //    }
-
-        //    if (node is ConstDeclarationNode)
-        //    {
-        //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == ReservedKeywords.Private)
-        //        {
-        //            return "PrivateConst";
-        //        }
-        //        if (accessbility == ReservedKeywords.Friend)
-        //        {
-        //            return "FriendConst";
-        //        }
-
-        //        return "PublicConst";
-        //    }
-
-        //    if (node is VariableDeclarationNode)
-        //    {
-        //        var accessbility = (node as DeclarationNode).Accessibility;
-        //        if (accessbility == ReservedKeywords.Private)
-        //        {
-        //            return "PrivateField";
-        //        }
-        //        if (accessbility == ReservedKeywords.Friend)
-        //        {
-        //            return "FriendField";
-        //        }
-
-        //        return "PublicField";
-        //    }
-
-        //    if (node is CodeBlockNode)
-        //    {
-        //        return "CodeBlock";
-        //    }
-
-        //    if (node is IdentifierNode)
-        //    {
-        //        return "Identifier";
-        //    }
-
-        //    if (node is ParameterNode)
-        //    {
-        //        return "Parameter";
-        //    }
-
-        //    if (node is AssignmentNode)
-        //    {
-        //        return "Assignment";
-        //    }
-
-        //    if (node is UserDefinedTypeMemberNode)
-        //    {
-        //        return "PublicField";
-        //    }
-
-        //    if (node is EnumMemberNode)
-        //    {
-        //        return "EnumItem";
-        //    }
-
-        //    if (node is LabelNode)
-        //    {
-        //        return "Label";
-        //    }
-
-        //    return "Operation";
-        //}
-
-        //private string GetNodeText(SyntaxTreeNode node)
-        //{
-        //    if (node is ProcedureNode)
-        //    {
-        //        var procNode = node as ProcedureNode;
-        //        var propertyTypes = new[] { ProcedureKind.PropertyGet, ProcedureKind.PropertyLet, ProcedureKind.PropertySet };
-        //        if (propertyTypes.Any(pt => pt == procNode.Kind))
-        //        {
-        //            var kind = procNode.Kind == ProcedureKind.PropertyGet
-        //                ? ReservedKeywords.Get
-        //                : procNode.Kind == ProcedureKind.PropertyLet
-        //                    ? ReservedKeywords.Let
-        //                    : ReservedKeywords.Set;
-
-        //            return string.Format("{0} ({1})", procNode.Identifier.Name, kind);
-        //        }
-        //        return procNode.Identifier.Name;
-        //    }
-
-        //    if (node is UserDefinedTypeNode)
-        //    {
-        //        return ((UserDefinedTypeNode) node).Identifier.Name;
-        //    }
-
-        //    if (node is EnumNode)
-        //    {
-        //        return ((EnumNode) node).Identifier.Name;
-        //    }
-
-        //    if (node is IdentifierNode)
-        //    {
-        //        return ((IdentifierNode) node).Name;
-        //    }
-
-        //    return node.Instruction.Value.Trim();
-        //}
     }
 }
