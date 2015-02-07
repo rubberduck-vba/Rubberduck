@@ -5,7 +5,7 @@ Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more 
 ##Features:
 ###Unit testing
 
-Fully integrated unit testing with minimal (read: next to none) boiler plate code. Just add a reference to Rubberduck and create a new module scoped `Assert` class and you're ready to start writing tests. 
+Fully integrated unit testing with minimal (read: next to none) boiler plate code. Just add a reference to Rubberduck and create a new module-scoped `AssertClass` instance and you're ready to start writing tests. 
 
     '@TestModule
     Private Assert As New Rubberduck.AssertClass
