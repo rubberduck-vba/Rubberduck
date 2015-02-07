@@ -92,7 +92,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue++;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
+            OnNavigateCodeIssue(null, new NavigateCodeEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -108,10 +108,10 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue--;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
+            OnNavigateCodeIssue(null, new NavigateCodeEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
+        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {

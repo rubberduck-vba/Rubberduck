@@ -144,7 +144,7 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(issue);
         }
 
-        public event EventHandler<NavigateCodeIssueEventArgs> NavigateCodeIssue;
+        public event EventHandler<NavigateCodeEventArgs> NavigateCodeIssue;
         private void CodeIssuesGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
@@ -164,7 +164,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             var result = item.GetInspectionResultItem();
-            handler(this, new NavigateCodeIssueEventArgs(result.QualifiedSelection.QualifiedName, result.Context));
+            handler(this, new NavigateCodeEventArgs(result.QualifiedSelection.QualifiedName, result.Context));
         }
 
         public event EventHandler RefreshCodeInspections;

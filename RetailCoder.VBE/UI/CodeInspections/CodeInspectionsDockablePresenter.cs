@@ -49,7 +49,7 @@ namespace Rubberduck.UI.CodeInspections
             base.Show();
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
+        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {

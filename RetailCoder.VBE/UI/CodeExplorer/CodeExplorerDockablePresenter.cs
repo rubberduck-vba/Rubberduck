@@ -19,7 +19,6 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
-using Rubberduck.Extensions;
 using Rubberduck.Reflection;
 
 namespace Rubberduck.UI.CodeExplorer

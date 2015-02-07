@@ -4,12 +4,12 @@ using Antlr4.Runtime;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
 
-namespace Rubberduck.UI.CodeInspections
+namespace Rubberduck.UI
 {
     [ComVisible(false)]
-    public class NavigateCodeIssueEventArgs : EventArgs
+    public class NavigateCodeEventArgs : EventArgs
     {
-        public NavigateCodeIssueEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)
+        public NavigateCodeEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)
         {
             _qualifiedName = qualifiedName;
             _context = context;

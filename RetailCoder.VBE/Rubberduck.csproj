@@ -177,7 +177,7 @@
     <Compile Include="UI\CodeInspections\CodeInspectionsWindow.Designer.cs">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeInspections\NavigateCodeIssueEventArgs.cs" />
+    <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockablePresenterBase.cs" />
     <Compile Include="Config\Configuration.cs" />
