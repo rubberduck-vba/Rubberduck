@@ -15,6 +15,12 @@ namespace Rubberduck.UI
             _context = context;
         }
 
+        public NavigateCodeEventArgs(Instruction instruction)
+        {
+            _qualifiedName = instruction.QualifiedModuleName;
+            _context = instruction.ParserRuleContext;
+        }
+
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
 

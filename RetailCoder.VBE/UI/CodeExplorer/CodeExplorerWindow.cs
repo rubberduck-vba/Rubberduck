@@ -23,7 +23,7 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.LabelEdit = false;
         }
 
-        public event EventHandler<SyntaxTreeNodeClickEventArgs> NavigateTreeNode;
+        public event EventHandler<NavigateCodeEventArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
             var handler = NavigateTreeNode;
@@ -33,8 +33,8 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             // todo: make this work without an Instruction class:
-            //var instruction = (Instruction)e.Node.Tag;
-            //handler(this, new SyntaxTreeNodeClickEventArgs(instruction));
+            var instruction = (Instruction)e.Node.Tag;
+            handler(this, new NavigateCodeEventArgs(instruction));
         }
 
 

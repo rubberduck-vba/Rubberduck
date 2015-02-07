@@ -52,7 +52,7 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
-        private void NavigateExplorerTreeNode(object sender, SyntaxTreeNodeClickEventArgs e)
+        private void NavigateExplorerTreeNode(object sender, NavigateCodeEventArgs e)
         {
             //todo: re-implement navigate to feature
 

@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="UI\Instruction.cs" />
     <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
