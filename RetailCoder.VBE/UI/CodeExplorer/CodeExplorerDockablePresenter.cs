@@ -112,38 +112,32 @@ namespace Rubberduck.UI.CodeExplorer
             projectNode.ImageKey = "ClosedFolder";
             treeView.BackColor = treeView.BackColor;
 
+            var moduleNodes = CreateModuleNodes(project, new Font(treeView.Font, FontStyle.Regular));
+
+            projectNode.Nodes.AddRange(moduleNodes.ToArray());
+            treeView.Nodes.Add(projectNode);
+        }
+
+        private ConcurrentBag<TreeNode> CreateModuleNodes(VBProject project, Font font)
+        {
             var moduleNodes = new ConcurrentBag<TreeNode>();
 
 
             foreach (VBComponent component in project.VBComponents)
             {
                 var moduleNode = new TreeNode(component.Name);
-                moduleNode.NodeFont = new Font(treeView.Font, FontStyle.Regular);
+                moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
 
-                AddOptionNodes(moduleNode, parserNode);
-
+                AddNodes<OptionNode>(moduleNode, parserNode, CreateOptionNode);
                 AddNodes<EnumNode>(moduleNode, parserNode, CreateEnumNode);
                 AddNodes<ProcedureNode>(moduleNode, parserNode, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
             }
-
-            projectNode.Nodes.AddRange(moduleNodes.ToArray());
-            treeView.Nodes.Add(projectNode);
-        }
-
-        private void AddOptionNodes(TreeNode moduleNode, INode parserNode)
-        {
-            foreach (var node in parserNode.Children.OfType<OptionNode>())
-            {
-                var treeNode = new TreeNode("Option" + node.Option);
-                treeNode.ImageKey = "Option";
-
-                moduleNode.Nodes.Add(treeNode);
-            }
+            return moduleNodes;
         }
 
         private delegate TreeNode CreateTreeNode(INode node);
@@ -171,6 +165,15 @@ namespace Rubberduck.UI.CodeExplorer
             result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
 
             return result;
+        }
+
+        private TreeNode CreateOptionNode(INode node)
+        {
+            var optionNode = (OptionNode)node;
+            var treeNode = new TreeNode("Option" + optionNode.Option);
+            treeNode.ImageKey = "Option";
+
+            return treeNode;
         }
 
         private string GetProcedureImageKey(ProcedureNode node)
