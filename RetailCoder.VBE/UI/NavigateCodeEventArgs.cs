@@ -12,19 +12,24 @@ namespace Rubberduck.UI
         public NavigateCodeEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)
         {
             _qualifiedName = qualifiedName;
-            _context = context;
+            _selection = context.GetSelection();
         }
 
-        public NavigateCodeEventArgs(Instruction instruction)
+        public NavigateCodeEventArgs(QualifiedModuleName qualifiedModuleName, Extensions.Selection selection)
         {
-            _qualifiedName = instruction.QualifiedModuleName;
-            _context = instruction.ParserRuleContext;
+            _qualifiedName = qualifiedModuleName;
+            _selection = selection;
+        }
+
+        public    NavigateCodeEventArgs(Extensions.QualifiedSelection qualifiedSelection)
+            :this(qualifiedSelection.QualifiedName, qualifiedSelection.Selection)
+        {
         }
 
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
 
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        private readonly Extensions.Selection _selection;
+        public Extensions.Selection Selection { get { return _selection; } }
     }
 }

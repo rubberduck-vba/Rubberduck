@@ -164,7 +164,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             var result = item.GetInspectionResultItem();
-            handler(this, new NavigateCodeEventArgs(result.QualifiedSelection.QualifiedName, result.Context));
+            handler(this, new NavigateCodeEventArgs(result.QualifiedSelection));
         }
 
         public event EventHandler RefreshCodeInspections;

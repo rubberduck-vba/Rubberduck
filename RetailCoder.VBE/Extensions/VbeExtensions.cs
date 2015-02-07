@@ -53,6 +53,7 @@ namespace Rubberduck.Extensions
             return null;
         }
 
+        [System.Obsolete]
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, ParserRuleContext context)
         {
             var projectName = qualifiedModuleName.ProjectName;
@@ -81,6 +82,16 @@ namespace Rubberduck.Extensions
             }
 
             return new CodeModuleSelection(modules.First(), Selection.Empty);
+        }
+
+        public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)
+        {
+            var projectName = qualifiedModuleName.ProjectName;
+            var componentName = qualifiedModuleName.ModuleName;
+
+            var modules = FindCodeModules(vbe, projectName, componentName).ToList();
+
+            return new CodeModuleSelection(modules.First(), selection);
         }
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>

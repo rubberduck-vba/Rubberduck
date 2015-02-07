@@ -115,7 +115,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var location = _vbe.FindInstruction(e.QualifiedName, e.Context);
+                var location = _vbe.FindInstruction(e.QualifiedName, e.Selection);
                 location.CodeModule.CodePane.SetSelection(location.Selection);
 
                 var codePane = location.CodeModule.CodePane;

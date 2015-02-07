@@ -122,17 +122,19 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var moduleNodes = new ConcurrentBag<TreeNode>();
 
-
             foreach (VBComponent component in project.VBComponents)
             {
                 var moduleNode = new TreeNode(component.Name);
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
+                
+                var qualifiedModuleName = new Inspections.QualifiedModuleName(project.Name, component.Name);
+                moduleNode.Tag = new QualifiedSelection(qualifiedModuleName, Selection.Empty);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines());
 
-                AddNodes<OptionNode>(moduleNode, parserNode, CreateOptionNode);
-                AddNodes<EnumNode>(moduleNode, parserNode, CreateEnumNode);
+                AddNodes<OptionNode>(moduleNode, parserNode, qualifiedModuleName, CreateOptionNode);
+                AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName ,CreateEnumNode);
                 //todo: implement these treeview nodes
 
                 //  enummember: imageKey = "EnumItem"
@@ -141,7 +143,7 @@ namespace Rubberduck.UI.CodeExplorer
                 //constants: imageKey = Accessibility + "Const"
                 //variables: imageKey = Accessibility + "Field"
 
-                AddNodes<ProcedureNode>(moduleNode, parserNode, CreateProcedureNode);
+                AddNodes<ProcedureNode>(moduleNode, parserNode, qualifiedModuleName, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
             }
@@ -149,11 +151,12 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private delegate TreeNode CreateTreeNode(INode node);
-        private void AddNodes<T>(TreeNode parentNode, INode parserNode, CreateTreeNode createTreeNodeDelegate)
+        private void AddNodes<T>(TreeNode parentNode, INode parserNode, Inspections.QualifiedModuleName qualifiedModuleName, CreateTreeNode createTreeNodeDelegate)
         {
             foreach (INode node in parserNode.Children.OfType<T>())
             {
                 var treeNode = createTreeNodeDelegate(node);
+                treeNode.Tag = new QualifiedSelection(qualifiedModuleName, node.Selection);
                 parentNode.Nodes.Add(createTreeNodeDelegate(node));
             }
         }

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -33,8 +34,8 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             // todo: make this work without an Instruction class:
-            var instruction = (Instruction)e.Node.Tag;
-            handler(this, new NavigateCodeEventArgs(instruction));
+            var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
+            handler(this, new NavigateCodeEventArgs(qualifiedSelection));
         }
 
 

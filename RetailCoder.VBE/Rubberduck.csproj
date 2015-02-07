@@ -85,7 +85,6 @@
   <ItemGroup>
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
-    <Compile Include="UI\Instruction.cs" />
     <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
@@ -167,7 +166,6 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeExplorer\SyntaxTreeNodeClickEventArgs.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionResultGridViewItem.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsDockablePresenter.cs" />
     <Compile Include="UI\CodeInspections\CodeInspectionsMenu.cs" />
