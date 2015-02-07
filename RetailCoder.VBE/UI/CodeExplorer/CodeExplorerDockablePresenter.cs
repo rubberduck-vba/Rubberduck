@@ -1,25 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Concurrent;
 using System.Drawing;
-using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Grammar;
-using System;
-using Antlr4.Runtime.Tree;
-using Rubberduck.UI;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
-using Rubberduck.Reflection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -54,35 +41,33 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, NavigateCodeEventArgs e)
         {
-            //todo: re-implement navigate to feature
+            //todo: fix selection. It's way off.
 
-            //var instruction = e.Instruction;
+            var selection = e.Selection;
+            var projectName = e.QualifiedName.ProjectName;
+            var componentName = e.QualifiedName.ModuleName;
 
-            //var project = instruction.Line.ProjectName;
-            //var component = instruction.Line.ComponentName;
+            var project = VBE.VBProjects.Cast<VBProject>()
+                               .FirstOrDefault(p => p.Name == projectName);
 
-            //var vbProject = VBE.VBProjects.Cast<VBProject>()
-            //                   .FirstOrDefault(p => p.Name == project);
+            VBComponent component = null;
+            if (project != null)
+            {
+                component = project.VBComponents.Cast<VBComponent>()
+                                       .FirstOrDefault(c => c.Name == componentName);
+            }
 
-            //VBComponent vbComponent = null;
-            //if (vbProject != null)
-            //{
-            //    vbComponent = vbProject.VBComponents.Cast<VBComponent>()
-            //                           .FirstOrDefault(c => c.Name == component);
-            //}
+            if (component == null)
+            {
+                return;
+            }
 
-            //if (vbComponent == null)
-            //{
-            //    return;
-            //}
+            var codePane = component.CodeModule.CodePane;
 
-            //var codePane = vbComponent.CodeModule.CodePane;
-            //var selection = instruction.QualifiedSelection;
-
-            //if (selection.StartLine != 0)
-            //{
-            //   codePane.SetSelection(selection);
-            //}
+            if (e.Selection.StartLine != 0)
+            {
+                codePane.SetSelection(e.Selection);
+            }
         }
 
         private void RefreshExplorerTreeView()
@@ -157,7 +142,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var treeNode = createTreeNodeDelegate(node);
                 treeNode.Tag = new QualifiedSelection(qualifiedModuleName, node.Selection);
-                parentNode.Nodes.Add(createTreeNodeDelegate(node));
+                parentNode.Nodes.Add(treeNode);
             }
         }
 

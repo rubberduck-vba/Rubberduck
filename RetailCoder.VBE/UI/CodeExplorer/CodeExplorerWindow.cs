@@ -33,7 +33,6 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            // todo: make this work without an Instruction class:
             var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
             handler(this, new NavigateCodeEventArgs(qualifiedSelection));
         }
