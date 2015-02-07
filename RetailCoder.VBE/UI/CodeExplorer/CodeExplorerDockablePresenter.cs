@@ -124,8 +124,8 @@ namespace Rubberduck.UI.CodeExplorer
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines[1, component.CodeModule.CountOfLines]);
 
                 AddOptionNodes(moduleNode, parserNode);
-                AddEnumNodes(moduleNode, parserNode);
 
+                AddNodes<EnumNode>(moduleNode, parserNode, CreateEnumNode);
                 AddNodes<ProcedureNode>(moduleNode, parserNode, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
@@ -146,18 +146,6 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private void AddEnumNodes(TreeNode moduleNode, INode parserNode)
-        {
-            foreach (var node in parserNode.Children.OfType<EnumNode>())
-            {
-                var treeNode = new TreeNode(node.Identifier.Name);
-                treeNode.ImageKey = node.Accessibility.ToString() + "Enum";
-
-                moduleNode.Nodes.Add(treeNode);
-            }
-        }
-
-
         private delegate TreeNode CreateTreeNode(INode node);
         private void AddNodes<T>(TreeNode moduleNode, INode parserNode, CreateTreeNode createTreeNodeDelegate)
         {
@@ -172,6 +160,15 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var result = new TreeNode(node.LocalScope);
             result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
+
+            return result;
+        }
+
+        private TreeNode CreateEnumNode(INode node)
+        {
+            var enumNode = (EnumNode)node;
+            var result = new TreeNode(enumNode.Identifier.Name);
+            result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
 
             return result;
         }
