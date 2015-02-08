@@ -167,6 +167,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private void UpdateCompletedTestsLabels()
         {
+            TotalElapsedMilisecondsLabel.Text = string.Format("{0} ms", _playList.Sum(item => item.GetDuration() == TimeSpan.Zero ? 0 : item.GetDuration().Milliseconds));
             passedTestsLabel.Text = string.Format("{0} Passed", _playList.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
             failedTestsLabel.Text = string.Format("{0} Failed", _playList.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
             inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _playList.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
