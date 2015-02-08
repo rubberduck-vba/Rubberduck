@@ -45,6 +45,11 @@ namespace Rubberduck.VBA.Nodes
             _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
         }
 
+        public string IdentifierName
+        {
+            get { return _identifier.Name; }
+        }
+
         public string SpecifiedValue
         {
             get { return _context.valueStmt().GetText(); }
