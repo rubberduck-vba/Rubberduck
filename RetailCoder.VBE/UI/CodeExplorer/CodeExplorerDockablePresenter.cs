@@ -123,6 +123,7 @@ namespace Rubberduck.UI.CodeExplorer
                 //todo: implement these treeview nodes
 
                 //  enummember: imageKey = "EnumItem"
+
                 //types: imageKey = Accessibility + "Type"
                 //  typemember: imageKey = "PublicField"
                 //constants: imageKey = Accessibility + "Const"
@@ -151,6 +152,19 @@ namespace Rubberduck.UI.CodeExplorer
             var enumNode = (EnumNode)node;
             var result = new TreeNode(enumNode.Identifier.Name);
             result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
+
+            //Assumes the parent scope of an EnumNode will be in the form "Project.Module". I'm not sure how robust this is.
+            var scope = node.ParentScope.Split(new char[] {'.'});
+            var qualifiedModuleName = new Inspections.QualifiedModuleName(scope[0], scope[1]);
+
+            foreach (EnumConstNode child in node.Children)
+            {
+                var childNode = new TreeNode(child.IdentifierName);
+                childNode.ImageKey = "EnumItem";
+                childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
+
+                result.Nodes.Add(childNode);
+            }
 
             return result;
         }
