@@ -110,6 +110,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var moduleNode = new TreeNode(component.Name);
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
+                moduleNode.SelectedImageKey = moduleNode.ImageKey;
                 
                 var qualifiedModuleName = new Inspections.QualifiedModuleName(project.Name, component.Name);
                 moduleNode.Tag = new QualifiedSelection(qualifiedModuleName, Selection.Empty);
@@ -145,6 +146,7 @@ namespace Rubberduck.UI.CodeExplorer
             var enumNode = (EnumNode)node;
             var result = new TreeNode(enumNode.Identifier.Name);
             result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
+            result.SelectedImageKey = result.ImageKey;
 
             var qualifiedModuleName = SplitScope(node.ParentScope);
 
@@ -152,6 +154,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var childNode = new TreeNode(child.IdentifierName);
                 childNode.ImageKey = "EnumItem";
+                childNode.SelectedImageKey = childNode.ImageKey;
                 childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
 
                 result.Nodes.Add(childNode);
@@ -167,6 +170,7 @@ namespace Rubberduck.UI.CodeExplorer
             var typeNode = (TypeNode)node;
             var result = new TreeNode(typeNode.Identifier.Name);
             result.ImageKey = typeNode.Accessibility.ToString() + "Type";
+            result.SelectedImageKey = result.ImageKey;
 
             var qualifiedModuleName = SplitScope(node.ParentScope);
 
@@ -174,6 +178,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var childNode = new TreeNode(child.IdentifierName);
                 childNode.ImageKey = "PublicField";
+                childNode.SelectedImageKey = childNode.ImageKey;
                 childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
 
                 result.Nodes.Add(childNode);
@@ -194,6 +199,7 @@ namespace Rubberduck.UI.CodeExplorer
             var optionNode = (OptionNode)node;
             var treeNode = new TreeNode("Option" + optionNode.Option);
             treeNode.ImageKey = "Option";
+            treeNode.SelectedImageKey = treeNode.ImageKey;
 
             return treeNode;
         }
@@ -211,6 +217,7 @@ namespace Rubberduck.UI.CodeExplorer
                 treeNode.ImageKey = identifierNode.Accessibility + "Field";
             }
 
+            treeNode.SelectedImageKey = treeNode.ImageKey;
             return treeNode;
         }
 
@@ -218,7 +225,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var result = new TreeNode(node.LocalScope);
             result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
-
+            result.SelectedImageKey = result.ImageKey;
             return result;
         }
 
