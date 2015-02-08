@@ -49,13 +49,15 @@ namespace Rubberduck.Inspections
 
         private void ChangeParameterPassing(VBE vbe, string newValue)
         {
-            var oldContent = Context.GetText();
-            var newContent = string.Concat(newValue, " ", Context.GetText());
-
-            var result = oldContent.Replace(oldContent, newContent);
+            var parameter = Context.GetText();
+            var newContent = string.Concat(newValue, " ", parameter);
+            var selection = QualifiedSelection.Selection;
 
             var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
-            module.ReplaceLine(Context.GetSelection().StartLine, result);
+            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
+
+            var result = lines.Replace(parameter, newContent);
+            module.ReplaceLine(selection.StartLine, result);
         }
     }
 }
