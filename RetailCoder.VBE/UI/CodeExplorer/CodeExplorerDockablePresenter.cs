@@ -88,12 +88,10 @@ namespace Rubberduck.UI.CodeExplorer
         private void AddProjectNode(VBProject project)
         {
             var treeView = Control.SolutionTree;
-            // todo: [re-]implement
 
             var projectNode = new TreeNode();
             projectNode.Text = project.Name;
 
-            //projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
             treeView.BackColor = treeView.BackColor;
 
@@ -112,6 +110,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var moduleNode = new TreeNode(component.Name);
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
+                moduleNode.SelectedImageKey = moduleNode.ImageKey;
                 
                 var qualifiedModuleName = new Inspections.QualifiedModuleName(project.Name, component.Name);
                 moduleNode.Tag = new QualifiedSelection(qualifiedModuleName, Selection.Empty);
@@ -120,13 +119,9 @@ namespace Rubberduck.UI.CodeExplorer
 
                 AddNodes<OptionNode>(moduleNode, parserNode, qualifiedModuleName, CreateOptionNode);
                 AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName ,CreateEnumNode);
-                //todo: implement these treeview nodes
-
-                //  enummember: imageKey = "EnumItem"
-                //types: imageKey = Accessibility + "Type"
-                //  typemember: imageKey = "PublicField"
-                //constants: imageKey = Accessibility + "Const"
-                //variables: imageKey = Accessibility + "Field"
+                AddNodes<TypeNode>(moduleNode, parserNode, qualifiedModuleName, CreateTypeNode);
+                AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
+                AddNodes<VariableDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
 
                 AddNodes<ProcedureNode>(moduleNode, parserNode, qualifiedModuleName, CreateProcedureNode);
 
@@ -151,8 +146,52 @@ namespace Rubberduck.UI.CodeExplorer
             var enumNode = (EnumNode)node;
             var result = new TreeNode(enumNode.Identifier.Name);
             result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
+            result.SelectedImageKey = result.ImageKey;
+
+            var qualifiedModuleName = SplitScope(node.ParentScope);
+
+            foreach (EnumConstNode child in node.Children)
+            {
+                var childNode = new TreeNode(child.IdentifierName);
+                childNode.ImageKey = "EnumItem";
+                childNode.SelectedImageKey = childNode.ImageKey;
+                childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
+
+                result.Nodes.Add(childNode);
+            }
 
             return result;
+        }
+
+        private TreeNode CreateTypeNode(INode node)
+        {
+            //types: imageKey = Accessibility + "Type"
+            //  typemember: imageKey = "PublicField"
+            var typeNode = (TypeNode)node;
+            var result = new TreeNode(typeNode.Identifier.Name);
+            result.ImageKey = typeNode.Accessibility.ToString() + "Type";
+            result.SelectedImageKey = result.ImageKey;
+
+            var qualifiedModuleName = SplitScope(node.ParentScope);
+
+            foreach (TypeElementNode child in node.Children)
+            {
+                var childNode = new TreeNode(child.IdentifierName);
+                childNode.ImageKey = "PublicField";
+                childNode.SelectedImageKey = childNode.ImageKey;
+                childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
+
+                result.Nodes.Add(childNode);
+            }
+
+            return result;
+        }
+
+        private Inspections.QualifiedModuleName SplitScope(string scope)
+        {
+            //Assumes the scope will be in the form "Project.Module". This isn't very robust.
+            var arr = scope.Split(new char[] { '.' });
+            return new Inspections.QualifiedModuleName(arr[0], arr[1]);
         }
 
         private TreeNode CreateOptionNode(INode node)
@@ -160,7 +199,25 @@ namespace Rubberduck.UI.CodeExplorer
             var optionNode = (OptionNode)node;
             var treeNode = new TreeNode("Option" + optionNode.Option);
             treeNode.ImageKey = "Option";
+            treeNode.SelectedImageKey = treeNode.ImageKey;
 
+            return treeNode;
+        }
+
+        private TreeNode CreateDeclaredIdentifierNode(INode node)
+        {
+            var identifierNode = (DeclaredIdentifierNode)node.Children.First(); //a constant declaration node will only ever have a single child (I think)
+            var treeNode = new TreeNode(identifierNode.Name);
+            if (node is ConstDeclarationNode)
+            {
+                treeNode.ImageKey = identifierNode.Accessibility + "Const";
+            }
+            if (node is VariableDeclarationNode)
+            {
+                treeNode.ImageKey = identifierNode.Accessibility + "Field";
+            }
+
+            treeNode.SelectedImageKey = treeNode.ImageKey;
             return treeNode;
         }
 
@@ -168,7 +225,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var result = new TreeNode(node.LocalScope);
             result.ImageKey = GetProcedureImageKey((ProcedureNode)node);
-
+            result.SelectedImageKey = result.ImageKey;
             return result;
         }
 
@@ -214,7 +271,6 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 return;
             }
-
             e.Node.ImageKey = "OpenFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
         }
