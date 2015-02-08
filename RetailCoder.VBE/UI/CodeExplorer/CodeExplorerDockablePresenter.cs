@@ -118,11 +118,7 @@ namespace Rubberduck.UI.CodeExplorer
 
                 AddNodes<OptionNode>(moduleNode, parserNode, qualifiedModuleName, CreateOptionNode);
                 AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName ,CreateEnumNode);
-                //todo: implement these treeview nodes
-
-                //types: imageKey = Accessibility + "Type"
-                //  typemember: imageKey = "PublicField"
-
+                AddNodes<TypeNode>(moduleNode, parserNode, qualifiedModuleName, CreateTypeNode);
                 AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
                 AddNodes<VariableDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
 
@@ -150,9 +146,7 @@ namespace Rubberduck.UI.CodeExplorer
             var result = new TreeNode(enumNode.Identifier.Name);
             result.ImageKey = enumNode.Accessibility.ToString() + "Enum";
 
-            //Assumes the parent scope of an EnumNode will be in the form "Project.Module". I'm not sure how robust this is.
-            var scope = node.ParentScope.Split(new char[] {'.'});
-            var qualifiedModuleName = new Inspections.QualifiedModuleName(scope[0], scope[1]);
+            var qualifiedModuleName = SplitScope(node.ParentScope);
 
             foreach (EnumConstNode child in node.Children)
             {
@@ -164,6 +158,35 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             return result;
+        }
+
+        private TreeNode CreateTypeNode(INode node)
+        {
+            //types: imageKey = Accessibility + "Type"
+            //  typemember: imageKey = "PublicField"
+            var typeNode = (TypeNode)node;
+            var result = new TreeNode(typeNode.Identifier.Name);
+            result.ImageKey = typeNode.Accessibility.ToString() + "Type";
+
+            var qualifiedModuleName = SplitScope(node.ParentScope);
+
+            foreach (TypeElementNode child in node.Children)
+            {
+                var childNode = new TreeNode(child.IdentifierName);
+                childNode.ImageKey = "PublicField";
+                childNode.Tag = new QualifiedSelection(qualifiedModuleName, child.Selection);
+
+                result.Nodes.Add(childNode);
+            }
+
+            return result;
+        }
+
+        private Inspections.QualifiedModuleName SplitScope(string scope)
+        {
+            //Assumes the scope will be in the form "Project.Module". This isn't very robust.
+            var arr = scope.Split(new char[] { '.' });
+            return new Inspections.QualifiedModuleName(arr[0], arr[1]);
         }
 
         private TreeNode CreateOptionNode(INode node)
