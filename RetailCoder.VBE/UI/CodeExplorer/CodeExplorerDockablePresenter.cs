@@ -123,9 +123,8 @@ namespace Rubberduck.UI.CodeExplorer
                 //types: imageKey = Accessibility + "Type"
                 //  typemember: imageKey = "PublicField"
 
-                AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateConstDeclarationNode);
-
-                //variables: imageKey = Accessibility + "Field"
+                AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
+                AddNodes<VariableDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
 
                 AddNodes<ProcedureNode>(moduleNode, parserNode, qualifiedModuleName, CreateProcedureNode);
 
@@ -176,11 +175,18 @@ namespace Rubberduck.UI.CodeExplorer
             return treeNode;
         }
 
-        private TreeNode CreateConstDeclarationNode(INode node)
+        private TreeNode CreateDeclaredIdentifierNode(INode node)
         {
-            var constNode = (DeclaredIdentifierNode)node.Children.First(); //a constant declaration node will only ever have a single child (I think)
-            var treeNode = new TreeNode(constNode.Name);
-            treeNode.ImageKey = constNode.Accessibility + "Const";
+            var identifierNode = (DeclaredIdentifierNode)node.Children.First(); //a constant declaration node will only ever have a single child (I think)
+            var treeNode = new TreeNode(identifierNode.Name);
+            if (node is ConstDeclarationNode)
+            {
+                treeNode.ImageKey = identifierNode.Accessibility + "Const";
+            }
+            if (node is VariableDeclarationNode)
+            {
+                treeNode.ImageKey = identifierNode.Accessibility + "Field";
+            }
 
             return treeNode;
         }
