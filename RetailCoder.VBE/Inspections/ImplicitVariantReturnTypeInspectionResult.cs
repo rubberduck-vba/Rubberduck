@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -27,14 +30,55 @@ namespace Rubberduck.Inspections
 
         private void ReturnExplicitVariant(VBE vbe)
         {
-            var instruction = Context.GetLine();
-            var newContent = instruction + " " + Tokens.As + " " + Tokens.Variant;
-            var oldContent = instruction;
+            // note: turns a multiline signature into a one-liner signature.
+            // bug: removes all comments.
 
-            var result = oldContent.Replace(instruction, newContent);
+            var node = GetNode(Context);
+            var signature = node.Signature.TrimEnd();
 
+            var procedure = Context.GetText();
+            var result = procedure.Replace(signature, signature + ' ' + Tokens.As + ' ' + Tokens.Variant);
+            
             var module = vbe.FindCodeModules(QualifiedName).First();
-            module.ReplaceLine(Context.GetSelection().StartLine, result);
+            var selection = Context.GetSelection();
+
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+            module.InsertLines(selection.StartLine, result);
+        }
+
+        private ProcedureNode GetNode(ParserRuleContext context)
+        {
+            var result = GetNode(context as VisualBasic6Parser.FunctionStmtContext);
+            if (result != null) return result;
+            
+            result = GetNode(context as VisualBasic6Parser.PropertyGetStmtContext);
+            Debug.Assert(result != null, "result != null");
+
+            return result;
+        }
+
+        private ProcedureNode GetNode(VisualBasic6Parser.FunctionStmtContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var scope = QualifiedName.ToString();
+            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            return new ProcedureNode(context, scope, localScope);
+        }
+
+        private ProcedureNode GetNode(VisualBasic6Parser.PropertyGetStmtContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var scope = QualifiedName.ToString();
+            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            return new ProcedureNode(context, scope, localScope);
         }
     }
 }
