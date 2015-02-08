@@ -36,6 +36,37 @@ namespace Rubberduck.Extensions
 
         public static Selection Empty { get { return new Selection(1, 1, 1, 1); } }
 
+        public bool Contains(Selection selection)
+        {
+            // single line comparison
+            if (selection.StartLine == StartLine && selection.EndLine == EndLine)
+            {
+                return selection.StartColumn >= StartColumn && selection.EndColumn <= EndColumn;
+            }
+
+            // multiline, obvious case:
+            if (selection.StartLine > StartLine && selection.EndLine < EndLine)
+            {
+                return true;
+            }
+
+            // starts on same line:
+            if (selection.StartLine == StartLine && selection.StartColumn > StartColumn)
+            {
+                return selection.EndLine < EndLine || 
+                    (selection.EndLine == EndLine && selection.EndColumn <= EndColumn);
+            }
+
+            // ends on same line:
+            if (selection.EndLine == EndLine && selection.EndColumn < EndColumn)
+            {
+                return selection.StartLine > StartLine ||
+                       (selection.StartLine == StartLine && selection.StartColumn >= StartColumn);
+            }
+
+            return false;
+        }
+
         private readonly int _startLine;
         public int StartLine { get { return _startLine; } }
         

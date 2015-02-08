@@ -30,6 +30,15 @@ namespace Rubberduck.VBA
                 );
         }
 
+        /// <summary>
+        /// Returns <c>true</c> if specified <c>Selection</c> contains this node.
+        /// </summary>
+        public static bool IsInSelection(this ParserRuleContext context, Selection selection)
+        {
+            var contextSelection = context.GetSelection();
+            return selection.Contains(contextSelection);
+        }
+
         public static VBAccessibility GetAccessibility(this VisualBasic6Parser.VisibilityContext context)
         {
             if (context == null)

@@ -43,6 +43,11 @@ namespace Rubberduck.VBA
             return parseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
         }
 
+        public static IEnumerable<ParserRuleContext> GetProcedure(this IParseTree parseTree, string name)
+        {
+            return parseTree.GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(name));
+        }
+
         public static IEnumerable<VisualBasic6Parser.ModuleOptionContext> GetModuleOptions(this IParseTree parseTree)
         {
             return parseTree.GetContexts<ModuleOptionsListener, VisualBasic6Parser.ModuleOptionContext>(new ModuleOptionsListener());
@@ -54,6 +59,14 @@ namespace Rubberduck.VBA
         public static IEnumerable<ParserRuleContext> GetDeclarations(this IParseTree parseTree)
         {
             return parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener());
+        }
+        
+        /// <summary>
+        /// Finds all variable references in specified parse tree.
+        /// </summary>
+        public static IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> GetVariableReferences(this IParseTree parseTree)
+        {
+            return parseTree.GetContexts<VariableReferencesListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableReferencesListener());
         }
 
         private static IEnumerable<TContext> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
@@ -70,6 +83,19 @@ namespace Rubberduck.VBA
             where TContext : ParserRuleContext
         {
             IEnumerable<TContext> Members { get; }
+        }
+
+        private class VariableReferencesListener : VisualBasic6BaseListener,
+            IExtensionListener<VisualBasic6Parser.AmbiguousIdentifierContext>
+        {
+            private readonly IList<VisualBasic6Parser.AmbiguousIdentifierContext> _members = new List<VisualBasic6Parser.AmbiguousIdentifierContext>(); 
+
+            public IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> Members { get { return _members; } }
+
+            public override void EnterAmbiguousIdentifier(VisualBasic6Parser.AmbiguousIdentifierContext context)
+            {
+                _members.Add(context);
+            }
         }
 
         private class DeclarationListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
@@ -173,6 +199,56 @@ namespace Rubberduck.VBA
             public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
             {
                 _members.Add(context);
+            }
+        }
+
+        private class ProcedureNameListener : ProcedureListener
+        {
+            private readonly string _name;
+
+            public ProcedureNameListener(string name)
+            {
+                _name = name;
+            }
+
+            public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+            {
+                if (context.ambiguousIdentifier().GetText() == _name)
+                {
+                    base.EnterFunctionStmt(context);
+                }
+            }
+
+            public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+            {
+                if (context.ambiguousIdentifier().GetText() == _name)
+                {
+                    base.EnterSubStmt(context);
+                }
+            }
+
+            public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+            {
+                if (context.ambiguousIdentifier().GetText() == _name)
+                {
+                    base.EnterPropertyGetStmt(context);
+                }
+            }
+
+            public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+            {
+                if (context.ambiguousIdentifier().GetText() == _name)
+                {
+                    base.EnterPropertyLetStmt(context);
+                }
+            }
+
+            public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+            {
+                if (context.ambiguousIdentifier().GetText() == _name)
+                {
+                    base.EnterPropertySetStmt(context);
+                }
             }
         }
     }

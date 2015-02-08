@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.Dialogs.Refactorings
+﻿namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     partial class ExtractMethodDialog
     {
@@ -36,20 +36,22 @@
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.MethodNameBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.MethodReturnValueCombo = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.MethodAccessibilityCombo = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
-            this.label7 = new System.Windows.Forms.Label();
             this.PreviewBox = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
+            this.label6 = new System.Windows.Forms.Label();
+            this.MethodAccessibilityCombo = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.MethodReturnValueCombo = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.MethodNameBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -122,6 +124,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.InvalidNameValidationIcon);
             this.panel1.Controls.Add(this.PreviewBox);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.MethodParametersGrid);
@@ -138,86 +141,6 @@
             this.panel1.Size = new System.Drawing.Size(576, 378);
             this.panel1.TabIndex = 2;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Name:";
-            // 
-            // MethodNameBox
-            // 
-            this.MethodNameBox.Location = new System.Drawing.Point(63, 7);
-            this.MethodNameBox.Name = "MethodNameBox";
-            this.MethodNameBox.Size = new System.Drawing.Size(501, 20);
-            this.MethodNameBox.TabIndex = 1;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 37);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Return:";
-            // 
-            // MethodReturnValueCombo
-            // 
-            this.MethodReturnValueCombo.FormattingEnabled = true;
-            this.MethodReturnValueCombo.Location = new System.Drawing.Point(63, 34);
-            this.MethodReturnValueCombo.Name = "MethodReturnValueCombo";
-            this.MethodReturnValueCombo.Size = new System.Drawing.Size(211, 21);
-            this.MethodReturnValueCombo.TabIndex = 3;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(280, 37);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Accessibility:";
-            // 
-            // MethodAccessibilityCombo
-            // 
-            this.MethodAccessibilityCombo.FormattingEnabled = true;
-            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(353, 34);
-            this.MethodAccessibilityCombo.Name = "MethodAccessibilityCombo";
-            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(211, 21);
-            this.MethodAccessibilityCombo.TabIndex = 5;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 68);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(63, 13);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "Parameters:";
-            // 
-            // MethodParametersGrid
-            // 
-            this.MethodParametersGrid.AllowUserToAddRows = false;
-            this.MethodParametersGrid.AllowUserToDeleteRows = false;
-            this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.MethodParametersGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MethodParametersGrid.Location = new System.Drawing.Point(18, 85);
-            this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
-            this.MethodParametersGrid.Name = "MethodParametersGrid";
-            this.MethodParametersGrid.Size = new System.Drawing.Size(547, 97);
-            this.MethodParametersGrid.TabIndex = 7;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 195);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(48, 13);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Preview:";
-            // 
             // PreviewBox
             // 
             this.PreviewBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -232,6 +155,96 @@
             this.PreviewBox.Size = new System.Drawing.Size(546, 148);
             this.PreviewBox.TabIndex = 9;
             this.PreviewBox.WordWrap = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(15, 195);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(48, 13);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "Preview:";
+            // 
+            // MethodParametersGrid
+            // 
+            this.MethodParametersGrid.AllowUserToAddRows = false;
+            this.MethodParametersGrid.AllowUserToDeleteRows = false;
+            this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.MethodParametersGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.MethodParametersGrid.Location = new System.Drawing.Point(18, 85);
+            this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
+            this.MethodParametersGrid.Name = "MethodParametersGrid";
+            this.MethodParametersGrid.Size = new System.Drawing.Size(547, 97);
+            this.MethodParametersGrid.TabIndex = 7;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(15, 68);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(63, 13);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Parameters:";
+            // 
+            // MethodAccessibilityCombo
+            // 
+            this.MethodAccessibilityCombo.FormattingEnabled = true;
+            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(353, 34);
+            this.MethodAccessibilityCombo.Name = "MethodAccessibilityCombo";
+            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(211, 21);
+            this.MethodAccessibilityCombo.TabIndex = 5;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(280, 37);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(67, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Accessibility:";
+            // 
+            // MethodReturnValueCombo
+            // 
+            this.MethodReturnValueCombo.FormattingEnabled = true;
+            this.MethodReturnValueCombo.Location = new System.Drawing.Point(63, 34);
+            this.MethodReturnValueCombo.Name = "MethodReturnValueCombo";
+            this.MethodReturnValueCombo.Size = new System.Drawing.Size(211, 21);
+            this.MethodReturnValueCombo.TabIndex = 3;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(15, 37);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(42, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Return:";
+            // 
+            // MethodNameBox
+            // 
+            this.MethodNameBox.Location = new System.Drawing.Point(63, 7);
+            this.MethodNameBox.Name = "MethodNameBox";
+            this.MethodNameBox.Size = new System.Drawing.Size(501, 20);
+            this.MethodNameBox.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 10);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(38, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Name:";
+            // 
+            // InvalidNameValidationIcon
+            // 
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
+            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
+            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
+            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.InvalidNameValidationIcon.TabIndex = 10;
+            this.InvalidNameValidationIcon.TabStop = false;
             // 
             // ExtractMethodDialog
             // 
@@ -250,6 +263,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -273,5 +287,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.DataGridView MethodParametersGrid;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.PictureBox InvalidNameValidationIcon;
     }
 }

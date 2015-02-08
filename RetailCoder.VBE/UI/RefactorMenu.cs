@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI
 {
@@ -22,27 +24,56 @@ namespace Rubberduck.UI
             _parser = parser;
         }
 
-        private CommandBarButton _parseModuleButton;
-        public CommandBarButton ParseModuleButton { get { return _parseModuleButton; } }
+        private CommandBarButton _extractMethodButton;
+        public CommandBarButton ExtractMethodButton { get { return _extractMethodButton; } }
         
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
-            _parseModuleButton = AddMenuButton(menu);
-            _parseModuleButton.Caption = "&Parse module";
-            _parseModuleButton.FaceId = 3039;
-            _parseModuleButton.Click += OnParseModuleButtonClick;
+            _extractMethodButton = AddMenuButton(menu);
+            _extractMethodButton.Caption = "Extract &Method";
+            _extractMethodButton.Click += OnExtractMethodButtonClick;
 
         }
 
-        private void OnParseModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin))
+            if (_vbe.ActiveCodePane == null)
             {
-                presenter.Show();
+                return;
             }
+
+            var selection = _vbe.ActiveCodePane.GetSelection();
+            if (selection.StartLine <= _vbe.ActiveCodePane.CodeModule.CountOfDeclarationLines)
+            {
+                return;
+            }
+
+            vbext_ProcKind startKind;
+            var startScope = _vbe.ActiveCodePane.CodeModule.get_ProcOfLine(selection.StartLine, out startKind);
+            vbext_ProcKind endKind;
+            var endScope = _vbe.ActiveCodePane.CodeModule.get_ProcOfLine(selection.EndLine, out endKind);
+
+            if (startScope != endScope)
+            {
+                return;
+            }
+
+            // if method is a property, GetProcedure(name) can return up to 3 members:
+            var method = _parser.Parse(_vbe.ActiveCodePane.CodeModule.Lines())
+                                .GetProcedure(startScope)
+                                .SingleOrDefault(proc => proc.GetSelection().Contains(selection));
+
+            if (method == null)
+            {
+                return;
+            }
+
+            var view = new ExtractMethodDialog();
+            var presenter = new ExtractMethodPresenter(view, method, selection);
+            presenter.Show();
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

@@ -25,7 +25,7 @@ namespace Rubberduck.UI
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
-        //private readonly RefactorMenu _refactorMenu; // todo: implement refactoring
+        private readonly RefactorMenu _refactorMenu;
         private readonly IConfigurationService _configService;
 
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IEnumerable<IInspection> inspections)
@@ -40,14 +40,14 @@ namespace Rubberduck.UI
             _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, todoSettings, parser);
 
             _codeInspectionsMenu = new CodeInspectionsMenu(_vbe, addIn, parser, inspections);
-            //_refactorMenu = new RefactorMenu(_vbe, addIn);
+            _refactorMenu = new RefactorMenu(_vbe, addIn, parser);
 
         }
 
         public void Dispose()
         {
             _testMenu.Dispose();
-            //_refactorMenu.Dispose();
+            _refactorMenu.Dispose();
         }
 
         private CommandBarButton _about;
@@ -64,7 +64,7 @@ namespace Rubberduck.UI
 
             _testMenu.Initialize(menu.Controls);
             _codeExplorerMenu.Initialize(menu.Controls);
-            //_refactorMenu.Initialize(menu.Controls);
+            _refactorMenu.Initialize(menu.Controls);
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 

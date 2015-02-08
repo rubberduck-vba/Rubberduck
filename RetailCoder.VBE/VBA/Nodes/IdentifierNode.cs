@@ -6,17 +6,20 @@ namespace Rubberduck.VBA.Nodes
     {
         private readonly VisualBasic6Parser.CertainIdentifierContext _certainContext;
         private readonly VisualBasic6Parser.AmbiguousIdentifierContext _ambiguousContext;
+        private readonly VisualBasic6Parser.AsTypeClauseContext _asTypeClauseContext;
 
-        public IdentifierNode(VisualBasic6Parser.CertainIdentifierContext context, string scope)
+        public IdentifierNode(VisualBasic6Parser.CertainIdentifierContext context, string scope, VisualBasic6Parser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _certainContext = context;
+            _asTypeClauseContext = asTypeClause;
         }
 
-        public IdentifierNode(VisualBasic6Parser.AmbiguousIdentifierContext context, string scope)
+        public IdentifierNode(VisualBasic6Parser.AmbiguousIdentifierContext context, string scope, VisualBasic6Parser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _ambiguousContext = context;
+            _asTypeClauseContext = asTypeClause;
         }
 
         public string Name
@@ -27,6 +30,13 @@ namespace Rubberduck.VBA.Nodes
                     ? _certainContext.IDENTIFIER()[0].GetText()
                     : _ambiguousContext.IDENTIFIER()[0].GetText();
             }
+        }
+
+        public override string ToString()
+        {
+            return _asTypeClauseContext == null
+                ? Name
+                : Name + ' ' + _asTypeClauseContext.GetText();
         }
     }
 }
