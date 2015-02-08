@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -16,7 +17,7 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return InspectionNames.MultipleDeclarations; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
@@ -29,22 +30,26 @@ namespace Rubberduck.Inspections
                     var variables = declaration as VisualBasic6Parser.VariableStmtContext;                    
                     if (variables != null && HasMultipleDeclarations(variables))
                     {
-                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<VisualBasic6Parser.VariableListStmtContext>(module.QualifiedName, variables.variableListStmt()));
+                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.variableListStmt()));
                     }
 
                     var consts = declaration as VisualBasic6Parser.ConstStmtContext;
+                    if (consts != null && HasMultipleDeclarations(consts))
+                    {
+                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));
+                    }
                 }
             }
         }
 
         private bool HasMultipleDeclarations(VisualBasic6Parser.VariableStmtContext context)
         {
-            return context.ChildCount > 1;
+            return context.variableListStmt().variableSubStmt().Count > 1;
         }
 
         private bool HasMultipleDeclarations(VisualBasic6Parser.ConstStmtContext context)
         {
-            return context.ChildCount > 1;
+            return context.constSubStmt().Count > 1;
         }
     }
 }

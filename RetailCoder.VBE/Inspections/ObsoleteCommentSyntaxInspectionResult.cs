@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.Extensions;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
@@ -22,19 +25,74 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Replace Rem reserved keyword with single quote", ReplaceWithSingleQuote},
+                    {"Replace 'Rem' usage with a single-quote comment marker", ReplaceWithSingleQuote},
                     {"Remove comment", RemoveComment}
                 };
         }
 
         private void ReplaceWithSingleQuote(VBE vbe)
         {
-            throw new NotImplementedException();
+            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            if (module == null)
+            {
+                return;
+            }
+
+            var content = module.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
+
+            int markerPosition;
+            if (!content.HasComment(out markerPosition))
+            {
+                return;
+            }
+
+            var code = string.Empty;
+            if (markerPosition > 0)
+            {
+                code = content.Substring(0, markerPosition - 1);
+            }
+
+            var newContent = code + Tokens.CommentMarker + " " + Comment.CommentText;
+
+            if (Comment.QualifiedSelection.Selection.LineCount > 1)
+            {
+                module.DeleteLines(Comment.QualifiedSelection.Selection.StartLine + 1, Comment.QualifiedSelection.Selection.LineCount);
+            }
+
+            module.ReplaceLine(QualifiedSelection.Selection.StartLine, newContent);
         }
 
         private void RemoveComment(VBE vbe)
         {
-            throw new NotImplementedException();
+            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            if (module == null)
+            {
+                return;
+            }
+
+            var content = module.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
+
+            int markerPosition;
+            if (!content.HasComment(out markerPosition))
+            {
+                return;
+            }
+
+            var code = string.Empty;
+            if (markerPosition > 0)
+            {
+                code = content.Substring(0, markerPosition - 1);
+            }
+
+            if (Comment.QualifiedSelection.Selection.LineCount > 1)
+            {
+                module.DeleteLines(Comment.QualifiedSelection.Selection.StartLine, Comment.QualifiedSelection.Selection.LineCount);
+            }
+
+            if (!string.IsNullOrEmpty(code))
+            {
+                module.ReplaceLine(Comment.QualifiedSelection.Selection.StartLine, code);
+            }
         }
     }
 }
