@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public QualifiedSelection QualifiedSelection
+        public virtual QualifiedSelection QualifiedSelection
         {
             get
             {

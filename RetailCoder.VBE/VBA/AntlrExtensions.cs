@@ -79,6 +79,7 @@ namespace Rubberduck.VBA
 
             public override void EnterVariableStmt(VisualBasic6Parser.VariableStmtContext context)
             {
+                _members.Add(context);
                 foreach (var child in context.variableListStmt().variableSubStmt())
                 {
                     _members.Add(child);
@@ -92,6 +93,7 @@ namespace Rubberduck.VBA
 
             public override void EnterConstStmt(VisualBasic6Parser.ConstStmtContext context)
             {
+                _members.Add(context);
                 foreach (var child in context.constSubStmt())
                 {
                     _members.Add(child);
