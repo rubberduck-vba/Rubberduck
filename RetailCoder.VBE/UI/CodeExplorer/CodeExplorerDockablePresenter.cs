@@ -88,12 +88,10 @@ namespace Rubberduck.UI.CodeExplorer
         private void AddProjectNode(VBProject project)
         {
             var treeView = Control.SolutionTree;
-            // todo: [re-]implement
 
             var projectNode = new TreeNode();
             projectNode.Text = project.Name;
 
-            //projectNode.Tag = node.Instruction;
             projectNode.ImageKey = "ClosedFolder";
             treeView.BackColor = treeView.BackColor;
 
@@ -122,11 +120,11 @@ namespace Rubberduck.UI.CodeExplorer
                 AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName ,CreateEnumNode);
                 //todo: implement these treeview nodes
 
-                //  enummember: imageKey = "EnumItem"
-
                 //types: imageKey = Accessibility + "Type"
                 //  typemember: imageKey = "PublicField"
-                //constants: imageKey = Accessibility + "Const"
+
+                AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateConstDeclarationNode);
+
                 //variables: imageKey = Accessibility + "Field"
 
                 AddNodes<ProcedureNode>(moduleNode, parserNode, qualifiedModuleName, CreateProcedureNode);
@@ -174,6 +172,15 @@ namespace Rubberduck.UI.CodeExplorer
             var optionNode = (OptionNode)node;
             var treeNode = new TreeNode("Option" + optionNode.Option);
             treeNode.ImageKey = "Option";
+
+            return treeNode;
+        }
+
+        private TreeNode CreateConstDeclarationNode(INode node)
+        {
+            var constNode = (DeclaredIdentifierNode)node.Children.First(); //a constant declaration node will only ever have a single child (I think)
+            var treeNode = new TreeNode(constNode.Name);
+            treeNode.ImageKey = constNode.Accessibility + "Const";
 
             return treeNode;
         }
