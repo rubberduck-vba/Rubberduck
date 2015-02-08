@@ -9,7 +9,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -37,7 +36,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             e.QuickFix(VBE);
             OnRefreshCodeInspections(null, EventArgs.Empty);
-            Control.FindNextIssue();
+            //Control.FindNextIssue(); // note: decide if this is annoying or surprising, UX-wise
         }
 
         public override void Show()

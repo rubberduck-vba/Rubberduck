@@ -24,7 +24,9 @@ namespace Rubberduck.Extensions
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
-        /// <summary>   A CodePane extension method that selected procedure. </summary>
+        /// <summary>
+        /// Returns a <see cref="Selection"/> representing the position 
+        /// </summary>
         ///
         /// <param name="selection">    The selection. </param>
         /// <returns>   A QualifiedSelection object representing the procedure the cursor is currently in. </returns>

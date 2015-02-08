@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime.Tree;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 

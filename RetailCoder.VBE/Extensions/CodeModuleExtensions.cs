@@ -27,6 +27,11 @@ namespace Rubberduck.Extensions
         /// </summary>
         public static string Lines(this CodeModule module)
         {
+            if (module.CountOfLines == 0)
+            {
+                return string.Empty;
+            }
+
             return module.Lines[1, module.CountOfLines];
         }
     }

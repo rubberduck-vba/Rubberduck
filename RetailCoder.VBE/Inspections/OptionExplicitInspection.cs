@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -28,8 +29,10 @@ namespace Rubberduck.Inspections
                     declarationLines = 1;
                 }
 
-                var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n');
-                if (!lines.Contains(Tokens.Option + " " + Tokens.Explicit))
+                var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n')
+                                                       .Select(line => line.Replace("\r",string.Empty));
+                var option = Tokens.Option + " " + Tokens.Explicit;
+                if (!lines.Contains(option))
                 {
                     yield return new OptionExplicitInspectionResult(Name, Severity, module.QualifiedName);
                 }
