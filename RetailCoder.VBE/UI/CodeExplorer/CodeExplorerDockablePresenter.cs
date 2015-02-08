@@ -271,7 +271,6 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 return;
             }
-
             e.Node.ImageKey = "OpenFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
         }
