@@ -27,12 +27,6 @@ namespace Rubberduck.UI.CodeExplorer
         public event EventHandler<NavigateCodeEventArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
-            //effectively disables navigation if node has children
-            if (e.Node.Nodes.Count > 0)
-            {
-                return;
-            }
-
             var handler = NavigateTreeNode;
             if (handler == null)
             {
