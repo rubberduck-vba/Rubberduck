@@ -39,8 +39,13 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
-        private void NavigateExplorerTreeNode(object sender, NavigateCodeEventArgs e)
+        private void NavigateExplorerTreeNode(object sender, CodeExplorerNavigateArgs e)
         {
+            if (!e.Node.IsExpanded)
+            {
+                e.Node.Expand();
+            }
+
             var projectName = e.QualifiedName.ProjectName;
             var componentName = e.QualifiedName.ModuleName;
 
@@ -91,6 +96,7 @@ namespace Rubberduck.UI.CodeExplorer
 
             var projectNode = new TreeNode();
             projectNode.Text = project.Name;
+            projectNode.Tag = new QualifiedSelection();
 
             projectNode.ImageKey = "ClosedFolder";
             treeView.BackColor = treeView.BackColor;
@@ -165,8 +171,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private TreeNode CreateTypeNode(INode node)
         {
-            //types: imageKey = Accessibility + "Type"
-            //  typemember: imageKey = "PublicField"
             var typeNode = (TypeNode)node;
             var result = new TreeNode(typeNode.Identifier.Name);
             result.ImageKey = typeNode.Accessibility.ToString() + "Type";
