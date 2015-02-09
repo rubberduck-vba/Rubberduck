@@ -48,7 +48,9 @@ The following features are currently under development:
 
 ###ANTLR-Powered Parser
 
-Rubberduck's most powerful features will make extensive use of parse trees. We are currently working on re-implementing everything that needs a parser, to open the door to deeper code analysis, and... refactorings.
+Rubberduck's most powerful features will make extensive use of parse trees. We are currently working on re-implementing everything that needs a parser, to open the door to deeper code analysis, and... refactorings:
+
+![extract method](http://i.stack.imgur.com/FhUwt.png)
 
 ###GitHub/Source Control Integration
 
