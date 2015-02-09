@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Reflection\VbProjectExtensions.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
@@ -239,7 +240,6 @@
     <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="Reflection\Project.cs" />
     <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />

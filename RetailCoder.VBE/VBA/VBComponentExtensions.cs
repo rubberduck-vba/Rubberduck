@@ -57,5 +57,22 @@ namespace Rubberduck.VBA
                 }
             }
         }
+
+        public static string FileExtension(this vbext_ComponentType componentType)
+        {
+            switch (componentType)
+            {
+                case vbext_ComponentType.vbext_ct_ClassModule:
+                    return ".cls";
+                case vbext_ComponentType.vbext_ct_MSForm:
+                    return ".frm";
+                case vbext_ComponentType.vbext_ct_StdModule:
+                    return ".bas";
+                case vbext_ComponentType.vbext_ct_Document:
+                case vbext_ComponentType.vbext_ct_ActiveXDesigner:
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }
