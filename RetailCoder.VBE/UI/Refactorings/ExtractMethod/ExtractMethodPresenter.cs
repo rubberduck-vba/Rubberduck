@@ -85,9 +85,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> _locals; 
 
         private readonly string _selectedCode;
+        private readonly VBE _vbe;
 
         public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
         {
+            _vbe = vbe;
+
             _view = dialog;
             _parentMethodTree = parentMethod;
             _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.StartLine, selection.LineCount);
@@ -162,7 +165,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 return;
             }
 
-            // todo: proceed with method extraction refactoring.
+            // add extracted method:
+            _vbe.ActiveCodePane.CodeModule.AddFromString(GetExtractedMethod());
+
+            // todo: replace selection with call to extracted method:
+
         }
 
         private void _view_RefreshPreview(object sender, EventArgs e)
@@ -197,7 +204,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
             result += Tokens.End + ' ' + keyword + "\r\n";
 
-            return result;
+            return "\r\n" + result;
         }
     }
 }
