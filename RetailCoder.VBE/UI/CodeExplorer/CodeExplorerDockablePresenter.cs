@@ -69,7 +69,11 @@ namespace Rubberduck.UI.CodeExplorer
             if (e.Selection.StartLine != 0)
             {
                 //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
-                var selection = new Selection(e.Selection.StartLine, 1, e.Selection.EndLine, e.Selection.EndColumn);
+                var selection = new Selection(e.Selection.StartLine,
+                                                1,
+                                                e.Selection.EndLine,
+                                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
+                                              );
                 codePane.SetSelection(selection);
                 //codePane.SetSelection(e.Selection);
             }
@@ -117,18 +121,17 @@ namespace Rubberduck.UI.CodeExplorer
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);
                 moduleNode.SelectedImageKey = moduleNode.ImageKey;
-                
+
                 var qualifiedModuleName = new Inspections.QualifiedModuleName(project.Name, component.Name);
                 moduleNode.Tag = new QualifiedSelection(qualifiedModuleName, Selection.Empty);
 
                 var parserNode = _parser.Parse(project.Name, component.Name, component.CodeModule.Lines());
 
                 AddNodes<OptionNode>(moduleNode, parserNode, qualifiedModuleName, CreateOptionNode);
-                AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName ,CreateEnumNode);
+                AddNodes<EnumNode>(moduleNode, parserNode, qualifiedModuleName, CreateEnumNode);
                 AddNodes<TypeNode>(moduleNode, parserNode, qualifiedModuleName, CreateTypeNode);
                 AddNodes<ConstDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
                 AddNodes<VariableDeclarationNode>(moduleNode, parserNode, qualifiedModuleName, CreateDeclaredIdentifierNode);
-
                 AddNodes<ProcedureNode>(moduleNode, parserNode, qualifiedModuleName, CreateProcedureNode);
 
                 moduleNodes.Add(moduleNode);
