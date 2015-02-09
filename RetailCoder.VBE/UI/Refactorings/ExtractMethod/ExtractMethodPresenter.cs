@@ -202,6 +202,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private string GetExtractedMethod()
         {
+            const string EndOfLine = "\r\n";
+
             var access = _view.Accessibility.ToString();
             var keyword = Tokens.Sub;
             var returnType = string.Empty;
@@ -213,16 +215,16 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var parameters = "(" + string.Join(", ", _view.Parameters) + ")";
 
-            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + "\r\n";
+            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + EndOfLine;
 
-            result += "\r\n" + _selectedCode + "\r\n";
+            result += EndOfLine + _selectedCode + EndOfLine;
             if (!string.IsNullOrEmpty(returnType))
             {
-                result += "    " + _view.MethodName + " = " + _view.ReturnValue.Name + "\r\n";
+                result += "    " + _view.MethodName + " = " + _view.ReturnValue.Name + EndOfLine;
             }
-            result += Tokens.End + ' ' + keyword + "\r\n";
+            result += Tokens.End + ' ' + keyword + EndOfLine;
 
-            return "\r\n" + result;
+            return EndOfLine + result;
         }
     }
 }
