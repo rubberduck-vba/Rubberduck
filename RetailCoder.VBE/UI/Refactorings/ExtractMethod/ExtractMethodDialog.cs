@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.VBA.Nodes;
@@ -20,19 +21,21 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
     public interface IExtractMethodDialog : IDialogView
     {
-        event EventHandler<ValueChangedEventArgs<IdentifierNode>> MethodReturnValueChanged;
-        void OnMethodReturnValueChanged(IdentifierNode newValue);
+        ExtractedParameter ReturnValue { get; set; }
+        IEnumerable<ExtractedParameter> ReturnValues { get; set; }
 
-        event EventHandler<ValueChangedEventArgs<VBAccessibility>> MethodAccessibilityChanged;
-        void OnMethodAccessibilityChanged(VBAccessibility newValue);
+        VBAccessibility Accessibility { get; set; }
+        string MethodName { get; set; }
 
-        event EventHandler<ValueChangedEventArgs<string>> MethodNameChanged;
-        void OnMethodNameChanged(string newValue);
-
+        event EventHandler RefreshPreview;
+        void OnRefreshPreview();
         string Preview { get; set; }
+
         IEnumerable<ExtractedParameter> Parameters { get; set; }
 
-        string MethodName { get; set; }
+        IEnumerable<ExtractedParameter> Inputs { get; set; }
+        IEnumerable<ExtractedParameter> Outputs { get; set; }
+        IEnumerable<ExtractedParameter> Locals { get; set; }
     }
 
     public partial class ExtractMethodDialog : Form, IExtractMethodDialog
@@ -42,7 +45,47 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             InitializeComponent();
             RegisterViewEvents();
 
+            MethodAccessibilityCombo.DataSource = new[]
+            {
+                VBAccessibility.Private,
+                VBAccessibility.Public,
+                VBAccessibility.Friend
+            }.ToList();
+        }
+
+        private void InitializeParameterGrid()
+        {
+            if (_parameters == null)
+            {
+                return;
+            }
+
+            MethodParametersGrid.AutoGenerateColumns = false;
+            MethodParametersGrid.Columns.Clear();
             MethodParametersGrid.DataSource = _parameters;
+            MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.WhiteSmoke;
+
+            var paramNameColumn = new DataGridViewTextBoxColumn();
+            paramNameColumn.Name = "Name";
+            paramNameColumn.DataPropertyName = "Name";
+            paramNameColumn.HeaderText = "Name";
+            paramNameColumn.ReadOnly = true;
+
+            var paramTypeColumn = new DataGridViewTextBoxColumn();
+            paramTypeColumn.Name = "TypeName";
+            paramTypeColumn.DataPropertyName = "TypeName";
+            paramTypeColumn.HeaderText = "Type";
+            paramTypeColumn.ReadOnly = true;
+
+            var paramPassedByColumn = new DataGridViewComboBoxColumn();
+            paramPassedByColumn.Name = "Passed";
+            paramPassedByColumn.DataSource = Enum.GetValues(typeof (ExtractedParameter.PassedBy));
+            paramPassedByColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            paramPassedByColumn.HeaderText = "Passed";
+            paramPassedByColumn.DataPropertyName = "Passed";
+            paramPassedByColumn.ReadOnly = true;
+
+            MethodParametersGrid.Columns.AddRange(paramNameColumn, paramTypeColumn, paramPassedByColumn);
         }
 
         private void RegisterViewEvents()
@@ -55,43 +98,37 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             MethodReturnValueCombo.SelectedIndexChanged += MethodReturnValueCombo_SelectedIndexChanged;
         }
 
-        public event EventHandler<ValueChangedEventArgs<IdentifierNode>> MethodReturnValueChanged;
-
-        public void OnMethodReturnValueChanged(IdentifierNode newValue)
+        public event EventHandler RefreshPreview;
+        public void OnRefreshPreview()
         {
-            var args = new ValueChangedEventArgs<IdentifierNode>(newValue);
-            OnViewEvent(MethodReturnValueChanged, args);
+            OnViewEvent(RefreshPreview);
         }
 
         private void MethodReturnValueCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            OnMethodReturnValueChanged((IdentifierNode)MethodReturnValueCombo.SelectedItem);
+            ReturnValue = (ExtractedParameter) MethodReturnValueCombo.SelectedItem;
         }
 
-        public event EventHandler<ValueChangedEventArgs<VBAccessibility>> MethodAccessibilityChanged;
-
-        public void OnMethodAccessibilityChanged(VBAccessibility newValue)
+        private VBAccessibility _accessibility;
+        public VBAccessibility Accessibility
         {
-            var args = new ValueChangedEventArgs<VBAccessibility>(newValue);
-            OnViewEvent(MethodAccessibilityChanged, args);
+            get { return _accessibility; }
+            set
+            {
+                _accessibility = value; 
+                OnRefreshPreview();
+            }
         }
 
         private void MethodAccessibilityCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            OnMethodAccessibilityChanged((VBAccessibility)MethodAccessibilityCombo.SelectedItem);
-        }
-
-        public event EventHandler<ValueChangedEventArgs<string>> MethodNameChanged;
-
-        public void OnMethodNameChanged(string newValue)
-        {
-            var args = new ValueChangedEventArgs<string>(newValue);
-            OnViewEvent(MethodNameChanged, args);
+            Accessibility = ((VBAccessibility) MethodAccessibilityCombo.SelectedItem);
         }
 
         private void MethodNameBox_TextChanged(object sender, EventArgs e)
         {
-            OnMethodNameChanged(MethodNameBox.Text);
+            MethodName = MethodNameBox.Text;
+            OnRefreshPreview();
         }
 
         private void OnViewEvent(EventHandler target, EventArgs args = null)
@@ -155,19 +192,55 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private BindingList<ExtractedParameter> _parameters;
         public IEnumerable<ExtractedParameter> Parameters
         {
-            get { return _parameters; }
+            get { return _parameters.Where(p => p.Name != _returnValue.Name); }
             set
             {
                 _parameters = new BindingList<ExtractedParameter>(value.ToList());
-                MethodParametersGrid.DataSource = _parameters;
-                MethodParametersGrid.Refresh();
+                InitializeParameterGrid();
+                OnRefreshPreview();
             }
         }
+
+        private BindingList<ExtractedParameter> _returnValues; 
+        public IEnumerable<ExtractedParameter> ReturnValues
+        {
+            get { return _returnValues; }
+            set
+            {
+                _returnValues = new BindingList<ExtractedParameter>(value.ToList());
+                var items = _returnValues.ToArray();
+                MethodReturnValueCombo.Items.AddRange(items);
+                MethodReturnValueCombo.DisplayMember = "Name";
+            }
+        }
+
+        private ExtractedParameter _returnValue;
+        public ExtractedParameter ReturnValue
+        {
+            get { return _returnValue; }
+            set
+            {
+                _returnValue = value;
+                MethodReturnValueCombo.Text = value.Name;
+                Parameters = Inputs.Where(input => input.Name != _returnValue.Name)
+                                   .Union(Outputs.Where(output => output.Name != _returnValue.Name));
+                OnRefreshPreview();
+            }
+        }
+
+        public IEnumerable<ExtractedParameter> Inputs { get; set; }
+        public IEnumerable<ExtractedParameter> Outputs { get; set; }
+        public IEnumerable<ExtractedParameter> Locals { get; set; }
 
         public string MethodName
         {
             get { return MethodNameBox.Text; }
-            set { MethodNameBox.Text = value; }
+            set
+            {
+                MethodNameBox.Text = value;
+                InvalidNameValidationIcon.Visible = string.IsNullOrWhiteSpace(value);
+                OnRefreshPreview();
+            }
         }
     }
 }

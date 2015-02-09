@@ -72,7 +72,7 @@ namespace Rubberduck.UI
             }
 
             var view = new ExtractMethodDialog();
-            var presenter = new ExtractMethodPresenter(view, method, selection);
+            var presenter = new ExtractMethodPresenter(_vbe, view, method, selection);
             presenter.Show();
         }
 

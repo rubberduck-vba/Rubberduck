@@ -36,6 +36,7 @@
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.PreviewBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
@@ -46,12 +47,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.MethodNameBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -104,23 +104,25 @@
             // 
             // CancelButton
             // 
+            this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelButton.Location = new System.Drawing.Point(490, 11);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 0;
             this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.UseVisualStyleBackColor = false;
             // 
             // OkButton
             // 
+            this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OkButton.Location = new System.Drawing.Point(409, 11);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(75, 23);
             this.OkButton.TabIndex = 1;
             this.OkButton.Text = "Ok";
-            this.OkButton.UseVisualStyleBackColor = true;
+            this.OkButton.UseVisualStyleBackColor = false;
             // 
             // panel1
             // 
@@ -140,6 +142,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(576, 378);
             this.panel1.TabIndex = 2;
+            // 
+            // InvalidNameValidationIcon
+            // 
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
+            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
+            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
+            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.InvalidNameValidationIcon.TabIndex = 10;
+            this.InvalidNameValidationIcon.TabStop = false;
             // 
             // PreviewBox
             // 
@@ -236,16 +248,6 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Name:";
             // 
-            // InvalidNameValidationIcon
-            // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
-            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
-            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
-            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.InvalidNameValidationIcon.TabIndex = 10;
-            this.InvalidNameValidationIcon.TabStop = false;
-            // 
             // ExtractMethodDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,16 +256,20 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ExtractMethodDialog";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Rubberduck - Extract Method";
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
             this.ResumeLayout(false);
 
         }

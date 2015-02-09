@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
@@ -54,16 +55,21 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             ByVal
         }
 
-        public ExtractedParameter(string name, string typeName, PassedBy by)
+        public ExtractedParameter(string name, string typeName, PassedBy passed)
         {
             Name = name;
             TypeName = typeName;
-            By = by;
+            Passed = passed;
         }
 
         public string Name { get; set; }
         public string TypeName { get; set; }
-        public PassedBy By { get; set; }
+        public PassedBy Passed { get; set; }
+
+        public override string ToString()
+        {
+            return Passed.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
+        }
     }
 
     [ComVisible(false)]
@@ -78,13 +84,13 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IEnumerable<ExtractedParameter> _output;
         private readonly IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> _locals; 
 
-        private readonly Selection _selection;
+        private readonly string _selectedCode;
 
-        public ExtractMethodPresenter(IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
+        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
         {
             _view = dialog;
             _parentMethodTree = parentMethod;
-            _selection = selection;
+            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.StartLine, selection.LineCount);
 
             _parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
             
@@ -133,15 +139,21 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public void Show()
         {
             _view.MethodName = "Method1";
+            _view.Inputs = _input;
+            _view.Outputs = _output.Select(output => new ExtractedParameter(output.Name, output.TypeName, ExtractedParameter.PassedBy.ByRef));
+            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.GetText(), string.Empty, ExtractedParameter.PassedBy.ByVal));
+
+            _view.ReturnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
+                .Union(_view.Outputs)
+                .Union(_view.Inputs)
+                .Union(_view.Locals);
 
             if (_output.Count() == 1)
             {
-                _view.Parameters = _input;
+                _view.ReturnValue = _view.Outputs.Single();
             }
-            else
-            {
-                _view.Parameters = _input.Union(_output);
-            }
+
+            _view.RefreshPreview += _view_RefreshPreview;
 
             var result = _view.ShowDialog();
             if (result != DialogResult.OK)
@@ -152,24 +164,34 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             // todo: proceed with method extraction refactoring.
         }
 
-        public string MethodName { get; private set; }
-        
-        public VBAccessibility MethodAccessibility { get; private set; }
-        public IEnumerable<VBAccessibility> AvailableAccessibilities
+        private void _view_RefreshPreview(object sender, EventArgs e)
         {
-            get
-            {
-                return new[]
-                {
-                    VBAccessibility.Private,
-                    VBAccessibility.Public,
-                    VBAccessibility.Friend
-                };
-            } 
+            Preview();
         }
 
-        public IdentifierNode MethodReturnValue { get; private set; }
+        private void Preview()
+        {
+            var access = _view.Accessibility.ToString();
+            var keyword = Tokens.Sub;
+            var returnType = string.Empty;
+            if (_view.ReturnValue.Name != "(none)")
+            {
+                keyword = Tokens.Function;
+                returnType = Tokens.As + ' ' + _view.ReturnValue.TypeName;
+            }
 
-        public string NewMethodPreview { get; private set; }
+            var parameters = "(" + string.Join(", ", _view.Parameters) + ")";
+
+            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + "\r\n";
+
+            result += "\r\n" + _selectedCode + "\r\n";
+            if (!string.IsNullOrEmpty(returnType))
+            {
+                result += "    " + _view.MethodName + " = " + _view.ReturnValue.Name + "\r\n";
+            }
+            result += Tokens.End + ' ' + keyword + "\r\n";
+
+            _view.Preview = result;
+        }
     }
 }
