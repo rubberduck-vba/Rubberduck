@@ -86,10 +86,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private readonly string _selectedCode;
         private readonly VBE _vbe;
+        private readonly Selection _selection;
 
         public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
         {
             _vbe = vbe;
+            _selection = selection;
 
             _view = dialog;
             _parentMethodTree = parentMethod;
@@ -165,11 +167,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 return;
             }
 
-            // add extracted method:
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.StartLine, _selection.LineCount - 1);
+            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.StartLine, GetMethodCall());
+
             _vbe.ActiveCodePane.CodeModule.AddFromString(GetExtractedMethod());
-
-            // todo: replace selection with call to extracted method:
-
         }
 
         private void _view_RefreshPreview(object sender, EventArgs e)
@@ -180,6 +181,23 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private void Preview()
         {
             _view.Preview = GetExtractedMethod();
+        }
+
+        private string GetMethodCall()
+        {
+            string result;
+            var returnValueName = _view.ReturnValue.Name;
+            var argsList = string.Join(", ", _view.Parameters.Select(p => p.Name));
+            if (returnValueName != "(none)")
+            {
+                result = returnValueName + " = " + _view.MethodName + '(' + argsList + ')';
+            }
+            else
+            {
+                result = _view.MethodName + ' ' + argsList;
+            }
+
+            return "    " + result; // todo: smarter indentation
         }
 
         private string GetExtractedMethod()
