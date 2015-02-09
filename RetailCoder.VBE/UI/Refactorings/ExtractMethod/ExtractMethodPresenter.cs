@@ -154,6 +154,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
 
             _view.RefreshPreview += _view_RefreshPreview;
+            _view.OnRefreshPreview();
 
             var result = _view.ShowDialog();
             if (result != DialogResult.OK)
@@ -170,6 +171,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         }
 
         private void Preview()
+        {
+            _view.Preview = GetExtractedMethod();
+        }
+
+        private string GetExtractedMethod()
         {
             var access = _view.Accessibility.ToString();
             var keyword = Tokens.Sub;
@@ -191,7 +197,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
             result += Tokens.End + ' ' + keyword + "\r\n";
 
-            _view.Preview = result;
+            return result;
         }
     }
 }
