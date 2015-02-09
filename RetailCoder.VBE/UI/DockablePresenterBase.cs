@@ -58,7 +58,14 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            _window.Visible = true;
+            try
+            {
+                _window.Visible = true;
+            }
+            catch (COMException e)
+            {
+                // bug: this exception shouldn't be happening. issue #169.
+            }
         }
 
         public virtual void Close()
