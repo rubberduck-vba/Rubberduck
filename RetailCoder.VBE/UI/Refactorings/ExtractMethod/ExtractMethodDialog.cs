@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.VBA.Nodes;
 
@@ -25,6 +28,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         event EventHandler<ValueChangedEventArgs<string>> MethodNameChanged;
         void OnMethodNameChanged(string newValue);
+
+        string Preview { get; set; }
+        IEnumerable<ExtractedParameter> Parameters { get; set; }
+
+        string MethodName { get; set; }
     }
 
     public partial class ExtractMethodDialog : Form, IExtractMethodDialog
@@ -33,6 +41,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         {
             InitializeComponent();
             RegisterViewEvents();
+
+            MethodParametersGrid.DataSource = _parameters;
         }
 
         private void RegisterViewEvents()
@@ -129,6 +139,35 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private void OkButtonOnClick(object sender, EventArgs e)
         {
             OnOkButtonClicked();
+        }
+
+        private string _preview;
+        public string Preview
+        {
+            get { return _preview; }
+            set
+            {
+                _preview = value;
+                PreviewBox.Text = _preview;
+            }
+        }
+
+        private BindingList<ExtractedParameter> _parameters;
+        public IEnumerable<ExtractedParameter> Parameters
+        {
+            get { return _parameters; }
+            set
+            {
+                _parameters = new BindingList<ExtractedParameter>(value.ToList());
+                MethodParametersGrid.DataSource = _parameters;
+                MethodParametersGrid.Refresh();
+            }
+        }
+
+        public string MethodName
+        {
+            get { return MethodNameBox.Text; }
+            set { MethodNameBox.Text = value; }
         }
     }
 }

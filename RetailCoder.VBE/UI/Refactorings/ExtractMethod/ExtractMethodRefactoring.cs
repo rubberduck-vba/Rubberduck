@@ -25,10 +25,13 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public static IDictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, Selection selection)
         {
             var declarations = parseTree.GetDeclarations().ToList();
+
             var constants = declarations.OfType<VisualBasic6Parser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
             var variables = declarations.OfType<VisualBasic6Parser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
-            
+            var arguments = declarations.OfType<VisualBasic6Parser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
+
             var identifiers = constants.Union(variables)
+                                       .Union(arguments)
                                        .ToDictionary(declaration => declaration.GetText(), 
                                                      declaration => declaration);
 

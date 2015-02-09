@@ -140,6 +140,11 @@ namespace Rubberduck.VBA
             {
                 _members.Add(context);
             }
+
+            public override void EnterArg(VisualBasic6Parser.ArgContext context)
+            {
+                _members.Add(context);
+            }
         }
 
         private class ModuleOptionsListener : VisualBasic6BaseListener, IExtensionListener<VisualBasic6Parser.ModuleOptionContext>

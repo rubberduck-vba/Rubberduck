@@ -115,14 +115,34 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                     kvp.Key.GetText(),
                     ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause() == null
                         ? Tokens.Variant
-                        : ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause().GetText(),
+                        : ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause().type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
-            return consts.Union(variables);
+            var arguments = declarations
+                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.ArgContext)
+                .Select(kvp => new ExtractedParameter(
+                    kvp.Key.GetText(),
+                    ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause() == null
+                        ? Tokens.Variant
+                        : ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
+                    ExtractedParameter.PassedBy.ByVal));
+
+            return consts.Union(variables.Union(arguments));
         }
 
         public void Show()
         {
+            _view.MethodName = "Method1";
+
+            if (_output.Count() == 1)
+            {
+                _view.Parameters = _input;
+            }
+            else
+            {
+                _view.Parameters = _input.Union(_output);
+            }
+
             var result = _view.ShowDialog();
             if (result != DialogResult.OK)
             {
