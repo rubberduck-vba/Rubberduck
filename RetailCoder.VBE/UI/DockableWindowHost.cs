@@ -10,6 +10,8 @@ namespace Rubberduck.UI
     [ProgId(ProgId)]
     [ComVisible(true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+    //Underscores make classes invisible to VB6 object explorer
+    //Nothing breaks because we declare a ProgId
     public partial class _DockableWindowHost : UserControl
     {
         private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
