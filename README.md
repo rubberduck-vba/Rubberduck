@@ -72,6 +72,12 @@ If you're **upgrading** from a previous version, you will need to completely uni
 
 ---
 
+##Contributing
+
+[Come meet the devs in Code Review's "VBA" chatroom](http://chat.stackexchange.com/rooms/14929/vba)!
+
+---
+
 ## License
 
 The MIT License (MIT)
