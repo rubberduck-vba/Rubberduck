@@ -156,11 +156,6 @@
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
     <Compile Include="VBEHost\PowerPointApp.cs" />
     <Compile Include="VBEHost\PublisherApp.cs" />
-    <Compile Include="Refactoring\MenuIcons.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MenuIcons.resx</DependentUpon>
-    </Compile>
     <Compile Include="VBA\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
@@ -335,10 +330,6 @@
     <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Refactoring\MenuIcons.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MenuIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
