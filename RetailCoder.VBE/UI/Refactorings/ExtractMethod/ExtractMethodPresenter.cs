@@ -144,18 +144,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public void Show()
         {
             _view.MethodName = "Method1";
-            _view.Inputs = _input;
-            _view.Outputs = _output.Select(output => new ExtractedParameter(output.Name, output.TypeName, ExtractedParameter.PassedBy.ByRef));
-            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.GetText(), string.Empty, ExtractedParameter.PassedBy.ByVal));
+            _view.Inputs = _input.ToList();
+            _view.Outputs = _output.Select(output => new ExtractedParameter(output.Name, output.TypeName, ExtractedParameter.PassedBy.ByRef)).ToList();
+            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.GetText(), string.Empty, ExtractedParameter.PassedBy.ByVal)).ToList();
 
-            _view.ReturnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
+            var returnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
                 .Union(_view.Outputs)
                 .Union(_view.Inputs)
-                .Union(_view.Locals);
+                .Union(_view.Locals)
+                .ToList();
 
+            _view.ReturnValues = returnValues;
             if (_output.Count() == 1)
             {
-                _view.ReturnValue = _view.Outputs.Single();
+                _view.ReturnValue = _output.Single();
             }
 
             _view.RefreshPreview += _view_RefreshPreview;
@@ -200,6 +202,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             return "    " + result; // todo: smarter indentation
         }
 
+        [ComVisible(false)]
         private string GetExtractedMethod()
         {
             const string EndOfLine = "\r\n";
@@ -207,7 +210,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var access = _view.Accessibility.ToString();
             var keyword = Tokens.Sub;
             var returnType = string.Empty;
-            if (_view.ReturnValue.Name != "(none)")
+            if (_view.ReturnValue != null && _view.ReturnValue.Name != "(none)")
             {
                 keyword = Tokens.Function;
                 returnType = Tokens.As + ' ' + _view.ReturnValue.TypeName;
@@ -218,9 +221,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + EndOfLine;
 
             result += EndOfLine + _selectedCode + EndOfLine;
+
             if (!string.IsNullOrEmpty(returnType))
             {
-                result += "    " + _view.MethodName + " = " + _view.ReturnValue.Name + EndOfLine;
+                result += "    " + _view.MethodName + " = " + returnType + EndOfLine;
             }
             result += Tokens.End + ' ' + keyword + EndOfLine;
 

@@ -42,6 +42,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
     {
         public ExtractMethodDialog()
         {
+            _parameters = new BindingList<ExtractedParameter>();
+
             InitializeComponent();
             RegisterViewEvents();
 
@@ -55,11 +57,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private void InitializeParameterGrid()
         {
-            if (_parameters == null)
-            {
-                return;
-            }
-
             MethodParametersGrid.AutoGenerateColumns = false;
             MethodParametersGrid.Columns.Clear();
             MethodParametersGrid.DataSource = _parameters;
