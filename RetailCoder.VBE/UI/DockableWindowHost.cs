@@ -10,7 +10,7 @@ namespace Rubberduck.UI
     [ProgId(ProgId)]
     [ComVisible(true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial class DockableWindowHost : UserControl
+    public partial class _DockableWindowHost : UserControl
     {
         private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
         public static string RegisteredClassId { get { return ClassId; } }

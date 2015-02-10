@@ -26,9 +26,9 @@ namespace Rubberduck.UI
         private Window CreateToolWindow(IDockableUserControl control)
         {
             object userControlObject = null;
-            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
+            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
             
-            var userControlHost = (DockableWindowHost)userControlObject;
+            var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
