@@ -2,6 +2,7 @@
 using Extensibility;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Rubberduck
@@ -9,6 +10,8 @@ namespace Rubberduck
     [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
+    //[System.ComponentModel.Description("Entry point for the add-in. DO NOT CALL DIRECTLY.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class Extension : IDTExtensibility2, IDisposable
     {
         public const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";

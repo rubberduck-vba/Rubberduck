@@ -2,12 +2,14 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Rubberduck.UI
 {
     [Guid(ClassId)]
     [ProgId(ProgId)]
     [ComVisible(true)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public partial class DockableWindowHost : UserControl
     {
         private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
