@@ -183,6 +183,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ExtractMethod_6786_32 {
+            get {
+                object obj = ResourceManager.GetObject("ExtractMethod_6786_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GoLtrHS {
             get {
                 object obj = ResourceManager.GetObject("GoLtrHS", resourceCulture);

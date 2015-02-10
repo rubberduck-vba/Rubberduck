@@ -12,7 +12,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI
 {
@@ -68,8 +67,8 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
-            _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
-            _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));
+            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
+            _about = AddButton(menu, "&About...", true, OnAboutClick);
             
         }
 
