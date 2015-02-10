@@ -177,6 +177,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private void _view_RefreshPreview(object sender, EventArgs e)
         {
+            var hasReturnValue = _view.ReturnValue != null && _view.ReturnValue.Name != "(none)";
+            _view.CanSetReturnValue = 
+                hasReturnValue && !IsValueType(_view.ReturnValue.TypeName);
+
             Preview();
         }
 
@@ -192,25 +196,48 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var argsList = string.Join(", ", _view.Parameters.Select(p => p.Name));
             if (returnValueName != "(none)")
             {
-                result = returnValueName + " = " + _view.MethodName + '(' + argsList + ')';
+                var setter = _view.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
+                result = setter + returnValueName + " = " + _view.MethodName + '(' + argsList + ')';
             }
             else
             {
                 result = _view.MethodName + ' ' + argsList;
             }
-
+            
             return "    " + result; // todo: smarter indentation
+        }
+
+        private static readonly IEnumerable<string> _valueTypes = new[]
+        {
+            Tokens.Boolean,
+            Tokens.Byte,
+            Tokens.Currency,
+            Tokens.Date,
+            Tokens.Decimal,
+            Tokens.Double,
+            Tokens.Integer,
+            Tokens.Long,
+            Tokens.LongLong,
+            Tokens.Single,
+            Tokens.String
+        };
+
+        public static bool IsValueType(string typeName)
+        {
+            return _valueTypes.Contains(typeName);
         }
 
         [ComVisible(false)]
         private string GetExtractedMethod()
         {
-            const string EndOfLine = "\r\n";
+            const string newLine = "\r\n";
 
             var access = _view.Accessibility.ToString();
             var keyword = Tokens.Sub;
             var returnType = string.Empty;
-            if (_view.ReturnValue != null && _view.ReturnValue.Name != "(none)")
+
+            var isFunction = _view.ReturnValue != null && _view.ReturnValue.Name != "(none)";
+            if (isFunction)
             {
                 keyword = Tokens.Function;
                 returnType = Tokens.As + ' ' + _view.ReturnValue.TypeName;
@@ -218,17 +245,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var parameters = "(" + string.Join(", ", _view.Parameters) + ")";
 
-            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + EndOfLine;
+            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
 
-            result += EndOfLine + _selectedCode + EndOfLine;
+            result += newLine + _selectedCode + newLine;
 
-            if (!string.IsNullOrEmpty(returnType))
+            if (isFunction)
             {
-                result += "    " + _view.MethodName + " = " + returnType + EndOfLine;
+                // return value by assigning the method itself:
+                var setter = _view.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
+                result += "    " + setter + _view.MethodName + " = " + _view.ReturnValue.Name + newLine;
             }
-            result += Tokens.End + ' ' + keyword + EndOfLine;
 
-            return EndOfLine + result;
+            result += Tokens.End + ' ' + keyword + newLine;
+
+            return newLine + result + newLine;
         }
     }
 }

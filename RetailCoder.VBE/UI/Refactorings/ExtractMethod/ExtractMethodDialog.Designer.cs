@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtractMethodDialog));
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
+            this.SetReturnValueCheck = new System.Windows.Forms.CheckBox();
             this.PreviewBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
@@ -47,47 +47,13 @@
             this.label4 = new System.Windows.Forms.Label();
             this.MethodNameBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
             this.SuspendLayout();
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.White;
-            this.flowLayoutPanel1.Controls.Add(this.label1);
-            this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(8);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(576, 60);
-            this.flowLayoutPanel1.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(11, 8);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(2);
-            this.label1.Size = new System.Drawing.Size(107, 19);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Extract Method";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 27);
-            this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(4);
-            this.label2.Size = new System.Drawing.Size(452, 21);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
-    "her options.";
             // 
             // flowLayoutPanel2
             // 
@@ -124,8 +90,42 @@
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
             // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.White;
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(576, 68);
+            this.panel2.TabIndex = 13;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(15, 9);
+            this.label1.Name = "label1";
+            this.label1.Padding = new System.Windows.Forms.Padding(2);
+            this.label1.Size = new System.Drawing.Size(107, 19);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Extract Method";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 30);
+            this.label2.Name = "label2";
+            this.label2.Padding = new System.Windows.Forms.Padding(4);
+            this.label2.Size = new System.Drawing.Size(452, 21);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
+    "her options.";
+            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.SetReturnValueCheck);
             this.panel1.Controls.Add(this.InvalidNameValidationIcon);
             this.panel1.Controls.Add(this.PreviewBox);
             this.panel1.Controls.Add(this.label7);
@@ -137,21 +137,20 @@
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.MethodNameBox);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 60);
+            this.panel1.Location = new System.Drawing.Point(0, 71);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(576, 378);
-            this.panel1.TabIndex = 2;
+            this.panel1.Size = new System.Drawing.Size(576, 372);
+            this.panel1.TabIndex = 14;
             // 
-            // InvalidNameValidationIcon
+            // SetReturnValueCheck
             // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
-            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
-            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
-            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.InvalidNameValidationIcon.TabIndex = 10;
-            this.InvalidNameValidationIcon.TabStop = false;
+            this.SetReturnValueCheck.AutoSize = true;
+            this.SetReturnValueCheck.Location = new System.Drawing.Point(255, 37);
+            this.SetReturnValueCheck.Name = "SetReturnValueCheck";
+            this.SetReturnValueCheck.Size = new System.Drawing.Size(42, 17);
+            this.SetReturnValueCheck.TabIndex = 11;
+            this.SetReturnValueCheck.Text = "Set";
+            this.SetReturnValueCheck.UseVisualStyleBackColor = true;
             // 
             // PreviewBox
             // 
@@ -159,7 +158,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PreviewBox.BackColor = System.Drawing.Color.White;
             this.PreviewBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PreviewBox.Location = new System.Drawing.Point(18, 212);
+            this.PreviewBox.Location = new System.Drawing.Point(18, 206);
             this.PreviewBox.Multiline = true;
             this.PreviewBox.Name = "PreviewBox";
             this.PreviewBox.ReadOnly = true;
@@ -171,7 +170,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 195);
+            this.label7.Location = new System.Drawing.Point(15, 190);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(48, 13);
             this.label7.TabIndex = 8;
@@ -183,16 +182,16 @@
             this.MethodParametersGrid.AllowUserToDeleteRows = false;
             this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.MethodParametersGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MethodParametersGrid.Location = new System.Drawing.Point(18, 85);
+            this.MethodParametersGrid.Location = new System.Drawing.Point(18, 82);
             this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
             this.MethodParametersGrid.Name = "MethodParametersGrid";
-            this.MethodParametersGrid.Size = new System.Drawing.Size(547, 97);
+            this.MethodParametersGrid.Size = new System.Drawing.Size(546, 97);
             this.MethodParametersGrid.TabIndex = 7;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 68);
+            this.label6.Location = new System.Drawing.Point(15, 66);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(63, 13);
             this.label6.TabIndex = 6;
@@ -201,15 +200,15 @@
             // MethodAccessibilityCombo
             // 
             this.MethodAccessibilityCombo.FormattingEnabled = true;
-            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(353, 34);
+            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(410, 34);
             this.MethodAccessibilityCombo.Name = "MethodAccessibilityCombo";
-            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(211, 21);
+            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(155, 21);
             this.MethodAccessibilityCombo.TabIndex = 5;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(280, 37);
+            this.label5.Location = new System.Drawing.Point(336, 37);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(67, 13);
             this.label5.TabIndex = 4;
@@ -220,7 +219,7 @@
             this.MethodReturnValueCombo.FormattingEnabled = true;
             this.MethodReturnValueCombo.Location = new System.Drawing.Point(63, 34);
             this.MethodReturnValueCombo.Name = "MethodReturnValueCombo";
-            this.MethodReturnValueCombo.Size = new System.Drawing.Size(211, 21);
+            this.MethodReturnValueCombo.Size = new System.Drawing.Size(185, 21);
             this.MethodReturnValueCombo.TabIndex = 3;
             // 
             // label4
@@ -248,14 +247,24 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Name:";
             // 
+            // InvalidNameValidationIcon
+            // 
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
+            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
+            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
+            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.InvalidNameValidationIcon.TabIndex = 10;
+            this.InvalidNameValidationIcon.TabStop = false;
+            // 
             // ExtractMethodDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(576, 481);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.flowLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -263,36 +272,37 @@
             this.Name = "ExtractMethodDialog";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Rubberduck - Extract Method";
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Button OkButton;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox SetReturnValueCheck;
+        private System.Windows.Forms.PictureBox InvalidNameValidationIcon;
+        private System.Windows.Forms.TextBox PreviewBox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DataGridView MethodParametersGrid;
+        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox MethodAccessibilityCombo;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox MethodReturnValueCombo;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox MethodNameBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox PreviewBox;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.DataGridView MethodParametersGrid;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.PictureBox InvalidNameValidationIcon;
     }
 }

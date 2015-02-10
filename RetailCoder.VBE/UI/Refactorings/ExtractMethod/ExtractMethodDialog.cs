@@ -26,6 +26,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         VBAccessibility Accessibility { get; set; }
         string MethodName { get; set; }
+        bool SetReturnValue { get; set; }
+        bool CanSetReturnValue { get; set; }
 
         event EventHandler RefreshPreview;
         void OnRefreshPreview();
@@ -90,6 +92,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             OkButton.Click += OkButtonOnClick;
             CancelButton.Click += CancelButton_Click;
 
+            SetReturnValueCheck.CheckedChanged += SetReturnValueCheck_CheckedChanged;
             MethodNameBox.TextChanged += MethodNameBox_TextChanged;
             MethodAccessibilityCombo.SelectedIndexChanged += MethodAccessibilityCombo_SelectedIndexChanged;
             MethodReturnValueCombo.SelectedIndexChanged += MethodReturnValueCombo_SelectedIndexChanged;
@@ -99,6 +102,33 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public void OnRefreshPreview()
         {
             OnViewEvent(RefreshPreview);
+        }
+
+        private bool _setReturnValue;
+
+        public bool SetReturnValue
+        {
+            get { return _setReturnValue; }
+            set
+            {
+                _setReturnValue = value;
+                OnRefreshPreview();
+            }
+        }
+
+        public bool CanSetReturnValue
+        {
+            get { return SetReturnValueCheck.Enabled; }
+            set
+            {
+                SetReturnValueCheck.Enabled = value;
+                SetReturnValueCheck.Checked = value;
+            }
+        }
+
+        private void SetReturnValueCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            SetReturnValue = SetReturnValueCheck.Checked;
         }
 
         private void MethodReturnValueCombo_SelectedIndexChanged(object sender, EventArgs e)
