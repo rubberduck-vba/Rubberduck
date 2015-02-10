@@ -21,6 +21,13 @@ namespace Rubberduck.Extensions
             int endColumn;
 
             code.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+            if (endLine > startLine && endColumn == 1)
+            {
+                endLine--;
+                endColumn = code.CodeModule.get_Lines(endLine, 1).Length;
+            }
+
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
