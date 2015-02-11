@@ -1,12 +1,17 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using AddIn = Microsoft.Vbe.Interop.AddIn;
+using Font = System.Drawing.Font;
+using Selection = Rubberduck.Extensions.Selection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -74,19 +79,23 @@ namespace Rubberduck.UI.CodeExplorer
                                                 e.Selection.EndLine,
                                                 e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
                                               );
-                codePane.SetSelection(selection);
-                //codePane.SetSelection(e.Selection);
+                //codePane.SetSelection(selection);
+                codePane.SetSelection(e.Selection);
             }
         }
 
-        private void RefreshExplorerTreeView()
+        private async void RefreshExplorerTreeView()
         {
+            Control.Cursor = Cursors.WaitCursor;
             Control.SolutionTree.Nodes.Clear();
-            var projects = VBE.VBProjects.Cast<VBProject>().OrderBy(project => project.Name);
+            var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
             {
-                AddProjectNode(vbProject);
+                Control.SolutionTree.Nodes.Add(await GetProjectNodeAsync(vbProject));
             }
+
+            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
+            Control.Cursor = Cursors.Default;
         }
 
         private void RefreshExplorerTreeView(object sender, System.EventArgs e)
@@ -94,26 +103,27 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void AddProjectNode(VBProject project)
+        private async Task<TreeNode> GetProjectNodeAsync(VBProject project)
         {
-            var treeView = Control.SolutionTree;
+            return await Task.Run(() =>
+            {
+                var treeView = Control.SolutionTree;
+                var projectNode = new TreeNode();
+                projectNode.Text = project.Name;
+                projectNode.Tag = new QualifiedSelection();
 
-            var projectNode = new TreeNode();
-            projectNode.Text = project.Name;
-            projectNode.Tag = new QualifiedSelection();
+                projectNode.ImageKey = "ClosedFolder";
 
-            projectNode.ImageKey = "ClosedFolder";
-            treeView.BackColor = treeView.BackColor;
+                var moduleNodes = CreateModuleNodes(project, new Font(treeView.Font, FontStyle.Regular));
 
-            var moduleNodes = CreateModuleNodes(project, new Font(treeView.Font, FontStyle.Regular));
-
-            projectNode.Nodes.AddRange(moduleNodes.ToArray());
-            treeView.Nodes.Add(projectNode);
+                projectNode.Nodes.AddRange(moduleNodes.ToArray());
+                return projectNode;
+            });
         }
 
-        private ConcurrentBag<TreeNode> CreateModuleNodes(VBProject project, Font font)
+        private IEnumerable<TreeNode> CreateModuleNodes(VBProject project, Font font)
         {
-            var moduleNodes = new ConcurrentBag<TreeNode>();
+            var moduleNodes = new List<TreeNode>();
 
             foreach (VBComponent component in project.VBComponents)
             {

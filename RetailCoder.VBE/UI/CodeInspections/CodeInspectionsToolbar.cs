@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -150,17 +152,23 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var code = _parser.Parse(_vbe.ActiveVBProject).ToList();
+            RefreshAsync();
+        }
 
-            var results = new List<CodeInspectionResultBase>();
-            foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
+        private async void RefreshAsync()
+        {
+            var code = (await _parser.ParseAsync(_vbe.ActiveVBProject)).ToList();
+
+            var results = new ConcurrentBag<CodeInspectionResultBase>();
+            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
+            Parallel.ForEach(inspections, inspection =>
             {
-                var result = inspection.GetInspectionResults(code).ToArray();
-                if (result.Length != 0)
+                var result = inspection.GetInspectionResults(code);
+                foreach (var inspectionResult in result)
                 {
-                    results.AddRange(result);
+                    results.Add(inspectionResult);
                 }
-            }
+            });
 
             _issues = results.ToArray();
             _currentIssue = 0;

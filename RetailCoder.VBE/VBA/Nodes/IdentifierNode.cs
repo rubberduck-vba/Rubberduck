@@ -27,8 +27,8 @@ namespace Rubberduck.VBA.Nodes
             get
             {
                 return _certainContext != null
-                    ? _certainContext.IDENTIFIER()[0].GetText()
-                    : _ambiguousContext.IDENTIFIER()[0].GetText();
+                    ? _certainContext.GetText()
+                    : _ambiguousContext.GetText();
             }
         }
 

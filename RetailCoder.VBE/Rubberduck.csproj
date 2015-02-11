@@ -96,6 +96,7 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="VBA\IRubberduckParser.cs" />
     <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
