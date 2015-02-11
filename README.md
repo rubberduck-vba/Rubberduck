@@ -1,4 +1,4 @@
-#Every programmer needs a Rubberduk.
+#Every programmer needs a Rubberduck.
 
 ![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
