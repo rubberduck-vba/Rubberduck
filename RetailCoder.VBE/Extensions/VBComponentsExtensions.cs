@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Extensions
 {
