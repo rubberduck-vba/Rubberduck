@@ -1,47 +1,75 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI.CodeExplorer;
+using Rubberduck.Extensions;
+using Rubberduck.Properties;
+using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
 
 namespace Rubberduck.UI
 {
     [ComVisible(false)]
-    public class RefactorMenu : IDisposable
+    public class RefactorMenu : Menu, IDisposable
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
-        public RefactorMenu(VBE vbe, AddIn addin, Parser parser)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
+            : base(vbe, addin)
         {
-            _vbe = vbe;
-            _addin = addin;
             _parser = parser;
         }
 
-        private CommandBarButton _parseModuleButton;
-        public CommandBarButton ParseModuleButton { get { return _parseModuleButton; } }
-        
+        private CommandBarButton _extractMethodButton;
+
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
-            _parseModuleButton = AddMenuButton(menu);
-            _parseModuleButton.Caption = "&Parse module";
-            _parseModuleButton.FaceId = 3039;
-            _parseModuleButton.Click += OnParseModuleButtonClick;
+            _extractMethodButton = AddMenuButton(menu,"Extract &Method", Resources.ExtractMethod_6786_32);
+            _extractMethodButton.Click += OnExtractMethodButtonClick;
 
         }
 
-        private void OnParseModuleButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin))
+            if (IDE.ActiveCodePane == null)
             {
-                presenter.Show();
+                return;
             }
+
+            var selection = IDE.ActiveCodePane.GetSelection();
+            if (selection.StartLine <= IDE.ActiveCodePane.CodeModule.CountOfDeclarationLines)
+            {
+                return;
+            }
+
+            vbext_ProcKind startKind;
+            var startScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.StartLine, out startKind);
+            vbext_ProcKind endKind;
+            var endScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.EndLine, out endKind);
+
+            if (startScope != endScope)
+            {
+                return;
+            }
+
+            // if method is a property, GetProcedure(name) can return up to 3 members:
+            var method = _parser.Parse(IDE.ActiveCodePane.CodeModule.Lines())
+                                .GetProcedure(startScope)
+                                .SingleOrDefault(proc => proc.GetSelection().Contains(selection));
+
+            if (method == null)
+            {
+                return;
+            }
+
+            var view = new ExtractMethodDialog();
+            var presenter = new ExtractMethodPresenter(IDE, view, method, selection);
+            presenter.Show();
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

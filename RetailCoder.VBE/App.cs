@@ -7,6 +7,7 @@ using Rubberduck.UI;
 using Rubberduck.Config;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck
 {
@@ -21,15 +22,11 @@ namespace Rubberduck
         public App(VBE vbe, AddIn addIn)
         {
             _configService = new ConfigurationLoader();
-
-            var grammar = _configService.GetImplementedSyntax();
-
             _inspections = _configService.GetImplementedCodeInspections();
 
             var config = _configService.LoadConfiguration();
             EnableCodeInspections(config);
-
-            var parser = new Parser(grammar);
+            var parser = new VBParser();
 
             _menu = new RubberduckMenu(vbe, addIn, _configService, parser, _inspections);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, parser, _inspections);

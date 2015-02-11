@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
@@ -18,14 +14,16 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly AddIn _addin;
         private readonly IEnumerable<IInspection> _inspections;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
+        private readonly CodeInspectionsWindow _window;
 
-        public CodeInspectionsMenu(VBE vbe, AddIn addin, Parser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _addin = addin;
             _parser = parser;
             _inspections = inspections;
+            _window = new CodeInspectionsWindow();
         }
 
         private CommandBarButton _codeInspectionsButton;
@@ -42,7 +40,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
         {
-            var presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, _vbe, _addin);
+            var presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, _vbe, _addin, _window);
             presenter.Show();
         }
     }

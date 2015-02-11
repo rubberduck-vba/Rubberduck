@@ -7,18 +7,21 @@ using Rubberduck.Config;
 using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    /// <summary>   (Not COM visible) Presenter for the Todo Explorer.  </summary>
+    /// <summary>
+    /// Presenter for the to-do items explorer.
+    /// </summary>
     [ComVisible(false)]
     public class ToDoExplorerDockablePresenter : DockablePresenterBase
     {
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
         private ToDoExplorerWindow Control { get { return UserControl as ToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(Parser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
             : base(vbe, addin, new ToDoExplorerWindow())
         {
             _parser = parser;
@@ -34,24 +37,27 @@ namespace Rubberduck.UI.ToDoItems
             var items = new List<ToDoItem>();
             foreach (var project in VBE.VBProjects.Cast<VBProject>())
             {
-                var tree = _parser.Parse(project);
-                items.AddRange(tree.FindAllComments().SelectMany(GetToDoMarkers));
+                var modules = _parser.Parse(project);
+                foreach (var module in modules)
+                {
+                    items.AddRange(module.Comments.SelectMany(GetToDoMarkers));
+                }
             }
 
             Control.SetItems(items);
         }
 
-        private IEnumerable<ToDoItem> GetToDoMarkers(Instruction instruction)
+        private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            return _markers.Where(marker => instruction.Comment.ToLowerInvariant()
+            return _markers.Where(marker => comment.Comment.ToLowerInvariant()
                                                    .Contains(marker.Text.ToLowerInvariant()))
-                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, instruction));
+                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, comment));
         }
 
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
         {
             var project = VBE.VBProjects.Cast<VBProject>()
-                .FirstOrDefault(p => p.Name == e.Selection.ProjectName);
+                .FirstOrDefault(p => p.Name == e.SelectedItem.Selection.QualifiedName.ProjectName);
 
             if (project == null)
             {
@@ -59,7 +65,7 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var component = project.VBComponents.Cast<VBComponent>()
-                .FirstOrDefault(c => c.Name == e.Selection.ModuleName);
+                .FirstOrDefault(c => c.Name == e.SelectedItem.Selection.QualifiedName.ModuleName);
 
             if (component == null)
             {
@@ -68,7 +74,7 @@ namespace Rubberduck.UI.ToDoItems
 
             var codePane = component.CodeModule.CodePane;
 
-            codePane.SetSelection(e.Selection.LineNumber);
+            codePane.SetSelection(e.SelectedItem.Selection.Selection);
             codePane.ForceFocus();
         }
     }

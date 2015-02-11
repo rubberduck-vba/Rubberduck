@@ -12,14 +12,16 @@ namespace Rubberduck.Inspections
     [ComVisible(false)]
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type)
-            : base(inspection, node, type)
+        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VisualBasic6Parser.ArgContext> qualifiedContext)
+            : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
+        private new VisualBasic6Parser.ArgContext Context { get { return base.Context as VisualBasic6Parser.ArgContext; } }
+
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            if ((Node as ParameterNode).Identifier.IsArray)
+            if (Context.LPAREN() != null && Context.RPAREN() != null)
             {
                 // array parameters must be passed by reference
                 return new Dictionary<string, Action<VBE>>
@@ -37,33 +39,25 @@ namespace Rubberduck.Inspections
 
         private void PassParameterByRef(VBE vbe)
         {
-            ChangeParameterPassing(vbe, ReservedKeywords.ByRef);
+            ChangeParameterPassing(vbe, Tokens.ByRef);
         }
 
         private void PassParameterByVal(VBE vbe)
         {
-            ChangeParameterPassing(vbe, ReservedKeywords.ByVal);
+            ChangeParameterPassing(vbe, Tokens.ByVal);
         }
 
         private void ChangeParameterPassing(VBE vbe, string newValue)
         {
-            var instruction = Node.Instruction;
-            if (!instruction.Line.IsMultiline)
-            {
-                var newContent = string.Concat(newValue, " ", instruction.Value);
-                var oldContent = instruction.Line.Content;
+            var parameter = Context.GetText();
+            var newContent = string.Concat(newValue, " ", parameter);
+            var selection = QualifiedSelection.Selection;
 
-                var result = oldContent.Replace(instruction.Value, newContent);
+            var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
+            var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
-                var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
-                module.ReplaceLine(instruction.Line.StartLineNumber, result);
-                Handled = true;
-            }
-            else
-            {
-                // todo: implement for multiline
-                throw new NotImplementedException("This method is not yet implemented for multiline instructions.");
-            }
+            var result = lines.Replace(parameter, newContent);
+            module.ReplaceLine(selection.StartLine, result);
         }
     }
 }

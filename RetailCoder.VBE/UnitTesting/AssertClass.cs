@@ -4,6 +4,7 @@ namespace Rubberduck.UnitTesting
 {
     [ComVisible(true)]
     [ComDefaultInterface(typeof(IAssert))]
+    [ProgId("Rubberduck.AssertClass")]
     public class AssertClass : IAssert
     {
         /// <summary>

@@ -118,11 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="112_RightArrowLong_Blue_16x16_72" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\112_RightArrowLong_Blue_16x16_72.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="AllLoadedTests_8644_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\AllLoadedTests_8644_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddClass_5561_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ListsofTests_8643_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ListsofTests_8643_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\TestMethod.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -130,38 +133,38 @@
   <data name="Information" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Information.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Step_RunTest_8814_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Step-RunTest_8814_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Expand_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Expand_large.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="VSObject_Module" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\VSObject_Module.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="rubberduck_adsize" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\rubberduck_adsize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AddModule_368_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="112_LeftArrowLong_Blue_16x16_72" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\112_LeftArrowLong_Blue_16x16_72.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddModule_368_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ListsofTests_8643_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ListsofTests_8643_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="GroupBy_284_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\GroupBy_284_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Play" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Play.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddModule_368_321" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Step_RunTest_8814_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Step-RunTest_8814_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Alert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Alert.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="OK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OK.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Serious" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Serious.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Warning.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rubberduck_adsize" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rubberduck_adsize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Refresh.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -172,25 +175,28 @@
   <data name="Collapse_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Collapse_large.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TestManager_8590_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\TestManager_8590_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="GroupBy_284_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\GroupBy_284_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Expand_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Expand_large.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Serious" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Serious.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="applycodechanges_6548_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\applycodechanges_6548_321.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\AddClass_5561_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TestManager_8590_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\TestManager_8590_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="GoLtrHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GoLtrHS.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Alert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Alert.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AddModule_368_321" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="112_RightArrowLong_Blue_16x16_72" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\112_RightArrowLong_Blue_16x16_72.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cross-circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExtractMethod_6786_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\ExtractMethod_6786_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

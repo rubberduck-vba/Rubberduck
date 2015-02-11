@@ -15,14 +15,14 @@ namespace Rubberduck.UI.CodeInspections
     [ComVisible(false)]
     public class CodeInspectionsDockablePresenter : DockablePresenterBase
     {
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
         private readonly IList<IInspection> _inspections;
         private List<CodeInspectionResultBase> _results;
 
-        public CodeInspectionsDockablePresenter(Parser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin) 
-            : base(vbe, addin, new CodeInspectionsWindow())
+        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin, CodeInspectionsWindow window) 
+            : base(vbe, addin, window)
         {
             _parser = parser;
             _inspections = inspections.ToList();
@@ -36,7 +36,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             e.QuickFix(VBE);
             OnRefreshCodeInspections(null, EventArgs.Empty);
-            Control.FindNextIssue();
+            //Control.FindNextIssue(); // note: decide if this is annoying or surprising, UX-wise
         }
 
         public override void Show()
@@ -48,27 +48,27 @@ namespace Rubberduck.UI.CodeInspections
             base.Show();
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
+        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {
-                var location = VBE.FindInstruction(e.Node.Instruction);
-                location.CodeModule.CodePane.SetSelection(location.Selection);
+                var location = VBE.FindInstruction(e.QualifiedName, e.Selection);
+                location.CodeModule.CodePane.SetSelection(e.Selection);
 
                 var codePane = location.CodeModule.CodePane;
                 var selection = location.Selection;
-                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                codePane.ForceFocus();
+                codePane.SetSelection(selection);
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Debug.Assert(false);
+                System.Diagnostics.Debug.Assert(false, exception.ToString());
             }
         }
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            var code = _parser.Parse(VBE.ActiveVBProject);
+            var code = _parser.Parse(VBE.ActiveVBProject).ToList();
+
             _results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {

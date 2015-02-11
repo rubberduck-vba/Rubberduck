@@ -17,11 +17,12 @@ namespace Rubberduck.UI.CodeInspections
         {
             _item = result;
             _severity = GetSeverityIcon(result.Severity);
-            _project = result.Node.Instruction.Line.ProjectName;
-            _component = result.Node.Instruction.Line.ComponentName;
-            _selection = result.Node.Instruction.Selection;
+            _selection = result.QualifiedSelection;
             _issue = result.Name;
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
+
+            _project = _selection.QualifiedName.ProjectName;
+            _component = _selection.QualifiedName.ModuleName;
         }
 
         private readonly CodeInspectionResultBase _item;
@@ -71,10 +72,10 @@ namespace Rubberduck.UI.CodeInspections
             get { return _component; }
         }
 
-        private readonly Selection _selection;
+        private readonly QualifiedSelection _selection;
         public int Line
         {
-            get { return _selection.StartLine; }
+            get { return _selection.Selection.StartLine; }
         }
 
         private readonly string _issue;

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -12,9 +13,9 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private readonly VBE _vbe;
         private readonly AddIn _addin;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
-        public CodeExplorerMenu(VBE vbe, AddIn addin, Parser parser)
+        public CodeExplorerMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
         {
             _vbe = vbe;
             _addin = addin;

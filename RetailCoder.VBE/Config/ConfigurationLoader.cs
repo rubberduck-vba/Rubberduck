@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Rubberduck.Inspections;
 using System.Reflection;
-using Rubberduck.VBA.Grammar;
 using System.Windows.Forms;
 
 namespace Rubberduck.Config
@@ -155,23 +154,6 @@ namespace Rubberduck.Config
                                   .ToList();
 
             return inspections;
-        }
-
-        /// <summary>   Gets all implemented syntax via reflection. </summary>
-        public List<ISyntax> GetImplementedSyntax()
-        {
-            var grammar = Assembly.GetExecutingAssembly()
-                                  .GetTypes()
-                                  .Where(type => type.BaseType == typeof(SyntaxBase))
-                                  .Select(type =>
-                                  {
-                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
-                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
-                                  })
-                                  .Where(syntax => syntax != null)
-                                  .Cast<ISyntax>()
-                                  .ToList();
-            return grammar;
         }
     }
 }

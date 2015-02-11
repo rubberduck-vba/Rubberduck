@@ -1,49 +1,84 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     public class ImplicitVariantReturnTypeInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitVariantReturnTypeInspectionResult(string name, SyntaxTreeNode node, CodeInspectionSeverity severity)
-            : base(name, node, severity)
+        public ImplicitVariantReturnTypeInspectionResult(string name, CodeInspectionSeverity severity, 
+            QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(name, severity, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return !Handled
-                ? new Dictionary<string, Action<VBE>>
-                    {
-                        {"Return explicit Variant", ReturnExplicitVariant}
-                    }
-                : new Dictionary<string, Action<VBE>>();
+            return
+                new Dictionary<string, Action<VBE>>
+                {
+                    {"Return explicit Variant", ReturnExplicitVariant}
+                };
         }
 
         private void ReturnExplicitVariant(VBE vbe)
         {
-            var instruction = Node.Instruction;
-            if (!instruction.Line.IsMultiline)
-            {
-                var newContent = string.Concat(instruction.Value, " ", ReservedKeywords.As, " ", ReservedKeywords.Variant);
-                var oldContent = instruction.Line.Content;
+            // note: turns a multiline signature into a one-liner signature.
+            // bug: removes all comments.
 
-                var result = oldContent.Replace(instruction.Value, newContent);
+            var node = GetNode(Context);
+            var signature = node.Signature.TrimEnd();
 
-                var module = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName).First();
-                module.ReplaceLine(instruction.Line.StartLineNumber, result);
-                Handled = true;
-            }
-            else
+            var procedure = Context.GetText();
+            var result = procedure.Replace(signature, signature + ' ' + Tokens.As + ' ' + Tokens.Variant);
+            
+            var module = vbe.FindCodeModules(QualifiedName).First();
+            var selection = Context.GetSelection();
+
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+            module.InsertLines(selection.StartLine, result);
+        }
+
+        private ProcedureNode GetNode(ParserRuleContext context)
+        {
+            var result = GetNode(context as VisualBasic6Parser.FunctionStmtContext);
+            if (result != null) return result;
+            
+            result = GetNode(context as VisualBasic6Parser.PropertyGetStmtContext);
+            Debug.Assert(result != null, "result != null");
+
+            return result;
+        }
+
+        private ProcedureNode GetNode(VisualBasic6Parser.FunctionStmtContext context)
+        {
+            if (context == null)
             {
-                // todo: implement for multiline
-                throw new NotImplementedException("This method is not [yet] implemented for multiline instructions.");
+                return null;
             }
+
+            var scope = QualifiedName.ToString();
+            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            return new ProcedureNode(context, scope, localScope);
+        }
+
+        private ProcedureNode GetNode(VisualBasic6Parser.PropertyGetStmtContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var scope = QualifiedName.ToString();
+            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            return new ProcedureNode(context, scope, localScope);
         }
     }
 }

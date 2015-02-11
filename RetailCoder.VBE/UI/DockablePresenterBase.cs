@@ -26,9 +26,9 @@ namespace Rubberduck.UI
         private Window CreateToolWindow(IDockableUserControl control)
         {
             object userControlObject = null;
-            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
+            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
             
-            var userControlHost = (DockableWindowHost)userControlObject;
+            var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
@@ -58,7 +58,14 @@ namespace Rubberduck.UI
 
         public virtual void Show()
         {
-            _window.Visible = true;
+            try
+            {
+                _window.Visible = true;
+            }
+            catch (COMException e)
+            {
+                // bug: this exception shouldn't be happening. issue #169.
+            }
         }
 
         public virtual void Close()

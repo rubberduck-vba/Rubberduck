@@ -6,384 +6,108 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace RubberduckTests
 {
     [TestClass]
     public class ParserTests
     {
-        private readonly IEnumerable<ISyntax> _grammar = Assembly.GetAssembly(typeof(ISyntax))
-                                  .GetTypes()
-                                  .Where(type => type.BaseType == typeof(SyntaxBase))
-                                  .Select(type =>
-                                  {
-                                      var constructorInfo = type.GetConstructor(Type.EmptyTypes);
-                                      return constructorInfo != null ? constructorInfo.Invoke(Type.EmptyTypes) : null;
-                                  })
-                                  .Cast<ISyntax>()
-                                  .ToList();
-
-
         [TestMethod]
-        public void TestSimpleDeclaration()
+        public void GetPublicProceduresReturnsPublicSubs()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo As Integer\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\nEnd Sub\n\nPrivate Sub FooBar()\nEnd Sub\n\nPublic Sub Bar()\nEnd Sub\n\nPublic Sub BarFoo(ByVal fb As Long)\nEnd Sub\n\nFunction GetFoo() As Bar\nEnd Function";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+            var module = parser.Parse(code);
+            var procedures = module.GetPublicProcedures().ToList();
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
+            var parameterless = procedures
+                .Where(p => p.argList().arg().Count == 0);
 
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("Integer", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
+            Assert.AreEqual(3, procedures.Count);
+            Assert.AreEqual(2, parameterless.Count());
         }
 
         [TestMethod]
-        public void TestDeclarationWithAssignment()
+        public void UnspecifiedProcedureVisibilityIsImplicit()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Private Strings As New StringType\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\r\n    Dim bar As Integer\r\nEnd Sub";
 
-            var match = Regex.Match(code, VBAGrammar.GeneralDeclarationSyntax);
-            Assert.IsTrue(match.Success);
+            var module = parser.Parse("project", "component", code);
+            var procedure = (ProcedureNode)module.Children.First();
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("Strings", identifier.Name);
-            Assert.AreEqual("StringType", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-            Assert.IsTrue(identifier.IsInitialized);
+            Assert.AreEqual(procedure.Accessibility, VBAccessibility.Implicit);
         }
 
         [TestMethod]
-        public void TestSimpleArrayDeclaration()
+        public void DeclarationSectionConst()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo() As Integer\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Const foo As Integer = 42\n\nOption Explicit\n\n";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+            var module = parser.Parse("project", "component", code);
+            var declaration = (ConstDeclarationNode)module.Children.First();
+            var constant = (DeclaredIdentifierNode)declaration.Children.First();
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("Integer", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-            Assert.IsTrue(identifier.IsArray);
+            Assert.AreEqual(constant.Name, "foo");
         }
 
         [TestMethod]
-        public void TestInitializedArrayDeclaration()
+        public void UnspecifiedReturnTypeGetsFlagged()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo(1 To 10) As Integer\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Function Foo()\n    Dim bar As Integer\nEnd Function";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("Integer", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-            Assert.IsTrue(identifier.IsArray);
+            var module = parser.Parse("project", "component", code);
+            var procedure = (ProcedureNode)module.Children.First();
+            
+            Assert.AreEqual(procedure.ReturnType, "Variant");            
+            Assert.IsTrue(procedure.IsImplicitReturnType);
         }
 
         [TestMethod]
-        public void TestMultiDimArrayDeclaration()
+        public void LocalDimMakesPrivateVariable()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo(1 To 10, 1 To 5) As Integer\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\n    Dim bar As Integer\nEnd Sub";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+            var module = parser.Parse("project", "component", code);
+            var procedure = module.Children.First();
+            var declaration = procedure.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("Integer", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-            Assert.IsTrue(identifier.IsArray);
-            Assert.AreEqual(2, identifier.ArrayDimensionsCount);
+            Assert.AreEqual(variable.Accessibility, VBAccessibility.Private);
         }
 
         [TestMethod]
-        public void TestTypeSpecifierSimpleDeclaration()
+        public void TypeHintsGetFlagged()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo$\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\n    Dim bar$\nEnd Sub";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+            var module = parser.Parse("project", "component", code);
+            var procedure = module.Children.First();
+            var declaration = procedure.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("String", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
+            Assert.AreEqual(variable.TypeName, "String");
+            Assert.IsTrue(variable.IsUsingTypeHint);
         }
 
         [TestMethod]
-        public void TestInitializerDeclaration()
+        public void ImplicitTypeGetsFlagged()
         {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo As New Collection\n";
+            IRubberduckParser parser = new VBParser();
+            var code = "Sub Foo()\n    Dim bar\nEnd Sub";
 
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
+            var module = parser.Parse("project", "component", code);
+            var procedure = module.Children.First();
+            var declaration = procedure.Children.First();
+            var variable = (DeclaredIdentifierNode)declaration.Children.First();
 
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("Collection", identifier.TypeName);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-            Assert.IsTrue(identifier.IsInitialized);
-        }
-
-        [TestMethod]
-        public void TestLibraryReferenceDeclaration()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo As ADODB.Recordset\n";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifier = declaration.ChildNodes.FirstOrDefault() as IdentifierNode;
-            Assert.IsNotNull(identifier);
-
-            Assert.AreEqual("foo", identifier.Name);
-            Assert.AreEqual("ADODB.Recordset", identifier.TypeName);
-            Assert.AreEqual("Rubberduck.Parser", identifier.Scope);
-            Assert.AreEqual("ADODB", identifier.Library);
-            Assert.IsTrue(identifier.IsTypeSpecified);
-        }
-
-        [TestMethod]
-        public void TestMultipleDeclarations()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo, bar As String\n";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifiers = declaration.ChildNodes.Select(node => node as IdentifierNode).ToList();
-            Assert.AreEqual(2, identifiers.Count);
-
-            Assert.AreEqual("foo", identifiers[0].Name);
-            Assert.AreEqual("bar", identifiers[1].Name);
-
-            Assert.AreEqual("Variant", identifiers[0].TypeName);
-            Assert.AreEqual("String", identifiers[1].TypeName);
-        }
-
-        [TestMethod]
-        public void TestMultipleDeclarationsWithArray()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo() As Integer, bar As String\n";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault() as DeclarationNode;
-            Assert.IsNotNull(declaration);
-
-            var identifiers = declaration.ChildNodes.Select(node => node as IdentifierNode).ToList();
-            Assert.AreEqual(2, identifiers.Count);
-
-            Assert.AreEqual("foo", identifiers[0].Name);
-            Assert.AreEqual("bar", identifiers[1].Name);
-
-            Assert.IsTrue(identifiers[0].IsArray);
-            Assert.IsFalse(identifiers[1].IsArray);
-        }
-        [TestMethod]
-        public void TestConstDeclaration()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Const foo As String = \"test\"\n";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var declaration = result.ChildNodes.FirstOrDefault(node => node as DeclarationNode != null);
-            Assert.IsNotNull(declaration);
-
-            var identifiers = declaration.ChildNodes.Select(node => node as IdentifierNode).ToList();
-
-            Assert.AreEqual("foo", identifiers[0].Name);
-            Assert.AreEqual("String", identifiers[0].TypeName);
-        }
-
-        [TestMethod]
-        public void TestPublicSubIsProcedureNode()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo()\n\rEnd Sub\n\r";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var procedure = result.ChildNodes.FirstOrDefault() as ProcedureNode;
-            Assert.IsNotNull(procedure);
-        }
-
-        [TestMethod]
-        public void TestProcedureNodeTakesParameter()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo(bar)\n\rEnd Sub\n\r";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var procedure = (ProcedureNode)result.ChildNodes.First();
-            Assert.AreEqual(1, procedure.Parameters.Count());
-        }
-
-        [TestMethod]
-        public void TestProcedureNodeTakesParameters()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo(ByVal a As Integer, ByRef b As Integer)\n\rEnd Sub\n\r";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var procedure = (ProcedureNode)result.ChildNodes.First();
-            var parameters = procedure.Parameters.ToList();
-            Assert.AreEqual(2, parameters.Count);
-            Assert.AreEqual("a", parameters[0].Identifier.Name);
-            Assert.AreEqual("b", parameters[1].Identifier.Name);
-        }
-
-        [TestMethod]
-        public void ProcedureNodeHasChildren()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\r";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var procedure = result.ChildNodes.First();
-            Assert.IsTrue(procedure.ChildNodes.OfType<VariableDeclarationNode>().Count() == 1);
-        }
-
-        [TestMethod]
-        public void ModuleHasProcedures()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub\n\rPublic Function Bar()\n\r    Dim foo As String\n\rEnd Function\n\r";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var procedures = result.ChildNodes.OfType<ProcedureNode>().ToList();
-            Assert.AreEqual(2, procedures.Count);
-        }
-
-        [TestMethod]
-        public void InstructionHasIndentation()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub Foo()\n\r    Dim bar As String\n\rEnd Sub";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-            var declaration = result.ChildNodes.Single().ChildNodes.Single();
-
-            Assert.AreEqual(5, declaration.Instruction.StartColumn);
-        }
-
-        [TestMethod]
-        public void CommentWithTrailingColonTest()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "' this is a test:\n";
-
-            var result = parser.Parse("ParserTests", "Rubberduck.Parser", code, false);
-
-            var node = result.ChildNodes.Single();
-            Assert.AreEqual(node.Instruction.Comment, "' this is a test:");
-        }
-
-        [TestMethod]
-        public void PrivateFieldsAreScopedToModule()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Dim foo As Integer";
-
-            var result = parser.Parse("ParserTests", "TestModule", code, false);
-
-            var node = result.ChildNodes.Single();
-            Assert.AreEqual("TestModule", node.Scope);
-        }
-
-        [TestMethod]
-        public void MethodsAreScopedToModule()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Sub DoSomething()\n\nEnd Sub\n";
-
-            var result = parser.Parse("ParserTests", "TestModule", code, false);
-
-            var node = result.ChildNodes.Single();
-            Assert.AreEqual("TestModule", node.Scope);
-        }
-
-        [TestMethod]
-        public void LocalsAreScopedToMethod()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Public Sub DoSomething()\nDim foo As Integer\nEnd Sub\n";
-
-            var result = parser.Parse("ParserTests", "TestModule", code, false);
-
-            var node = result.ChildNodes.Single().ChildNodes.Single();
-            Assert.AreEqual("TestModule.DoSomething", node.Scope);
-        }
-
-        [TestMethod]
-        public void MethodsArePublicByDefault()
-        {
-            var parser = new Parser(_grammar);
-            const string code = "Sub DoSomething()\nEnd Sub\n";
-
-            var result = parser.Parse("ParserTests", "TestModule", code, false);
-
-            var node = result.ChildNodes.Single() as ProcedureNode;
-            if (node == null)
-            {
-                Assert.Inconclusive();
-            }
-
-            Assert.AreEqual(ReservedKeywords.Public, node.Accessibility);
+            Assert.IsTrue(variable.IsImplicitlyTyped);
         }
     }
 }

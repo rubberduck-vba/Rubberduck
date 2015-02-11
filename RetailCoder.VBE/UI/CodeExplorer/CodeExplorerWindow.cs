@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -17,13 +18,36 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
             RefreshButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
+            SolutionTree.MouseDown += SolutionTreeMouseDown;
+            SolutionTree.BeforeExpand += SolutionTreeBeforeExpand;
+            SolutionTree.BeforeCollapse += SolutionTreeBeforeCollapse;
             SolutionTree.ShowLines = false;
             SolutionTree.ImageList = TreeNodeIcons;
             SolutionTree.ShowNodeToolTips = true;
             SolutionTree.LabelEdit = false;
         }
 
-        public event EventHandler<SyntaxTreeNodeClickEventArgs> NavigateTreeNode;
+        #region Hack to disable double click node expansion
+        private bool doubleClicked;
+        private void SolutionTreeMouseDown(object sender, MouseEventArgs e)
+        {
+            doubleClicked = (e.Clicks > 1);
+        }
+
+        private void SolutionTreeBeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = doubleClicked;
+            doubleClicked = false;
+        }
+
+        private void SolutionTreeBeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = doubleClicked;
+            doubleClicked = false;
+        }
+        #endregion
+
+        public event EventHandler<CodeExplorerNavigateArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
             var handler = NavigateTreeNode;
@@ -32,8 +56,11 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            var instruction = (Instruction)e.Node.Tag;
-            handler(this, new SyntaxTreeNodeClickEventArgs(instruction));
+            if (e.Node.Tag != null)
+            {
+                var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
+                handler(this, new CodeExplorerNavigateArgs(e.Node, qualifiedSelection));
+            }
         }
 
 

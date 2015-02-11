@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -21,12 +21,16 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(SyntaxTreeNode node)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
-            var comments = node.FindAllComments();
-            var remComments = comments.Where(instruction => instruction.Comment.StartsWith(ReservedKeywords.Rem))
-                                      .Select(instruction => new CommentNode(instruction, node.Scope));
-            return remComments.Select(instruction => new ObsoleteCommentSyntaxInspectionResult(Name, instruction, Severity));
+            var modules = parseResult.ToList();
+            foreach (var comment in modules.SelectMany(module => module.Comments))
+            {
+                if (comment.Marker == Tokens.Rem)
+                {
+                    yield return new ObsoleteCommentSyntaxInspectionResult(Name, Severity, comment);
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.VBA;
+using Rubberduck.Extensions;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.ToDoItems
 {
@@ -12,27 +13,19 @@ namespace Rubberduck.ToDoItems
         private readonly string _description;
         public string Description { get { return _description; } }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
+        private readonly QualifiedSelection _selection;
+        public QualifiedSelection Selection { get { return _selection; } }
 
-        private readonly string _moduleName;
-        public string ModuleName { get { return _moduleName; } }
+        public ToDoItem(TaskPriority priority, CommentNode comment)
+            : this(priority, comment.CommentText, comment.QualifiedSelection)
+        {
+        }
 
-        private readonly int _lineNumber;
-        public int LineNumber { get { return _lineNumber; } }
-
-        public ToDoItem(TaskPriority priority, string description, string projectName, string moduleName,  int lineNumber)
+        public ToDoItem(TaskPriority priority, string description, QualifiedSelection qualifiedSelection)
         {
             _priority = priority;
             _description = description;
-            _projectName = projectName;
-            _moduleName = moduleName;
-            _lineNumber = lineNumber;
-        }
-
-        public ToDoItem(TaskPriority priority, Instruction instruction)
-            : this(priority, instruction.Comment, instruction.Line.ProjectName, instruction.Line.ComponentName, instruction.Line.StartLineNumber)
-        {
+            _selection = qualifiedSelection;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -14,10 +15,10 @@ namespace Rubberduck.UI.UnitTesting
     {
         // todo: move stuff from TestEngine into here.
 
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
         private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
 
-        public TestExplorerDockablePresenter(Parser parser, VBE vbe, AddIn addin, IDockableUserControl control) 
+        public TestExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addin, IDockableUserControl control) 
             : base(vbe, addin, control)
         {
             _parser = parser;

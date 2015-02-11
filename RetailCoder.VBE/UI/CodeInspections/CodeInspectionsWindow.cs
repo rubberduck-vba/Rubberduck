@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -144,7 +144,7 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(issue);
         }
 
-        public event EventHandler<NavigateCodeIssueEventArgs> NavigateCodeIssue;
+        public event EventHandler<NavigateCodeEventArgs> NavigateCodeIssue;
         private void CodeIssuesGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
@@ -163,7 +163,8 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            handler(this, new NavigateCodeIssueEventArgs(item.GetInspectionResultItem().Node));
+            var result = item.GetInspectionResultItem();
+            handler(this, new NavigateCodeEventArgs(result.QualifiedSelection));
         }
 
         public event EventHandler RefreshCodeInspections;

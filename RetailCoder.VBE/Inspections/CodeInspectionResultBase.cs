@@ -1,21 +1,38 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Excel;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
-        public CodeInspectionResultBase(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type)
+        /// <summary>
+        /// Creates a comment inspection result.
+        /// </summary>
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, CommentNode comment)
+            : this(inspection, type, comment.QualifiedSelection.QualifiedName, null, comment)
+        { }
+
+        /// <summary>
+        /// Creates an inspection result.
+        /// </summary>
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
+            if (context == null && comment == null)
+                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
+
             _name = inspection;
-            _node = node;
             _type = type;
+            _qualifiedName = qualifiedName;
+            _context = context;
+            _comment = comment;
         }
 
         private readonly string _name;
@@ -24,17 +41,33 @@ namespace Rubberduck.Inspections
         /// </summary>
         public string Name { get { return _name; } }
 
-        private readonly SyntaxTreeNode _node;
-        /// <summary>
-        /// Gets the <see cref="Node"/> containing a code issue.
-        /// </summary>
-        public SyntaxTreeNode Node { get { return _node; } }
-
         private readonly CodeInspectionSeverity _type;
         /// <summary>
         /// Gets the severity of the code issue.
         /// </summary>
         public CodeInspectionSeverity Severity { get { return _type; } }
+
+        private readonly QualifiedModuleName _qualifiedName;
+        protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+
+        private readonly ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
+
+        private readonly CommentNode _comment;
+        public CommentNode Comment { get { return _comment; } }
+
+        /// <summary>
+        /// Gets the information needed to select the target instruction in the VBE.
+        /// </summary>
+        public virtual QualifiedSelection QualifiedSelection
+        {
+            get
+            {
+                return _context == null 
+                    ? _comment.QualifiedSelection 
+                    : new QualifiedSelection(_qualifiedName, _context.GetSelection());
+            }
+        }
 
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.
@@ -44,17 +77,14 @@ namespace Rubberduck.Inspections
         /// each value is a method returning <c>void</c> and taking a <c>VBE</c> parameter.</returns>
         public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
 
-        /// <summary>
-        /// Gets/sets a value indicating whether inspection result has been handled/fixed.
-        /// </summary>
-        protected bool Handled { get; set; }
-
-        /// <summary>
-        /// Sets <see cref="Handled"/> flag to <c>true</c> without applying any fix.
-        /// </summary>
-        public void Ignore()
+        public VBComponent FindComponent(VBE vbe)
         {
-            Handled = true;
+            return vbe.VBProjects.Cast<VBProject>()
+                      .Where(project => project.Name == QualifiedName.ProjectName)
+                      .SelectMany(project =>
+                                    project.VBComponents.Cast<VBComponent>()
+                                           .Where(component => component.Name == QualifiedName.ModuleName))
+                      .SingleOrDefault();
         }
     }
 }

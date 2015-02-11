@@ -5,7 +5,9 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Extensions
 {
-    /// <summary>   VBE Code Pane extensions. </summary>
+    /// <summary>
+    /// VBE Code Pane extension methods. 
+    /// </summary>
     [ComVisible(false)]
     public static class CodePaneExtensions
     {
@@ -19,13 +21,22 @@ namespace Rubberduck.Extensions
             int endColumn;
 
             code.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+            if (endLine > startLine && endColumn == 1)
+            {
+                endLine--;
+                endColumn = code.CodeModule.get_Lines(endLine, 1).Length;
+            }
+
             return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
-        /// <summary>   A CodePane extension method that selected procedure. </summary>
+        /// <summary>
+        /// Returns a <see cref="Selection"/> representing the position 
+        /// </summary>
         ///
         /// <param name="selection">    The selection. </param>
-        /// <returns>   A Selection object representing the procedure the cursor is currently in. </returns>
+        /// <returns>   A QualifiedSelection object representing the procedure the cursor is currently in. </returns>
         public static Selection SelectedProcedure(this CodePane code, Selection selection)
         {
             vbext_ProcKind kind;

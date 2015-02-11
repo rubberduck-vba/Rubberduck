@@ -9,6 +9,8 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -17,12 +19,12 @@ namespace Rubberduck.UI.CodeInspections
     {
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
-        private readonly Parser _parser;
+        private readonly IRubberduckParser _parser;
 
         private CodeInspectionResultBase[] _issues;
         private int _currentIssue;
 
-        public CodeInspectionsToolbar(VBE vbe, Parser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _parser = parser;
@@ -90,7 +92,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue++;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
+            OnNavigateCodeIssue(null, new NavigateCodeEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -106,14 +108,14 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _currentIssue--;
-            OnNavigateCodeIssue(null, new NavigateCodeIssueEventArgs(_issues[_currentIssue].Node));
+            OnNavigateCodeIssue(null, new NavigateCodeEventArgs(_issues[_currentIssue].QualifiedSelection.QualifiedName, _issues[_currentIssue].Context));
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeIssueEventArgs e)
+        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {
-                var location = _vbe.FindInstruction(e.Node.Instruction);
+                var location = _vbe.FindInstruction(e.QualifiedName, e.Selection);
                 location.CodeModule.CodePane.SetSelection(location.Selection);
 
                 var codePane = location.CodeModule.CodePane;
@@ -127,7 +129,6 @@ namespace Rubberduck.UI.CodeInspections
                 System.Diagnostics.Debug.Assert(false);
             }
         }
-
 
         private void _quickFixButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
@@ -149,7 +150,8 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var code = _parser.Parse(_vbe.ActiveVBProject);
+            var code = _parser.Parse(_vbe.ActiveVBProject).ToList();
+
             var results = new List<CodeInspectionResultBase>();
             foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
             {

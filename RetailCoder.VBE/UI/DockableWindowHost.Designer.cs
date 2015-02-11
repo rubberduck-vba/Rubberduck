@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI
 {
-    partial class DockableWindowHost
+    partial class _DockableWindowHost
     {
         /// <summary> 
         /// Required designer variable.

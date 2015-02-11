@@ -1,41 +1,41 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     [ComVisible(false)]
     public class OptionExplicitInspectionResult : CodeInspectionResultBase
     {
-        public OptionExplicitInspectionResult(string inspection, SyntaxTreeNode node, CodeInspectionSeverity type) 
-            : base(inspection, node, type)
+        public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
+            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Empty)))
         {
         }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return !Handled
-                ? new Dictionary<string, Action<VBE>>
-                    {
-                        {"Specify Option Explicit", SpecifyOptionExplicit}
-                    }
-                : new Dictionary<string, Action<VBE>>();
+            return
+                new Dictionary<string, Action<VBE>>
+                {
+                    {"Specify Option Explicit", SpecifyOptionExplicit}
+                };
         }
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            var instruction = Node.Instruction;
-            var modules = vbe.FindCodeModules(instruction.Line.ProjectName, instruction.Line.ComponentName);
-            foreach (var codeModule in modules)
+            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            if (module == null)
             {
-                codeModule.InsertLines(1, string.Concat(ReservedKeywords.Option, " ", ReservedKeywords.Explicit));
+                return;
             }
 
-            Handled = true;
+            module.InsertLines(1, Tokens.Option + " " + Tokens.Explicit + "\n");
         }
     }
 }

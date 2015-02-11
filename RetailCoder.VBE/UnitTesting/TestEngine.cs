@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,18 +37,6 @@ namespace Rubberduck.UnitTesting
             }
 
             _hostWindow.Visible = true;
-        }
-
-        public void Run(TestMethod test)
-        {
-            _explorer.ClearProgress();
-            var tests = new Dictionary<TestMethod, TestResult> { { test, null } };
-
-            _explorer.SetPlayList(tests);
-            AssignResults(tests.Keys);
-
-            _lastRun = tests.Keys;
-            ShowExplorerWindow();
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -133,7 +120,10 @@ namespace Rubberduck.UnitTesting
             }
             catch(ArgumentException)
             {
-                System.Windows.Forms.MessageBox.Show("Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                System.Windows.Forms.MessageBox.Show(
+                    "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
+                    "Warning", System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation);
             }
         }
 
