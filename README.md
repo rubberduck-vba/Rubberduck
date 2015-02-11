@@ -1,3 +1,5 @@
+#Every programmer needs a Rubberduk.
+
 ![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
@@ -6,9 +8,9 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 ---
 
-##Features
+#Features
 
-###Code Explorer
+##Code Explorer
 
 The VBE's *Project Explorer* was nice... in 1999. Get the same bird's eye view of your project and navigate anywhere, with the *Code Explorer* dockable toolwindow:
 
@@ -16,7 +18,7 @@ The VBE's *Project Explorer* was nice... in 1999. Get the same bird's eye view o
 
 This tree view drills down to *member* level, so not only you can see modules with their properties, functions and procedures, you also get to see a module's fields, constants, enums (and their members) and user-defined types (and their members) - without having to bring up the *object browser*.
 
-###To-do Items
+##To-do Items
 
 Ever wish you had a task list built into the VBA IDE? You don't have to wish anymore: it's here! Rubberduck searches your code for `TODO:` comments (or whatever you configure as "todo" markers) and displays them all in a convenient dockable toolwindow. Double-click on an item in the list to navigate to that location in the code.
 
@@ -24,7 +26,7 @@ Ever wish you had a task list built into the VBA IDE? You don't have to wish any
 
 Rubberduck comes with default markers and priority levels, but that's 100% configurable.
 
-###Test Explorer
+##Test Explorer
 
 Fully integrated unit testing, with zero boiler plate code (a little comment doesn't really count, right?). Use late-binding to create a `Rubberduk.AssertClass` object, or let Rubberduck automatically add a reference to its type library, and start writing unit tests for your VBA code:
 
@@ -48,7 +50,7 @@ The *Test Explorer* dockable toolwindow lists all tests found in all opened VBPr
 
 ![Test Explorer dockable toolwindow](http://imgur.com/NepssQ8.png)
 
-###Code Inspections
+##Code Inspections
 
 Find various code issues in your code - and fix them, with just a few clicks! 
 
@@ -60,7 +62,7 @@ In the event where you would have too many docked windows, Rubberduck offers you
 
 ---
 
-##Coming Up
+#Coming Up
 
 The following features are currently under development and scheduled for the next version (v1.2):
 
@@ -78,7 +80,7 @@ This feature will make it possible to push your VBA code to your GitHub reposito
 
 ---
 
-##Contributing
+#Contributing
 
 If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
 [come meet the devs in Code Review's "VBA" chatroom](http://chat.stackexchange.com/rooms/14929/vba) - we'll be happy to answer your questions and help you help us take the VBE into the 21st century!
@@ -87,7 +89,8 @@ Some issues are tagged with [help-wanted](https://github.com/retailcoder/Rubberd
 
 ---
 
-##Installation 
+#Installation
+
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.1), and run the Setup.exe.
 
 Please note that this software has only been tested on Office 2007 & 2010.
@@ -97,7 +100,7 @@ If you're **upgrading** from a previous version, you will need to completely uni
 
 ---
 
-## License
+#License
 
 The MIT License (MIT)
 
@@ -125,9 +128,7 @@ SOFTWARE.
 
 #Attributions
 
-##Other Open-Source Projects
-
-###[ANTLR](http://www.antlr.org/)
+##[ANTLR](http://www.antlr.org/)
 
 As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
@@ -137,19 +138,19 @@ As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
 We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
-##Icons Attribution
+#Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
 
-###[Fugue Icons](http://p.yusukekamiyamane.com/)
+##[Fugue Icons](http://p.yusukekamiyamane.com/)
 
-This beautiful suite of professional-grade icons packs over 3,570 icons (16x16) that can be used for just about anything.
+This beautiful suite of professional-grade icons packs over 3,570 icons (16x16). You name it, there's an icon for that.
 
 > (C) 2012 Yusuke Kamiyamane. All rights reserved. 
 These icons are licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).
 If you can't or don't want to provide attribution, please [purchase a royalty-free license](http://p.yusukekamiyamane.com/).
 
-###[Microsoft Visual Studio Image Library](http://www.microsoft.com/en-ca/download/details.aspx?id=35825)
+##[Microsoft Visual Studio Image Library](http://www.microsoft.com/en-ca/download/details.aspx?id=35825)
 
 Icons in the `./Resources/Microsoft/` directory are licensed under Microsoft's Software License Terms, must be used accordingly with their meaning / file name.
 
