@@ -14,7 +14,7 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 The VBE's *Project Explorer* was nice... in 1999. Get the same bird's eye view of your project and navigate anywhere, with the *Code Explorer* dockable toolwindow:
 
-![Code Explorer Window](http://i.imgur.com/bkDOB4w.png)
+![Code Explorer Window](http://i.stack.imgur.com/yilHM.png)
 
 This tree view drills down to *member* level, so not only you can see modules with their properties, functions and procedures, you also get to see a module's fields, constants, enums (and their members) and user-defined types (and their members) - without having to bring up the *object browser*.
 
@@ -48,7 +48,7 @@ Fully integrated unit testing, with zero boiler plate code (a little comment doe
 The `'@TestModule` marker is merely a hint to tell Rubberduck to search that module for test methods; the `'@TestMethod` marker isn't needed if the method starts with the word `Test`. 
 The *Test Explorer* dockable toolwindow lists all tests found in all opened VBProjects, and makes it easy to add new test modules and methods - and run them:
 
-![Test Explorer dockable toolwindow](http://imgur.com/NepssQ8.png)
+![Test Explorer dockable toolwindow](http://i.stack.imgur.com/gOMfO.png)
 
 ##Code Inspections
 
