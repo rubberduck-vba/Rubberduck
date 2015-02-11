@@ -16,7 +16,7 @@ namespace Rubberduck.Extensions
             var lines = module.CountOfLines;
             if (lines == 0)
             {
-                return new string[]{};
+                return new string[] { };
             }
 
             return module.get_Lines(1, lines).Replace("\r", string.Empty).Split('\n');
@@ -33,6 +33,14 @@ namespace Rubberduck.Extensions
             }
 
             return module.Lines[1, module.CountOfLines];
+        }
+
+        /// <summary>
+        /// Deletes all lines from the CodeModule
+        /// </summary>
+        public static void Clear(this CodeModule module)
+        {
+            module.DeleteLines(1, module.CountOfLines);
         }
     }
 }

@@ -78,14 +78,14 @@ namespace Rubberduck.UI
         protected Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
         {
             Object userControlObject = null;
-            DockableWindowHost userControlHost;
+            _DockableWindowHost userControlHost;
             Window toolWindow;
             const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost"; //DockableWindowHost progId
             const string dockableWindowHostGUID = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
 
-            userControlHost = (DockableWindowHost)userControlObject;
+            userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this
 
             userControlHost.AddUserControl(toolWindowUserControl);

@@ -2,6 +2,7 @@
 using Extensibility;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Rubberduck
@@ -9,7 +10,10 @@ namespace Rubberduck
     [ComVisible(true)]
     [Guid(ClassId)]
     [ProgId(ProgId)]
-    public class Extension : IDTExtensibility2, IDisposable
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    //underscores make classes invisible to VB6 object explorer
+    //Nothing breaks because we declare a ProgId
+    public class _Extension : IDTExtensibility2, IDisposable
     {
         public const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         public const string ProgId = "Rubberduck.Extension";
@@ -30,9 +34,9 @@ namespace Rubberduck
             {
                 _app = new App((VBE)Application, (AddIn)AddInInst);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Rubberduck Add-In Could Not Be Loaded",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show(exception.Message, "Rubberduck Add-In Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

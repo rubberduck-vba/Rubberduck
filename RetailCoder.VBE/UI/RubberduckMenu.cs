@@ -52,6 +52,9 @@ namespace Rubberduck.UI
         private CommandBarButton _about;
         private CommandBarButton _settings;
 
+        //todo: remove these temporary testing buttons
+        private CommandBarButton _sourceControl;
+
         public void Initialize()
         {
             var menuBarControls = _vbe.CommandBars[1].Controls;
@@ -67,9 +70,19 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
-            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
-            _about = AddButton(menu, "&About...", true, OnAboutClick);
+            _sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
+
+            _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
+            _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));
             
+        }
+
+        private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            using (var window = new SourceControl.GitView(_vbe.ActiveVBProject))
+            {
+                window.ShowDialog();
+            }
         }
 
         private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler)
@@ -90,7 +103,7 @@ namespace Rubberduck.UI
             }
         }
 
-        void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new AboutWindow())
             {

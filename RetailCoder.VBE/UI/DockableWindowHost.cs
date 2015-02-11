@@ -2,13 +2,17 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Rubberduck.UI
 {
     [Guid(ClassId)]
     [ProgId(ProgId)]
     [ComVisible(true)]
-    public partial class DockableWindowHost : UserControl
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    //Underscores make classes invisible to VB6 object explorer
+    //Nothing breaks because we declare a ProgId
+    public partial class _DockableWindowHost : UserControl
     {
         private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
         public static string RegisteredClassId { get { return ClassId; } }
