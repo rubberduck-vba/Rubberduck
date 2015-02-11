@@ -90,6 +90,8 @@
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
     </Compile>

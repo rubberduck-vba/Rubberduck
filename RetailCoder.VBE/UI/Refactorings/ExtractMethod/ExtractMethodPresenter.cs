@@ -10,68 +10,9 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    /// <summary>
-    /// Describes usages of a declared identifier.
-    /// </summary>
-    [ComVisible(false)]
-    public enum ExtractedDeclarationUsage
-    {
-        /// <summary>
-        /// A variable that isn't used in selection, 
-        /// will not be extracted.
-        /// </summary>
-        NotUsed,
-
-        /// <summary>
-        /// A variable that is only used in selection, 
-        /// will be moved to the extracted method.
-        /// </summary>
-        UsedOnlyInSelection,
-        
-        /// <summary>
-        /// A variable that is used before selection,
-        /// will be extracted as a parameter.
-        /// </summary>
-        UsedBeforeSelection,
-        
-        /// <summary>
-        /// A variable that is used after selection,
-        /// will be extracted as a <c>ByRef</c> parameter 
-        /// or become the extracted method's return value.
-        /// </summary>
-        UsedAfterSelection
-    }
-
-    [ComVisible(true)]
-    public class ExtractedParameter
-    {
-        public enum PassedBy
-        {
-            ByRef,
-            ByVal
-        }
-
-        public ExtractedParameter(string name, string typeName, PassedBy passed)
-        {
-            Name = name;
-            TypeName = typeName;
-            Passed = passed;
-        }
-
-        public string Name { get; set; }
-        public string TypeName { get; set; }
-        public PassedBy Passed { get; set; }
-
-        public override string ToString()
-        {
-            return Passed.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
-        }
-    }
-
     [ComVisible(false)]
     public class ExtractMethodPresenter
     {
@@ -151,7 +92,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var returnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
                 .Union(_view.Outputs)
                 .Union(_view.Inputs)
-                .Union(_view.Locals)
                 .ToList();
 
             _view.ReturnValues = returnValues;
@@ -207,7 +147,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             return "    " + result; // todo: smarter indentation
         }
 
-        private static readonly IEnumerable<string> _valueTypes = new[]
+        private static readonly IEnumerable<string> ValueTypes = new[]
         {
             Tokens.Boolean,
             Tokens.Byte,
@@ -224,7 +164,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         public static bool IsValueType(string typeName)
         {
-            return _valueTypes.Contains(typeName);
+            return ValueTypes.Contains(typeName);
         }
 
         [ComVisible(false)]
@@ -247,7 +187,15 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
 
-            result += newLine + _selectedCode + newLine;
+            var localConsts = _locals.Select(e => e.Parent)
+                .OfType<VisualBasic6Parser.ConstSubStmtContext>()
+                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
+            var localVariables = _locals.Select(e => e.Parent)
+                .OfType<VisualBasic6Parser.VariableSubStmtContext>()
+                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
+            var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());
+
+            result += newLine + locals + newLine + _selectedCode + newLine;
 
             if (isFunction)
             {

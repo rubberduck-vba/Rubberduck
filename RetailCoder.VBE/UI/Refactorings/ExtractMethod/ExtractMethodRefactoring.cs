@@ -28,17 +28,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                       .GroupBy(usage => new { Identifier = usage.GetText()})
                                       .ToList();
 
+            var notUsedInSelection = references.Where(usage => usage.All(token => !selection.Contains(token.GetSelection())))
+                                               .Select(usage => usage.Key).ToList();
+
             var usedBeforeSelection = references.Where(usage => usage.Any(token => token.GetSelection().EndLine < selection.StartLine))
-                                                    .Select(usage => usage.Key);
+                                                    .Select(usage => usage.Key)
+                                                .Where(usage => notUsedInSelection.All(e => e.Identifier != usage.Identifier));
 
             var usedAfterSelection = references.Where(usage => usage.Any(token => token.GetSelection().StartLine > selection.EndLine))
-                                                   .Select(usage => usage.Key);
+                                                   .Select(usage => usage.Key)
+                                                .Where(usage => notUsedInSelection.All(e => e.Identifier != usage.Identifier));
 
             var usedOnlyWithinSelection = references.Where(usage => usage.All(token => selection.Contains(token.GetSelection())))
                                                     .Select(usage => usage.Key);
 
-            var notUsedInSelection = references.Where(usage => usage.All(token => !selection.Contains(token.GetSelection())))
-                                               .Select(usage => usage.Key);
 
             var result = new Dictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>();
 

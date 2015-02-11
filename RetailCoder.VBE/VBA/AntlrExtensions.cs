@@ -94,6 +94,9 @@ namespace Rubberduck.VBA
 
             public override void EnterAmbiguousIdentifier(VisualBasic6Parser.AmbiguousIdentifierContext context)
             {
+                // exclude declarations
+                if (!(context.Parent is VisualBasic6Parser.VariableSubStmtContext) &&
+                    !(context.Parent is VisualBasic6Parser.ConstSubStmtContext))
                 _members.Add(context);
             }
         }
