@@ -22,8 +22,8 @@ namespace Rubberduck.UI.SourceControl
 
         public GitView(Microsoft.Vbe.Interop.VBProject project):this()
         {
-            Repository repo = new Repository("SourceControlTest", @"C:\Users\Christopher\Documents\SourceControlTest", @"https://github.com/ckuhn203/SourceControlTest.git");
-            this.git = new GitProvider(project, repo, "ckuhn203", "Macc2232");
+            Repository repo = new Repository("SourceControlTest", @"path", @"url");
+            this.git = new GitProvider(project, repo, "username", "password");
         }
 
         private void Commit_Click(object sender, EventArgs e)
