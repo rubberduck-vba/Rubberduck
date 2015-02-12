@@ -115,6 +115,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Potentially confusing implicit array lower bound.
+        /// </summary>
+        internal static string OptionBase {
+            get {
+                return ResourceManager.GetString("OptionBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Option Explicit is not specified.
         /// </summary>
         internal static string OptionExplicit {

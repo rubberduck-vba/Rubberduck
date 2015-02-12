@@ -5,14 +5,14 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public class OptionExplicitInspection : IInspection
+    public class OptionBaseInspection : IInspection
     {
-        public OptionExplicitInspection()
+        public OptionBaseInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Hint;
         }
 
-        public string Name { get { return InspectionNames.OptionExplicit; } }
+        public string Name { get { return InspectionNames.OptionBase; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -27,11 +27,11 @@ namespace Rubberduck.Inspections
                 }
 
                 var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n')
-                                                       .Select(line => line.Replace("\r",string.Empty));
-                var option = Tokens.Option + " " + Tokens.Explicit;
-                if (!lines.Contains(option))
+                    .Select(line => line.Replace("\r", string.Empty));
+                var option = Tokens.Option + " " + Tokens.Base + " 1";
+                if (lines.Contains(option))
                 {
-                    yield return new OptionExplicitInspectionResult(Name, Severity, module.QualifiedName);
+                    yield return new OptionBaseInspectionResult(Name, Severity, module.QualifiedName);
                 }
             }
         }
