@@ -102,7 +102,6 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                //todo: all actions will require this pattern; 
                 throw new SourceControlException("Fetch failed.", ex);
             }
 
