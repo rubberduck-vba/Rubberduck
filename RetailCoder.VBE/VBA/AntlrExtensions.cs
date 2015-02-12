@@ -53,6 +53,11 @@ namespace Rubberduck.VBA
             return parseTree.GetContexts<ModuleOptionsListener, VisualBasic6Parser.ModuleOptionContext>(new ModuleOptionsListener());
         }
 
+        public static IEnumerable<ParserRuleContext> GetObsoleteStatements(this IParseTree parseTree)
+        {
+            return parseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener());
+        }
+
         /// <summary>
         /// Finds all declarations in specified parse tree.
         /// </summary>
@@ -256,6 +261,36 @@ namespace Rubberduck.VBA
                 if (context.ambiguousIdentifier().GetText() == _name)
                 {
                     base.EnterPropertySetStmt(context);
+                }
+            }
+        }
+
+        private class ObsoleteInstrutionsListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
+        {
+            private readonly IList<ParserRuleContext> _members = new List<ParserRuleContext>();
+            public IEnumerable<ParserRuleContext> Members { get { return _members; } }
+
+            public override void EnterLetStmt(VisualBasic6Parser.LetStmtContext context)
+            {
+                _members.Add(context);
+            }
+
+            public override void EnterExplicitCallStmt(VisualBasic6Parser.ExplicitCallStmtContext context)
+            {
+
+                if (context.eCS_MemberProcedureCall() != null)
+                {
+                    if (context.eCS_MemberProcedureCall().CALL() != null)
+                    {
+                        _members.Add(context);
+                    }
+                }
+                else if (context.eCS_ProcedureCall() != null)
+                {
+                    if (context.eCS_ProcedureCall().CALL() != null)
+                    {
+                        _members.Add(context);
+                    }
                 }
             }
         }
