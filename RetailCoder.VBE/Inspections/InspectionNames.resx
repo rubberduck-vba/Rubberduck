@@ -126,8 +126,14 @@
   <data name="MultipleDeclarations" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
+  <data name="ObsoleteCall" xml:space="preserve">
+    <value>Use of obsolete Call statement</value>
+  </data>
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Use of obsolete Rem comment syntax</value>
+  </data>
+  <data name="ObsoleteLet" xml:space="preserve">
+    <value>Use of obsolete Let statement</value>
   </data>
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>

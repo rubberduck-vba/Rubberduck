@@ -282,14 +282,14 @@ namespace Rubberduck.VBA
                 {
                     if (context.eCS_MemberProcedureCall().CALL() != null)
                     {
-                        _members.Add(context);
+                        _members.Add(context.eCS_MemberProcedureCall());
                     }
                 }
                 else if (context.eCS_ProcedureCall() != null)
                 {
                     if (context.eCS_ProcedureCall().CALL() != null)
                     {
-                        _members.Add(context);
+                        _members.Add(context.eCS_ProcedureCall());
                     }
                 }
             }

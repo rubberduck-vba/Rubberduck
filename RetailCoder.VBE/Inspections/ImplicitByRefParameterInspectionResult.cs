@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
@@ -9,7 +8,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
         public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VisualBasic6Parser.ArgContext> qualifiedContext)
