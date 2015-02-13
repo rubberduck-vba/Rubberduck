@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = module.ParseTree.GetProcedures().Where(HasExpectedReturnType);
+                var procedures = ((IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener())).Where(HasExpectedReturnType);
                 foreach (var procedure in procedures)
                 {
                     var asTypeClause = GetAsTypeClause(procedure);

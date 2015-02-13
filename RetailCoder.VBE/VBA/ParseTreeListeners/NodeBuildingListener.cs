@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public partial class VBTreeListener : VisualBasic6BaseListener
+    public class NodeBuildingListener : VisualBasic6BaseListener
     {
         private readonly string _project;
         private readonly string _module;
@@ -14,7 +13,7 @@ namespace Rubberduck.VBA
         private string _currentScope;
         private Node _currentNode;
 
-        public VBTreeListener(string project, string module)
+        public NodeBuildingListener(string project, string module)
         {
             _project = project;
             _module = module;

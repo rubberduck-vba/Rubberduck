@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = module.ParseTree.GetProcedures();
+                var procedures = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
                 foreach (var procedure in procedures)
                 {
                     var args = GetArguments(procedure);

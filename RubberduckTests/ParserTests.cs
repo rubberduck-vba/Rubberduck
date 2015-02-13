@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace RubberduckTests
 {
@@ -20,7 +23,11 @@ namespace RubberduckTests
             var code = "Sub Foo()\nEnd Sub\n\nPrivate Sub FooBar()\nEnd Sub\n\nPublic Sub Bar()\nEnd Sub\n\nPublic Sub BarFoo(ByVal fb As Long)\nEnd Sub\n\nFunction GetFoo() As Bar\nEnd Function";
 
             var module = parser.Parse(code);
-            var procedures = module.GetPublicProcedures().ToList();
+            var walker = new ParseTreeWalker();
+
+            var listener = new PublicSubListener();
+            walker.Walk(listener, module);
+            var procedures = listener.Members.ToList();
 
             var parameterless = procedures
                 .Where(p => p.argList().arg().Count == 0);

@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var result in parseResult)
             {
-                var statements = result.ParseTree.GetObsoleteStatements().ToList();
+                var statements = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener())).ToList();
                 var module = result;
                 foreach (var inspectionResult in 
                     statements.OfType<VisualBasic6Parser.ECS_MemberProcedureCallContext>()

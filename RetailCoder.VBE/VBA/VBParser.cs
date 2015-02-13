@@ -15,12 +15,15 @@ namespace Rubberduck.VBA
 {
     public class VBParser : IRubberduckParser
     {
+        /// <summary>
+        /// An overload for the COM API.
+        /// </summary>
         public INode Parse(string projectName, string componentName, string code)
         {
             var result = Parse(code);
             var walker = new ParseTreeWalker();
             
-            var listener = new VBTreeListener(projectName, componentName);
+            var listener = new NodeBuildingListener(projectName, componentName);
             walker.Walk(listener, result);
 
             return listener.Root;
