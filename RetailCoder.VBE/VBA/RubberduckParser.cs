@@ -13,7 +13,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public class VBParser : IRubberduckParser
+    public class RubberduckParser : IRubberduckParser
     {
         /// <summary>
         /// An overload for the COM API.

@@ -19,6 +19,5 @@ namespace Rubberduck.VBA
 
             return listener.Members;
         }
-
     }
 }

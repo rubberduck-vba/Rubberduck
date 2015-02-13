@@ -19,7 +19,7 @@ namespace RubberduckTests
         [TestMethod]
         public void GetPublicProceduresReturnsPublicSubs()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Sub Foo()\nEnd Sub\n\nPrivate Sub FooBar()\nEnd Sub\n\nPublic Sub Bar()\nEnd Sub\n\nPublic Sub BarFoo(ByVal fb As Long)\nEnd Sub\n\nFunction GetFoo() As Bar\nEnd Function";
 
             var module = parser.Parse(code);
@@ -39,7 +39,7 @@ namespace RubberduckTests
         [TestMethod]
         public void UnspecifiedProcedureVisibilityIsImplicit()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Sub Foo()\r\n    Dim bar As Integer\r\nEnd Sub";
 
             var module = parser.Parse("project", "component", code);
@@ -51,7 +51,7 @@ namespace RubberduckTests
         [TestMethod]
         public void DeclarationSectionConst()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Const foo As Integer = 42\n\nOption Explicit\n\n";
 
             var module = parser.Parse("project", "component", code);
@@ -64,7 +64,7 @@ namespace RubberduckTests
         [TestMethod]
         public void UnspecifiedReturnTypeGetsFlagged()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Function Foo()\n    Dim bar As Integer\nEnd Function";
 
             var module = parser.Parse("project", "component", code);
@@ -77,7 +77,7 @@ namespace RubberduckTests
         [TestMethod]
         public void LocalDimMakesPrivateVariable()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Sub Foo()\n    Dim bar As Integer\nEnd Sub";
 
             var module = parser.Parse("project", "component", code);
@@ -91,7 +91,7 @@ namespace RubberduckTests
         [TestMethod]
         public void TypeHintsGetFlagged()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Sub Foo()\n    Dim bar$\nEnd Sub";
 
             var module = parser.Parse("project", "component", code);
@@ -106,7 +106,7 @@ namespace RubberduckTests
         [TestMethod]
         public void ImplicitTypeGetsFlagged()
         {
-            IRubberduckParser parser = new VBParser();
+            IRubberduckParser parser = new RubberduckParser();
             var code = "Sub Foo()\n    Dim bar\nEnd Sub";
 
             var module = parser.Parse("project", "component", code);

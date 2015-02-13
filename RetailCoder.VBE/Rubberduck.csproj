@@ -132,7 +132,7 @@
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
-    <Compile Include="VBA\VBParser.cs" />
+    <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
     <Compile Include="VBA\Grammar\VisualBasic6BaseListener.cs" />
     <Compile Include="VBA\Grammar\VisualBasic6BaseVisitor.cs" />
