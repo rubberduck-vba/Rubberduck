@@ -162,10 +162,19 @@ namespace Rubberduck.SourceControl
             Signature signature = GetSignature();
             var result = repo.Merge(repo.Branches[sourceBranch], signature);
 
-            if (result.Status == MergeStatus.Conflicts)
+            switch (result.Status)
             {
-                //todo: report conflict? Perhaps merge should follow Lib2Git's lead and return a value?
-                repo.Reset(ResetMode.Hard, oldHeadCommit);
+                case MergeStatus.Conflicts:
+                    repo.Reset(ResetMode.Hard, oldHeadCommit); //abort merge
+                    //todo: report conflict? Perhaps merge should follow Lib2Git's lead and return a value?
+                    break;
+                case MergeStatus.NonFastForward:
+                    //https://help.github.com/articles/dealing-with-non-fast-forward-errors/
+                    Pull();
+                    Merge(sourceBranch, destinationBranch); //a little leary about this. Could stack overflow if I'm wrong.
+                    break;
+                default:
+                    break; //success
             }
         }
 
