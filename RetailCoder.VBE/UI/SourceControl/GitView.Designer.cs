@@ -34,6 +34,10 @@
             this.Fetch = new System.Windows.Forms.Button();
             this.NewBranch = new System.Windows.Forms.Button();
             this.Checkout = new System.Windows.Forms.Button();
+            this.UserName = new System.Windows.Forms.TextBox();
+            this.Password = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Commit
@@ -96,11 +100,49 @@
             this.Checkout.UseVisualStyleBackColor = true;
             this.Checkout.Click += new System.EventHandler(this.Checkout_Click);
             // 
+            // UserName
+            // 
+            this.UserName.Location = new System.Drawing.Point(241, 21);
+            this.UserName.Name = "UserName";
+            this.UserName.Size = new System.Drawing.Size(80, 20);
+            this.UserName.TabIndex = 6;
+            // 
+            // Password
+            // 
+            this.Password.Location = new System.Drawing.Point(241, 48);
+            this.Password.Name = "Password";
+            this.Password.PasswordChar = '*';
+            this.Password.Size = new System.Drawing.Size(80, 20);
+            this.Password.TabIndex = 7;
+            this.Password.UseSystemPasswordChar = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(161, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(60, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "User Name";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(164, 48);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Password";
+            // 
             // GitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Password);
+            this.Controls.Add(this.UserName);
             this.Controls.Add(this.Checkout);
             this.Controls.Add(this.NewBranch);
             this.Controls.Add(this.Fetch);
@@ -110,6 +152,7 @@
             this.Name = "GitView";
             this.Text = "GitView";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -121,5 +164,9 @@
         private System.Windows.Forms.Button Fetch;
         private System.Windows.Forms.Button NewBranch;
         private System.Windows.Forms.Button Checkout;
+        private System.Windows.Forms.TextBox UserName;
+        private System.Windows.Forms.TextBox Password;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
