@@ -157,8 +157,16 @@ namespace Rubberduck.SourceControl
         {
             repo.Checkout(repo.Branches[destinationBranch]);
 
+            var oldHeadCommit = repo.Head.Tip;
+
             Signature signature = GetSignature();
-            repo.Merge(repo.Branches[sourceBranch], signature);
+            var result = repo.Merge(repo.Branches[sourceBranch], signature);
+
+            if (result.Status == MergeStatus.Conflicts)
+            {
+                //todo: report conflict? Perhaps merge should follow Lib2Git's lead and return a value?
+                repo.Reset(ResetMode.Hard, oldHeadCommit);
+            }
         }
 
         public override void Checkout(string branch)
