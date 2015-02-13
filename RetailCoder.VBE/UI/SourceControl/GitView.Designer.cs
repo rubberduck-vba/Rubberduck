@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.SourceControl
 {
-    partial class GitView
+    partial class DummyGitView
     {
         /// <summary>
         /// Required designer variable.
@@ -34,8 +34,9 @@
             this.Fetch = new System.Windows.Forms.Button();
             this.NewBranch = new System.Windows.Forms.Button();
             this.Checkout = new System.Windows.Forms.Button();
-            this.UserName = new System.Windows.Forms.TextBox();
-            this.Password = new System.Windows.Forms.TextBox();
+            this.Merge = new System.Windows.Forms.Button();
+            this.SourceBranch = new System.Windows.Forms.ComboBox();
+            this.DestinationBranch = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -100,56 +101,73 @@
             this.Checkout.UseVisualStyleBackColor = true;
             this.Checkout.Click += new System.EventHandler(this.Checkout_Click);
             // 
-            // UserName
+            // Merge
             // 
-            this.UserName.Location = new System.Drawing.Point(241, 21);
-            this.UserName.Name = "UserName";
-            this.UserName.Size = new System.Drawing.Size(80, 20);
-            this.UserName.TabIndex = 6;
+            this.Merge.Location = new System.Drawing.Point(37, 214);
+            this.Merge.Name = "Merge";
+            this.Merge.Size = new System.Drawing.Size(75, 23);
+            this.Merge.TabIndex = 6;
+            this.Merge.Text = "Merge";
+            this.Merge.UseVisualStyleBackColor = true;
+            this.Merge.Click += new System.EventHandler(this.Merge_Click);
             // 
-            // Password
+            // SourceBranch
             // 
-            this.Password.Location = new System.Drawing.Point(241, 48);
-            this.Password.Name = "Password";
-            this.Password.PasswordChar = '*';
-            this.Password.Size = new System.Drawing.Size(80, 20);
-            this.Password.TabIndex = 7;
-            this.Password.UseSystemPasswordChar = true;
+            this.SourceBranch.FormattingEnabled = true;
+            this.SourceBranch.Items.AddRange(new object[] {
+            "master",
+            "testbranch"});
+            this.SourceBranch.Location = new System.Drawing.Point(119, 214);
+            this.SourceBranch.Name = "SourceBranch";
+            this.SourceBranch.Size = new System.Drawing.Size(104, 21);
+            this.SourceBranch.TabIndex = 7;
+            // 
+            // DestinationBranch
+            // 
+            this.DestinationBranch.FormattingEnabled = true;
+            this.DestinationBranch.Items.AddRange(new object[] {
+            "master",
+            "testbranch"});
+            this.DestinationBranch.Location = new System.Drawing.Point(229, 214);
+            this.DestinationBranch.Name = "DestinationBranch";
+            this.DestinationBranch.Size = new System.Drawing.Size(104, 21);
+            this.DestinationBranch.TabIndex = 8;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(161, 27);
+            this.label1.Location = new System.Drawing.Point(118, 194);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "User Name";
+            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Source";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(164, 48);
+            this.label2.Location = new System.Drawing.Point(230, 194);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Password";
+            this.label2.Size = new System.Drawing.Size(60, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Destination";
             // 
-            // GitView
+            // DummyGitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Password);
-            this.Controls.Add(this.UserName);
+            this.Controls.Add(this.DestinationBranch);
+            this.Controls.Add(this.SourceBranch);
+            this.Controls.Add(this.Merge);
             this.Controls.Add(this.Checkout);
             this.Controls.Add(this.NewBranch);
             this.Controls.Add(this.Fetch);
             this.Controls.Add(this.Pull);
             this.Controls.Add(this.Push);
             this.Controls.Add(this.Commit);
-            this.Name = "GitView";
+            this.Name = "DummyGitView";
             this.Text = "GitView";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -164,8 +182,9 @@
         private System.Windows.Forms.Button Fetch;
         private System.Windows.Forms.Button NewBranch;
         private System.Windows.Forms.Button Checkout;
-        private System.Windows.Forms.TextBox UserName;
-        private System.Windows.Forms.TextBox Password;
+        private System.Windows.Forms.Button Merge;
+        private System.Windows.Forms.ComboBox SourceBranch;
+        private System.Windows.Forms.ComboBox DestinationBranch;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }

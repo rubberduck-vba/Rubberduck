@@ -99,7 +99,7 @@ namespace Rubberduck.SourceControl
             Fetch("origin");
         }
 
-        public override void Fetch(string remoteName)
+        public void Fetch(string remoteName)
         {
             try
             {
