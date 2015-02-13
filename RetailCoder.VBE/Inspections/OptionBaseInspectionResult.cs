@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
@@ -17,12 +16,14 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return
+            return new Dictionary<string, Action<VBE>>(); // these fixes could break the code.
+            /*
                 new Dictionary<string, Action<VBE>>
                 {
                     {"Remove Option statement", RemoveOptionStatement},
                     {"Specify Option Base 0", SpecifyOptionBaseZero}
-                };
+                }; 
+            */
         }
 
         private void SpecifyOptionBaseZero(VBE vbe)
@@ -32,6 +33,7 @@ namespace Rubberduck.Inspections
 
         private void RebaseAllArrayReferences(VBE vbe)
         {
+            throw new NotImplementedException();
         }
 
         private void RemoveOptionStatement(VBE vbe)
