@@ -36,17 +36,17 @@ namespace Rubberduck.UI.ToDoItems
 
         private void RefreshToDoList(object sender, EventArgs e)
         {
-            RefreshAsync();
+            Refresh();
         }
 
-        private async void RefreshAsync()
+        private void Refresh()
         {
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>();
             Parallel.ForEach(projects,
-                async project =>
+                project =>
                 {
-                    var modules = await _parser.ParseAsync(project);
+                    var modules = _parser.Parse(project);
                     foreach (var module in modules)
                     {
                         var markers = module.Comments.AsParallel().SelectMany(GetToDoMarkers);

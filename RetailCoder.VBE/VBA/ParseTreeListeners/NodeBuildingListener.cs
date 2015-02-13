@@ -58,7 +58,7 @@ namespace Rubberduck.VBA
 
         private ProcedureNode CreateProcedureNode(dynamic context)
         {
-            var procedureName = context.ambiguousIdentifier().IDENTIFIER()[0].Symbol.Text;
+            var procedureName = context.ambiguousIdentifier().GetText();
             var node = new ProcedureNode(context, _currentScope, procedureName);
             
             var args = context.argList().arg() as IReadOnlyList<VisualBasic6Parser.ArgContext>;

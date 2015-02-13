@@ -130,6 +130,7 @@
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />

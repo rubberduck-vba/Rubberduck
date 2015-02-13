@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 using AddIn = Microsoft.Vbe.Interop.AddIn;
 using Font = System.Drawing.Font;
 using Selection = Rubberduck.Extensions.Selection;
@@ -127,6 +129,10 @@ namespace Rubberduck.UI.CodeExplorer
 
             foreach (VBComponent component in project.VBComponents)
             {
+                //var qualifiedName = new QualifiedModuleName(project.Name, component.Name);
+                //var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName));
+                //moduleNodes.AddRange(moduleNode);
+
                 var moduleNode = new TreeNode(component.Name);
                 moduleNode.NodeFont = font;
                 moduleNode.ImageKey = GetComponentImageKey(component.Type);

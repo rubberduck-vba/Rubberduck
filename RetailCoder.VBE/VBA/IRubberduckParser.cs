@@ -30,7 +30,7 @@ namespace Rubberduck.VBA
         /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
         IEnumerable<VBComponentParseResult> Parse(VBProject vbProject);
 
-        Task<IEnumerable<VBComponentParseResult>> ParseAsync(VBProject project);
+        VBComponentParseResult Parse(VBComponent component);
 
         IEnumerable<CommentNode> ParseComments(VBComponent vbComponent);
     }

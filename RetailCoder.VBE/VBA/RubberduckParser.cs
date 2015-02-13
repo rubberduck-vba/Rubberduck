@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
@@ -42,28 +43,18 @@ namespace Rubberduck.VBA
 
         public IEnumerable<VBComponentParseResult> Parse(VBProject project)
         {
-            return project.VBComponents.Cast<VBComponent>()
-                          .Select(component => new VBComponentParseResult(component, 
-                                               Parse(component.CodeModule.Lines()), ParseComments(component)));
+            var modules = project.VBComponents.Cast<VBComponent>();
+            foreach(var module in modules)
+            {
+                yield return Parse(module);
+            };
         }
 
-        public async Task<IEnumerable<VBComponentParseResult>> ParseAsync(VBProject project)
+        public VBComponentParseResult Parse(VBComponent component)
         {
-            return await Task.Run(() => project.VBComponents.Cast<VBComponent>()
-                .AsParallel()
-                .Select(component =>
-                {
-                    var lines = Parse(component.CodeModule.Lines());
-                    var comments = ParseComments(component);
-                    return new VBComponentParseResult(component, lines, comments);
-                }));
-        }
-
-        public async Task<VBComponentParseResult> ParseAsync(VBComponent component)
-        {
-            var result = await Task.Run(() => Parse(component.CodeModule.Lines()));
-            var comments = await Task.Run(() => ParseComments(component));
-            return new VBComponentParseResult(component, result, comments);
+            var lines = Parse(component.CodeModule.Lines());
+            var comments = ParseComments(component);
+            return new VBComponentParseResult(component, lines, comments);
         }
 
         public IEnumerable<CommentNode> ParseComments(VBComponent component)
