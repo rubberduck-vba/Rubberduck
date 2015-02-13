@@ -176,6 +176,8 @@ namespace Rubberduck.SourceControl
                 default:
                     break; //success
             }
+
+            base.Merge(sourceBranch, destinationBranch);
         }
 
         public override void Checkout(string branch)
