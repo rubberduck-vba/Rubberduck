@@ -90,21 +90,26 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        /// <summary>
+        /// Fetches the specified remote for tracking.
+        /// If not argument is supplied, fetches the "origin" remote.
+        /// </summary>
         public override void Fetch()
         {
-            //todo: break dependency on origin remote
-            //todo: document the fact that git integration only works on remotes named "origin"
+            Fetch("origin");
+        }
 
+        public override void Fetch(string remoteName)
+        {
             try
             {
-                var remote = repo.Network.Remotes["origin"];
+                var remote = repo.Network.Remotes[remoteName];
                 repo.Network.Fetch(remote);
             }
             catch (LibGit2SharpException ex)
             {
                 throw new SourceControlException("Fetch failed.", ex);
             }
-
         }
 
         public override void Pull()
