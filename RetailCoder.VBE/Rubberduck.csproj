@@ -402,7 +402,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
-    <None Include="Resources\tick-circle.png" />
     <None Include="VBA\Grammar\VisualBasic6.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
@@ -415,9 +414,6 @@
     <None Include="Resources\exclamation-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\question-white.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\arrow-circle-double.png" />
   </ItemGroup>
   <ItemGroup>
@@ -425,21 +421,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-repeat.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--plus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--exclamation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask-empty.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-repeat1.png" />
@@ -461,6 +442,11 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\question-white.png" />
+    <None Include="Resources\tick-circle.png" />
+    <None Include="Resources\navigation-180.png" />
+    <None Include="Resources\navigation.png" />
+    <None Include="Resources\tick.png" />
     <None Include="Resources\Step-RunTest_8814_32.bmp" />
     <None Include="Resources\Warning.bmp" />
     <None Include="Resources\Serious.bmp" />
@@ -476,6 +462,21 @@
     <None Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\cross-circle.png" />
+    <None Include="Resources\exclamation-diamond.png" />
+    <None Include="Resources\arrow.png" />
+    <None Include="Resources\document-copy.png" />
+    <None Include="Resources\information-white.png" />
+    <None Include="Resources\exclamation-white.png" />
+    <None Include="Resources\exclamation.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\flask.png" />
+    <None Include="Resources\flask--arrow.png" />
+    <None Include="Resources\flask--exclamation.png" />
+    <None Include="Resources\flask--plus.png" />
+    <None Include="Resources\flask-empty.png" />
+    <None Include="Resources\creative-commons.png" />
+    <None Include="Resources\gear.png" />
+    <None Include="Resources\control-000-small.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />
