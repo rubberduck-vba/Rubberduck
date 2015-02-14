@@ -39,6 +39,7 @@
             this.DestinationBranch = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.Undo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Commit
@@ -151,11 +152,22 @@
             this.label2.TabIndex = 10;
             this.label2.Text = "Destination";
             // 
+            // Undo
+            // 
+            this.Undo.Location = new System.Drawing.Point(229, 34);
+            this.Undo.Name = "Undo";
+            this.Undo.Size = new System.Drawing.Size(75, 23);
+            this.Undo.TabIndex = 11;
+            this.Undo.Text = "Undo";
+            this.Undo.UseVisualStyleBackColor = true;
+            this.Undo.Click += new System.EventHandler(this.Undo_Click);
+            // 
             // DummyGitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.Undo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.DestinationBranch);
@@ -187,5 +199,6 @@
         private System.Windows.Forms.ComboBox DestinationBranch;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button Undo;
     }
 }

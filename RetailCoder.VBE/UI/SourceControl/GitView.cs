@@ -60,5 +60,10 @@ namespace Rubberduck.UI.SourceControl
         {
             git.Merge(this.SourceBranch.SelectedItem.ToString(), this.DestinationBranch.SelectedItem.ToString());
         }
+
+        private void Undo_Click(object sender, EventArgs e)
+        {
+            git.Undo(@"C:\Users\Christopher\Documents\SourceControlTest\Module1.bas");
+        }
     }
 }
