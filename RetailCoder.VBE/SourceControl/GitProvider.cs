@@ -13,12 +13,14 @@ namespace Rubberduck.SourceControl
     class GitProvider : SourceControlProviderBase
     {
         private LibGit2Sharp.Repository repo;
-        //todo: put this someplace safe and preferably encrypted
         private Credentials creds;
         private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
 
+        public GitProvider(VBProject project, Repository repository)
+            : base(project, repository) { }
+
         public GitProvider(VBProject project, Repository repository, string userName, string passWord)
-            : base(project, repository)
+            : this(project, repository)
         {
             repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
 
@@ -76,10 +78,15 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                var options = new PushOptions()
+                //Only use credentials if we've been given credentials to use in the constructor.
+                PushOptions options = null;
+                if (this.creds != null)
                 {
-                    CredentialsProvider = credHandler
-                };
+                    options = new PushOptions()
+                    {
+                        CredentialsProvider = credHandler
+                    };
+                }
 
                 var branch = repo.Branches[this.CurrentBranch];
                 repo.Network.Push(branch, options);
