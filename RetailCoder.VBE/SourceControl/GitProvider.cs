@@ -158,15 +158,13 @@ namespace Rubberduck.SourceControl
             repo.Checkout(repo.Branches[destinationBranch]);
 
             var oldHeadCommit = repo.Head.Tip;
-
-            Signature signature = GetSignature();
+            var signature = GetSignature();
             var result = repo.Merge(repo.Branches[sourceBranch], signature);
 
             switch (result.Status)
             {
                 case MergeStatus.Conflicts:
-                    repo.Reset(ResetMode.Hard, oldHeadCommit); //abort merge
-                    //todo: report conflict? Perhaps merge should follow Lib2Git's lead and return a value?
+                    repo.Reset(ResetMode.Hard, oldHeadCommit);
                     break;
                 case MergeStatus.NonFastForward:
                     //https://help.github.com/articles/dealing-with-non-fast-forward-errors/
@@ -174,9 +172,8 @@ namespace Rubberduck.SourceControl
                     Merge(sourceBranch, destinationBranch); //a little leary about this. Could stack overflow if I'm wrong.
                     break;
                 default:
-                    break; //success
+                    break;
             }
-
             base.Merge(sourceBranch, destinationBranch);
         }
 
