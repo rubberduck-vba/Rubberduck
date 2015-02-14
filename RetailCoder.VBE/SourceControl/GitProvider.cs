@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using LibGit2Sharp;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Rubberduck.SourceControl
 {
@@ -101,13 +103,13 @@ namespace Rubberduck.SourceControl
         /// Fetches the specified remote for tracking.
         /// If not argument is supplied, fetches the "origin" remote.
         /// </summary>
-        public override void Fetch()
+        public override void Fetch([Optional] string remoteName)
         {
-            Fetch("origin");
-        }
+            if (remoteName == null)
+            {
+                remoteName = "origin";
+            }
 
-        public void Fetch(string remoteName)
-        {
             try
             {
                 var remote = repo.Network.Remotes[remoteName];

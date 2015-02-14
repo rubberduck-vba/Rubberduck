@@ -29,7 +29,7 @@ namespace Rubberduck.SourceControl
         public abstract IEnumerable<string> Branches { get; }
         public abstract Repository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
-        public abstract void Fetch();
+        public abstract void Fetch(string remoteName);
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
         public abstract void CreateBranch(string branch);

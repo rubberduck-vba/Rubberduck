@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.SourceControl
 {
@@ -27,7 +28,7 @@ namespace Rubberduck.SourceControl
 
         //todo: document
         void Push();
-        void Fetch();
+        void Fetch([Optional] string remoteName);
         void Pull();
         void Commit(string message);
         void Merge(string sourceBranch, string destinationBranch);
