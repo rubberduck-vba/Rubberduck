@@ -179,9 +179,15 @@ namespace Rubberduck.SourceControl
 
         public override void Checkout(string branch)
         {
-            repo.Checkout(repo.Branches[branch]);
-
-            base.Checkout(branch);
+            try
+            {
+                repo.Checkout(repo.Branches[branch]);
+                base.Checkout(branch);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Checkout failed.", ex);
+            }
         }
 
         public override void CreateBranch(string branch)
@@ -200,7 +206,6 @@ namespace Rubberduck.SourceControl
         {
             //todo: investigate revert results class
             repo.Revert(repo.Head.Tip, GetSignature());
-
             base.Revert();
         }
 
@@ -219,8 +224,6 @@ namespace Rubberduck.SourceControl
         private Signature GetSignature()
         {
             return this.repo.Config.BuildSignature(DateTimeOffset.Now);
-            //todo: clean up dead code
-            // return new Signature("ckuhn203", "ckuhn203@gmail.com", DateTimeOffset.Now);
         }
     }
 }
