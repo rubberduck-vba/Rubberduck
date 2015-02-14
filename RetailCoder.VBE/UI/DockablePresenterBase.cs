@@ -25,16 +25,24 @@ namespace Rubberduck.UI
 
         private Window CreateToolWindow(IDockableUserControl control)
         {
-            object userControlObject = null;
-            var toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
-            
-            var userControlHost = (_DockableWindowHost)userControlObject;
-            toolWindow.Visible = true; //window resizing doesn't work without this
+            try
+            {
+                object userControlObject = null;
+                var toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
 
-            EnsureMinimumWindowSize(toolWindow);
+                var userControlHost = (_DockableWindowHost)userControlObject;
+                toolWindow.Visible = true; //window resizing doesn't work without this
 
-            userControlHost.AddUserControl(control as UserControl);
-            return toolWindow;
+                EnsureMinimumWindowSize(toolWindow);
+
+                userControlHost.AddUserControl(control as UserControl);
+                return toolWindow;
+            }
+            catch (Exception)
+            {
+                // note: there's a COM exception here if the window was X-closed
+                return null;
+            }
         }
 
         private void EnsureMinimumWindowSize(Window window)

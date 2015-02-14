@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,9 @@ namespace Rubberduck.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
+        private readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> _cache = 
+            new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
+
         /// <summary>
         /// An overload for the COM API.
         /// </summary>
@@ -52,15 +56,25 @@ namespace Rubberduck.VBA
 
         public VBComponentParseResult Parse(VBComponent component)
         {
-            var lines = Parse(component.CodeModule.Lines());
+            VBComponentParseResult cachedValue;
+            var name = component.QualifiedName();
+            if (_cache.TryGetValue(name, out cachedValue))
+            {
+                return cachedValue;
+            }
+
+            var parseTree = Parse(component.CodeModule.Lines());
             var comments = ParseComments(component);
-            return new VBComponentParseResult(component, lines, comments);
+            var result = new VBComponentParseResult(component, parseTree, comments);
+
+            _cache.AddOrUpdate(name, module => result, (qName, module) => result);
+            return result;
         }
 
         public IEnumerable<CommentNode> ParseComments(VBComponent component)
         {
             var code = component.CodeModule.Code();
-            var qualifiedName = new QualifiedModuleName(component.Collection.Parent.Name, component.Name);
+            var qualifiedName = component.QualifiedName();
 
             var commentBuilder = new StringBuilder();
             var continuing = false;

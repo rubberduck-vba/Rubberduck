@@ -61,7 +61,7 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = ((IEnumerable<ParserRuleContext>) _parser.Parse(IDE.ActiveCodePane.CodeModule.Lines()).GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope)))
+            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent).ParseTree.GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope)))
                                 .SingleOrDefault(proc => proc.GetSelection().Contains(selection));
 
             if (method == null)
