@@ -16,8 +16,9 @@ namespace Rubberduck.Extensions
             var moduleName = component.Name;
             var project = component.Collection.Parent;
             var hash = project.GetHashCode();
+            var code = component.CodeModule.Lines().GetHashCode();
 
-            return new QualifiedModuleName(project.Name, moduleName, hash);
+            return new QualifiedModuleName(project.Name, moduleName, hash, code);
         }
 
         /// <summary>
