@@ -53,26 +53,6 @@ namespace Rubberduck.UI.CodeExplorer
                 e.Node.Expand();
             }
 
-            var projectName = e.QualifiedName.ProjectName;
-            var componentName = e.QualifiedName.ModuleName;
-
-            var project = VBE.VBProjects.Cast<VBProject>()
-                               .FirstOrDefault(p => p.Name == projectName);
-
-            VBComponent component = null;
-            if (project != null)
-            {
-                component = project.VBComponents.Cast<VBComponent>()
-                                       .FirstOrDefault(c => c.Name == componentName);
-            }
-
-            if (component == null)
-            {
-                return;
-            }
-
-            var codePane = component.CodeModule.CodePane;
-
             if (e.Selection.StartLine != 0)
             {
                 //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
@@ -81,8 +61,7 @@ namespace Rubberduck.UI.CodeExplorer
                                                 e.Selection.EndLine,
                                                 e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
                                               );
-                //codePane.SetSelection(selection);
-                codePane.SetSelection(e.Selection);
+                VBE.SetSelection(new QualifiedSelection(e.QualifiedName, selection));
             }
         }
 
