@@ -11,6 +11,7 @@ namespace Rubberduck.SourceControl
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
         private VBProject project;
+        private string lastActiveModule;
 
         public SourceControlProviderBase(VBProject project)
         {
@@ -81,8 +82,16 @@ namespace Rubberduck.SourceControl
 
         private void Refresh()
         {
+            var selection = this.project.VBE.ActiveCodePane.GetSelection();
+            var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Name;
+            var projectName = this.project.Name;
+
+            var qualifiedSelection = new QualifiedSelection(projectName, moduleName, selection);
+
             this.project.RemoveAllComponents();
             this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
+
+            this.project.VBE.SetSelection(qualifiedSelection);
         }
     }
 }

@@ -5,6 +5,9 @@ namespace Rubberduck.Extensions
 {
     public struct QualifiedSelection
     {
+        public QualifiedSelection(string projectName, string moduleName, Selection selection)
+            : this(new QualifiedModuleName(projectName, moduleName), selection) { }
+
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
             _qualifiedName = qualifiedName;
