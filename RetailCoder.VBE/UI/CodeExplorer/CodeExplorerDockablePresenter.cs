@@ -135,7 +135,7 @@ namespace Rubberduck.UI.CodeExplorer
             foreach (VBComponent vbComponent in project.VBComponents)
             {
                 var component = vbComponent;
-                // todo: find a way to avoid blocking UI here
+                // todo: find a way to avoid blocking UI here (a 'TreeNode' cannot be 'invoked')
 //                Task.Run(() =>
 //                {
                     var qualifiedName = component.QualifiedName();

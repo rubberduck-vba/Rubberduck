@@ -17,7 +17,7 @@ namespace Rubberduck.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        private readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> _cache = 
+        private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> _cache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
         /// <summary>
