@@ -65,5 +65,10 @@ namespace Rubberduck.UI.SourceControl
         {
             git.Undo(@"C:\Users\Christopher\Documents\SourceControlTest\Module1.bas");
         }
+
+        private void Revert_Click(object sender, EventArgs e)
+        {
+            git.Revert();
+        }
     }
 }

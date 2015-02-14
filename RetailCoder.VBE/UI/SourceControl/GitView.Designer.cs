@@ -40,6 +40,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.Undo = new System.Windows.Forms.Button();
+            this.Revert = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Commit
@@ -162,11 +163,22 @@
             this.Undo.UseVisualStyleBackColor = true;
             this.Undo.Click += new System.EventHandler(this.Undo_Click);
             // 
+            // Revert
+            // 
+            this.Revert.Location = new System.Drawing.Point(233, 64);
+            this.Revert.Name = "Revert";
+            this.Revert.Size = new System.Drawing.Size(75, 23);
+            this.Revert.TabIndex = 12;
+            this.Revert.Text = "Revert";
+            this.Revert.UseVisualStyleBackColor = true;
+            this.Revert.Click += new System.EventHandler(this.Revert_Click);
+            // 
             // DummyGitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.Revert);
             this.Controls.Add(this.Undo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -200,5 +212,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button Undo;
+        private System.Windows.Forms.Button Revert;
     }
 }

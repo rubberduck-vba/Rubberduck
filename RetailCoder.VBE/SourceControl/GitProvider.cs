@@ -213,9 +213,21 @@ namespace Rubberduck.SourceControl
 
         public override void Revert()
         {
-            //todo: investigate revert results class
-            repo.Revert(repo.Head.Tip, GetSignature());
-            base.Revert();
+            try
+            {
+                var results = repo.Revert(repo.Head.Tip, GetSignature());
+
+                if (results.Status == RevertStatus.Conflicts)
+                {
+                    throw new SourceControlException("Revert resulted in conflicts. Revert failed.");
+                }
+
+                base.Revert();
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Revert failed.", ex);
+            }
         }
 
         public override void AddFile(string filePath)
