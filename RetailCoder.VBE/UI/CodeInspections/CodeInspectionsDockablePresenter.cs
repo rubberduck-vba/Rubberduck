@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -67,18 +68,27 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            var code = _parser.Parse(VBE.ActiveVBProject).ToList();
+            Control.Cursor = Cursors.WaitCursor;
+            RefreshAsync();
+            Control.Cursor = Cursors.Default;
+        }
 
-            _results = new List<CodeInspectionResultBase>();
-            foreach (var inspection in _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
+        private async void RefreshAsync()
+        {
+            var code = (_parser.Parse(VBE.ActiveVBProject)).ToList();
+
+            var results = new ConcurrentBag<CodeInspectionResultBase>();
+            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
+            Parallel.ForEach(inspections, inspection =>
             {
-                var result = inspection.GetInspectionResults(code).ToArray();
-                if (result.Length != 0)
+                var result = inspection.GetInspectionResults(code);
+                foreach (var inspectionResult in result)
                 {
-                    _results.AddRange(result);
+                    results.Add(inspectionResult);
                 }
-            }
+            });
 
+            _results = results.ToList();
             Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
         }
     }

@@ -41,10 +41,10 @@ namespace Rubberduck.UI.CodeInspections
             new Dictionary<CodeInspectionSeverity, Bitmap>
             {
                 { CodeInspectionSeverity.DoNotShow, null },
-                { CodeInspectionSeverity.Hint, Resources.Information },
-                { CodeInspectionSeverity.Suggestion, Resources.Alert },
-                { CodeInspectionSeverity.Warning, Resources.Warning },
-                { CodeInspectionSeverity.Error, Resources.Critical }
+                { CodeInspectionSeverity.Hint, Resources.information_white },
+                { CodeInspectionSeverity.Suggestion, Resources.information },
+                { CodeInspectionSeverity.Warning, Resources.exclamation },
+                { CodeInspectionSeverity.Error, Resources.cross_circle }
             };
 
         private Image GetSeverityIcon(CodeInspectionSeverity severity)

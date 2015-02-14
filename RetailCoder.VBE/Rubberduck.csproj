@@ -88,8 +88,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementUsageInspectionResult.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementUsageInspectionResult.cs" />
+    <Compile Include="Inspections\OptionBaseInspection.cs" />
+    <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +107,10 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
+    <Compile Include="VBA\IRubberduckParser.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
     <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
@@ -112,11 +124,17 @@
     <Compile Include="VBA\Nodes\TypeNode.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
     <Compile Include="VBA\Nodes\VBComponentParseResult.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ObsoleteInstrutionsListener.cs" />
     <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
-    <Compile Include="VBA\VBParser.cs" />
-    <Compile Include="VBA\VBTreeListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
+    <Compile Include="VBA\RubberduckParser.cs" />
+    <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
     <Compile Include="VBA\Grammar\VisualBasic6BaseListener.cs" />
     <Compile Include="VBA\Grammar\VisualBasic6BaseVisitor.cs" />
     <Compile Include="VBA\Grammar\VisualBasic6Lexer.cs" />
@@ -393,7 +411,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
-    <None Include="Resources\tick-circle.png" />
     <None Include="VBA\Grammar\VisualBasic6.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
@@ -406,9 +423,6 @@
     <None Include="Resources\exclamation-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\question-white.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\arrow-circle-double.png" />
   </ItemGroup>
   <ItemGroup>
@@ -416,21 +430,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-repeat.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--plus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask--exclamation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\flask-empty.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\arrow-repeat1.png" />
@@ -452,6 +451,11 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\question-white.png" />
+    <None Include="Resources\tick-circle.png" />
+    <None Include="Resources\navigation-180.png" />
+    <None Include="Resources\navigation.png" />
+    <None Include="Resources\tick.png" />
     <None Include="Resources\Step-RunTest_8814_32.bmp" />
     <None Include="Resources\Warning.bmp" />
     <None Include="Resources\Serious.bmp" />
@@ -467,6 +471,21 @@
     <None Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\cross-circle.png" />
+    <None Include="Resources\exclamation-diamond.png" />
+    <None Include="Resources\arrow.png" />
+    <None Include="Resources\document-copy.png" />
+    <None Include="Resources\information-white.png" />
+    <None Include="Resources\exclamation-white.png" />
+    <None Include="Resources\exclamation.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\flask.png" />
+    <None Include="Resources\flask--arrow.png" />
+    <None Include="Resources\flask--exclamation.png" />
+    <None Include="Resources\flask--plus.png" />
+    <None Include="Resources\flask-empty.png" />
+    <None Include="Resources\creative-commons.png" />
+    <None Include="Resources\gear.png" />
+    <None Include="Resources\control-000-small.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

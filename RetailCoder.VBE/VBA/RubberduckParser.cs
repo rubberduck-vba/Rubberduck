@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
@@ -13,41 +14,17 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public interface IRubberduckParser
+    public class RubberduckParser : IRubberduckParser
     {
         /// <summary>
-        /// Parses specified code into a COM-visible code tree.
+        /// An overload for the COM API.
         /// </summary>
-        /// <param name="projectName">The name of the VBA project the code belongs to.</param>
-        /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>
-        /// <param name="code">The code fragment or module content to be parsed.</param>
-        /// <returns>Returns a COM-visible code tree.</returns>
-        INode Parse(string projectName, string componentName, string code);
-
-        /// <summary>
-        /// Parses specified code into a parse tree.
-        /// </summary>
-        /// <param name="code">The code fragment or module content to be parsed.</param>
-        /// <returns>Returns a parse tree representing the parsed code.</returns>
-        IParseTree Parse(string code);
-
-        /// <summary>
-        /// Parses all code modules in specified project.
-        /// </summary>
-        /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
-        IEnumerable<VBComponentParseResult> Parse(VBProject vbProject);
-
-        IEnumerable<CommentNode> ParseComments(VBComponent vbComponent);
-    }
-
-    public class VBParser : IRubberduckParser
-    {
         public INode Parse(string projectName, string componentName, string code)
         {
             var result = Parse(code);
             var walker = new ParseTreeWalker();
             
-            var listener = new VBTreeListener(projectName, componentName);
+            var listener = new NodeBuildingListener(projectName, componentName);
             walker.Walk(listener, result);
 
             return listener.Root;
@@ -66,9 +43,18 @@ namespace Rubberduck.VBA
 
         public IEnumerable<VBComponentParseResult> Parse(VBProject project)
         {
-            return project.VBComponents.Cast<VBComponent>()
-                          .Select(component => new VBComponentParseResult(component, 
-                                               Parse(component.CodeModule.Lines()), ParseComments(component)));
+            var modules = project.VBComponents.Cast<VBComponent>();
+            foreach(var module in modules)
+            {
+                yield return Parse(module);
+            };
+        }
+
+        public VBComponentParseResult Parse(VBComponent component)
+        {
+            var lines = Parse(component.CodeModule.Lines());
+            var comments = ParseComments(component);
+            return new VBComponentParseResult(component, lines, comments);
         }
 
         public IEnumerable<CommentNode> ParseComments(VBComponent component)

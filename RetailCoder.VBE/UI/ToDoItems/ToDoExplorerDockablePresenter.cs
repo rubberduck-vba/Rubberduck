@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
@@ -34,15 +36,26 @@ namespace Rubberduck.UI.ToDoItems
 
         private void RefreshToDoList(object sender, EventArgs e)
         {
-            var items = new List<ToDoItem>();
-            foreach (var project in VBE.VBProjects.Cast<VBProject>())
-            {
-                var modules = _parser.Parse(project);
-                foreach (var module in modules)
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            var items = new ConcurrentBag<ToDoItem>();
+            var projects = VBE.VBProjects.Cast<VBProject>();
+            Parallel.ForEach(projects,
+                project =>
                 {
-                    items.AddRange(module.Comments.SelectMany(GetToDoMarkers));
-                }
-            }
+                    var modules = _parser.Parse(project);
+                    foreach (var module in modules)
+                    {
+                        var markers = module.Comments.AsParallel().SelectMany(GetToDoMarkers);
+                        foreach (var marker in markers)
+                        {
+                            items.Add(marker);
+                        }
+                    }
+                });
 
             Control.SetItems(items);
         }

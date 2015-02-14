@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
+
+namespace Rubberduck.Inspections
+{
+    public class ObsoleteCallStatementUsageInspectionResult : CodeInspectionResultBase
+    {
+        public ObsoleteCallStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type,
+            QualifiedContext<VisualBasic6Parser.ExplicitCallStmtContext> qualifiedContext)
+            : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+        {
+        }
+
+        private new VisualBasic6Parser.ExplicitCallStmtContext Context { get { return base.Context as VisualBasic6Parser.ExplicitCallStmtContext;} }
+
+        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        {
+            return new Dictionary<string, Action<VBE>>
+            {
+                {"Remove obsolete statement", RemoveObsoleteStatement}
+            };
+        }
+
+        private void RemoveObsoleteStatement(VBE vbe)
+        {
+            var module = vbe.FindCodeModules(QualifiedName).SingleOrDefault();
+            if (module == null)
+            {
+                return;
+            }
+
+            var selection = Context.GetSelection();
+            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount);
+            var originalInstruction = Context.GetText();
+
+            string procedure;
+            VisualBasic6Parser.ArgsCallContext arguments;
+            if (Context.eCS_MemberProcedureCall() != null)
+            {
+                procedure = Context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.eCS_MemberProcedureCall().argsCall();
+            }
+            else
+            {
+                procedure = Context.eCS_ProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.eCS_ProcedureCall().argsCall();
+            }
+
+            module.DeleteLines(selection.StartLine, selection.LineCount);
+
+            var argsList = arguments == null
+                ? new[] { string.Empty }
+                : arguments.argCall().Select(e => e.GetText());
+            var newInstruction = procedure + ' ' + string.Join(", ", argsList);
+            var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
+
+            module.InsertLines(selection.StartLine, newCodeLines);
+        }
+    }
+}

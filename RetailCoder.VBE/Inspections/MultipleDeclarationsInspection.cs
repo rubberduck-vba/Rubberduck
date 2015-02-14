@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var declarations = module.ParseTree.GetDeclarations();
+                var declarations = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener());
                 foreach (var declaration in declarations.Where(declaration => declaration is VisualBasic6Parser.ConstStmtContext || declaration is VisualBasic6Parser.VariableStmtContext))
                 {
                     var variables = declaration as VisualBasic6Parser.VariableStmtContext;                    

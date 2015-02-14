@@ -302,7 +302,7 @@ inputStmt : INPUT WS valueStmt (WS? ',' WS? valueStmt)+;
 
 killStmt : KILL WS valueStmt;
 
-letStmt : (LET WS)? implicitCallStmt_InStmt WS? (EQ | PLUS_EQ | MINUS_EQ) WS? valueStmt;
+letStmt : (LET WS)? implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
 lineInputStmt : LINE_INPUT WS valueStmt WS? ',' WS? valueStmt;
 
@@ -850,11 +850,9 @@ LEQ : '<=';
 LPAREN : '(';
 LT : '<';
 MINUS : '-';
-MINUS_EQ : '-=';
 MULT : '*';
 NEQ : '<>';
 PLUS : '+';
-PLUS_EQ : '+=';
 POW : '^';
 RPAREN : ')';
 L_SQUARE_BRACKET : '[';

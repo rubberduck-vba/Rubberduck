@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToDoExplorerWindow));
             this.todoItemsGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.refreshButton = new System.Windows.Forms.ToolStripButton();
+            this.configureButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -55,21 +57,13 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
-            this.toolStripSeparator1});
+            this.toolStripSeparator1,
+            this.configureButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(319, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // refreshButton
-            // 
-            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = global::Rubberduck.Properties.Resources.Refresh;
-            this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClicked);
             // 
             // toolStripSeparator1
             // 
@@ -84,6 +78,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(319, 206);
             this.panel1.TabIndex = 3;
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+            this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClicked);
+            // 
+            // configureButton
+            // 
+            this.configureButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.configureButton.Image = global::Rubberduck.Properties.Resources.gear;
+            this.configureButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.configureButton.Name = "configureButton";
+            this.configureButton.Size = new System.Drawing.Size(23, 22);
+            this.configureButton.Visible = false;
             // 
             // ToDoExplorerWindow
             // 
@@ -109,6 +121,7 @@
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripButton configureButton;
 
 
     }

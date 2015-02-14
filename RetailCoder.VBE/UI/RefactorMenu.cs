@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Antlr4.Runtime;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI
 {
@@ -58,8 +61,7 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = _parser.Parse(IDE.ActiveCodePane.CodeModule.Lines())
-                                .GetProcedure(startScope)
+            var method = ((IEnumerable<ParserRuleContext>) _parser.Parse(IDE.ActiveCodePane.CodeModule.Lines()).GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope)))
                                 .SingleOrDefault(proc => proc.GetSelection().Contains(selection));
 
             if (method == null)
