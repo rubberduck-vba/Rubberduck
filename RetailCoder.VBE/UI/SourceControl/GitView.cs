@@ -11,19 +11,19 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public partial class GitView : Form
+    public partial class DummyGitView : Form
     {
         private ISourceControlProvider git;
 
-        public GitView()
+        public DummyGitView()
         {
             InitializeComponent();
         }
 
-        public GitView(Microsoft.Vbe.Interop.VBProject project):this()
+        public DummyGitView(Microsoft.Vbe.Interop.VBProject project):this()
         {
-            Repository repo = new Repository("SourceControlTest", @"path", @"url");
-            this.git = new GitProvider(project, repo, "username", "password");
+            Repository repo = new Repository("SourceControlTest", @"C:\Users\Christopher\Documents\SourceControlTest", @"https://github.com/ckuhn203/SourceControlTest.git");
+            this.git = new GitProvider(project, repo, "UserName", "Password");
         }
 
         private void Commit_Click(object sender, EventArgs e)
@@ -53,7 +53,17 @@ namespace Rubberduck.UI.SourceControl
 
         private void Checkout_Click(object sender, EventArgs e)
         {
-            git.Checkout("master");
+            git.Checkout(this.SourceBranch.SelectedItem.ToString());
+        }
+
+        private void Merge_Click(object sender, EventArgs e)
+        {
+            git.Merge(this.SourceBranch.SelectedItem.ToString(), this.DestinationBranch.SelectedItem.ToString());
+        }
+
+        private void Undo_Click(object sender, EventArgs e)
+        {
+            git.Undo(@"C:\Users\Christopher\Documents\SourceControlTest\Module1.bas");
         }
     }
 }

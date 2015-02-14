@@ -79,7 +79,7 @@ namespace Rubberduck.UI
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new SourceControl.GitView(_vbe.ActiveVBProject))
+            using (var window = new SourceControl.DummyGitView(_vbe.ActiveVBProject))
             {
                 window.ShowDialog();
             }

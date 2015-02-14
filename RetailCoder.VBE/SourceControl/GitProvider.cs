@@ -90,22 +90,26 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        /// <summary>
+        /// Fetches the specified remote for tracking.
+        /// If not argument is supplied, fetches the "origin" remote.
+        /// </summary>
         public override void Fetch()
         {
-            //todo: break dependency on origin remote
-            //todo: document the fact that git integration only works on remotes named "origin"
+            Fetch("origin");
+        }
 
+        public void Fetch(string remoteName)
+        {
             try
             {
-                var remote = repo.Network.Remotes["origin"];
+                var remote = repo.Network.Remotes[remoteName];
                 repo.Network.Fetch(remote);
             }
             catch (LibGit2SharpException ex)
             {
-                //todo: all actions will require this pattern; 
                 throw new SourceControlException("Fetch failed.", ex);
             }
-
         }
 
         public override void Pull()
@@ -153,8 +157,24 @@ namespace Rubberduck.SourceControl
         {
             repo.Checkout(repo.Branches[destinationBranch]);
 
-            Signature signature = GetSignature();
-            repo.Merge(repo.Branches[sourceBranch], signature);
+            var oldHeadCommit = repo.Head.Tip;
+            var signature = GetSignature();
+            var result = repo.Merge(repo.Branches[sourceBranch], signature);
+
+            switch (result.Status)
+            {
+                case MergeStatus.Conflicts:
+                    repo.Reset(ResetMode.Hard, oldHeadCommit);
+                    break;
+                case MergeStatus.NonFastForward:
+                    //https://help.github.com/articles/dealing-with-non-fast-forward-errors/
+                    Pull();
+                    Merge(sourceBranch, destinationBranch); //a little leary about this. Could stack overflow if I'm wrong.
+                    break;
+                default:
+                    break;
+            }
+            base.Merge(sourceBranch, destinationBranch);
         }
 
         public override void Checkout(string branch)

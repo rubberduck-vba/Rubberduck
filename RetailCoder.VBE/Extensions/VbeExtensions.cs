@@ -53,6 +53,27 @@ namespace Rubberduck.Extensions
             return null;
         }
 
+        public static void SetSelection(this VBE vbe, QualifiedSelection selection)
+        {
+            //not a very robust method. Breaks if there are multiple projects with the same name.
+            var project = vbe.VBProjects.Cast<VBProject>()
+                            .FirstOrDefault(p => p.Name == selection.QualifiedName.ProjectName);
+
+            VBComponent component = null;
+            if (project != null)
+            {
+                component = project.VBComponents.Cast<VBComponent>()
+                                .FirstOrDefault(c => c.Name == selection.QualifiedName.ModuleName);
+            }
+
+            if (component == null)
+            {
+                return;
+            }
+
+            component.CodeModule.CodePane.SetSelection(selection.Selection);
+        }
+
         [System.Obsolete]
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, ParserRuleContext context)
         {
