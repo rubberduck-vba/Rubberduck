@@ -141,6 +141,9 @@
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>
   </data>
+  <data name="VariableNotAssigned" xml:space="preserve">
+    <value>Variable is never assigned</value>
+  </data>
   <data name="VariableTypeNotDeclared" xml:space="preserve">
     <value>Variable type is implicitly Variant</value>
   </data>
