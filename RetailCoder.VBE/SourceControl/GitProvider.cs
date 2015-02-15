@@ -21,13 +21,14 @@ namespace Rubberduck.SourceControl
             : base(project) { }
 
         public GitProvider(VBProject project, IRepository repository)
-            : base(project, repository) { }
+            : base(project, repository) 
+        {
+            repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+        }
 
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
-            repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
-
             this.creds = new UsernamePasswordCredentials()
             {
                 Username = userName,
@@ -238,6 +239,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 repo.CreateBranch(branch);
+                repo.Checkout(branch);
             }
             catch (LibGit2SharpException ex)
             {
