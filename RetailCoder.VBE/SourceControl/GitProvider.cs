@@ -11,7 +11,6 @@ using System.ComponentModel;
 
 namespace Rubberduck.SourceControl
 {
-    //todo: I need a way to get to the branch status...
     class GitProvider : SourceControlProviderBase
     {
         private LibGit2Sharp.Repository repo;
@@ -60,18 +59,47 @@ namespace Rubberduck.SourceControl
 
         public override Repository Clone(string remotePathOrUrl, string workingDirectory)
         {
-            //todo: parse name from remote path
-            var name = String.Empty;
-            return new Repository(name, workingDirectory, remotePathOrUrl);
+            try
+            {
+                var name = GetProjectNameFromDirectory(remotePathOrUrl);
+                return new Repository(name, workingDirectory, remotePathOrUrl);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to clone remote repository.", ex);
+            }
         }
 
-        public override Repository Init(string directory)
+        public override Repository Init(string directory, bool bare = false)
         {
-            //todo: implement
-            var repository = base.Init(directory);
+            try
+            {
+                string workingDir;
 
-            throw new NotImplementedException();
+                if (bare)
+                {
+                    workingDir = string.Empty;
+                }
+                else
+                {
+                    workingDir = directory;
+                }
 
+                LibGit2Sharp.Repository.Init(directory, bare);
+
+                var projectName = GetProjectNameFromDirectory(directory);
+                return new Repository(this.project.Name, workingDir, directory);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Unable to initialize repository.", ex);
+            }
+        }
+
+        public override Repository InitVBAProject(string directory)
+        {
+            var repository = base.InitVBAProject(directory);
+            Init(directory);
             return repository;
         }
 
@@ -270,6 +298,7 @@ namespace Rubberduck.SourceControl
                 throw new SourceControlException("Undo failed.", ex);
             }
         }
+
         private Signature GetSignature()
         {
             return this.repo.Config.BuildSignature(DateTimeOffset.Now);

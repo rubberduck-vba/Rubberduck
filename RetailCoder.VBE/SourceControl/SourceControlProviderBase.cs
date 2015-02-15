@@ -10,8 +10,7 @@ namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        private VBProject project;
-        private string lastActiveModule;
+        protected VBProject project;
 
         public SourceControlProviderBase(VBProject project)
         {
@@ -33,11 +32,18 @@ namespace Rubberduck.SourceControl
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
         public abstract void CreateBranch(string branch);
+        public abstract Repository Init(string directory, bool bare = false);
 
-        public virtual Repository Init(string directory)
+        public virtual Repository InitVBAProject(string directory)
         {
+            var projectName = GetProjectNameFromDirectory(directory);
+            if (projectName != string.Empty && projectName != this.project.Name)
+            {
+                directory = System.IO.Path.Combine(directory, project.Name);
+            }
+
             this.project.ExportSourceFiles(directory);
-            this.CurrentRepository = new Repository(project.Name, directory, String.Empty);
+            this.CurrentRepository = new Repository(project.Name, directory, directory);
             return this.CurrentRepository;
         }
 
@@ -86,6 +92,14 @@ namespace Rubberduck.SourceControl
         {
             this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
             return null;
+        }
+
+        protected string GetProjectNameFromDirectory(string directory)
+        {
+            var separators = new char[] { '/', '\\', '.' };
+            return directory.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                .Where(c => c != "git")
+                .LastOrDefault();
         }
 
         private void Refresh()

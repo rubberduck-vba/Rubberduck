@@ -24,10 +24,23 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="directory">The directory where the new repository will be created.</param>
         /// <returns>Newly created repository.</returns>
-        Repository Init(string directory);
+        Repository Init(string directory, bool bare = false);
+
+        /// <summary>
+        /// Creates a new repository and sets the CurrentRepository property from the VBProject passed to the ISourceControlProvider upon creation.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns>Newly created Repository.</returns>
+        Repository InitVBAProject(string directory);
 
         //todo: document
         void Push();
+
+        /// <summary>
+        /// Fetches the specified remote for tracking.
+        /// If argument is not supplied, returns a default remote defined by implementation.
+        /// </summary>
+        /// <param name="remoteName"></param>
         void Fetch([Optional] string remoteName);
         void Pull();
         void Commit(string message);
