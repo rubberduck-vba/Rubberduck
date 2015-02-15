@@ -244,17 +244,31 @@ namespace Rubberduck.SourceControl
 
         public override IEnumerable<IFileStatusEntry> Status()
         {
-            base.Status();
-            return repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+            try
+            {
+                base.Status();
+                return repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to retrieve repository status.", ex);
+            }
         }
 
         public override void Undo(string filePath)
         {
-            var paths = new List<string>();
-            paths.Add(filePath);
+            try
+            {
+                var paths = new List<string>();
+                paths.Add(filePath);
 
-            repo.CheckoutPaths(this.CurrentBranch, paths);
-            base.Undo(filePath);
+                repo.CheckoutPaths(this.CurrentBranch, paths);
+                base.Undo(filePath);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Undo failed.", ex);
+            }
         }
         private Signature GetSignature()
         {
