@@ -259,15 +259,31 @@ namespace Rubberduck.SourceControl
 
         public override void AddFile(string filePath)
         {
-            //todo: implement / test
-            // https://github.com/libgit2/libgit2sharp/wiki/Git-add
-            repo.Stage(filePath);
+            try
+            {
+                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
+                repo.Stage(filePath);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(string.Format("Failed to stage file {0}", filePath), ex);
+            }
         }
 
+        /// <summary>
+        /// Removes file from staging area, but leaves the file in the working directory.
+        /// </summary>
+        /// <param name="filePath"></param>
         public override void RemoveFile(string filePath)
         {
-            //todo: implement
-            throw new NotImplementedException();
+            try
+            {
+                repo.Remove(filePath, false);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException(string.Format("Failed to remove file {0} from staging area.", filePath), ex);
+            }
         }
 
         public override IEnumerable<IFileStatusEntry> Status()
