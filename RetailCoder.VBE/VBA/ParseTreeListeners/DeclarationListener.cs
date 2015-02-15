@@ -1,13 +1,30 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
+
+    public class ScopedDeclaration<TContext>
+        where TContext : ParserRuleContext
+    {
+        private readonly TContext _context;
+
+        public ScopedDeclaration(TContext context)
+        {
+            _context = context;
+        }
+
+        public TContext Context { get { return _context; } }
+    }
+
     public class DeclarationListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
     {
         private readonly IList<ParserRuleContext> _members = new List<ParserRuleContext>();
         public IEnumerable<ParserRuleContext> Members { get { return _members; } }
+
+
 
         public override void EnterVariableStmt(VisualBasic6Parser.VariableStmtContext context)
         {

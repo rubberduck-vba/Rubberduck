@@ -10,12 +10,11 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    [ComVisible(false)]
     public class ExtractMethodRefactoring
     {
         public static IDictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, Selection selection)
         {
-            var declarations = ((IEnumerable<ParserRuleContext>) parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener())).ToList();
+            var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener()).ToList();
 
             var constants = declarations.OfType<VisualBasic6Parser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
             var variables = declarations.OfType<VisualBasic6Parser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
@@ -26,7 +25,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                        .ToDictionary(declaration => declaration.GetText(), 
                                                      declaration => declaration);
 
-            var references = ((IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext>) parseTree.GetContexts<VariableReferencesListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableReferencesListener()))
+            var references = parseTree.GetContexts<VariableReferencesListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableReferencesListener())
                                       .GroupBy(usage => new { Identifier = usage.GetText()})
                                       .ToList();
 
