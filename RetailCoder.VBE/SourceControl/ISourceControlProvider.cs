@@ -38,5 +38,6 @@ namespace Rubberduck.SourceControl
         void Revert();
         void AddFile(string filePath);
         void RemoveFile(string filePath);
+        IEnumerable<IFileStatusEntry> Status();
     }
 }

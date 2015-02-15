@@ -95,6 +95,7 @@
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />

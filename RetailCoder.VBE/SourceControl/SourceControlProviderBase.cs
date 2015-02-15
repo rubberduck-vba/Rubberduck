@@ -63,10 +63,12 @@ namespace Rubberduck.SourceControl
 
         public virtual void Undo(string filePath)
         {
-            //GetFileNameWithoutExtension returns empty string if it's not a file
-            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
-            var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            //this might need to cherry pick from the tip instead.
 
+           var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+
+           //GetFileNameWithoutExtension returns empty string if it's not a file
+           //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
             if (componentName != String.Empty)
             {
                 var component = this.project.VBComponents.Item(componentName);
@@ -80,8 +82,16 @@ namespace Rubberduck.SourceControl
             Refresh();
         }
 
+        public virtual IEnumerable<IFileStatusEntry> Status()
+        {
+            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            return null;
+        }
+
         private void Refresh()
         {
+            //Because refreshing removes all components, we need to store the current selection,
+            // so we can correctly reset it once the files are imported from the repository.
             var selection = this.project.VBE.ActiveCodePane.GetSelection();
             var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Name;
             var projectName = this.project.Name;

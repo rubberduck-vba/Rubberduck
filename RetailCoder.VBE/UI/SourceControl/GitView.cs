@@ -70,5 +70,11 @@ namespace Rubberduck.UI.SourceControl
         {
             git.Revert();
         }
+
+        private void Status_Click(object sender, EventArgs e)
+        {
+            var status = git.Status();
+            this.StatusResults.DataSource = new BindingList<IFileStatusEntry>(status.ToList());
+        }
     }
 }

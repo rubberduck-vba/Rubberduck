@@ -58,7 +58,6 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        //note: should we really have a clone method? I don't think we'll use it, but could be useful in an API.
         public override Repository Clone(string remotePathOrUrl, string workingDirectory)
         {
             //todo: parse name from remote path
@@ -232,6 +231,7 @@ namespace Rubberduck.SourceControl
 
         public override void AddFile(string filePath)
         {
+            //todo: implement / test
             // https://github.com/libgit2/libgit2sharp/wiki/Git-add
             repo.Stage(filePath);
         }
@@ -242,6 +242,20 @@ namespace Rubberduck.SourceControl
             throw new NotImplementedException();
         }
 
+        public override IEnumerable<IFileStatusEntry> Status()
+        {
+            base.Status();
+            return repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+        }
+
+        public override void Undo(string filePath)
+        {
+            var paths = new List<string>();
+            paths.Add(filePath);
+
+            repo.CheckoutPaths(this.CurrentBranch, paths);
+            base.Undo(filePath);
+        }
         private Signature GetSignature()
         {
             return this.repo.Config.BuildSignature(DateTimeOffset.Now);
