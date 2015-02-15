@@ -17,10 +17,10 @@ namespace Rubberduck.SourceControl
         private Credentials creds;
         private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
 
-        public GitProvider(VBProject project, Repository repository)
+        public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) { }
 
-        public GitProvider(VBProject project, Repository repository, string userName, string passWord)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
             repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
@@ -57,7 +57,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override Repository Clone(string remotePathOrUrl, string workingDirectory)
+        public override IRepository Clone(string remotePathOrUrl, string workingDirectory)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override Repository Init(string directory, bool bare = false)
+        public override IRepository Init(string directory, bool bare = false)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override Repository InitVBAProject(string directory)
+        public override IRepository InitVBAProject(string directory)
         {
             var repository = base.InitVBAProject(directory);
             Init(directory);

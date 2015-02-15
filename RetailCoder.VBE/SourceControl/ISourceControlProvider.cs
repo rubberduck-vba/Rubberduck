@@ -9,7 +9,7 @@ namespace Rubberduck.SourceControl
 {
     public interface ISourceControlProvider
     {
-        Repository CurrentRepository { get; }
+        IRepository CurrentRepository { get; }
         string CurrentBranch { get; }
         IEnumerable<string> Branches { get; }
 
@@ -17,21 +17,21 @@ namespace Rubberduck.SourceControl
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>
         /// <param name="workingDirectory">Directory the repository will be cloned to.</param>
         /// <returns>Newly cloned repository.</returns>
-        Repository Clone(string remotePathOrUrl, string workingDirectory);
+        IRepository Clone(string remotePathOrUrl, string workingDirectory);
 
         /// <summary>
         /// Creates a new repository in/from the given directory.
         /// </summary>
         /// <param name="directory">The directory where the new repository will be created.</param>
         /// <returns>Newly created repository.</returns>
-        Repository Init(string directory, bool bare = false);
+        IRepository Init(string directory, bool bare = false);
 
         /// <summary>
         /// Creates a new repository and sets the CurrentRepository property from the VBProject passed to the ISourceControlProvider upon creation.
         /// </summary>
         /// <param name="directory"></param>
         /// <returns>Newly created Repository.</returns>
-        Repository InitVBAProject(string directory);
+        IRepository InitVBAProject(string directory);
 
         //todo: document
         void Push();

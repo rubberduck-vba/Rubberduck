@@ -17,24 +17,24 @@ namespace Rubberduck.SourceControl
             this.project = project;
         }
 
-        public SourceControlProviderBase(VBProject project, Repository repository)
+        public SourceControlProviderBase(VBProject project, IRepository repository)
             :this(project)
         {
             this.CurrentRepository = repository;
         }
 
-        public Repository CurrentRepository { get; private set; }
+        public IRepository CurrentRepository { get; private set; }
         public abstract string CurrentBranch { get; }
         public abstract IEnumerable<string> Branches { get; }
-        public abstract Repository Clone(string remotePathOrUrl, string workingDirectory);
+        public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
         public abstract void CreateBranch(string branch);
-        public abstract Repository Init(string directory, bool bare = false);
+        public abstract IRepository Init(string directory, bool bare = false);
 
-        public virtual Repository InitVBAProject(string directory)
+        public virtual IRepository InitVBAProject(string directory)
         {
             var projectName = GetProjectNameFromDirectory(directory);
             if (projectName != string.Empty && projectName != this.project.Name)
