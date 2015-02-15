@@ -39,7 +39,10 @@ namespace Rubberduck.SourceControl
 
         ~GitProvider()
         {
-            repo.Dispose();
+            if (repo != null)
+            {
+                repo.Dispose();
+            }
         }
 
         public override string CurrentBranch
@@ -102,7 +105,7 @@ namespace Rubberduck.SourceControl
         public override IRepository InitVBAProject(string directory)
         {
             var repository = base.InitVBAProject(directory);
-            Init(directory);
+            Init(repository.LocalLocation);
             return repository;
         }
 
