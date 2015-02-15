@@ -13,7 +13,7 @@ namespace Rubberduck.SourceControl
         string RemoteLocation { get; }
     }
 
-    public class Repository : Rubberduck.SourceControl.IRepository
+    public class Repository : IRepository, IEquatable<Repository>
     {
         public string Name { get; private set; }
         public string LocalLocation { get; private set; }
@@ -24,6 +24,13 @@ namespace Rubberduck.SourceControl
             this.Name = name;
             this.LocalLocation = localDirectory;
             this.RemoteLocation = remotePathOrUrl;
+        }
+
+        public bool Equals(Repository other)
+        {
+            return this.LocalLocation == other.LocalLocation
+                    && this.RemoteLocation == other.LocalLocation
+                    && this.Name == other.Name;
         }
     }
 }
