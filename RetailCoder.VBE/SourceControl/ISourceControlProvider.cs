@@ -42,15 +42,64 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="remoteName"></param>
         void Fetch([Optional] string remoteName);
+
+        /// <summary>
+        /// Fetches the currently tracking remote and merges it into the CurrentBranch.
+        /// </summary>
         void Pull();
+
+        /// <summary>
+        /// Stages all modified files and commits to CurrentBranch.
+        /// </summary>
+        /// <param name="message"></param>
         void Commit(string message);
+
+        /// <summary>
+        /// Merges the source branch into the desitnation.
+        /// </summary>
+        /// <param name="sourceBranch"></param>
+        /// <param name="destinationBranch"></param>
         void Merge(string sourceBranch, string destinationBranch);
+
+        /// <summary>
+        /// Checks out the target branch.
+        /// </summary>
+        /// <param name="branch"></param>
         void Checkout(string branch);
+
+        /// <summary>
+        /// Creates and checks out a new branch.
+        /// </summary>
+        /// <param name="branch"></param>
         void CreateBranch(string branch);
+
+        /// <summary>
+        /// Undoes uncommitted changes to a particular file.
+        /// </summary>
+        /// <param name="filePath"></param>
         void Undo(string filePath);
+
+        /// <summary>
+        /// Reverts entire branch to the last commit.
+        /// </summary>
         void Revert();
+
+        /// <summary>
+        /// Adds untracked file to repository.
+        /// </summary>
+        /// <param name="filePath"></param>
         void AddFile(string filePath);
+
+        /// <summary>
+        /// Removes file from tracking.
+        /// </summary>
+        /// <param name="filePath"></param>
         void RemoveFile(string filePath);
+
+        /// <summary>
+        /// Returns a collection of file status entries.
+        /// Semantically the same as calling $git status.
+        /// </summary>
         IEnumerable<IFileStatusEntry> Status();
     }
 }
