@@ -11,11 +11,14 @@ using System.ComponentModel;
 
 namespace Rubberduck.SourceControl
 {
-    class GitProvider : SourceControlProviderBase
+    public class GitProvider : SourceControlProviderBase
     {
         private LibGit2Sharp.Repository repo;
         private Credentials creds;
         private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
+
+        public GitProvider(VBProject project) 
+            : base(project) { }
 
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) { }
