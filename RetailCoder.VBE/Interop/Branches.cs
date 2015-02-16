@@ -10,10 +10,6 @@ using System.ComponentModel;
 namespace Rubberduck.Interop
 {
     [ComVisible(true)]
-    [Guid("24015981-B6A1-4416-983F-83D4AE51BDEA")]
-    public interface IBranches : IEnumerable{}
-
-    [ComVisible(true)]
     [Guid("423A3B28-376B-4F96-A2E0-96E354965048")]
     [ProgId("Rubberduck.Branches")]
     [ClassInterface(ClassInterfaceType.None)]
