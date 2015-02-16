@@ -13,7 +13,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    [ComVisible(false)]
     public class ExtractMethodPresenter
     {
         private readonly IExtractMethodDialog _view;
@@ -43,7 +42,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var input = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedBeforeSelection).ToList();
             var output = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection).ToList();
             
-            _locals = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedOnlyInSelection).Select(kvp => kvp.Key);
+            _locals = _parentMethodDeclarations.Where(
+                kvp => kvp.Value == ExtractedDeclarationUsage.UsedOnlyInSelection
+                    || kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection
+                ).Select(kvp => kvp.Key);
+
             _input = ExtractParameters(input);
             _output = ExtractParameters(output);
         }
@@ -192,7 +195,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
                 .OfType<VisualBasic6Parser.VariableSubStmtContext>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
+                .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
+                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
             var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());
 
             result += newLine + locals + newLine + _selectedCode + newLine;

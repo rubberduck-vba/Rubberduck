@@ -9,7 +9,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class VariableTypeNotDeclaredInspectionResult : CodeInspectionResultBase
     {
         public VariableTypeNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type, ParserRuleContext context, QualifiedModuleName qualifiedName)

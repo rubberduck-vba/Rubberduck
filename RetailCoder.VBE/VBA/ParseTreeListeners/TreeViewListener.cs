@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
@@ -29,6 +30,16 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var node = new TreeNode(context.GetText());
+            var parent = context.Parent as VisualBasic6Parser.VariableStmtContext;
+            var accessibility = parent == null || parent.visibility() == null 
+                ? VBAccessibility.Implicit 
+                : parent.visibility().GetAccessibility();
+            node.ImageKey = (accessibility == VBAccessibility.Public || 
+                             accessibility == VBAccessibility.Global)
+                ? "PublicField"
+                : "PrivateField";
+
+            node.SelectedImageKey = node.ImageKey;
             _tree.Nodes.Add(node);
         }
 
@@ -40,6 +51,16 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var node = new TreeNode(context.GetText());
+            var parent = context.Parent as VisualBasic6Parser.ConstStmtContext;
+            var accessibility = parent == null || parent.visibility() == null 
+                ? VBAccessibility.Implicit 
+                : parent.visibility().GetAccessibility();
+            node.ImageKey = (accessibility == VBAccessibility.Public || 
+                             accessibility == VBAccessibility.Global)
+                ? "PublicConst"
+                : "PrivateConst";
+
+            node.SelectedImageKey = node.ImageKey;
             _tree.Nodes.Add(node);
         }
 
@@ -50,8 +71,19 @@ namespace Rubberduck.VBA.ParseTreeListeners
             foreach (var member in members)
             {
                 var memberNode = node.Nodes.Add(member.GetText());
-                // format node
+                memberNode.ImageKey = "EnumItem";
+                memberNode.SelectedImageKey = memberNode.ImageKey;
             }
+
+            var accessibility = context.visibility() == null 
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            node.ImageKey = (accessibility == VBAccessibility.Public || 
+                             accessibility == VBAccessibility.Global)
+                ? "PublicEnum"
+                : "PrivateEnum";
+
+            node.SelectedImageKey = node.ImageKey;
 
             _tree.Nodes.Add(node);
         }
@@ -63,41 +95,92 @@ namespace Rubberduck.VBA.ParseTreeListeners
             foreach (var member in members)
             {
                 var memberNode = node.Nodes.Add(member.GetText());
-                // format node
+                memberNode.ImageKey = "PublicField";
+                memberNode.SelectedImageKey = memberNode.ImageKey;
             }
+
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            node.ImageKey = (accessibility == VBAccessibility.Public || 
+                             accessibility == VBAccessibility.Global)
+                ? "PublicType"
+                : "PrivateType";
+
+            node.SelectedImageKey = node.ImageKey;
         }
 
         public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
         {
             _isInDeclarationsSection = false;
-            _tree.Nodes.Add(CreateProcedureNode(context));
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            var imageKey = accessibility == VBAccessibility.Private
+                ? "PrivateMethod"
+                : accessibility == VBAccessibility.Friend
+                    ? "FriendMethod"
+                    : "PublicMethod";
+            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
         public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
         {
             _isInDeclarationsSection = false;
-            _tree.Nodes.Add(CreateProcedureNode(context));
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            var imageKey = accessibility == VBAccessibility.Private
+                ? "PrivateMethod"
+                : accessibility == VBAccessibility.Friend
+                    ? "FriendMethod"
+                    : "PublicMethod";
+            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
         public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            _tree.Nodes.Add(CreateProcedureNode(context));
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            var imageKey = accessibility == VBAccessibility.Private
+                ? "PrivateProperty"
+                : accessibility == VBAccessibility.Friend
+                    ? "FriendProperty"
+                    : "PublicProperty";
+            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
         public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            _tree.Nodes.Add(CreateProcedureNode(context));
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            var imageKey = accessibility == VBAccessibility.Private
+                ? "PrivateProperty"
+                : accessibility == VBAccessibility.Friend
+                    ? "FriendProperty"
+                    : "PublicProperty";
+            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
         public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            _tree.Nodes.Add(CreateProcedureNode(context));
+            var accessibility = context.visibility() == null
+                ? VBAccessibility.Implicit
+                : context.visibility().GetAccessibility();
+            var imageKey = accessibility == VBAccessibility.Private
+                ? "PrivateProperty"
+                : accessibility == VBAccessibility.Friend
+                    ? "FriendProperty"
+                    : "PublicProperty";
+            _tree.Nodes.Add(CreateProcedureNode(context,imageKey));
         }
 
-        private TreeNode CreateProcedureNode(dynamic context)
+        private TreeNode CreateProcedureNode(dynamic context, string imageKey)
         {
             var procedureName = context.ambiguousIdentifier().GetText();
             var node = new TreeNode(procedureName);
@@ -111,9 +194,14 @@ namespace Rubberduck.VBA.ParseTreeListeners
             foreach (var arg in args)
             {
                 var argNode = new TreeNode(arg.GetText());
+                argNode.ImageKey = "Parameter";
+                argNode.SelectedImageKey = argNode.ImageKey;
+
                 node.Nodes.Add(argNode);
             }
 
+            node.ImageKey = imageKey;
+            node.SelectedImageKey = node.ImageKey;
             return node;
         }
     }

@@ -186,6 +186,7 @@ namespace Rubberduck.UI.CodeInspections
             if (_issues.Length == 0)
             {
                 _quickFixButton.TooltipText = string.Empty;
+                _statusButton.TooltipText = string.Empty;
                 return;
             }
 
@@ -196,6 +197,7 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             _quickFixButton.TooltipText = fix.Key;
+            _statusButton.TooltipText = _issues[_currentIssue].Name;
         }
     }
 }
