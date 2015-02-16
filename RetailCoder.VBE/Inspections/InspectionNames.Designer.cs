@@ -88,6 +88,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function does not return anything.
+        /// </summary>
+        internal static string NonReturningFunction {
+            get {
+                return ResourceManager.GetString("NonReturningFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of obsolete Call statement.
         /// </summary>
         internal static string ObsoleteCall {
