@@ -65,6 +65,6 @@ namespace Rubberduck.Interop
         void RemoveFile(string filePath);
 
         [DispId(17)]
-        IFileStatusEntries Status();
+        IEnumerable Status();
     }
 }
