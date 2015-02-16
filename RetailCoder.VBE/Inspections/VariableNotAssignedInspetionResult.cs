@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove unused variable", RemoveVariableDeclaration}
+                    {"Remove unassigned variable (and usages)", RemoveVariableDeclaration}
                 };
         }
 
@@ -45,6 +45,11 @@ namespace Rubberduck.Inspections
             {
                 module.InsertLines(selection.StartLine, newCodeLines);
             }
+        }
+
+        private void RemoveVariableUsages(VBE vbe)
+        {
+            
         }
     }
 }

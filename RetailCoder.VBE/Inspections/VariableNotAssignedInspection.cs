@@ -87,7 +87,7 @@ namespace Rubberduck.Inspections
 
                 // identify unassigned procedure-scoped declarations:
                 unassignedDeclarations.AddRange(
-                    locals.Where(local => assignments.All(a => a.Name != local.Name))
+                    locals.Where(local => assignments.All(a => (a.Scope.MemberName + a.Name) != (local.Scope.MemberName + local.Name)))
                           .Select(identifier => new VariableNotAssignedInspetionResult(Name, Severity, identifier.Context.ambiguousIdentifier(), result.QualifiedName)));
 
                 // identify globals assigned in this module:
