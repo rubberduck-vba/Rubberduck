@@ -126,6 +126,9 @@
   <data name="MultipleDeclarations" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
+  <data name="NonReturningFunction" xml:space="preserve">
+    <value>Function does not return anything</value>
+  </data>
   <data name="ObsoleteCall" xml:space="preserve">
     <value>Use of obsolete Call statement</value>
   </data>

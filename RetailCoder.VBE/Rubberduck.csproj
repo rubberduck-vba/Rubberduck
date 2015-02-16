@@ -88,6 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
+    <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementUsageInspection.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementUsageInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementUsageInspection.cs" />

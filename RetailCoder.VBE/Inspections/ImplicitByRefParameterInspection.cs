@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
+                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
                 foreach (var procedure in procedures)
                 {
                     var args = GetArguments(procedure);
