@@ -95,6 +95,11 @@
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Interop\Branches.cs" />
+    <Compile Include="Interop\FileStatusEntries.cs" />
+    <Compile Include="Interop\GitProvider.cs" />
+    <Compile Include="Interop\ISourceControlProvider.cs" />
+    <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
