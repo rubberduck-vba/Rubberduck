@@ -40,6 +40,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.Undo = new System.Windows.Forms.Button();
+            this.Revert = new System.Windows.Forms.Button();
+            this.Status = new System.Windows.Forms.Button();
+            this.StatusResults = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.StatusResults)).BeginInit();
             this.SuspendLayout();
             // 
             // Commit
@@ -154,7 +158,7 @@
             // 
             // Undo
             // 
-            this.Undo.Location = new System.Drawing.Point(229, 34);
+            this.Undo.Location = new System.Drawing.Point(233, 34);
             this.Undo.Name = "Undo";
             this.Undo.Size = new System.Drawing.Size(75, 23);
             this.Undo.TabIndex = 11;
@@ -162,11 +166,45 @@
             this.Undo.UseVisualStyleBackColor = true;
             this.Undo.Click += new System.EventHandler(this.Undo_Click);
             // 
+            // Revert
+            // 
+            this.Revert.Location = new System.Drawing.Point(233, 64);
+            this.Revert.Name = "Revert";
+            this.Revert.Size = new System.Drawing.Size(75, 23);
+            this.Revert.TabIndex = 12;
+            this.Revert.Text = "Revert";
+            this.Revert.UseVisualStyleBackColor = true;
+            this.Revert.Click += new System.EventHandler(this.Revert_Click);
+            // 
+            // Status
+            // 
+            this.Status.Location = new System.Drawing.Point(37, 243);
+            this.Status.Name = "Status";
+            this.Status.Size = new System.Drawing.Size(75, 23);
+            this.Status.TabIndex = 14;
+            this.Status.Text = "Status";
+            this.Status.UseVisualStyleBackColor = true;
+            this.Status.Click += new System.EventHandler(this.Status_Click);
+            // 
+            // StatusResults
+            // 
+            this.StatusResults.AllowUserToAddRows = false;
+            this.StatusResults.AllowUserToDeleteRows = false;
+            this.StatusResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.StatusResults.Location = new System.Drawing.Point(37, 272);
+            this.StatusResults.Name = "StatusResults";
+            this.StatusResults.ReadOnly = true;
+            this.StatusResults.Size = new System.Drawing.Size(292, 171);
+            this.StatusResults.TabIndex = 15;
+            // 
             // DummyGitView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(341, 455);
+            this.Controls.Add(this.StatusResults);
+            this.Controls.Add(this.Status);
+            this.Controls.Add(this.Revert);
             this.Controls.Add(this.Undo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -181,6 +219,7 @@
             this.Controls.Add(this.Commit);
             this.Name = "DummyGitView";
             this.Text = "GitView";
+            ((System.ComponentModel.ISupportInitialize)(this.StatusResults)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -200,5 +239,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button Undo;
+        private System.Windows.Forms.Button Revert;
+        private System.Windows.Forms.Button Status;
+        private System.Windows.Forms.DataGridView StatusResults;
     }
 }

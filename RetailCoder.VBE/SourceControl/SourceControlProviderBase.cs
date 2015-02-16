@@ -10,34 +10,40 @@ namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        private VBProject project;
-        private string lastActiveModule;
+        protected VBProject project;
 
         public SourceControlProviderBase(VBProject project)
         {
             this.project = project;
         }
 
-        public SourceControlProviderBase(VBProject project, Repository repository)
+        public SourceControlProviderBase(VBProject project, IRepository repository)
             :this(project)
         {
             this.CurrentRepository = repository;
         }
 
-        public Repository CurrentRepository { get; private set; }
+        public IRepository CurrentRepository { get; private set; }
         public abstract string CurrentBranch { get; }
         public abstract IEnumerable<string> Branches { get; }
-        public abstract Repository Clone(string remotePathOrUrl, string workingDirectory);
+        public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
-        public abstract void Fetch();
+        public abstract void Fetch(string remoteName);
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
         public abstract void CreateBranch(string branch);
+        public abstract IRepository Init(string directory, bool bare = false);
 
-        public virtual Repository Init(string directory)
+        public virtual IRepository InitVBAProject(string directory)
         {
+            var projectName = GetProjectNameFromDirectory(directory);
+            if (projectName != string.Empty && projectName != this.project.Name)
+            {
+                directory = System.IO.Path.Combine(directory, project.Name);
+            }
+
             this.project.ExportSourceFiles(directory);
-            this.CurrentRepository = new Repository(project.Name, directory, String.Empty);
+            this.CurrentRepository = new Repository(project.Name, directory, directory);
             return this.CurrentRepository;
         }
 
@@ -63,10 +69,12 @@ namespace Rubberduck.SourceControl
 
         public virtual void Undo(string filePath)
         {
-            //GetFileNameWithoutExtension returns empty string if it's not a file
-            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
-            var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            //this might need to cherry pick from the tip instead.
 
+           var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+
+           //GetFileNameWithoutExtension returns empty string if it's not a file
+           //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
             if (componentName != String.Empty)
             {
                 var component = this.project.VBComponents.Item(componentName);
@@ -80,8 +88,24 @@ namespace Rubberduck.SourceControl
             Refresh();
         }
 
+        public virtual IEnumerable<IFileStatusEntry> Status()
+        {
+            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            return null;
+        }
+
+        protected string GetProjectNameFromDirectory(string directory)
+        {
+            var separators = new char[] { '/', '\\', '.' };
+            return directory.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                .Where(c => c != "git")
+                .LastOrDefault();
+        }
+
         private void Refresh()
         {
+            //Because refreshing removes all components, we need to store the current selection,
+            // so we can correctly reset it once the files are imported from the repository.
             var selection = this.project.VBE.ActiveCodePane.GetSelection();
             var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Parent.QualifiedName();
 

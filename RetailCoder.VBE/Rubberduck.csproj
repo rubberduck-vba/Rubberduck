@@ -99,6 +99,12 @@
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspetionResult.cs" />
+    <Compile Include="Interop\Branches.cs" />
+    <Compile Include="Interop\FileStatusEntries.cs" />
+    <Compile Include="Interop\GitProvider.cs" />
+    <Compile Include="Interop\ISourceControlProvider.cs" />
+    <Compile Include="Interop\SourceControlClassFactory.cs" />
+    <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
