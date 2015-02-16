@@ -33,7 +33,9 @@ namespace Rubberduck.SourceControl
         /// <returns>Newly created Repository.</returns>
         IRepository InitVBAProject(string directory);
 
-        //todo: document
+        /// <summary>
+        /// Pushes commits in the CurrentBranch of the Local repo to the Remote.
+        /// </summary>
         void Push();
 
         /// <summary>
