@@ -83,10 +83,9 @@ namespace Rubberduck.SourceControl
         private void Refresh()
         {
             var selection = this.project.VBE.ActiveCodePane.GetSelection();
-            var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Name;
-            var projectName = this.project.Name;
+            var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Parent.QualifiedName();
 
-            var qualifiedSelection = new QualifiedSelection(projectName, moduleName, selection);
+            var qualifiedSelection = new QualifiedSelection(moduleName, selection);
 
             this.project.RemoveAllComponents();
             this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
