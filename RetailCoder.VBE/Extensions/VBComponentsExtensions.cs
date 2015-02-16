@@ -4,12 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
 using Rubberduck.VBA;
 
 namespace Rubberduck.Extensions
 {
     public static class VBComponentsExtensions
     {
+        public static QualifiedModuleName QualifiedName(this VBComponent component)
+        {
+            var moduleName = component.Name;
+            var project = component.Collection.Parent;
+            var hash = project.GetHashCode();
+            var code = component.CodeModule.Lines().GetHashCode();
+
+            return new QualifiedModuleName(project.Name, moduleName, hash, code);
+        }
+
         /// <summary>
         /// Safely removes the specified VbComponent from the collection.
         /// </summary>

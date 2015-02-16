@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.VBA
@@ -17,6 +19,16 @@ namespace Rubberduck.VBA
             walker.Walk(listener, parseTree);
 
             return listener.Members;
+        }
+
+        /// <summary>
+        /// Assuming the specified identifier is in scope,
+        /// returns <c>true</c> if its name matches that of the used variable.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsIdentifierUsage(this VisualBasic6Parser.VariableCallStmtContext usage, VisualBasic6Parser.AmbiguousIdentifierContext identifier)
+        {
+            return usage.ambiguousIdentifier().GetText() == identifier.GetText();
         }
     }
 }

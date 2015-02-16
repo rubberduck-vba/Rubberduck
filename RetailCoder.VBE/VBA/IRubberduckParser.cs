@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
@@ -10,6 +11,7 @@ namespace Rubberduck.VBA
     {
         /// <summary>
         /// Parses specified code into a COM-visible code tree.
+        /// Use the <c>(QualifiedModuleName,string)</c> overload for managed clients.
         /// </summary>
         /// <param name="projectName">The name of the VBA project the code belongs to.</param>
         /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>

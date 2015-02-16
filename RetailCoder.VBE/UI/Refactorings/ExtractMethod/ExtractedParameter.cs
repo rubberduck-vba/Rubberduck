@@ -1,9 +1,7 @@
-using System.Runtime.InteropServices;
 using Rubberduck.VBA;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    [ComVisible(true)]
     public class ExtractedParameter
     {
         public enum PassedBy

@@ -95,6 +95,8 @@
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspetionResult.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
@@ -130,7 +132,9 @@
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ScopedDeclaration.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
