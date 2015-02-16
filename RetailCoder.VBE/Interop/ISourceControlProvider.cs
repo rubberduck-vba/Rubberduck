@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Rubberduck.Interop
         string CurrentBranch { get; }
 
         [DispId(2)]
-        IBranches Branches { get; }
+        IEnumerable Branches { get; }
 
         [DispId(3)]
         IRepository Clone(string remotePathOrUrl, string workingDirectory);
@@ -64,6 +65,6 @@ namespace Rubberduck.Interop
         void RemoveFile(string filePath);
 
         [DispId(17)]
-        IFileStatusEntries Status();
+        IEnumerable Status();
     }
 }
