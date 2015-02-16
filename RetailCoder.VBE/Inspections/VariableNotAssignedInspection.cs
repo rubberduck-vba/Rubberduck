@@ -103,15 +103,5 @@ namespace Rubberduck.Inspections
 
             return unassignedDeclarations;
         }
-
-        private IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> FindUnassignedLocals(ParserRuleContext procedureContext, IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> globals)
-        {
-            return procedureContext.GetRuleContexts<VisualBasic6Parser.VariableSubStmtContext>()
-                .Select(variable => variable.ambiguousIdentifier())
-                .Union(globals)
-                .Where(identifier => 
-                    procedureContext.GetContexts<VariableAssignmentListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
-                           .All(assignment => assignment.GetText() != identifier.GetText()));
-        }
     }
 }

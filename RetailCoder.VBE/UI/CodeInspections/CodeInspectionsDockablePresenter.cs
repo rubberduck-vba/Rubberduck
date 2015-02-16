@@ -69,11 +69,11 @@ namespace Rubberduck.UI.CodeInspections
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
             Control.Cursor = Cursors.WaitCursor;
-            RefreshAsync();
+            Refresh();
             Control.Cursor = Cursors.Default;
         }
 
-        private async void RefreshAsync()
+        private void Refresh()
         {
             var code = (_parser.Parse(VBE.ActiveVBProject)).ToList();
 
