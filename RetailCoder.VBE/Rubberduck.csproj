@@ -103,6 +103,7 @@
     <Compile Include="Interop\ISourceControlProvider.cs" />
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
+    <Compile Include="SourceControl\FileStatusEntry.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
