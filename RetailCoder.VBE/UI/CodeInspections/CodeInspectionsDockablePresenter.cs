@@ -78,15 +78,23 @@ namespace Rubberduck.UI.CodeInspections
             var code = (_parser.Parse(VBE.ActiveVBProject)).ToList();
 
             var results = new ConcurrentBag<CodeInspectionResultBase>();
-            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
-            Parallel.ForEach(inspections, inspection =>
+            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
+                .Select(inspection =>
+                    new Task(() =>
+                    {
+                        var result = inspection.GetInspectionResults(code);
+                        foreach (var inspectionResult in result)
+                        {
+                            results.Add(inspectionResult);
+                        }
+                    })).ToArray();
+
+            foreach (var inspection in inspections)
             {
-                var result = inspection.GetInspectionResults(code);
-                foreach (var inspectionResult in result)
-                {
-                    results.Add(inspectionResult);
-                }
-            });
+                inspection.Start();
+            }
+
+            Task.WaitAll(inspections);
 
             _results = results.ToList();
             Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));

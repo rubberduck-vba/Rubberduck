@@ -132,6 +132,7 @@
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ScopedDeclaration.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
