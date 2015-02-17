@@ -5,7 +5,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 {
     /// <summary>
     /// This class is not used, because the grammar (/generated parser)
-    /// requires options to be specified first, or module options end up in an error node.
+    /// requires options to be specified first, or Module options end up in an error node.
     /// </summary>
     public class ModuleOptionsListener : IVBBaseListener, IExtensionListener<VBParser.ModuleOptionContext>
     {
@@ -14,7 +14,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterModuleOptions(VBParser.ModuleOptionsContext context)
         {
-            foreach (var option in context.moduleOption())
+            foreach (var option in context.ModuleOption())
             {
                 _members.Add(option);
             }

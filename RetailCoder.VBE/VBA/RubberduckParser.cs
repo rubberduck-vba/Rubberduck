@@ -41,7 +41,7 @@ namespace Rubberduck.VBA
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBParser(tokens);
             
-            var result = parser.startRule();
+            var result = parser.StartRule();
             return result;
         }
 

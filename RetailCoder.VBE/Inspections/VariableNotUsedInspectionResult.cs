@@ -5,9 +5,9 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableAssignedValueNotUsedInspectionResult : CodeInspectionResultBase
+    public class VariableNotUsedInspectionResult : CodeInspectionResultBase
     {
-        public VariableAssignedValueNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public VariableNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, type, qualifiedName, context)
         {
@@ -18,11 +18,11 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove assignment", RemoveVariableAssignment}
+                    {"Remove unused variable declaration", RemoveUnusedDeclaration}
                 };
         }
 
-        private void RemoveVariableAssignment(VBE vbe)
+        private void RemoveUnusedDeclaration(VBE vbe)
         {
             
         }

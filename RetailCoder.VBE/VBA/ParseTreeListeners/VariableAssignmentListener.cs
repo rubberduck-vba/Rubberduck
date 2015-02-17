@@ -4,7 +4,18 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class VariableAssignmentListener : IVBBaseListener, IExtensionListener<VBParser.AmbiguousIdentifierContext>
+    public class VariableAssignmentListener : VariableUsageListener
+    {
+        public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
+        {
+            if (context.Parent.Parent.Parent is VBParser.LetStmtContext)
+            {
+                base.EnterVariableCallStmt(context);
+            }
+        }
+    }
+
+    public class VariableUsageListener : IVBBaseListener, IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
         private readonly IList<VBParser.AmbiguousIdentifierContext> _members = new List<VBParser.AmbiguousIdentifierContext>();
         public IEnumerable<VBParser.AmbiguousIdentifierContext> Members { get { return _members; } }
@@ -16,10 +27,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
         {
-            if (context.Parent.Parent.Parent is VBParser.LetStmtContext)
-            {
-                _members.Add(context.ambiguousIdentifier());
-            }
+            _members.Add(context.ambiguousIdentifier());
         }
     }
 }

@@ -34,18 +34,17 @@ namespace Rubberduck.Inspections
             foreach (var result in parseResults)
             {
                 // module-scoped in this module:
-                var declarations = result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
-                                         .OfType<VBParser.VariableSubStmtContext>()
-                                         .Where(variable => globals.All(global => global.Context.GetText() != variable.GetText()))
-                                         .ToList();
+                var declarations = GetModuleDeclarations(result, globals).ToList();
                 var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener()).ToList();
+
+                // todo: replace anonymous types with actual types, and extract methods.
 
                 // fetch & scope all assignments:
                 var assignments = procedures.SelectMany(
                     procedure => procedure.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
                                          .Select(context => new
                                              {
-                                                 Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).ambiguousIdentifier().GetText()),
+                                                 Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).AmbiguousIdentifier().GetText()),
                                                  Name = context.GetText()
                                              }));
 
@@ -56,13 +55,15 @@ namespace Rubberduck.Inspections
                                           .Select(context => new
                                              {
                                                  Context = context,
-                                                 Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).ambiguousIdentifier().GetText()),
-                                                 Name = context.ambiguousIdentifier().GetText()
-                                             }));
+                                                 Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).AmbiguousIdentifier().GetText()),
+                                                 Name = context.AmbiguousIdentifier().GetText(),
+                                                 Usages = procedure.GetContexts<VariableUsageListener, VBParser.AmbiguousIdentifierContext>(new VariableUsageListener())
+                                                                   .Where(usage => usage.GetText() == context.AmbiguousIdentifier().GetText())
+                                             })).ToList();
 
                 // identify unassigned module-scoped declarations:
                 unassignedDeclarations.AddRange(
-                    declarations.Select(d => d.ambiguousIdentifier())
+                    declarations.Select(d => d.AmbiguousIdentifier())
                                 .Where(d => globals.All(g => g.Context.GetText() != d.GetText()) 
                                         && assignments.All(a => a.Name != d.GetText()))
                                 .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier, result.QualifiedName)));
@@ -70,11 +71,15 @@ namespace Rubberduck.Inspections
                 // identify unassigned procedure-scoped declarations:
                 unassignedDeclarations.AddRange(
                     locals.Where(local => assignments.All(a => (a.Scope.MemberName + a.Name) != (local.Scope.MemberName + local.Name)))
-                          .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Context.ambiguousIdentifier(), result.QualifiedName)));
+                          .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Context.AmbiguousIdentifier(), result.QualifiedName)));
 
                 // identify globals assigned in this module:
                 assignedGlobals.AddRange(globals.Where(global => assignments.Any(a => a.Name == global.Context.GetText()))
                                                 .Select(global => global.Context));
+
+                // identify unused locals:
+                unassignedDeclarations.AddRange(
+                    locals.Where(local => !local.Usages.Any()).Select(local => new VariableNotUsedInspectionResult(Name, Severity, local.Context, local.Scope.ModuleScope)));
             }
 
             // identify unassigned globals:
@@ -86,6 +91,19 @@ namespace Rubberduck.Inspections
             return unassignedDeclarations;
         }
 
+        private static IEnumerable<VBParser.VariableSubStmtContext> GetModuleDeclarations(VBComponentParseResult module, List<QualifiedContext<VBParser.AmbiguousIdentifierContext>> globals)
+        {
+            var declarations = 
+                module.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
+                    .OfType<VBParser.VariableSubStmtContext>()
+                    .Where(variable => 
+                        globals.All(global => 
+                            !global.QualifiedName.Equals(module.QualifiedName) 
+                         && !global.Context.GetText().Equals(variable.GetText())));
+
+            return declarations;
+        }
+
         private static IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
             FindGlobalVariables(IEnumerable<VBComponentParseResult> parseResults)
         {
@@ -93,25 +111,25 @@ namespace Rubberduck.Inspections
                 result => result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
                                 .OfType<VBParser.VariableStmtContext>()
                                 .Where(IsGlobal)
-                                .SelectMany(context => GetDeclaredIdentifiers(context)
-                                    .Select(variable => variable.ToQualifiedContext(result.QualifiedName))));
+                                .SelectMany(context => 
+                                    GetDeclaredIdentifiers(context).Select(variable => 
+                                        variable.ToQualifiedContext(result.QualifiedName))));
             return globals;
         }
 
         private static bool IsGlobal(VBParser.VariableStmtContext context)
         {
-            var visibility = context.visibility();
+            var visibility = context.Visibility();
             return visibility != null
                    && visibility.GetText() != Tokens.Private;
 
         }
 
-        private static IEnumerable<VBParser.AmbiguousIdentifierContext>
-            GetDeclaredIdentifiers(VBParser.VariableStmtContext context)
+        private static IEnumerable<VBParser.AmbiguousIdentifierContext> GetDeclaredIdentifiers(VBParser.VariableStmtContext context)
         {
-            return context.variableListStmt()
-                          .variableSubStmt()
-                          .Select(variable => variable.ambiguousIdentifier());
+            return context.VariableListStmt()
+                          .VariableSubStmt()
+                          .Select(variable => variable.AmbiguousIdentifier());
         }
     }
 }

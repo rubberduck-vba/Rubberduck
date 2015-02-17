@@ -31,9 +31,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
             var node = new TreeNode(context.GetText());
             var parent = context.Parent as VBParser.VariableStmtContext;
-            var accessibility = parent == null || parent.visibility() == null 
+            var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.visibility().GetAccessibility();
+                : parent.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicField"
@@ -52,9 +52,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
             var node = new TreeNode(context.GetText());
             var parent = context.Parent as VBParser.ConstStmtContext;
-            var accessibility = parent == null || parent.visibility() == null 
+            var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.visibility().GetAccessibility();
+                : parent.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicConst"

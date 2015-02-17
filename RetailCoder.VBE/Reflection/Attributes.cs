@@ -17,7 +17,7 @@ namespace Rubberduck.Reflection
     }
 
     /// <summary>
-    /// An attribute that marks a code module as a test module.
+    /// An attribute that marks a code Module as a test Module.
     /// </summary>
     [ComVisible(false)]
     public class TestModuleAttribute : MemberAttributeBase { }

@@ -77,9 +77,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .Where(kvp => kvp.Key.Parent is VBParser.ArgContext)
                 .Select(kvp => new ExtractedParameter(
                     kvp.Key.GetText(),
-                    ((VBParser.ArgContext)kvp.Key.Parent).asTypeClause() == null
+                    ((VBParser.ArgContext)kvp.Key.Parent).AsTypeClause() == null
                         ? Tokens.Variant
-                        : ((VBParser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
+                        : ((VBParser.ArgContext)kvp.Key.Parent).AsTypeClause().type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             return consts.Union(variables.Union(arguments));
@@ -195,8 +195,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
                 .OfType<VBParser.VariableSubStmtContext>()
-                .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
-                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
+                .Where(e => _view.Parameters.All(param => param.Name != e.AmbiguousIdentifier().GetText()))
+                .Select(e => "    " + Tokens.Dim + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
             var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());
 
             result += newLine + locals + newLine + _selectedCode + newLine;

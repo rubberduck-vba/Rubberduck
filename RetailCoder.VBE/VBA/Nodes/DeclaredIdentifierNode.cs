@@ -8,9 +8,9 @@ namespace Rubberduck.VBA.Nodes
         public ConstDeclarationNode(VBParser.ConstStmtContext context, string scope, bool isLocal = false)
             : base(context, scope, null, new List<Node>())
         {
-            foreach (var constant in context.constSubStmt())
+            foreach (var constant in context.ConstSubStmt())
             {
-                AddChild(new DeclaredIdentifierNode(constant, scope, context.visibility(), isLocal));
+                AddChild(new DeclaredIdentifierNode(constant, scope, context.Visibility(), isLocal));
             }
         }
     }
@@ -20,9 +20,9 @@ namespace Rubberduck.VBA.Nodes
         public VariableDeclarationNode(VBParser.VariableStmtContext context, string scope)
             :base(context, scope, null, new List<Node>())
         {
-            foreach (var variable in context.variableListStmt().variableSubStmt())
+            foreach (var variable in context.VariableListStmt().VariableSubStmt())
             {
-                AddChild(new DeclaredIdentifierNode(variable, scope, context.visibility(), context.DIM() != null || context.STATIC() != null));
+                AddChild(new DeclaredIdentifierNode(variable, scope, context.Visibility(), context.DIM() != null || context.STATIC() != null));
             }
         }
     }
@@ -70,7 +70,7 @@ namespace Rubberduck.VBA.Nodes
                             VBParser.VisibilityContext visibility, bool isLocal = true)
             : base(context, scope)
         {
-            _name = context.ambiguousIdentifier().GetText();
+            _name = context.AmbiguousIdentifier().GetText();
             if (context.asTypeClause() == null)
             {
                 if (context.typeHint() == null)

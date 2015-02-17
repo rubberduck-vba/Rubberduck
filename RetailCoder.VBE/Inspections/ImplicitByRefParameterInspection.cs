@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections
                 return new List<VBParser.ArgContext>();
             }
 
-            return argsList.arg();
+            return argsList.Arg();
         }
 
         private static VBParser.ArgListContext GetSubArgsList(ParserRuleContext procedureContext)

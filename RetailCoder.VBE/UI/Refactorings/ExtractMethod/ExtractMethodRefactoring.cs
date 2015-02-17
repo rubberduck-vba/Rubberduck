@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener()).ToList();
 
             var constants = declarations.OfType<VBParser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
-            var variables = declarations.OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
+            var variables = declarations.OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.AmbiguousIdentifier());
             var arguments = declarations.OfType<VBParser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
 
             var identifiers = constants.Union(variables)

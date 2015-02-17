@@ -9,7 +9,7 @@ namespace Rubberduck.VBA.Nodes
     {
         /// <param name="context">The parser rule context, obtained from an ANTLR-generated parser method.</param>
         /// <param name="project">The name of the VBA project the code belongs to.</param>
-        /// <param name="component">The name of the VBA component (module) the code belongs to.</param>
+        /// <param name="component">The name of the VBA component (Module) the code belongs to.</param>
         public ModuleNode(ParserRuleContext context, string project, string component, ICollection<Node> children)
             : base(context, project, component, children)
         {
@@ -27,7 +27,7 @@ namespace Rubberduck.VBA.Nodes
         private readonly string _component;
 
         /// <summary>
-        /// The name of the VBA component (module) the code belongs to.
+        /// The name of the VBA component (Module) the code belongs to.
         /// </summary>
         public string ComponentName { get { return _component; } }
     }

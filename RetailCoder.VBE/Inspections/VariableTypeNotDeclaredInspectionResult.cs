@@ -71,7 +71,7 @@ namespace Rubberduck.Inspections
             var parent = (VBParser.ConstStmtContext) context.Parent;
             instruction = parent.GetText();
 
-            var visibilityContext = parent.visibility();
+            var visibilityContext = parent.Visibility();
             var visibility = visibilityContext == null ? string.Empty : visibilityContext.GetText() + ' ';
 
             var result = visibility

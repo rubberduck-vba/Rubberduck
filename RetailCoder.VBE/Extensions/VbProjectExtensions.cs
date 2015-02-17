@@ -34,7 +34,7 @@ namespace Rubberduck.Extensions
         }
 
         /// <summary>
-        /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code module name and file extensions are based on what type of code module it is.
+        /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
         /// </summary>
         /// <param name="project">The <see cref="VbProject"/> to be exported to source files.</param>
         /// <param name="directoryPath">The destination directory path.</param>
@@ -51,7 +51,7 @@ namespace Rubberduck.Extensions
         /// </summary>
         /// <remarks>
         /// Document type Components cannot be physically removed from a project through the VBE.
-        /// Instead, the code will simply be deleted from the code module.
+        /// Instead, the code will simply be deleted from the code Module.
         /// </remarks>
         /// <param name="project"></param>
         public static void RemoveAllComponents(this VBProject project)

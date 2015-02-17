@@ -12,7 +12,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterVariableStmt(VBParser.VariableStmtContext context)
         {
             _members.Add(context);
-            foreach (var child in context.variableListStmt().variableSubStmt())
+            foreach (var child in context.VariableListStmt().VariableSubStmt())
             {
                 _members.Add(child);
             }
@@ -26,7 +26,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterConstStmt(VBParser.ConstStmtContext context)
         {
             _members.Add(context);
-            foreach (var child in context.constSubStmt())
+            foreach (var child in context.ConstSubStmt())
             {
                 _members.Add(child);
             }

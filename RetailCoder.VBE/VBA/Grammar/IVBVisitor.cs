@@ -39,7 +39,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsDiv</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -60,7 +60,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLsetStmt([NotNull] VBParser.LsetStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.argList"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -82,7 +82,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsNegation</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -97,7 +97,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsLt</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -111,7 +111,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAsTypeClause([NotNull] VBParser.AsTypeClauseContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.appactivateStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AppActivateStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -125,7 +125,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_S_DictionaryCall([NotNull] VBParser.ICS_S_DictionaryCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.explicitCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ExplicitCallStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -147,14 +147,14 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsLike</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsLike([NotNull] VBParser.VsLikeContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.deftypeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DefTypeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -191,21 +191,21 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAdd</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsAdd([NotNull] VBParser.VsAddContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.argDefaultValue"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgDefaultValue"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitArgDefaultValue([NotNull] VBParser.ArgDefaultValueContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.chdirStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ChdirStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -226,7 +226,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitGetStmt([NotNull] VBParser.GetStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleHeader"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleHeader"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -248,21 +248,21 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAddressOf</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsAddressOf([NotNull] VBParser.VsAddressOfContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.beepStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.BeepStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitBeepStmt([NotNull] VBParser.BeepStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.declareStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DeclareStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -284,28 +284,28 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsMid</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsMid([NotNull] VBParser.VsMidContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.functionStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.FunctionStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionStmt([NotNull] VBParser.FunctionStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.deleteSettingStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DeleteSettingStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDeleteSettingStmt([NotNull] VBParser.DeleteSettingStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.subscript"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Subscript"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -320,7 +320,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionBaseStmt</c>
-	/// labeled alternative in <see cref="VBParser.moduleOption"/>.
+	/// labeled alternative in <see cref="VBParser.ModuleOption"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -349,7 +349,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEndStmt([NotNull] VBParser.EndStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.macroIfThenElseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.MacroIfThenElseStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -378,7 +378,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsMinus</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -386,14 +386,14 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsImp</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsImp([NotNull] VBParser.VsImpContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.attributeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AttributeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -401,7 +401,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsGeq</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -415,7 +415,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitBlock([NotNull] VBParser.BlockContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.closeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.CloseStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -429,7 +429,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_B_FunctionCall([NotNull] VBParser.ICS_B_FunctionCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.subscripts"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Subscripts"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -451,7 +451,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionPrivateModuleStmt</c>
-	/// labeled alternative in <see cref="VBParser.moduleOption"/>.
+	/// labeled alternative in <see cref="VBParser.ModuleOption"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -459,7 +459,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsMult</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -467,7 +467,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAssign</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -488,7 +488,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitComparisonOperator([NotNull] VBParser.ComparisonOperatorContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.propertyLetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertyLetStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -516,28 +516,28 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEnumerationStmt_Constant([NotNull] VBParser.EnumerationStmt_ConstantContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.propertySetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertySetStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitPropertySetStmt([NotNull] VBParser.PropertySetStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.propertyGetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertyGetStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitPropertyGetStmt([NotNull] VBParser.PropertyGetStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.module"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Module"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitModule([NotNull] VBParser.ModuleContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleBodyElement"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBodyElement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -560,7 +560,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsMod</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -574,14 +574,14 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_S_MembersCall([NotNull] VBParser.ICS_S_MembersCallContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.typeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.TypeStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTypeStmt([NotNull] VBParser.TypeStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleConfig"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleConfig"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -596,7 +596,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAmp</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -611,7 +611,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsEq</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -619,7 +619,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsAnd</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -655,7 +655,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitFieldLength([NotNull] VBParser.FieldLengthContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.blockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.BlockStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -677,7 +677,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionCompareStmt</c>
-	/// labeled alternative in <see cref="VBParser.moduleOption"/>.
+	/// labeled alternative in <see cref="VBParser.ModuleOption"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -712,7 +712,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMkdirStmt([NotNull] VBParser.MkdirStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.subStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.SubStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -726,7 +726,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitSaveSettingStmt([NotNull] VBParser.SaveSettingStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.argCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -740,7 +740,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTypeHint([NotNull] VBParser.TypeHintContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.chdriveStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ChdriveStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -776,7 +776,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsLiteral</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -798,7 +798,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsEqv</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -826,7 +826,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitTypeOfStmt([NotNull] VBParser.TypeOfStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.doLoopStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DoLoopStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -834,7 +834,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsNeq</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -842,7 +842,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsTypeOf</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -857,21 +857,21 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsValueCalls</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVsValueCalls([NotNull] VBParser.VsValueCallsContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.eraseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EraseStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEraseStmt([NotNull] VBParser.EraseStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleBody"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBody"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -886,7 +886,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitCaseCondTo([NotNull] VBParser.CaseCondToContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.constStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ConstStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -894,7 +894,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsOr</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -916,7 +916,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsNew</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -951,7 +951,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitRmdirStmt([NotNull] VBParser.RmdirStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.eventStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EventStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1001,7 +1001,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsXor</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1009,7 +1009,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsGt</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1017,7 +1017,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsLeq</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1028,10 +1028,10 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitSetattrStmt([NotNull] VBParser.SetattrStmtContext context);
+	Result VisitSetattrStmt([NotNull] VBParser.SetAttrStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleOptions"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleOptions"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1066,14 +1066,14 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableCallStmt([NotNull] VBParser.VariableCallStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.errorStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ErrorStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitErrorStmt([NotNull] VBParser.ErrorStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.exitStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ExitStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1102,7 +1102,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionExplicitStmt</c>
-	/// labeled alternative in <see cref="VBParser.moduleOption"/>.
+	/// labeled alternative in <see cref="VBParser.ModuleOption"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1130,7 +1130,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMemberSubCallStmt([NotNull] VBParser.MemberSubCallStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.implicitCallStmt_InStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ImplicitCallStmt_InStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1144,7 +1144,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableListStmt([NotNull] VBParser.VariableListStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.ambiguousIdentifier"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AmbiguousIdentifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1152,7 +1152,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsPow</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1174,7 +1174,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsPlus</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1182,7 +1182,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsStruct</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1217,7 +1217,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitMemberCall_Value([NotNull] VBParser.MemberCall_ValueContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleBlock"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1231,7 +1231,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableSubStmt([NotNull] VBParser.VariableSubStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.moduleAttributes"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleAttributes"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1239,7 +1239,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsNot</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1267,7 +1267,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitUnloadStmt([NotNull] VBParser.UnloadStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.dateStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DateStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1282,7 +1282,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>vsIs</c>
-	/// labeled alternative in <see cref="VBParser.valueStmt"/>.
+	/// labeled alternative in <see cref="VBParser.ValueStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1310,7 +1310,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLoadStmt([NotNull] VBParser.LoadStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.literal"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Literal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1324,7 +1324,7 @@ public interface IVBVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitVariableStmt([NotNull] VBParser.VariableStmtContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBParser.startRule"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.StartRule"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
