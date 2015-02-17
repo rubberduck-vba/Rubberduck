@@ -26,25 +26,7 @@ namespace Rubberduck.Inspections
             var parseResults = parseResult.ToList();
 
             // publics & globals delared at module-scope in standard modules:
-            var globals = 
-                parseResults.Select(result => 
-                                new 
-                                { 
-                                    Name = result.QualifiedName, 
-                                    Globals = result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
-                                                              .OfType<VisualBasic6Parser.VariableStmtContext>()
-                                                              .Where(context => 
-                                                                  context.visibility() != null && 
-                                                                  context.visibility().GetText() != Tokens.Private)
-                                                              .SelectMany(context => context.variableListStmt().variableSubStmt()
-                                                                                    .Select(variable => variable.ambiguousIdentifier()))
-                                })
-                             .SelectMany(module => module.Globals.Select(global => 
-                                new
-                                {
-                                    Name = module.Name,
-                                    Global = global
-                                })).ToList();
+            var globals = FindGlobalVariables(parseResults).ToList();
 
             var assignedGlobals = new List<VisualBasic6Parser.AmbiguousIdentifierContext>();
             var unassignedDeclarations = new List<CodeInspectionResultBase>();
@@ -54,7 +36,7 @@ namespace Rubberduck.Inspections
                 // module-scoped in this module:
                 var declarations = result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
                                          .OfType<VisualBasic6Parser.VariableSubStmtContext>()
-                                         .Where(variable => globals.All(global => global.Global.GetText() != variable.GetText()))
+                                         .Where(variable => globals.All(global => global.Context.GetText() != variable.GetText()))
                                          .ToList();
                 var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener()).ToList();
 
@@ -81,7 +63,7 @@ namespace Rubberduck.Inspections
                 // identify unassigned module-scoped declarations:
                 unassignedDeclarations.AddRange(
                     declarations.Select(d => d.ambiguousIdentifier())
-                                .Where(d => globals.All(g => g.Global.GetText() != d.GetText()) 
+                                .Where(d => globals.All(g => g.Context.GetText() != d.GetText()) 
                                         && assignments.All(a => a.Name != d.GetText()))
                                 .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier, result.QualifiedName)));
 
@@ -91,17 +73,46 @@ namespace Rubberduck.Inspections
                           .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Context.ambiguousIdentifier(), result.QualifiedName)));
 
                 // identify globals assigned in this module:
-                assignedGlobals.AddRange(globals.Where(global => assignments.Any(a => a.Name == global.Global.GetText()))
-                                                .Select(global => global.Global));
+                assignedGlobals.AddRange(globals.Where(global => assignments.Any(a => a.Name == global.Context.GetText()))
+                                                .Select(global => global.Context));
             }
 
             // identify unassigned globals:
             var assignedIdentifiers = assignedGlobals.Select(assigned => assigned.GetText());
-            var unassignedGlobals = globals.Where(global => !assignedIdentifiers.Contains(global.Global.GetText()))
-                                           .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Global, identifier.Name));
+            var unassignedGlobals = globals.Where(global => !assignedIdentifiers.Contains(global.Context.GetText()))
+                                           .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Context, identifier.QualifiedName));
             unassignedDeclarations.AddRange(unassignedGlobals);
 
             return unassignedDeclarations;
+        }
+
+        private static IEnumerable<QualifiedContext<VisualBasic6Parser.AmbiguousIdentifierContext>> 
+            FindGlobalVariables(IEnumerable<VBComponentParseResult> parseResults)
+        {
+            var globals =
+                parseResults.SelectMany(result =>
+                            result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
+                                .OfType<VisualBasic6Parser.VariableStmtContext>()
+                                .Where(IsGlobal)
+                                .SelectMany(context => GetDeclaredIdentifiers(context)
+                                    .Select(variable => variable.ToQualifiedContext(result.QualifiedName))));
+            return globals;
+        }
+
+        private static bool IsGlobal(VisualBasic6Parser.VariableStmtContext context)
+        {
+            var visibility = context.visibility();
+            return visibility != null
+                   && visibility.GetText() != Tokens.Private;
+
+        }
+
+        private static IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext>
+            GetDeclaredIdentifiers(VisualBasic6Parser.VariableStmtContext context)
+        {
+            return context.variableListStmt()
+                          .variableSubStmt()
+                          .Select(variable => variable.ambiguousIdentifier());
         }
     }
 }

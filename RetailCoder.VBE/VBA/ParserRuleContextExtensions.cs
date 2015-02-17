@@ -1,6 +1,7 @@
 using System;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
@@ -8,6 +9,11 @@ namespace Rubberduck.VBA
 {
     public static class ParserRuleContextExtensions
     {
+        public static QualifiedContext<TContext> ToQualifiedContext<TContext>(this TContext context, QualifiedModuleName name)
+        {
+            return new QualifiedContext<TContext>(name, context);
+        }
+
         public static Selection GetSelection(this ParserRuleContext context)
         {
             if (context == null)
