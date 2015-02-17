@@ -119,6 +119,7 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\DeclarationSectionListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
     <Compile Include="VBA\IRubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="UI\SourceControl\GitView.Designer.cs">
       <DependentUpon>GitView.cs</DependentUpon>
     </Compile>
+    <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />

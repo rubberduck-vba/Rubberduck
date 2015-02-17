@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.ParseTreeListeners;
@@ -15,8 +14,15 @@ namespace Rubberduck.VBA
             where TListener : IExtensionListener<TContext>, IParseTreeListener
             where TContext : class
         {
-            var walker = new ParseTreeWalker();
-            walker.Walk(listener, parseTree);
+            try
+            {
+                var walker = new ParseTreeWalker();
+                walker.Walk(listener, parseTree);
+            }
+            catch (WalkerCancelledException)
+            {
+                // swallow. this exception is thrown when a listener doesn't need to walk an entire parse tree.
+            }
 
             return listener.Members;
         }
