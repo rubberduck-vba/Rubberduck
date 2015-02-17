@@ -17,43 +17,43 @@ namespace Rubberduck.VBA.Nodes
         }
 
         public ProcedureNode(VBParser.PropertySetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.visibility(), context.ambiguousIdentifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_SET();
         }
 
         public ProcedureNode(VBParser.PropertyLetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.visibility(), context.ambiguousIdentifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_LET();
         }
 
         public ProcedureNode(VBParser.PropertyGetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
+            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.AmbiguousIdentifier(), context.asTypeClause)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_GET();
             _asTypeClauseContext = context.asTypeClause();
         }
 
         public ProcedureNode(VBParser.FunctionStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
+            : this(context, scope, localScope, VBProcedureKind.Function, context.Visibility(), context.AmbiguousIdentifier(), context.AsTypeClause)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.FUNCTION();
-            _asTypeClauseContext = context.asTypeClause();
+            _asTypeClauseContext = context.AsTypeClause();
         }
 
         public ProcedureNode(VBParser.SubStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Sub, context.visibility(), context.ambiguousIdentifier(), null)
+            : this(context, scope, localScope, VBProcedureKind.Sub, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.SUB();
         }

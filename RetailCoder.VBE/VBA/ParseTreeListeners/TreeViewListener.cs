@@ -113,9 +113,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
@@ -127,9 +127,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
@@ -155,9 +155,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
@@ -169,9 +169,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend

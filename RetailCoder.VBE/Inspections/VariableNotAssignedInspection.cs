@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
@@ -44,6 +43,7 @@ namespace Rubberduck.Inspections
                     procedure => procedure.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
                                          .Select(context => new
                                              {
+                                                 Context = context,
                                                  Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).AmbiguousIdentifier().GetText()),
                                                  Name = context.GetText()
                                              }));
@@ -77,9 +77,17 @@ namespace Rubberduck.Inspections
                 assignedGlobals.AddRange(globals.Where(global => assignments.Any(a => a.Name == global.Context.GetText()))
                                                 .Select(global => global.Context));
 
-                // identify unused locals:
+                // identify assigned but unused locals:
+                // todo: figure out if it's possible to reuse this code AND to have a configurable VariableNotUsedInspection
                 unassignedDeclarations.AddRange(
-                    locals.Where(local => !local.Usages.Any()).Select(local => new VariableNotUsedInspectionResult(Name, Severity, local.Context, local.Scope.ModuleScope)));
+                    locals.Where(local => local.Usages.All(usage => (usage.Parent.Parent.Parent.Parent is VBParser.LetStmtContext)))
+                          .Select(local => 
+                              new VariableNotUsedInspectionResult(InspectionNames.VariableNotUsed, CodeInspectionSeverity.Error, local.Context, local.Scope.ModuleScope)));
+
+                // identify used but not declared locals:
+                unassignedDeclarations.AddRange(
+                    assignments.Where(usage => declarations.All(declaration => declaration.AmbiguousIdentifier().GetText() != usage.Name))
+                               .Select(usage => new VariableNotDeclaredInspectionResult(InspectionNames.VariableNotDeclared, CodeInspectionSeverity.Error, usage.Context, result.QualifiedName)));
             }
 
             // identify unassigned globals:

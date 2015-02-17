@@ -10,7 +10,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
-            var visibility = context.visibility();
+            var visibility = context.Visibility();
             if (visibility == null || visibility.PUBLIC() != null)
             {
                 _members.Add(context);

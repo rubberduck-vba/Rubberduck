@@ -13,7 +13,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterFunctionStmt(context);
             }
@@ -21,7 +21,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterSubStmt(context);
             }
@@ -29,7 +29,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyGetStmt(context);
             }
@@ -37,7 +37,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyLetStmt(context);
             }
@@ -45,7 +45,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertySetStmt(context);
             }

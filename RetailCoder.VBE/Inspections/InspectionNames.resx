@@ -147,6 +147,12 @@
   <data name="VariableNotAssigned" xml:space="preserve">
     <value>Variable is never assigned</value>
   </data>
+  <data name="VariableNotDeclared" xml:space="preserve">
+    <value>Variable is not declared</value>
+  </data>
+  <data name="VariableNotUsed" xml:space="preserve">
+    <value>Variable value is never retrieved</value>
+  </data>
   <data name="VariableTypeNotDeclared" xml:space="preserve">
     <value>Variable type is implicitly Variant</value>
   </data>

@@ -61,31 +61,31 @@ namespace Rubberduck.Inspections
         private static VBParser.ArgListContext GetSubArgsList(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.SubStmtContext;
-            return context == null ? null : context.argList();
+            return context == null ? null : context.ArgList();
         }
 
         private static VBParser.ArgListContext GetFunctionArgsList(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.FunctionStmtContext;
-            return context == null ? null : context.argList();
+            return context == null ? null : context.ArgList();
         }
 
         private static VBParser.ArgListContext GetPropertyGetArgsList(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.PropertyGetStmtContext;
-            return context == null ? null : context.argList();
+            return context == null ? null : context.ArgList();
         }
 
         private static VBParser.ArgListContext GetPropertyLetArgsList(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.PropertyLetStmtContext;
-            return context == null ? null : context.argList();
+            return context == null ? null : context.ArgList();
         }
 
         private static VBParser.ArgListContext GetPropertySetArgsList(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.PropertySetStmtContext;
-            return context == null ? null : context.argList();
+            return context == null ? null : context.ArgList();
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.AmbiguousIdentifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
 
@@ -77,7 +77,7 @@ namespace Rubberduck.Inspections
             }
 
             var scope = QualifiedName.ToString();
-            var localScope = scope + "." + context.ambiguousIdentifier().GetText();
+            var localScope = scope + "." + context.AmbiguousIdentifier().GetText();
             return new ProcedureNode(context, scope, localScope);
         }
     }

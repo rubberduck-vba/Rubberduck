@@ -151,6 +151,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable is not declared.
+        /// </summary>
+        internal static string VariableNotDeclared {
+            get {
+                return ResourceManager.GetString("VariableNotDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable value is never retrieved.
+        /// </summary>
+        internal static string VariableNotUsed {
+            get {
+                return ResourceManager.GetString("VariableNotUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable type is implicitly Variant.
         /// </summary>
         internal static string VariableTypeNotDeclared {

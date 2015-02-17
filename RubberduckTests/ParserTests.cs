@@ -30,7 +30,7 @@ namespace RubberduckTests
             var procedures = listener.Members.ToList();
 
             var parameterless = procedures
-                .Where(p => p.argList().Arg().Count == 0);
+                .Where(p => p.ArgList().Arg().Count == 0);
 
             Assert.AreEqual(3, procedures.Count);
             Assert.AreEqual(2, parameterless.Count());
