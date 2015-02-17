@@ -28,8 +28,8 @@ namespace Rubberduck.Inspections
                 //       doing this right may require accessing the Access object model to find usages in macros.
 
                 var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
-                var functions = procedures.OfType<VisualBasic6Parser.FunctionStmtContext>()
-                    .Where(function => function.GetContexts<VariableAssignmentListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
+                var functions = procedures.OfType<VBParser.FunctionStmtContext>()
+                    .Where(function => function.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
                         .All(assignment => assignment.GetText() != function.ambiguousIdentifier().GetText()));
                 foreach (var unassignedFunction in functions)
                 {

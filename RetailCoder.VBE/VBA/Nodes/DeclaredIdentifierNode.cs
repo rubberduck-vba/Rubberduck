@@ -5,7 +5,7 @@ namespace Rubberduck.VBA.Nodes
 {
     public class ConstDeclarationNode : Node
     {
-        public ConstDeclarationNode(VisualBasic6Parser.ConstStmtContext context, string scope, bool isLocal = false)
+        public ConstDeclarationNode(VBParser.ConstStmtContext context, string scope, bool isLocal = false)
             : base(context, scope, null, new List<Node>())
         {
             foreach (var constant in context.constSubStmt())
@@ -17,7 +17,7 @@ namespace Rubberduck.VBA.Nodes
 
     public class VariableDeclarationNode : Node
     {
-        public VariableDeclarationNode(VisualBasic6Parser.VariableStmtContext context, string scope)
+        public VariableDeclarationNode(VBParser.VariableStmtContext context, string scope)
             :base(context, scope, null, new List<Node>())
         {
             foreach (var variable in context.variableListStmt().variableSubStmt())
@@ -39,8 +39,8 @@ namespace Rubberduck.VBA.Nodes
             { "$", Tokens.String }
         };
 
-        public DeclaredIdentifierNode(VisualBasic6Parser.ConstSubStmtContext context, string scope,
-            VisualBasic6Parser.VisibilityContext visibility, bool isLocal)
+        public DeclaredIdentifierNode(VBParser.ConstSubStmtContext context, string scope,
+            VBParser.VisibilityContext visibility, bool isLocal)
             : base(context, scope)
         {
             _name = context.ambiguousIdentifier().GetText();
@@ -66,8 +66,8 @@ namespace Rubberduck.VBA.Nodes
             _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
         }
 
-        public DeclaredIdentifierNode(VisualBasic6Parser.VariableSubStmtContext context, string scope, 
-                            VisualBasic6Parser.VisibilityContext visibility, bool isLocal = true)
+        public DeclaredIdentifierNode(VBParser.VariableSubStmtContext context, string scope, 
+                            VBParser.VisibilityContext visibility, bool isLocal = true)
             : base(context, scope)
         {
             _name = context.ambiguousIdentifier().GetText();

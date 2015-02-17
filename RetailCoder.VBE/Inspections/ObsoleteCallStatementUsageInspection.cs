@@ -27,13 +27,13 @@ namespace Rubberduck.Inspections
                 var statements = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener())).ToList();
                 var module = result;
                 foreach (var inspectionResult in 
-                    statements.OfType<VisualBasic6Parser.ECS_MemberProcedureCallContext>()
-                              .Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText())).Select(node => node.Parent).Union(statements.OfType<VisualBasic6Parser.ECS_ProcedureCallContext>().Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText()))
+                    statements.OfType<VBParser.ECS_MemberProcedureCallContext>()
+                              .Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText())).Select(node => node.Parent).Union(statements.OfType<VBParser.ECS_ProcedureCallContext>().Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText()))
                               .Select(node => node.Parent))
-                              .Cast<VisualBasic6Parser.ExplicitCallStmtContext>()
+                              .Cast<VBParser.ExplicitCallStmtContext>()
                               .Select(context => 
                                   new ObsoleteCallStatementUsageInspectionResult(Name, Severity, 
-                                      new QualifiedContext<VisualBasic6Parser.ExplicitCallStmtContext>(module.QualifiedName, context))))
+                                      new QualifiedContext<VBParser.ExplicitCallStmtContext>(module.QualifiedName, context))))
                     yield return inspectionResult;
             }
         }

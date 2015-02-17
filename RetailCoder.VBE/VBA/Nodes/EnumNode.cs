@@ -6,10 +6,10 @@ namespace Rubberduck.VBA.Nodes
 {
     public class EnumNode : Node
     {
-        private readonly VisualBasic6Parser.EnumerationStmtContext _context;
+        private readonly VBParser.EnumerationStmtContext _context;
         private readonly IdentifierNode _identifier;
 
-        public EnumNode(VisualBasic6Parser.EnumerationStmtContext context, string scope)
+        public EnumNode(VBParser.EnumerationStmtContext context, string scope)
             :base(context, scope, null, new List<Node>())
         {
             _context = context;
@@ -35,10 +35,10 @@ namespace Rubberduck.VBA.Nodes
 
     public class EnumConstNode : Node
     {
-        private readonly VisualBasic6Parser.EnumerationStmt_ConstantContext _context;
+        private readonly VBParser.EnumerationStmt_ConstantContext _context;
         private readonly IdentifierNode _identifier;
 
-        public EnumConstNode(VisualBasic6Parser.EnumerationStmt_ConstantContext context, string scope)
+        public EnumConstNode(VBParser.EnumerationStmt_ConstantContext context, string scope)
             :base(context, scope)
         {
             _context = context;

@@ -37,9 +37,9 @@ namespace Rubberduck.VBA
         public IParseTree Parse(string code)
         {
             var input = new AntlrInputStream(code);
-            var lexer = new VisualBasic6Lexer(input);
+            var lexer = new VBLexer(input);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new VisualBasic6Parser(tokens);
+            var parser = new VBParser(tokens);
             
             var result = parser.startRule();
             return result;

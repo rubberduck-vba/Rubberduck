@@ -3,18 +3,18 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class VariableReferencesListener : VisualBasic6BaseListener,
-        IExtensionListener<VisualBasic6Parser.AmbiguousIdentifierContext>
+    public class VariableReferencesListener : IVBBaseListener,
+        IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
-        private readonly IList<VisualBasic6Parser.AmbiguousIdentifierContext> _members = new List<VisualBasic6Parser.AmbiguousIdentifierContext>();
+        private readonly IList<VBParser.AmbiguousIdentifierContext> _members = new List<VBParser.AmbiguousIdentifierContext>();
 
-        public IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> Members { get { return _members; } }
+        public IEnumerable<VBParser.AmbiguousIdentifierContext> Members { get { return _members; } }
 
-        public override void EnterAmbiguousIdentifier(VisualBasic6Parser.AmbiguousIdentifierContext context)
+        public override void EnterAmbiguousIdentifier(VBParser.AmbiguousIdentifierContext context)
         {
             // exclude declarations
-            if (!(context.Parent is VisualBasic6Parser.VariableSubStmtContext) &&
-                !(context.Parent is VisualBasic6Parser.ConstSubStmtContext))
+            if (!(context.Parent is VBParser.VariableSubStmtContext) &&
+                !(context.Parent is VBParser.ConstSubStmtContext))
                 _members.Add(context);
         }
     }

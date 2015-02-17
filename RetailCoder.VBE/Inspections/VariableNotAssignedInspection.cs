@@ -28,21 +28,21 @@ namespace Rubberduck.Inspections
             // publics & globals delared at module-scope in standard modules:
             var globals = FindGlobalVariables(parseResults).ToList();
 
-            var assignedGlobals = new List<VisualBasic6Parser.AmbiguousIdentifierContext>();
+            var assignedGlobals = new List<VBParser.AmbiguousIdentifierContext>();
             var unassignedDeclarations = new List<CodeInspectionResultBase>();
 
             foreach (var result in parseResults)
             {
                 // module-scoped in this module:
                 var declarations = result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
-                                         .OfType<VisualBasic6Parser.VariableSubStmtContext>()
+                                         .OfType<VBParser.VariableSubStmtContext>()
                                          .Where(variable => globals.All(global => global.Context.GetText() != variable.GetText()))
                                          .ToList();
                 var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener()).ToList();
 
                 // fetch & scope all assignments:
                 var assignments = procedures.SelectMany(
-                    procedure => procedure.GetContexts<VariableAssignmentListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
+                    procedure => procedure.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener())
                                          .Select(context => new
                                              {
                                                  Scope = new QualifiedMemberName(result.QualifiedName, ((dynamic)procedure).ambiguousIdentifier().GetText()),
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
                 // fetch & scope all procedure-scoped declarations:
                 var locals = procedures.SelectMany(
                     procedure => procedure.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener())
-                                          .OfType<VisualBasic6Parser.VariableSubStmtContext>()
+                                          .OfType<VBParser.VariableSubStmtContext>()
                                           .Select(context => new
                                              {
                                                  Context = context,
@@ -86,20 +86,19 @@ namespace Rubberduck.Inspections
             return unassignedDeclarations;
         }
 
-        private static IEnumerable<QualifiedContext<VisualBasic6Parser.AmbiguousIdentifierContext>> 
+        private static IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
             FindGlobalVariables(IEnumerable<VBComponentParseResult> parseResults)
         {
-            var globals =
-                parseResults.SelectMany(result =>
-                            result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
-                                .OfType<VisualBasic6Parser.VariableStmtContext>()
+            var globals = parseResults.SelectMany(
+                result => result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener())
+                                .OfType<VBParser.VariableStmtContext>()
                                 .Where(IsGlobal)
                                 .SelectMany(context => GetDeclaredIdentifiers(context)
                                     .Select(variable => variable.ToQualifiedContext(result.QualifiedName))));
             return globals;
         }
 
-        private static bool IsGlobal(VisualBasic6Parser.VariableStmtContext context)
+        private static bool IsGlobal(VBParser.VariableStmtContext context)
         {
             var visibility = context.visibility();
             return visibility != null
@@ -107,8 +106,8 @@ namespace Rubberduck.Inspections
 
         }
 
-        private static IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext>
-            GetDeclaredIdentifiers(VisualBasic6Parser.VariableStmtContext context)
+        private static IEnumerable<VBParser.AmbiguousIdentifierContext>
+            GetDeclaredIdentifiers(VBParser.VariableStmtContext context)
         {
             return context.variableListStmt()
                           .variableSubStmt()

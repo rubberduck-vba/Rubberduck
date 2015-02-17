@@ -4,7 +4,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public class NodeBuildingListener : VisualBasic6BaseListener
+    public class NodeBuildingListener : IVBBaseListener
     {
         private readonly string _project;
         private readonly string _module;
@@ -31,27 +31,27 @@ namespace Rubberduck.VBA
             _currentNode = null;
         }
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
@@ -61,7 +61,7 @@ namespace Rubberduck.VBA
             var procedureName = context.ambiguousIdentifier().GetText();
             var node = new ProcedureNode(context, _currentScope, procedureName);
             
-            var args = context.argList().arg() as IReadOnlyList<VisualBasic6Parser.ArgContext>;
+            var args = context.argList().arg() as IReadOnlyList<VBParser.ArgContext>;
             if (args != null)
             {
                 foreach (var arg in args)
@@ -74,52 +74,52 @@ namespace Rubberduck.VBA
             return node;
         }
 
-        public override void ExitOptionExplicitStmt(VisualBasic6Parser.OptionExplicitStmtContext context)
+        public override void ExitOptionExplicitStmt(VBParser.OptionExplicitStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitOptionBaseStmt(VisualBasic6Parser.OptionBaseStmtContext context)
+        public override void ExitOptionBaseStmt(VBParser.OptionBaseStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitOptionCompareStmt(VisualBasic6Parser.OptionCompareStmtContext context)
+        public override void ExitOptionCompareStmt(VBParser.OptionCompareStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        public override void ExitEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
             _members.Add(new EnumNode(context, _currentScope));
         }
 
-        public override void ExitSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void ExitSubStmt(VBParser.SubStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void ExitFunctionStmt(VBParser.FunctionStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void ExitPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void ExitPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void ExitPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitVariableStmt(VisualBasic6Parser.VariableStmtContext context)
+        public override void ExitVariableStmt(VBParser.VariableStmtContext context)
         {
             var node = new VariableDeclarationNode(context, _currentScope);
             if (_currentNode == null)
@@ -132,7 +132,7 @@ namespace Rubberduck.VBA
             }
         }
 
-        public override void ExitConstStmt(VisualBasic6Parser.ConstStmtContext context)
+        public override void ExitConstStmt(VBParser.ConstStmtContext context)
         {
             var node = new ConstDeclarationNode(context, _currentScope);
             if (_currentNode == null)
@@ -145,7 +145,7 @@ namespace Rubberduck.VBA
             }
         }
 
-        public override void ExitTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+        public override void ExitTypeStmt(VBParser.TypeStmtContext context)
         {
             _members.Add(new TypeNode(context, _currentScope));
         }

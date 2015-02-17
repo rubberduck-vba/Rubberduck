@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
         {
         }
 
-        private new VisualBasic6Parser.FunctionStmtContext Context { get { return base.Context as VisualBasic6Parser.FunctionStmtContext; } }
+        private new VBParser.FunctionStmtContext Context { get { return base.Context as VBParser.FunctionStmtContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {

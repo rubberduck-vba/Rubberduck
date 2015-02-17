@@ -4,19 +4,19 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class VariableAssignmentListener : VisualBasic6BaseListener, IExtensionListener<VisualBasic6Parser.AmbiguousIdentifierContext>
+    public class VariableAssignmentListener : IVBBaseListener, IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
-        private readonly IList<VisualBasic6Parser.AmbiguousIdentifierContext> _members = new List<VisualBasic6Parser.AmbiguousIdentifierContext>();
-        public IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> Members { get { return _members; } }
+        private readonly IList<VBParser.AmbiguousIdentifierContext> _members = new List<VBParser.AmbiguousIdentifierContext>();
+        public IEnumerable<VBParser.AmbiguousIdentifierContext> Members { get { return _members; } }
 
-        public override void EnterForNextStmt(VisualBasic6Parser.ForNextStmtContext context)
+        public override void EnterForNextStmt(VBParser.ForNextStmtContext context)
         {
             _members.Add(context.ambiguousIdentifier().First());
         }
 
-        public override void EnterVariableCallStmt(VisualBasic6Parser.VariableCallStmtContext context)
+        public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
         {
-            if (context.Parent.Parent.Parent is VisualBasic6Parser.LetStmtContext)
+            if (context.Parent.Parent.Parent is VBParser.LetStmtContext)
             {
                 _members.Add(context.ambiguousIdentifier());
             }

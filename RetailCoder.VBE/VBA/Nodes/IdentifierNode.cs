@@ -4,18 +4,18 @@ namespace Rubberduck.VBA.Nodes
 {
     public class IdentifierNode : Node
     {
-        private readonly VisualBasic6Parser.CertainIdentifierContext _certainContext;
-        private readonly VisualBasic6Parser.AmbiguousIdentifierContext _ambiguousContext;
-        private readonly VisualBasic6Parser.AsTypeClauseContext _asTypeClauseContext;
+        private readonly VBParser.CertainIdentifierContext _certainContext;
+        private readonly VBParser.AmbiguousIdentifierContext _ambiguousContext;
+        private readonly VBParser.AsTypeClauseContext _asTypeClauseContext;
 
-        public IdentifierNode(VisualBasic6Parser.CertainIdentifierContext context, string scope, VisualBasic6Parser.AsTypeClauseContext asTypeClause = null)
+        public IdentifierNode(VBParser.CertainIdentifierContext context, string scope, VBParser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _certainContext = context;
             _asTypeClauseContext = asTypeClause;
         }
 
-        public IdentifierNode(VisualBasic6Parser.AmbiguousIdentifierContext context, string scope, VisualBasic6Parser.AsTypeClauseContext asTypeClause = null)
+        public IdentifierNode(VBParser.AmbiguousIdentifierContext context, string scope, VBParser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _ambiguousContext = context;

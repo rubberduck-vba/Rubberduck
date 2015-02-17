@@ -11,12 +11,12 @@ namespace Rubberduck.Inspections
     public class ObsoleteLetStatementUsageInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteLetStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<VisualBasic6Parser.LetStmtContext> qualifiedContext)
+            QualifiedContext<VBParser.LetStmtContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VisualBasic6Parser.LetStmtContext Context { get { return base.Context as VisualBasic6Parser.LetStmtContext; } }
+        private new VBParser.LetStmtContext Context { get { return base.Context as VBParser.LetStmtContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {

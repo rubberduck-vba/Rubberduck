@@ -25,7 +25,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public partial class VisualBasic6Lexer : Lexer {
+public partial class VBLexer : Lexer {
 	public const int
 		T__8=1, T__7=2, T__6=3, T__5=4, T__4=5, T__3=6, T__2=7, T__1=8, T__0=9, 
 		ACCESS=10, ADDRESSOF=11, ALIAS=12, AND=13, ATTRIBUTE=14, APPACTIVATE=15, 
@@ -132,7 +132,7 @@ public partial class VisualBasic6Lexer : Lexer {
 	};
 
 
-	public VisualBasic6Lexer(ICharStream input)
+	public VBLexer(ICharStream input)
 		: base(input)
 	{
 		_interp = new LexerATNSimulator(this,_ATN);

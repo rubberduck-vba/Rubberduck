@@ -10,12 +10,12 @@ namespace Rubberduck.Inspections
 {
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VisualBasic6Parser.ArgContext> qualifiedContext)
+        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBParser.ArgContext> qualifiedContext)
             : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VisualBasic6Parser.ArgContext Context { get { return base.Context as VisualBasic6Parser.ArgContext; } }
+        private new VBParser.ArgContext Context { get { return base.Context as VBParser.ArgContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {

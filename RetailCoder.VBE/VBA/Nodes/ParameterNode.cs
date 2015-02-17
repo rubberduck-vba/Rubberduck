@@ -11,7 +11,7 @@ namespace Rubberduck.VBA.Nodes
             ByVal
         }
 
-        public ParameterNode(VisualBasic6Parser.ArgContext context, string scope)
+        public ParameterNode(VBParser.ArgContext context, string scope)
             : base(context, scope)
         {
         }

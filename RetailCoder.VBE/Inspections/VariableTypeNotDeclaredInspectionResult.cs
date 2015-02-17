@@ -37,18 +37,18 @@ namespace Rubberduck.Inspections
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(Context as VisualBasic6Parser.VariableSubStmtContext, out originalInstruction);
+            var fix = DeclareExplicitVariant(Context as VBParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context as VisualBasic6Parser.ConstSubStmtContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBParser.ConstSubStmtContext, out originalInstruction);
             }
             
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
             component.CodeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
         }
 
-        private string DeclareExplicitVariant(VisualBasic6Parser.VariableSubStmtContext context, out string instruction)
+        private string DeclareExplicitVariant(VBParser.VariableSubStmtContext context, out string instruction)
         {
             if (context == null)
             {
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
             return instruction + ' ' + Tokens.As + ' ' + Tokens.Variant;
         }
 
-        private string DeclareExplicitVariant(VisualBasic6Parser.ConstSubStmtContext context, out string instruction)
+        private string DeclareExplicitVariant(VBParser.ConstSubStmtContext context, out string instruction)
         {
             if (context == null)
             {
@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections
                 return null;
             }
 
-            var parent = (VisualBasic6Parser.ConstStmtContext) context.Parent;
+            var parent = (VBParser.ConstStmtContext) context.Parent;
             instruction = parent.GetText();
 
             var visibilityContext = parent.visibility();

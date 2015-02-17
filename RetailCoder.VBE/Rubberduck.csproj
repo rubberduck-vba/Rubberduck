@@ -151,12 +151,12 @@
     <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6BaseListener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6BaseVisitor.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Lexer.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Listener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Parser.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Visitor.cs" />
+    <Compile Include="VBA\Grammar\IVBBaseListener.cs" />
+    <Compile Include="VBA\Grammar\IVBBaseVisitor.cs" />
+    <Compile Include="VBA\Grammar\VBLexer.cs" />
+    <Compile Include="VBA\Grammar\IVBListener.cs" />
+    <Compile Include="VBA\Grammar\VBParser.cs" />
+    <Compile Include="VBA\Grammar\IVBVisitor.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
@@ -427,7 +427,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
-    <None Include="VBA\Grammar\VisualBasic6.g4">
+    <None Include="VBA\Grammar\VB.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
     </None>

@@ -26,15 +26,15 @@ namespace Rubberduck.Inspections
             foreach (var module in parseResult)
             {
                 var declarations = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener());
-                foreach (var declaration in declarations.Where(declaration => declaration is VisualBasic6Parser.ConstStmtContext || declaration is VisualBasic6Parser.VariableStmtContext))
+                foreach (var declaration in declarations.Where(declaration => declaration is VBParser.ConstStmtContext || declaration is VBParser.VariableStmtContext))
                 {
-                    var variables = declaration as VisualBasic6Parser.VariableStmtContext;                    
+                    var variables = declaration as VBParser.VariableStmtContext;                    
                     if (variables != null && HasMultipleDeclarations(variables))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.variableListStmt()));
                     }
 
-                    var consts = declaration as VisualBasic6Parser.ConstStmtContext;
+                    var consts = declaration as VBParser.ConstStmtContext;
                     if (consts != null && HasMultipleDeclarations(consts))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));
@@ -43,12 +43,12 @@ namespace Rubberduck.Inspections
             }
         }
 
-        private bool HasMultipleDeclarations(VisualBasic6Parser.VariableStmtContext context)
+        private bool HasMultipleDeclarations(VBParser.VariableStmtContext context)
         {
             return context.variableListStmt().variableSubStmt().Count > 1;
         }
 
-        private bool HasMultipleDeclarations(VisualBasic6Parser.ConstStmtContext context)
+        private bool HasMultipleDeclarations(VBParser.ConstStmtContext context)
         {
             return context.constSubStmt().Count > 1;
         }

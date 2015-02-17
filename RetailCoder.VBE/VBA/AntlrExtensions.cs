@@ -32,7 +32,7 @@ namespace Rubberduck.VBA
         /// returns <c>true</c> if its name matches that of the used variable.
         /// </summary>
         /// <returns></returns>
-        public static bool IsIdentifierUsage(this VisualBasic6Parser.VariableCallStmtContext usage, VisualBasic6Parser.AmbiguousIdentifierContext identifier)
+        public static bool IsIdentifierUsage(this VBParser.VariableCallStmtContext usage, VBParser.AmbiguousIdentifierContext identifier)
         {
             return usage.ambiguousIdentifier().GetText() == identifier.GetText();
         }

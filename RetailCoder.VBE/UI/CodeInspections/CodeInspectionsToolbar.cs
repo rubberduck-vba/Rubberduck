@@ -65,14 +65,14 @@ namespace Rubberduck.UI.CodeInspections
             _navigatePreviousButton.Caption = "Previous";
             _navigatePreviousButton.TooltipText = "Navigate to previous issue";
             _navigatePreviousButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
-            _navigatePreviousButton.FaceId = 41; // Resources.112_LeftArrowLong_Blue_16x16_72 makes a gray block when disabled
+            _navigatePreviousButton.FaceId = 41; // Resources.112_LeftArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigatePreviousButton.Enabled = false;
 
             _navigateNextButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _navigateNextButton.Caption = "Next";
             _navigateNextButton.TooltipText = "Navigate to next issue";
             _navigateNextButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
-            _navigateNextButton.FaceId = 39; // Resources.112_RightArrowLong_Blue_16x16_72 makes a gray block when disabled
+            _navigateNextButton.FaceId = 39; // Resources.112_RightArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigateNextButton.Enabled = false;
 
             _refreshButton.Click += _refreshButton_Click;

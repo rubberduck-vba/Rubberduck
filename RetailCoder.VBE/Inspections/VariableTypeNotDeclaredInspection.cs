@@ -29,13 +29,13 @@ namespace Rubberduck.Inspections
                 var declarations = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener())).ToList();
                 var module = result; // to avoid access to modified closure in below lambdas
 
-                var constants = declarations.Where(declaration => declaration is VisualBasic6Parser.ConstSubStmtContext)
-                                            .Cast<VisualBasic6Parser.ConstSubStmtContext>()
+                var constants = declarations.Where(declaration => declaration is VBParser.ConstSubStmtContext)
+                                            .Cast<VBParser.ConstSubStmtContext>()
                                             .Where(constant => constant.asTypeClause() == null)
                                             .Select(constant => new VariableTypeNotDeclaredInspectionResult(Name, Severity, constant, module.QualifiedName));
 
-                var variables = declarations.Where(declaration => declaration is VisualBasic6Parser.VariableSubStmtContext)
-                                            .Cast<VisualBasic6Parser.VariableSubStmtContext>()
+                var variables = declarations.Where(declaration => declaration is VBParser.VariableSubStmtContext)
+                                            .Cast<VBParser.VariableSubStmtContext>()
                                             .Where(variable => variable.asTypeClause() == null)
                                             .Select(variable => new VariableTypeNotDeclaredInspectionResult(Name, Severity, variable, module.QualifiedName));
 

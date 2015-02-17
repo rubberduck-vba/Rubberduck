@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections
             get
             {
                 ParserRuleContext context;
-                if (Context is VisualBasic6Parser.ConstStmtContext)
+                if (Context is VBParser.ConstStmtContext)
                 {
                     context = Context;
                 }
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
             var selection = QualifiedSelection.Selection;
             string keyword = string.Empty;
 
-            var variables = Context.Parent as VisualBasic6Parser.VariableStmtContext;
+            var variables = Context.Parent as VBParser.VariableStmtContext;
             if (variables != null)
             {
                 if (variables.DIM() != null)
@@ -74,7 +74,7 @@ namespace Rubberduck.Inspections
                 }
             }
 
-            var consts = Context as VisualBasic6Parser.ConstStmtContext;
+            var consts = Context as VBParser.ConstStmtContext;
             if (consts != null)
             {
                 var keywords = string.Empty;

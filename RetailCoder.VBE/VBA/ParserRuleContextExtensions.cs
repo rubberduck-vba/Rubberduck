@@ -45,7 +45,7 @@ namespace Rubberduck.VBA
             return selection.Contains(contextSelection);
         }
 
-        public static VBAccessibility GetAccessibility(this VisualBasic6Parser.VisibilityContext context)
+        public static VBAccessibility GetAccessibility(this VBParser.VisibilityContext context)
         {
             if (context == null)
                 return VBAccessibility.Implicit;

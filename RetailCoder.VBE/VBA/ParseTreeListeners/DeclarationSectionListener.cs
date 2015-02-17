@@ -4,12 +4,12 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class DeclarationListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
+    public class DeclarationListener : IVBBaseListener, IExtensionListener<ParserRuleContext>
     {
         private readonly IList<ParserRuleContext> _members = new List<ParserRuleContext>();
         public IEnumerable<ParserRuleContext> Members { get { return _members; } }
 
-        public override void EnterVariableStmt(VisualBasic6Parser.VariableStmtContext context)
+        public override void EnterVariableStmt(VBParser.VariableStmtContext context)
         {
             _members.Add(context);
             foreach (var child in context.variableListStmt().variableSubStmt())
@@ -18,12 +18,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
-        public override void EnterEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
             _members.Add(context);
         }
 
-        public override void EnterConstStmt(VisualBasic6Parser.ConstStmtContext context)
+        public override void EnterConstStmt(VBParser.ConstStmtContext context)
         {
             _members.Add(context);
             foreach (var child in context.constSubStmt())
@@ -32,22 +32,22 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
-        public override void EnterTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
         {
             _members.Add(context);
         }
 
-        public override void EnterDeclareStmt(VisualBasic6Parser.DeclareStmtContext context)
+        public override void EnterDeclareStmt(VBParser.DeclareStmtContext context)
         {
             _members.Add(context);
         }
 
-        public override void EnterEventStmt(VisualBasic6Parser.EventStmtContext context)
+        public override void EnterEventStmt(VBParser.EventStmtContext context)
         {
             _members.Add(context);
         }
 
-        public override void EnterArg(VisualBasic6Parser.ArgContext context)
+        public override void EnterArg(VBParser.ArgContext context)
         {
             _members.Add(context);
         }
@@ -55,32 +55,32 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
     public class DeclarationSectionListener : DeclarationListener
     {
-        public override void EnterArg(VisualBasic6Parser.ArgContext context)
+        public override void EnterArg(VBParser.ArgContext context)
         {
             return;
         }
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
             throw new WalkerCancelledException();
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
             throw new WalkerCancelledException();
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             throw new WalkerCancelledException();
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             throw new WalkerCancelledException();
         }
 
-        public override void ExitPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void ExitPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             throw new WalkerCancelledException();
         }

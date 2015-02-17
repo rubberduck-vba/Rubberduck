@@ -11,12 +11,12 @@ namespace Rubberduck.Inspections
     public class ObsoleteCallStatementUsageInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteCallStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type,
-            QualifiedContext<VisualBasic6Parser.ExplicitCallStmtContext> qualifiedContext)
+            QualifiedContext<VBParser.ExplicitCallStmtContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VisualBasic6Parser.ExplicitCallStmtContext Context { get { return base.Context as VisualBasic6Parser.ExplicitCallStmtContext;} }
+        private new VBParser.ExplicitCallStmtContext Context { get { return base.Context as VBParser.ExplicitCallStmtContext;} }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
 
             string procedure;
-            VisualBasic6Parser.ArgsCallContext arguments;
+            VBParser.ArgsCallContext arguments;
             if (Context.eCS_MemberProcedureCall() != null)
             {
                 procedure = Context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();

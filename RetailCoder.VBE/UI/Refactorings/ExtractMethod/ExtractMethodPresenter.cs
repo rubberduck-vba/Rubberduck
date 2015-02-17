@@ -18,11 +18,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IExtractMethodDialog _view;
 
         private readonly IParseTree _parentMethodTree;
-        private IDictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
+        private IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
 
         private readonly IEnumerable<ExtractedParameter> _input;
         private readonly IEnumerable<ExtractedParameter> _output;
-        private readonly IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> _locals; 
+        private readonly IEnumerable<VBParser.AmbiguousIdentifierContext> _locals; 
 
         private readonly string _selectedCode;
         private readonly VBE _vbe;
@@ -51,12 +51,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _output = ExtractParameters(output);
         }
 
-        private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
+        private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
         {
             var consts = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.ConstSubStmtContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.ConstSubStmtContext)
                 .Select(kvp => kvp.Key.Parent)
-                .Cast<VisualBasic6Parser.ConstSubStmtContext>()
+                .Cast<VBParser.ConstSubStmtContext>()
                 .Select(constant => new ExtractedParameter(
                     constant.ambiguousIdentifier().GetText(),
                     constant.asTypeClause() == null
@@ -65,21 +65,21 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                     ExtractedParameter.PassedBy.ByVal));
 
             var variables = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.VariableSubStmtContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.VariableSubStmtContext)
                 .Select(kvp => new ExtractedParameter(
                     kvp.Key.GetText(),
-                    ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause() == null
+                    ((VBParser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause() == null
                         ? Tokens.Variant
-                        : ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause().type().GetText(),
+                        : ((VBParser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause().type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             var arguments = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.ArgContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.ArgContext)
                 .Select(kvp => new ExtractedParameter(
                     kvp.Key.GetText(),
-                    ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause() == null
+                    ((VBParser.ArgContext)kvp.Key.Parent).asTypeClause() == null
                         ? Tokens.Variant
-                        : ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
+                        : ((VBParser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             return consts.Union(variables.Union(arguments));
@@ -191,10 +191,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
 
             var localConsts = _locals.Select(e => e.Parent)
-                .OfType<VisualBasic6Parser.ConstSubStmtContext>()
+                .OfType<VBParser.ConstSubStmtContext>()
                 .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
-                .OfType<VisualBasic6Parser.VariableSubStmtContext>()
+                .OfType<VBParser.VariableSubStmtContext>()
                 .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
                 .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
             var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());

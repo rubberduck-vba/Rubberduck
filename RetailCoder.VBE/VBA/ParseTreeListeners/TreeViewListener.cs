@@ -7,7 +7,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class TreeViewListener : VisualBasic6BaseListener, IExtensionListener<TreeNode>
+    public class TreeViewListener : IVBBaseListener, IExtensionListener<TreeNode>
     {
         private readonly TreeNode _tree;
         private bool _isInDeclarationsSection = true;
@@ -22,7 +22,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             get { return new[] {_tree}; }
         }
 
-        public override void EnterVariableSubStmt(VisualBasic6Parser.VariableSubStmtContext context)
+        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
@@ -30,7 +30,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var node = new TreeNode(context.GetText());
-            var parent = context.Parent as VisualBasic6Parser.VariableStmtContext;
+            var parent = context.Parent as VBParser.VariableStmtContext;
             var accessibility = parent == null || parent.visibility() == null 
                 ? VBAccessibility.Implicit 
                 : parent.visibility().GetAccessibility();
@@ -43,7 +43,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterConstSubStmt(VisualBasic6Parser.ConstSubStmtContext context)
+        public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
@@ -51,7 +51,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var node = new TreeNode(context.GetText());
-            var parent = context.Parent as VisualBasic6Parser.ConstStmtContext;
+            var parent = context.Parent as VBParser.ConstStmtContext;
             var accessibility = parent == null || parent.visibility() == null 
                 ? VBAccessibility.Implicit 
                 : parent.visibility().GetAccessibility();
@@ -64,7 +64,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
             var node = new TreeNode(context.ambiguousIdentifier().GetText());
             var members = context.enumerationStmt_Constant();
@@ -88,7 +88,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
         {
             var node = new TreeNode(context.ambiguousIdentifier().GetText());
             var members = context.typeStmt_Element();
@@ -110,7 +110,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             node.SelectedImageKey = node.ImageKey;
         }
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
@@ -124,7 +124,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
@@ -138,7 +138,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
@@ -152,7 +152,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
@@ -166,7 +166,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
-        public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
@@ -185,7 +185,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             var procedureName = context.ambiguousIdentifier().GetText();
             var node = new TreeNode(procedureName);
 
-            var args = context.argList().arg() as IReadOnlyList<VisualBasic6Parser.ArgContext>;
+            var args = context.argList().arg() as IReadOnlyList<VBParser.ArgContext>;
             if (args == null)
             {
                 return node;

@@ -12,20 +12,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     public class ExtractMethodRefactoring
     {
-        public static IDictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, Selection selection)
+        public static IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, Selection selection)
         {
             var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener()).ToList();
 
-            var constants = declarations.OfType<VisualBasic6Parser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
-            var variables = declarations.OfType<VisualBasic6Parser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
-            var arguments = declarations.OfType<VisualBasic6Parser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
+            var constants = declarations.OfType<VBParser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
+            var variables = declarations.OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
+            var arguments = declarations.OfType<VBParser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
 
             var identifiers = constants.Union(variables)
                                        .Union(arguments)
                                        .ToDictionary(declaration => declaration.GetText(), 
                                                      declaration => declaration);
 
-            var references = parseTree.GetContexts<VariableReferencesListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableReferencesListener())
+            var references = parseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(new VariableReferencesListener())
                                       .GroupBy(usage => new { Identifier = usage.GetText()})
                                       .ToList();
 
@@ -44,12 +44,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                                     .Select(usage => usage.Key);
 
 
-            var result = new Dictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>();
+            var result = new Dictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>();
 
             // temporal coupling: references used after selection must be added first
             foreach (var reference in usedAfterSelection)
             {
-                VisualBasic6Parser.AmbiguousIdentifierContext key;
+                VBParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in usedBeforeSelection)
             {
-                VisualBasic6Parser.AmbiguousIdentifierContext key;
+                VBParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -73,7 +73,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in usedOnlyWithinSelection)
             {
-                VisualBasic6Parser.AmbiguousIdentifierContext key;
+                VBParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in notUsedInSelection)
             {
-                VisualBasic6Parser.AmbiguousIdentifierContext key;
+                VBParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))

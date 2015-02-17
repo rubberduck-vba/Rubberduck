@@ -7,12 +7,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
     /// This class is not used, because the grammar (/generated parser)
     /// requires options to be specified first, or module options end up in an error node.
     /// </summary>
-    public class ModuleOptionsListener : VisualBasic6BaseListener, IExtensionListener<VisualBasic6Parser.ModuleOptionContext>
+    public class ModuleOptionsListener : IVBBaseListener, IExtensionListener<VBParser.ModuleOptionContext>
     {
-        private readonly IList<VisualBasic6Parser.ModuleOptionContext> _members = new List<VisualBasic6Parser.ModuleOptionContext>();
-        public IEnumerable<VisualBasic6Parser.ModuleOptionContext> Members { get { return _members; } }
+        private readonly IList<VBParser.ModuleOptionContext> _members = new List<VBParser.ModuleOptionContext>();
+        public IEnumerable<VBParser.ModuleOptionContext> Members { get { return _members; } }
 
-        public override void EnterModuleOptions(VisualBasic6Parser.ModuleOptionsContext context)
+        public override void EnterModuleOptions(VBParser.ModuleOptionsContext context)
         {
             foreach (var option in context.moduleOption())
             {

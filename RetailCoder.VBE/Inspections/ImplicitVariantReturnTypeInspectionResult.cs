@@ -48,16 +48,16 @@ namespace Rubberduck.Inspections
 
         private ProcedureNode GetNode(ParserRuleContext context)
         {
-            var result = GetNode(context as VisualBasic6Parser.FunctionStmtContext);
+            var result = GetNode(context as VBParser.FunctionStmtContext);
             if (result != null) return result;
             
-            result = GetNode(context as VisualBasic6Parser.PropertyGetStmtContext);
+            result = GetNode(context as VBParser.PropertyGetStmtContext);
             Debug.Assert(result != null, "result != null");
 
             return result;
         }
 
-        private ProcedureNode GetNode(VisualBasic6Parser.FunctionStmtContext context)
+        private ProcedureNode GetNode(VBParser.FunctionStmtContext context)
         {
             if (context == null)
             {
@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections
             return new ProcedureNode(context, scope, localScope);
         }
 
-        private ProcedureNode GetNode(VisualBasic6Parser.PropertyGetStmtContext context)
+        private ProcedureNode GetNode(VBParser.PropertyGetStmtContext context)
         {
             if (context == null)
             {

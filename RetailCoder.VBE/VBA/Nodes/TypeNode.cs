@@ -9,10 +9,10 @@ namespace Rubberduck.VBA.Nodes
 {
     public class TypeNode :Node
     {
-        private readonly VisualBasic6Parser.TypeStmtContext _context;
+        private readonly VBParser.TypeStmtContext _context;
         private readonly IdentifierNode _identifier;
 
-        public TypeNode(VisualBasic6Parser.TypeStmtContext context, string scope)
+        public TypeNode(VBParser.TypeStmtContext context, string scope)
             :base(context, scope, null, new List<Node>())
         {
             _context = context;
@@ -38,10 +38,10 @@ namespace Rubberduck.VBA.Nodes
 
     public class TypeElementNode : Node
     {
-        private readonly VisualBasic6Parser.TypeStmt_ElementContext _context;
+        private readonly VBParser.TypeStmt_ElementContext _context;
         private readonly IdentifierNode _identifier;
 
-        public TypeElementNode(VisualBasic6Parser.TypeStmt_ElementContext context, string scope)
+        public TypeElementNode(VBParser.TypeStmt_ElementContext context, string scope)
             :base(context,scope)
         {
             _context = context;

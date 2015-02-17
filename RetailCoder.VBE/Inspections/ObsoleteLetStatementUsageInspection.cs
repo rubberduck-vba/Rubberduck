@@ -26,9 +26,9 @@ namespace Rubberduck.Inspections
             {
                 var module = result;
                 var results = ((IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener()))
-                    .OfType<VisualBasic6Parser.LetStmtContext>()
+                    .OfType<VBParser.LetStmtContext>()
                     .Where(context => context.LET() != null && !string.IsNullOrEmpty(context.LET().GetText()))
-                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VisualBasic6Parser.LetStmtContext>(module.QualifiedName, context)));
+                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VBParser.LetStmtContext>(module.QualifiedName, context)));
                 foreach (var inspectionResult in results)
                 {
                     yield return inspectionResult;
