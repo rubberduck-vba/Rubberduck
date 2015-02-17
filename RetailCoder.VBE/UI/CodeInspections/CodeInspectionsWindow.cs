@@ -84,21 +84,21 @@ namespace Rubberduck.UI.CodeInspections
             PreviousButton.Enabled = enableNavigation;
             GoButton.Enabled = enableNavigation;
 
+            var quickFixMenu = QuickFixButton.DropDownItems;
+            if (quickFixMenu.Count > 0)
+            {
+                foreach (var quickFixButton in quickFixMenu.Cast<ToolStripMenuItem>())
+                {
+                    quickFixButton.Click -= QuickFixItemClick;
+                }
+            }
+
             if (CodeIssuesGridView.SelectedRows.Count > 0)
             {
                 var issue = (CodeInspectionResultGridViewItem) CodeIssuesGridView.SelectedRows[0].DataBoundItem;
                 _availableQuickFixes = issue.GetInspectionResultItem()
                     .GetQuickFixes();
                 var descriptions = _availableQuickFixes.Keys.ToList();
-
-                var quickFixMenu = QuickFixButton.DropDownItems;
-                if (quickFixMenu.Count > 0)
-                {
-                    foreach (var quickFixButton in quickFixMenu.Cast<ToolStripMenuItem>())
-                    {
-                        quickFixButton.Click -= QuickFixItemClick;
-                    }
-                }
 
                 quickFixMenu.Clear();
                 foreach (var caption in descriptions)

@@ -37,7 +37,6 @@ namespace Rubberduck.UI.CodeInspections
         {
             e.QuickFix(VBE);
             OnRefreshCodeInspections(null, EventArgs.Empty);
-            //Control.FindNextIssue(); // note: decide if this is annoying or surprising, UX-wise
         }
 
         public override void Show()
