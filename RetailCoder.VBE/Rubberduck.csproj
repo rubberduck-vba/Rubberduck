@@ -97,8 +97,9 @@
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Inspections\VariableAssignedValueNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
-    <Compile Include="Inspections\VariableNotAssignedInspetionResult.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspectionResult.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
     <Compile Include="Interop\GitProvider.cs" />
@@ -106,6 +107,8 @@
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
+    <Compile Include="SourceControl\IRepository.cs" />
+    <Compile Include="SourceControl\Repository2.cs" />
     <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
@@ -118,7 +121,6 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
-    <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\DeclarationSectionListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
     <Compile Include="VBA\IRubberduckParser.cs" />
@@ -160,7 +162,6 @@
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
     <Compile Include="SourceControl\GitProvider.cs" />
     <Compile Include="SourceControl\ISourceControlProvider.cs" />
-    <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="SourceControl\SourceControlException.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />

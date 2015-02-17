@@ -23,6 +23,10 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
+                // todo: in Microsoft Access, this inspection should only return a result for private functions.
+                //       changing an unassigned function to a "Sub" could break Access macros that reference it.
+                //       doing this right may require accessing the Access object model to find usages in macros.
+
                 var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
                 var functions = procedures.OfType<VisualBasic6Parser.FunctionStmtContext>()
                     .Where(function => function.GetContexts<VariableAssignmentListener, VisualBasic6Parser.AmbiguousIdentifierContext>(new VariableAssignmentListener())

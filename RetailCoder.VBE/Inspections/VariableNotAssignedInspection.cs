@@ -83,12 +83,12 @@ namespace Rubberduck.Inspections
                     declarations.Select(d => d.ambiguousIdentifier())
                                 .Where(d => globals.All(g => g.Global.GetText() != d.GetText()) 
                                         && assignments.All(a => a.Name != d.GetText()))
-                                .Select(identifier => new VariableNotAssignedInspetionResult(Name, Severity, identifier, result.QualifiedName)));
+                                .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier, result.QualifiedName)));
 
                 // identify unassigned procedure-scoped declarations:
                 unassignedDeclarations.AddRange(
                     locals.Where(local => assignments.All(a => (a.Scope.MemberName + a.Name) != (local.Scope.MemberName + local.Name)))
-                          .Select(identifier => new VariableNotAssignedInspetionResult(Name, Severity, identifier.Context.ambiguousIdentifier(), result.QualifiedName)));
+                          .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Context.ambiguousIdentifier(), result.QualifiedName)));
 
                 // identify globals assigned in this module:
                 assignedGlobals.AddRange(globals.Where(global => assignments.Any(a => a.Name == global.Global.GetText()))
@@ -98,7 +98,7 @@ namespace Rubberduck.Inspections
             // identify unassigned globals:
             var assignedIdentifiers = assignedGlobals.Select(assigned => assigned.GetText());
             var unassignedGlobals = globals.Where(global => !assignedIdentifiers.Contains(global.Global.GetText()))
-                                           .Select(identifier => new VariableNotAssignedInspetionResult(Name, Severity, identifier.Global, identifier.Name));
+                                           .Select(identifier => new VariableNotAssignedInspectionResult(Name, Severity, identifier.Global, identifier.Name));
             unassignedDeclarations.AddRange(unassignedGlobals);
 
             return unassignedDeclarations;

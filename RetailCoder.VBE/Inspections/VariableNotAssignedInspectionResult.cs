@@ -7,9 +7,9 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotAssignedInspetionResult : CodeInspectionResultBase
+    public class VariableNotAssignedInspectionResult : CodeInspectionResultBase
     {
-        public VariableNotAssignedInspetionResult(string inspection, CodeInspectionSeverity type,
+        public VariableNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, type, qualifiedName, context)
         {
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove unassigned variable (and usages)", RemoveVariableDeclaration}
+                    {"Remove unassigned variable (and all references)", RemoveVariableDeclaration}
                 };
         }
 
