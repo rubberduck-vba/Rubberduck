@@ -7,22 +7,20 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotDeclaredInspectionResult : OptionExplicitInspectionResult
+    public class VariableNotDeclaredInspectionResult : CodeInspectionResultBase
     {
-        private readonly ParserRuleContext _context;
-
         public VariableNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName)
+            : base(inspection, type, qualifiedName, context)
         {
-            _context = context;
         }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            var result = base.GetQuickFixes();
-            result.Add("Remove variable usage", RemoveVariableUsage);
-            return result;
+            return new Dictionary<string, Action<VBE>>
+            {
+                {"Remove variable usage", RemoveVariableUsage}
+            };
         }
 
         private void RemoveVariableUsage(VBE vbe)
