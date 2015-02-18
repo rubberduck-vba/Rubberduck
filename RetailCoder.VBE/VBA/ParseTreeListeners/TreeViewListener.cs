@@ -154,10 +154,6 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicMethod";
 
             var node = CreateProcedureNode(context, imageKey);
-            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                ? context.Signature()
-                : context.AmbiguousIdentifier().GetText();
-
             _tree.Nodes.Add(node);
         }
 
@@ -174,10 +170,6 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicMethod";
 
             var node = CreateProcedureNode(context, imageKey);
-            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                ? context.Signature()
-                : context.AmbiguousIdentifier().GetText();
-
             _tree.Nodes.Add(node);
         }
 
@@ -194,10 +186,6 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
-            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                ? context.Signature()
-                : context.AmbiguousIdentifier().GetText();
-
             _tree.Nodes.Add(node);
         }
 
@@ -214,10 +202,6 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
-            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                ? context.Signature()
-                : context.AmbiguousIdentifier().GetText();
-
             _tree.Nodes.Add(node);
         }
 
@@ -234,36 +218,20 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
-            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                ? context.Signature()
-                : context.AmbiguousIdentifier().GetText();
-
             _tree.Nodes.Add(node);
         }
 
         private TreeNode CreateProcedureNode(dynamic context, string imageKey)
         {
-            var procedureName = context.AmbiguousIdentifier().GetText();
-            var node = new TreeNode(procedureName);
-
-            var args = context.ArgList().Arg() as IReadOnlyList<VBParser.ArgContext>;
-            if (args == null)
+            var node = new TreeNode
             {
-                return node;
-            }
-
-            foreach (var arg in args)
-            {
-                var argNode = new TreeNode(arg.GetText());
-                argNode.ImageKey = "Parameter";
-                argNode.SelectedImageKey = argNode.ImageKey;
-                argNode.Tag = arg.GetQualifiedSelection(_name);
-                node.Nodes.Add(argNode);
-            }
-
-            node.ImageKey = imageKey;
-            node.SelectedImageKey = node.ImageKey;
-            node.Tag = ((ParserRuleContext)context).GetQualifiedSelection(_name);
+                ImageKey = imageKey,
+                SelectedImageKey = imageKey,
+                Tag = ((ParserRuleContext) context).GetQualifiedSelection(_name),
+                Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                    ? context.Signature()
+                    : context.AmbiguousIdentifier().GetText()
+            };
             return node;
         }
     }
