@@ -47,7 +47,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
         #endregion
 
-        public event EventHandler<CodeExplorerNavigateArgs> NavigateTreeNode;
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
             var handler = NavigateTreeNode;
@@ -59,7 +59,7 @@ namespace Rubberduck.UI.CodeExplorer
             if (e.Node.Tag != null)
             {
                 var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
-                handler(this, new CodeExplorerNavigateArgs(e.Node, qualifiedSelection));
+                handler(this, new TreeNodeNavigateCodeEventArgs(e.Node, qualifiedSelection));
             }
         }
 

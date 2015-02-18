@@ -46,7 +46,7 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
-        private void NavigateExplorerTreeNode(object sender, CodeExplorerNavigateArgs e)
+        private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
             if (!e.Node.IsExpanded)
             {
