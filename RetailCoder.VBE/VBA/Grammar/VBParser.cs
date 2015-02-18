@@ -11406,7 +11406,7 @@ public partial class VBParser : Parser {
 			return GetToken(VBParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
-		public TypeHintContext typeHint() {
+		public TypeHintContext TypeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
 		public VariableSubStmtContext(ParserRuleContext parent, int invokingState)

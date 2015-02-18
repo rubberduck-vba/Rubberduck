@@ -73,14 +73,14 @@ namespace Rubberduck.VBA.Nodes
             _name = context.AmbiguousIdentifier().GetText();
             if (context.asTypeClause() == null)
             {
-                if (context.typeHint() == null)
+                if (context.TypeHint() == null)
                 {
                     _isImplicitlyTyped = true;
                     _typeName = Tokens.Variant;
                 }
                 else
                 {
-                    var hint = context.typeHint().GetText();
+                    var hint = context.TypeHint().GetText();
                     _isUsingTypeHint = true;
                     _typeName = TypeSpecifiers[hint];
                 }

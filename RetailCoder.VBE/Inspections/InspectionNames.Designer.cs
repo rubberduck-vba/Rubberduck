@@ -124,6 +124,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete type hints in identifier.
+        /// </summary>
+        internal static string ObsoleteTypeHint {
+            get {
+                return ResourceManager.GetString("ObsoleteTypeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Potentially confusing implicit array lower bound.
         /// </summary>
         internal static string OptionBase {
