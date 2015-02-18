@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections
 
             var result = visibility
                          + Tokens.Const + ' '
-                         + context.ambiguousIdentifier().GetText() + ' '
+                         + context.AmbiguousIdentifier().GetText() + ' '
                          + Tokens.As + ' ' + Tokens.Variant + ' '
                          + context.EQ().GetText() + ' '
                          + context.valueStmt().GetText();

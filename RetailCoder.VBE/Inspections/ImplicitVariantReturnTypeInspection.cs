@@ -67,7 +67,7 @@ namespace Rubberduck.Inspections
         private static VBParser.AsTypeClauseContext GetPropertyGetReturnType(ParserRuleContext procedureContext)
         {
             var context = procedureContext as VBParser.PropertyGetStmtContext;
-            return context == null ? null : context.asTypeClause();
+            return context == null ? null : context.AsTypeClause();
         }
     }
 }

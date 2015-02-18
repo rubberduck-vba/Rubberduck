@@ -58,7 +58,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .Select(kvp => kvp.Key.Parent)
                 .Cast<VBParser.ConstSubStmtContext>()
                 .Select(constant => new ExtractedParameter(
-                    constant.ambiguousIdentifier().GetText(),
+                    constant.AmbiguousIdentifier().GetText(),
                     constant.asTypeClause() == null
                         ? Tokens.Variant
                         : constant.asTypeClause().type().GetText(),
@@ -192,7 +192,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var localConsts = _locals.Select(e => e.Parent)
                 .OfType<VBParser.ConstSubStmtContext>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
+                .Select(e => "    " + Tokens.Const + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
                 .OfType<VBParser.VariableSubStmtContext>()
                 .Where(e => _view.Parameters.All(param => param.Name != e.AmbiguousIdentifier().GetText()))

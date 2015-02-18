@@ -33,12 +33,12 @@ namespace Rubberduck.VBA.Nodes
         }
 
         public ProcedureNode(VBParser.PropertyGetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.AmbiguousIdentifier(), context.asTypeClause)
+            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.Visibility(), context.AmbiguousIdentifier(), context.AsTypeClause)
         {
             _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_GET();
-            _asTypeClauseContext = context.asTypeClause();
+            _asTypeClauseContext = context.AsTypeClause();
         }
 
         public ProcedureNode(VBParser.FunctionStmtContext context, string scope, string localScope)

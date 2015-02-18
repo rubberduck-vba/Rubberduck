@@ -58,5 +58,66 @@ namespace Rubberduck.VBA
 
             return (VBAccessibility) Enum.Parse(typeof (VBAccessibility), context.GetText());
         }
+
+        public static string Signature(this VBParser.FunctionStmtContext context)
+        {
+            var visibility = context.Visibility();
+            var visibilityText = visibility == null ? string.Empty : visibility.GetText();
+
+            var identifierText = context.AmbiguousIdentifier().GetText();
+            var argsText = context.ArgList().GetText();
+            
+            var asType = context.AsTypeClause();
+            var asTypeText = asType == null ? string.Empty : asType.GetText();
+
+            return (visibilityText + ' ' + Tokens.Function + ' ' + identifierText + argsText + ' ' + asTypeText).Trim();
+        }
+
+        public static string Signature(this VBParser.SubStmtContext context)
+        {
+            var visibility = context.Visibility();
+            var visibilityText = visibility == null ? string.Empty : visibility.GetText();
+
+            var identifierText = context.AmbiguousIdentifier().GetText();
+            var argsText = context.ArgList().GetText();
+
+            return (visibilityText + ' ' + Tokens.Sub + ' ' + identifierText + argsText).Trim();
+        }
+
+        public static string Signature(this VBParser.PropertyGetStmtContext context)
+        {
+            var visibility = context.Visibility();
+            var visibilityText = visibility == null ? string.Empty : visibility.GetText();
+
+            var identifierText = context.AmbiguousIdentifier().GetText();
+            var argsText = context.ArgList().GetText();
+
+            var asType = context.AsTypeClause();
+            var asTypeText = asType == null ? string.Empty : asType.GetText();
+
+            return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Get + ' ' + identifierText + argsText + ' ' + asTypeText).Trim();
+        }
+
+        public static string Signature(this VBParser.PropertyLetStmtContext context)
+        {
+            var visibility = context.Visibility();
+            var visibilityText = visibility == null ? string.Empty : visibility.GetText();
+
+            var identifierText = context.AmbiguousIdentifier().GetText();
+            var argsText = context.ArgList().GetText();
+
+            return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Let + ' ' + identifierText + argsText).Trim();
+        }
+
+        public static string Signature(this VBParser.PropertySetStmtContext context)
+        {
+            var visibility = context.Visibility();
+            var visibilityText = visibility == null ? string.Empty : visibility.GetText();
+
+            var identifierText = context.AmbiguousIdentifier().GetText();
+            var argsText = context.ArgList().GetText();
+
+            return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Set + ' ' + identifierText + argsText).Trim();
+        }
     }
 }

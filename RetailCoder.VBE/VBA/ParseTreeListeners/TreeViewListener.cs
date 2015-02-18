@@ -9,15 +9,23 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
+    public enum TreeViewDisplayStyle
+    {
+        MemberNames,
+        Signatures
+    }
+
     public class TreeViewListener : IVBBaseListener, IExtensionListener<TreeNode>
     {
         private readonly QualifiedModuleName _name;
+        private readonly TreeViewDisplayStyle _displayStyle;
         private readonly TreeNode _tree;
         private bool _isInDeclarationsSection = true;
 
-        public TreeViewListener(QualifiedModuleName name)
+        public TreeViewListener(QualifiedModuleName name, TreeViewDisplayStyle displayStyle = TreeViewDisplayStyle.MemberNames)
         {
             _name = name;
+            _displayStyle = displayStyle;
             _tree = new TreeNode(name.ModuleName);
         }
 
@@ -33,7 +41,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 return;
             }
 
-            var node = new TreeNode(context.GetText());
+            var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.GetText()
+                : context.AmbiguousIdentifier().GetText();
+
+            var node = new TreeNode(nodeText);
             var parent = context.Parent as VBParser.VariableStmtContext;
             var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
@@ -55,7 +67,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 return;
             }
 
-            var node = new TreeNode(context.GetText());
+            var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.GetText()
+                : context.AmbiguousIdentifier().GetText();
+
+            var node = new TreeNode(nodeText);
             var parent = context.Parent as VBParser.ConstStmtContext;
             var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
@@ -101,7 +117,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
             var members = context.typeStmt_Element();
             foreach (var member in members)
             {
-                var memberNode = node.Nodes.Add(member.GetText());
+                var memberNodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                    ? member.GetText()
+                    : member.AmbiguousIdentifier().GetText();
+
+                var memberNode = node.Nodes.Add(memberNodeText);
                 memberNode.ImageKey = "PublicField";
                 memberNode.SelectedImageKey = memberNode.ImageKey;
                 memberNode.Tag = member.GetQualifiedSelection(_name);
@@ -117,6 +137,8 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
             node.Tag = context.GetQualifiedSelection(_name);
             node.SelectedImageKey = node.ImageKey;
+
+            _tree.Nodes.Add(node);
         }
 
         public override void EnterSubStmt(VBParser.SubStmtContext context)
@@ -131,7 +153,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     ? "FriendMethod"
                     : "PublicMethod";
 
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+            var node = CreateProcedureNode(context, imageKey);
+            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.Signature()
+                : context.AmbiguousIdentifier().GetText();
+
+            _tree.Nodes.Add(node);
         }
 
         public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
@@ -145,21 +172,33 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : accessibility == VBAccessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.Signature()
+                : context.AmbiguousIdentifier().GetText();
+
+            _tree.Nodes.Add(node);
         }
 
         public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.Signature()
+                : context.AmbiguousIdentifier().GetText();
+
+            _tree.Nodes.Add(node);
         }
 
         public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
@@ -173,7 +212,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.Signature()
+                : context.AmbiguousIdentifier().GetText();
+
+            _tree.Nodes.Add(node);
         }
 
         public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
@@ -187,7 +232,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context,imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            node.Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.Signature()
+                : context.AmbiguousIdentifier().GetText();
+
+            _tree.Nodes.Add(node);
         }
 
         private TreeNode CreateProcedureNode(dynamic context, string imageKey)

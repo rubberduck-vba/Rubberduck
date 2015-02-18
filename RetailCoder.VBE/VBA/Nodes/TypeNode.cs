@@ -45,7 +45,7 @@ namespace Rubberduck.VBA.Nodes
             :base(context,scope)
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
         }
 
         public string IdentifierName

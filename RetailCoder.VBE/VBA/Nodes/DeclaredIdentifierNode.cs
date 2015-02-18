@@ -43,7 +43,7 @@ namespace Rubberduck.VBA.Nodes
             VBParser.VisibilityContext visibility, bool isLocal)
             : base(context, scope)
         {
-            _name = context.ambiguousIdentifier().GetText();
+            _name = context.AmbiguousIdentifier().GetText();
             if (context.asTypeClause() == null)
             {
                 if (context.typeHint() == null)
