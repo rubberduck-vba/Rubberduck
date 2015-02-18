@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
+using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -9,11 +11,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
 {
     public class TreeViewListener : IVBBaseListener, IExtensionListener<TreeNode>
     {
+        private readonly QualifiedModuleName _name;
         private readonly TreeNode _tree;
         private bool _isInDeclarationsSection = true;
 
         public TreeViewListener(QualifiedModuleName name)
         {
+            _name = name;
             _tree = new TreeNode(name.ModuleName);
         }
 
@@ -40,6 +44,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : "PrivateField";
 
             node.SelectedImageKey = node.ImageKey;
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
@@ -61,6 +66,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : "PrivateConst";
 
             node.SelectedImageKey = node.ImageKey;
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
@@ -73,6 +79,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 var memberNode = node.Nodes.Add(member.GetText());
                 memberNode.ImageKey = "EnumItem";
                 memberNode.SelectedImageKey = memberNode.ImageKey;
+                memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
             var accessibility = context.visibility() == null 
@@ -84,7 +91,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : "PrivateEnum";
 
             node.SelectedImageKey = node.ImageKey;
-
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
@@ -97,6 +104,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 var memberNode = node.Nodes.Add(member.GetText());
                 memberNode.ImageKey = "PublicField";
                 memberNode.SelectedImageKey = memberNode.ImageKey;
+                memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
             var accessibility = context.visibility() == null
@@ -107,6 +115,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 ? "PublicType"
                 : "PrivateType";
 
+            node.Tag = context.GetQualifiedSelection(_name);
             node.SelectedImageKey = node.ImageKey;
         }
 
@@ -121,6 +130,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 : accessibility == VBAccessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
+
             _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
         }
 
@@ -182,10 +192,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         private TreeNode CreateProcedureNode(dynamic context, string imageKey)
         {
-            var procedureName = context.ambiguousIdentifier().GetText();
+            var procedureName = context.AmbiguousIdentifier().GetText();
             var node = new TreeNode(procedureName);
 
-            var args = context.argList().arg() as IReadOnlyList<VBParser.ArgContext>;
+            var args = context.ArgList().Arg() as IReadOnlyList<VBParser.ArgContext>;
             if (args == null)
             {
                 return node;
@@ -196,12 +206,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 var argNode = new TreeNode(arg.GetText());
                 argNode.ImageKey = "Parameter";
                 argNode.SelectedImageKey = argNode.ImageKey;
-
+                argNode.Tag = arg.GetQualifiedSelection(_name);
                 node.Nodes.Add(argNode);
             }
 
             node.ImageKey = imageKey;
             node.SelectedImageKey = node.ImageKey;
+            node.Tag = ((ParserRuleContext)context).GetQualifiedSelection(_name);
             return node;
         }
     }
