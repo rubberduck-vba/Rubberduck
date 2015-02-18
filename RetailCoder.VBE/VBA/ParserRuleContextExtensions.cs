@@ -14,6 +14,12 @@ namespace Rubberduck.VBA
             return new QualifiedContext<TContext>(name, context);
         }
 
+        public static QualifiedSelection GetQualifiedSelection(this ParserRuleContext context, QualifiedModuleName name)
+        {
+            var selection = context.GetSelection();
+            return new QualifiedSelection(name, selection);
+        }
+
         public static Selection GetSelection(this ParserRuleContext context)
         {
             if (context == null)
