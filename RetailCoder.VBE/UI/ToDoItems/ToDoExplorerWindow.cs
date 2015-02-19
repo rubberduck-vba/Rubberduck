@@ -16,6 +16,7 @@ namespace Rubberduck.UI.ToDoItems
         string IDockableUserControl.Caption { get { return "ToDo Explorer"; } }
 
         public string SortedByColumn { get; set; }
+        public bool SortedAscending { get; set; }
 
         private BindingList<ToDoItem> _todoItems;
         public IEnumerable<ToDoItem> TodoItems 
