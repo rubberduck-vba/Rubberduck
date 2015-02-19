@@ -86,7 +86,7 @@ namespace Rubberduck.UI.ToDoItems
                                     .ThenByDescending(item => item.Priority)
                                     .ThenBy(item => item.LineNumber);
 
-            Control.SetItems(sortedItems);
+            Control.TodoItems = sortedItems;
         }
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)

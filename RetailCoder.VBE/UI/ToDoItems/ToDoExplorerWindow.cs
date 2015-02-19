@@ -84,15 +84,6 @@ namespace Rubberduck.UI.ToDoItems
             handler(this, EventArgs.Empty);
         }
 
-        public void SetItems(IEnumerable<ToDoItem> items)
-        {
-            _todoItems.Clear();
-            foreach (var toDoItem in items)
-            {
-                _todoItems.Add(toDoItem);
-            }
-        }
-
         public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
         private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
         {
