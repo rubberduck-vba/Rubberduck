@@ -131,7 +131,9 @@ SOFTWARE.
 
 #Attributions
 
-##[ANTLR](http://www.antlr.org/)
+##Software & Libraries
+
+###[ANTLR](http://www.antlr.org/)
 
 As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
@@ -141,11 +143,25 @@ As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
 We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
-#Icons
+###[LibGit2Sharp](https://github.com/libgit2/libgit2sharp)
+
+**What is LibGit2Sharp?**
+
+LibGit2Sharp is the library that has allowed us to integrate Git right into the VBA IDE (and as a nice bonus, expose a nice API that handles the nitty gritty of importing source files to and from the IDE to a repo for you).
+
+> LibGit2Sharp brings all the might and speed of libgit2, a native Git implementation, to the managed world of .Net and Mono.
+
+**Okay, so what is [libgit2](https://libgit2.github.com/)?**
+
+> libgit2 is a portable, pure C implementation of the Git core methods provided as a re-entrant linkable library with a solid API, allowing you to write native speed custom Git applications in any language which supports C bindings.
+
+Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
+
+##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
 
-##[Fugue Icons](http://p.yusukekamiyamane.com/)
+###[Fugue Icons](http://p.yusukekamiyamane.com/)
 
 This beautiful suite of professional-grade icons packs over 3,570 icons (16x16). You name it, there's an icon for that.
 
@@ -153,7 +169,7 @@ This beautiful suite of professional-grade icons packs over 3,570 icons (16x16).
 These icons are licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).
 If you can't or don't want to provide attribution, please [purchase a royalty-free license](http://p.yusukekamiyamane.com/).
 
-##[Microsoft Visual Studio Image Library](http://www.microsoft.com/en-ca/download/details.aspx?id=35825)
+###[Microsoft Visual Studio Image Library](http://www.microsoft.com/en-ca/download/details.aspx?id=35825)
 
 Icons in the `./Resources/Microsoft/` directory are licensed under Microsoft's Software License Terms, must be used accordingly with their meaning / file name.
 
