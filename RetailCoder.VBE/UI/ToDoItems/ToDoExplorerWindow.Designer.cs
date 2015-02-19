@@ -45,6 +45,7 @@
             // 
             this.todoItemsGridView.AllowUserToAddRows = false;
             this.todoItemsGridView.AllowUserToDeleteRows = false;
+            this.todoItemsGridView.AllowUserToOrderColumns = true;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.todoItemsGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.todoItemsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -55,6 +56,7 @@
             this.todoItemsGridView.ReadOnly = true;
             this.todoItemsGridView.Size = new System.Drawing.Size(319, 206);
             this.todoItemsGridView.TabIndex = 0;
+            this.todoItemsGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ColumnHeaderMouseClicked);
             // 
             // toolStrip1
             // 
