@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToDoExplorerWindow));
             this.todoItemsGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.configureButton = new System.Windows.Forms.ToolStripButton();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -44,6 +45,8 @@
             // 
             this.todoItemsGridView.AllowUserToAddRows = false;
             this.todoItemsGridView.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.todoItemsGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.todoItemsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.todoItemsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -65,20 +68,6 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.todoItemsGridView);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(319, 206);
-            this.panel1.TabIndex = 3;
-            // 
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -88,6 +77,11 @@
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
             this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClicked);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // configureButton
             // 
             this.configureButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -96,6 +90,15 @@
             this.configureButton.Name = "configureButton";
             this.configureButton.Size = new System.Drawing.Size(23, 22);
             this.configureButton.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.todoItemsGridView);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(319, 206);
+            this.panel1.TabIndex = 3;
             // 
             // ToDoExplorerWindow
             // 

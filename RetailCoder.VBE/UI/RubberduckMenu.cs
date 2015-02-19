@@ -51,8 +51,6 @@ namespace Rubberduck.UI
 
         private CommandBarButton _about;
         private CommandBarButton _settings;
-
-        //todo: remove these temporary testing buttons
         private CommandBarButton _sourceControl;
 
         public void Initialize()
@@ -70,7 +68,8 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu.Controls);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
-            _sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
+            //note: disabled for 1.2 release
+            //_sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
 
             _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
             _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));

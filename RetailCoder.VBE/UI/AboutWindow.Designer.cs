@@ -30,6 +30,7 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.CloseButton = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.titleLabel = new System.Windows.Forms.Label();
             this.versionLabel = new System.Windows.Forms.Label();
@@ -40,10 +41,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.codereviewLinkLabel = new System.Windows.Forms.LinkLabel();
             this.mztoolsLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.AntrLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.LibGit2SharpLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -61,19 +64,31 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 290);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 356);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // CloseButton
             // 
             this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseButton.Location = new System.Drawing.Point(408, 265);
+            this.CloseButton.Location = new System.Drawing.Point(408, 331);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(75, 22);
             this.CloseButton.TabIndex = 0;
             this.CloseButton.Text = "Close";
             this.CloseButton.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.rubberduck_adsize;
+            this.pictureBox1.Location = new System.Drawing.Point(2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(229, 324);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
             // 
             // flowLayoutPanel1
             // 
@@ -87,6 +102,9 @@
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.codereviewLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.mztoolsLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.label2);
+            this.flowLayoutPanel1.Controls.Add(this.AntrLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.LibGit2SharpLinkLabel);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -94,7 +112,7 @@
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(245, 254);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(245, 320);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
             // titleLabel
@@ -204,23 +222,50 @@
             this.mztoolsLinkLabel.Text = "MZ-Tools Articles";
             this.mztoolsLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
             // 
-            // pictureBox1
+            // AntrLinkLabel
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.rubberduck_adsize;
-            this.pictureBox1.Location = new System.Drawing.Point(2, 2);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(229, 258);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.AntrLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
+            this.AntrLinkLabel.AutoSize = true;
+            this.AntrLinkLabel.LinkColor = System.Drawing.Color.Blue;
+            this.AntrLinkLabel.Location = new System.Drawing.Point(6, 213);
+            this.AntrLinkLabel.Name = "AntrLinkLabel";
+            this.AntrLinkLabel.Size = new System.Drawing.Size(46, 17);
+            this.AntrLinkLabel.TabIndex = 9;
+            this.AntrLinkLabel.TabStop = true;
+            this.AntrLinkLabel.Text = "ANTLR";
+            this.AntrLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
+            this.AntrLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.AntrLinkLabel_LinkClicked);
+            // 
+            // LibGit2SharpLinkLabel
+            // 
+            this.LibGit2SharpLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
+            this.LibGit2SharpLinkLabel.AutoSize = true;
+            this.LibGit2SharpLinkLabel.LinkColor = System.Drawing.Color.Blue;
+            this.LibGit2SharpLinkLabel.Location = new System.Drawing.Point(6, 230);
+            this.LibGit2SharpLinkLabel.Name = "LibGit2SharpLinkLabel";
+            this.LibGit2SharpLinkLabel.Size = new System.Drawing.Size(80, 17);
+            this.LibGit2SharpLinkLabel.TabIndex = 10;
+            this.LibGit2SharpLinkLabel.TabStop = true;
+            this.LibGit2SharpLinkLabel.Text = "LibGit2Sharp";
+            this.LibGit2SharpLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
+            this.LibGit2SharpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LibGit2SharpLinkLabel_LinkClicked);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(6, 196);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(118, 17);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Technologies Used";
             // 
             // AboutWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 290);
+            this.ClientSize = new System.Drawing.Size(486, 356);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -232,9 +277,9 @@
             this.Text = "About";
             this.TopMost = true;
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -254,5 +299,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel codereviewLinkLabel;
         private System.Windows.Forms.LinkLabel mztoolsLinkLabel;
+        private System.Windows.Forms.LinkLabel AntrLinkLabel;
+        private System.Windows.Forms.LinkLabel LibGit2SharpLinkLabel;
+        private System.Windows.Forms.Label label2;
     }
 }
