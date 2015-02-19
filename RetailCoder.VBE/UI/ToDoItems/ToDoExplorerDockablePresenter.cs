@@ -39,32 +39,9 @@ namespace Rubberduck.UI.ToDoItems
         void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
-            IOrderedEnumerable<ToDoItem> resortedItems = null;
 
-            if (columnName == "ProjectName")
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.ProjectName);
-            }
+            var resortedItems = Control.TodoItems.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
 
-            if (columnName == "ModuleName")
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.ModuleName);
-            }
-
-            if (columnName == "Priority")
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.Priority);
-            }
-
-            if (columnName == "LineNumber")
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.LineNumber);
-            }
-
-            if (columnName == "Description")
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.Description);
-            }
 
             Control.TodoItems = resortedItems;
         }
