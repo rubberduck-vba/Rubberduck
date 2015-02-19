@@ -1,4 +1,8 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Rubberduck.VBA.Grammar;
 
@@ -17,18 +21,18 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterExplicitCallStmt(VBParser.ExplicitCallStmtContext context)
         {
 
-            if (context.eCS_MemberProcedureCall() != null)
+            if (context.ECS_MemberProcedureCall() != null)
             {
-                if (context.eCS_MemberProcedureCall().CALL() != null)
+                if (context.ECS_MemberProcedureCall().CALL() != null)
                 {
-                    _members.Add(context.eCS_MemberProcedureCall());
+                    _members.Add(context.ECS_MemberProcedureCall());
                 }
             }
-            else if (context.eCS_ProcedureCall() != null)
+            else if (context.ECS_ProcedureCall() != null)
             {
-                if (context.eCS_ProcedureCall().CALL() != null)
+                if (context.ECS_ProcedureCall().CALL() != null)
                 {
-                    _members.Add(context.eCS_ProcedureCall());
+                    _members.Add(context.ECS_ProcedureCall());
                 }
             }
         }

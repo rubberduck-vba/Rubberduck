@@ -16,16 +16,37 @@ namespace Rubberduck.VBA.Nodes
         {
         }
 
-        private readonly VBParameterType _passedBy;
-        public VBParameterType PassedBy { get { return _passedBy; } }
+        private new VBParser.ArgContext Context { get { return Context;} }
 
-        private readonly string _name;
-        public string Name { get { return _name; } }
+        public VBParameterType PassedBy
+        {
+            get
+            {
+                return Context.BYVAL() != null 
+                    ? VBParameterType.ByVal
+                    : Context.BYREF() != null
+                        ? VBParameterType.ByRef 
+                        : VBParameterType.ImplicitByRef;
+            }
+        }
 
-        private readonly string _type;
-        public string TypeName { get { return _type; } }
+        public string Name { get { return Context.AmbiguousIdentifier().GetText(); } }
+        public string TypeName 
+        { 
+            get 
+            { 
+                return Context.AsTypeClause() == null || string.IsNullOrEmpty(Context.AsTypeClause().GetText())
+                    ? Tokens.Variant
+                    : Context.AsTypeClause().Type().GetText(); 
+            } 
+        }
 
-        private readonly bool _isOptional;
-        public bool IsOptional { get { return _isOptional; } }
+        public bool IsOptional
+        {
+            get
+            {
+                return Context.OPTIONAL() == null || string.IsNullOrEmpty(Context.OPTIONAL().GetText());
+            }
+        }
     }
 }

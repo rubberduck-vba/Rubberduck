@@ -58,10 +58,10 @@ namespace Rubberduck.VBA.Nodes
             _keyword = context.SUB();
         }
 
-        private ProcedureNode(ParserRuleContext context, string scope, string localScope, 
-                              VBProcedureKind kind, 
-                              VBParser.VisibilityContext visibility, 
-                              VBParser.AmbiguousIdentifierContext name, 
+        private ProcedureNode(ParserRuleContext context, string scope, string localScope,
+                              VBProcedureKind kind,
+                              VBParser.VisibilityContext visibility,
+                              VBParser.AmbiguousIdentifierContext name,
                               Func<VBParser.AsTypeClauseContext> asType)
             : base(context, scope, localScope)
         {
@@ -75,9 +75,9 @@ namespace Rubberduck.VBA.Nodes
                 var returnTypeClause = asType();
                 _isImplicitReturnType = returnTypeClause == null;
 
-                _returnType = returnTypeClause == null 
-                                ? Tokens.Variant 
-                                : returnTypeClause.type().GetText();
+                _returnType = returnTypeClause == null
+                                ? Tokens.Variant
+                                : returnTypeClause.Type().GetText();
             }
         }
 
@@ -106,7 +106,7 @@ namespace Rubberduck.VBA.Nodes
         {
             get
             {
-                var visibility = _visibilityContext == null ? string.Empty : _visibilityContext.GetText() + ' '; 
+                var visibility = _visibilityContext == null ? string.Empty : _visibilityContext.GetText() + ' ';
                 var @static = _staticNode == null ? string.Empty : _staticNode.GetText() + ' ';
                 var keyword = _keyword.GetText() + ' ';
                 var args = _argsListContext == null ? "()" : _argsListContext.GetText() + ' ';

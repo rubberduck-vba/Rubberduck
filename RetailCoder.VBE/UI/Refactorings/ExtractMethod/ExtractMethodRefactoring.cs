@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Extensions;
@@ -18,15 +17,15 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var constants = declarations.OfType<VBParser.ConstSubStmtContext>().Select(constant => constant.AmbiguousIdentifier());
             var variables = declarations.OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.AmbiguousIdentifier());
-            var arguments = declarations.OfType<VBParser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
+            var arguments = declarations.OfType<VBParser.ArgContext>().Select(arg => arg.AmbiguousIdentifier());
 
             var identifiers = constants.Union(variables)
                                        .Union(arguments)
-                                       .ToDictionary(declaration => declaration.GetText(), 
+                                       .ToDictionary(declaration => declaration.GetText(),
                                                      declaration => declaration);
 
             var references = parseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(new VariableReferencesListener())
-                                      .GroupBy(usage => new { Identifier = usage.GetText()})
+                                      .GroupBy(usage => new { Identifier = usage.GetText() })
                                       .ToList();
 
             var notUsedInSelection = references.Where(usage => usage.All(token => !selection.Contains(token.GetSelection())))

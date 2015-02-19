@@ -1,5 +1,9 @@
-﻿using System.Linq;
-using Rubberduck.VBA.Grammar;
+﻿using Rubberduck.VBA.Grammar;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Rubberduck.VBA.Nodes
 {
@@ -42,7 +46,7 @@ namespace Rubberduck.VBA.Nodes
         }
 
         private readonly VBOption _option;
-        public VBOption Option { get {  return _option; } }
+        public VBOption Option { get { return _option; } }
 
         private readonly string _value;
         public string Value { get { return _value; } }

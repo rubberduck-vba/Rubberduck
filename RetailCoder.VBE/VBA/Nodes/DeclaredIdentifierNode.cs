@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
@@ -18,7 +18,7 @@ namespace Rubberduck.VBA.Nodes
     public class VariableDeclarationNode : Node
     {
         public VariableDeclarationNode(VBParser.VariableStmtContext context, string scope)
-            :base(context, scope, null, new List<Node>())
+            : base(context, scope, null, new List<Node>())
         {
             foreach (var variable in context.VariableListStmt().VariableSubStmt())
             {
@@ -44,34 +44,7 @@ namespace Rubberduck.VBA.Nodes
             : base(context, scope)
         {
             _name = context.AmbiguousIdentifier().GetText();
-            if (context.asTypeClause() == null)
-            {
-                if (context.typeHint() == null)
-                {
-                    _isImplicitlyTyped = true;
-                    _typeName = Tokens.Variant;
-                }
-                else
-                {
-                    var hint = context.typeHint().GetText();
-                    _isUsingTypeHint = true;
-                    _typeName = TypeSpecifiers[hint];
-                }
-            }
-            else
-            {
-                _typeName = context.asTypeClause().type().GetText();
-            }
-
-            _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
-        }
-
-        public DeclaredIdentifierNode(VBParser.VariableSubStmtContext context, string scope, 
-                            VBParser.VisibilityContext visibility, bool isLocal = true)
-            : base(context, scope)
-        {
-            _name = context.AmbiguousIdentifier().GetText();
-            if (context.asTypeClause() == null)
+            if (context.AsTypeClause() == null)
             {
                 if (context.TypeHint() == null)
                 {
@@ -87,7 +60,34 @@ namespace Rubberduck.VBA.Nodes
             }
             else
             {
-                _typeName = context.asTypeClause().type().GetText();
+                _typeName = context.AsTypeClause().Type().GetText();
+            }
+
+            _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
+        }
+
+        public DeclaredIdentifierNode(VBParser.VariableSubStmtContext context, string scope,
+                            VBParser.VisibilityContext visibility, bool isLocal = true)
+            : base(context, scope)
+        {
+            _name = context.AmbiguousIdentifier().GetText();
+            if (context.AsTypeClause() == null)
+            {
+                if (context.TypeHint() == null)
+                {
+                    _isImplicitlyTyped = true;
+                    _typeName = Tokens.Variant;
+                }
+                else
+                {
+                    var hint = context.TypeHint().GetText();
+                    _isUsingTypeHint = true;
+                    _typeName = TypeSpecifiers[hint];
+                }
+            }
+            else
+            {
+                _typeName = context.AsTypeClause().Type().GetText();
             }
 
             _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();

@@ -2573,7 +2573,7 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class ConstSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
@@ -2586,7 +2586,7 @@ public partial class VBParser : Parser {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBParser.WS, i);
 		}
-		public TypeHintContext typeHint() {
+		public TypeHintContext TypeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
 		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
@@ -3317,7 +3317,7 @@ public partial class VBParser : Parser {
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
@@ -3328,7 +3328,7 @@ public partial class VBParser : Parser {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public EnumerationStmtContext(ParserRuleContext parent, int invokingState)
@@ -3417,10 +3417,10 @@ public partial class VBParser : Parser {
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ValueStmtContext valueStmt() {
+		public ValueStmtContext ValueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
@@ -11391,7 +11391,7 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class VariableSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
@@ -11858,10 +11858,10 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class ExplicitCallStmtContext : ParserRuleContext {
-		public ECS_ProcedureCallContext eCS_ProcedureCall() {
+		public ECS_ProcedureCallContext ECS_ProcedureCall() {
 			return GetRuleContext<ECS_ProcedureCallContext>(0);
 		}
-		public ECS_MemberProcedureCallContext eCS_MemberProcedureCall() {
+		public ECS_MemberProcedureCallContext ECS_MemberProcedureCall() {
 			return GetRuleContext<ECS_MemberProcedureCallContext>(0);
 		}
 		public ExplicitCallStmtContext(ParserRuleContext parent, int invokingState)
@@ -13612,7 +13612,7 @@ public partial class VBParser : Parser {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode BYREF() { return GetToken(VBParser.BYREF, 0); }
@@ -14532,7 +14532,7 @@ public partial class VBParser : Parser {
 		public ITerminalNode AS() { return GetToken(VBParser.AS, 0); }
 		public ITerminalNode NEW() { return GetToken(VBParser.NEW, 0); }
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
-		public TypeContext type() {
+		public TypeContext Type() {
 			return GetRuleContext<TypeContext>(0);
 		}
 		public ITerminalNode WS(int i) {

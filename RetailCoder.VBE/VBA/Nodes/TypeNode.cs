@@ -1,19 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
-    public class TypeNode :Node
+    public class TypeNode : Node
     {
         private readonly VBParser.TypeStmtContext _context;
         private readonly IdentifierNode _identifier;
 
         public TypeNode(VBParser.TypeStmtContext context, string scope)
-            :base(context, scope, null, new List<Node>())
+            : base(context, scope, null, new List<Node>())
         {
             _context = context;
             _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
@@ -27,12 +24,12 @@ namespace Rubberduck.VBA.Nodes
 
         public IdentifierNode Identifier
         {
-            get {return _identifier;}
+            get { return _identifier; }
         }
 
         public VBAccessibility Accessibility
         {
-            get {return (VBAccessibility) Enum.Parse(typeof (VBAccessibility), _context.visibility().GetText());}
+            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.visibility().GetText()); }
         }
     }
 
@@ -42,7 +39,7 @@ namespace Rubberduck.VBA.Nodes
         private readonly IdentifierNode _identifier;
 
         public TypeElementNode(VBParser.TypeStmt_ElementContext context, string scope)
-            :base(context,scope)
+            : base(context, scope)
         {
             _context = context;
             _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
@@ -50,7 +47,7 @@ namespace Rubberduck.VBA.Nodes
 
         public string IdentifierName
         {
-            get {return _identifier.Name; }
+            get { return _identifier.Name; }
         }
     }
 }

@@ -12,6 +12,7 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.VBA
 {

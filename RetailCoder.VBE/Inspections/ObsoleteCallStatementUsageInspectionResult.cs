@@ -40,15 +40,15 @@ namespace Rubberduck.Inspections
 
             string procedure;
             VBParser.ArgsCallContext arguments;
-            if (Context.eCS_MemberProcedureCall() != null)
+            if (Context.ECS_MemberProcedureCall() != null)
             {
-                procedure = Context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.eCS_MemberProcedureCall().argsCall();
+                procedure = Context.ECS_MemberProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.ECS_MemberProcedureCall().argsCall();
             }
             else
             {
-                procedure = Context.eCS_ProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.eCS_ProcedureCall().argsCall();
+                procedure = Context.ECS_ProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.ECS_ProcedureCall().argsCall();
             }
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

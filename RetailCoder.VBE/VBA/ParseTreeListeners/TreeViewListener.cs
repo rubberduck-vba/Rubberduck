@@ -88,7 +88,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
-            var node = new TreeNode(context.ambiguousIdentifier().GetText());
+            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
             var members = context.enumerationStmt_Constant();
             foreach (var member in members)
             {
@@ -98,9 +98,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.visibility() == null 
+            var accessibility = context.Visibility() == null 
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicEnum"
