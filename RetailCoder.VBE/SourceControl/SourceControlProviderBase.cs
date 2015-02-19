@@ -109,12 +109,10 @@ namespace Rubberduck.SourceControl
             var selection = this.project.VBE.ActiveCodePane.GetSelection();
             var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Parent.QualifiedName();
 
-            var qualifiedSelection = new QualifiedSelection(moduleName, selection);
-
             this.project.RemoveAllComponents();
             this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
 
-            this.project.VBE.SetSelection(qualifiedSelection);
+            this.project.VBE.SetSelection(selection);
         }
     }
 }

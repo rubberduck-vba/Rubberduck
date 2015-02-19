@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using System;
+using Rubberduck.Inspections;
 using Rubberduck.UI;
 
 namespace Rubberduck.Extensions
@@ -13,7 +14,7 @@ namespace Rubberduck.Extensions
     {
         /// <summary>   A CodePane extension method that gets the current selection. </summary>
         /// <returns>   The selection. </returns>
-        public static Selection GetSelection(this CodePane code)
+        public static QualifiedSelection GetSelection(this CodePane code)
         {
             int startLine;
             int endLine;
@@ -28,7 +29,8 @@ namespace Rubberduck.Extensions
                 endColumn = code.CodeModule.get_Lines(endLine, 1).Length;
             }
 
-            return new Selection(startLine, startColumn, endLine, endColumn);
+            var selection = new Selection(startLine, startColumn, endLine, endColumn);
+            return new QualifiedSelection(code.CodeModule.Parent.QualifiedName(), selection);
         }
 
         /// <summary>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
@@ -11,7 +7,8 @@ namespace Rubberduck.VBA.ParseTreeListeners
     {
         private readonly string _name;
 
-        public ProcedureNameListener(string name)
+        public ProcedureNameListener(string name, QualifiedModuleName qualifiedName)
+            : base(qualifiedName)
         {
             _name = name;
         }

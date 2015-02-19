@@ -126,7 +126,7 @@ namespace Rubberduck.UI.CodeExplorer
                     root.Nodes.Add(node);
 
                     var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
-                    node.Nodes.AddRange(moduleNode.Nodes.Cast<TreeNode>().ToArray());
+                    node.Nodes.AddRange(moduleNode.Context.Nodes.Cast<TreeNode>().ToArray());
 
                     node.Text = component.Name;
                     node.ImageKey = "StandardModule";

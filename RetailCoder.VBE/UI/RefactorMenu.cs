@@ -45,15 +45,15 @@ namespace Rubberduck.UI
             }
 
             var selection = IDE.ActiveCodePane.GetSelection();
-            if (selection.StartLine <= IDE.ActiveCodePane.CodeModule.CountOfDeclarationLines)
+            if (selection.Selection.StartLine <= IDE.ActiveCodePane.CodeModule.CountOfDeclarationLines)
             {
                 return;
             }
 
             vbext_ProcKind startKind;
-            var startScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.StartLine, out startKind);
+            var startScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.Selection.StartLine, out startKind);
             vbext_ProcKind endKind;
-            var endScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.EndLine, out endKind);
+            var endScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.Selection.EndLine, out endKind);
 
             if (startScope != endScope)
             {
@@ -61,8 +61,8 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent).ParseTree.GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope)))
-                                .SingleOrDefault(proc => proc.GetSelection().Contains(selection));
+            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent).ParseTree.GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope, selection.QualifiedName)))
+                                .SingleOrDefault(proc => proc.Context.GetSelection().Contains(selection.Selection));
 
             if (method == null)
             {
@@ -70,7 +70,7 @@ namespace Rubberduck.UI
             }
 
             var view = new ExtractMethodDialog();
-            var presenter = new ExtractMethodPresenter(IDE, view, method, selection);
+            var presenter = new ExtractMethodPresenter(IDE, view, method.Context, selection);
             presenter.Show();
         }
 

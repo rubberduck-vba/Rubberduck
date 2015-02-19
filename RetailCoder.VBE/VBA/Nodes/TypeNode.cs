@@ -29,7 +29,7 @@ namespace Rubberduck.VBA.Nodes
 
         public VBAccessibility Accessibility
         {
-            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.visibility().GetText()); }
+            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.Visibility().GetText()); }
         }
     }
 

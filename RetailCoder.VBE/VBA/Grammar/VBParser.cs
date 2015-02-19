@@ -2738,16 +2738,16 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class DeclareStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode DECLARE() { return GetToken(VBParser.DECLARE, 0); }
 		public ITerminalNode FUNCTION() { return GetToken(VBParser.FUNCTION, 0); }
-		public ArgListContext argList() {
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
 		public ITerminalNode LIB() { return GetToken(VBParser.LIB, 0); }
@@ -2759,7 +2759,7 @@ public partial class VBParser : Parser {
 			return GetToken(VBParser.WS, i);
 		}
 		public ITerminalNode ALIAS() { return GetToken(VBParser.ALIAS, 0); }
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public ITerminalNode SUB() { return GetToken(VBParser.SUB, 0); }
@@ -3606,18 +3606,18 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class EventStmtContext : ParserRuleContext {
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode EVENT() { return GetToken(VBParser.EVENT, 0); }
-		public ArgListContext argList() {
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public EventStmtContext(ParserRuleContext parent, int invokingState)
@@ -3960,14 +3960,14 @@ public partial class VBParser : Parser {
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+		public IReadOnlyList<AmbiguousIdentifierContext> AmbiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
 		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+		public AmbiguousIdentifierContext AmbiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
 		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
@@ -9322,7 +9322,7 @@ public partial class VBParser : Parser {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public ITerminalNode TYPE() { return GetToken(VBParser.TYPE, 0); }
@@ -11685,7 +11685,7 @@ public partial class VBParser : Parser {
 
 	public partial class WithStmtContext : ParserRuleContext {
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+		public ImplicitCallStmt_InStmtContext ImplicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
@@ -12522,7 +12522,7 @@ public partial class VBParser : Parser {
 		public ICS_S_DictionaryCallContext iCS_S_DictionaryCall() {
 			return GetRuleContext<ICS_S_DictionaryCallContext>(0);
 		}
-		public ICS_S_VariableCallContext iCS_S_VariableCall() {
+		public ICS_S_VariableCallContext ICS_S_VariableCall() {
 			return GetRuleContext<ICS_S_VariableCallContext>(0);
 		}
 		public ImplicitCallStmt_InStmtContext(ParserRuleContext parent, int invokingState)
@@ -12596,7 +12596,7 @@ public partial class VBParser : Parser {
 		public DictionaryCallStmtContext dictionaryCallStmt() {
 			return GetRuleContext<DictionaryCallStmtContext>(0);
 		}
-		public VariableCallStmtContext variableCallStmt() {
+		public VariableCallStmtContext VariableCallStmt() {
 			return GetRuleContext<VariableCallStmtContext>(0);
 		}
 		public ICS_S_VariableCallContext(ParserRuleContext parent, int invokingState)
@@ -13059,7 +13059,7 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class VariableCallStmtContext : ParserRuleContext {
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public TypeHintContext typeHint() {

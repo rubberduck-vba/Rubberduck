@@ -26,16 +26,16 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private readonly string _selectedCode;
         private readonly VBE _vbe;
-        private readonly Selection _selection;
+        private readonly QualifiedSelection _selection;
 
-        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
+        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, QualifiedSelection selection)
         {
             _vbe = vbe;
             _selection = selection;
 
             _view = dialog;
             _parentMethodTree = parentMethod;
-            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.StartLine, selection.LineCount);
+            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.Selection.StartLine, selection.Selection.LineCount);
 
             _parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
 
@@ -112,8 +112,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 return;
             }
 
-            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.StartLine, _selection.LineCount - 1);
-            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.StartLine, GetMethodCall());
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.Selection.StartLine, _selection.Selection.LineCount - 1);
+            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
 
             _vbe.ActiveCodePane.CodeModule.AddFromString(GetExtractedMethod());
         }

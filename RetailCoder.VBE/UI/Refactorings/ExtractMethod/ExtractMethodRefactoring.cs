@@ -11,9 +11,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     public class ExtractMethodRefactoring
     {
-        public static IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, Selection selection)
+        public static IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, QualifiedSelection selection)
         {
-            var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener()).ToList();
+            var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(selection.QualifiedName)).ToList();
 
             var constants = declarations.OfType<VBParser.ConstSubStmtContext>().Select(constant => constant.AmbiguousIdentifier());
             var variables = declarations.OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.AmbiguousIdentifier());
@@ -24,22 +24,22 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                        .ToDictionary(declaration => declaration.GetText(),
                                                      declaration => declaration);
 
-            var references = parseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(new VariableReferencesListener())
-                                      .GroupBy(usage => new { Identifier = usage.GetText() })
+            var references = parseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(new VariableReferencesListener(selection.QualifiedName))
+                                      .GroupBy(usage => new { Identifier = usage.Context.GetText() })
                                       .ToList();
 
-            var notUsedInSelection = references.Where(usage => usage.All(token => !selection.Contains(token.GetSelection())))
+            var notUsedInSelection = references.Where(usage => usage.All(token => !selection.Selection.Contains(token.Context.GetSelection())))
                                                .Select(usage => usage.Key).ToList();
 
-            var usedBeforeSelection = references.Where(usage => usage.Any(token => token.GetSelection().EndLine < selection.StartLine))
+            var usedBeforeSelection = references.Where(usage => usage.Any(token => token.Context.GetSelection().EndLine < selection.Selection.StartLine))
                                                     .Select(usage => usage.Key)
                                                 .Where(usage => notUsedInSelection.All(e => e.Identifier != usage.Identifier));
 
-            var usedAfterSelection = references.Where(usage => usage.Any(token => token.GetSelection().StartLine > selection.EndLine))
+            var usedAfterSelection = references.Where(usage => usage.Any(token => token.Context.GetSelection().StartLine > selection.Selection.EndLine))
                                                    .Select(usage => usage.Key)
                                                 .Where(usage => notUsedInSelection.All(e => e.Identifier != usage.Identifier));
 
-            var usedOnlyWithinSelection = references.Where(usage => usage.All(token => selection.Contains(token.GetSelection())))
+            var usedOnlyWithinSelection = references.Where(usage => usage.All(token => selection.Selection.Contains(token.Context.GetSelection())))
                                                     .Select(usage => usage.Key);
 
 

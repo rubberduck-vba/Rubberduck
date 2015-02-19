@@ -10,7 +10,7 @@ namespace Rubberduck.VBA
     /// </summary>
     public static class AntlrExtensions
     {
-        public static IEnumerable<TContext> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
+        public static IEnumerable<QualifiedContext<TContext>> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
             where TListener : IExtensionListener<TContext>, IParseTreeListener
             where TContext : class
         {
@@ -34,7 +34,7 @@ namespace Rubberduck.VBA
         /// <returns></returns>
         public static bool IsIdentifierUsage(this VBParser.VariableCallStmtContext usage, VBParser.AmbiguousIdentifierContext identifier)
         {
-            return usage.ambiguousIdentifier().GetText() == identifier.GetText();
+            return usage.AmbiguousIdentifier().GetText() == identifier.GetText();
         }
     }
 }

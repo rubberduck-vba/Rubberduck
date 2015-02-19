@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener());
+                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
                 foreach (var procedure in procedures)
                 {
                     var args = GetArguments(procedure);
@@ -47,9 +47,9 @@ namespace Rubberduck.Inspections
                 GetPropertySetArgsList
             };
 
-        private IEnumerable<VBParser.ArgContext> GetArguments(ParserRuleContext procedureContext)
+        private IEnumerable<VBParser.ArgContext> GetArguments(QualifiedContext<ParserRuleContext> procedureContext)
         {
-            var argsList = Converters.Select(converter => converter(procedureContext)).FirstOrDefault(args => args != null);
+            var argsList = Converters.Select(converter => converter(procedureContext.Context)).FirstOrDefault(args => args != null);
             if (argsList == null)
             {
                 return new List<VBParser.ArgContext>();

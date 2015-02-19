@@ -26,7 +26,9 @@ namespace Rubberduck.Inspections
         {
             foreach (var result in parseResult)
             {
-                var declarations = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener())).ToList();
+                var declarations = 
+                    result.ParseTree.GetContexts<
+                        DeclarationListener, ParserRuleContext>(new DeclarationListener(result.QualifiedName)).ToList();
                 var module = result; // to avoid access to modified closure in below lambdas
 
                 var constants = declarations.Where(declaration => declaration is VBParser.ConstSubStmtContext)

@@ -26,14 +26,14 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener()).Where(HasExpectedReturnType);
+                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName))
+                    .Where(HasExpectedReturnType);
                 foreach (var procedure in procedures)
                 {
-                    var asTypeClause = GetAsTypeClause(procedure);
+                    var asTypeClause = GetAsTypeClause(procedure.Context);
                     if (asTypeClause == null)
                     {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(Name, Severity, 
-                            new QualifiedContext<ParserRuleContext>(module.QualifiedName, procedure));
+                        yield return new ImplicitVariantReturnTypeInspectionResult(Name, Severity, procedure);
                     }
                 }
             }
@@ -51,10 +51,10 @@ namespace Rubberduck.Inspections
             return Converters.Select(converter => converter(procedureContext)).FirstOrDefault(args => args != null);
         }
 
-        private static bool HasExpectedReturnType(ParserRuleContext procedureContext)
+        private static bool HasExpectedReturnType(QualifiedContext<ParserRuleContext> procedureContext)
         {
-            var function = procedureContext as VBParser.FunctionStmtContext;
-            var getter = procedureContext as VBParser.PropertyGetStmtContext;
+            var function = procedureContext.Context as VBParser.FunctionStmtContext;
+            var getter = procedureContext.Context as VBParser.PropertyGetStmtContext;
             return function != null || getter != null;
         }
 

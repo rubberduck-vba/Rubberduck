@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
             foreach (var module in parseResult)
             {
                 var local = module;
-                var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener());
+                var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener(module.QualifiedName));
                 var results = declarations.OfType<VBParser.VariableSubStmtContext>()
                     .Where(variable => variable.TypeHint() != null
                                        && !string.IsNullOrEmpty(variable.TypeHint().GetText()))

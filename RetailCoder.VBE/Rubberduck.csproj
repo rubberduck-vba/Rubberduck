@@ -129,6 +129,7 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\ParameterNode.cs" />
     <Compile Include="VBA\Nodes\TypeNode.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
-    <Compile Include="VBA\Grammar\IVBBaseListener.cs" />
+    <Compile Include="VBA\Grammar\VBListenerBase.cs" />
     <Compile Include="VBA\Grammar\IVBBaseVisitor.cs" />
     <Compile Include="VBA\Grammar\VBLexer.cs" />
     <Compile Include="VBA\Grammar\IVBListener.cs" />

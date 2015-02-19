@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
@@ -15,7 +14,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
         Signatures
     }
 
-    public class TreeViewListener : IVBBaseListener, IExtensionListener<TreeNode>
+    public class TreeViewListener : VBListenerBase, IExtensionListener<TreeNode>
     {
         private readonly QualifiedModuleName _name;
         private readonly TreeViewDisplayStyle _displayStyle;
@@ -26,12 +25,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _name = name;
             _displayStyle = displayStyle;
-            _tree = new TreeNode(name.ModuleName);
+            _tree = new TreeNode(name.ModuleName) {Tag = new QualifiedSelection(_name, Selection.Empty)};
         }
 
-        public IEnumerable<TreeNode> Members
+        public IEnumerable<QualifiedContext<TreeNode>> Members
         {
-            get { return new[] {_tree}; }
+            get { return new QualifiedContext<TreeNode>[] {new QualifiedContext<TreeNode>(_name , _tree)}; }
         }
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
@@ -127,9 +126,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicType"

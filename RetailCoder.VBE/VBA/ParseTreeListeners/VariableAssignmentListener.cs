@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class NodeBuildingListener : IVBBaseListener
+    public class NodeBuildingListener : VBListenerBase
     {
         private readonly string _project;
         private readonly string _module;
@@ -161,21 +162,40 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 base.EnterVariableCallStmt(context);
             }
         }
+
+        public VariableAssignmentListener(QualifiedModuleName qualifiedName) 
+            : base(qualifiedName)
+        {
+        }
     }
 
-    public class VariableUsageListener : IVBBaseListener, IExtensionListener<VBParser.AmbiguousIdentifierContext>
+    public class VariableUsageListener : VBListenerBase, IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
-        private readonly IList<VBParser.AmbiguousIdentifierContext> _members = new List<VBParser.AmbiguousIdentifierContext>();
-        public IEnumerable<VBParser.AmbiguousIdentifierContext> Members { get { return _members; } }
+        private readonly IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _members = 
+            new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+
+        private readonly QualifiedModuleName _qualifiedName;
+
+        public VariableUsageListener(QualifiedModuleName qualifiedName)
+        {
+            _qualifiedName = qualifiedName;
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
 
         public override void EnterForNextStmt(VBParser.ForNextStmtContext context)
         {
-            _members.Add(context.ambiguousIdentifier().First());
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_qualifiedName, context.AmbiguousIdentifier().First()));
         }
 
         public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
         {
-            _members.Add(context.ambiguousIdentifier());
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_qualifiedName, context.AmbiguousIdentifier()));
+        }
+
+        public override void EnterWithStmt(VBParser.WithStmtContext context)
+        {
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_qualifiedName, context.ImplicitCallStmt_InStmt().ICS_S_VariableCall().VariableCallStmt().AmbiguousIdentifier()));
         }
     }
 }

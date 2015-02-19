@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
         {
             foreach (var result in parseResult)
             {
-                var statements = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener())).ToList();
+                var statements = ((IEnumerable<ParserRuleContext>) result.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener(result.QualifiedName))).ToList();
                 var module = result;
                 foreach (var inspectionResult in 
                     statements.OfType<VBParser.ECS_MemberProcedureCallContext>()

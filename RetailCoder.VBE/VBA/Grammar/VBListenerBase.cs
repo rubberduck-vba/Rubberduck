@@ -32,7 +32,7 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public partial class IVBBaseListener : IVBListener {
+public partial class VBListenerBase : IVBListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBParser.stopStmt"/>.
 	/// <para>The default implementation does nothing.</para>
