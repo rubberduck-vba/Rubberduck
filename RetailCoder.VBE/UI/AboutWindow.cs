@@ -55,6 +55,16 @@ namespace Rubberduck.UI
             VisitLink("https://github.com/retailcoder/Rubberduck");
         }
 
+        private void LibGit2SharpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            VisitLink("https://github.com/libgit2/libgit2sharp");
+        }
+
+        private void AntrLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            VisitLink("http://www.antlr.org/");
+        }
+
         private void VisitLink(string url)
         {
             var info = new ProcessStartInfo(url);
