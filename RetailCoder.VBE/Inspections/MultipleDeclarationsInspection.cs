@@ -25,16 +25,16 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var declarations = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                foreach (var declaration in declarations.Where(declaration => declaration is VBParser.ConstStmtContext || declaration is VBParser.VariableStmtContext))
+                var declarations = module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(module.QualifiedName));
+                foreach (var declaration in declarations.Where(declaration => declaration.Context is VBParser.ConstStmtContext || declaration.Context is VBParser.VariableStmtContext))
                 {
-                    var variables = declaration as VBParser.VariableStmtContext;                    
+                    var variables = declaration.Context as VBParser.VariableStmtContext;                    
                     if (variables != null && HasMultipleDeclarations(variables))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.VariableListStmt()));
                     }
 
-                    var consts = declaration as VBParser.ConstStmtContext;
+                    var consts = declaration.Context as VBParser.ConstStmtContext;
                     if (consts != null && HasMultipleDeclarations(consts))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));

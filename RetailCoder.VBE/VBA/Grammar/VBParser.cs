@@ -9304,17 +9304,17 @@ public partial class VBParser : Parser {
 	}
 
 	public partial class TypeStmtContext : ParserRuleContext {
-		public IReadOnlyList<TypeStmt_ElementContext> typeStmt_Element() {
+		public IReadOnlyList<TypeStmt_ElementContext> TypeStmt_Element() {
 			return GetRuleContexts<TypeStmt_ElementContext>();
 		}
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
-		public TypeStmt_ElementContext typeStmt_Element(int i) {
+		public TypeStmt_ElementContext TypeStmt_Element(int i) {
 			return GetRuleContext<TypeStmt_ElementContext>(i);
 		}
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }

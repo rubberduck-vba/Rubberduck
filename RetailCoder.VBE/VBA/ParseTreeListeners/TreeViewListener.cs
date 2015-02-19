@@ -112,8 +112,8 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterTypeStmt(VBParser.TypeStmtContext context)
         {
-            var node = new TreeNode(context.ambiguousIdentifier().GetText());
-            var members = context.typeStmt_Element();
+            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
+            var members = context.TypeStmt_Element();
             foreach (var member in members)
             {
                 var memberNodeText = _displayStyle == TreeViewDisplayStyle.Signatures

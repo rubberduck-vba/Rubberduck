@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
@@ -22,6 +23,10 @@ namespace Rubberduck.VBA
             catch (WalkerCancelledException)
             {
                 // swallow. this exception is thrown when a listener doesn't need to walk an entire parse tree.
+            }
+            catch (NullReferenceException e)
+            {
+                // bug? swallow? is WalkerCancelledException thrown?
             }
 
             return listener.Members;

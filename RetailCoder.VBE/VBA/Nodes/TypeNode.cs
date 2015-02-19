@@ -13,9 +13,9 @@ namespace Rubberduck.VBA.Nodes
             : base(context, scope, null, new List<Node>())
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
 
-            var children = context.typeStmt_Element();
+            var children = context.TypeStmt_Element();
             foreach (var child in children)
             {
                 AddChild(new TypeElementNode(child, scope));
