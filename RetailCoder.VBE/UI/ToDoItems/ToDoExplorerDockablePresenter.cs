@@ -10,6 +10,7 @@ using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -30,8 +31,42 @@ namespace Rubberduck.UI.ToDoItems
             _markers = markers;
             Control.NavigateToDoItem += NavigateToDoItem;
             Control.RefreshToDoItems += RefreshToDoList;
+            Control.SortColumn += SortColumn;
 
             RefreshToDoList(this, EventArgs.Empty);
+        }
+
+        void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            IOrderedEnumerable<ToDoItem> resortedItems = null;
+
+            if (columnName == "ProjectName")
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.ProjectName);
+            }
+
+            if (columnName == "ModuleName")
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.ModuleName);
+            }
+
+            if (columnName == "Priority")
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.Priority);
+            }
+
+            if (columnName == "LineNumber")
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.LineNumber);
+            }
+
+            if (columnName == "Description")
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.Description);
+            }
+
+            Control.TodoItems = resortedItems;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
