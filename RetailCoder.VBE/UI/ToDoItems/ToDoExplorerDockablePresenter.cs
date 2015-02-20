@@ -10,6 +10,7 @@ using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -30,8 +31,31 @@ namespace Rubberduck.UI.ToDoItems
             _markers = markers;
             Control.NavigateToDoItem += NavigateToDoItem;
             Control.RefreshToDoItems += RefreshToDoList;
+            Control.SortColumn += SortColumn;
 
             RefreshToDoList(this, EventArgs.Empty);
+        }
+
+        void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            IOrderedEnumerable<ToDoItem> resortedItems = null;
+
+
+            if (columnName == Control.SortedByColumn && Control.SortedAscending)
+            {
+                resortedItems = Control.TodoItems.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
+                Control.SortedAscending = false;
+            }
+            else
+            {
+                resortedItems = Control.TodoItems.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
+                Control.SortedByColumn = columnName;
+                Control.SortedAscending = true;
+            }
+
+
+            Control.TodoItems = resortedItems;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
@@ -57,7 +81,12 @@ namespace Rubberduck.UI.ToDoItems
                     }
                 });
 
-            Control.SetItems(items);
+            var sortedItems = items.OrderBy(item => item.ProjectName)
+                                    .ThenBy(item => item.ModuleName)
+                                    .ThenByDescending(item => item.Priority)
+                                    .ThenBy(item => item.LineNumber);
+
+            Control.SetItems(sortedItems);
         }
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
@@ -70,7 +99,7 @@ namespace Rubberduck.UI.ToDoItems
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
         {
             var project = VBE.VBProjects.Cast<VBProject>()
-                .FirstOrDefault(p => p.Name == e.SelectedItem.Selection.QualifiedName.ProjectName);
+                .FirstOrDefault(p => p.Name == e.SelectedItem.ProjectName);
 
             if (project == null)
             {
@@ -78,7 +107,7 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var component = project.VBComponents.Cast<VBComponent>()
-                .FirstOrDefault(c => c.Name == e.SelectedItem.Selection.QualifiedName.ModuleName);
+                .FirstOrDefault(c => c.Name == e.SelectedItem.ModuleName);
 
             if (component == null)
             {
@@ -87,7 +116,7 @@ namespace Rubberduck.UI.ToDoItems
 
             var codePane = component.CodeModule.CodePane;
 
-            codePane.SetSelection(e.SelectedItem.Selection.Selection);
+            codePane.SetSelection(e.SelectedItem.GetSelection().Selection);
             codePane.ForceFocus();
         }
     }
