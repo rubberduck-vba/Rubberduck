@@ -11,6 +11,8 @@ using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -59,10 +61,23 @@ namespace Rubberduck.UI.ToDoItems
 
         private void RefreshToDoList(object sender, EventArgs e)
         {
-            Refresh();
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => Refresh());
+                getItems.Start();
+
+                Control.TodoItems = getItems.Result;
+                
+                //Parallel.Invoke(() => Refresh());
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
-        private void Refresh()
+        private IOrderedEnumerable<ToDoItem> Refresh()
         {
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>();
@@ -85,7 +100,7 @@ namespace Rubberduck.UI.ToDoItems
                                     .ThenByDescending(item => item.Priority)
                                     .ThenBy(item => item.LineNumber);
 
-            Control.TodoItems = sortedItems;
+            return sortedItems;
         }
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
