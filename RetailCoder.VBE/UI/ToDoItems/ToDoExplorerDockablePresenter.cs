@@ -64,12 +64,10 @@ namespace Rubberduck.UI.ToDoItems
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => Refresh());
+                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => GetItems());
                 getItems.Start();
 
                 Control.TodoItems = getItems.Result;
-                
-                //Parallel.Invoke(() => Refresh());
             }
             finally
             {
@@ -77,7 +75,7 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private IOrderedEnumerable<ToDoItem> Refresh()
+        private IOrderedEnumerable<ToDoItem> GetItems()
         {
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>();
