@@ -63,44 +63,42 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private void RefreshExplorerTreeView()
+        private async void RefreshExplorerTreeView()
         {
-            Control.SolutionTree.Nodes.Clear();
-
-            var projects = VBE.VBProjects.Cast<VBProject>();
-            foreach (var vbProject in projects)
+            try
             {
-                var project = vbProject;
-                Task.Run(() =>
+                Cursor.Current = Cursors.WaitCursor;
+                Control.SolutionTree.Nodes.Clear();
+
+                var projects = VBE.VBProjects.Cast<VBProject>();
+                foreach (var vbProject in projects)
                 {
-                    var node = new TreeNode(project.Name + " (parsing...)");
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
-
-                    Control.Invoke((MethodInvoker)delegate
+                    var project = vbProject;
+                    await Task.Run(() =>
                     {
-                        Control.SolutionTree.Nodes.Add(node);
-                        AddProjectNodes(project, node);
-                    });
-                });
-            }
+                        var node = new TreeNode(project.Name + " (parsing...)");
+                        node.ImageKey = "Hourglass";
+                        node.SelectedImageKey = node.ImageKey;
 
-            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
+                        Control.Invoke((MethodInvoker)delegate
+                        {
+                            Control.SolutionTree.Nodes.Add(node);
+                            AddProjectNodes(project, node);
+                        });
+                    });
+                }
+
+                Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void RefreshExplorerTreeView(object sender, System.EventArgs e)
         {
-            //todo: Unblock the UI and display a wait cursor.
-            try
-            {
-                Control.Cursor = Cursors.WaitCursor;
-                RefreshExplorerTreeView();
-            }
-            finally
-            {
-                Control.Cursor = Cursors.Default;
-            }
-
+            RefreshExplorerTreeView();
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
