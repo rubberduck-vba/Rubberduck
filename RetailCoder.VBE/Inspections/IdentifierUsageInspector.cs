@@ -16,6 +16,7 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
+        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
 
         public IdentifierUsageInspector(IEnumerable<VBComponentParseResult> parseResult)
         {
@@ -24,6 +25,7 @@ namespace Rubberduck.Inspections
             _fields = GetFields(_globals);
             _locals = GetLocals();
             _assignments = GetAssignments();
+            _usages = GetIdentifierUsages(_assignments);
         }
 
         /// <summary>
@@ -91,6 +93,42 @@ namespace Rubberduck.Inspections
             foreach (var field in unassignedFields)
             {
                 yield return field;
+            }
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedGlobals()
+        {
+            var unusedGlobals = _globals.Where(context => _usages.Where(usage => usage.QualifiedName == context.QualifiedName)
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
+
+            foreach (var context in unusedGlobals)
+            {
+                yield return context;
+            }
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedFields()
+        {
+            var unusedFields = _fields.Where(context =>
+                _usages.Where(usage => usage.QualifiedName == context.QualifiedName)
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
+
+            foreach (var context in unusedFields)
+            {
+                yield return context;
+            }
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedLocals()
+        {
+            var unusedLocals = _locals.Where(context => 
+                _usages.Where(usage => usage.QualifiedName == context.QualifiedName 
+                                    && usage.MemberName == context.MemberName)
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
+
+            foreach (var context in unusedLocals)
+            {
+                yield return context;
             }
         }
 
@@ -165,6 +203,21 @@ namespace Rubberduck.Inspections
                 result.AddRange(module.ParseTree
                     .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener)
                     .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
+            }
+
+            return result;
+        }
+
+        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
+        {
+            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            foreach (var module in _parseResult)
+            {
+                var listener = new VariableReferencesListener(module.QualifiedName);
+
+                // includes assignments
+                var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
+                result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
             }
 
             return result;
