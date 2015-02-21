@@ -44,6 +44,9 @@ namespace Rubberduck.Inspections
             }
         }
 
+        /// <summary>
+        /// Gets all global-scope fields that are not assigned in any standard or class module.
+        /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedGlobals()
         {
             var unassignedGlobals = _globals
@@ -61,6 +64,9 @@ namespace Rubberduck.Inspections
             }
         }
 
+        /// <summary>
+        /// Gets all module-scope fields that are not assigned.
+        /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedFields()
         {
             var unassignedFields = _fields
@@ -73,6 +79,9 @@ namespace Rubberduck.Inspections
             }
         }
 
+        /// <summary>
+        /// Gets all procedure-scope locals that are not assigned.
+        /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedLocals()
         {
             var unassignedFields = _locals
@@ -102,11 +111,6 @@ namespace Rubberduck.Inspections
                     .Where(declaration => IsGlobal(declaration.Visibility()))
                     .SelectMany(declaration => declaration.VariableListStmt().VariableSubStmt())
                     .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
-
-                result.AddRange(declarations.Select(declaration => declaration.Context)
-                                            .OfType<VBParser.TypeStmtContext>()
-                    .Where(declaration => IsGlobal(declaration.Visibility()))
-                    .Select(declaration => declaration.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
             }
 
             return result;
@@ -159,22 +163,38 @@ namespace Rubberduck.Inspections
             {
                 var listener = new VariableAssignmentListener(module.QualifiedName);
                 result.AddRange(module.ParseTree
-                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener));
+                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener)
+                    .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
             }
 
             return result;
         }
 
+        private static bool IsConstant(VBParser.AmbiguousIdentifierContext context)
+        {
+            return context.Parent.Parent.GetType() == typeof(VBParser.ConstSubStmtContext);
+        }
+
+        private static bool IsJoinedAssignemntDeclaration(VBParser.AmbiguousIdentifierContext context)
+        {
+            var declaration = context.Parent as VBParser.VariableSubStmtContext;
+            if (declaration == null)
+            {
+                return false;
+            }
+
+            var asTypeClause = declaration.AsTypeClause();
+            if (asTypeClause == null)
+            {
+                return false;
+            }
+
+            return asTypeClause.NEW() == null;
+        }
+
         private static bool IsGlobal(VBParser.VisibilityContext context)
         {
             return context != null && context.GetText() != Tokens.Private;
-        }
-
-        private static IEnumerable<VBParser.AmbiguousIdentifierContext> GetDeclaredIdentifiers(VBParser.VariableStmtContext context)
-        {
-            return context.VariableListStmt()
-                .VariableSubStmt()
-                .Select(variable => variable.AmbiguousIdentifier());
         }
     }
 }

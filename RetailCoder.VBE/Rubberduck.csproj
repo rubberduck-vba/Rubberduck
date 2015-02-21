@@ -151,6 +151,7 @@
     <Compile Include="VBA\ParseTreeListeners\ScopedDeclaration.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\VariableUsageListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />

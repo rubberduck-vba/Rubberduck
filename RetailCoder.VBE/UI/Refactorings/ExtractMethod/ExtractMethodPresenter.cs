@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -191,7 +190,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var localConsts = _locals.Select(e => e.Parent)
                 .OfType<VBParser.ConstSubStmtContext>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.AsTypeClause().GetText() + " = " + e.valueStmt().GetText());
+                .Select(e => "    " + Tokens.Const + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.AsTypeClause().GetText() + " = " + e.ValueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
                 .OfType<VBParser.VariableSubStmtContext>()
                 .Where(e => _view.Parameters.All(param => param.Name != e.AmbiguousIdentifier().GetText()))

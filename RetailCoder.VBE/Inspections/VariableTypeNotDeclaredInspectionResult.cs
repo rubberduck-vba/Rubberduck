@@ -77,7 +77,7 @@ namespace Rubberduck.Inspections
                          + context.AmbiguousIdentifier().GetText() + ' '
                          + Tokens.As + ' ' + Tokens.Variant + ' '
                          + context.EQ().GetText() + ' '
-                         + context.valueStmt().GetText();
+                         + context.ValueStmt().GetText();
             return result;
         }
     }
