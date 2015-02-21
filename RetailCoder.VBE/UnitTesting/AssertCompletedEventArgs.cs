@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(false)]
     public class AssertCompletedEventArgs : EventArgs
     {
         public AssertCompletedEventArgs(TestResult result)

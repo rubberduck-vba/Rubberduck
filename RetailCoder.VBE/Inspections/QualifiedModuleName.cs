@@ -24,6 +24,16 @@ namespace Rubberduck.Inspections
         {
             return obj.GetHashCode() == GetHashCode();
         }
+
+        public static bool operator ==(QualifiedMemberName a, QualifiedMemberName b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(QualifiedMemberName a, QualifiedMemberName b)
+        {
+            return !a.Equals(b);
+        }
     }
 
     public struct QualifiedModuleName
@@ -63,6 +73,16 @@ namespace Rubberduck.Inspections
         public override bool Equals(object obj)
         {
             return obj.GetHashCode() == GetHashCode();
+        }
+
+        public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(QualifiedModuleName a, QualifiedModuleName b)
+        {
+            return !a.Equals(b);
         }
     }
 }

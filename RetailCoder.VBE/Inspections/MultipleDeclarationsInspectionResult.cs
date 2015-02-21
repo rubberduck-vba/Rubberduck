@@ -11,7 +11,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
     {
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
@@ -33,7 +32,7 @@ namespace Rubberduck.Inspections
             get
             {
                 ParserRuleContext context;
-                if (Context is VisualBasic6Parser.ConstStmtContext)
+                if (Context is VBParser.ConstStmtContext)
                 {
                     context = Context;
                 }
@@ -52,41 +51,41 @@ namespace Rubberduck.Inspections
             var selection = QualifiedSelection.Selection;
             string keyword = string.Empty;
 
-            var variables = Context.Parent as VisualBasic6Parser.VariableStmtContext;
+            var variables = Context.Parent as VBParser.VariableStmtContext;
             if (variables != null)
             {
                 if (variables.DIM() != null)
                 {
                     keyword += Tokens.Dim + ' ';
                 }
-                else if(variables.visibility() != null)
+                else if(variables.Visibility() != null)
                 {
-                    keyword += variables.visibility().GetText() + ' '; 
+                    keyword += variables.Visibility().GetText() + ' '; 
                 }
                 else if (variables.STATIC() != null)
                 {
                     keyword += variables.STATIC().GetText() + ' ';
                 }
 
-                foreach (var variable in variables.variableListStmt().variableSubStmt())
+                foreach (var variable in variables.VariableListStmt().VariableSubStmt())
                 {
                     newContent.AppendLine(keyword + variable.GetText());
                 }
             }
 
-            var consts = Context as VisualBasic6Parser.ConstStmtContext;
+            var consts = Context as VBParser.ConstStmtContext;
             if (consts != null)
             {
                 var keywords = string.Empty;
 
-                if (consts.visibility() != null)
+                if (consts.Visibility() != null)
                 {
-                    keywords += consts.visibility().GetText() + ' ';
+                    keywords += consts.Visibility().GetText() + ' ';
                 }
 
                 keywords += consts.CONST().GetText() + ' ';
 
-                foreach (var constant in consts.constSubStmt())
+                foreach (var constant in consts.ConstSubStmt())
                 {
                     newContent.AppendLine(keywords + constant.GetText());
                 }

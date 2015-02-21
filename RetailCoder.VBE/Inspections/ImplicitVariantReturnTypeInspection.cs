@@ -10,7 +10,6 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class ImplicitVariantReturnTypeInspection : IInspection
     {
         public ImplicitVariantReturnTypeInspection()
@@ -26,48 +25,48 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener()).Where(HasExpectedReturnType);
+                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName))
+                    .Where(HasExpectedReturnType);
                 foreach (var procedure in procedures)
                 {
-                    var asTypeClause = GetAsTypeClause(procedure);
+                    var asTypeClause = GetAsTypeClause(procedure.Context);
                     if (asTypeClause == null)
                     {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(Name, Severity, 
-                            new QualifiedContext<ParserRuleContext>(module.QualifiedName, procedure));
+                        yield return new ImplicitVariantReturnTypeInspectionResult(Name, Severity, procedure);
                     }
                 }
             }
         }
 
-        private static readonly IEnumerable<Func<ParserRuleContext, VisualBasic6Parser.AsTypeClauseContext>> Converters =
-        new List<Func<ParserRuleContext, VisualBasic6Parser.AsTypeClauseContext>>
+        private static readonly IEnumerable<Func<ParserRuleContext, VBParser.AsTypeClauseContext>> Converters =
+        new List<Func<ParserRuleContext, VBParser.AsTypeClauseContext>>
             {
                 GetFunctionReturnType,
                 GetPropertyGetReturnType
             };
 
-        private VisualBasic6Parser.AsTypeClauseContext GetAsTypeClause(ParserRuleContext procedureContext)
+        private VBParser.AsTypeClauseContext GetAsTypeClause(ParserRuleContext procedureContext)
         {
             return Converters.Select(converter => converter(procedureContext)).FirstOrDefault(args => args != null);
         }
 
-        private static bool HasExpectedReturnType(ParserRuleContext procedureContext)
+        private static bool HasExpectedReturnType(QualifiedContext<ParserRuleContext> procedureContext)
         {
-            var function = procedureContext as VisualBasic6Parser.FunctionStmtContext;
-            var getter = procedureContext as VisualBasic6Parser.PropertyGetStmtContext;
+            var function = procedureContext.Context as VBParser.FunctionStmtContext;
+            var getter = procedureContext.Context as VBParser.PropertyGetStmtContext;
             return function != null || getter != null;
         }
 
-        private static VisualBasic6Parser.AsTypeClauseContext GetFunctionReturnType(ParserRuleContext procedureContext)
+        private static VBParser.AsTypeClauseContext GetFunctionReturnType(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VisualBasic6Parser.FunctionStmtContext;
-            return context == null ? null : context.asTypeClause();
+            var context = procedureContext as VBParser.FunctionStmtContext;
+            return context == null ? null : context.AsTypeClause();
         }
 
-        private static VisualBasic6Parser.AsTypeClauseContext GetPropertyGetReturnType(ParserRuleContext procedureContext)
+        private static VBParser.AsTypeClauseContext GetPropertyGetReturnType(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VisualBasic6Parser.PropertyGetStmtContext;
-            return context == null ? null : context.asTypeClause();
+            var context = procedureContext as VBParser.PropertyGetStmtContext;
+            return context == null ? null : context.AsTypeClause();
         }
     }
 }

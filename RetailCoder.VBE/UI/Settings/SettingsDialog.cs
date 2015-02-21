@@ -11,7 +11,6 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    [System.Runtime.InteropServices.ComVisible(false)]
     public partial class SettingsDialog : Form
     {
         private Configuration _config;

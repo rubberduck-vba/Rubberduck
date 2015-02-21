@@ -88,17 +88,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\IdentifierUsageInspector.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
-    <Compile Include="Inspections\ObsoleteCallStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementUsageInspectionResult.cs" />
-    <Compile Include="Inspections\ObsoleteLetStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementUsageInspectionResult.cs" />
+    <Compile Include="Inspections\ObsoleteTypeHintInspection.cs" />
+    <Compile Include="Inspections\ObsoleteTypeHintInspectionResult.cs" />
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
-    <Compile Include="Inspections\VariableNotAssignedInspetionResult.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspectionResult.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
     <Compile Include="Interop\GitProvider.cs" />
@@ -106,7 +110,11 @@
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorerNavigateArgs.cs" />
+    <Compile Include="SourceControl\IRepository.cs" />
+    <Compile Include="SourceControl\Repository.cs" />
+    <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
@@ -115,52 +123,48 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="VBA\Nodes\OptionNode.cs" />
+    <Compile Include="VBA\Nodes\EnumNode.cs" />
+    <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
+    <Compile Include="VBA\Nodes\ProcedureNode.cs" />
+    <Compile Include="VBA\Nodes\ParameterNode.cs" />
+    <Compile Include="VBA\Nodes\TypeNode.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\DeclarationSectionListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
     <Compile Include="VBA\IRubberduckParser.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
     <Compile Include="VBA\Nodes\CommentNode.cs" />
-    <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\ModuleNode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
-    <Compile Include="VBA\Nodes\OptionNode.cs" />
-    <Compile Include="VBA\Nodes\ParameterNode.cs" />
-    <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
-    <Compile Include="VBA\Nodes\TypeNode.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
     <Compile Include="VBA\Nodes\VBComponentParseResult.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ObsoleteInstrutionsListener.cs" />
     <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ScopedDeclaration.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
-    <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6BaseListener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6BaseVisitor.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Lexer.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Listener.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Parser.cs" />
-    <Compile Include="VBA\Grammar\VisualBasic6Visitor.cs" />
+    <Compile Include="VBA\Grammar\VBListenerBase.cs" />
+    <Compile Include="VBA\Grammar\IVBBaseVisitor.cs" />
+    <Compile Include="VBA\Grammar\VBLexer.cs" />
+    <Compile Include="VBA\Grammar\IVBListener.cs" />
+    <Compile Include="VBA\Grammar\VBParser.cs" />
+    <Compile Include="VBA\Grammar\IVBVisitor.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
     <Compile Include="SourceControl\GitProvider.cs" />
     <Compile Include="SourceControl\ISourceControlProvider.cs" />
-    <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="SourceControl\SourceControlException.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
@@ -426,7 +430,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
-    <None Include="VBA\Grammar\VisualBasic6.g4">
+    <None Include="VBA\Grammar\VB.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
     </None>

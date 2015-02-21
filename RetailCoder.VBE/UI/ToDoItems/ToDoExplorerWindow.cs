@@ -8,7 +8,6 @@ using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    [ComVisible(false)]
     public partial class ToDoExplorerWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "8B071EDA-2C9C-4009-9A22-A1958BF98B28";

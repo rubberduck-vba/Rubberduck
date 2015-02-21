@@ -7,7 +7,6 @@ using System.Collections;
 using Rubberduck.SourceControl;
 using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 
 namespace Rubberduck.Interop
 {

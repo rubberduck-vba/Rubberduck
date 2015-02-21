@@ -18,30 +18,30 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IExtractMethodDialog _view;
 
         private readonly IParseTree _parentMethodTree;
-        private IDictionary<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
+        private IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
 
         private readonly IEnumerable<ExtractedParameter> _input;
         private readonly IEnumerable<ExtractedParameter> _output;
-        private readonly IEnumerable<VisualBasic6Parser.AmbiguousIdentifierContext> _locals; 
+        private readonly IEnumerable<VBParser.AmbiguousIdentifierContext> _locals;
 
         private readonly string _selectedCode;
         private readonly VBE _vbe;
-        private readonly Selection _selection;
+        private readonly QualifiedSelection _selection;
 
-        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, Selection selection)
+        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, QualifiedSelection selection)
         {
             _vbe = vbe;
             _selection = selection;
 
             _view = dialog;
             _parentMethodTree = parentMethod;
-            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.StartLine, selection.LineCount);
+            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.Selection.StartLine, selection.Selection.LineCount);
 
             _parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
-            
+
             var input = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedBeforeSelection).ToList();
             var output = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection).ToList();
-            
+
             _locals = _parentMethodDeclarations.Where(
                 kvp => kvp.Value == ExtractedDeclarationUsage.UsedOnlyInSelection
                     || kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection
@@ -51,35 +51,35 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _output = ExtractParameters(output);
         }
 
-        private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VisualBasic6Parser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
+        private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
         {
             var consts = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.ConstSubStmtContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.ConstSubStmtContext)
                 .Select(kvp => kvp.Key.Parent)
-                .Cast<VisualBasic6Parser.ConstSubStmtContext>()
+                .Cast<VBParser.ConstSubStmtContext>()
                 .Select(constant => new ExtractedParameter(
-                    constant.ambiguousIdentifier().GetText(),
-                    constant.asTypeClause() == null
+                    constant.AmbiguousIdentifier().GetText(),
+                    constant.AsTypeClause() == null
                         ? Tokens.Variant
-                        : constant.asTypeClause().type().GetText(),
+                        : constant.AsTypeClause().Type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             var variables = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.VariableSubStmtContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.VariableSubStmtContext)
                 .Select(kvp => new ExtractedParameter(
                     kvp.Key.GetText(),
-                    ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause() == null
+                    ((VBParser.VariableSubStmtContext)kvp.Key.Parent).AsTypeClause() == null
                         ? Tokens.Variant
-                        : ((VisualBasic6Parser.VariableSubStmtContext) kvp.Key.Parent).asTypeClause().type().GetText(),
+                        : ((VBParser.VariableSubStmtContext)kvp.Key.Parent).AsTypeClause().Type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             var arguments = declarations
-                .Where(kvp => kvp.Key.Parent is VisualBasic6Parser.ArgContext)
+                .Where(kvp => kvp.Key.Parent is VBParser.ArgContext)
                 .Select(kvp => new ExtractedParameter(
                     kvp.Key.GetText(),
-                    ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause() == null
+                    ((VBParser.ArgContext)kvp.Key.Parent).AsTypeClause() == null
                         ? Tokens.Variant
-                        : ((VisualBasic6Parser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
+                        : ((VBParser.ArgContext)kvp.Key.Parent).AsTypeClause().Type().GetText(),
                     ExtractedParameter.PassedBy.ByVal));
 
             return consts.Union(variables.Union(arguments));
@@ -112,8 +112,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 return;
             }
 
-            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.StartLine, _selection.LineCount - 1);
-            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.StartLine, GetMethodCall());
+            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.Selection.StartLine, _selection.Selection.LineCount - 1);
+            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
 
             _vbe.ActiveCodePane.CodeModule.AddFromString(GetExtractedMethod());
         }
@@ -121,7 +121,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private void _view_RefreshPreview(object sender, EventArgs e)
         {
             var hasReturnValue = _view.ReturnValue != null && _view.ReturnValue.Name != "(none)";
-            _view.CanSetReturnValue = 
+            _view.CanSetReturnValue =
                 hasReturnValue && !IsValueType(_view.ReturnValue.TypeName);
 
             Preview();
@@ -146,7 +146,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             {
                 result = _view.MethodName + ' ' + argsList;
             }
-            
+
             return "    " + result; // todo: smarter indentation
         }
 
@@ -170,7 +170,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             return ValueTypes.Contains(typeName);
         }
 
-        [ComVisible(false)]
         private string GetExtractedMethod()
         {
             const string newLine = "\r\n";
@@ -191,12 +190,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
 
             var localConsts = _locals.Select(e => e.Parent)
-                .OfType<VisualBasic6Parser.ConstSubStmtContext>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
+                .OfType<VBParser.ConstSubStmtContext>()
+                .Select(e => "    " + Tokens.Const + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.AsTypeClause().GetText() + " = " + e.valueStmt().GetText());
             var localVariables = _locals.Select(e => e.Parent)
-                .OfType<VisualBasic6Parser.VariableSubStmtContext>()
-                .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
-                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
+                .OfType<VBParser.VariableSubStmtContext>()
+                .Where(e => _view.Parameters.All(param => param.Name != e.AmbiguousIdentifier().GetText()))
+                .Select(e => "    " + Tokens.Dim + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.AsTypeClause().GetText());
             var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());
 
             result += newLine + locals + newLine + _selectedCode + newLine;

@@ -5,7 +5,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
     /// <summary>
     /// Describes usages of a declared identifier.
     /// </summary>
-    [ComVisible(false)]
     public enum ExtractedDeclarationUsage
     {
         /// <summary>

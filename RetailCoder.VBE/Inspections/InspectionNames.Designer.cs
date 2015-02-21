@@ -124,6 +124,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete type hints in identifier.
+        /// </summary>
+        internal static string ObsoleteTypeHint {
+            get {
+                return ResourceManager.GetString("ObsoleteTypeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Potentially confusing implicit array lower bound.
         /// </summary>
         internal static string OptionBase {
@@ -147,6 +156,24 @@ namespace Rubberduck.Inspections {
         internal static string VariableNotAssigned {
             get {
                 return ResourceManager.GetString("VariableNotAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable is not declared.
+        /// </summary>
+        internal static string VariableNotDeclared {
+            get {
+                return ResourceManager.GetString("VariableNotDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable value is never retrieved.
+        /// </summary>
+        internal static string VariableNotUsed {
+            get {
+                return ResourceManager.GetString("VariableNotUsed", resourceCulture);
             }
         }
         

@@ -9,7 +9,7 @@ namespace Rubberduck.Extensions
     public static class CodeModuleExtensions
     {
         /// <summary>
-        /// Gets an array of strings where each element is a line of code in the module.
+        /// Gets an array of strings where each element is a line of code in the Module.
         /// </summary>
         public static string[] Code(this CodeModule module)
         {
@@ -23,7 +23,7 @@ namespace Rubberduck.Extensions
         }
 
         /// <summary>
-        /// Returns all of the code in a module as a string.
+        /// Returns all of the code in a Module as a string.
         /// </summary>
         public static string Lines(this CodeModule module)
         {

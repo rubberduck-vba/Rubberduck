@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace Rubberduck.Config
 {
-    [ComVisible(false)]
     public class ConfigurationLoader : IConfigurationService
     {
         private static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");

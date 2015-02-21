@@ -2,7 +2,6 @@
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public interface IDockableUserControl
     {
         /// <summary>

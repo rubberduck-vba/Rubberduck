@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.Config
 {
-    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     [XmlRootAttribute(Namespace = "", IsNullable = false)]
     public class Configuration

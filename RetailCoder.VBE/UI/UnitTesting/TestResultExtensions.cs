@@ -4,7 +4,6 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public static class TestResultExtensions
     {
         public static Image Icon(this TestResult result)

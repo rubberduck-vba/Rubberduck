@@ -1,55 +1,166 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class DeclarationListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
+    public class LocalDeclarationListener : VBListenerBase, IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
-        private readonly IList<ParserRuleContext> _members = new List<ParserRuleContext>();
-        public IEnumerable<ParserRuleContext> Members { get { return _members; } }
+        private readonly QualifiedModuleName _qualifiedName;
+        private readonly IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _members =
+            new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
-        public override void EnterVariableStmt(VisualBasic6Parser.VariableStmtContext context)
+        private QualifiedMemberName _memberName;
+
+        public LocalDeclarationListener(QualifiedModuleName qualifiedName)
         {
-            _members.Add(context);
-            foreach (var child in context.variableListStmt().variableSubStmt())
+            _qualifiedName = qualifiedName;
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
+
+        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
+        {
+            if (_memberName == default(QualifiedMemberName))
             {
-                _members.Add(child);
+                // ignore fields
+                return;
+            }
+
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+        }
+
+        public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
+        {
+            if (_memberName == default(QualifiedMemberName))
+            {
+                // ignore fields
+                return;
+            }
+
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+        }
+
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+    }
+
+    public class DeclarationListener : VBListenerBase, IExtensionListener<ParserRuleContext>
+    {
+        private readonly QualifiedModuleName _qualifiedName;
+
+        private readonly IList<QualifiedContext<ParserRuleContext>> _members = 
+            new List<QualifiedContext<ParserRuleContext>>();
+
+        public DeclarationListener(QualifiedModuleName qualifiedName)
+        {
+            _qualifiedName = qualifiedName;
+        }
+
+        public IEnumerable<QualifiedContext<ParserRuleContext>> Members { get { return _members; } }
+
+        public override void EnterVariableStmt(VBParser.VariableStmtContext context)
+        {
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
+            foreach (var child in context.VariableListStmt().VariableSubStmt())
+            {
+                _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, child));
             }
         }
 
-        public override void EnterEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterConstStmt(VisualBasic6Parser.ConstStmtContext context)
+        public override void EnterConstStmt(VBParser.ConstStmtContext context)
         {
-            _members.Add(context);
-            foreach (var child in context.constSubStmt())
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
+            foreach (var child in context.ConstSubStmt())
             {
-                _members.Add(child);
+                _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, child));
             }
         }
 
-        public override void EnterTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterDeclareStmt(VisualBasic6Parser.DeclareStmtContext context)
+        public override void EnterDeclareStmt(VBParser.DeclareStmtContext context)
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterEventStmt(VisualBasic6Parser.EventStmtContext context)
+        public override void EnterEventStmt(VBParser.EventStmtContext context)
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterArg(VisualBasic6Parser.ArgContext context)
+        public override void EnterArg(VBParser.ArgContext context)
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
+        }
+    }
+
+    public class DeclarationSectionListener : DeclarationListener
+    {
+        public DeclarationSectionListener(QualifiedModuleName qualifiedName)
+            : base(qualifiedName)
+        {
+        }
+
+        public override void EnterArg(VBParser.ArgContext context)
+        {
+            return;
+        }
+
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        {
+            throw new WalkerCancelledException();
+        }
+
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        {
+            throw new WalkerCancelledException();
+        }
+
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        {
+            throw new WalkerCancelledException();
+        }
+
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        {
+            throw new WalkerCancelledException();
+        }
+
+        public override void ExitPropertySetStmt(VBParser.PropertySetStmtContext context)
+        {
+            throw new WalkerCancelledException();
         }
     }
 }

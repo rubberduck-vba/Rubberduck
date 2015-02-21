@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Config
 {
-    [ComVisible(false)]
     public interface IConfigurationService
     {
         CodeInspection[] GetDefaultCodeInspections();

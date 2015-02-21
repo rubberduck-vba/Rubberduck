@@ -1,19 +1,32 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class PublicSubListener : VisualBasic6BaseListener, IExtensionListener<VisualBasic6Parser.SubStmtContext>
+    public class PublicSubListener : VBListenerBase, IExtensionListener<VBParser.SubStmtContext>
     {
-        private readonly IList<VisualBasic6Parser.SubStmtContext> _members = new List<VisualBasic6Parser.SubStmtContext>();
-        public IEnumerable<VisualBasic6Parser.SubStmtContext> Members { get { return _members; } }
+        private readonly QualifiedModuleName _qualifiedName;
+        private readonly IList<QualifiedContext<VBParser.SubStmtContext>> _members = 
+            new List<QualifiedContext<VBParser.SubStmtContext>>();
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public IEnumerable<QualifiedContext<VBParser.SubStmtContext>> Members { get { return _members; } }
+
+        public PublicSubListener(QualifiedModuleName qualifiedName)
         {
-            var visibility = context.visibility();
+            _qualifiedName = qualifiedName;
+        }
+
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        {
+            var visibility = context.Visibility();
             if (visibility == null || visibility.PUBLIC() != null)
             {
-                _members.Add(context);
+                _members.Add(new QualifiedContext<VBParser.SubStmtContext>(_qualifiedName, context));
             }
         }
     }

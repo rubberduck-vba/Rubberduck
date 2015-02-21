@@ -13,7 +13,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
@@ -84,21 +83,21 @@ namespace Rubberduck.UI.CodeInspections
             PreviousButton.Enabled = enableNavigation;
             GoButton.Enabled = enableNavigation;
 
+            var quickFixMenu = QuickFixButton.DropDownItems;
+            if (quickFixMenu.Count > 0)
+            {
+                foreach (var quickFixButton in quickFixMenu.Cast<ToolStripMenuItem>())
+                {
+                    quickFixButton.Click -= QuickFixItemClick;
+                }
+            }
+
             if (CodeIssuesGridView.SelectedRows.Count > 0)
             {
                 var issue = (CodeInspectionResultGridViewItem) CodeIssuesGridView.SelectedRows[0].DataBoundItem;
                 _availableQuickFixes = issue.GetInspectionResultItem()
                     .GetQuickFixes();
                 var descriptions = _availableQuickFixes.Keys.ToList();
-
-                var quickFixMenu = QuickFixButton.DropDownItems;
-                if (quickFixMenu.Count > 0)
-                {
-                    foreach (var quickFixButton in quickFixMenu.Cast<ToolStripMenuItem>())
-                    {
-                        quickFixButton.Click -= QuickFixItemClick;
-                    }
-                }
 
                 quickFixMenu.Clear();
                 foreach (var caption in descriptions)

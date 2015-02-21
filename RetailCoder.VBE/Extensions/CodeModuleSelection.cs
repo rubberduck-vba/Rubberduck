@@ -3,7 +3,6 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Extensions
 {
-    [ComVisible(false)]
     public class CodeModuleSelection
     {
         public CodeModuleSelection(CodeModule codeModule, Selection selection)

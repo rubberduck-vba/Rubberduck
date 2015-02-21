@@ -1,12 +1,14 @@
-﻿namespace Rubberduck.VBA.Nodes
+﻿using System;
+
+namespace Rubberduck.VBA.Nodes
 {
     public enum VBAccessibility
     {
         Implicit,
-        Public,
         Private,
+        Public,
         Global,
         Friend,
-        Static
+        Static,
     }
 }

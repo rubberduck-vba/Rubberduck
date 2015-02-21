@@ -9,7 +9,6 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class MultipleDeclarationsInspection : IInspection
     {
         public MultipleDeclarationsInspection()
@@ -25,16 +24,16 @@ namespace Rubberduck.Inspections
         {
             foreach (var module in parseResult)
             {
-                var declarations = (IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener());
-                foreach (var declaration in declarations.Where(declaration => declaration is VisualBasic6Parser.ConstStmtContext || declaration is VisualBasic6Parser.VariableStmtContext))
+                var declarations = module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(module.QualifiedName));
+                foreach (var declaration in declarations.Where(declaration => declaration.Context is VBParser.ConstStmtContext || declaration.Context is VBParser.VariableStmtContext))
                 {
-                    var variables = declaration as VisualBasic6Parser.VariableStmtContext;                    
+                    var variables = declaration.Context as VBParser.VariableStmtContext;                    
                     if (variables != null && HasMultipleDeclarations(variables))
                     {
-                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.variableListStmt()));
+                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.VariableListStmt()));
                     }
 
-                    var consts = declaration as VisualBasic6Parser.ConstStmtContext;
+                    var consts = declaration.Context as VBParser.ConstStmtContext;
                     if (consts != null && HasMultipleDeclarations(consts))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));
@@ -43,14 +42,14 @@ namespace Rubberduck.Inspections
             }
         }
 
-        private bool HasMultipleDeclarations(VisualBasic6Parser.VariableStmtContext context)
+        private bool HasMultipleDeclarations(VBParser.VariableStmtContext context)
         {
-            return context.variableListStmt().variableSubStmt().Count > 1;
+            return context.VariableListStmt().VariableSubStmt().Count > 1;
         }
 
-        private bool HasMultipleDeclarations(VisualBasic6Parser.ConstStmtContext context)
+        private bool HasMultipleDeclarations(VBParser.ConstStmtContext context)
         {
-            return context.constSubStmt().Count > 1;
+            return context.ConstSubStmt().Count > 1;
         }
     }
 }

@@ -5,7 +5,6 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public class TestExplorerItem
     {
         public TestExplorerItem(TestMethod test, TestResult result)

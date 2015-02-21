@@ -3,9 +3,9 @@ using Antlr4.Runtime;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public interface IExtensionListener<out TContext>
+    public interface IExtensionListener<TContext>
         where TContext : class
     {
-        IEnumerable<TContext> Members { get; }
+        IEnumerable<QualifiedContext<TContext>> Members { get; }
     }
 }

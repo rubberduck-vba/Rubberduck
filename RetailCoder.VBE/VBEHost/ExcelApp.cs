@@ -3,7 +3,6 @@ using Microsoft.Office.Interop.Excel;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class ExcelApp : HostApplicationBase<Application>
     {
         public ExcelApp() : base("Excel") { }

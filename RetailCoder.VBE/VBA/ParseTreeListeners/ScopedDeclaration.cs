@@ -1,26 +1,29 @@
-using Antlr4.Runtime;
+using System.Collections.Generic;
 using Rubberduck.Inspections;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class ScopedDeclaration<TContext>
-        where TContext : ParserRuleContext
+    public class VariableReferencesListener : VBListenerBase,
+    IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
-        private readonly TContext _context;
-        private readonly QualifiedMemberName _scope;
+        private readonly QualifiedModuleName _qualifiedName;
+        private readonly IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _members = 
+            new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
-        public ScopedDeclaration(TContext context, QualifiedModuleName scope)
-            :this(context, new QualifiedMemberName(scope, string.Empty))
+        public VariableReferencesListener(QualifiedModuleName qualifiedName)
         {
+            _qualifiedName = qualifiedName;
         }
 
-        public ScopedDeclaration(TContext context, QualifiedMemberName scope)
-        {
-            _context = context;
-            _scope = scope;
-        }
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
 
-        public TContext Context { get { return _context; } }
-        public QualifiedMemberName Scope { get { return _scope; } }
+        public override void EnterAmbiguousIdentifier(VBParser.AmbiguousIdentifierContext context)
+        {
+            // exclude declarations
+            if (!(context.Parent is VBParser.VariableSubStmtContext) &&
+                !(context.Parent is VBParser.ConstSubStmtContext))
+                _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_qualifiedName, context));
+        }
     }
 }

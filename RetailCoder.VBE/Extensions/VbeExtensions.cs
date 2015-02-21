@@ -10,7 +10,6 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Extensions
 {
-    [ComVisible(false)]
     public static class VbeExtensions
     {
         public static IEnumerable<CodeModule> FindCodeModules(this VBE vbe, QualifiedModuleName qualifiedName)

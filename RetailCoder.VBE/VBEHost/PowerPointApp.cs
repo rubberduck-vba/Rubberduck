@@ -3,7 +3,6 @@ using Microsoft.Office.Interop.Excel;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class PowerPointApp : HostApplicationBase<Application>
     {
         public PowerPointApp() : base("PowerPoint") { }
@@ -16,7 +15,7 @@ namespace Rubberduck
 
         protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
         {
-            /* Note: Powerpoint supports a `FileName.ppt!module.method` syntax, 
+            /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax, 
              * but that would require significant changes to the Unit Testing Framework.
              * http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx
              */

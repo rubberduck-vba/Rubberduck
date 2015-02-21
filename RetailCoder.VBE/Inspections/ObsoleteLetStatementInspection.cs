@@ -9,15 +9,15 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementUsageInspection : IInspection
+    public class ObsoleteLetStatementInspection : IInspection
     {
-        public ObsoleteLetStatementUsageInspection()
+        public ObsoleteLetStatementInspection()
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ObsoleteLet; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
@@ -25,10 +25,11 @@ namespace Rubberduck.Inspections
             foreach (var result in parseResult)
             {
                 var module = result;
-                var results = ((IEnumerable<ParserRuleContext>) module.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener()))
-                    .OfType<VisualBasic6Parser.LetStmtContext>()
+                var results = module.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener(module.QualifiedName))
+                    .Select(context => context.Context)
+                    .OfType<VBParser.LetStmtContext>()
                     .Where(context => context.LET() != null && !string.IsNullOrEmpty(context.LET().GetText()))
-                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VisualBasic6Parser.LetStmtContext>(module.QualifiedName, context)));
+                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VBParser.LetStmtContext>(module.QualifiedName, context)));
                 foreach (var inspectionResult in results)
                 {
                     yield return inspectionResult;

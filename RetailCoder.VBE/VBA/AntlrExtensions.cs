@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using Rubberduck.VBA.Grammar;
@@ -10,7 +11,7 @@ namespace Rubberduck.VBA
     /// </summary>
     public static class AntlrExtensions
     {
-        public static IEnumerable<TContext> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
+        public static IEnumerable<QualifiedContext<TContext>> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
             where TListener : IExtensionListener<TContext>, IParseTreeListener
             where TContext : class
         {
@@ -23,6 +24,10 @@ namespace Rubberduck.VBA
             {
                 // swallow. this exception is thrown when a listener doesn't need to walk an entire parse tree.
             }
+            catch (NullReferenceException e)
+            {
+                // bug? swallow? is WalkerCancelledException thrown?
+            }
 
             return listener.Members;
         }
@@ -32,9 +37,9 @@ namespace Rubberduck.VBA
         /// returns <c>true</c> if its name matches that of the used variable.
         /// </summary>
         /// <returns></returns>
-        public static bool IsIdentifierUsage(this VisualBasic6Parser.VariableCallStmtContext usage, VisualBasic6Parser.AmbiguousIdentifierContext identifier)
+        public static bool IsIdentifierUsage(this VBParser.VariableCallStmtContext usage, VBParser.AmbiguousIdentifierContext identifier)
         {
-            return usage.ambiguousIdentifier().GetText() == identifier.GetText();
+            return usage.AmbiguousIdentifier().GetText() == identifier.GetText();
         }
     }
 }

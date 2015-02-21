@@ -24,16 +24,16 @@ using IToken = Antlr4.Runtime.IToken;
 using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
-/// This class provides an empty implementation of <see cref="IVisualBasic6Visitor{Result}"/>,
+/// This class provides an empty implementation of <see cref="IVBVisitor{Result}"/>,
 /// which can be extended to create a visitor which only needs to handle a subset
 /// of the available methods.
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<Result>, IVisualBasic6Visitor<Result> {
+public partial class IVBBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, IVBVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.stopStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.stopStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -41,10 +41,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStopStmt([NotNull] VisualBasic6Parser.StopStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitStopStmt([NotNull] VBParser.StopStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsDiv"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsDiv"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -52,10 +52,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsDiv([NotNull] VisualBasic6Parser.VsDivContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsDiv([NotNull] VBParser.VsDivContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.inputStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.inputStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -63,10 +63,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitInputStmt([NotNull] VisualBasic6Parser.InputStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitInputStmt([NotNull] VBParser.InputStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.lsetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.lsetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -74,10 +74,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLsetStmt([NotNull] VisualBasic6Parser.LsetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitLsetStmt([NotNull] VBParser.LsetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.argList"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgList"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -85,10 +85,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArgList([NotNull] VisualBasic6Parser.ArgListContext context) { return VisitChildren(context); }
+	public virtual Result VisitArgList([NotNull] VBParser.ArgListContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.visibility"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.visibility"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -96,10 +96,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVisibility([NotNull] VisualBasic6Parser.VisibilityContext context) { return VisitChildren(context); }
+	public virtual Result VisitVisibility([NotNull] VBParser.VisibilityContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.writeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.writeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -107,10 +107,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitWriteStmt([NotNull] VisualBasic6Parser.WriteStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitWriteStmt([NotNull] VBParser.WriteStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsNegation"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsNegation"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -118,10 +118,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsNegation([NotNull] VisualBasic6Parser.VsNegationContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsNegation([NotNull] VBParser.VsNegationContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.functionOrArrayCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.functionOrArrayCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -129,10 +129,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFunctionOrArrayCallStmt([NotNull] VisualBasic6Parser.FunctionOrArrayCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitFunctionOrArrayCallStmt([NotNull] VBParser.FunctionOrArrayCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsLt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsLt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -140,10 +140,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsLt([NotNull] VisualBasic6Parser.VsLtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsLt([NotNull] VBParser.VsLtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.asTypeClause"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.asTypeClause"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -151,10 +151,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAsTypeClause([NotNull] VisualBasic6Parser.AsTypeClauseContext context) { return VisitChildren(context); }
+	public virtual Result VisitAsTypeClause([NotNull] VBParser.AsTypeClauseContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.appactivateStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AppActivateStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -162,10 +162,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAppactivateStmt([NotNull] VisualBasic6Parser.AppactivateStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitAppactivateStmt([NotNull] VBParser.AppactivateStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_S_DictionaryCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_S_DictionaryCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -173,10 +173,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_S_DictionaryCall([NotNull] VisualBasic6Parser.ICS_S_DictionaryCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_S_DictionaryCall([NotNull] VBParser.ICS_S_DictionaryCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.explicitCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ExplicitCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -184,10 +184,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitExplicitCallStmt([NotNull] VisualBasic6Parser.ExplicitCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitExplicitCallStmt([NotNull] VBParser.ExplicitCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.outputList_Expression"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.outputList_Expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -195,10 +195,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOutputList_Expression([NotNull] VisualBasic6Parser.OutputList_ExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitOutputList_Expression([NotNull] VBParser.OutputList_ExpressionContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.arg"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.arg"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -206,10 +206,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArg([NotNull] VisualBasic6Parser.ArgContext context) { return VisitChildren(context); }
+	public virtual Result VisitArg([NotNull] VBParser.ArgContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsLike"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsLike"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -217,10 +217,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsLike([NotNull] VisualBasic6Parser.VsLikeContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsLike([NotNull] VBParser.VsLikeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.deftypeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DefTypeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -228,10 +228,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDeftypeStmt([NotNull] VisualBasic6Parser.DeftypeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDeftypeStmt([NotNull] VBParser.DeftypeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.dictionaryCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.dictionaryCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -239,10 +239,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDictionaryCallStmt([NotNull] VisualBasic6Parser.DictionaryCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDictionaryCallStmt([NotNull] VBParser.DictionaryCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.rsetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.rsetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -250,10 +250,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRsetStmt([NotNull] VisualBasic6Parser.RsetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRsetStmt([NotNull] VBParser.RsetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.blockIfThenElse"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.blockIfThenElse"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -261,10 +261,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBlockIfThenElse([NotNull] VisualBasic6Parser.BlockIfThenElseContext context) { return VisitChildren(context); }
+	public virtual Result VisitBlockIfThenElse([NotNull] VBParser.BlockIfThenElseContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.memberPropertyCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.memberPropertyCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -272,10 +272,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMemberPropertyCallStmt([NotNull] VisualBasic6Parser.MemberPropertyCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMemberPropertyCallStmt([NotNull] VBParser.MemberPropertyCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsAdd"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsAdd"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -283,10 +283,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsAdd([NotNull] VisualBasic6Parser.VsAddContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsAdd([NotNull] VBParser.VsAddContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.argDefaultValue"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgDefaultValue"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -294,10 +294,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArgDefaultValue([NotNull] VisualBasic6Parser.ArgDefaultValueContext context) { return VisitChildren(context); }
+	public virtual Result VisitArgDefaultValue([NotNull] VBParser.ArgDefaultValueContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.chdirStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ChdirStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -305,10 +305,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitChdirStmt([NotNull] VisualBasic6Parser.ChdirStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitChdirStmt([NotNull] VBParser.ChdirStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.typeStmt_Element"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.typeStmt_Element"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -316,10 +316,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTypeStmt_Element([NotNull] VisualBasic6Parser.TypeStmt_ElementContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeStmt_Element([NotNull] VBParser.TypeStmt_ElementContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.getStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.getStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -327,10 +327,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGetStmt([NotNull] VisualBasic6Parser.GetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitGetStmt([NotNull] VBParser.GetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleHeader"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleHeader"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -338,10 +338,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleHeader([NotNull] VisualBasic6Parser.ModuleHeaderContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleHeader([NotNull] VBParser.ModuleHeaderContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.redimStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.redimStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -349,10 +349,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRedimStmt([NotNull] VisualBasic6Parser.RedimStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRedimStmt([NotNull] VBParser.RedimStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.sC_Case"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.sC_Case"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -360,10 +360,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSC_Case([NotNull] VisualBasic6Parser.SC_CaseContext context) { return VisitChildren(context); }
+	public virtual Result VisitSC_Case([NotNull] VBParser.SC_CaseContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsAddressOf"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsAddressOf"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -371,10 +371,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsAddressOf([NotNull] VisualBasic6Parser.VsAddressOfContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsAddressOf([NotNull] VBParser.VsAddressOfContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.beepStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.BeepStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -382,10 +382,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBeepStmt([NotNull] VisualBasic6Parser.BeepStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitBeepStmt([NotNull] VBParser.BeepStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.declareStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DeclareStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -393,10 +393,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDeclareStmt([NotNull] VisualBasic6Parser.DeclareStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDeclareStmt([NotNull] VBParser.DeclareStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.onErrorStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.onErrorStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -404,10 +404,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOnErrorStmt([NotNull] VisualBasic6Parser.OnErrorStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOnErrorStmt([NotNull] VBParser.OnErrorStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.selectCaseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.selectCaseStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -415,10 +415,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSelectCaseStmt([NotNull] VisualBasic6Parser.SelectCaseStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSelectCaseStmt([NotNull] VBParser.SelectCaseStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsMid"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsMid"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -426,10 +426,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsMid([NotNull] VisualBasic6Parser.VsMidContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsMid([NotNull] VBParser.VsMidContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.functionStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.FunctionStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -437,10 +437,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFunctionStmt([NotNull] VisualBasic6Parser.FunctionStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitFunctionStmt([NotNull] VBParser.FunctionStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.deleteSettingStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DeleteSettingStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -448,10 +448,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDeleteSettingStmt([NotNull] VisualBasic6Parser.DeleteSettingStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDeleteSettingStmt([NotNull] VBParser.DeleteSettingStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.subscript"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Subscript"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -459,10 +459,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSubscript([NotNull] VisualBasic6Parser.SubscriptContext context) { return VisitChildren(context); }
+	public virtual Result VisitSubscript([NotNull] VBParser.SubscriptContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_B_SubCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_B_SubCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -470,10 +470,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_B_SubCall([NotNull] VisualBasic6Parser.ICS_B_SubCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_B_SubCall([NotNull] VBParser.ICS_B_SubCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.optionBaseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.optionBaseStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -481,10 +481,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOptionBaseStmt([NotNull] VisualBasic6Parser.OptionBaseStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOptionBaseStmt([NotNull] VBParser.OptionBaseStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.filecopyStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.filecopyStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -492,10 +492,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFilecopyStmt([NotNull] VisualBasic6Parser.FilecopyStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitFilecopyStmt([NotNull] VBParser.FilecopyStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.inlineIfThenElse"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.inlineIfThenElse"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -503,10 +503,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitInlineIfThenElse([NotNull] VisualBasic6Parser.InlineIfThenElseContext context) { return VisitChildren(context); }
+	public virtual Result VisitInlineIfThenElse([NotNull] VBParser.InlineIfThenElseContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.endStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EndStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -514,10 +514,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEndStmt([NotNull] VisualBasic6Parser.EndStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitEndStmt([NotNull] VBParser.EndStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.macroIfThenElseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.MacroIfThenElseStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -525,10 +525,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMacroIfThenElseStmt([NotNull] VisualBasic6Parser.MacroIfThenElseStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMacroIfThenElseStmt([NotNull] VBParser.MacroIfThenElseStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.implementsStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.implementsStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -536,10 +536,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitImplementsStmt([NotNull] VisualBasic6Parser.ImplementsStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitImplementsStmt([NotNull] VBParser.ImplementsStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.complexType"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.complexType"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -547,10 +547,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComplexType([NotNull] VisualBasic6Parser.ComplexTypeContext context) { return VisitChildren(context); }
+	public virtual Result VisitComplexType([NotNull] VBParser.ComplexTypeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.outputList"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.outputList"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -558,10 +558,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOutputList([NotNull] VisualBasic6Parser.OutputListContext context) { return VisitChildren(context); }
+	public virtual Result VisitOutputList([NotNull] VBParser.OutputListContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsMinus"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsMinus"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -569,10 +569,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsMinus([NotNull] VisualBasic6Parser.VsMinusContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsMinus([NotNull] VBParser.VsMinusContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsImp"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsImp"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -580,10 +580,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsImp([NotNull] VisualBasic6Parser.VsImpContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsImp([NotNull] VBParser.VsImpContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.attributeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AttributeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -591,10 +591,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAttributeStmt([NotNull] VisualBasic6Parser.AttributeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitAttributeStmt([NotNull] VBParser.AttributeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsGeq"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsGeq"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -602,10 +602,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsGeq([NotNull] VisualBasic6Parser.VsGeqContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsGeq([NotNull] VBParser.VsGeqContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.block"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Block"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -613,10 +613,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBlock([NotNull] VisualBasic6Parser.BlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitBlock([NotNull] VBParser.BlockContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.closeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.CloseStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -624,10 +624,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCloseStmt([NotNull] VisualBasic6Parser.CloseStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitCloseStmt([NotNull] VBParser.CloseStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_B_FunctionCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_B_FunctionCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -635,10 +635,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_B_FunctionCall([NotNull] VisualBasic6Parser.ICS_B_FunctionCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_B_FunctionCall([NotNull] VBParser.ICS_B_FunctionCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.subscripts"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Subscripts"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -646,10 +646,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSubscripts([NotNull] VisualBasic6Parser.SubscriptsContext context) { return VisitChildren(context); }
+	public virtual Result VisitSubscripts([NotNull] VBParser.SubscriptsContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.lineInputStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.lineInputStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -657,10 +657,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLineInputStmt([NotNull] VisualBasic6Parser.LineInputStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitLineInputStmt([NotNull] VBParser.LineInputStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.baseType"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.baseType"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -668,10 +668,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBaseType([NotNull] VisualBasic6Parser.BaseTypeContext context) { return VisitChildren(context); }
+	public virtual Result VisitBaseType([NotNull] VBParser.BaseTypeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.optionPrivateModuleStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.optionPrivateModuleStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -679,10 +679,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOptionPrivateModuleStmt([NotNull] VisualBasic6Parser.OptionPrivateModuleStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOptionPrivateModuleStmt([NotNull] VBParser.OptionPrivateModuleStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsMult"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsMult"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -690,10 +690,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsMult([NotNull] VisualBasic6Parser.VsMultContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsMult([NotNull] VBParser.VsMultContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsAssign"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsAssign"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -701,10 +701,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsAssign([NotNull] VisualBasic6Parser.VsAssignContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsAssign([NotNull] VBParser.VsAssignContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.putStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.putStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -712,10 +712,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPutStmt([NotNull] VisualBasic6Parser.PutStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitPutStmt([NotNull] VBParser.PutStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.comparisonOperator"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.comparisonOperator"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -723,10 +723,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComparisonOperator([NotNull] VisualBasic6Parser.ComparisonOperatorContext context) { return VisitChildren(context); }
+	public virtual Result VisitComparisonOperator([NotNull] VBParser.ComparisonOperatorContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.propertyLetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertyLetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -734,10 +734,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPropertyLetStmt([NotNull] VisualBasic6Parser.PropertyLetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitPropertyLetStmt([NotNull] VBParser.PropertyLetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.raiseEventStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.raiseEventStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -745,10 +745,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRaiseEventStmt([NotNull] VisualBasic6Parser.RaiseEventStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRaiseEventStmt([NotNull] VBParser.RaiseEventStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ambiguousKeyword"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ambiguousKeyword"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -756,10 +756,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAmbiguousKeyword([NotNull] VisualBasic6Parser.AmbiguousKeywordContext context) { return VisitChildren(context); }
+	public virtual Result VisitAmbiguousKeyword([NotNull] VBParser.AmbiguousKeywordContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.enumerationStmt_Constant"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.enumerationStmt_Constant"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -767,10 +767,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEnumerationStmt_Constant([NotNull] VisualBasic6Parser.EnumerationStmt_ConstantContext context) { return VisitChildren(context); }
+	public virtual Result VisitEnumerationStmt_Constant([NotNull] VBParser.EnumerationStmt_ConstantContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.propertySetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertySetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -778,10 +778,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPropertySetStmt([NotNull] VisualBasic6Parser.PropertySetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitPropertySetStmt([NotNull] VBParser.PropertySetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.propertyGetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.PropertyGetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -789,10 +789,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPropertyGetStmt([NotNull] VisualBasic6Parser.PropertyGetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitPropertyGetStmt([NotNull] VBParser.PropertyGetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.module"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Module"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -800,10 +800,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModule([NotNull] VisualBasic6Parser.ModuleContext context) { return VisitChildren(context); }
+	public virtual Result VisitModule([NotNull] VBParser.ModuleContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleBodyElement"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBodyElement"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -811,10 +811,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleBodyElement([NotNull] VisualBasic6Parser.ModuleBodyElementContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleBodyElement([NotNull] VBParser.ModuleBodyElementContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ifElseIfBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ifElseIfBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -822,10 +822,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIfElseIfBlockStmt([NotNull] VisualBasic6Parser.IfElseIfBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitIfElseIfBlockStmt([NotNull] VBParser.IfElseIfBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.caseCondIs"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.caseCondIs"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -833,10 +833,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCaseCondIs([NotNull] VisualBasic6Parser.CaseCondIsContext context) { return VisitChildren(context); }
+	public virtual Result VisitCaseCondIs([NotNull] VBParser.CaseCondIsContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsMod"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsMod"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -844,10 +844,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsMod([NotNull] VisualBasic6Parser.VsModContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsMod([NotNull] VBParser.VsModContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_S_MembersCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_S_MembersCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -855,10 +855,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_S_MembersCall([NotNull] VisualBasic6Parser.ICS_S_MembersCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_S_MembersCall([NotNull] VBParser.ICS_S_MembersCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.typeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.TypeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -866,10 +866,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTypeStmt([NotNull] VisualBasic6Parser.TypeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeStmt([NotNull] VBParser.TypeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleConfig"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleConfig"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -877,10 +877,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleConfig([NotNull] VisualBasic6Parser.ModuleConfigContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleConfig([NotNull] VBParser.ModuleConfigContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.memberFunctionOrArrayCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.memberFunctionOrArrayCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -888,10 +888,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMemberFunctionOrArrayCallStmt([NotNull] VisualBasic6Parser.MemberFunctionOrArrayCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMemberFunctionOrArrayCallStmt([NotNull] VBParser.MemberFunctionOrArrayCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsAmp"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsAmp"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -899,10 +899,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsAmp([NotNull] VisualBasic6Parser.VsAmpContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsAmp([NotNull] VBParser.VsAmpContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.implicitCallStmt_InBlock"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.implicitCallStmt_InBlock"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -910,10 +910,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitImplicitCallStmt_InBlock([NotNull] VisualBasic6Parser.ImplicitCallStmt_InBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitImplicitCallStmt_InBlock([NotNull] VBParser.ImplicitCallStmt_InBlockContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsEq"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsEq"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -921,10 +921,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsEq([NotNull] VisualBasic6Parser.VsEqContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsEq([NotNull] VBParser.VsEqContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsAnd"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsAnd"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -932,10 +932,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsAnd([NotNull] VisualBasic6Parser.VsAndContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsAnd([NotNull] VBParser.VsAndContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.onGoSubStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.onGoSubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -943,10 +943,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOnGoSubStmt([NotNull] VisualBasic6Parser.OnGoSubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOnGoSubStmt([NotNull] VBParser.OnGoSubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_B_MemberFunctionCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_B_MemberFunctionCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -954,10 +954,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_B_MemberFunctionCall([NotNull] VisualBasic6Parser.ICS_B_MemberFunctionCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_B_MemberFunctionCall([NotNull] VBParser.ICS_B_MemberFunctionCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.caseCondValue"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.caseCondValue"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -965,10 +965,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCaseCondValue([NotNull] VisualBasic6Parser.CaseCondValueContext context) { return VisitChildren(context); }
+	public virtual Result VisitCaseCondValue([NotNull] VBParser.CaseCondValueContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.fieldLength"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.fieldLength"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -976,10 +976,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitFieldLength([NotNull] VisualBasic6Parser.FieldLengthContext context) { return VisitChildren(context); }
+	public virtual Result VisitFieldLength([NotNull] VBParser.FieldLengthContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.blockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.BlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -987,10 +987,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBlockStmt([NotNull] VisualBasic6Parser.BlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitBlockStmt([NotNull] VBParser.BlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.whileWendStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.whileWendStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -998,10 +998,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitWhileWendStmt([NotNull] VisualBasic6Parser.WhileWendStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitWhileWendStmt([NotNull] VBParser.WhileWendStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.constSubStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.constSubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1009,10 +1009,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitConstSubStmt([NotNull] VisualBasic6Parser.ConstSubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitConstSubStmt([NotNull] VBParser.ConstSubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.optionCompareStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.optionCompareStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1020,10 +1020,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOptionCompareStmt([NotNull] VisualBasic6Parser.OptionCompareStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOptionCompareStmt([NotNull] VBParser.OptionCompareStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_S_VariableCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_S_VariableCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1031,10 +1031,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_S_VariableCall([NotNull] VisualBasic6Parser.ICS_S_VariableCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_S_VariableCall([NotNull] VBParser.ICS_S_VariableCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.eCS_ProcedureCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.eCS_ProcedureCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1042,10 +1042,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitECS_ProcedureCall([NotNull] VisualBasic6Parser.ECS_ProcedureCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitECS_ProcedureCall([NotNull] VBParser.ECS_ProcedureCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.lockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.lockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1053,10 +1053,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLockStmt([NotNull] VisualBasic6Parser.LockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitLockStmt([NotNull] VBParser.LockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.mkdirStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.mkdirStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1064,10 +1064,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMkdirStmt([NotNull] VisualBasic6Parser.MkdirStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMkdirStmt([NotNull] VBParser.MkdirStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.subStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.SubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1075,10 +1075,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSubStmt([NotNull] VisualBasic6Parser.SubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSubStmt([NotNull] VBParser.SubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.saveSettingStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.saveSettingStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1086,10 +1086,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSaveSettingStmt([NotNull] VisualBasic6Parser.SaveSettingStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSaveSettingStmt([NotNull] VBParser.SaveSettingStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.argCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ArgCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1097,10 +1097,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArgCall([NotNull] VisualBasic6Parser.ArgCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitArgCall([NotNull] VBParser.ArgCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.typeHint"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.typeHint"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1108,10 +1108,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTypeHint([NotNull] VisualBasic6Parser.TypeHintContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeHint([NotNull] VBParser.TypeHintContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.chdriveStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ChdriveStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1119,10 +1119,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitChdriveStmt([NotNull] VisualBasic6Parser.ChdriveStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitChdriveStmt([NotNull] VBParser.ChdriveStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.macroIfBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.macroIfBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1130,10 +1130,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMacroIfBlockStmt([NotNull] VisualBasic6Parser.MacroIfBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMacroIfBlockStmt([NotNull] VBParser.MacroIfBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.returnStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.returnStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1141,10 +1141,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitReturnStmt([NotNull] VisualBasic6Parser.ReturnStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitReturnStmt([NotNull] VBParser.ReturnStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.seekStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.seekStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1152,10 +1152,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSeekStmt([NotNull] VisualBasic6Parser.SeekStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSeekStmt([NotNull] VBParser.SeekStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.resumeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.resumeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1163,10 +1163,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitResumeStmt([NotNull] VisualBasic6Parser.ResumeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitResumeStmt([NotNull] VBParser.ResumeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsLiteral"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsLiteral"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1174,10 +1174,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsLiteral([NotNull] VisualBasic6Parser.VsLiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsLiteral([NotNull] VBParser.VsLiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ifConditionStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ifConditionStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1185,10 +1185,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIfConditionStmt([NotNull] VisualBasic6Parser.IfConditionStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitIfConditionStmt([NotNull] VBParser.IfConditionStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.type"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.type"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1196,10 +1196,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitType([NotNull] VisualBasic6Parser.TypeContext context) { return VisitChildren(context); }
+	public virtual Result VisitType([NotNull] VBParser.TypeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsEqv"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsEqv"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1207,10 +1207,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsEqv([NotNull] VisualBasic6Parser.VsEqvContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsEqv([NotNull] VBParser.VsEqvContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.killStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.killStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1218,10 +1218,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitKillStmt([NotNull] VisualBasic6Parser.KillStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitKillStmt([NotNull] VBParser.KillStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.enumerationStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EnumerationStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1229,10 +1229,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEnumerationStmt([NotNull] VisualBasic6Parser.EnumerationStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitEnumerationStmt([NotNull] VBParser.EnumerationStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.typeOfStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.typeOfStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1240,10 +1240,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTypeOfStmt([NotNull] VisualBasic6Parser.TypeOfStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeOfStmt([NotNull] VBParser.TypeOfStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.doLoopStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DoLoopStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1251,10 +1251,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDoLoopStmt([NotNull] VisualBasic6Parser.DoLoopStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDoLoopStmt([NotNull] VBParser.DoLoopStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsNeq"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsNeq"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1262,10 +1262,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsNeq([NotNull] VisualBasic6Parser.VsNeqContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsNeq([NotNull] VBParser.VsNeqContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsTypeOf"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsTypeOf"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1273,10 +1273,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsTypeOf([NotNull] VisualBasic6Parser.VsTypeOfContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsTypeOf([NotNull] VBParser.VsTypeOfContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_B_MemberSubCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_B_MemberSubCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1284,10 +1284,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_B_MemberSubCall([NotNull] VisualBasic6Parser.ICS_B_MemberSubCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_B_MemberSubCall([NotNull] VBParser.ICS_B_MemberSubCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsValueCalls"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsValueCalls"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1295,10 +1295,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsValueCalls([NotNull] VisualBasic6Parser.VsValueCallsContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsValueCalls([NotNull] VBParser.VsValueCallsContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.eraseStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EraseStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1306,10 +1306,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEraseStmt([NotNull] VisualBasic6Parser.EraseStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitEraseStmt([NotNull] VBParser.EraseStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleBody"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBody"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1317,10 +1317,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleBody([NotNull] VisualBasic6Parser.ModuleBodyContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleBody([NotNull] VBParser.ModuleBodyContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.caseCondTo"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.caseCondTo"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1328,10 +1328,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCaseCondTo([NotNull] VisualBasic6Parser.CaseCondToContext context) { return VisitChildren(context); }
+	public virtual Result VisitCaseCondTo([NotNull] VBParser.CaseCondToContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.constStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ConstStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1339,10 +1339,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitConstStmt([NotNull] VisualBasic6Parser.ConstStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitConstStmt([NotNull] VBParser.ConstStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsOr"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsOr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1350,10 +1350,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsOr([NotNull] VisualBasic6Parser.VsOrContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsOr([NotNull] VBParser.VsOrContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ifBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ifBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1361,10 +1361,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIfBlockStmt([NotNull] VisualBasic6Parser.IfBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitIfBlockStmt([NotNull] VBParser.IfBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.redimSubStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.redimSubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1372,10 +1372,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRedimSubStmt([NotNull] VisualBasic6Parser.RedimSubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRedimSubStmt([NotNull] VBParser.RedimSubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsNew"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsNew"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1383,10 +1383,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsNew([NotNull] VisualBasic6Parser.VsNewContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsNew([NotNull] VBParser.VsNewContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.unlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.unlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1394,10 +1394,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitUnlockStmt([NotNull] VisualBasic6Parser.UnlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitUnlockStmt([NotNull] VBParser.UnlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.macroElseIfBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.macroElseIfBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1405,10 +1405,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMacroElseIfBlockStmt([NotNull] VisualBasic6Parser.MacroElseIfBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMacroElseIfBlockStmt([NotNull] VBParser.MacroElseIfBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.goSubStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.goSubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1416,10 +1416,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGoSubStmt([NotNull] VisualBasic6Parser.GoSubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitGoSubStmt([NotNull] VBParser.GoSubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.rmdirStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.rmdirStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1427,10 +1427,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRmdirStmt([NotNull] VisualBasic6Parser.RmdirStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRmdirStmt([NotNull] VBParser.RmdirStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.eventStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.EventStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1438,10 +1438,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitEventStmt([NotNull] VisualBasic6Parser.EventStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitEventStmt([NotNull] VBParser.EventStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.letStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.letStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1449,10 +1449,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLetStmt([NotNull] VisualBasic6Parser.LetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitLetStmt([NotNull] VBParser.LetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.randomizeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.randomizeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1460,10 +1460,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitRandomizeStmt([NotNull] VisualBasic6Parser.RandomizeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitRandomizeStmt([NotNull] VBParser.RandomizeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.forEachStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.forEachStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1471,10 +1471,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitForEachStmt([NotNull] VisualBasic6Parser.ForEachStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitForEachStmt([NotNull] VBParser.ForEachStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.midStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.midStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1482,10 +1482,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMidStmt([NotNull] VisualBasic6Parser.MidStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMidStmt([NotNull] VBParser.MidStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.openStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.openStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1493,10 +1493,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOpenStmt([NotNull] VisualBasic6Parser.OpenStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOpenStmt([NotNull] VBParser.OpenStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.lineLabel"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.lineLabel"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1504,10 +1504,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLineLabel([NotNull] VisualBasic6Parser.LineLabelContext context) { return VisitChildren(context); }
+	public virtual Result VisitLineLabel([NotNull] VBParser.LineLabelContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsXor"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsXor"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1515,10 +1515,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsXor([NotNull] VisualBasic6Parser.VsXorContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsXor([NotNull] VBParser.VsXorContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsGt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsGt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1526,10 +1526,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsGt([NotNull] VisualBasic6Parser.VsGtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsGt([NotNull] VBParser.VsGtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsLeq"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsLeq"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1537,10 +1537,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsLeq([NotNull] VisualBasic6Parser.VsLeqContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsLeq([NotNull] VBParser.VsLeqContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.setattrStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.setattrStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1548,10 +1548,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSetattrStmt([NotNull] VisualBasic6Parser.SetattrStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSetattrStmt([NotNull] VBParser.SetAttrStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleOptions"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleOptions"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1559,10 +1559,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleOptions([NotNull] VisualBasic6Parser.ModuleOptionsContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleOptions([NotNull] VBParser.ModuleOptionsContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.sendkeysStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.sendkeysStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1570,10 +1570,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSendkeysStmt([NotNull] VisualBasic6Parser.SendkeysStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSendkeysStmt([NotNull] VBParser.SendkeysStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.forNextStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.forNextStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1581,10 +1581,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitForNextStmt([NotNull] VisualBasic6Parser.ForNextStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitForNextStmt([NotNull] VBParser.ForNextStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.printStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.printStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1592,10 +1592,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitPrintStmt([NotNull] VisualBasic6Parser.PrintStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitPrintStmt([NotNull] VBParser.PrintStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.variableCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.variableCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1603,10 +1603,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableCallStmt([NotNull] VisualBasic6Parser.VariableCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableCallStmt([NotNull] VBParser.VariableCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.errorStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ErrorStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1614,10 +1614,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitErrorStmt([NotNull] VisualBasic6Parser.ErrorStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitErrorStmt([NotNull] VBParser.ErrorStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.exitStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ExitStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1625,10 +1625,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitExitStmt([NotNull] VisualBasic6Parser.ExitStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitExitStmt([NotNull] VBParser.ExitStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.argsCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.argsCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1636,10 +1636,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArgsCall([NotNull] VisualBasic6Parser.ArgsCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitArgsCall([NotNull] VBParser.ArgsCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.timeStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.timeStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1647,10 +1647,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTimeStmt([NotNull] VisualBasic6Parser.TimeStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitTimeStmt([NotNull] VBParser.TimeStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.resetStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.resetStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1658,10 +1658,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitResetStmt([NotNull] VisualBasic6Parser.ResetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitResetStmt([NotNull] VBParser.ResetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.optionExplicitStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.optionExplicitStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1669,10 +1669,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOptionExplicitStmt([NotNull] VisualBasic6Parser.OptionExplicitStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOptionExplicitStmt([NotNull] VBParser.OptionExplicitStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.sC_CaseElse"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.sC_CaseElse"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1680,10 +1680,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSC_CaseElse([NotNull] VisualBasic6Parser.SC_CaseElseContext context) { return VisitChildren(context); }
+	public virtual Result VisitSC_CaseElse([NotNull] VBParser.SC_CaseElseContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.setStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.setStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1691,10 +1691,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSetStmt([NotNull] VisualBasic6Parser.SetStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSetStmt([NotNull] VBParser.SetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.memberSubCallStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.memberSubCallStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1702,10 +1702,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMemberSubCallStmt([NotNull] VisualBasic6Parser.MemberSubCallStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMemberSubCallStmt([NotNull] VBParser.MemberSubCallStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.implicitCallStmt_InStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ImplicitCallStmt_InStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1713,10 +1713,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitImplicitCallStmt_InStmt([NotNull] VisualBasic6Parser.ImplicitCallStmt_InStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitImplicitCallStmt_InStmt([NotNull] VBParser.ImplicitCallStmt_InStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.variableListStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.variableListStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1724,10 +1724,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableListStmt([NotNull] VisualBasic6Parser.VariableListStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableListStmt([NotNull] VBParser.VariableListStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ambiguousIdentifier"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.AmbiguousIdentifier"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1735,10 +1735,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAmbiguousIdentifier([NotNull] VisualBasic6Parser.AmbiguousIdentifierContext context) { return VisitChildren(context); }
+	public virtual Result VisitAmbiguousIdentifier([NotNull] VBParser.AmbiguousIdentifierContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsPow"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsPow"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1746,10 +1746,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsPow([NotNull] VisualBasic6Parser.VsPowContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsPow([NotNull] VBParser.VsPowContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.ifElseBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ifElseBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1757,10 +1757,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIfElseBlockStmt([NotNull] VisualBasic6Parser.IfElseBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitIfElseBlockStmt([NotNull] VBParser.IfElseBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.iCS_S_FunctionOrArrayCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.iCS_S_FunctionOrArrayCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1768,10 +1768,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitICS_S_FunctionOrArrayCall([NotNull] VisualBasic6Parser.ICS_S_FunctionOrArrayCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitICS_S_FunctionOrArrayCall([NotNull] VBParser.ICS_S_FunctionOrArrayCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsPlus"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsPlus"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1779,10 +1779,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsPlus([NotNull] VisualBasic6Parser.VsPlusContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsPlus([NotNull] VBParser.VsPlusContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsStruct"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsStruct"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1790,10 +1790,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsStruct([NotNull] VisualBasic6Parser.VsStructContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsStruct([NotNull] VBParser.VsStructContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.letterrange"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.letterrange"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1801,10 +1801,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLetterrange([NotNull] VisualBasic6Parser.LetterrangeContext context) { return VisitChildren(context); }
+	public virtual Result VisitLetterrange([NotNull] VBParser.LetterrangeContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.widthStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.widthStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1812,10 +1812,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitWidthStmt([NotNull] VisualBasic6Parser.WidthStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitWidthStmt([NotNull] VBParser.WidthStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.withStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.withStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1823,10 +1823,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitWithStmt([NotNull] VisualBasic6Parser.WithStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitWithStmt([NotNull] VBParser.WithStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.memberCall_Value"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.memberCall_Value"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1834,10 +1834,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMemberCall_Value([NotNull] VisualBasic6Parser.MemberCall_ValueContext context) { return VisitChildren(context); }
+	public virtual Result VisitMemberCall_Value([NotNull] VBParser.MemberCall_ValueContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleBlock"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleBlock"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1845,10 +1845,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleBlock([NotNull] VisualBasic6Parser.ModuleBlockContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleBlock([NotNull] VBParser.ModuleBlockContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.variableSubStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.variableSubStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1856,10 +1856,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableSubStmt([NotNull] VisualBasic6Parser.VariableSubStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableSubStmt([NotNull] VBParser.VariableSubStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.moduleAttributes"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.ModuleAttributes"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1867,10 +1867,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitModuleAttributes([NotNull] VisualBasic6Parser.ModuleAttributesContext context) { return VisitChildren(context); }
+	public virtual Result VisitModuleAttributes([NotNull] VBParser.ModuleAttributesContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsNot"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsNot"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1878,10 +1878,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsNot([NotNull] VisualBasic6Parser.VsNotContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsNot([NotNull] VBParser.VsNotContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.goToStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.goToStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1889,10 +1889,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGoToStmt([NotNull] VisualBasic6Parser.GoToStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitGoToStmt([NotNull] VBParser.GoToStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.certainIdentifier"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.certainIdentifier"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1900,10 +1900,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCertainIdentifier([NotNull] VisualBasic6Parser.CertainIdentifierContext context) { return VisitChildren(context); }
+	public virtual Result VisitCertainIdentifier([NotNull] VBParser.CertainIdentifierContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.unloadStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.unloadStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1911,10 +1911,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitUnloadStmt([NotNull] VisualBasic6Parser.UnloadStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitUnloadStmt([NotNull] VBParser.UnloadStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.dateStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.DateStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1922,10 +1922,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDateStmt([NotNull] VisualBasic6Parser.DateStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitDateStmt([NotNull] VBParser.DateStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.onGoToStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.onGoToStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1933,10 +1933,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitOnGoToStmt([NotNull] VisualBasic6Parser.OnGoToStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitOnGoToStmt([NotNull] VBParser.OnGoToStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.vsIs"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.vsIs"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1944,10 +1944,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVsIs([NotNull] VisualBasic6Parser.VsIsContext context) { return VisitChildren(context); }
+	public virtual Result VisitVsIs([NotNull] VBParser.VsIsContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.macroElseBlockStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.macroElseBlockStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1955,10 +1955,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMacroElseBlockStmt([NotNull] VisualBasic6Parser.MacroElseBlockStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitMacroElseBlockStmt([NotNull] VBParser.MacroElseBlockStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.eCS_MemberProcedureCall"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.eCS_MemberProcedureCall"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1966,10 +1966,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitECS_MemberProcedureCall([NotNull] VisualBasic6Parser.ECS_MemberProcedureCallContext context) { return VisitChildren(context); }
+	public virtual Result VisitECS_MemberProcedureCall([NotNull] VBParser.ECS_MemberProcedureCallContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.loadStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.loadStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1977,10 +1977,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLoadStmt([NotNull] VisualBasic6Parser.LoadStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitLoadStmt([NotNull] VBParser.LoadStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.literal"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.Literal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1988,10 +1988,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLiteral([NotNull] VisualBasic6Parser.LiteralContext context) { return VisitChildren(context); }
+	public virtual Result VisitLiteral([NotNull] VBParser.LiteralContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.variableStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.variableStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -1999,10 +1999,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableStmt([NotNull] VisualBasic6Parser.VariableStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitVariableStmt([NotNull] VBParser.VariableStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.startRule"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.StartRule"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -2010,10 +2010,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStartRule([NotNull] VisualBasic6Parser.StartRuleContext context) { return VisitChildren(context); }
+	public virtual Result VisitStartRule([NotNull] VBParser.StartRuleContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.nameStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.nameStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -2021,10 +2021,10 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNameStmt([NotNull] VisualBasic6Parser.NameStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitNameStmt([NotNull] VBParser.NameStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VisualBasic6Parser.savepictureStmt"/>.
+	/// Visit a parse tree produced by <see cref="VBParser.savepictureStmt"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -2032,6 +2032,6 @@ public partial class VisualBasic6BaseVisitor<Result> : AbstractParseTreeVisitor<
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSavepictureStmt([NotNull] VisualBasic6Parser.SavepictureStmtContext context) { return VisitChildren(context); }
+	public virtual Result VisitSavepictureStmt([NotNull] VBParser.SavepictureStmtContext context) { return VisitChildren(context); }
 }
 } // namespace Rubberduck.VBA

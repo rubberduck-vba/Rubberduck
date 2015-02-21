@@ -3,7 +3,6 @@ using Microsoft.Office.Interop.Access;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class AccessApp : HostApplicationBase<Application>
     {
         public AccessApp() : base("Access") { }

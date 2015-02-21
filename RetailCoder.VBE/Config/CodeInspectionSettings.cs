@@ -4,7 +4,6 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
-    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class CodeInspectionSettings
     {
@@ -22,7 +21,6 @@ namespace Rubberduck.Config
         }
     }
 
-    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class CodeInspection
     {

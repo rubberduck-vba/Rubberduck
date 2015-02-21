@@ -3,7 +3,6 @@ using Microsoft.Office.Interop.Word;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class WordApp : HostApplicationBase<Application>
     {
         public WordApp() : base("Word") { }

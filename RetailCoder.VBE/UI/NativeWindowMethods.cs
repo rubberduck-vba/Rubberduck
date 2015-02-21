@@ -7,8 +7,9 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
-    /// <summary>   Collection of WinAPI methods and extensions to handle native windows. </summary>
+    /// <summary>
+    /// Collection of WinAPI methods and extensions to handle native windows.
+    /// </summary>
     // Special Thank You to Carlos Quintero for supplying the project with the original code this file is based on.
     public static class NativeWindowMethods
     {

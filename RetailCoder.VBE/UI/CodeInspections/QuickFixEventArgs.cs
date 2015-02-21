@@ -4,7 +4,6 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public class QuickFixEventArgs
     {
         private readonly Action<VBE> _quickFix;

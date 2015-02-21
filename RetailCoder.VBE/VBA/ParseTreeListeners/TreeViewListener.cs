@@ -1,207 +1,236 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
+using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class TreeViewListener : VisualBasic6BaseListener, IExtensionListener<TreeNode>
+    public enum TreeViewDisplayStyle
     {
+        MemberNames,
+        Signatures
+    }
+
+    public class TreeViewListener : VBListenerBase, IExtensionListener<TreeNode>
+    {
+        private readonly QualifiedModuleName _name;
+        private readonly TreeViewDisplayStyle _displayStyle;
         private readonly TreeNode _tree;
         private bool _isInDeclarationsSection = true;
 
-        public TreeViewListener(QualifiedModuleName name)
+        public TreeViewListener(QualifiedModuleName name, TreeViewDisplayStyle displayStyle = TreeViewDisplayStyle.MemberNames)
         {
-            _tree = new TreeNode(name.ModuleName);
+            _name = name;
+            _displayStyle = displayStyle;
+            _tree = new TreeNode(name.ModuleName) {Tag = new QualifiedSelection(_name, Selection.Empty)};
         }
 
-        public IEnumerable<TreeNode> Members
+        public IEnumerable<QualifiedContext<TreeNode>> Members
         {
-            get { return new[] {_tree}; }
+            get { return new QualifiedContext<TreeNode>[] {new QualifiedContext<TreeNode>(_name , _tree)}; }
         }
 
-        public override void EnterVariableSubStmt(VisualBasic6Parser.VariableSubStmtContext context)
+        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
                 return;
             }
 
-            var node = new TreeNode(context.GetText());
-            var parent = context.Parent as VisualBasic6Parser.VariableStmtContext;
-            var accessibility = parent == null || parent.visibility() == null 
+            var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.GetText()
+                : context.AmbiguousIdentifier().GetText();
+
+            var node = new TreeNode(nodeText);
+            var parent = context.Parent as VBParser.VariableStmtContext;
+            var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.visibility().GetAccessibility();
+                : parent.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicField"
                 : "PrivateField";
 
             node.SelectedImageKey = node.ImageKey;
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterConstSubStmt(VisualBasic6Parser.ConstSubStmtContext context)
+        public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
                 return;
             }
 
-            var node = new TreeNode(context.GetText());
-            var parent = context.Parent as VisualBasic6Parser.ConstStmtContext;
-            var accessibility = parent == null || parent.visibility() == null 
+            var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                ? context.GetText()
+                : context.AmbiguousIdentifier().GetText();
+
+            var node = new TreeNode(nodeText);
+            var parent = context.Parent as VBParser.ConstStmtContext;
+            var accessibility = parent == null || parent.Visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.visibility().GetAccessibility();
+                : parent.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicConst"
                 : "PrivateConst";
 
             node.SelectedImageKey = node.ImageKey;
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterEnumerationStmt(VisualBasic6Parser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
-            var node = new TreeNode(context.ambiguousIdentifier().GetText());
+            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
             var members = context.enumerationStmt_Constant();
             foreach (var member in members)
             {
                 var memberNode = node.Nodes.Add(member.GetText());
                 memberNode.ImageKey = "EnumItem";
                 memberNode.SelectedImageKey = memberNode.ImageKey;
+                memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.visibility() == null 
+            var accessibility = context.Visibility() == null 
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicEnum"
                 : "PrivateEnum";
 
             node.SelectedImageKey = node.ImageKey;
-
+            node.Tag = context.GetQualifiedSelection(_name);
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterTypeStmt(VisualBasic6Parser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
         {
-            var node = new TreeNode(context.ambiguousIdentifier().GetText());
-            var members = context.typeStmt_Element();
+            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
+            var members = context.TypeStmt_Element();
             foreach (var member in members)
             {
-                var memberNode = node.Nodes.Add(member.GetText());
+                var memberNodeText = _displayStyle == TreeViewDisplayStyle.Signatures
+                    ? member.GetText()
+                    : member.AmbiguousIdentifier().GetText();
+
+                var memberNode = node.Nodes.Add(memberNodeText);
                 memberNode.ImageKey = "PublicField";
                 memberNode.SelectedImageKey = memberNode.ImageKey;
+                memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicType"
                 : "PrivateType";
 
+            node.Tag = context.GetQualifiedSelection(_name);
             node.SelectedImageKey = node.ImageKey;
+
+            _tree.Nodes.Add(node);
         }
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            _tree.Nodes.Add(node);
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context, imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.visibility() == null
+            var accessibility = context.Visibility() == null
                 ? VBAccessibility.Implicit
-                : context.visibility().GetAccessibility();
+                : context.Visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
-            _tree.Nodes.Add(CreateProcedureNode(context,imageKey));
+
+            var node = CreateProcedureNode(context, imageKey);
+            _tree.Nodes.Add(node);
         }
 
         private TreeNode CreateProcedureNode(dynamic context, string imageKey)
         {
-            var procedureName = context.ambiguousIdentifier().GetText();
-            var node = new TreeNode(procedureName);
-
-            var args = context.argList().arg() as IReadOnlyList<VisualBasic6Parser.ArgContext>;
-            if (args == null)
+            var node = new TreeNode
             {
-                return node;
-            }
-
-            foreach (var arg in args)
-            {
-                var argNode = new TreeNode(arg.GetText());
-                argNode.ImageKey = "Parameter";
-                argNode.SelectedImageKey = argNode.ImageKey;
-
-                node.Nodes.Add(argNode);
-            }
-
-            node.ImageKey = imageKey;
-            node.SelectedImageKey = node.ImageKey;
+                ImageKey = imageKey,
+                SelectedImageKey = imageKey,
+                Tag = ((ParserRuleContext) context).GetQualifiedSelection(_name),
+                Text = _displayStyle == TreeViewDisplayStyle.Signatures
+                    ? context.Signature()
+                    : context.AmbiguousIdentifier().GetText()
+            };
             return node;
         }
     }

@@ -13,7 +13,6 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public class CodeInspectionsDockablePresenter : DockablePresenterBase
     {
         private readonly IRubberduckParser _parser;
@@ -37,7 +36,6 @@ namespace Rubberduck.UI.CodeInspections
         {
             e.QuickFix(VBE);
             OnRefreshCodeInspections(null, EventArgs.Empty);
-            //Control.FindNextIssue(); // note: decide if this is annoying or surprising, UX-wise
         }
 
         public override void Show()

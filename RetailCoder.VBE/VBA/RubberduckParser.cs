@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
@@ -12,12 +10,13 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
-        private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> _cache = 
+        private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
         /// <summary>
@@ -37,11 +36,11 @@ namespace Rubberduck.VBA
         public IParseTree Parse(string code)
         {
             var input = new AntlrInputStream(code);
-            var lexer = new VisualBasic6Lexer(input);
+            var lexer = new VBLexer(input);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new VisualBasic6Parser(tokens);
+            var parser = new VBParser(tokens);
             
-            var result = parser.startRule();
+            var result = parser.StartRule();
             return result;
         }
 
@@ -58,7 +57,7 @@ namespace Rubberduck.VBA
         {
             VBComponentParseResult cachedValue;
             var name = component.QualifiedName();
-            if (_cache.TryGetValue(name, out cachedValue))
+            if (ParseResultCache.TryGetValue(name, out cachedValue))
             {
                 return cachedValue;
             }
@@ -67,7 +66,7 @@ namespace Rubberduck.VBA
             var comments = ParseComments(component);
             var result = new VBComponentParseResult(component, parseTree, comments);
 
-            _cache.AddOrUpdate(name, module => result, (qName, module) => result);
+            ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
             return result;
         }
 

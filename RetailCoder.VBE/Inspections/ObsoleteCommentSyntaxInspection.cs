@@ -6,7 +6,6 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class ObsoleteCommentSyntaxInspection : IInspection
     {
         /// <summary>

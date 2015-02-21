@@ -9,7 +9,6 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public class TestMenu : Menu
     {
         // 2743: play icon with stopwatch

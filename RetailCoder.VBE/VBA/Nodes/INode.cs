@@ -17,7 +17,7 @@ namespace Rubberduck.VBA.Nodes
         string LocalScope { get; }
 
         /// <summary>
-        /// Gets a value representing the position of the context in the code module.
+        /// Gets a value representing the position of the context in the code Module.
         /// </summary>
         Selection Selection { get; }
 

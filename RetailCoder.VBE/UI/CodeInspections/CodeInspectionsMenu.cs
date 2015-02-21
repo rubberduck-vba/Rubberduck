@@ -8,7 +8,6 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public class CodeInspectionsMenu
     {
         private readonly VBE _vbe;

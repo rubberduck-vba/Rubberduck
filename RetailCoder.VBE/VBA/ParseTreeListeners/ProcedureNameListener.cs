@@ -1,3 +1,4 @@
+﻿using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
@@ -6,46 +7,47 @@ namespace Rubberduck.VBA.ParseTreeListeners
     {
         private readonly string _name;
 
-        public ProcedureNameListener(string name)
+        public ProcedureNameListener(string name, QualifiedModuleName qualifiedName)
+            : base(qualifiedName)
         {
             _name = name;
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterFunctionStmt(context);
             }
         }
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterSubStmt(context);
             }
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyGetStmt(context);
             }
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyLetStmt(context);
             }
         }
 
-        public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
         {
-            if (context.ambiguousIdentifier().GetText() == _name)
+            if (context.AmbiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertySetStmt(context);
             }

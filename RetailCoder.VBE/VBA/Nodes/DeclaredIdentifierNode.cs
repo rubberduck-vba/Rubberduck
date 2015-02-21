@@ -1,28 +1,28 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
     public class ConstDeclarationNode : Node
     {
-        public ConstDeclarationNode(VisualBasic6Parser.ConstStmtContext context, string scope, bool isLocal = false)
+        public ConstDeclarationNode(VBParser.ConstStmtContext context, string scope, bool isLocal = false)
             : base(context, scope, null, new List<Node>())
         {
-            foreach (var constant in context.constSubStmt())
+            foreach (var constant in context.ConstSubStmt())
             {
-                AddChild(new DeclaredIdentifierNode(constant, scope, context.visibility(), isLocal));
+                AddChild(new DeclaredIdentifierNode(constant, scope, context.Visibility(), isLocal));
             }
         }
     }
 
     public class VariableDeclarationNode : Node
     {
-        public VariableDeclarationNode(VisualBasic6Parser.VariableStmtContext context, string scope)
-            :base(context, scope, null, new List<Node>())
+        public VariableDeclarationNode(VBParser.VariableStmtContext context, string scope)
+            : base(context, scope, null, new List<Node>())
         {
-            foreach (var variable in context.variableListStmt().variableSubStmt())
+            foreach (var variable in context.VariableListStmt().VariableSubStmt())
             {
-                AddChild(new DeclaredIdentifierNode(variable, scope, context.visibility(), context.DIM() != null || context.STATIC() != null));
+                AddChild(new DeclaredIdentifierNode(variable, scope, context.Visibility(), context.DIM() != null || context.STATIC() != null));
             }
         }
     }
@@ -39,55 +39,55 @@ namespace Rubberduck.VBA.Nodes
             { "$", Tokens.String }
         };
 
-        public DeclaredIdentifierNode(VisualBasic6Parser.ConstSubStmtContext context, string scope,
-            VisualBasic6Parser.VisibilityContext visibility, bool isLocal)
+        public DeclaredIdentifierNode(VBParser.ConstSubStmtContext context, string scope,
+            VBParser.VisibilityContext visibility, bool isLocal)
             : base(context, scope)
         {
-            _name = context.ambiguousIdentifier().GetText();
-            if (context.asTypeClause() == null)
+            _name = context.AmbiguousIdentifier().GetText();
+            if (context.AsTypeClause() == null)
             {
-                if (context.typeHint() == null)
+                if (context.TypeHint() == null)
                 {
                     _isImplicitlyTyped = true;
                     _typeName = Tokens.Variant;
                 }
                 else
                 {
-                    var hint = context.typeHint().GetText();
+                    var hint = context.TypeHint().GetText();
                     _isUsingTypeHint = true;
                     _typeName = TypeSpecifiers[hint];
                 }
             }
             else
             {
-                _typeName = context.asTypeClause().type().GetText();
+                _typeName = context.AsTypeClause().Type().GetText();
             }
 
             _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
         }
 
-        public DeclaredIdentifierNode(VisualBasic6Parser.VariableSubStmtContext context, string scope, 
-                            VisualBasic6Parser.VisibilityContext visibility, bool isLocal = true)
+        public DeclaredIdentifierNode(VBParser.VariableSubStmtContext context, string scope,
+                            VBParser.VisibilityContext visibility, bool isLocal = true)
             : base(context, scope)
         {
-            _name = context.ambiguousIdentifier().GetText();
-            if (context.asTypeClause() == null)
+            _name = context.AmbiguousIdentifier().GetText();
+            if (context.AsTypeClause() == null)
             {
-                if (context.typeHint() == null)
+                if (context.TypeHint() == null)
                 {
                     _isImplicitlyTyped = true;
                     _typeName = Tokens.Variant;
                 }
                 else
                 {
-                    var hint = context.typeHint().GetText();
+                    var hint = context.TypeHint().GetText();
                     _isUsingTypeHint = true;
                     _typeName = TypeSpecifiers[hint];
                 }
             }
             else
             {
-                _typeName = context.asTypeClause().type().GetText();
+                _typeName = context.AsTypeClause().Type().GetText();
             }
 
             _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();

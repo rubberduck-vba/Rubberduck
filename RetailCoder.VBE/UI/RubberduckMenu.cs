@@ -15,7 +15,6 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public class RubberduckMenu : IDisposable
     {
         private readonly VBE _vbe;

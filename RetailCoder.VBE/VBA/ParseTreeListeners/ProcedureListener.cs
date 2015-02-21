@@ -1,37 +1,51 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class ProcedureListener : VisualBasic6BaseListener, IExtensionListener<ParserRuleContext>
+    public class ProcedureListener : VBListenerBase, IExtensionListener<ParserRuleContext>
     {
-        private readonly IList<ParserRuleContext> _members = new List<ParserRuleContext>();
-        public IEnumerable<ParserRuleContext> Members { get { return _members; } }
+        protected readonly QualifiedModuleName _qualifiedName;
+        private readonly IList<QualifiedContext<ParserRuleContext>> _members = 
+            new List<QualifiedContext<ParserRuleContext>>();
 
-        public override void EnterSubStmt(VisualBasic6Parser.SubStmtContext context)
+        public ProcedureListener(QualifiedModuleName qualifiedName)
         {
-            _members.Add(context);
+            _qualifiedName = qualifiedName;
         }
 
-        public override void EnterFunctionStmt(VisualBasic6Parser.FunctionStmtContext context)
+        public IEnumerable<QualifiedContext<ParserRuleContext>> Members { get { return _members; } }
+
+        private void AddMember<TContext>(TContext context) where TContext : ParserRuleContext
         {
-            _members.Add(context);
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterPropertyGetStmt(VisualBasic6Parser.PropertyGetStmtContext context)
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
         {
-            _members.Add(context);
+            AddMember(context);
         }
 
-        public override void EnterPropertyLetStmt(VisualBasic6Parser.PropertyLetStmtContext context)
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
         {
-            _members.Add(context);
+            AddMember(context);
         }
 
-        public override void EnterPropertySetStmt(VisualBasic6Parser.PropertySetStmtContext context)
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
         {
-            _members.Add(context);
+            AddMember(context);
+        }
+
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        {
+            AddMember(context);
+        }
+
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        {
+            AddMember(context);
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using System.Linq;
-using Rubberduck.VBA.Grammar;
+﻿using Rubberduck.VBA.Grammar;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Rubberduck.VBA.Nodes
 {
@@ -13,28 +17,28 @@ namespace Rubberduck.VBA.Nodes
             PrivateModule
         }
 
-        public OptionNode(VisualBasic6Parser.OptionBaseStmtContext context, string scope)
+        public OptionNode(VBParser.OptionBaseStmtContext context, string scope)
             : base(context, scope)
         {
             _option = VBOption.Explicit;
             _value = null;
         }
 
-        public OptionNode(VisualBasic6Parser.OptionCompareStmtContext context, string scope)
+        public OptionNode(VBParser.OptionCompareStmtContext context, string scope)
             : base(context, scope)
         {
             _option = VBOption.PrivateModule;
             _value = context.children.Last().GetText(); // note: context.children is a public field
         }
 
-        public OptionNode(VisualBasic6Parser.OptionExplicitStmtContext context, string scope)
+        public OptionNode(VBParser.OptionExplicitStmtContext context, string scope)
             : base(context, scope)
         {
             _option = VBOption.Explicit;
             _value = null;
         }
 
-        public OptionNode(VisualBasic6Parser.OptionPrivateModuleStmtContext context, string scope)
+        public OptionNode(VBParser.OptionPrivateModuleStmtContext context, string scope)
             : base(context, scope)
         {
             _option = VBOption.PrivateModule;
@@ -42,7 +46,7 @@ namespace Rubberduck.VBA.Nodes
         }
 
         private readonly VBOption _option;
-        public VBOption Option { get {  return _option; } }
+        public VBOption Option { get { return _option; } }
 
         private readonly string _value;
         public string Value { get { return _value; } }

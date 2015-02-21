@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
@@ -37,18 +35,18 @@ namespace Rubberduck.Inspections
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(Context as VisualBasic6Parser.VariableSubStmtContext, out originalInstruction);
+            var fix = DeclareExplicitVariant(Context as VBParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context as VisualBasic6Parser.ConstSubStmtContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBParser.ConstSubStmtContext, out originalInstruction);
             }
             
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
             component.CodeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
         }
 
-        private string DeclareExplicitVariant(VisualBasic6Parser.VariableSubStmtContext context, out string instruction)
+        private string DeclareExplicitVariant(VBParser.VariableSubStmtContext context, out string instruction)
         {
             if (context == null)
             {
@@ -60,7 +58,7 @@ namespace Rubberduck.Inspections
             return instruction + ' ' + Tokens.As + ' ' + Tokens.Variant;
         }
 
-        private string DeclareExplicitVariant(VisualBasic6Parser.ConstSubStmtContext context, out string instruction)
+        private string DeclareExplicitVariant(VBParser.ConstSubStmtContext context, out string instruction)
         {
             if (context == null)
             {
@@ -68,15 +66,15 @@ namespace Rubberduck.Inspections
                 return null;
             }
 
-            var parent = (VisualBasic6Parser.ConstStmtContext) context.Parent;
+            var parent = (VBParser.ConstStmtContext) context.Parent;
             instruction = parent.GetText();
 
-            var visibilityContext = parent.visibility();
+            var visibilityContext = parent.Visibility();
             var visibility = visibilityContext == null ? string.Empty : visibilityContext.GetText() + ' ';
 
             var result = visibility
                          + Tokens.Const + ' '
-                         + context.ambiguousIdentifier().GetText() + ' '
+                         + context.AmbiguousIdentifier().GetText() + ' '
                          + Tokens.As + ' ' + Tokens.Variant + ' '
                          + context.EQ().GetText() + ' '
                          + context.valueStmt().GetText();

@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using LibGit2Sharp;
+using IRepository = Rubberduck.SourceControl.IRepository;
 
 namespace Rubberduck.SourceControl
 {
     public class GitProvider : SourceControlProviderBase
     {
         private LibGit2Sharp.Repository repo;
-        private Credentials creds;
+        private Credentials credentials;
         private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
 
         public GitProvider(VBProject project) 
@@ -29,13 +30,13 @@ namespace Rubberduck.SourceControl
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
-            this.creds = new UsernamePasswordCredentials()
+            this.credentials = new UsernamePasswordCredentials()
             {
                 Username = userName,
                 Password = passWord
             };
 
-            this.credHandler = (url, user, cred) => creds;
+            this.credHandler = (url, user, cred) => credentials;
         }
 
         ~GitProvider()
@@ -117,7 +118,7 @@ namespace Rubberduck.SourceControl
             {
                 //Only use credentials if we've been given credentials to use in the constructor.
                 PushOptions options = null;
-                if (this.creds != null)
+                if (this.credentials != null)
                 {
                     options = new PushOptions()
                     {

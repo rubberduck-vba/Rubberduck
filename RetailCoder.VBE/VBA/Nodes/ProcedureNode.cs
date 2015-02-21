@@ -16,53 +16,53 @@ namespace Rubberduck.VBA.Nodes
             PropertySet
         }
 
-        public ProcedureNode(VisualBasic6Parser.PropertySetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.visibility(), context.ambiguousIdentifier(), null)
+        public ProcedureNode(VBParser.PropertySetStmtContext context, string scope, string localScope)
+            : this(context, scope, localScope, VBProcedureKind.PropertySet, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_SET();
         }
 
-        public ProcedureNode(VisualBasic6Parser.PropertyLetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.visibility(), context.ambiguousIdentifier(), null)
+        public ProcedureNode(VBParser.PropertyLetStmtContext context, string scope, string localScope)
+            : this(context, scope, localScope, VBProcedureKind.PropertyLet, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_LET();
         }
 
-        public ProcedureNode(VisualBasic6Parser.PropertyGetStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
+        public ProcedureNode(VBParser.PropertyGetStmtContext context, string scope, string localScope)
+            : this(context, scope, localScope, VBProcedureKind.PropertyGet, context.Visibility(), context.AmbiguousIdentifier(), context.AsTypeClause)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.PROPERTY_GET();
-            _asTypeClauseContext = context.asTypeClause();
+            _asTypeClauseContext = context.AsTypeClause();
         }
 
-        public ProcedureNode(VisualBasic6Parser.FunctionStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Function, context.visibility(), context.ambiguousIdentifier(), context.asTypeClause)
+        public ProcedureNode(VBParser.FunctionStmtContext context, string scope, string localScope)
+            : this(context, scope, localScope, VBProcedureKind.Function, context.Visibility(), context.AmbiguousIdentifier(), context.AsTypeClause)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.FUNCTION();
-            _asTypeClauseContext = context.asTypeClause();
+            _asTypeClauseContext = context.AsTypeClause();
         }
 
-        public ProcedureNode(VisualBasic6Parser.SubStmtContext context, string scope, string localScope)
-            : this(context, scope, localScope, VBProcedureKind.Sub, context.visibility(), context.ambiguousIdentifier(), null)
+        public ProcedureNode(VBParser.SubStmtContext context, string scope, string localScope)
+            : this(context, scope, localScope, VBProcedureKind.Sub, context.Visibility(), context.AmbiguousIdentifier(), null)
         {
-            _argsListContext = context.argList();
+            _argsListContext = context.ArgList();
             _staticNode = context.STATIC();
             _keyword = context.SUB();
         }
 
-        private ProcedureNode(ParserRuleContext context, string scope, string localScope, 
-                              VBProcedureKind kind, 
-                              VisualBasic6Parser.VisibilityContext visibility, 
-                              VisualBasic6Parser.AmbiguousIdentifierContext name, 
-                              Func<VisualBasic6Parser.AsTypeClauseContext> asType)
+        private ProcedureNode(ParserRuleContext context, string scope, string localScope,
+                              VBProcedureKind kind,
+                              VBParser.VisibilityContext visibility,
+                              VBParser.AmbiguousIdentifierContext name,
+                              Func<VBParser.AsTypeClauseContext> asType)
             : base(context, scope, localScope)
         {
             _kind = kind;
@@ -75,9 +75,9 @@ namespace Rubberduck.VBA.Nodes
                 var returnTypeClause = asType();
                 _isImplicitReturnType = returnTypeClause == null;
 
-                _returnType = returnTypeClause == null 
-                                ? Tokens.Variant 
-                                : returnTypeClause.type().GetText();
+                _returnType = returnTypeClause == null
+                                ? Tokens.Variant
+                                : returnTypeClause.Type().GetText();
             }
         }
 
@@ -96,17 +96,17 @@ namespace Rubberduck.VBA.Nodes
         private readonly VBAccessibility _accessibility;
         public VBAccessibility Accessibility { get { return _accessibility; } }
 
-        private readonly VisualBasic6Parser.VisibilityContext _visibilityContext;
-        private readonly VisualBasic6Parser.ArgListContext _argsListContext;
+        private readonly VBParser.VisibilityContext _visibilityContext;
+        private readonly VBParser.ArgListContext _argsListContext;
         private readonly ITerminalNode _staticNode;
         private readonly ITerminalNode _keyword;
-        private readonly VisualBasic6Parser.AsTypeClauseContext _asTypeClauseContext;
+        private readonly VBParser.AsTypeClauseContext _asTypeClauseContext;
 
         public string Signature
         {
             get
             {
-                var visibility = _visibilityContext == null ? string.Empty : _visibilityContext.GetText() + ' '; 
+                var visibility = _visibilityContext == null ? string.Empty : _visibilityContext.GetText() + ' ';
                 var @static = _staticNode == null ? string.Empty : _staticNode.GetText() + ' ';
                 var keyword = _keyword.GetText() + ' ';
                 var args = _argsListContext == null ? "()" : _argsListContext.GetText() + ' ';

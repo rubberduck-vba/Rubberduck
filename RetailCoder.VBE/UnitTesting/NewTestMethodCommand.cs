@@ -7,7 +7,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(false)]
     public static class NewTestMethodCommand
     {
         private static readonly string NamePlaceholder = "%METHODNAME%";

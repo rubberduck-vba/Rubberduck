@@ -27,7 +27,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
-public partial class VisualBasic6Parser : Parser {
+public partial class VBParser : Parser {
 	public const int
 		T__8=1, T__7=2, T__6=3, T__5=4, T__4=5, T__3=6, T__2=7, T__1=8, T__0=9, 
 		ACCESS=10, ADDRESSOF=11, ALIAS=12, AND=13, ATTRIBUTE=14, APPACTIVATE=15, 
@@ -138,37 +138,37 @@ public partial class VisualBasic6Parser : Parser {
 		RULE_letterrange = 139, RULE_lineLabel = 140, RULE_literal = 141, RULE_type = 142, 
 		RULE_typeHint = 143, RULE_visibility = 144, RULE_ambiguousKeyword = 145;
 	public static readonly string[] ruleNames = {
-		"startRule", "module", "moduleHeader", "moduleConfig", "moduleAttributes", 
-		"moduleOptions", "moduleOption", "moduleBody", "moduleBodyElement", "moduleBlock", 
-		"attributeStmt", "block", "blockStmt", "appactivateStmt", "beepStmt", 
-		"chdirStmt", "chdriveStmt", "closeStmt", "constStmt", "constSubStmt", 
-		"dateStmt", "declareStmt", "deftypeStmt", "deleteSettingStmt", "doLoopStmt", 
-		"endStmt", "enumerationStmt", "enumerationStmt_Constant", "eraseStmt", 
-		"errorStmt", "eventStmt", "exitStmt", "filecopyStmt", "forEachStmt", "forNextStmt", 
-		"functionStmt", "getStmt", "goSubStmt", "goToStmt", "ifThenElseStmt", 
-		"ifBlockStmt", "ifConditionStmt", "ifElseIfBlockStmt", "ifElseBlockStmt", 
-		"implementsStmt", "inputStmt", "killStmt", "letStmt", "lineInputStmt", 
-		"loadStmt", "lockStmt", "lsetStmt", "macroIfThenElseStmt", "macroIfBlockStmt", 
-		"macroElseIfBlockStmt", "macroElseBlockStmt", "midStmt", "mkdirStmt", 
-		"nameStmt", "onErrorStmt", "onGoToStmt", "onGoSubStmt", "openStmt", "outputList", 
-		"outputList_Expression", "printStmt", "propertyGetStmt", "propertySetStmt", 
-		"propertyLetStmt", "putStmt", "raiseEventStmt", "randomizeStmt", "redimStmt", 
-		"redimSubStmt", "resetStmt", "resumeStmt", "returnStmt", "rmdirStmt", 
-		"rsetStmt", "savepictureStmt", "saveSettingStmt", "seekStmt", "selectCaseStmt", 
-		"sC_Case", "sC_Cond", "sC_CaseElse", "sendkeysStmt", "setattrStmt", "setStmt", 
-		"stopStmt", "subStmt", "timeStmt", "typeStmt", "typeStmt_Element", "typeOfStmt", 
-		"unloadStmt", "unlockStmt", "valueStmt", "variableStmt", "variableListStmt", 
-		"variableSubStmt", "whileWendStmt", "widthStmt", "withStmt", "writeStmt", 
-		"explicitCallStmt", "eCS_ProcedureCall", "eCS_MemberProcedureCall", "implicitCallStmt_InBlock", 
-		"iCS_B_SubCall", "iCS_B_FunctionCall", "iCS_B_MemberSubCall", "iCS_B_MemberFunctionCall", 
-		"implicitCallStmt_InStmt", "iCS_S_VariableCall", "iCS_S_FunctionOrArrayCall", 
-		"iCS_S_DictionaryCall", "iCS_S_MembersCall", "memberPropertyCallStmt", 
-		"memberFunctionOrArrayCallStmt", "memberSubCallStmt", "memberCall_Value", 
-		"variableCallStmt", "dictionaryCallStmt", "functionOrArrayCallStmt", "argsCall", 
-		"argCall", "argList", "arg", "argDefaultValue", "subscripts", "subscript", 
-		"ambiguousIdentifier", "asTypeClause", "baseType", "certainIdentifier", 
-		"comparisonOperator", "complexType", "fieldLength", "letterrange", "lineLabel", 
-		"literal", "type", "typeHint", "visibility", "ambiguousKeyword"
+		"StartRule", "Module", "ModuleHeader", "ModuleConfig", "ModuleAttributes", 
+		"ModuleOptions", "ModuleOption", "ModuleBody", "ModuleBodyElement", "ModuleBlock", 
+		"AttributeStmt", "Block", "BlockStmt", "AppActivateStmt", "BeepStmt", 
+		"ChdirStmt", "ChdriveStmt", "CloseStmt", "ConstStmt", "ConstSubStmt", 
+		"DateStmt", "DeclareStmt", "DefTypeStmt", "DeleteSettingStmt", "DoLoopStmt", 
+		"EndStmt", "EnumerationStmt", "EnumerationStmt_Constant", "EraseStmt", 
+		"ErrorStmt", "EventStmt", "ExitStmt", "FilecopyStmt", "ForEachStmt", "ForNextStmt", 
+		"FunctionStmt", "GetStmt", "GoSubStmt", "GoToStmt", "IfThenElseStmt", 
+		"IfBlockStmt", "IfConditionStmt", "IfElseIfBlockStmt", "IfElseBlockStmt", 
+		"ImplementsStmt", "InputStmt", "KillStmt", "LetStmt", "LineInputStmt", 
+		"LoadStmt", "LockStmt", "LSetStmt", "MacroIfThenElseStmt", "MacroIfBlockStmt", 
+		"MacroElseIfBlockStmt", "MacroElseBlockStmt", "MidStmt", "MkdirStmt", 
+		"NameStmt", "OnErrorStmt", "OnGoToStmt", "OnGoSubStmt", "OpenStmt", "OutputList", 
+		"OutputList_Expression", "PrintStmt", "PropertyGetStmt", "PropertySetStmt", 
+		"PropertyLetStmt", "PutStmt", "RaiseEventStmt", "RandomizeStmt", "RedimStmt", 
+		"RedimSubStmt", "ResetStmt", "ResumeStmt", "ReturnStmt", "RmdirStmt", 
+		"RSetStmt", "SavePictureStmt", "SaveSettingStmt", "SeekStmt", "SelectCaseStmt", 
+		"SC_Case", "SC_Cond", "SC_CaseElse", "SendkeysStmt", "SetAttrStmt", "SetStmt", 
+		"StopStmt", "SubStmt", "TimeStmt", "TypeStmt", "TypeStmt_Element", "TypeOfStmt", 
+		"UnloadStmt", "UnlockStmt", "ValueStmt", "VariableStmt", "VariableListStmt", 
+		"VariableSubStmt", "WhileWendStmt", "WidthStmt", "WithStmt", "WriteStmt", 
+		"ExplicitCallStmt", "ECS_ProcedureCall", "ECS_MemberProcedureCall", "ImplicitCallStmt_InBlock", 
+		"ICS_B_SubCall", "ICS_B_FunctionCall", "ICS_B_MemberSubCall", "ICS_B_MemberFunctionCall", 
+		"ImplicitCallStmt_InStmt", "ICS_S_VariableCall", "ICS_S_FunctionOrArrayCall", 
+		"ICS_S_DictionaryCall", "ICS_S_MembersCall", "MemberPropertyCallStmt", 
+		"MemberFunctionOrArrayCallStmt", "MemberSubCallStmt", "MemberCall_Value", 
+		"VariableCallStmt", "DictionaryCallStmt", "FunctionOrArrayCallStmt", "ArgsCall", 
+		"ArgCall", "ArgList", "Arg", "ArgDefaultValue", "Subscripts", "Subscript", 
+		"AmbiguousIdentifier", "AsTypeClause", "BaseType", "CertainIdentifier", 
+		"ComparisonOperator", "ComplexType", "FieldLength", "LetterRange", "LineLabel", 
+		"Literal", "Type", "TypeHint", "Visibility", "AmbiguousKeyword"
 	};
 
 	public override string GrammarFileName { get { return "VisualBasic6.g4"; } }
@@ -179,13 +179,13 @@ public partial class VisualBasic6Parser : Parser {
 
 	public override string SerializedAtn { get { return _serializedATN; } }
 
-	public VisualBasic6Parser(ITokenStream input)
+	public VBParser(ITokenStream input)
 		: base(input)
 	{
 		_interp = new ParserATNSimulator(this,_ATN);
 	}
 	public partial class StartRuleContext : ParserRuleContext {
-		public ITerminalNode Eof() { return GetToken(VisualBasic6Parser.Eof, 0); }
+		public ITerminalNode Eof() { return GetToken(VBParser.Eof, 0); }
 		public ModuleContext module() {
 			return GetRuleContext<ModuleContext>(0);
 		}
@@ -195,28 +195,28 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_startRule; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterStartRule(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitStartRule(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitStartRule(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public StartRuleContext startRule() {
+	public StartRuleContext StartRule() {
 		StartRuleContext _localctx = new StartRuleContext(_ctx, State);
 		EnterRule(_localctx, 0, RULE_startRule);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 292; module();
+			State = 292; Module();
 			State = 293; Match(Eof);
 			}
 		}
@@ -232,27 +232,27 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleContext : ParserRuleContext {
-		public ModuleBodyContext moduleBody() {
+		public ModuleBodyContext ModuleBody() {
 			return GetRuleContext<ModuleBodyContext>(0);
 		}
-		public ModuleAttributesContext moduleAttributes() {
+		public ModuleAttributesContext ModuleAttributes() {
 			return GetRuleContext<ModuleAttributesContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ModuleHeaderContext moduleHeader() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ModuleHeaderContext ModuleHeader() {
 			return GetRuleContext<ModuleHeaderContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ModuleOptionsContext moduleOptions() {
+		public ModuleOptionsContext ModuleOptions() {
 			return GetRuleContext<ModuleOptionsContext>(0);
 		}
-		public ModuleConfigContext moduleConfig() {
+		public ModuleConfigContext ModuleConfig() {
 			return GetRuleContext<ModuleConfigContext>(0);
 		}
 		public ModuleContext(ParserRuleContext parent, int invokingState)
@@ -261,22 +261,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_module; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModule(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModule(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModule(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleContext module() {
+	public ModuleContext Module() {
 		ModuleContext _localctx = new ModuleContext(_ctx, State);
 		EnterRule(_localctx, 2, RULE_module);
 		int _la;
@@ -311,7 +311,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,3,_ctx) ) {
 			case 1:
 				{
-				State = 304; moduleHeader();
+				State = 304; ModuleHeader();
 				State = 306;
 				_errHandler.Sync(this);
 				_alt = 1;
@@ -338,7 +338,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,4,_ctx) ) {
 			case 1:
 				{
-				State = 312; moduleConfig();
+				State = 312; ModuleConfig();
 				}
 				break;
 			}
@@ -361,7 +361,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,6,_ctx) ) {
 			case 1:
 				{
-				State = 321; moduleAttributes();
+				State = 321; ModuleAttributes();
 				}
 				break;
 			}
@@ -384,7 +384,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if (((((_la - 122)) & ~0x3f) == 0 && ((1L << (_la - 122)) & ((1L << (OPTION_BASE - 122)) | (1L << (OPTION_EXPLICIT - 122)) | (1L << (OPTION_COMPARE - 122)) | (1L << (OPTION_PRIVATE_MODULE - 122)))) != 0)) {
 				{
-				State = 330; moduleOptions();
+				State = 330; ModuleOptions();
 				}
 			}
 
@@ -407,7 +407,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 339; moduleBody();
+				State = 339; ModuleBody();
 				}
 			}
 
@@ -446,35 +446,35 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleHeaderContext : ParserRuleContext {
-		public ITerminalNode DOUBLELITERAL() { return GetToken(VisualBasic6Parser.DOUBLELITERAL, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode VERSION() { return GetToken(VisualBasic6Parser.VERSION, 0); }
+		public ITerminalNode DOUBLELITERAL() { return GetToken(VBParser.DOUBLELITERAL, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode VERSION() { return GetToken(VBParser.VERSION, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode CLASS() { return GetToken(VisualBasic6Parser.CLASS, 0); }
+		public ITerminalNode CLASS() { return GetToken(VBParser.CLASS, 0); }
 		public ModuleHeaderContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_moduleHeader; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleHeader(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleHeader(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleHeader(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleHeaderContext moduleHeader() {
+	public ModuleHeaderContext ModuleHeader() {
 		ModuleHeaderContext _localctx = new ModuleHeaderContext(_ctx, State);
 		EnterRule(_localctx, 4, RULE_moduleHeader);
 		try {
@@ -499,54 +499,54 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleConfigContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public IReadOnlyList<AmbiguousIdentifierContext> AmbiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ITerminalNode EQ(int i) {
-			return GetToken(VisualBasic6Parser.EQ, i);
+			return GetToken(VBParser.EQ, i);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+		public AmbiguousIdentifierContext AmbiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
-		public IReadOnlyList<LiteralContext> literal() {
+		public IReadOnlyList<LiteralContext> Literal() {
 			return GetRuleContexts<LiteralContext>();
 		}
-		public ITerminalNode BEGIN() { return GetToken(VisualBasic6Parser.BEGIN, 0); }
-		public LiteralContext literal(int i) {
+		public ITerminalNode BEGIN() { return GetToken(VBParser.BEGIN, 0); }
+		public LiteralContext Literal(int i) {
 			return GetRuleContext<LiteralContext>(i);
 		}
-		public IReadOnlyList<ITerminalNode> EQ() { return GetTokens(VisualBasic6Parser.EQ); }
-		public ITerminalNode END() { return GetToken(VisualBasic6Parser.END, 0); }
+		public IReadOnlyList<ITerminalNode> EQ() { return GetTokens(VBParser.EQ); }
+		public ITerminalNode END() { return GetToken(VBParser.END, 0); }
 		public ModuleConfigContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_moduleConfig; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleConfig(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleConfig(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleConfig(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleConfigContext moduleConfig() {
+	public ModuleConfigContext ModuleConfig() {
 		ModuleConfigContext _localctx = new ModuleConfigContext(_ctx, State);
 		EnterRule(_localctx, 6, RULE_moduleConfig);
 		int _la;
@@ -576,7 +576,7 @@ public partial class VisualBasic6Parser : Parser {
 				case 1:
 					{
 					{
-					State = 363; ambiguousIdentifier();
+					State = 363; AmbiguousIdentifier();
 					State = 365;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -594,7 +594,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 371; literal();
+					State = 371; Literal();
 					State = 372; Match(NEWLINE);
 					}
 					}
@@ -640,9 +640,9 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleAttributesContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public AttributeStmtContext attributeStmt(int i) {
 			return GetRuleContext<AttributeStmtContext>(i);
@@ -656,22 +656,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_moduleAttributes; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleAttributes(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleAttributes(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleAttributes(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleAttributesContext moduleAttributes() {
+	public ModuleAttributesContext ModuleAttributes() {
 		ModuleAttributesContext _localctx = new ModuleAttributesContext(_ctx, State);
 		EnterRule(_localctx, 8, RULE_moduleAttributes);
 		try {
@@ -686,7 +686,7 @@ public partial class VisualBasic6Parser : Parser {
 				case 1:
 					{
 					{
-					State = 384; attributeStmt();
+					State = 384; AttributeStmt();
 					State = 386;
 					_errHandler.Sync(this);
 					_alt = 1;
@@ -730,14 +730,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleOptionsContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ModuleOptionContext moduleOption(int i) {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ModuleOptionContext ModuleOption(int i) {
 			return GetRuleContext<ModuleOptionContext>(i);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ModuleOptionContext> moduleOption() {
+		public IReadOnlyList<ModuleOptionContext> ModuleOption() {
 			return GetRuleContexts<ModuleOptionContext>();
 		}
 		public ModuleOptionsContext(ParserRuleContext parent, int invokingState)
@@ -746,22 +746,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_moduleOptions; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleOptions(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleOptions(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleOptions(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleOptionsContext moduleOptions() {
+	public ModuleOptionsContext ModuleOptions() {
 		ModuleOptionsContext _localctx = new ModuleOptionsContext(_ctx, State);
 		EnterRule(_localctx, 10, RULE_moduleOptions);
 		int _la;
@@ -775,7 +775,7 @@ public partial class VisualBasic6Parser : Parser {
 			do {
 				{
 				{
-				State = 394; moduleOption();
+				State = 394; ModuleOption();
 				State = 396;
 				_errHandler.Sync(this);
 				_alt = 1;
@@ -827,82 +827,82 @@ public partial class VisualBasic6Parser : Parser {
 		}
 	}
 	public partial class OptionExplicitStmtContext : ModuleOptionContext {
-		public ITerminalNode OPTION_EXPLICIT() { return GetToken(VisualBasic6Parser.OPTION_EXPLICIT, 0); }
+		public ITerminalNode OPTION_EXPLICIT() { return GetToken(VBParser.OPTION_EXPLICIT, 0); }
 		public OptionExplicitStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOptionExplicitStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOptionExplicitStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOptionExplicitStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class OptionPrivateModuleStmtContext : ModuleOptionContext {
-		public ITerminalNode OPTION_PRIVATE_MODULE() { return GetToken(VisualBasic6Parser.OPTION_PRIVATE_MODULE, 0); }
+		public ITerminalNode OPTION_PRIVATE_MODULE() { return GetToken(VBParser.OPTION_PRIVATE_MODULE, 0); }
 		public OptionPrivateModuleStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOptionPrivateModuleStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOptionPrivateModuleStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOptionPrivateModuleStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class OptionBaseStmtContext : ModuleOptionContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VisualBasic6Parser.INTEGERLITERAL, 0); }
-		public ITerminalNode OPTION_BASE() { return GetToken(VisualBasic6Parser.OPTION_BASE, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBParser.INTEGERLITERAL, 0); }
+		public ITerminalNode OPTION_BASE() { return GetToken(VBParser.OPTION_BASE, 0); }
 		public OptionBaseStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOptionBaseStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOptionBaseStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOptionBaseStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class OptionCompareStmtContext : ModuleOptionContext {
-		public ITerminalNode DATABASE() { return GetToken(VisualBasic6Parser.DATABASE, 0); }
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode TEXT() { return GetToken(VisualBasic6Parser.TEXT, 0); }
-		public ITerminalNode BINARY() { return GetToken(VisualBasic6Parser.BINARY, 0); }
-		public ITerminalNode OPTION_COMPARE() { return GetToken(VisualBasic6Parser.OPTION_COMPARE, 0); }
+		public ITerminalNode DATABASE() { return GetToken(VBParser.DATABASE, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode TEXT() { return GetToken(VBParser.TEXT, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBParser.BINARY, 0); }
+		public ITerminalNode OPTION_COMPARE() { return GetToken(VBParser.OPTION_COMPARE, 0); }
 		public OptionCompareStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOptionCompareStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOptionCompareStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOptionCompareStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleOptionContext moduleOption() {
+	public ModuleOptionContext ModuleOption() {
 		ModuleOptionContext _localctx = new ModuleOptionContext(_ctx, State);
 		EnterRule(_localctx, 12, RULE_moduleOption);
 		int _la;
@@ -962,12 +962,12 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleBodyContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public IReadOnlyList<ModuleBodyElementContext> moduleBodyElement() {
 			return GetRuleContexts<ModuleBodyElementContext>();
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ModuleBodyElementContext moduleBodyElement(int i) {
 			return GetRuleContext<ModuleBodyElementContext>(i);
@@ -978,22 +978,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_moduleBody; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleBody(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleBody(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleBody(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleBodyContext moduleBody() {
+	public ModuleBodyContext ModuleBody() {
 		ModuleBodyContext _localctx = new ModuleBodyContext(_ctx, State);
 		EnterRule(_localctx, 14, RULE_moduleBody);
 		int _la;
@@ -1001,7 +1001,7 @@ public partial class VisualBasic6Parser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 414; moduleBodyElement();
+			State = 414; ModuleBodyElement();
 			State = 423;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,24,_ctx);
@@ -1022,7 +1022,7 @@ public partial class VisualBasic6Parser : Parser {
 						_errHandler.Sync(this);
 						_la = _input.La(1);
 					} while ( _la==NEWLINE );
-					State = 420; moduleBodyElement();
+					State = 420; ModuleBodyElement();
 					}
 					} 
 				}
@@ -1044,37 +1044,37 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ModuleBodyElementContext : ParserRuleContext {
-		public PropertyLetStmtContext propertyLetStmt() {
+		public PropertyLetStmtContext PropertyLetStmt() {
 			return GetRuleContext<PropertyLetStmtContext>(0);
 		}
-		public PropertySetStmtContext propertySetStmt() {
+		public PropertySetStmtContext PropertySetStmt() {
 			return GetRuleContext<PropertySetStmtContext>(0);
 		}
-		public FunctionStmtContext functionStmt() {
+		public FunctionStmtContext FunctionStmt() {
 			return GetRuleContext<FunctionStmtContext>(0);
 		}
-		public SubStmtContext subStmt() {
+		public SubStmtContext SubStmt() {
 			return GetRuleContext<SubStmtContext>(0);
 		}
-		public DeclareStmtContext declareStmt() {
+		public DeclareStmtContext DeclareStmt() {
 			return GetRuleContext<DeclareStmtContext>(0);
 		}
-		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+		public MacroIfThenElseStmtContext MacroIfThenElseStmt() {
 			return GetRuleContext<MacroIfThenElseStmtContext>(0);
 		}
-		public TypeStmtContext typeStmt() {
+		public TypeStmtContext TypeStmt() {
 			return GetRuleContext<TypeStmtContext>(0);
 		}
-		public ModuleBlockContext moduleBlock() {
+		public ModuleBlockContext ModuleBlock() {
 			return GetRuleContext<ModuleBlockContext>(0);
 		}
-		public PropertyGetStmtContext propertyGetStmt() {
+		public PropertyGetStmtContext PropertyGetStmt() {
 			return GetRuleContext<PropertyGetStmtContext>(0);
 		}
-		public EventStmtContext eventStmt() {
+		public EventStmtContext EventStmt() {
 			return GetRuleContext<EventStmtContext>(0);
 		}
-		public EnumerationStmtContext enumerationStmt() {
+		public EnumerationStmtContext EnumerationStmt() {
 			return GetRuleContext<EnumerationStmtContext>(0);
 		}
 		public ModuleBodyElementContext(ParserRuleContext parent, int invokingState)
@@ -1083,22 +1083,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_moduleBodyElement; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleBodyElement(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleBodyElement(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleBodyElement(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleBodyElementContext moduleBodyElement() {
+	public ModuleBodyElementContext ModuleBodyElement() {
 		ModuleBodyElementContext _localctx = new ModuleBodyElementContext(_ctx, State);
 		EnterRule(_localctx, 16, RULE_moduleBodyElement);
 		try {
@@ -1107,77 +1107,77 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 426; moduleBlock();
+				State = 426; ModuleBlock();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 427; declareStmt();
+				State = 427; DeclareStmt();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 428; enumerationStmt();
+				State = 428; EnumerationStmt();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 429; eventStmt();
+				State = 429; EventStmt();
 				}
 				break;
 
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 430; functionStmt();
+				State = 430; FunctionStmt();
 				}
 				break;
 
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 431; macroIfThenElseStmt();
+				State = 431; MacroIfThenElseStmt();
 				}
 				break;
 
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 432; propertyGetStmt();
+				State = 432; PropertyGetStmt();
 				}
 				break;
 
 			case 8:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 433; propertySetStmt();
+				State = 433; PropertySetStmt();
 				}
 				break;
 
 			case 9:
 				EnterOuterAlt(_localctx, 9);
 				{
-				State = 434; propertyLetStmt();
+				State = 434; PropertyLetStmt();
 				}
 				break;
 
 			case 10:
 				EnterOuterAlt(_localctx, 10);
 				{
-				State = 435; subStmt();
+				State = 435; SubStmt();
 				}
 				break;
 
 			case 11:
 				EnterOuterAlt(_localctx, 11);
 				{
-				State = 436; typeStmt();
+				State = 436; TypeStmt();
 				}
 				break;
 			}
@@ -1203,28 +1203,28 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_moduleBlock; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterModuleBlock(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitModuleBlock(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitModuleBlock(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ModuleBlockContext moduleBlock() {
+	public ModuleBlockContext ModuleBlock() {
 		ModuleBlockContext _localctx = new ModuleBlockContext(_ctx, State);
 		EnterRule(_localctx, 18, RULE_moduleBlock);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 439; block();
+			State = 439; Block();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1242,40 +1242,40 @@ public partial class VisualBasic6Parser : Parser {
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode ATTRIBUTE() { return GetToken(VisualBasic6Parser.ATTRIBUTE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode ATTRIBUTE() { return GetToken(VBParser.ATTRIBUTE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public IReadOnlyList<LiteralContext> literal() {
+		public IReadOnlyList<LiteralContext> Literal() {
 			return GetRuleContexts<LiteralContext>();
 		}
-		public LiteralContext literal(int i) {
+		public LiteralContext Literal(int i) {
 			return GetRuleContext<LiteralContext>(i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public AttributeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_attributeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterAttributeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitAttributeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAttributeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public AttributeStmtContext attributeStmt() {
+	public AttributeStmtContext AttributeStmt() {
 		AttributeStmtContext _localctx = new AttributeStmtContext(_ctx, State);
 		EnterRule(_localctx, 20, RULE_attributeStmt);
 		int _la;
@@ -1285,7 +1285,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 441; Match(ATTRIBUTE);
 			State = 442; Match(WS);
-			State = 443; implicitCallStmt_InStmt();
+			State = 443; ImplicitCallStmt_InStmt();
 			State = 445;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -1303,7 +1303,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 451; literal();
+			State = 451; Literal();
 			State = 462;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,30,_ctx);
@@ -1328,7 +1328,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 459; literal();
+					State = 459; Literal();
 					}
 					} 
 				}
@@ -1350,18 +1350,18 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class BlockContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public IReadOnlyList<BlockStmtContext> blockStmt() {
+		public IReadOnlyList<BlockStmtContext> BlockStmt() {
 			return GetRuleContexts<BlockStmtContext>();
 		}
-		public BlockStmtContext blockStmt(int i) {
+		public BlockStmtContext BlockStmt(int i) {
 			return GetRuleContext<BlockStmtContext>(i);
 		}
 		public BlockContext(ParserRuleContext parent, int invokingState)
@@ -1370,22 +1370,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_block; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterBlock(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitBlock(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBlock(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public BlockContext block() {
+	public BlockContext Block() {
 		BlockContext _localctx = new BlockContext(_ctx, State);
 		EnterRule(_localctx, 22, RULE_block);
 		int _la;
@@ -1393,7 +1393,7 @@ public partial class VisualBasic6Parser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 465; blockStmt();
+			State = 465; BlockStmt();
 			State = 477;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,33,_ctx);
@@ -1422,7 +1422,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 474; blockStmt();
+					State = 474; BlockStmt();
 					}
 					} 
 				}
@@ -1444,205 +1444,205 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class BlockStmtContext : ParserRuleContext {
-		public WidthStmtContext widthStmt() {
+		public WidthStmtContext WidthStmt() {
 			return GetRuleContext<WidthStmtContext>(0);
 		}
-		public ConstStmtContext constStmt() {
+		public ConstStmtContext ConstStmt() {
 			return GetRuleContext<ConstStmtContext>(0);
 		}
-		public KillStmtContext killStmt() {
+		public KillStmtContext KillStmt() {
 			return GetRuleContext<KillStmtContext>(0);
 		}
-		public GoToStmtContext goToStmt() {
+		public GoToStmtContext GoToStmt() {
 			return GetRuleContext<GoToStmtContext>(0);
 		}
-		public OpenStmtContext openStmt() {
+		public OpenStmtContext OpenStmt() {
 			return GetRuleContext<OpenStmtContext>(0);
 		}
-		public ExitStmtContext exitStmt() {
+		public ExitStmtContext ExitStmt() {
 			return GetRuleContext<ExitStmtContext>(0);
 		}
-		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+		public MacroIfThenElseStmtContext MacroIfThenElseStmt() {
 			return GetRuleContext<MacroIfThenElseStmtContext>(0);
 		}
-		public UnlockStmtContext unlockStmt() {
+		public UnlockStmtContext UnlockStmt() {
 			return GetRuleContext<UnlockStmtContext>(0);
 		}
-		public LineInputStmtContext lineInputStmt() {
+		public LineInputStmtContext LineInputStmt() {
 			return GetRuleContext<LineInputStmtContext>(0);
 		}
-		public SetattrStmtContext setattrStmt() {
-			return GetRuleContext<SetattrStmtContext>(0);
+		public SetAttrStmtContext SetAttrStmt() {
+			return GetRuleContext<SetAttrStmtContext>(0);
 		}
-		public CloseStmtContext closeStmt() {
+		public CloseStmtContext CloseStmt() {
 			return GetRuleContext<CloseStmtContext>(0);
 		}
-		public LockStmtContext lockStmt() {
+		public LockStmtContext LockStmt() {
 			return GetRuleContext<LockStmtContext>(0);
 		}
-		public SetStmtContext setStmt() {
+		public SetStmtContext SetStmt() {
 			return GetRuleContext<SetStmtContext>(0);
 		}
-		public ChdriveStmtContext chdriveStmt() {
+		public ChdriveStmtContext ChdriveStmt() {
 			return GetRuleContext<ChdriveStmtContext>(0);
 		}
-		public OnErrorStmtContext onErrorStmt() {
+		public OnErrorStmtContext OnErrorStmt() {
 			return GetRuleContext<OnErrorStmtContext>(0);
 		}
-		public ImplicitCallStmt_InBlockContext implicitCallStmt_InBlock() {
+		public ImplicitCallStmt_InBlockContext ImplicitCallStmt_InBlock() {
 			return GetRuleContext<ImplicitCallStmt_InBlockContext>(0);
 		}
-		public SendkeysStmtContext sendkeysStmt() {
+		public SendkeysStmtContext SendkeysStmt() {
 			return GetRuleContext<SendkeysStmtContext>(0);
 		}
-		public DateStmtContext dateStmt() {
+		public DateStmtContext DateStmt() {
 			return GetRuleContext<DateStmtContext>(0);
 		}
-		public SeekStmtContext seekStmt() {
+		public SeekStmtContext SeekStmt() {
 			return GetRuleContext<SeekStmtContext>(0);
 		}
-		public LsetStmtContext lsetStmt() {
+		public LsetStmtContext LSetStmt() {
 			return GetRuleContext<LsetStmtContext>(0);
 		}
-		public RandomizeStmtContext randomizeStmt() {
+		public RandomizeStmtContext RandomizeStmt() {
 			return GetRuleContext<RandomizeStmtContext>(0);
 		}
-		public ForNextStmtContext forNextStmt() {
+		public ForNextStmtContext ForNextStmt() {
 			return GetRuleContext<ForNextStmtContext>(0);
 		}
-		public EraseStmtContext eraseStmt() {
+		public EraseStmtContext EraseStmt() {
 			return GetRuleContext<EraseStmtContext>(0);
 		}
-		public DeftypeStmtContext deftypeStmt() {
+		public DeftypeStmtContext DefTypeStmt() {
 			return GetRuleContext<DeftypeStmtContext>(0);
 		}
-		public ImplementsStmtContext implementsStmt() {
+		public ImplementsStmtContext ImplementsStmt() {
 			return GetRuleContext<ImplementsStmtContext>(0);
 		}
-		public NameStmtContext nameStmt() {
+		public NameStmtContext NameStmt() {
 			return GetRuleContext<NameStmtContext>(0);
 		}
-		public RsetStmtContext rsetStmt() {
+		public RsetStmtContext RSetStmt() {
 			return GetRuleContext<RsetStmtContext>(0);
 		}
-		public ResetStmtContext resetStmt() {
+		public ResetStmtContext ResetStmt() {
 			return GetRuleContext<ResetStmtContext>(0);
 		}
-		public UnloadStmtContext unloadStmt() {
+		public UnloadStmtContext UnloadStmt() {
 			return GetRuleContext<UnloadStmtContext>(0);
 		}
-		public MkdirStmtContext mkdirStmt() {
+		public MkdirStmtContext MkdirStmt() {
 			return GetRuleContext<MkdirStmtContext>(0);
 		}
-		public PrintStmtContext printStmt() {
+		public PrintStmtContext PrintStmt() {
 			return GetRuleContext<PrintStmtContext>(0);
 		}
-		public DoLoopStmtContext doLoopStmt() {
+		public DoLoopStmtContext DoLoopStmt() {
 			return GetRuleContext<DoLoopStmtContext>(0);
 		}
-		public LineLabelContext lineLabel() {
+		public LineLabelContext LineLabel() {
 			return GetRuleContext<LineLabelContext>(0);
 		}
-		public SelectCaseStmtContext selectCaseStmt() {
+		public SelectCaseStmtContext SelectCaseStmt() {
 			return GetRuleContext<SelectCaseStmtContext>(0);
 		}
-		public StopStmtContext stopStmt() {
+		public StopStmtContext StopStmt() {
 			return GetRuleContext<StopStmtContext>(0);
 		}
-		public ErrorStmtContext errorStmt() {
+		public ErrorStmtContext ErrorStmt() {
 			return GetRuleContext<ErrorStmtContext>(0);
 		}
-		public OnGoToStmtContext onGoToStmt() {
+		public OnGoToStmtContext OnGoToStmt() {
 			return GetRuleContext<OnGoToStmtContext>(0);
 		}
-		public BeepStmtContext beepStmt() {
+		public BeepStmtContext BeepStmt() {
 			return GetRuleContext<BeepStmtContext>(0);
 		}
-		public EndStmtContext endStmt() {
+		public EndStmtContext EndStmt() {
 			return GetRuleContext<EndStmtContext>(0);
 		}
-		public ExplicitCallStmtContext explicitCallStmt() {
+		public ExplicitCallStmtContext ExplicitCallStmt() {
 			return GetRuleContext<ExplicitCallStmtContext>(0);
 		}
-		public WithStmtContext withStmt() {
+		public WithStmtContext WithStmt() {
 			return GetRuleContext<WithStmtContext>(0);
 		}
-		public AttributeStmtContext attributeStmt() {
+		public AttributeStmtContext AttributeStmt() {
 			return GetRuleContext<AttributeStmtContext>(0);
 		}
-		public MidStmtContext midStmt() {
+		public MidStmtContext MidStmt() {
 			return GetRuleContext<MidStmtContext>(0);
 		}
-		public VariableStmtContext variableStmt() {
+		public VariableStmtContext VariableStmt() {
 			return GetRuleContext<VariableStmtContext>(0);
 		}
-		public ForEachStmtContext forEachStmt() {
+		public ForEachStmtContext ForEachStmt() {
 			return GetRuleContext<ForEachStmtContext>(0);
 		}
-		public AppactivateStmtContext appactivateStmt() {
+		public AppactivateStmtContext AppActivateStmt() {
 			return GetRuleContext<AppactivateStmtContext>(0);
 		}
-		public ChdirStmtContext chdirStmt() {
+		public ChdirStmtContext ChdirStmt() {
 			return GetRuleContext<ChdirStmtContext>(0);
 		}
-		public WriteStmtContext writeStmt() {
+		public WriteStmtContext WriteStmt() {
 			return GetRuleContext<WriteStmtContext>(0);
 		}
-		public SavepictureStmtContext savepictureStmt() {
+		public SavepictureStmtContext SavePictureStmt() {
 			return GetRuleContext<SavepictureStmtContext>(0);
 		}
-		public GetStmtContext getStmt() {
+		public GetStmtContext GetStmt() {
 			return GetRuleContext<GetStmtContext>(0);
 		}
-		public DeleteSettingStmtContext deleteSettingStmt() {
+		public DeleteSettingStmtContext DeleteSettingStmt() {
 			return GetRuleContext<DeleteSettingStmtContext>(0);
 		}
-		public RaiseEventStmtContext raiseEventStmt() {
+		public RaiseEventStmtContext RaiseEventStmt() {
 			return GetRuleContext<RaiseEventStmtContext>(0);
 		}
-		public TimeStmtContext timeStmt() {
+		public TimeStmtContext TimeStmt() {
 			return GetRuleContext<TimeStmtContext>(0);
 		}
-		public RedimStmtContext redimStmt() {
+		public RedimStmtContext RedimStmt() {
 			return GetRuleContext<RedimStmtContext>(0);
 		}
-		public InputStmtContext inputStmt() {
+		public InputStmtContext InputStmt() {
 			return GetRuleContext<InputStmtContext>(0);
 		}
-		public OnGoSubStmtContext onGoSubStmt() {
+		public OnGoSubStmtContext OnGoSubStmt() {
 			return GetRuleContext<OnGoSubStmtContext>(0);
 		}
-		public ResumeStmtContext resumeStmt() {
+		public ResumeStmtContext ResumeStmt() {
 			return GetRuleContext<ResumeStmtContext>(0);
 		}
-		public PutStmtContext putStmt() {
+		public PutStmtContext PutStmt() {
 			return GetRuleContext<PutStmtContext>(0);
 		}
-		public IfThenElseStmtContext ifThenElseStmt() {
+		public IfThenElseStmtContext IfThenElseStmt() {
 			return GetRuleContext<IfThenElseStmtContext>(0);
 		}
-		public FilecopyStmtContext filecopyStmt() {
+		public FilecopyStmtContext FileCopyStmt() {
 			return GetRuleContext<FilecopyStmtContext>(0);
 		}
-		public LoadStmtContext loadStmt() {
+		public LoadStmtContext LoadStmt() {
 			return GetRuleContext<LoadStmtContext>(0);
 		}
-		public SaveSettingStmtContext saveSettingStmt() {
+		public SaveSettingStmtContext SaveSettingStmt() {
 			return GetRuleContext<SaveSettingStmtContext>(0);
 		}
-		public RmdirStmtContext rmdirStmt() {
+		public RmdirStmtContext RmdirStmt() {
 			return GetRuleContext<RmdirStmtContext>(0);
 		}
-		public ReturnStmtContext returnStmt() {
+		public ReturnStmtContext ReturnStmt() {
 			return GetRuleContext<ReturnStmtContext>(0);
 		}
-		public WhileWendStmtContext whileWendStmt() {
+		public WhileWendStmtContext WhileWendStmt() {
 			return GetRuleContext<WhileWendStmtContext>(0);
 		}
-		public LetStmtContext letStmt() {
+		public LetStmtContext LetStmt() {
 			return GetRuleContext<LetStmtContext>(0);
 		}
-		public GoSubStmtContext goSubStmt() {
+		public GoSubStmtContext GoSubStmt() {
 			return GetRuleContext<GoSubStmtContext>(0);
 		}
 		public BlockStmtContext(ParserRuleContext parent, int invokingState)
@@ -1651,22 +1651,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_blockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public BlockStmtContext blockStmt() {
+	public BlockStmtContext BlockStmt() {
 		BlockStmtContext _localctx = new BlockStmtContext(_ctx, State);
 		EnterRule(_localctx, 24, RULE_blockStmt);
 		try {
@@ -1675,112 +1675,112 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 480; appactivateStmt();
+				State = 480; AppActivateStmt();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 481; attributeStmt();
+				State = 481; AttributeStmt();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 482; beepStmt();
+				State = 482; BeepStmt();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 483; chdirStmt();
+				State = 483; ChdirStmt();
 				}
 				break;
 
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 484; chdriveStmt();
+				State = 484; ChdriveStmt();
 				}
 				break;
 
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 485; closeStmt();
+				State = 485; CloseStmt();
 				}
 				break;
 
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 486; constStmt();
+				State = 486; ConstStmt();
 				}
 				break;
 
 			case 8:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 487; dateStmt();
+				State = 487; DateStmt();
 				}
 				break;
 
 			case 9:
 				EnterOuterAlt(_localctx, 9);
 				{
-				State = 488; deleteSettingStmt();
+				State = 488; DeleteSettingStmt();
 				}
 				break;
 
 			case 10:
 				EnterOuterAlt(_localctx, 10);
 				{
-				State = 489; deftypeStmt();
+				State = 489; DefTypeStmt();
 				}
 				break;
 
 			case 11:
 				EnterOuterAlt(_localctx, 11);
 				{
-				State = 490; doLoopStmt();
+				State = 490; DoLoopStmt();
 				}
 				break;
 
 			case 12:
 				EnterOuterAlt(_localctx, 12);
 				{
-				State = 491; endStmt();
+				State = 491; EndStmt();
 				}
 				break;
 
 			case 13:
 				EnterOuterAlt(_localctx, 13);
 				{
-				State = 492; eraseStmt();
+				State = 492; EraseStmt();
 				}
 				break;
 
 			case 14:
 				EnterOuterAlt(_localctx, 14);
 				{
-				State = 493; errorStmt();
+				State = 493; ErrorStmt();
 				}
 				break;
 
 			case 15:
 				EnterOuterAlt(_localctx, 15);
 				{
-				State = 494; exitStmt();
+				State = 494; ExitStmt();
 				}
 				break;
 
 			case 16:
 				EnterOuterAlt(_localctx, 16);
 				{
-				State = 495; explicitCallStmt();
+				State = 495; ExplicitCallStmt();
 				}
 				break;
 
@@ -1906,7 +1906,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 34:
 				EnterOuterAlt(_localctx, 34);
 				{
-				State = 513; macroIfThenElseStmt();
+				State = 513; MacroIfThenElseStmt();
 				}
 				break;
 
@@ -2154,13 +2154,13 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class AppactivateStmtContext : ParserRuleContext {
-		public ITerminalNode APPACTIVATE() { return GetToken(VisualBasic6Parser.APPACTIVATE, 0); }
+		public ITerminalNode APPACTIVATE() { return GetToken(VBParser.APPACTIVATE, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -2171,22 +2171,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_appactivateStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterAppactivateStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitAppactivateStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAppactivateStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public AppactivateStmtContext appactivateStmt() {
+	public AppactivateStmtContext AppActivateStmt() {
 		AppactivateStmtContext _localctx = new AppactivateStmtContext(_ctx, State);
 		EnterRule(_localctx, 26, RULE_appactivateStmt);
 		int _la;
@@ -2195,7 +2195,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 549; Match(APPACTIVATE);
 			State = 550; Match(WS);
-			State = 551; valueStmt(0);
+			State = 551; ValueStmt(0);
 			State = 560;
 			switch ( Interpreter.AdaptivePredict(_input,37,_ctx) ) {
 			case 1:
@@ -2217,7 +2217,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 559; valueStmt(0);
+				State = 559; ValueStmt(0);
 				}
 				break;
 			}
@@ -2235,29 +2235,29 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class BeepStmtContext : ParserRuleContext {
-		public ITerminalNode BEEP() { return GetToken(VisualBasic6Parser.BEEP, 0); }
+		public ITerminalNode BEEP() { return GetToken(VBParser.BEEP, 0); }
 		public BeepStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_beepStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterBeepStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitBeepStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBeepStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public BeepStmtContext beepStmt() {
+	public BeepStmtContext BeepStmt() {
 		BeepStmtContext _localctx = new BeepStmtContext(_ctx, State);
 		EnterRule(_localctx, 28, RULE_beepStmt);
 		try {
@@ -2281,30 +2281,30 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode CHDIR() { return GetToken(VisualBasic6Parser.CHDIR, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode CHDIR() { return GetToken(VBParser.CHDIR, 0); }
 		public ChdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_chdirStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterChdirStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitChdirStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitChdirStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ChdirStmtContext chdirStmt() {
+	public ChdirStmtContext ChdirStmt() {
 		ChdirStmtContext _localctx = new ChdirStmtContext(_ctx, State);
 		EnterRule(_localctx, 30, RULE_chdirStmt);
 		try {
@@ -2312,7 +2312,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 564; Match(CHDIR);
 			State = 565; Match(WS);
-			State = 566; valueStmt(0);
+			State = 566; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2330,30 +2330,30 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode CHDRIVE() { return GetToken(VisualBasic6Parser.CHDRIVE, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode CHDRIVE() { return GetToken(VBParser.CHDRIVE, 0); }
 		public ChdriveStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_chdriveStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterChdriveStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitChdriveStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitChdriveStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ChdriveStmtContext chdriveStmt() {
+	public ChdriveStmtContext ChdriveStmt() {
 		ChdriveStmtContext _localctx = new ChdriveStmtContext(_ctx, State);
 		EnterRule(_localctx, 32, RULE_chdriveStmt);
 		try {
@@ -2361,7 +2361,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 568; Match(CHDRIVE);
 			State = 569; Match(WS);
-			State = 570; valueStmt(0);
+			State = 570; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2379,10 +2379,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode CLOSE() { return GetToken(VisualBasic6Parser.CLOSE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode CLOSE() { return GetToken(VBParser.CLOSE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -2393,22 +2393,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_closeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterCloseStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitCloseStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCloseStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public CloseStmtContext closeStmt() {
+	public CloseStmtContext CloseStmt() {
 		CloseStmtContext _localctx = new CloseStmtContext(_ctx, State);
 		EnterRule(_localctx, 34, RULE_closeStmt);
 		int _la;
@@ -2422,7 +2422,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				{
 				State = 573; Match(WS);
-				State = 574; valueStmt(0);
+				State = 574; ValueStmt(0);
 				State = 585;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,40,_ctx);
@@ -2447,7 +2447,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 582; valueStmt(0);
+						State = 582; ValueStmt(0);
 						}
 						} 
 					}
@@ -2472,18 +2472,18 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ConstStmtContext : ParserRuleContext {
-		public ConstSubStmtContext constSubStmt(int i) {
+		public ConstSubStmtContext ConstSubStmt(int i) {
 			return GetRuleContext<ConstSubStmtContext>(i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public IReadOnlyList<ConstSubStmtContext> constSubStmt() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public IReadOnlyList<ConstSubStmtContext> ConstSubStmt() {
 			return GetRuleContexts<ConstSubStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode CONST() { return GetToken(VisualBasic6Parser.CONST, 0); }
-		public VisibilityContext visibility() {
+		public ITerminalNode CONST() { return GetToken(VBParser.CONST, 0); }
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public ConstStmtContext(ParserRuleContext parent, int invokingState)
@@ -2492,22 +2492,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_constStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterConstStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitConstStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitConstStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ConstStmtContext constStmt() {
+	public ConstStmtContext ConstStmt() {
 		ConstStmtContext _localctx = new ConstStmtContext(_ctx, State);
 		EnterRule(_localctx, 36, RULE_constStmt);
 		int _la;
@@ -2573,38 +2573,38 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ConstSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public TypeHintContext typeHint() {
+		public TypeHintContext TypeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public ConstSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_constSubStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterConstSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitConstSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitConstSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -2618,7 +2618,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 611; ambiguousIdentifier();
+			State = 611; AmbiguousIdentifier();
 			State = 613;
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
@@ -2653,7 +2653,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 626; valueStmt(0);
+			State = 626; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2668,37 +2668,37 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class DateStmtContext : ParserRuleContext {
-		public ITerminalNode DATE() { return GetToken(VisualBasic6Parser.DATE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode DATE() { return GetToken(VBParser.DATE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public DateStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_dateStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDateStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDateStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDateStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DateStmtContext dateStmt() {
+	public DateStmtContext DateStmt() {
 		DateStmtContext _localctx = new DateStmtContext(_ctx, State);
 		EnterRule(_localctx, 40, RULE_dateStmt);
 		int _la;
@@ -2723,7 +2723,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 636; valueStmt(0);
+			State = 636; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2738,53 +2738,53 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class DeclareStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode DECLARE() { return GetToken(VisualBasic6Parser.DECLARE, 0); }
-		public ITerminalNode FUNCTION() { return GetToken(VisualBasic6Parser.FUNCTION, 0); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode DECLARE() { return GetToken(VBParser.DECLARE, 0); }
+		public ITerminalNode FUNCTION() { return GetToken(VBParser.FUNCTION, 0); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode LIB() { return GetToken(VisualBasic6Parser.LIB, 0); }
-		public IReadOnlyList<ITerminalNode> STRINGLITERAL() { return GetTokens(VisualBasic6Parser.STRINGLITERAL); }
+		public ITerminalNode LIB() { return GetToken(VBParser.LIB, 0); }
+		public IReadOnlyList<ITerminalNode> STRINGLITERAL() { return GetTokens(VBParser.STRINGLITERAL); }
 		public ITerminalNode STRINGLITERAL(int i) {
-			return GetToken(VisualBasic6Parser.STRINGLITERAL, i);
+			return GetToken(VBParser.STRINGLITERAL, i);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode ALIAS() { return GetToken(VisualBasic6Parser.ALIAS, 0); }
-		public VisibilityContext visibility() {
+		public ITerminalNode ALIAS() { return GetToken(VBParser.ALIAS, 0); }
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode SUB() { return GetToken(VisualBasic6Parser.SUB, 0); }
+		public ITerminalNode SUB() { return GetToken(VBParser.SUB, 0); }
 		public DeclareStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_declareStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDeclareStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDeclareStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDeclareStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DeclareStmtContext declareStmt() {
+	public DeclareStmtContext DeclareStmt() {
 		DeclareStmtContext _localctx = new DeclareStmtContext(_ctx, State);
 		EnterRule(_localctx, 42, RULE_declareStmt);
 		int _la;
@@ -2809,7 +2809,7 @@ public partial class VisualBasic6Parser : Parser {
 			}
 			Consume();
 			State = 646; Match(WS);
-			State = 647; ambiguousIdentifier();
+			State = 647; AmbiguousIdentifier();
 			State = 648; Match(WS);
 			State = 649; Match(LIB);
 			State = 650; Match(WS);
@@ -2837,7 +2837,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 661; argList();
+				State = 661; ArgList();
 				}
 				break;
 			}
@@ -2864,50 +2864,50 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class DeftypeStmtContext : ParserRuleContext {
-		public ITerminalNode DEFCUR() { return GetToken(VisualBasic6Parser.DEFCUR, 0); }
-		public ITerminalNode DEFSTR() { return GetToken(VisualBasic6Parser.DEFSTR, 0); }
-		public ITerminalNode DEFDATE() { return GetToken(VisualBasic6Parser.DEFDATE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode DEFOBJ() { return GetToken(VisualBasic6Parser.DEFOBJ, 0); }
+		public ITerminalNode DEFCUR() { return GetToken(VBParser.DEFCUR, 0); }
+		public ITerminalNode DEFSTR() { return GetToken(VBParser.DEFSTR, 0); }
+		public ITerminalNode DEFDATE() { return GetToken(VBParser.DEFDATE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode DEFOBJ() { return GetToken(VBParser.DEFOBJ, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode DEFDBL() { return GetToken(VisualBasic6Parser.DEFDBL, 0); }
-		public ITerminalNode DEFINT() { return GetToken(VisualBasic6Parser.DEFINT, 0); }
+		public ITerminalNode DEFDBL() { return GetToken(VBParser.DEFDBL, 0); }
+		public ITerminalNode DEFINT() { return GetToken(VBParser.DEFINT, 0); }
 		public LetterrangeContext letterrange(int i) {
 			return GetRuleContext<LetterrangeContext>(i);
 		}
-		public ITerminalNode DEFVAR() { return GetToken(VisualBasic6Parser.DEFVAR, 0); }
-		public ITerminalNode DEFSNG() { return GetToken(VisualBasic6Parser.DEFSNG, 0); }
+		public ITerminalNode DEFVAR() { return GetToken(VBParser.DEFVAR, 0); }
+		public ITerminalNode DEFSNG() { return GetToken(VBParser.DEFSNG, 0); }
 		public IReadOnlyList<LetterrangeContext> letterrange() {
 			return GetRuleContexts<LetterrangeContext>();
 		}
-		public ITerminalNode DEFBOOL() { return GetToken(VisualBasic6Parser.DEFBOOL, 0); }
-		public ITerminalNode DEFDEC() { return GetToken(VisualBasic6Parser.DEFDEC, 0); }
-		public ITerminalNode DEFBYTE() { return GetToken(VisualBasic6Parser.DEFBYTE, 0); }
-		public ITerminalNode DEFLNG() { return GetToken(VisualBasic6Parser.DEFLNG, 0); }
+		public ITerminalNode DEFBOOL() { return GetToken(VBParser.DEFBOOL, 0); }
+		public ITerminalNode DEFDEC() { return GetToken(VBParser.DEFDEC, 0); }
+		public ITerminalNode DEFBYTE() { return GetToken(VBParser.DEFBYTE, 0); }
+		public ITerminalNode DEFLNG() { return GetToken(VBParser.DEFLNG, 0); }
 		public DeftypeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_deftypeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDeftypeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDeftypeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDeftypeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DeftypeStmtContext deftypeStmt() {
+	public DeftypeStmtContext DefTypeStmt() {
 		DeftypeStmtContext _localctx = new DeftypeStmtContext(_ctx, State);
 		EnterRule(_localctx, 44, RULE_deftypeStmt);
 		int _la;
@@ -2972,36 +2972,36 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode DELETESETTING() { return GetToken(VisualBasic6Parser.DELETESETTING, 0); }
+		public ITerminalNode DELETESETTING() { return GetToken(VBParser.DELETESETTING, 0); }
 		public DeleteSettingStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_deleteSettingStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDeleteSettingStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDeleteSettingStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDeleteSettingStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DeleteSettingStmtContext deleteSettingStmt() {
+	public DeleteSettingStmtContext DeleteSettingStmt() {
 		DeleteSettingStmtContext _localctx = new DeleteSettingStmtContext(_ctx, State);
 		EnterRule(_localctx, 46, RULE_deleteSettingStmt);
 		int _la;
@@ -3010,7 +3010,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 684; Match(DELETESETTING);
 			State = 685; Match(WS);
-			State = 686; valueStmt(0);
+			State = 686; ValueStmt(0);
 			State = 688;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -3028,7 +3028,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 694; valueStmt(0);
+			State = 694; ValueStmt(0);
 			State = 703;
 			switch ( Interpreter.AdaptivePredict(_input,64,_ctx) ) {
 			case 1:
@@ -3050,7 +3050,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 702; valueStmt(0);
+				State = 702; ValueStmt(0);
 				}
 				break;
 			}
@@ -3068,20 +3068,20 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class DoLoopStmtContext : ParserRuleContext {
-		public ITerminalNode WHILE() { return GetToken(VisualBasic6Parser.WHILE, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public ITerminalNode WHILE() { return GetToken(VBParser.WHILE, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ITerminalNode DO() { return GetToken(VisualBasic6Parser.DO, 0); }
-		public ITerminalNode LOOP() { return GetToken(VisualBasic6Parser.LOOP, 0); }
-		public ITerminalNode UNTIL() { return GetToken(VisualBasic6Parser.UNTIL, 0); }
+		public ITerminalNode DO() { return GetToken(VBParser.DO, 0); }
+		public ITerminalNode LOOP() { return GetToken(VBParser.LOOP, 0); }
+		public ITerminalNode UNTIL() { return GetToken(VBParser.UNTIL, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -3092,22 +3092,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_doLoopStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDoLoopStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDoLoopStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDoLoopStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DoLoopStmtContext doLoopStmt() {
+	public DoLoopStmtContext DoLoopStmt() {
 		DoLoopStmtContext _localctx = new DoLoopStmtContext(_ctx, State);
 		EnterRule(_localctx, 48, RULE_doLoopStmt);
 		int _la;
@@ -3135,7 +3135,7 @@ public partial class VisualBasic6Parser : Parser {
 				switch ( Interpreter.AdaptivePredict(_input,67,_ctx) ) {
 				case 1:
 					{
-					State = 711; block();
+					State = 711; Block();
 					State = 713;
 					_errHandler.Sync(this);
 					_la = _input.La(1);
@@ -3168,7 +3168,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 				Consume();
 				State = 723; Match(WS);
-				State = 724; valueStmt(0);
+				State = 724; ValueStmt(0);
 				State = 726;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -3186,7 +3186,7 @@ public partial class VisualBasic6Parser : Parser {
 				switch ( Interpreter.AdaptivePredict(_input,70,_ctx) ) {
 				case 1:
 					{
-					State = 730; block();
+					State = 730; Block();
 					State = 732;
 					_errHandler.Sync(this);
 					_la = _input.La(1);
@@ -3225,7 +3225,7 @@ public partial class VisualBasic6Parser : Parser {
 					_la = _input.La(1);
 				} while ( _la==NEWLINE );
 				{
-				State = 746; block();
+				State = 746; Block();
 				State = 748;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -3249,7 +3249,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 				Consume();
 				State = 755; Match(WS);
-				State = 756; valueStmt(0);
+				State = 756; ValueStmt(0);
 				}
 				break;
 			}
@@ -3266,29 +3266,29 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class EndStmtContext : ParserRuleContext {
-		public ITerminalNode END() { return GetToken(VisualBasic6Parser.END, 0); }
+		public ITerminalNode END() { return GetToken(VBParser.END, 0); }
 		public EndStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_endStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterEndStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitEndStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEndStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public EndStmtContext endStmt() {
+	public EndStmtContext EndStmt() {
 		EndStmtContext _localctx = new EndStmtContext(_ctx, State);
 		EnterRule(_localctx, 50, RULE_endStmt);
 		try {
@@ -3309,26 +3309,26 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class EnumerationStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public EnumerationStmt_ConstantContext enumerationStmt_Constant(int i) {
 			return GetRuleContext<EnumerationStmt_ConstantContext>(i);
 		}
-		public ITerminalNode ENUM() { return GetToken(VisualBasic6Parser.ENUM, 0); }
+		public ITerminalNode ENUM() { return GetToken(VBParser.ENUM, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<EnumerationStmt_ConstantContext> enumerationStmt_Constant() {
 			return GetRuleContexts<EnumerationStmt_ConstantContext>();
 		}
-		public ITerminalNode END_ENUM() { return GetToken(VisualBasic6Parser.END_ENUM, 0); }
+		public ITerminalNode END_ENUM() { return GetToken(VBParser.END_ENUM, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public EnumerationStmtContext(ParserRuleContext parent, int invokingState)
@@ -3337,22 +3337,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_enumerationStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterEnumerationStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitEnumerationStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEnumerationStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public EnumerationStmtContext enumerationStmt() {
+	public EnumerationStmtContext EnumerationStmt() {
 		EnumerationStmtContext _localctx = new EnumerationStmtContext(_ctx, State);
 		EnterRule(_localctx, 52, RULE_enumerationStmt);
 		int _la;
@@ -3370,7 +3370,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 767; Match(ENUM);
 			State = 768; Match(WS);
-			State = 769; ambiguousIdentifier();
+			State = 769; AmbiguousIdentifier();
 			State = 771;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -3412,36 +3412,36 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class EnumerationStmt_ConstantContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ValueStmtContext valueStmt() {
+		public ValueStmtContext ValueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public EnumerationStmt_ConstantContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_enumerationStmt_Constant; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterEnumerationStmt_Constant(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitEnumerationStmt_Constant(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEnumerationStmt_Constant(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -3455,7 +3455,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 783; ambiguousIdentifier();
+			State = 783; AmbiguousIdentifier();
 			State = 792;
 			_la = _input.La(1);
 			if (_la==EQ || _la==WS) {
@@ -3477,7 +3477,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 791; valueStmt(0);
+				State = 791; ValueStmt(0);
 				}
 			}
 
@@ -3508,33 +3508,33 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class EraseStmtContext : ParserRuleContext {
-		public ITerminalNode ERASE() { return GetToken(VisualBasic6Parser.ERASE, 0); }
+		public ITerminalNode ERASE() { return GetToken(VBParser.ERASE, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public EraseStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_eraseStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterEraseStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitEraseStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEraseStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public EraseStmtContext eraseStmt() {
+	public EraseStmtContext EraseStmt() {
 		EraseStmtContext _localctx = new EraseStmtContext(_ctx, State);
 		EnterRule(_localctx, 56, RULE_eraseStmt);
 		try {
@@ -3542,7 +3542,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 799; Match(ERASE);
 			State = 800; Match(WS);
-			State = 801; valueStmt(0);
+			State = 801; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3560,30 +3560,30 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode ERROR() { return GetToken(VisualBasic6Parser.ERROR, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode ERROR() { return GetToken(VBParser.ERROR, 0); }
 		public ErrorStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_errorStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterErrorStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitErrorStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitErrorStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ErrorStmtContext errorStmt() {
+	public ErrorStmtContext ErrorStmt() {
 		ErrorStmtContext _localctx = new ErrorStmtContext(_ctx, State);
 		EnterRule(_localctx, 58, RULE_errorStmt);
 		try {
@@ -3591,7 +3591,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 803; Match(ERROR);
 			State = 804; Match(WS);
-			State = 805; valueStmt(0);
+			State = 805; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3606,18 +3606,18 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class EventStmtContext : ParserRuleContext {
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode EVENT() { return GetToken(VisualBasic6Parser.EVENT, 0); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode EVENT() { return GetToken(VBParser.EVENT, 0); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public EventStmtContext(ParserRuleContext parent, int invokingState)
@@ -3626,22 +3626,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_eventStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterEventStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitEventStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEventStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public EventStmtContext eventStmt() {
+	public EventStmtContext EventStmt() {
 		EventStmtContext _localctx = new EventStmtContext(_ctx, State);
 		EnterRule(_localctx, 60, RULE_eventStmt);
 		int _la;
@@ -3659,7 +3659,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 812; Match(EVENT);
 			State = 813; Match(WS);
-			State = 814; ambiguousIdentifier();
+			State = 814; AmbiguousIdentifier();
 			State = 816;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -3668,7 +3668,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 818; argList();
+			State = 818; ArgList();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3683,33 +3683,33 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ExitStmtContext : ParserRuleContext {
-		public ITerminalNode EXIT_FUNCTION() { return GetToken(VisualBasic6Parser.EXIT_FUNCTION, 0); }
-		public ITerminalNode EXIT_PROPERTY() { return GetToken(VisualBasic6Parser.EXIT_PROPERTY, 0); }
-		public ITerminalNode EXIT_DO() { return GetToken(VisualBasic6Parser.EXIT_DO, 0); }
-		public ITerminalNode EXIT_FOR() { return GetToken(VisualBasic6Parser.EXIT_FOR, 0); }
-		public ITerminalNode EXIT_SUB() { return GetToken(VisualBasic6Parser.EXIT_SUB, 0); }
+		public ITerminalNode EXIT_FUNCTION() { return GetToken(VBParser.EXIT_FUNCTION, 0); }
+		public ITerminalNode EXIT_PROPERTY() { return GetToken(VBParser.EXIT_PROPERTY, 0); }
+		public ITerminalNode EXIT_DO() { return GetToken(VBParser.EXIT_DO, 0); }
+		public ITerminalNode EXIT_FOR() { return GetToken(VBParser.EXIT_FOR, 0); }
+		public ITerminalNode EXIT_SUB() { return GetToken(VBParser.EXIT_SUB, 0); }
 		public ExitStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_exitStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterExitStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitExitStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitExitStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ExitStmtContext exitStmt() {
+	public ExitStmtContext ExitStmt() {
 		ExitStmtContext _localctx = new ExitStmtContext(_ctx, State);
 		EnterRule(_localctx, 62, RULE_exitStmt);
 		int _la;
@@ -3739,10 +3739,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode FILECOPY() { return GetToken(VisualBasic6Parser.FILECOPY, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode FILECOPY() { return GetToken(VBParser.FILECOPY, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -3753,15 +3753,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_filecopyStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterFilecopyStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitFilecopyStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFilecopyStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -3777,7 +3777,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 822; Match(FILECOPY);
 			State = 823; Match(WS);
-			State = 824; valueStmt(0);
+			State = 824; ValueStmt(0);
 			State = 826;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -3795,7 +3795,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 832; valueStmt(0);
+			State = 832; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3810,27 +3810,27 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ForEachStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VisualBasic6Parser.NEXT, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode NEXT() { return GetToken(VBParser.NEXT, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EACH() { return GetToken(VisualBasic6Parser.EACH, 0); }
+		public ITerminalNode EACH() { return GetToken(VBParser.EACH, 0); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
-		public ITerminalNode IN() { return GetToken(VisualBasic6Parser.IN, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public ITerminalNode IN() { return GetToken(VBParser.IN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
-		public ITerminalNode FOR() { return GetToken(VisualBasic6Parser.FOR, 0); }
+		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
@@ -3843,15 +3843,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_forEachStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterForEachStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitForEachStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitForEachStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -3869,7 +3869,7 @@ public partial class VisualBasic6Parser : Parser {
 			State = 835; Match(WS);
 			State = 836; Match(EACH);
 			State = 837; Match(WS);
-			State = 838; ambiguousIdentifier();
+			State = 838; AmbiguousIdentifier();
 			State = 840;
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
@@ -3881,7 +3881,7 @@ public partial class VisualBasic6Parser : Parser {
 			State = 842; Match(WS);
 			State = 843; Match(IN);
 			State = 844; Match(WS);
-			State = 845; valueStmt(0);
+			State = 845; ValueStmt(0);
 			State = 847;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -3899,7 +3899,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,88,_ctx) ) {
 			case 1:
 				{
-				State = 851; block();
+				State = 851; Block();
 				State = 853;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -3922,7 +3922,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				{
 				State = 860; Match(WS);
-				State = 861; ambiguousIdentifier();
+				State = 861; AmbiguousIdentifier();
 				}
 				break;
 			}
@@ -3940,37 +3940,37 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ForNextStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VisualBasic6Parser.NEXT, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBParser.NEXT, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode STEP() { return GetToken(VisualBasic6Parser.STEP, 0); }
+		public ITerminalNode STEP() { return GetToken(VBParser.STEP, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+		public IReadOnlyList<AmbiguousIdentifierContext> AmbiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
-		public ITerminalNode FOR() { return GetToken(VisualBasic6Parser.FOR, 0); }
+		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+		public AmbiguousIdentifierContext AmbiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -3980,15 +3980,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_forNextStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterForNextStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitForNextStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitForNextStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4004,7 +4004,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 864; Match(FOR);
 			State = 865; Match(WS);
-			State = 866; ambiguousIdentifier();
+			State = 866; AmbiguousIdentifier();
 			State = 868;
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
@@ -4039,11 +4039,11 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 881; valueStmt(0);
+			State = 881; ValueStmt(0);
 			State = 882; Match(WS);
 			State = 883; Match(TO);
 			State = 884; Match(WS);
-			State = 885; valueStmt(0);
+			State = 885; ValueStmt(0);
 			State = 890;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -4051,7 +4051,7 @@ public partial class VisualBasic6Parser : Parser {
 				State = 886; Match(WS);
 				State = 887; Match(STEP);
 				State = 888; Match(WS);
-				State = 889; valueStmt(0);
+				State = 889; ValueStmt(0);
 				}
 			}
 
@@ -4072,7 +4072,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,97,_ctx) ) {
 			case 1:
 				{
-				State = 897; block();
+				State = 897; Block();
 				State = 899;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -4095,7 +4095,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				{
 				State = 906; Match(WS);
-				State = 907; ambiguousIdentifier();
+				State = 907; AmbiguousIdentifier();
 				}
 				break;
 			}
@@ -4113,30 +4113,30 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class FunctionStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode FUNCTION() { return GetToken(VisualBasic6Parser.FUNCTION, 0); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode FUNCTION() { return GetToken(VBParser.FUNCTION, 0); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
-		public ITerminalNode END_FUNCTION() { return GetToken(VisualBasic6Parser.END_FUNCTION, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
+		public ITerminalNode END_FUNCTION() { return GetToken(VBParser.END_FUNCTION, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public BlockContext block() {
+		public BlockContext Block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public FunctionStmtContext(ParserRuleContext parent, int invokingState)
@@ -4145,22 +4145,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_functionStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterFunctionStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitFunctionStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFunctionStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public FunctionStmtContext functionStmt() {
+	public FunctionStmtContext FunctionStmt() {
 		FunctionStmtContext _localctx = new FunctionStmtContext(_ctx, State);
 		EnterRule(_localctx, 70, RULE_functionStmt);
 		int _la;
@@ -4187,7 +4187,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 919; Match(FUNCTION);
 			State = 920; Match(WS);
-			State = 921; ambiguousIdentifier();
+			State = 921; AmbiguousIdentifier();
 			State = 926;
 			switch ( Interpreter.AdaptivePredict(_input,102,_ctx) ) {
 			case 1:
@@ -4200,7 +4200,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 925; argList();
+				State = 925; ArgList();
 				}
 				break;
 			}
@@ -4230,7 +4230,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 937; block();
+				State = 937; Block();
 				State = 939;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -4262,13 +4262,13 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class GetStmtContext : ParserRuleContext {
-		public ITerminalNode GET() { return GetToken(VisualBasic6Parser.GET, 0); }
+		public ITerminalNode GET() { return GetToken(VBParser.GET, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -4279,15 +4279,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_getStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterGetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitGetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitGetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4303,7 +4303,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 947; Match(GET);
 			State = 948; Match(WS);
-			State = 949; valueStmt(0);
+			State = 949; ValueStmt(0);
 			State = 951;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -4325,7 +4325,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)) | (1L << (LPAREN - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (MINUS - 193)) | (1L << (PLUS - 193)) | (1L << (L_SQUARE_BRACKET - 193)) | (1L << (STRINGLITERAL - 193)) | (1L << (DATELITERAL - 193)) | (1L << (COLORLITERAL - 193)) | (1L << (INTEGERLITERAL - 193)) | (1L << (DOUBLELITERAL - 193)) | (1L << (FILENUMBER - 193)) | (1L << (IDENTIFIER - 193)))) != 0)) {
 				{
-				State = 957; valueStmt(0);
+				State = 957; ValueStmt(0);
 				}
 			}
 
@@ -4346,7 +4346,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 967; valueStmt(0);
+			State = 967; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4364,23 +4364,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode GOSUB() { return GetToken(VisualBasic6Parser.GOSUB, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode GOSUB() { return GetToken(VBParser.GOSUB, 0); }
 		public GoSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_goSubStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterGoSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitGoSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitGoSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4395,7 +4395,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 969; Match(GOSUB);
 			State = 970; Match(WS);
-			State = 971; valueStmt(0);
+			State = 971; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4410,26 +4410,26 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class GoToStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VisualBasic6Parser.GOTO, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBParser.GOTO, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public GoToStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_goToStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterGoToStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitGoToStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitGoToStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4444,7 +4444,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 973; Match(GOTO);
 			State = 974; Match(WS);
-			State = 975; valueStmt(0);
+			State = 975; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4474,7 +4474,7 @@ public partial class VisualBasic6Parser : Parser {
 		public IfElseBlockStmtContext ifElseBlockStmt() {
 			return GetRuleContext<IfElseBlockStmtContext>(0);
 		}
-		public ITerminalNode END_IF() { return GetToken(VisualBasic6Parser.END_IF, 0); }
+		public ITerminalNode END_IF() { return GetToken(VBParser.END_IF, 0); }
 		public IReadOnlyList<IfElseIfBlockStmtContext> ifElseIfBlockStmt() {
 			return GetRuleContexts<IfElseIfBlockStmtContext>();
 		}
@@ -4486,29 +4486,29 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public BlockIfThenElseContext(IfThenElseStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterBlockIfThenElse(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitBlockIfThenElse(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBlockIfThenElse(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class InlineIfThenElseContext : IfThenElseStmtContext {
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
-		public ITerminalNode IF() { return GetToken(VisualBasic6Parser.IF, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
+		public ITerminalNode IF() { return GetToken(VBParser.IF, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
 		}
-		public ITerminalNode ELSE() { return GetToken(VisualBasic6Parser.ELSE, 0); }
+		public ITerminalNode ELSE() { return GetToken(VBParser.ELSE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public IReadOnlyList<BlockStmtContext> blockStmt() {
 			return GetRuleContexts<BlockStmtContext>();
@@ -4518,15 +4518,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public InlineIfThenElseContext(IfThenElseStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterInlineIfThenElse(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitInlineIfThenElse(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitInlineIfThenElse(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4550,7 +4550,7 @@ public partial class VisualBasic6Parser : Parser {
 				State = 980; Match(WS);
 				State = 981; Match(THEN);
 				State = 982; Match(WS);
-				State = 983; blockStmt();
+				State = 983; BlockStmt();
 				State = 988;
 				switch ( Interpreter.AdaptivePredict(_input,112,_ctx) ) {
 				case 1:
@@ -4558,7 +4558,7 @@ public partial class VisualBasic6Parser : Parser {
 					State = 984; Match(WS);
 					State = 985; Match(ELSE);
 					State = 986; Match(WS);
-					State = 987; blockStmt();
+					State = 987; BlockStmt();
 					}
 					break;
 				}
@@ -4608,18 +4608,18 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class IfBlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
-		public ITerminalNode IF() { return GetToken(VisualBasic6Parser.IF, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
+		public ITerminalNode IF() { return GetToken(VBParser.IF, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -4630,15 +4630,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_ifBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterIfBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitIfBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4674,7 +4674,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,118,_ctx) ) {
 			case 1:
 				{
-				State = 1014; block();
+				State = 1014; Block();
 				State = 1016;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -4714,15 +4714,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_ifConditionStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterIfConditionStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitIfConditionStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfConditionStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4735,7 +4735,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 1022; valueStmt(0);
+			State = 1022; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -4750,18 +4750,18 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class IfElseIfBlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode ELSEIF() { return GetToken(VisualBasic6Parser.ELSEIF, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode ELSEIF() { return GetToken(VBParser.ELSEIF, 0); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -4772,15 +4772,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_ifElseIfBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterIfElseIfBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitIfElseIfBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfElseIfBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4816,7 +4816,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,121,_ctx) ) {
 			case 1:
 				{
-				State = 1034; block();
+				State = 1034; Block();
 				State = 1036;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -4847,11 +4847,11 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class IfElseBlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ITerminalNode ELSE() { return GetToken(VisualBasic6Parser.ELSE, 0); }
+		public ITerminalNode ELSE() { return GetToken(VBParser.ELSE, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
@@ -4861,15 +4861,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_ifElseBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterIfElseBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitIfElseBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfElseBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4901,7 +4901,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1048; block();
+				State = 1048; Block();
 				State = 1050;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -4935,23 +4935,23 @@ public partial class VisualBasic6Parser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode IMPLEMENTS() { return GetToken(VisualBasic6Parser.IMPLEMENTS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode IMPLEMENTS() { return GetToken(VBParser.IMPLEMENTS, 0); }
 		public ImplementsStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_implementsStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterImplementsStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitImplementsStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitImplementsStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -4966,7 +4966,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1056; Match(IMPLEMENTS);
 			State = 1057; Match(WS);
-			State = 1058; ambiguousIdentifier();
+			State = 1058; AmbiguousIdentifier();
 			}
 		}
 		catch (RecognitionException re) {
@@ -4984,10 +4984,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode INPUT() { return GetToken(VisualBasic6Parser.INPUT, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode INPUT() { return GetToken(VBParser.INPUT, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -4998,15 +4998,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_inputStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterInputStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitInputStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitInputStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5023,7 +5023,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1060; Match(INPUT);
 			State = 1061; Match(WS);
-			State = 1062; valueStmt(0);
+			State = 1062; ValueStmt(0);
 			State = 1071;
 			_errHandler.Sync(this);
 			_alt = 1;
@@ -5049,7 +5049,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 1070; valueStmt(0);
+					State = 1070; ValueStmt(0);
 					}
 					}
 					break;
@@ -5077,23 +5077,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode KILL() { return GetToken(VisualBasic6Parser.KILL, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode KILL() { return GetToken(VBParser.KILL, 0); }
 		public KillStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_killStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterKillStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitKillStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitKillStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5108,7 +5108,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1075; Match(KILL);
 			State = 1076; Match(WS);
-			State = 1077; valueStmt(0);
+			State = 1077; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5126,32 +5126,32 @@ public partial class VisualBasic6Parser : Parser {
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode PLUS_EQ() { return GetToken(VisualBasic6Parser.PLUS_EQ, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode PLUS_EQ() { return GetToken(VBParser.PLUS_EQ, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode LET() { return GetToken(VisualBasic6Parser.LET, 0); }
+		public ITerminalNode LET() { return GetToken(VBParser.LET, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode MINUS_EQ() { return GetToken(VisualBasic6Parser.MINUS_EQ, 0); }
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode MINUS_EQ() { return GetToken(VBParser.MINUS_EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public LetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_letStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5174,7 +5174,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 				break;
 			}
-			State = 1083; implicitCallStmt_InStmt();
+			State = 1083; ImplicitCallStmt_InStmt();
 			State = 1085;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -5197,7 +5197,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1091; valueStmt(0);
+			State = 1091; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5212,13 +5212,13 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class LineInputStmtContext : ParserRuleContext {
-		public ITerminalNode LINE_INPUT() { return GetToken(VisualBasic6Parser.LINE_INPUT, 0); }
+		public ITerminalNode LINE_INPUT() { return GetToken(VBParser.LINE_INPUT, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -5229,15 +5229,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_lineInputStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLineInputStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLineInputStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLineInputStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5253,7 +5253,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1093; Match(LINE_INPUT);
 			State = 1094; Match(WS);
-			State = 1095; valueStmt(0);
+			State = 1095; ValueStmt(0);
 			State = 1097;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -5271,7 +5271,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1103; valueStmt(0);
+			State = 1103; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5289,23 +5289,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode LOAD() { return GetToken(VisualBasic6Parser.LOAD, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode LOAD() { return GetToken(VBParser.LOAD, 0); }
 		public LoadStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_loadStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLoadStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLoadStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLoadStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5320,7 +5320,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1105; Match(LOAD);
 			State = 1106; Match(WS);
-			State = 1107; valueStmt(0);
+			State = 1107; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5338,12 +5338,12 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode LOCK() { return GetToken(VisualBasic6Parser.LOCK, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode LOCK() { return GetToken(VBParser.LOCK, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -5353,15 +5353,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_lockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5377,7 +5377,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1109; Match(LOCK);
 			State = 1110; Match(WS);
-			State = 1111; valueStmt(0);
+			State = 1111; ValueStmt(0);
 			State = 1126;
 			switch ( Interpreter.AdaptivePredict(_input,136,_ctx) ) {
 			case 1:
@@ -5399,7 +5399,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1119; valueStmt(0);
+				State = 1119; ValueStmt(0);
 				State = 1124;
 				switch ( Interpreter.AdaptivePredict(_input,135,_ctx) ) {
 				case 1:
@@ -5407,7 +5407,7 @@ public partial class VisualBasic6Parser : Parser {
 					State = 1120; Match(WS);
 					State = 1121; Match(TO);
 					State = 1122; Match(WS);
-					State = 1123; valueStmt(0);
+					State = 1123; ValueStmt(0);
 					}
 					break;
 				}
@@ -5434,27 +5434,27 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode LSET() { return GetToken(VisualBasic6Parser.LSET, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode LSET() { return GetToken(VBParser.LSET, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public LsetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_lsetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLsetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLsetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLsetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5470,7 +5470,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1128; Match(LSET);
 			State = 1129; Match(WS);
-			State = 1130; implicitCallStmt_InStmt();
+			State = 1130; ImplicitCallStmt_InStmt();
 			State = 1132;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -5488,7 +5488,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1138; valueStmt(0);
+			State = 1138; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5509,7 +5509,7 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<MacroElseIfBlockStmtContext> macroElseIfBlockStmt() {
 			return GetRuleContexts<MacroElseIfBlockStmtContext>();
 		}
-		public ITerminalNode MACRO_END_IF() { return GetToken(VisualBasic6Parser.MACRO_END_IF, 0); }
+		public ITerminalNode MACRO_END_IF() { return GetToken(VBParser.MACRO_END_IF, 0); }
 		public MacroElseIfBlockStmtContext macroElseIfBlockStmt(int i) {
 			return GetRuleContext<MacroElseIfBlockStmtContext>(i);
 		}
@@ -5522,22 +5522,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_macroIfThenElseStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMacroIfThenElseStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMacroIfThenElseStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMacroIfThenElseStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+	public MacroIfThenElseStmtContext MacroIfThenElseStmt() {
 		MacroIfThenElseStmtContext _localctx = new MacroIfThenElseStmtContext(_ctx, State);
 		EnterRule(_localctx, 104, RULE_macroIfThenElseStmt);
 		int _la;
@@ -5584,34 +5584,34 @@ public partial class VisualBasic6Parser : Parser {
 		public ModuleBodyContext moduleBody() {
 			return GetRuleContext<ModuleBodyContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode MACRO_IF() { return GetToken(VisualBasic6Parser.MACRO_IF, 0); }
+		public ITerminalNode MACRO_IF() { return GetToken(VBParser.MACRO_IF, 0); }
 		public MacroIfBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_macroIfBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMacroIfBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMacroIfBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMacroIfBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5647,7 +5647,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1162; moduleBody();
+				State = 1162; ModuleBody();
 				State = 1164;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -5681,34 +5681,34 @@ public partial class VisualBasic6Parser : Parser {
 		public ModuleBodyContext moduleBody() {
 			return GetRuleContext<ModuleBodyContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode MACRO_ELSEIF() { return GetToken(VisualBasic6Parser.MACRO_ELSEIF, 0); }
+		public ITerminalNode MACRO_ELSEIF() { return GetToken(VBParser.MACRO_ELSEIF, 0); }
 		public MacroElseIfBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_macroElseIfBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMacroElseIfBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMacroElseIfBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMacroElseIfBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5744,7 +5744,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1180; moduleBody();
+				State = 1180; ModuleBody();
 				State = 1182;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -5778,26 +5778,26 @@ public partial class VisualBasic6Parser : Parser {
 		public ModuleBodyContext moduleBody() {
 			return GetRuleContext<ModuleBodyContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ITerminalNode MACRO_ELSE() { return GetToken(VisualBasic6Parser.MACRO_ELSE, 0); }
+		public ITerminalNode MACRO_ELSE() { return GetToken(VBParser.MACRO_ELSE, 0); }
 		public MacroElseBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_macroElseBlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMacroElseBlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMacroElseBlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMacroElseBlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5829,7 +5829,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1194; moduleBody();
+				State = 1194; ModuleBody();
 				State = 1196;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -5860,31 +5860,31 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class MidStmtContext : ParserRuleContext {
-		public ITerminalNode MID() { return GetToken(VisualBasic6Parser.MID, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode MID() { return GetToken(VBParser.MID, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public MidStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_midStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMidStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMidStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMidStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5943,23 +5943,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode MKDIR() { return GetToken(VisualBasic6Parser.MKDIR, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode MKDIR() { return GetToken(VBParser.MKDIR, 0); }
 		public MkdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_mkdirStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMkdirStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMkdirStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMkdirStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -5974,7 +5974,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1216; Match(MKDIR);
 			State = 1217; Match(WS);
-			State = 1218; valueStmt(0);
+			State = 1218; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -5989,14 +5989,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class NameStmtContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VisualBasic6Parser.AS, 0); }
+		public ITerminalNode AS() { return GetToken(VBParser.AS, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode NAME() { return GetToken(VisualBasic6Parser.NAME, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode NAME() { return GetToken(VBParser.NAME, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -6007,15 +6007,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_nameStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterNameStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitNameStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNameStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6030,11 +6030,11 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1220; Match(NAME);
 			State = 1221; Match(WS);
-			State = 1222; valueStmt(0);
+			State = 1222; ValueStmt(0);
 			State = 1223; Match(WS);
 			State = 1224; Match(AS);
 			State = 1225; Match(WS);
-			State = 1226; valueStmt(0);
+			State = 1226; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6049,32 +6049,32 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OnErrorStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VisualBasic6Parser.GOTO, 0); }
-		public ITerminalNode NEXT() { return GetToken(VisualBasic6Parser.NEXT, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBParser.GOTO, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBParser.NEXT, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode ON_ERROR() { return GetToken(VisualBasic6Parser.ON_ERROR, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode ON_ERROR() { return GetToken(VBParser.ON_ERROR, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode RESUME() { return GetToken(VisualBasic6Parser.RESUME, 0); }
+		public ITerminalNode RESUME() { return GetToken(VBParser.RESUME, 0); }
 		public OnErrorStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_onErrorStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOnErrorStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOnErrorStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOnErrorStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6095,7 +6095,7 @@ public partial class VisualBasic6Parser : Parser {
 				{
 				State = 1230; Match(GOTO);
 				State = 1231; Match(WS);
-				State = 1232; valueStmt(0);
+				State = 1232; ValueStmt(0);
 				}
 				break;
 			case RESUME:
@@ -6122,14 +6122,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OnGoToStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VisualBasic6Parser.GOTO, 0); }
-		public ITerminalNode ON() { return GetToken(VisualBasic6Parser.ON, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBParser.GOTO, 0); }
+		public ITerminalNode ON() { return GetToken(VBParser.ON, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -6140,15 +6140,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_onGoToStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOnGoToStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOnGoToStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOnGoToStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6165,11 +6165,11 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1238; Match(ON);
 			State = 1239; Match(WS);
-			State = 1240; valueStmt(0);
+			State = 1240; ValueStmt(0);
 			State = 1241; Match(WS);
 			State = 1242; Match(GOTO);
 			State = 1243; Match(WS);
-			State = 1244; valueStmt(0);
+			State = 1244; ValueStmt(0);
 			State = 1255;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,156,_ctx);
@@ -6194,7 +6194,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 1252; valueStmt(0);
+					State = 1252; ValueStmt(0);
 					}
 					} 
 				}
@@ -6216,14 +6216,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OnGoSubStmtContext : ParserRuleContext {
-		public ITerminalNode ON() { return GetToken(VisualBasic6Parser.ON, 0); }
+		public ITerminalNode ON() { return GetToken(VBParser.ON, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode GOSUB() { return GetToken(VisualBasic6Parser.GOSUB, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode GOSUB() { return GetToken(VBParser.GOSUB, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -6234,15 +6234,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_onGoSubStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOnGoSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOnGoSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOnGoSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6259,11 +6259,11 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1258; Match(ON);
 			State = 1259; Match(WS);
-			State = 1260; valueStmt(0);
+			State = 1260; ValueStmt(0);
 			State = 1261; Match(WS);
 			State = 1262; Match(GOSUB);
 			State = 1263; Match(WS);
-			State = 1264; valueStmt(0);
+			State = 1264; ValueStmt(0);
 			State = 1275;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,159,_ctx);
@@ -6288,7 +6288,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 1272; valueStmt(0);
+					State = 1272; ValueStmt(0);
 					}
 					} 
 				}
@@ -6310,49 +6310,49 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OpenStmtContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VisualBasic6Parser.AS, 0); }
-		public ITerminalNode READ_WRITE() { return GetToken(VisualBasic6Parser.READ_WRITE, 0); }
-		public ITerminalNode LEN() { return GetToken(VisualBasic6Parser.LEN, 0); }
-		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VisualBasic6Parser.LOCK_READ_WRITE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode AS() { return GetToken(VBParser.AS, 0); }
+		public ITerminalNode READ_WRITE() { return GetToken(VBParser.READ_WRITE, 0); }
+		public ITerminalNode LEN() { return GetToken(VBParser.LEN, 0); }
+		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBParser.LOCK_READ_WRITE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode APPEND() { return GetToken(VisualBasic6Parser.APPEND, 0); }
-		public ITerminalNode INPUT() { return GetToken(VisualBasic6Parser.INPUT, 0); }
-		public ITerminalNode ACCESS() { return GetToken(VisualBasic6Parser.ACCESS, 0); }
+		public ITerminalNode APPEND() { return GetToken(VBParser.APPEND, 0); }
+		public ITerminalNode INPUT() { return GetToken(VBParser.INPUT, 0); }
+		public ITerminalNode ACCESS() { return GetToken(VBParser.ACCESS, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LOCK_WRITE() { return GetToken(VisualBasic6Parser.LOCK_WRITE, 0); }
-		public ITerminalNode RANDOM() { return GetToken(VisualBasic6Parser.RANDOM, 0); }
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
-		public ITerminalNode FOR() { return GetToken(VisualBasic6Parser.FOR, 0); }
-		public ITerminalNode READ() { return GetToken(VisualBasic6Parser.READ, 0); }
-		public ITerminalNode OPEN() { return GetToken(VisualBasic6Parser.OPEN, 0); }
-		public ITerminalNode SHARED() { return GetToken(VisualBasic6Parser.SHARED, 0); }
-		public ITerminalNode OUTPUT() { return GetToken(VisualBasic6Parser.OUTPUT, 0); }
-		public ITerminalNode WRITE() { return GetToken(VisualBasic6Parser.WRITE, 0); }
-		public ITerminalNode LOCK_READ() { return GetToken(VisualBasic6Parser.LOCK_READ, 0); }
+		public ITerminalNode LOCK_WRITE() { return GetToken(VBParser.LOCK_WRITE, 0); }
+		public ITerminalNode RANDOM() { return GetToken(VBParser.RANDOM, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
+		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
+		public ITerminalNode READ() { return GetToken(VBParser.READ, 0); }
+		public ITerminalNode OPEN() { return GetToken(VBParser.OPEN, 0); }
+		public ITerminalNode SHARED() { return GetToken(VBParser.SHARED, 0); }
+		public ITerminalNode OUTPUT() { return GetToken(VBParser.OUTPUT, 0); }
+		public ITerminalNode WRITE() { return GetToken(VBParser.WRITE, 0); }
+		public ITerminalNode LOCK_READ() { return GetToken(VBParser.LOCK_READ, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode BINARY() { return GetToken(VisualBasic6Parser.BINARY, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBParser.BINARY, 0); }
 		public OpenStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_openStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOpenStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOpenStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOpenStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6368,7 +6368,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1278; Match(OPEN);
 			State = 1279; Match(WS);
-			State = 1280; valueStmt(0);
+			State = 1280; ValueStmt(0);
 			State = 1281; Match(WS);
 			State = 1282; Match(FOR);
 			State = 1283; Match(WS);
@@ -6411,7 +6411,7 @@ public partial class VisualBasic6Parser : Parser {
 			State = 1295; Match(WS);
 			State = 1296; Match(AS);
 			State = 1297; Match(WS);
-			State = 1298; valueStmt(0);
+			State = 1298; ValueStmt(0);
 			State = 1309;
 			switch ( Interpreter.AdaptivePredict(_input,164,_ctx) ) {
 			case 1:
@@ -6435,7 +6435,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1308; valueStmt(0);
+				State = 1308; ValueStmt(0);
 				}
 				break;
 			}
@@ -6453,12 +6453,12 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OutputListContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<OutputList_ExpressionContext> outputList_Expression() {
 			return GetRuleContexts<OutputList_ExpressionContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public OutputList_ExpressionContext outputList_Expression(int i) {
 			return GetRuleContext<OutputList_ExpressionContext>(i);
@@ -6469,15 +6469,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_outputList; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOutputList(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOutputList(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOutputList(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6618,35 +6618,35 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class OutputList_ExpressionContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode SPC() { return GetToken(VisualBasic6Parser.SPC, 0); }
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode SPC() { return GetToken(VBParser.SPC, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
-		public ITerminalNode TAB() { return GetToken(VisualBasic6Parser.TAB, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
+		public ITerminalNode TAB() { return GetToken(VBParser.TAB, 0); }
 		public OutputList_ExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_outputList_Expression; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterOutputList_Expression(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitOutputList_Expression(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOutputList_Expression(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6663,7 +6663,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 1346; valueStmt(0);
+				State = 1346; ValueStmt(0);
 				}
 				break;
 
@@ -6726,16 +6726,16 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class PrintStmtContext : ParserRuleContext {
-		public ITerminalNode PRINT() { return GetToken(VisualBasic6Parser.PRINT, 0); }
+		public ITerminalNode PRINT() { return GetToken(VBParser.PRINT, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public OutputListContext outputList() {
 			return GetRuleContext<OutputListContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public PrintStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -6743,15 +6743,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_printStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterPrintStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitPrintStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPrintStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -6767,7 +6767,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1365; Match(PRINT);
 			State = 1366; Match(WS);
-			State = 1367; valueStmt(0);
+			State = 1367; ValueStmt(0);
 			State = 1369;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -6807,30 +6807,30 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class PropertyGetStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VisualBasic6Parser.END_PROPERTY, 0); }
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
+		public ITerminalNode END_PROPERTY() { return GetToken(VBParser.END_PROPERTY, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public BlockContext block() {
+		public BlockContext Block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public ITerminalNode PROPERTY_GET() { return GetToken(VisualBasic6Parser.PROPERTY_GET, 0); }
-		public VisibilityContext visibility() {
+		public ITerminalNode PROPERTY_GET() { return GetToken(VBParser.PROPERTY_GET, 0); }
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public PropertyGetStmtContext(ParserRuleContext parent, int invokingState)
@@ -6839,22 +6839,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_propertyGetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterPropertyGetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitPropertyGetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPropertyGetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public PropertyGetStmtContext propertyGetStmt() {
+	public PropertyGetStmtContext PropertyGetStmt() {
 		PropertyGetStmtContext _localctx = new PropertyGetStmtContext(_ctx, State);
 		EnterRule(_localctx, 132, RULE_propertyGetStmt);
 		int _la;
@@ -6881,7 +6881,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 1387; Match(PROPERTY_GET);
 			State = 1388; Match(WS);
-			State = 1389; ambiguousIdentifier();
+			State = 1389; AmbiguousIdentifier();
 			State = 1394;
 			switch ( Interpreter.AdaptivePredict(_input,186,_ctx) ) {
 			case 1:
@@ -6894,7 +6894,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1393; argList();
+				State = 1393; ArgList();
 				}
 				break;
 			}
@@ -6924,7 +6924,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1405; block();
+				State = 1405; Block();
 				State = 1407;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -6956,51 +6956,51 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class PropertySetStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VisualBasic6Parser.END_PROPERTY, 0); }
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
+		public ITerminalNode END_PROPERTY() { return GetToken(VBParser.END_PROPERTY, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public BlockContext block() {
+		public BlockContext Block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode PROPERTY_SET() { return GetToken(VisualBasic6Parser.PROPERTY_SET, 0); }
+		public ITerminalNode PROPERTY_SET() { return GetToken(VBParser.PROPERTY_SET, 0); }
 		public PropertySetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_propertySetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterPropertySetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitPropertySetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPropertySetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public PropertySetStmtContext propertySetStmt() {
+	public PropertySetStmtContext PropertySetStmt() {
 		PropertySetStmtContext _localctx = new PropertySetStmtContext(_ctx, State);
 		EnterRule(_localctx, 134, RULE_propertySetStmt);
 		int _la;
@@ -7027,7 +7027,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 1424; Match(PROPERTY_SET);
 			State = 1425; Match(WS);
-			State = 1426; ambiguousIdentifier();
+			State = 1426; AmbiguousIdentifier();
 			State = 1431;
 			_la = _input.La(1);
 			if (_la==LPAREN || _la==WS) {
@@ -7040,7 +7040,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1430; argList();
+				State = 1430; ArgList();
 				}
 			}
 
@@ -7061,7 +7061,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1438; block();
+				State = 1438; Block();
 				State = 1440;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -7093,27 +7093,27 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class PropertyLetStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VisualBasic6Parser.END_PROPERTY, 0); }
-		public ITerminalNode PROPERTY_LET() { return GetToken(VisualBasic6Parser.PROPERTY_LET, 0); }
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
+		public ITerminalNode END_PROPERTY() { return GetToken(VBParser.END_PROPERTY, 0); }
+		public ITerminalNode PROPERTY_LET() { return GetToken(VBParser.PROPERTY_LET, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public BlockContext block() {
+		public BlockContext Block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
 		public PropertyLetStmtContext(ParserRuleContext parent, int invokingState)
@@ -7122,22 +7122,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_propertyLetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterPropertyLetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitPropertyLetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPropertyLetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public PropertyLetStmtContext propertyLetStmt() {
+	public PropertyLetStmtContext PropertyLetStmt() {
 		PropertyLetStmtContext _localctx = new PropertyLetStmtContext(_ctx, State);
 		EnterRule(_localctx, 136, RULE_propertyLetStmt);
 		int _la;
@@ -7164,7 +7164,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 1457; Match(PROPERTY_LET);
 			State = 1458; Match(WS);
-			State = 1459; ambiguousIdentifier();
+			State = 1459; AmbiguousIdentifier();
 			State = 1464;
 			_la = _input.La(1);
 			if (_la==LPAREN || _la==WS) {
@@ -7177,7 +7177,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1463; argList();
+				State = 1463; ArgList();
 				}
 			}
 
@@ -7198,7 +7198,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1471; block();
+				State = 1471; Block();
 				State = 1473;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -7230,13 +7230,13 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class PutStmtContext : ParserRuleContext {
-		public ITerminalNode PUT() { return GetToken(VisualBasic6Parser.PUT, 0); }
+		public ITerminalNode PUT() { return GetToken(VBParser.PUT, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -7247,15 +7247,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_putStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterPutStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitPutStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPutStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7271,7 +7271,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1481; Match(PUT);
 			State = 1482; Match(WS);
-			State = 1483; valueStmt(0);
+			State = 1483; ValueStmt(0);
 			State = 1485;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -7293,7 +7293,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)) | (1L << (LPAREN - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (MINUS - 193)) | (1L << (PLUS - 193)) | (1L << (L_SQUARE_BRACKET - 193)) | (1L << (STRINGLITERAL - 193)) | (1L << (DATELITERAL - 193)) | (1L << (COLORLITERAL - 193)) | (1L << (INTEGERLITERAL - 193)) | (1L << (DOUBLELITERAL - 193)) | (1L << (FILENUMBER - 193)) | (1L << (IDENTIFIER - 193)))) != 0)) {
 				{
-				State = 1491; valueStmt(0);
+				State = 1491; ValueStmt(0);
 				}
 			}
 
@@ -7314,7 +7314,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1501; valueStmt(0);
+			State = 1501; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -7332,31 +7332,31 @@ public partial class VisualBasic6Parser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
-		public ITerminalNode RAISEEVENT() { return GetToken(VisualBasic6Parser.RAISEEVENT, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
+		public ITerminalNode RAISEEVENT() { return GetToken(VBParser.RAISEEVENT, 0); }
 		public RaiseEventStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_raiseEventStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRaiseEventStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRaiseEventStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRaiseEventStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7372,7 +7372,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1503; Match(RAISEEVENT);
 			State = 1504; Match(WS);
-			State = 1505; ambiguousIdentifier();
+			State = 1505; AmbiguousIdentifier();
 			State = 1520;
 			switch ( Interpreter.AdaptivePredict(_input,214,_ctx) ) {
 			case 1:
@@ -7431,23 +7431,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode RANDOMIZE() { return GetToken(VisualBasic6Parser.RANDOMIZE, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode RANDOMIZE() { return GetToken(VBParser.RANDOMIZE, 0); }
 		public RandomizeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_randomizeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRandomizeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRandomizeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRandomizeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7466,7 +7466,7 @@ public partial class VisualBasic6Parser : Parser {
 			case 1:
 				{
 				State = 1523; Match(WS);
-				State = 1524; valueStmt(0);
+				State = 1524; ValueStmt(0);
 				}
 				break;
 			}
@@ -7490,11 +7490,11 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<RedimSubStmtContext> redimSubStmt() {
 			return GetRuleContexts<RedimSubStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode PRESERVE() { return GetToken(VisualBasic6Parser.PRESERVE, 0); }
-		public ITerminalNode REDIM() { return GetToken(VisualBasic6Parser.REDIM, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode PRESERVE() { return GetToken(VBParser.PRESERVE, 0); }
+		public ITerminalNode REDIM() { return GetToken(VBParser.REDIM, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public RedimStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -7502,15 +7502,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_redimStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRedimStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRedimStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRedimStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7589,30 +7589,30 @@ public partial class VisualBasic6Parser : Parser {
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public SubscriptsContext subscripts() {
 			return GetRuleContext<SubscriptsContext>(0);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public RedimSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_redimSubStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRedimSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRedimSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRedimSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7626,7 +7626,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 1547; implicitCallStmt_InStmt();
+			State = 1547; ImplicitCallStmt_InStmt();
 			State = 1549;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -7644,7 +7644,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1555; subscripts();
+			State = 1555; Subscripts();
 			State = 1557;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -7677,22 +7677,22 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ResetStmtContext : ParserRuleContext {
-		public ITerminalNode RESET() { return GetToken(VisualBasic6Parser.RESET, 0); }
+		public ITerminalNode RESET() { return GetToken(VBParser.RESET, 0); }
 		public ResetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_resetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterResetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitResetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitResetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7720,27 +7720,27 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ResumeStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VisualBasic6Parser.NEXT, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBParser.NEXT, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode RESUME() { return GetToken(VisualBasic6Parser.RESUME, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode RESUME() { return GetToken(VBParser.RESUME, 0); }
 		public ResumeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_resumeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterResumeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitResumeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitResumeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7769,7 +7769,7 @@ public partial class VisualBasic6Parser : Parser {
 
 				case 2:
 					{
-					State = 1569; ambiguousIdentifier();
+					State = 1569; AmbiguousIdentifier();
 					}
 					break;
 				}
@@ -7790,22 +7790,22 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ReturnStmtContext : ParserRuleContext {
-		public ITerminalNode RETURN() { return GetToken(VisualBasic6Parser.RETURN, 0); }
+		public ITerminalNode RETURN() { return GetToken(VBParser.RETURN, 0); }
 		public ReturnStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_returnStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterReturnStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitReturnStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitReturnStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7836,23 +7836,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode RMDIR() { return GetToken(VisualBasic6Parser.RMDIR, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode RMDIR() { return GetToken(VBParser.RMDIR, 0); }
 		public RmdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_rmdirStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRmdirStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRmdirStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRmdirStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7867,7 +7867,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1576; Match(RMDIR);
 			State = 1577; Match(WS);
-			State = 1578; valueStmt(0);
+			State = 1578; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -7888,27 +7888,27 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode RSET() { return GetToken(VisualBasic6Parser.RSET, 0); }
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode RSET() { return GetToken(VBParser.RSET, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public RsetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_rsetStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterRsetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitRsetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRsetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7924,7 +7924,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1580; Match(RSET);
 			State = 1581; Match(WS);
-			State = 1582; implicitCallStmt_InStmt();
+			State = 1582; ImplicitCallStmt_InStmt();
 			State = 1584;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -7942,7 +7942,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1590; valueStmt(0);
+			State = 1590; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -7960,29 +7960,29 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode SAVEPICTURE() { return GetToken(VisualBasic6Parser.SAVEPICTURE, 0); }
+		public ITerminalNode SAVEPICTURE() { return GetToken(VBParser.SAVEPICTURE, 0); }
 		public SavepictureStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_savepictureStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSavepictureStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSavepictureStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSavepictureStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -7998,7 +7998,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1592; Match(SAVEPICTURE);
 			State = 1593; Match(WS);
-			State = 1594; valueStmt(0);
+			State = 1594; ValueStmt(0);
 			State = 1596;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8016,7 +8016,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1602; valueStmt(0);
+			State = 1602; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -8034,10 +8034,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode SAVESETTING() { return GetToken(VisualBasic6Parser.SAVESETTING, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode SAVESETTING() { return GetToken(VBParser.SAVESETTING, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -8048,15 +8048,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_saveSettingStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSaveSettingStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSaveSettingStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSaveSettingStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8072,7 +8072,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1604; Match(SAVESETTING);
 			State = 1605; Match(WS);
-			State = 1606; valueStmt(0);
+			State = 1606; ValueStmt(0);
 			State = 1608;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8090,7 +8090,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1614; valueStmt(0);
+			State = 1614; ValueStmt(0);
 			State = 1616;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8108,7 +8108,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1622; valueStmt(0);
+			State = 1622; ValueStmt(0);
 			State = 1624;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8126,7 +8126,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1630; valueStmt(0);
+			State = 1630; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -8144,29 +8144,29 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode SEEK() { return GetToken(VisualBasic6Parser.SEEK, 0); }
+		public ITerminalNode SEEK() { return GetToken(VBParser.SEEK, 0); }
 		public SeekStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_seekStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSeekStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSeekStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSeekStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8182,7 +8182,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1632; Match(SEEK);
 			State = 1633; Match(WS);
-			State = 1634; valueStmt(0);
+			State = 1634; ValueStmt(0);
 			State = 1636;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8200,7 +8200,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1642; valueStmt(0);
+			State = 1642; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -8215,26 +8215,26 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SelectCaseStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public SC_CaseElseContext sC_CaseElse() {
 			return GetRuleContext<SC_CaseElseContext>(0);
 		}
 		public IReadOnlyList<SC_CaseContext> sC_Case() {
 			return GetRuleContexts<SC_CaseContext>();
 		}
-		public ITerminalNode CASE() { return GetToken(VisualBasic6Parser.CASE, 0); }
-		public ITerminalNode END_SELECT() { return GetToken(VisualBasic6Parser.END_SELECT, 0); }
+		public ITerminalNode CASE() { return GetToken(VBParser.CASE, 0); }
+		public ITerminalNode END_SELECT() { return GetToken(VBParser.END_SELECT, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode SELECT() { return GetToken(VisualBasic6Parser.SELECT, 0); }
+		public ITerminalNode SELECT() { return GetToken(VBParser.SELECT, 0); }
 		public SC_CaseContext sC_Case(int i) {
 			return GetRuleContext<SC_CaseContext>(i);
 		}
@@ -8244,15 +8244,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_selectCaseStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSelectCaseStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSelectCaseStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSelectCaseStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8271,7 +8271,7 @@ public partial class VisualBasic6Parser : Parser {
 			State = 1645; Match(WS);
 			State = 1646; Match(CASE);
 			State = 1647; Match(WS);
-			State = 1648; valueStmt(0);
+			State = 1648; ValueStmt(0);
 			State = 1650;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -8331,14 +8331,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SC_CaseContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode CASE() { return GetToken(VisualBasic6Parser.CASE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode CASE() { return GetToken(VBParser.CASE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -8352,15 +8352,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_sC_Case; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSC_Case(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSC_Case(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSC_Case(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8435,7 +8435,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,248,_ctx) ) {
 			case 1:
 				{
-				State = 1690; block();
+				State = 1690; Block();
 				State = 1692;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -8481,79 +8481,79 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VisualBasic6Parser.INTEGERLITERAL, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBParser.INTEGERLITERAL, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public CaseCondToContext(SC_CondContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterCaseCondTo(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitCaseCondTo(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCaseCondTo(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class CaseCondValueContext : SC_CondContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public CaseCondValueContext(SC_CondContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterCaseCondValue(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitCaseCondValue(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCaseCondValue(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class CaseCondIsContext : SC_CondContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode IS() { return GetToken(VisualBasic6Parser.IS, 0); }
+		public ITerminalNode IS() { return GetToken(VBParser.IS, 0); }
 		public ComparisonOperatorContext comparisonOperator() {
 			return GetRuleContext<ComparisonOperatorContext>(0);
 		}
 		public CaseCondIsContext(SC_CondContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterCaseCondIs(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitCaseCondIs(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCaseCondIs(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8590,7 +8590,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1706; valueStmt(0);
+				State = 1706; ValueStmt(0);
 				}
 				break;
 
@@ -8598,7 +8598,7 @@ public partial class VisualBasic6Parser : Parser {
 				_localctx = new CaseCondValueContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 1708; valueStmt(0);
+				State = 1708; ValueStmt(0);
 				State = 1719;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,253,_ctx);
@@ -8623,7 +8623,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 1716; valueStmt(0);
+						State = 1716; ValueStmt(0);
 						}
 						} 
 					}
@@ -8642,7 +8642,7 @@ public partial class VisualBasic6Parser : Parser {
 				State = 1723; Match(WS);
 				State = 1724; Match(TO);
 				State = 1725; Match(WS);
-				State = 1726; valueStmt(0);
+				State = 1726; ValueStmt(0);
 				State = 1737;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,256,_ctx);
@@ -8667,7 +8667,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 1734; valueStmt(0);
+						State = 1734; ValueStmt(0);
 						}
 						} 
 					}
@@ -8691,15 +8691,15 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SC_CaseElseContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode ELSE() { return GetToken(VisualBasic6Parser.ELSE, 0); }
-		public ITerminalNode CASE() { return GetToken(VisualBasic6Parser.CASE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode ELSE() { return GetToken(VBParser.ELSE, 0); }
+		public ITerminalNode CASE() { return GetToken(VBParser.CASE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -8710,15 +8710,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_sC_CaseElse; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSC_CaseElse(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSC_CaseElse(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSC_CaseElse(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8793,7 +8793,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1764; block();
+				State = 1764; Block();
 				State = 1766;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -8827,10 +8827,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode SENDKEYS() { return GetToken(VisualBasic6Parser.SENDKEYS, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode SENDKEYS() { return GetToken(VBParser.SENDKEYS, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -8841,15 +8841,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_sendkeysStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSendkeysStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSendkeysStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSendkeysStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -8865,7 +8865,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1772; Match(SENDKEYS);
 			State = 1773; Match(WS);
-			State = 1774; valueStmt(0);
+			State = 1774; ValueStmt(0);
 			State = 1783;
 			switch ( Interpreter.AdaptivePredict(_input,267,_ctx) ) {
 			case 1:
@@ -8887,7 +8887,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1782; valueStmt(0);
+				State = 1782; ValueStmt(0);
 				}
 				break;
 			}
@@ -8904,41 +8904,41 @@ public partial class VisualBasic6Parser : Parser {
 		return _localctx;
 	}
 
-	public partial class SetattrStmtContext : ParserRuleContext {
+	public partial class SetAttrStmtContext : ParserRuleContext {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode SETATTR() { return GetToken(VisualBasic6Parser.SETATTR, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode SETATTR() { return GetToken(VBParser.SETATTR, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public SetattrStmtContext(ParserRuleContext parent, int invokingState)
+		public SetAttrStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_setattrStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSetattrStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSetattrStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSetattrStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public SetattrStmtContext setattrStmt() {
-		SetattrStmtContext _localctx = new SetattrStmtContext(_ctx, State);
+	public SetAttrStmtContext setattrStmt() {
+		SetAttrStmtContext _localctx = new SetAttrStmtContext(_ctx, State);
 		EnterRule(_localctx, 174, RULE_setattrStmt);
 		int _la;
 		try {
@@ -8946,7 +8946,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1785; Match(SETATTR);
 			State = 1786; Match(WS);
-			State = 1787; valueStmt(0);
+			State = 1787; ValueStmt(0);
 			State = 1789;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8964,7 +8964,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1795; valueStmt(0);
+			State = 1795; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -8979,33 +8979,33 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SetStmtContext : ParserRuleContext {
-		public ITerminalNode SET() { return GetToken(VisualBasic6Parser.SET, 0); }
+		public ITerminalNode SET() { return GetToken(VBParser.SET, 0); }
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public SetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_setStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSetStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSetStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSetStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9021,7 +9021,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1797; Match(SET);
 			State = 1798; Match(WS);
-			State = 1799; implicitCallStmt_InStmt();
+			State = 1799; ImplicitCallStmt_InStmt();
 			State = 1801;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -9039,7 +9039,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1807; valueStmt(0);
+			State = 1807; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -9054,22 +9054,22 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class StopStmtContext : ParserRuleContext {
-		public ITerminalNode STOP() { return GetToken(VisualBasic6Parser.STOP, 0); }
+		public ITerminalNode STOP() { return GetToken(VBParser.STOP, 0); }
 		public StopStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_stopStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterStopStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitStopStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitStopStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9097,51 +9097,51 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SubStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ITerminalNode END_SUB() { return GetToken(VisualBasic6Parser.END_SUB, 0); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public ITerminalNode END_SUB() { return GetToken(VBParser.END_SUB, 0); }
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ArgListContext argList() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ArgListContext ArgList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public BlockContext block() {
+		public BlockContext Block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode SUB() { return GetToken(VisualBasic6Parser.SUB, 0); }
+		public ITerminalNode SUB() { return GetToken(VBParser.SUB, 0); }
 		public SubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_subStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public SubStmtContext subStmt() {
+	public SubStmtContext SubStmt() {
 		SubStmtContext _localctx = new SubStmtContext(_ctx, State);
 		EnterRule(_localctx, 180, RULE_subStmt);
 		int _la;
@@ -9168,7 +9168,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 1820; Match(SUB);
 			State = 1821; Match(WS);
-			State = 1822; ambiguousIdentifier();
+			State = 1822; AmbiguousIdentifier();
 			State = 1827;
 			_la = _input.La(1);
 			if (_la==LPAREN || _la==WS) {
@@ -9181,7 +9181,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1826; argList();
+				State = 1826; ArgList();
 				}
 			}
 
@@ -9202,7 +9202,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 1834; block();
+				State = 1834; Block();
 				State = 1836;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -9234,30 +9234,30 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class TimeStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode TIME() { return GetToken(VisualBasic6Parser.TIME, 0); }
+		public ITerminalNode TIME() { return GetToken(VBParser.TIME, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public TimeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_timeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterTimeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitTimeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTimeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9289,7 +9289,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 1852; valueStmt(0);
+			State = 1852; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -9304,50 +9304,50 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class TypeStmtContext : ParserRuleContext {
-		public IReadOnlyList<TypeStmt_ElementContext> typeStmt_Element() {
+		public IReadOnlyList<TypeStmt_ElementContext> TypeStmt_Element() {
 			return GetRuleContexts<TypeStmt_ElementContext>();
 		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public TypeStmt_ElementContext typeStmt_Element(int i) {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public TypeStmt_ElementContext TypeStmt_Element(int i) {
 			return GetRuleContext<TypeStmt_ElementContext>(i);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode END_TYPE() { return GetToken(VisualBasic6Parser.END_TYPE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode END_TYPE() { return GetToken(VBParser.END_TYPE, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode TYPE() { return GetToken(VisualBasic6Parser.TYPE, 0); }
+		public ITerminalNode TYPE() { return GetToken(VBParser.TYPE, 0); }
 		public TypeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_typeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterTypeStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitTypeStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTypeStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public TypeStmtContext typeStmt() {
+	public TypeStmtContext TypeStmt() {
 		TypeStmtContext _localctx = new TypeStmtContext(_ctx, State);
 		EnterRule(_localctx, 184, RULE_typeStmt);
 		int _la;
@@ -9365,7 +9365,7 @@ public partial class VisualBasic6Parser : Parser {
 
 			State = 1859; Match(TYPE);
 			State = 1860; Match(WS);
-			State = 1861; ambiguousIdentifier();
+			State = 1861; AmbiguousIdentifier();
 			State = 1863;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -9407,40 +9407,40 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class TypeStmt_ElementContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public SubscriptsContext subscripts() {
 			return GetRuleContext<SubscriptsContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public TypeStmt_ElementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_typeStmt_Element; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterTypeStmt_Element(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitTypeStmt_Element(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTypeStmt_Element(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9454,7 +9454,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 1875; ambiguousIdentifier();
+			State = 1875; AmbiguousIdentifier();
 			State = 1890;
 			switch ( Interpreter.AdaptivePredict(_input,288,_ctx) ) {
 			case 1:
@@ -9480,7 +9480,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 1883; subscripts();
+					State = 1883; Subscripts();
 					}
 					break;
 				}
@@ -9535,30 +9535,30 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode TYPEOF() { return GetToken(VisualBasic6Parser.TYPEOF, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode TYPEOF() { return GetToken(VBParser.TYPEOF, 0); }
 		public TypeContext type() {
 			return GetRuleContext<TypeContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode IS() { return GetToken(VisualBasic6Parser.IS, 0); }
+		public ITerminalNode IS() { return GetToken(VBParser.IS, 0); }
 		public TypeOfStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_typeOfStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterTypeOfStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitTypeOfStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTypeOfStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9573,7 +9573,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1901; Match(TYPEOF);
 			State = 1902; Match(WS);
-			State = 1903; valueStmt(0);
+			State = 1903; ValueStmt(0);
 			State = 1908;
 			switch ( Interpreter.AdaptivePredict(_input,291,_ctx) ) {
 			case 1:
@@ -9602,23 +9602,23 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode UNLOAD() { return GetToken(VisualBasic6Parser.UNLOAD, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode UNLOAD() { return GetToken(VBParser.UNLOAD, 0); }
 		public UnloadStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_unloadStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterUnloadStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitUnloadStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitUnloadStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9633,7 +9633,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1910; Match(UNLOAD);
 			State = 1911; Match(WS);
-			State = 1912; valueStmt(0);
+			State = 1912; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -9651,12 +9651,12 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode UNLOCK() { return GetToken(VisualBasic6Parser.UNLOCK, 0); }
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
+		public ITerminalNode UNLOCK() { return GetToken(VBParser.UNLOCK, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -9666,15 +9666,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_unlockStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterUnlockStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitUnlockStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitUnlockStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9690,7 +9690,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 1914; Match(UNLOCK);
 			State = 1915; Match(WS);
-			State = 1916; valueStmt(0);
+			State = 1916; ValueStmt(0);
 			State = 1931;
 			switch ( Interpreter.AdaptivePredict(_input,295,_ctx) ) {
 			case 1:
@@ -9712,7 +9712,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1924; valueStmt(0);
+				State = 1924; ValueStmt(0);
 				State = 1929;
 				switch ( Interpreter.AdaptivePredict(_input,294,_ctx) ) {
 				case 1:
@@ -9720,7 +9720,7 @@ public partial class VisualBasic6Parser : Parser {
 					State = 1925; Match(WS);
 					State = 1926; Match(TO);
 					State = 1927; Match(WS);
-					State = 1928; valueStmt(0);
+					State = 1928; ValueStmt(0);
 					}
 					break;
 				}
@@ -9753,157 +9753,157 @@ public partial class VisualBasic6Parser : Parser {
 		}
 	}
 	public partial class VsDivContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode DIV() { return GetToken(VisualBasic6Parser.DIV, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode DIV() { return GetToken(VBParser.DIV, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsDivContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsDiv(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsDiv(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsDiv(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsNegationContext : ValueStmtContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode MINUS() { return GetToken(VisualBasic6Parser.MINUS, 0); }
+		public ITerminalNode MINUS() { return GetToken(VBParser.MINUS, 0); }
 		public VsNegationContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsNegation(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsNegation(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsNegation(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsMinusContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode MINUS() { return GetToken(VisualBasic6Parser.MINUS, 0); }
+		public ITerminalNode MINUS() { return GetToken(VBParser.MINUS, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsMinusContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsMinus(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsMinus(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsMinus(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsImpContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode IMP() { return GetToken(VisualBasic6Parser.IMP, 0); }
+		public ITerminalNode IMP() { return GetToken(VBParser.IMP, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsImpContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsImp(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsImp(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsImp(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsGeqContext : ValueStmtContext {
-		public ITerminalNode GEQ() { return GetToken(VisualBasic6Parser.GEQ, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode GEQ() { return GetToken(VBParser.GEQ, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsGeqContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsGeq(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsGeq(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsGeq(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsLtContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode LT() { return GetToken(VisualBasic6Parser.LT, 0); }
+		public ITerminalNode LT() { return GetToken(VBParser.LT, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsLtContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsLt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsLt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsLt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -9914,96 +9914,96 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public VsLiteralContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsLiteral(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsLiteral(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsLiteral(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsEqvContext : ValueStmtContext {
-		public ITerminalNode EQV() { return GetToken(VisualBasic6Parser.EQV, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode EQV() { return GetToken(VBParser.EQV, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsEqvContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsEqv(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsEqv(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsEqv(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsLikeContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LIKE() { return GetToken(VisualBasic6Parser.LIKE, 0); }
+		public ITerminalNode LIKE() { return GetToken(VBParser.LIKE, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsLikeContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsLike(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsLike(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsLike(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsNeqContext : ValueStmtContext {
-		public ITerminalNode NEQ() { return GetToken(VisualBasic6Parser.NEQ, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode NEQ() { return GetToken(VBParser.NEQ, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsNeqContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsNeq(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsNeq(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsNeq(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10014,96 +10014,96 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public VsTypeOfContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsTypeOf(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsTypeOf(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsTypeOf(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsPowContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode POW() { return GetToken(VisualBasic6Parser.POW, 0); }
+		public ITerminalNode POW() { return GetToken(VBParser.POW, 0); }
 		public VsPowContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsPow(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsPow(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsPow(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsMultContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode MULT() { return GetToken(VisualBasic6Parser.MULT, 0); }
+		public ITerminalNode MULT() { return GetToken(VBParser.MULT, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsMultContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsMult(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsMult(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsMult(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsAddContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode PLUS() { return GetToken(VisualBasic6Parser.PLUS, 0); }
+		public ITerminalNode PLUS() { return GetToken(VBParser.PLUS, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsAddContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsAdd(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsAdd(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsAdd(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10112,25 +10112,25 @@ public partial class VisualBasic6Parser : Parser {
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode ASSIGN() { return GetToken(VisualBasic6Parser.ASSIGN, 0); }
+		public ITerminalNode ASSIGN() { return GetToken(VBParser.ASSIGN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public VsAssignContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsAssign(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsAssign(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsAssign(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10141,91 +10141,91 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public VsValueCallsContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsValueCalls(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsValueCalls(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsValueCalls(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsPlusContext : ValueStmtContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode PLUS() { return GetToken(VisualBasic6Parser.PLUS, 0); }
+		public ITerminalNode PLUS() { return GetToken(VBParser.PLUS, 0); }
 		public VsPlusContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsPlus(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsPlus(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsPlus(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsStructContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsStructContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsStruct(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsStruct(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsStruct(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsOrContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode OR() { return GetToken(VisualBasic6Parser.OR, 0); }
+		public ITerminalNode OR() { return GetToken(VBParser.OR, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsOrContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsOr(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsOr(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsOr(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10234,67 +10234,67 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode ADDRESSOF() { return GetToken(VisualBasic6Parser.ADDRESSOF, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode ADDRESSOF() { return GetToken(VBParser.ADDRESSOF, 0); }
 		public VsAddressOfContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsAddressOf(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsAddressOf(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsAddressOf(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsModContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode MOD() { return GetToken(VisualBasic6Parser.MOD, 0); }
+		public ITerminalNode MOD() { return GetToken(VBParser.MOD, 0); }
 		public VsModContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsMod(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsMod(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsMod(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsNewContext : ValueStmtContext {
-		public ITerminalNode NEW() { return GetToken(VisualBasic6Parser.NEW, 0); }
+		public ITerminalNode NEW() { return GetToken(VBParser.NEW, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public VsNewContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsNew(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsNew(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsNew(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10303,46 +10303,46 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode NOT() { return GetToken(VisualBasic6Parser.NOT, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode NOT() { return GetToken(VBParser.NOT, 0); }
 		public VsNotContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsNot(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsNot(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsNot(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsAmpContext : ValueStmtContext {
-		public ITerminalNode AMPERSAND() { return GetToken(VisualBasic6Parser.AMPERSAND, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public ITerminalNode AMPERSAND() { return GetToken(VBParser.AMPERSAND, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsAmpContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsAmp(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsAmp(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsAmp(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -10353,188 +10353,188 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public VsMidContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsMid(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsMid(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsMid(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsAndContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode AND() { return GetToken(VisualBasic6Parser.AND, 0); }
+		public ITerminalNode AND() { return GetToken(VBParser.AND, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsAndContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsAnd(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsAnd(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsAnd(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsEqContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public VsEqContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsEq(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsEq(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsEq(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsIsContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode IS() { return GetToken(VisualBasic6Parser.IS, 0); }
+		public ITerminalNode IS() { return GetToken(VBParser.IS, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsIsContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsIs(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsIs(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsIs(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsXorContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode XOR() { return GetToken(VisualBasic6Parser.XOR, 0); }
+		public ITerminalNode XOR() { return GetToken(VBParser.XOR, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsXorContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsXor(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsXor(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsXor(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsGtContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode GT() { return GetToken(VisualBasic6Parser.GT, 0); }
+		public ITerminalNode GT() { return GetToken(VBParser.GT, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsGtContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsGt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsGt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsGt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsLeqContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode LEQ() { return GetToken(VisualBasic6Parser.LEQ, 0); }
+		public ITerminalNode LEQ() { return GetToken(VBParser.LEQ, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
 		public VsLeqContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVsLeq(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVsLeq(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsLeq(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ValueStmtContext valueStmt() {
-		return valueStmt(0);
+	public ValueStmtContext ValueStmt() {
+		return ValueStmt(0);
 	}
 
-	private ValueStmtContext valueStmt(int _p) {
+	private ValueStmtContext ValueStmt(int _p) {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = State;
 		ValueStmtContext _localctx = new ValueStmtContext(_ctx, _parentState);
@@ -10556,7 +10556,7 @@ public partial class VisualBasic6Parser : Parser {
 
 				State = 1934; Match(NEW);
 				State = 1935; Match(WS);
-				State = 1936; valueStmt(29);
+				State = 1936; ValueStmt(29);
 				}
 				break;
 
@@ -10565,7 +10565,7 @@ public partial class VisualBasic6Parser : Parser {
 				_localctx = new VsAssignContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 1937; implicitCallStmt_InStmt();
+				State = 1937; ImplicitCallStmt_InStmt();
 				State = 1939;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -10583,7 +10583,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1945; valueStmt(25);
+				State = 1945; ValueStmt(25);
 				}
 				break;
 
@@ -10601,7 +10601,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1951; valueStmt(23);
+				State = 1951; ValueStmt(23);
 				}
 				break;
 
@@ -10612,7 +10612,7 @@ public partial class VisualBasic6Parser : Parser {
 				_prevctx = _localctx;
 				State = 1952; Match(ADDRESSOF);
 				State = 1953; Match(WS);
-				State = 1954; valueStmt(22);
+				State = 1954; ValueStmt(22);
 				}
 				break;
 
@@ -10630,7 +10630,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1959; valueStmt(7);
+				State = 1959; ValueStmt(7);
 				}
 				break;
 
@@ -10641,7 +10641,7 @@ public partial class VisualBasic6Parser : Parser {
 				_prevctx = _localctx;
 				State = 1960; Match(NOT);
 				State = 1961; Match(WS);
-				State = 1962; valueStmt(4);
+				State = 1962; ValueStmt(4);
 				}
 				break;
 
@@ -10650,7 +10650,7 @@ public partial class VisualBasic6Parser : Parser {
 				_localctx = new VsLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 1963; literal();
+				State = 1963; Literal();
 				}
 				break;
 
@@ -10668,7 +10668,7 @@ public partial class VisualBasic6Parser : Parser {
 				_localctx = new VsValueCallsContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				State = 1965; implicitCallStmt_InStmt();
+				State = 1965; ImplicitCallStmt_InStmt();
 				}
 				break;
 
@@ -10695,7 +10695,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 1971; valueStmt(0);
+				State = 1971; ValueStmt(0);
 				State = 1982;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -10719,7 +10719,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 1979; valueStmt(0);
+					State = 1979; ValueStmt(0);
 					}
 					}
 					State = 1984;
@@ -10764,7 +10764,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 1997; valueStmt(25);
+						State = 1997; ValueStmt(25);
 						}
 						break;
 
@@ -10777,7 +10777,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 1999; Match(WS);
 						State = 2000; Match(AMPERSAND);
 						State = 2001; Match(WS);
-						State = 2002; valueStmt(22);
+						State = 2002; ValueStmt(22);
 						}
 						break;
 
@@ -10790,7 +10790,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 2004; Match(WS);
 						State = 2005; Match(AND);
 						State = 2006; Match(WS);
-						State = 2007; valueStmt(21);
+						State = 2007; ValueStmt(21);
 						}
 						break;
 
@@ -10817,7 +10817,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2016; valueStmt(20);
+						State = 2016; ValueStmt(20);
 						}
 						break;
 
@@ -10844,7 +10844,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2025; valueStmt(19);
+						State = 2025; ValueStmt(19);
 						}
 						break;
 
@@ -10871,7 +10871,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2034; valueStmt(18);
+						State = 2034; ValueStmt(18);
 						}
 						break;
 
@@ -10898,7 +10898,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2043; valueStmt(17);
+						State = 2043; ValueStmt(17);
 						}
 						break;
 
@@ -10925,7 +10925,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2052; valueStmt(16);
+						State = 2052; ValueStmt(16);
 						}
 						break;
 
@@ -10952,7 +10952,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2061; valueStmt(15);
+						State = 2061; ValueStmt(15);
 						}
 						break;
 
@@ -10979,7 +10979,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2070; valueStmt(14);
+						State = 2070; ValueStmt(14);
 						}
 						break;
 
@@ -10992,7 +10992,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 2072; Match(WS);
 						State = 2073; Match(EQV);
 						State = 2074; Match(WS);
-						State = 2075; valueStmt(13);
+						State = 2075; ValueStmt(13);
 						}
 						break;
 
@@ -11005,7 +11005,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 2077; Match(WS);
 						State = 2078; Match(IMP);
 						State = 2079; Match(WS);
-						State = 2080; valueStmt(12);
+						State = 2080; ValueStmt(12);
 						}
 						break;
 
@@ -11018,7 +11018,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 2082; Match(WS);
 						State = 2083; Match(IS);
 						State = 2084; Match(WS);
-						State = 2085; valueStmt(11);
+						State = 2085; ValueStmt(11);
 						}
 						break;
 
@@ -11031,7 +11031,7 @@ public partial class VisualBasic6Parser : Parser {
 						State = 2087; Match(WS);
 						State = 2088; Match(LIKE);
 						State = 2089; Match(WS);
-						State = 2090; valueStmt(10);
+						State = 2090; ValueStmt(10);
 						}
 						break;
 
@@ -11058,7 +11058,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2099; valueStmt(9);
+						State = 2099; ValueStmt(9);
 						}
 						break;
 
@@ -11085,7 +11085,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2108; valueStmt(7);
+						State = 2108; ValueStmt(7);
 						}
 						break;
 
@@ -11112,7 +11112,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2117; valueStmt(6);
+						State = 2117; ValueStmt(6);
 						}
 						break;
 
@@ -11139,7 +11139,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2126; valueStmt(4);
+						State = 2126; ValueStmt(4);
 						}
 						break;
 
@@ -11166,7 +11166,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2135; valueStmt(3);
+						State = 2135; ValueStmt(3);
 						}
 						break;
 
@@ -11193,7 +11193,7 @@ public partial class VisualBasic6Parser : Parser {
 							}
 						}
 
-						State = 2144; valueStmt(2);
+						State = 2144; ValueStmt(2);
 						}
 						break;
 					}
@@ -11217,34 +11217,34 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class VariableStmtContext : ParserRuleContext {
-		public ITerminalNode DIM() { return GetToken(VisualBasic6Parser.DIM, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
-		public VariableListStmtContext variableListStmt() {
+		public ITerminalNode DIM() { return GetToken(VBParser.DIM, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
+		public VariableListStmtContext VariableListStmt() {
 			return GetRuleContext<VariableListStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public VisibilityContext visibility() {
+		public VisibilityContext Visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode WITHEVENTS() { return GetToken(VisualBasic6Parser.WITHEVENTS, 0); }
+		public ITerminalNode WITHEVENTS() { return GetToken(VBParser.WITHEVENTS, 0); }
 		public VariableStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_variableStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVariableStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVariableStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVariableStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11305,15 +11305,15 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class VariableListStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public VariableSubStmtContext variableSubStmt(int i) {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public VariableSubStmtContext VariableSubStmt(int i) {
 			return GetRuleContext<VariableSubStmtContext>(i);
 		}
-		public IReadOnlyList<VariableSubStmtContext> variableSubStmt() {
+		public IReadOnlyList<VariableSubStmtContext> VariableSubStmt() {
 			return GetRuleContexts<VariableSubStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public VariableListStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -11321,15 +11321,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_variableListStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVariableListStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVariableListStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVariableListStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11391,22 +11391,22 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class VariableSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public SubscriptsContext subscripts() {
 			return GetRuleContext<SubscriptsContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
-		public TypeHintContext typeHint() {
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
+		public TypeHintContext TypeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
 		public VariableSubStmtContext(ParserRuleContext parent, int invokingState)
@@ -11415,15 +11415,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_variableSubStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVariableSubStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVariableSubStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVariableSubStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11437,7 +11437,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2176; ambiguousIdentifier();
+			State = 2176; AmbiguousIdentifier();
 			State = 2194;
 			switch ( Interpreter.AdaptivePredict(_input,345,_ctx) ) {
 			case 1:
@@ -11463,7 +11463,7 @@ public partial class VisualBasic6Parser : Parser {
 				_la = _input.La(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)) | (1L << (LPAREN - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (MINUS - 193)) | (1L << (PLUS - 193)) | (1L << (L_SQUARE_BRACKET - 193)) | (1L << (STRINGLITERAL - 193)) | (1L << (DATELITERAL - 193)) | (1L << (COLORLITERAL - 193)) | (1L << (INTEGERLITERAL - 193)) | (1L << (DOUBLELITERAL - 193)) | (1L << (FILENUMBER - 193)) | (1L << (IDENTIFIER - 193)))) != 0)) {
 					{
-					State = 2184; subscripts();
+					State = 2184; Subscripts();
 					State = 2186;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -11518,19 +11518,19 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class WhileWendStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ITerminalNode WHILE() { return GetToken(VisualBasic6Parser.WHILE, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ITerminalNode WHILE() { return GetToken(VBParser.WHILE, 0); }
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public BlockContext block(int i) {
 			return GetRuleContext<BlockContext>(i);
 		}
-		public ITerminalNode WEND() { return GetToken(VisualBasic6Parser.WEND, 0); }
+		public ITerminalNode WEND() { return GetToken(VBParser.WEND, 0); }
 		public IReadOnlyList<BlockContext> block() {
 			return GetRuleContexts<BlockContext>();
 		}
@@ -11540,15 +11540,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_whileWendStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterWhileWendStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitWhileWendStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitWhileWendStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11565,7 +11565,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 2203; Match(WHILE);
 			State = 2204; Match(WS);
-			State = 2205; valueStmt(0);
+			State = 2205; ValueStmt(0);
 			State = 2207;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -11586,7 +11586,7 @@ public partial class VisualBasic6Parser : Parser {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2211; block();
+					State = 2211; Block();
 					State = 2212; Match(NEWLINE);
 					}
 					} 
@@ -11610,13 +11610,13 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class WidthStmtContext : ParserRuleContext {
-		public ITerminalNode WIDTH() { return GetToken(VisualBasic6Parser.WIDTH, 0); }
+		public ITerminalNode WIDTH() { return GetToken(VBParser.WIDTH, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -11627,15 +11627,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_widthStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterWidthStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitWidthStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitWidthStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11651,7 +11651,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 2221; Match(WIDTH);
 			State = 2222; Match(WS);
-			State = 2223; valueStmt(0);
+			State = 2223; ValueStmt(0);
 			State = 2225;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -11669,7 +11669,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 			}
 
-			State = 2231; valueStmt(0);
+			State = 2231; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -11684,16 +11684,16 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class WithStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VisualBasic6Parser.NEWLINE); }
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
+		public ImplicitCallStmt_InStmtContext ImplicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VisualBasic6Parser.NEWLINE, i);
+			return GetToken(VBParser.NEWLINE, i);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public ITerminalNode WITH() { return GetToken(VisualBasic6Parser.WITH, 0); }
-		public ITerminalNode END_WITH() { return GetToken(VisualBasic6Parser.END_WITH, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public ITerminalNode WITH() { return GetToken(VBParser.WITH, 0); }
+		public ITerminalNode END_WITH() { return GetToken(VBParser.END_WITH, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
@@ -11703,15 +11703,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_withStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterWithStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitWithStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitWithStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11727,7 +11727,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 2233; Match(WITH);
 			State = 2234; Match(WS);
-			State = 2235; implicitCallStmt_InStmt();
+			State = 2235; ImplicitCallStmt_InStmt();
 			State = 2237;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
@@ -11745,7 +11745,7 @@ public partial class VisualBasic6Parser : Parser {
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
-				State = 2241; block();
+				State = 2241; Block();
 				State = 2243;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
@@ -11780,13 +11780,13 @@ public partial class VisualBasic6Parser : Parser {
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode WRITE() { return GetToken(VisualBasic6Parser.WRITE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode WRITE() { return GetToken(VBParser.WRITE, 0); }
 		public OutputListContext outputList() {
 			return GetRuleContext<OutputListContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public WriteStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -11794,15 +11794,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_writeStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterWriteStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitWriteStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitWriteStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11818,7 +11818,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 2251; Match(WRITE);
 			State = 2252; Match(WS);
-			State = 2253; valueStmt(0);
+			State = 2253; ValueStmt(0);
 			State = 2255;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -11858,10 +11858,10 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ExplicitCallStmtContext : ParserRuleContext {
-		public ECS_ProcedureCallContext eCS_ProcedureCall() {
+		public ECS_ProcedureCallContext ECS_ProcedureCall() {
 			return GetRuleContext<ECS_ProcedureCallContext>(0);
 		}
-		public ECS_MemberProcedureCallContext eCS_MemberProcedureCall() {
+		public ECS_MemberProcedureCallContext ECS_MemberProcedureCall() {
 			return GetRuleContext<ECS_MemberProcedureCallContext>(0);
 		}
 		public ExplicitCallStmtContext(ParserRuleContext parent, int invokingState)
@@ -11870,22 +11870,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_explicitCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterExplicitCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitExplicitCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitExplicitCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ExplicitCallStmtContext explicitCallStmt() {
+	public ExplicitCallStmtContext ExplicitCallStmt() {
 		ExplicitCallStmtContext _localctx = new ExplicitCallStmtContext(_ctx, State);
 		EnterRule(_localctx, 210, RULE_explicitCallStmt);
 		try {
@@ -11921,16 +11921,16 @@ public partial class VisualBasic6Parser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode CALL() { return GetToken(VisualBasic6Parser.CALL, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode CALL() { return GetToken(VBParser.CALL, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
@@ -11940,15 +11940,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_eCS_ProcedureCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterECS_ProcedureCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitECS_ProcedureCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitECS_ProcedureCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -11964,7 +11964,7 @@ public partial class VisualBasic6Parser : Parser {
 			{
 			State = 2268; Match(CALL);
 			State = 2269; Match(WS);
-			State = 2270; ambiguousIdentifier();
+			State = 2270; AmbiguousIdentifier();
 			State = 2272;
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
@@ -12031,22 +12031,22 @@ public partial class VisualBasic6Parser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode CALL() { return GetToken(VisualBasic6Parser.CALL, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode CALL() { return GetToken(VBParser.CALL, 0); }
 		public MemberPropertyCallStmtContext memberPropertyCallStmt(int i) {
 			return GetRuleContext<MemberPropertyCallStmtContext>(i);
 		}
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public VariableCallStmtContext variableCallStmt() {
 			return GetRuleContext<VariableCallStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public IReadOnlyList<MemberPropertyCallStmtContext> memberPropertyCallStmt() {
 			return GetRuleContexts<MemberPropertyCallStmtContext>();
 		}
@@ -12059,15 +12059,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_eCS_MemberProcedureCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterECS_MemberProcedureCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitECS_MemberProcedureCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitECS_MemberProcedureCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12108,7 +12108,7 @@ public partial class VisualBasic6Parser : Parser {
 				_alt = Interpreter.AdaptivePredict(_input,366,_ctx);
 			}
 			State = 2301; Match(T__7);
-			State = 2302; ambiguousIdentifier();
+			State = 2302; AmbiguousIdentifier();
 			State = 2304;
 			_la = _input.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
@@ -12190,15 +12190,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_implicitCallStmt_InBlock; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterImplicitCallStmt_InBlock(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitImplicitCallStmt_InBlock(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitImplicitCallStmt_InBlock(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12255,7 +12255,7 @@ public partial class VisualBasic6Parser : Parser {
 		public CertainIdentifierContext certainIdentifier() {
 			return GetRuleContext<CertainIdentifierContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
@@ -12265,15 +12265,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_B_SubCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_B_SubCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_B_SubCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_B_SubCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12322,15 +12322,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_B_FunctionCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_B_FunctionCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_B_FunctionCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_B_FunctionCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12382,15 +12382,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_B_MemberSubCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_B_MemberSubCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_B_MemberSubCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_B_MemberSubCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12411,7 +12411,7 @@ public partial class VisualBasic6Parser : Parser {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2337; implicitCallStmt_InStmt();
+					State = 2337; ImplicitCallStmt_InStmt();
 					}
 					} 
 				}
@@ -12452,15 +12452,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_B_MemberFunctionCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_B_MemberFunctionCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_B_MemberFunctionCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_B_MemberFunctionCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12482,7 +12482,7 @@ public partial class VisualBasic6Parser : Parser {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2345; implicitCallStmt_InStmt();
+					State = 2345; ImplicitCallStmt_InStmt();
 					}
 					} 
 				}
@@ -12522,7 +12522,7 @@ public partial class VisualBasic6Parser : Parser {
 		public ICS_S_DictionaryCallContext iCS_S_DictionaryCall() {
 			return GetRuleContext<ICS_S_DictionaryCallContext>(0);
 		}
-		public ICS_S_VariableCallContext iCS_S_VariableCall() {
+		public ICS_S_VariableCallContext ICS_S_VariableCall() {
 			return GetRuleContext<ICS_S_VariableCallContext>(0);
 		}
 		public ImplicitCallStmt_InStmtContext(ParserRuleContext parent, int invokingState)
@@ -12531,22 +12531,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_implicitCallStmt_InStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterImplicitCallStmt_InStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitImplicitCallStmt_InStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitImplicitCallStmt_InStmt(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+	public ImplicitCallStmt_InStmtContext ImplicitCallStmt_InStmt() {
 		ImplicitCallStmt_InStmtContext _localctx = new ImplicitCallStmt_InStmtContext(_ctx, State);
 		EnterRule(_localctx, 226, RULE_implicitCallStmt_InStmt);
 		try {
@@ -12596,7 +12596,7 @@ public partial class VisualBasic6Parser : Parser {
 		public DictionaryCallStmtContext dictionaryCallStmt() {
 			return GetRuleContext<DictionaryCallStmtContext>(0);
 		}
-		public VariableCallStmtContext variableCallStmt() {
+		public VariableCallStmtContext VariableCallStmt() {
 			return GetRuleContext<VariableCallStmtContext>(0);
 		}
 		public ICS_S_VariableCallContext(ParserRuleContext parent, int invokingState)
@@ -12605,15 +12605,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_S_VariableCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_S_VariableCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_S_VariableCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_S_VariableCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12661,15 +12661,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_S_FunctionOrArrayCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_S_FunctionOrArrayCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_S_FunctionOrArrayCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_S_FunctionOrArrayCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12714,15 +12714,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_S_DictionaryCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_S_DictionaryCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_S_DictionaryCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_S_DictionaryCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12771,15 +12771,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_iCS_S_MembersCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterICS_S_MembersCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitICS_S_MembersCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitICS_S_MembersCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12857,15 +12857,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_memberPropertyCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMemberPropertyCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMemberPropertyCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMemberPropertyCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12879,7 +12879,7 @@ public partial class VisualBasic6Parser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 2383; Match(T__7);
-			State = 2384; ambiguousIdentifier();
+			State = 2384; AmbiguousIdentifier();
 			}
 		}
 		catch (RecognitionException re) {
@@ -12903,15 +12903,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_memberFunctionOrArrayCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMemberFunctionOrArrayCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMemberFunctionOrArrayCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMemberFunctionOrArrayCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12940,7 +12940,7 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class MemberSubCallStmtContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
@@ -12953,15 +12953,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_memberSubCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMemberSubCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMemberSubCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMemberSubCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -12975,7 +12975,7 @@ public partial class VisualBasic6Parser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 2389; Match(T__7);
-			State = 2390; ambiguousIdentifier();
+			State = 2390; AmbiguousIdentifier();
 			State = 2393;
 			switch ( Interpreter.AdaptivePredict(_input,385,_ctx) ) {
 			case 1:
@@ -13011,15 +13011,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_memberCall_Value; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterMemberCall_Value(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitMemberCall_Value(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMemberCall_Value(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13059,7 +13059,7 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class VariableCallStmtContext : ParserRuleContext {
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public TypeHintContext typeHint() {
@@ -13071,15 +13071,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_variableCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVariableCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVariableCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVariableCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13092,7 +13092,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2399; ambiguousIdentifier();
+			State = 2399; AmbiguousIdentifier();
 			State = 2401;
 			switch ( Interpreter.AdaptivePredict(_input,387,_ctx) ) {
 			case 1:
@@ -13127,15 +13127,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_dictionaryCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterDictionaryCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitDictionaryCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDictionaryCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13149,7 +13149,7 @@ public partial class VisualBasic6Parser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 2403; Match(T__1);
-			State = 2404; ambiguousIdentifier();
+			State = 2404; AmbiguousIdentifier();
 			State = 2406;
 			switch ( Interpreter.AdaptivePredict(_input,388,_ctx) ) {
 			case 1:
@@ -13172,21 +13172,21 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class FunctionOrArrayCallStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public BaseTypeContext baseType() {
 			return GetRuleContext<BaseTypeContext>(0);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
 		}
@@ -13196,15 +13196,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_functionOrArrayCallStmt; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterFunctionOrArrayCallStmt(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitFunctionOrArrayCallStmt(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFunctionOrArrayCallStmt(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13222,7 +13222,7 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,389,_ctx) ) {
 			case 1:
 				{
-				State = 2408; ambiguousIdentifier();
+				State = 2408; AmbiguousIdentifier();
 				}
 				break;
 
@@ -13288,12 +13288,12 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ArgsCallContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ArgCallContext> argCall() {
 			return GetRuleContexts<ArgCallContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public ArgCallContext argCall(int i) {
 			return GetRuleContext<ArgCallContext>(i);
@@ -13304,15 +13304,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_argsCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterArgsCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitArgsCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArgsCall(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13338,7 +13338,7 @@ public partial class VisualBasic6Parser : Parser {
 					_la = _input.La(1);
 					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)) | (1L << (LPAREN - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (MINUS - 193)) | (1L << (PLUS - 193)) | (1L << (L_SQUARE_BRACKET - 193)) | (1L << (STRINGLITERAL - 193)) | (1L << (DATELITERAL - 193)) | (1L << (COLORLITERAL - 193)) | (1L << (INTEGERLITERAL - 193)) | (1L << (DOUBLELITERAL - 193)) | (1L << (FILENUMBER - 193)) | (1L << (IDENTIFIER - 193)))) != 0)) {
 						{
-						State = 2430; argCall();
+						State = 2430; ArgCall();
 						}
 					}
 
@@ -13371,7 +13371,7 @@ public partial class VisualBasic6Parser : Parser {
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,398,_ctx);
 			}
-			State = 2445; argCall();
+			State = 2445; ArgCall();
 			State = 2458;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,402,_ctx);
@@ -13405,7 +13405,7 @@ public partial class VisualBasic6Parser : Parser {
 					_la = _input.La(1);
 					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)) | (1L << (LPAREN - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (MINUS - 193)) | (1L << (PLUS - 193)) | (1L << (L_SQUARE_BRACKET - 193)) | (1L << (STRINGLITERAL - 193)) | (1L << (DATELITERAL - 193)) | (1L << (COLORLITERAL - 193)) | (1L << (INTEGERLITERAL - 193)) | (1L << (DOUBLELITERAL - 193)) | (1L << (FILENUMBER - 193)) | (1L << (IDENTIFIER - 193)))) != 0)) {
 						{
-						State = 2453; argCall();
+						State = 2453; ArgCall();
 						}
 					}
 
@@ -13430,35 +13430,35 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ArgCallContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode BYREF() { return GetToken(VisualBasic6Parser.BYREF, 0); }
-		public ITerminalNode PARAMARRAY() { return GetToken(VisualBasic6Parser.PARAMARRAY, 0); }
-		public ITerminalNode BYVAL() { return GetToken(VisualBasic6Parser.BYVAL, 0); }
+		public ITerminalNode BYREF() { return GetToken(VBParser.BYREF, 0); }
+		public ITerminalNode PARAMARRAY() { return GetToken(VBParser.PARAMARRAY, 0); }
+		public ITerminalNode BYVAL() { return GetToken(VBParser.BYVAL, 0); }
 		public ArgCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_argCall; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterArgCall(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitArgCall(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArgCall(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ArgCallContext argCall() {
+	public ArgCallContext ArgCall() {
 		ArgCallContext _localctx = new ArgCallContext(_ctx, State);
 		EnterRule(_localctx, 252, RULE_argCall);
 		int _la;
@@ -13479,7 +13479,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 				break;
 			}
-			State = 2465; valueStmt(0);
+			State = 2465; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -13494,16 +13494,16 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ArgListContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public IReadOnlyList<ArgContext> arg() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public IReadOnlyList<ArgContext> Arg() {
 			return GetRuleContexts<ArgContext>();
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
-		public ArgContext arg(int i) {
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
+		public ArgContext Arg(int i) {
 			return GetRuleContext<ArgContext>(i);
 		}
 		public ArgListContext(ParserRuleContext parent, int invokingState)
@@ -13512,22 +13512,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_argList; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterArgList(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitArgList(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArgList(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ArgListContext argList() {
+	public ArgListContext ArgList() {
 		ArgListContext _localctx = new ArgListContext(_ctx, State);
 		EnterRule(_localctx, 254, RULE_argList);
 		int _la;
@@ -13607,40 +13607,40 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ArgContext : ParserRuleContext {
-		public ITerminalNode OPTIONAL() { return GetToken(VisualBasic6Parser.OPTIONAL, 0); }
-		public AsTypeClauseContext asTypeClause() {
+		public ITerminalNode OPTIONAL() { return GetToken(VBParser.OPTIONAL, 0); }
+		public AsTypeClauseContext AsTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode BYREF() { return GetToken(VisualBasic6Parser.BYREF, 0); }
-		public ArgDefaultValueContext argDefaultValue() {
+		public ITerminalNode BYREF() { return GetToken(VBParser.BYREF, 0); }
+		public ArgDefaultValueContext ArgDefaultValue() {
 			return GetRuleContext<ArgDefaultValueContext>(0);
 		}
-		public ITerminalNode PARAMARRAY() { return GetToken(VisualBasic6Parser.PARAMARRAY, 0); }
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
-		public ITerminalNode BYVAL() { return GetToken(VisualBasic6Parser.BYVAL, 0); }
+		public ITerminalNode PARAMARRAY() { return GetToken(VBParser.PARAMARRAY, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
+		public ITerminalNode BYVAL() { return GetToken(VBParser.BYVAL, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public ArgContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_arg; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterArg(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitArg(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArg(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -13686,7 +13686,7 @@ public partial class VisualBasic6Parser : Parser {
 				}
 				break;
 			}
-			State = 2504; ambiguousIdentifier();
+			State = 2504; AmbiguousIdentifier();
 			State = 2513;
 			switch ( Interpreter.AdaptivePredict(_input,415,_ctx) ) {
 			case 1:
@@ -13733,7 +13733,7 @@ public partial class VisualBasic6Parser : Parser {
 					}
 				}
 
-				State = 2522; argDefaultValue();
+				State = 2522; ArgDefaultValue();
 				}
 				break;
 			}
@@ -13751,36 +13751,36 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ArgDefaultValueContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public LiteralContext literal() {
 			return GetRuleContext<LiteralContext>(0);
 		}
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public ArgDefaultValueContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_argDefaultValue; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterArgDefaultValue(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitArgDefaultValue(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArgDefaultValue(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ArgDefaultValueContext argDefaultValue() {
+	public ArgDefaultValueContext ArgDefaultValue() {
 		ArgDefaultValueContext _localctx = new ArgDefaultValueContext(_ctx, State);
 		EnterRule(_localctx, 258, RULE_argDefaultValue);
 		int _la;
@@ -13800,13 +13800,13 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,420,_ctx) ) {
 			case 1:
 				{
-				State = 2529; literal();
+				State = 2529; Literal();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2530; ambiguousIdentifier();
+				State = 2530; AmbiguousIdentifier();
 				}
 				break;
 			}
@@ -13827,12 +13827,12 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<SubscriptContext> subscript() {
 			return GetRuleContexts<SubscriptContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public SubscriptContext subscript(int i) {
 			return GetRuleContext<SubscriptContext>(i);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public SubscriptsContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -13840,22 +13840,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_subscripts; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSubscripts(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSubscripts(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSubscripts(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public SubscriptsContext subscripts() {
+	public SubscriptsContext Subscripts() {
 		SubscriptsContext _localctx = new SubscriptsContext(_ctx, State);
 		EnterRule(_localctx, 260, RULE_subscripts);
 		int _la;
@@ -13863,7 +13863,7 @@ public partial class VisualBasic6Parser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2533; subscript();
+			State = 2533; Subscript();
 			State = 2544;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,423,_ctx);
@@ -13888,7 +13888,7 @@ public partial class VisualBasic6Parser : Parser {
 						}
 					}
 
-					State = 2541; subscript();
+					State = 2541; Subscript();
 					}
 					} 
 				}
@@ -13910,14 +13910,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class SubscriptContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -13927,22 +13927,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_subscript; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterSubscript(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitSubscript(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitSubscript(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public SubscriptContext subscript() {
+	public SubscriptContext Subscript() {
 		SubscriptContext _localctx = new SubscriptContext(_ctx, State);
 		EnterRule(_localctx, 262, RULE_subscript);
 		try {
@@ -13952,14 +13952,14 @@ public partial class VisualBasic6Parser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,424,_ctx) ) {
 			case 1:
 				{
-				State = 2547; valueStmt(0);
+				State = 2547; ValueStmt(0);
 				State = 2548; Match(WS);
 				State = 2549; Match(TO);
 				State = 2550; Match(WS);
 				}
 				break;
 			}
-			State = 2554; valueStmt(0);
+			State = 2554; ValueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -13974,15 +13974,15 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class AmbiguousIdentifierContext : ParserRuleContext {
-		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VisualBasic6Parser.R_SQUARE_BRACKET, 0); }
-		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VisualBasic6Parser.L_SQUARE_BRACKET, 0); }
+		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBParser.R_SQUARE_BRACKET, 0); }
+		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBParser.L_SQUARE_BRACKET, 0); }
 		public AmbiguousKeywordContext ambiguousKeyword(int i) {
 			return GetRuleContext<AmbiguousKeywordContext>(i);
 		}
 		public ITerminalNode IDENTIFIER(int i) {
-			return GetToken(VisualBasic6Parser.IDENTIFIER, i);
+			return GetToken(VBParser.IDENTIFIER, i);
 		}
-		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VisualBasic6Parser.IDENTIFIER); }
+		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBParser.IDENTIFIER); }
 		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
@@ -13992,22 +13992,22 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_ambiguousIdentifier; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterAmbiguousIdentifier(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitAmbiguousIdentifier(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAmbiguousIdentifier(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public AmbiguousIdentifierContext ambiguousIdentifier() {
+	public AmbiguousIdentifierContext AmbiguousIdentifier() {
 		AmbiguousIdentifierContext _localctx = new AmbiguousIdentifierContext(_ctx, State);
 		EnterRule(_localctx, 264, RULE_ambiguousIdentifier);
 		int _la;
@@ -14529,14 +14529,14 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class AsTypeClauseContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VisualBasic6Parser.AS, 0); }
-		public ITerminalNode NEW() { return GetToken(VisualBasic6Parser.NEW, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public TypeContext type() {
+		public ITerminalNode AS() { return GetToken(VBParser.AS, 0); }
+		public ITerminalNode NEW() { return GetToken(VBParser.NEW, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public TypeContext Type() {
 			return GetRuleContext<TypeContext>(0);
 		}
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public FieldLengthContext fieldLength() {
 			return GetRuleContext<FieldLengthContext>(0);
@@ -14547,15 +14547,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_asTypeClause; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterAsTypeClause(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitAsTypeClause(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAsTypeClause(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -14603,31 +14603,31 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class BaseTypeContext : ParserRuleContext {
-		public ITerminalNode COLLECTION() { return GetToken(VisualBasic6Parser.COLLECTION, 0); }
-		public ITerminalNode BYTE() { return GetToken(VisualBasic6Parser.BYTE, 0); }
-		public ITerminalNode DATE() { return GetToken(VisualBasic6Parser.DATE, 0); }
-		public ITerminalNode BOOLEAN() { return GetToken(VisualBasic6Parser.BOOLEAN, 0); }
-		public ITerminalNode LONG() { return GetToken(VisualBasic6Parser.LONG, 0); }
-		public ITerminalNode DOUBLE() { return GetToken(VisualBasic6Parser.DOUBLE, 0); }
-		public ITerminalNode SINGLE() { return GetToken(VisualBasic6Parser.SINGLE, 0); }
-		public ITerminalNode VARIANT() { return GetToken(VisualBasic6Parser.VARIANT, 0); }
-		public ITerminalNode STRING() { return GetToken(VisualBasic6Parser.STRING, 0); }
-		public ITerminalNode INTEGER() { return GetToken(VisualBasic6Parser.INTEGER, 0); }
+		public ITerminalNode COLLECTION() { return GetToken(VBParser.COLLECTION, 0); }
+		public ITerminalNode BYTE() { return GetToken(VBParser.BYTE, 0); }
+		public ITerminalNode DATE() { return GetToken(VBParser.DATE, 0); }
+		public ITerminalNode BOOLEAN() { return GetToken(VBParser.BOOLEAN, 0); }
+		public ITerminalNode LONG() { return GetToken(VBParser.LONG, 0); }
+		public ITerminalNode DOUBLE() { return GetToken(VBParser.DOUBLE, 0); }
+		public ITerminalNode SINGLE() { return GetToken(VBParser.SINGLE, 0); }
+		public ITerminalNode VARIANT() { return GetToken(VBParser.VARIANT, 0); }
+		public ITerminalNode STRING() { return GetToken(VBParser.STRING, 0); }
+		public ITerminalNode INTEGER() { return GetToken(VBParser.INTEGER, 0); }
 		public BaseTypeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_baseType; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterBaseType(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitBaseType(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBaseType(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -14665,9 +14665,9 @@ public partial class VisualBasic6Parser : Parser {
 			return GetRuleContext<AmbiguousKeywordContext>(i);
 		}
 		public ITerminalNode IDENTIFIER(int i) {
-			return GetToken(VisualBasic6Parser.IDENTIFIER, i);
+			return GetToken(VBParser.IDENTIFIER, i);
 		}
-		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VisualBasic6Parser.IDENTIFIER); }
+		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBParser.IDENTIFIER); }
 		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
@@ -14677,15 +14677,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_certainIdentifier; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterCertainIdentifier(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitCertainIdentifier(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCertainIdentifier(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15206,29 +15206,29 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class ComparisonOperatorContext : ParserRuleContext {
-		public ITerminalNode NEQ() { return GetToken(VisualBasic6Parser.NEQ, 0); }
-		public ITerminalNode GEQ() { return GetToken(VisualBasic6Parser.GEQ, 0); }
-		public ITerminalNode LT() { return GetToken(VisualBasic6Parser.LT, 0); }
-		public ITerminalNode LEQ() { return GetToken(VisualBasic6Parser.LEQ, 0); }
-		public ITerminalNode LIKE() { return GetToken(VisualBasic6Parser.LIKE, 0); }
-		public ITerminalNode IS() { return GetToken(VisualBasic6Parser.IS, 0); }
-		public ITerminalNode GT() { return GetToken(VisualBasic6Parser.GT, 0); }
-		public ITerminalNode EQ() { return GetToken(VisualBasic6Parser.EQ, 0); }
+		public ITerminalNode NEQ() { return GetToken(VBParser.NEQ, 0); }
+		public ITerminalNode GEQ() { return GetToken(VBParser.GEQ, 0); }
+		public ITerminalNode LT() { return GetToken(VBParser.LT, 0); }
+		public ITerminalNode LEQ() { return GetToken(VBParser.LEQ, 0); }
+		public ITerminalNode LIKE() { return GetToken(VBParser.LIKE, 0); }
+		public ITerminalNode IS() { return GetToken(VBParser.IS, 0); }
+		public ITerminalNode GT() { return GetToken(VBParser.GT, 0); }
+		public ITerminalNode EQ() { return GetToken(VBParser.EQ, 0); }
 		public ComparisonOperatorContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_comparisonOperator; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterComparisonOperator(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitComparisonOperator(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparisonOperator(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15274,15 +15274,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_complexType; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterComplexType(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitComplexType(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComplexType(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15296,7 +15296,7 @@ public partial class VisualBasic6Parser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2604; ambiguousIdentifier();
+			State = 2604; AmbiguousIdentifier();
 			State = 2609;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,437,_ctx);
@@ -15305,7 +15305,7 @@ public partial class VisualBasic6Parser : Parser {
 					{
 					{
 					State = 2605; Match(T__7);
-					State = 2606; ambiguousIdentifier();
+					State = 2606; AmbiguousIdentifier();
 					}
 					} 
 				}
@@ -15327,27 +15327,27 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class FieldLengthContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VisualBasic6Parser.WS, 0); }
+		public ITerminalNode WS() { return GetToken(VBParser.WS, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VisualBasic6Parser.INTEGERLITERAL, 0); }
-		public ITerminalNode MULT() { return GetToken(VisualBasic6Parser.MULT, 0); }
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBParser.INTEGERLITERAL, 0); }
+		public ITerminalNode MULT() { return GetToken(VBParser.MULT, 0); }
 		public FieldLengthContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_fieldLength; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterFieldLength(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitFieldLength(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFieldLength(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15524,7 +15524,7 @@ public partial class VisualBasic6Parser : Parser {
 			case L_SQUARE_BRACKET:
 			case IDENTIFIER:
 				{
-				State = 2617; ambiguousIdentifier();
+				State = 2617; AmbiguousIdentifier();
 				}
 				break;
 			default:
@@ -15547,10 +15547,10 @@ public partial class VisualBasic6Parser : Parser {
 		public IReadOnlyList<CertainIdentifierContext> certainIdentifier() {
 			return GetRuleContexts<CertainIdentifierContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
-		public ITerminalNode MINUS() { return GetToken(VisualBasic6Parser.MINUS, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
+		public ITerminalNode MINUS() { return GetToken(VBParser.MINUS, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
 		public CertainIdentifierContext certainIdentifier(int i) {
 			return GetRuleContext<CertainIdentifierContext>(i);
@@ -15561,15 +15561,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_letterrange; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLetterrange(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLetterrange(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLetterrange(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15632,15 +15632,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_lineLabel; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLineLabel(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLineLabel(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLineLabel(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15653,7 +15653,7 @@ public partial class VisualBasic6Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2631; ambiguousIdentifier();
+			State = 2631; AmbiguousIdentifier();
 			State = 2632; Match(T__5);
 			}
 		}
@@ -15669,38 +15669,38 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class LiteralContext : ParserRuleContext {
-		public ITerminalNode FILENUMBER() { return GetToken(VisualBasic6Parser.FILENUMBER, 0); }
-		public ITerminalNode DOUBLELITERAL() { return GetToken(VisualBasic6Parser.DOUBLELITERAL, 0); }
-		public ITerminalNode COLORLITERAL() { return GetToken(VisualBasic6Parser.COLORLITERAL, 0); }
-		public ITerminalNode TRUE() { return GetToken(VisualBasic6Parser.TRUE, 0); }
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VisualBasic6Parser.INTEGERLITERAL, 0); }
-		public ITerminalNode STRINGLITERAL() { return GetToken(VisualBasic6Parser.STRINGLITERAL, 0); }
-		public ITerminalNode NULL() { return GetToken(VisualBasic6Parser.NULL, 0); }
-		public ITerminalNode NOTHING() { return GetToken(VisualBasic6Parser.NOTHING, 0); }
-		public ITerminalNode FALSE() { return GetToken(VisualBasic6Parser.FALSE, 0); }
-		public ITerminalNode DATELITERAL() { return GetToken(VisualBasic6Parser.DATELITERAL, 0); }
+		public ITerminalNode FILENUMBER() { return GetToken(VBParser.FILENUMBER, 0); }
+		public ITerminalNode DOUBLELITERAL() { return GetToken(VBParser.DOUBLELITERAL, 0); }
+		public ITerminalNode COLORLITERAL() { return GetToken(VBParser.COLORLITERAL, 0); }
+		public ITerminalNode TRUE() { return GetToken(VBParser.TRUE, 0); }
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBParser.INTEGERLITERAL, 0); }
+		public ITerminalNode STRINGLITERAL() { return GetToken(VBParser.STRINGLITERAL, 0); }
+		public ITerminalNode NULL() { return GetToken(VBParser.NULL, 0); }
+		public ITerminalNode NOTHING() { return GetToken(VBParser.NOTHING, 0); }
+		public ITerminalNode FALSE() { return GetToken(VBParser.FALSE, 0); }
+		public ITerminalNode DATELITERAL() { return GetToken(VBParser.DATELITERAL, 0); }
 		public LiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_literal; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterLiteral(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitLiteral(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitLiteral(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public LiteralContext literal() {
+	public LiteralContext Literal() {
 		LiteralContext _localctx = new LiteralContext(_ctx, State);
 		EnterRule(_localctx, 282, RULE_literal);
 		int _la;
@@ -15727,15 +15727,15 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class TypeContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VisualBasic6Parser.WS); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
 		public ComplexTypeContext complexType() {
 			return GetRuleContext<ComplexTypeContext>(0);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VisualBasic6Parser.RPAREN, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
-			return GetToken(VisualBasic6Parser.WS, i);
+			return GetToken(VBParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VisualBasic6Parser.LPAREN, 0); }
+		public ITerminalNode LPAREN() { return GetToken(VBParser.LPAREN, 0); }
 		public BaseTypeContext baseType() {
 			return GetRuleContext<BaseTypeContext>(0);
 		}
@@ -15745,15 +15745,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_type; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterType(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitType(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitType(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15826,15 +15826,15 @@ public partial class VisualBasic6Parser : Parser {
 		}
 		public override int RuleIndex { get { return RULE_typeHint; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterTypeHint(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitTypeHint(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTypeHint(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15868,25 +15868,25 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class VisibilityContext : ParserRuleContext {
-		public ITerminalNode PUBLIC() { return GetToken(VisualBasic6Parser.PUBLIC, 0); }
-		public ITerminalNode GLOBAL() { return GetToken(VisualBasic6Parser.GLOBAL, 0); }
-		public ITerminalNode PRIVATE() { return GetToken(VisualBasic6Parser.PRIVATE, 0); }
-		public ITerminalNode FRIEND() { return GetToken(VisualBasic6Parser.FRIEND, 0); }
+		public ITerminalNode PUBLIC() { return GetToken(VBParser.PUBLIC, 0); }
+		public ITerminalNode GLOBAL() { return GetToken(VBParser.GLOBAL, 0); }
+		public ITerminalNode PRIVATE() { return GetToken(VBParser.PRIVATE, 0); }
+		public ITerminalNode FRIEND() { return GetToken(VBParser.FRIEND, 0); }
 		public VisibilityContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_visibility; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterVisibility(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitVisibility(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVisibility(this);
 			else return visitor.VisitChildren(this);
 		}
@@ -15920,165 +15920,165 @@ public partial class VisualBasic6Parser : Parser {
 	}
 
 	public partial class AmbiguousKeywordContext : ParserRuleContext {
-		public ITerminalNode RESET() { return GetToken(VisualBasic6Parser.RESET, 0); }
-		public ITerminalNode GET() { return GetToken(VisualBasic6Parser.GET, 0); }
-		public ITerminalNode MID() { return GetToken(VisualBasic6Parser.MID, 0); }
-		public ITerminalNode ELSEIF() { return GetToken(VisualBasic6Parser.ELSEIF, 0); }
-		public ITerminalNode LOCK() { return GetToken(VisualBasic6Parser.LOCK, 0); }
-		public ITerminalNode VERSION() { return GetToken(VisualBasic6Parser.VERSION, 0); }
-		public ITerminalNode SENDKEYS() { return GetToken(VisualBasic6Parser.SENDKEYS, 0); }
-		public ITerminalNode IS() { return GetToken(VisualBasic6Parser.IS, 0); }
-		public ITerminalNode EACH() { return GetToken(VisualBasic6Parser.EACH, 0); }
-		public ITerminalNode DIM() { return GetToken(VisualBasic6Parser.DIM, 0); }
-		public ITerminalNode ERASE() { return GetToken(VisualBasic6Parser.ERASE, 0); }
-		public ITerminalNode DO() { return GetToken(VisualBasic6Parser.DO, 0); }
-		public ITerminalNode GOSUB() { return GetToken(VisualBasic6Parser.GOSUB, 0); }
-		public ITerminalNode STATIC() { return GetToken(VisualBasic6Parser.STATIC, 0); }
-		public ITerminalNode UNLOCK() { return GetToken(VisualBasic6Parser.UNLOCK, 0); }
-		public ITerminalNode DEFBYTE() { return GetToken(VisualBasic6Parser.DEFBYTE, 0); }
-		public ITerminalNode THEN() { return GetToken(VisualBasic6Parser.THEN, 0); }
-		public ITerminalNode DEFSTR() { return GetToken(VisualBasic6Parser.DEFSTR, 0); }
-		public ITerminalNode UNLOAD() { return GetToken(VisualBasic6Parser.UNLOAD, 0); }
-		public ITerminalNode LONG() { return GetToken(VisualBasic6Parser.LONG, 0); }
-		public ITerminalNode OR() { return GetToken(VisualBasic6Parser.OR, 0); }
-		public ITerminalNode WITH() { return GetToken(VisualBasic6Parser.WITH, 0); }
-		public ITerminalNode DELETESETTING() { return GetToken(VisualBasic6Parser.DELETESETTING, 0); }
-		public ITerminalNode PUBLIC() { return GetToken(VisualBasic6Parser.PUBLIC, 0); }
-		public ITerminalNode OPTIONAL() { return GetToken(VisualBasic6Parser.OPTIONAL, 0); }
-		public ITerminalNode EQV() { return GetToken(VisualBasic6Parser.EQV, 0); }
-		public ITerminalNode NEW() { return GetToken(VisualBasic6Parser.NEW, 0); }
-		public ITerminalNode ELSE() { return GetToken(VisualBasic6Parser.ELSE, 0); }
-		public ITerminalNode CLOSE() { return GetToken(VisualBasic6Parser.CLOSE, 0); }
-		public ITerminalNode CASE() { return GetToken(VisualBasic6Parser.CASE, 0); }
-		public ITerminalNode ERROR() { return GetToken(VisualBasic6Parser.ERROR, 0); }
-		public ITerminalNode CONST() { return GetToken(VisualBasic6Parser.CONST, 0); }
-		public ITerminalNode NULL() { return GetToken(VisualBasic6Parser.NULL, 0); }
-		public ITerminalNode TAB() { return GetToken(VisualBasic6Parser.TAB, 0); }
-		public ITerminalNode DEFCUR() { return GetToken(VisualBasic6Parser.DEFCUR, 0); }
-		public ITerminalNode AS() { return GetToken(VisualBasic6Parser.AS, 0); }
-		public ITerminalNode INPUT() { return GetToken(VisualBasic6Parser.INPUT, 0); }
-		public ITerminalNode TRUE() { return GetToken(VisualBasic6Parser.TRUE, 0); }
-		public ITerminalNode ADDRESSOF() { return GetToken(VisualBasic6Parser.ADDRESSOF, 0); }
-		public ITerminalNode TEXT() { return GetToken(VisualBasic6Parser.TEXT, 0); }
-		public ITerminalNode ACCESS() { return GetToken(VisualBasic6Parser.ACCESS, 0); }
-		public ITerminalNode RSET() { return GetToken(VisualBasic6Parser.RSET, 0); }
-		public ITerminalNode RANDOM() { return GetToken(VisualBasic6Parser.RANDOM, 0); }
-		public ITerminalNode DEFINT() { return GetToken(VisualBasic6Parser.DEFINT, 0); }
-		public ITerminalNode MKDIR() { return GetToken(VisualBasic6Parser.MKDIR, 0); }
-		public ITerminalNode CLASS() { return GetToken(VisualBasic6Parser.CLASS, 0); }
-		public ITerminalNode IN() { return GetToken(VisualBasic6Parser.IN, 0); }
-		public ITerminalNode DEFSNG() { return GetToken(VisualBasic6Parser.DEFSNG, 0); }
-		public ITerminalNode BYREF() { return GetToken(VisualBasic6Parser.BYREF, 0); }
-		public ITerminalNode LET() { return GetToken(VisualBasic6Parser.LET, 0); }
-		public ITerminalNode RETURN() { return GetToken(VisualBasic6Parser.RETURN, 0); }
-		public ITerminalNode DEFDEC() { return GetToken(VisualBasic6Parser.DEFDEC, 0); }
-		public ITerminalNode RESUME() { return GetToken(VisualBasic6Parser.RESUME, 0); }
-		public ITerminalNode BINARY() { return GetToken(VisualBasic6Parser.BINARY, 0); }
-		public ITerminalNode COLLECTION() { return GetToken(VisualBasic6Parser.COLLECTION, 0); }
-		public ITerminalNode PRIVATE() { return GetToken(VisualBasic6Parser.PRIVATE, 0); }
-		public ITerminalNode LOOP() { return GetToken(VisualBasic6Parser.LOOP, 0); }
-		public ITerminalNode FRIEND() { return GetToken(VisualBasic6Parser.FRIEND, 0); }
-		public ITerminalNode NOTHING() { return GetToken(VisualBasic6Parser.NOTHING, 0); }
-		public ITerminalNode WITHEVENTS() { return GetToken(VisualBasic6Parser.WITHEVENTS, 0); }
-		public ITerminalNode GOTO() { return GetToken(VisualBasic6Parser.GOTO, 0); }
-		public ITerminalNode DEFVAR() { return GetToken(VisualBasic6Parser.DEFVAR, 0); }
-		public ITerminalNode DATE() { return GetToken(VisualBasic6Parser.DATE, 0); }
-		public ITerminalNode APPACTIVATE() { return GetToken(VisualBasic6Parser.APPACTIVATE, 0); }
-		public ITerminalNode SPC() { return GetToken(VisualBasic6Parser.SPC, 0); }
-		public ITerminalNode SETATTR() { return GetToken(VisualBasic6Parser.SETATTR, 0); }
-		public ITerminalNode LIB() { return GetToken(VisualBasic6Parser.LIB, 0); }
-		public ITerminalNode OPEN() { return GetToken(VisualBasic6Parser.OPEN, 0); }
-		public ITerminalNode KILL() { return GetToken(VisualBasic6Parser.KILL, 0); }
-		public ITerminalNode STRING() { return GetToken(VisualBasic6Parser.STRING, 0); }
-		public ITerminalNode BEGIN() { return GetToken(VisualBasic6Parser.BEGIN, 0); }
-		public ITerminalNode RANDOMIZE() { return GetToken(VisualBasic6Parser.RANDOMIZE, 0); }
-		public ITerminalNode FALSE() { return GetToken(VisualBasic6Parser.FALSE, 0); }
-		public ITerminalNode NEXT() { return GetToken(VisualBasic6Parser.NEXT, 0); }
-		public ITerminalNode ENUM() { return GetToken(VisualBasic6Parser.ENUM, 0); }
-		public ITerminalNode CALL() { return GetToken(VisualBasic6Parser.CALL, 0); }
-		public ITerminalNode TIME() { return GetToken(VisualBasic6Parser.TIME, 0); }
-		public ITerminalNode DECLARE() { return GetToken(VisualBasic6Parser.DECLARE, 0); }
-		public ITerminalNode PRESERVE() { return GetToken(VisualBasic6Parser.PRESERVE, 0); }
-		public ITerminalNode TYPEOF() { return GetToken(VisualBasic6Parser.TYPEOF, 0); }
-		public ITerminalNode STEP() { return GetToken(VisualBasic6Parser.STEP, 0); }
-		public ITerminalNode DOUBLE() { return GetToken(VisualBasic6Parser.DOUBLE, 0); }
-		public ITerminalNode CHDIR() { return GetToken(VisualBasic6Parser.CHDIR, 0); }
-		public ITerminalNode LOAD() { return GetToken(VisualBasic6Parser.LOAD, 0); }
-		public ITerminalNode SINGLE() { return GetToken(VisualBasic6Parser.SINGLE, 0); }
-		public ITerminalNode ME() { return GetToken(VisualBasic6Parser.ME, 0); }
-		public ITerminalNode SAVEPICTURE() { return GetToken(VisualBasic6Parser.SAVEPICTURE, 0); }
-		public ITerminalNode WIDTH() { return GetToken(VisualBasic6Parser.WIDTH, 0); }
-		public ITerminalNode STOP() { return GetToken(VisualBasic6Parser.STOP, 0); }
-		public ITerminalNode IF() { return GetToken(VisualBasic6Parser.IF, 0); }
-		public ITerminalNode RMDIR() { return GetToken(VisualBasic6Parser.RMDIR, 0); }
-		public ITerminalNode SHARED() { return GetToken(VisualBasic6Parser.SHARED, 0); }
-		public ITerminalNode NAME() { return GetToken(VisualBasic6Parser.NAME, 0); }
-		public ITerminalNode IMPLEMENTS() { return GetToken(VisualBasic6Parser.IMPLEMENTS, 0); }
-		public ITerminalNode TO() { return GetToken(VisualBasic6Parser.TO, 0); }
-		public ITerminalNode DEFLNG() { return GetToken(VisualBasic6Parser.DEFLNG, 0); }
-		public ITerminalNode LIKE() { return GetToken(VisualBasic6Parser.LIKE, 0); }
-		public ITerminalNode VARIANT() { return GetToken(VisualBasic6Parser.VARIANT, 0); }
-		public ITerminalNode TYPE() { return GetToken(VisualBasic6Parser.TYPE, 0); }
-		public ITerminalNode DEFDATE() { return GetToken(VisualBasic6Parser.DEFDATE, 0); }
-		public ITerminalNode IMP() { return GetToken(VisualBasic6Parser.IMP, 0); }
-		public ITerminalNode BYVAL() { return GetToken(VisualBasic6Parser.BYVAL, 0); }
-		public ITerminalNode RAISEEVENT() { return GetToken(VisualBasic6Parser.RAISEEVENT, 0); }
-		public ITerminalNode BYTE() { return GetToken(VisualBasic6Parser.BYTE, 0); }
-		public ITerminalNode EVENT() { return GetToken(VisualBasic6Parser.EVENT, 0); }
-		public ITerminalNode PARAMARRAY() { return GetToken(VisualBasic6Parser.PARAMARRAY, 0); }
-		public ITerminalNode READ() { return GetToken(VisualBasic6Parser.READ, 0); }
-		public ITerminalNode NOT() { return GetToken(VisualBasic6Parser.NOT, 0); }
-		public ITerminalNode WRITE() { return GetToken(VisualBasic6Parser.WRITE, 0); }
-		public ITerminalNode CHDRIVE() { return GetToken(VisualBasic6Parser.CHDRIVE, 0); }
-		public ITerminalNode MOD() { return GetToken(VisualBasic6Parser.MOD, 0); }
-		public ITerminalNode SET() { return GetToken(VisualBasic6Parser.SET, 0); }
-		public ITerminalNode APPEND() { return GetToken(VisualBasic6Parser.APPEND, 0); }
-		public ITerminalNode AND() { return GetToken(VisualBasic6Parser.AND, 0); }
-		public ITerminalNode WEND() { return GetToken(VisualBasic6Parser.WEND, 0); }
-		public ITerminalNode ATTRIBUTE() { return GetToken(VisualBasic6Parser.ATTRIBUTE, 0); }
-		public ITerminalNode ALIAS() { return GetToken(VisualBasic6Parser.ALIAS, 0); }
-		public ITerminalNode WHILE() { return GetToken(VisualBasic6Parser.WHILE, 0); }
-		public ITerminalNode ON() { return GetToken(VisualBasic6Parser.ON, 0); }
-		public ITerminalNode BOOLEAN() { return GetToken(VisualBasic6Parser.BOOLEAN, 0); }
-		public ITerminalNode GLOBAL() { return GetToken(VisualBasic6Parser.GLOBAL, 0); }
-		public ITerminalNode BEEP() { return GetToken(VisualBasic6Parser.BEEP, 0); }
-		public ITerminalNode LSET() { return GetToken(VisualBasic6Parser.LSET, 0); }
-		public ITerminalNode SAVESETTING() { return GetToken(VisualBasic6Parser.SAVESETTING, 0); }
-		public ITerminalNode UNTIL() { return GetToken(VisualBasic6Parser.UNTIL, 0); }
-		public ITerminalNode REM() { return GetToken(VisualBasic6Parser.REM, 0); }
-		public ITerminalNode LEN() { return GetToken(VisualBasic6Parser.LEN, 0); }
-		public ITerminalNode PRINT() { return GetToken(VisualBasic6Parser.PRINT, 0); }
-		public ITerminalNode DATABASE() { return GetToken(VisualBasic6Parser.DATABASE, 0); }
-		public ITerminalNode XOR() { return GetToken(VisualBasic6Parser.XOR, 0); }
-		public ITerminalNode DEFOBJ() { return GetToken(VisualBasic6Parser.DEFOBJ, 0); }
-		public ITerminalNode SELECT() { return GetToken(VisualBasic6Parser.SELECT, 0); }
-		public ITerminalNode DEFDBL() { return GetToken(VisualBasic6Parser.DEFDBL, 0); }
-		public ITerminalNode PUT() { return GetToken(VisualBasic6Parser.PUT, 0); }
-		public ITerminalNode FILECOPY() { return GetToken(VisualBasic6Parser.FILECOPY, 0); }
-		public ITerminalNode FOR() { return GetToken(VisualBasic6Parser.FOR, 0); }
-		public ITerminalNode FUNCTION() { return GetToken(VisualBasic6Parser.FUNCTION, 0); }
-		public ITerminalNode OUTPUT() { return GetToken(VisualBasic6Parser.OUTPUT, 0); }
-		public ITerminalNode REDIM() { return GetToken(VisualBasic6Parser.REDIM, 0); }
-		public ITerminalNode DEFBOOL() { return GetToken(VisualBasic6Parser.DEFBOOL, 0); }
-		public ITerminalNode INTEGER() { return GetToken(VisualBasic6Parser.INTEGER, 0); }
-		public ITerminalNode SUB() { return GetToken(VisualBasic6Parser.SUB, 0); }
-		public ITerminalNode SEEK() { return GetToken(VisualBasic6Parser.SEEK, 0); }
-		public ITerminalNode END() { return GetToken(VisualBasic6Parser.END, 0); }
+		public ITerminalNode RESET() { return GetToken(VBParser.RESET, 0); }
+		public ITerminalNode GET() { return GetToken(VBParser.GET, 0); }
+		public ITerminalNode MID() { return GetToken(VBParser.MID, 0); }
+		public ITerminalNode ELSEIF() { return GetToken(VBParser.ELSEIF, 0); }
+		public ITerminalNode LOCK() { return GetToken(VBParser.LOCK, 0); }
+		public ITerminalNode VERSION() { return GetToken(VBParser.VERSION, 0); }
+		public ITerminalNode SENDKEYS() { return GetToken(VBParser.SENDKEYS, 0); }
+		public ITerminalNode IS() { return GetToken(VBParser.IS, 0); }
+		public ITerminalNode EACH() { return GetToken(VBParser.EACH, 0); }
+		public ITerminalNode DIM() { return GetToken(VBParser.DIM, 0); }
+		public ITerminalNode ERASE() { return GetToken(VBParser.ERASE, 0); }
+		public ITerminalNode DO() { return GetToken(VBParser.DO, 0); }
+		public ITerminalNode GOSUB() { return GetToken(VBParser.GOSUB, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBParser.STATIC, 0); }
+		public ITerminalNode UNLOCK() { return GetToken(VBParser.UNLOCK, 0); }
+		public ITerminalNode DEFBYTE() { return GetToken(VBParser.DEFBYTE, 0); }
+		public ITerminalNode THEN() { return GetToken(VBParser.THEN, 0); }
+		public ITerminalNode DEFSTR() { return GetToken(VBParser.DEFSTR, 0); }
+		public ITerminalNode UNLOAD() { return GetToken(VBParser.UNLOAD, 0); }
+		public ITerminalNode LONG() { return GetToken(VBParser.LONG, 0); }
+		public ITerminalNode OR() { return GetToken(VBParser.OR, 0); }
+		public ITerminalNode WITH() { return GetToken(VBParser.WITH, 0); }
+		public ITerminalNode DELETESETTING() { return GetToken(VBParser.DELETESETTING, 0); }
+		public ITerminalNode PUBLIC() { return GetToken(VBParser.PUBLIC, 0); }
+		public ITerminalNode OPTIONAL() { return GetToken(VBParser.OPTIONAL, 0); }
+		public ITerminalNode EQV() { return GetToken(VBParser.EQV, 0); }
+		public ITerminalNode NEW() { return GetToken(VBParser.NEW, 0); }
+		public ITerminalNode ELSE() { return GetToken(VBParser.ELSE, 0); }
+		public ITerminalNode CLOSE() { return GetToken(VBParser.CLOSE, 0); }
+		public ITerminalNode CASE() { return GetToken(VBParser.CASE, 0); }
+		public ITerminalNode ERROR() { return GetToken(VBParser.ERROR, 0); }
+		public ITerminalNode CONST() { return GetToken(VBParser.CONST, 0); }
+		public ITerminalNode NULL() { return GetToken(VBParser.NULL, 0); }
+		public ITerminalNode TAB() { return GetToken(VBParser.TAB, 0); }
+		public ITerminalNode DEFCUR() { return GetToken(VBParser.DEFCUR, 0); }
+		public ITerminalNode AS() { return GetToken(VBParser.AS, 0); }
+		public ITerminalNode INPUT() { return GetToken(VBParser.INPUT, 0); }
+		public ITerminalNode TRUE() { return GetToken(VBParser.TRUE, 0); }
+		public ITerminalNode ADDRESSOF() { return GetToken(VBParser.ADDRESSOF, 0); }
+		public ITerminalNode TEXT() { return GetToken(VBParser.TEXT, 0); }
+		public ITerminalNode ACCESS() { return GetToken(VBParser.ACCESS, 0); }
+		public ITerminalNode RSET() { return GetToken(VBParser.RSET, 0); }
+		public ITerminalNode RANDOM() { return GetToken(VBParser.RANDOM, 0); }
+		public ITerminalNode DEFINT() { return GetToken(VBParser.DEFINT, 0); }
+		public ITerminalNode MKDIR() { return GetToken(VBParser.MKDIR, 0); }
+		public ITerminalNode CLASS() { return GetToken(VBParser.CLASS, 0); }
+		public ITerminalNode IN() { return GetToken(VBParser.IN, 0); }
+		public ITerminalNode DEFSNG() { return GetToken(VBParser.DEFSNG, 0); }
+		public ITerminalNode BYREF() { return GetToken(VBParser.BYREF, 0); }
+		public ITerminalNode LET() { return GetToken(VBParser.LET, 0); }
+		public ITerminalNode RETURN() { return GetToken(VBParser.RETURN, 0); }
+		public ITerminalNode DEFDEC() { return GetToken(VBParser.DEFDEC, 0); }
+		public ITerminalNode RESUME() { return GetToken(VBParser.RESUME, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBParser.BINARY, 0); }
+		public ITerminalNode COLLECTION() { return GetToken(VBParser.COLLECTION, 0); }
+		public ITerminalNode PRIVATE() { return GetToken(VBParser.PRIVATE, 0); }
+		public ITerminalNode LOOP() { return GetToken(VBParser.LOOP, 0); }
+		public ITerminalNode FRIEND() { return GetToken(VBParser.FRIEND, 0); }
+		public ITerminalNode NOTHING() { return GetToken(VBParser.NOTHING, 0); }
+		public ITerminalNode WITHEVENTS() { return GetToken(VBParser.WITHEVENTS, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBParser.GOTO, 0); }
+		public ITerminalNode DEFVAR() { return GetToken(VBParser.DEFVAR, 0); }
+		public ITerminalNode DATE() { return GetToken(VBParser.DATE, 0); }
+		public ITerminalNode APPACTIVATE() { return GetToken(VBParser.APPACTIVATE, 0); }
+		public ITerminalNode SPC() { return GetToken(VBParser.SPC, 0); }
+		public ITerminalNode SETATTR() { return GetToken(VBParser.SETATTR, 0); }
+		public ITerminalNode LIB() { return GetToken(VBParser.LIB, 0); }
+		public ITerminalNode OPEN() { return GetToken(VBParser.OPEN, 0); }
+		public ITerminalNode KILL() { return GetToken(VBParser.KILL, 0); }
+		public ITerminalNode STRING() { return GetToken(VBParser.STRING, 0); }
+		public ITerminalNode BEGIN() { return GetToken(VBParser.BEGIN, 0); }
+		public ITerminalNode RANDOMIZE() { return GetToken(VBParser.RANDOMIZE, 0); }
+		public ITerminalNode FALSE() { return GetToken(VBParser.FALSE, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBParser.NEXT, 0); }
+		public ITerminalNode ENUM() { return GetToken(VBParser.ENUM, 0); }
+		public ITerminalNode CALL() { return GetToken(VBParser.CALL, 0); }
+		public ITerminalNode TIME() { return GetToken(VBParser.TIME, 0); }
+		public ITerminalNode DECLARE() { return GetToken(VBParser.DECLARE, 0); }
+		public ITerminalNode PRESERVE() { return GetToken(VBParser.PRESERVE, 0); }
+		public ITerminalNode TYPEOF() { return GetToken(VBParser.TYPEOF, 0); }
+		public ITerminalNode STEP() { return GetToken(VBParser.STEP, 0); }
+		public ITerminalNode DOUBLE() { return GetToken(VBParser.DOUBLE, 0); }
+		public ITerminalNode CHDIR() { return GetToken(VBParser.CHDIR, 0); }
+		public ITerminalNode LOAD() { return GetToken(VBParser.LOAD, 0); }
+		public ITerminalNode SINGLE() { return GetToken(VBParser.SINGLE, 0); }
+		public ITerminalNode ME() { return GetToken(VBParser.ME, 0); }
+		public ITerminalNode SAVEPICTURE() { return GetToken(VBParser.SAVEPICTURE, 0); }
+		public ITerminalNode WIDTH() { return GetToken(VBParser.WIDTH, 0); }
+		public ITerminalNode STOP() { return GetToken(VBParser.STOP, 0); }
+		public ITerminalNode IF() { return GetToken(VBParser.IF, 0); }
+		public ITerminalNode RMDIR() { return GetToken(VBParser.RMDIR, 0); }
+		public ITerminalNode SHARED() { return GetToken(VBParser.SHARED, 0); }
+		public ITerminalNode NAME() { return GetToken(VBParser.NAME, 0); }
+		public ITerminalNode IMPLEMENTS() { return GetToken(VBParser.IMPLEMENTS, 0); }
+		public ITerminalNode TO() { return GetToken(VBParser.TO, 0); }
+		public ITerminalNode DEFLNG() { return GetToken(VBParser.DEFLNG, 0); }
+		public ITerminalNode LIKE() { return GetToken(VBParser.LIKE, 0); }
+		public ITerminalNode VARIANT() { return GetToken(VBParser.VARIANT, 0); }
+		public ITerminalNode TYPE() { return GetToken(VBParser.TYPE, 0); }
+		public ITerminalNode DEFDATE() { return GetToken(VBParser.DEFDATE, 0); }
+		public ITerminalNode IMP() { return GetToken(VBParser.IMP, 0); }
+		public ITerminalNode BYVAL() { return GetToken(VBParser.BYVAL, 0); }
+		public ITerminalNode RAISEEVENT() { return GetToken(VBParser.RAISEEVENT, 0); }
+		public ITerminalNode BYTE() { return GetToken(VBParser.BYTE, 0); }
+		public ITerminalNode EVENT() { return GetToken(VBParser.EVENT, 0); }
+		public ITerminalNode PARAMARRAY() { return GetToken(VBParser.PARAMARRAY, 0); }
+		public ITerminalNode READ() { return GetToken(VBParser.READ, 0); }
+		public ITerminalNode NOT() { return GetToken(VBParser.NOT, 0); }
+		public ITerminalNode WRITE() { return GetToken(VBParser.WRITE, 0); }
+		public ITerminalNode CHDRIVE() { return GetToken(VBParser.CHDRIVE, 0); }
+		public ITerminalNode MOD() { return GetToken(VBParser.MOD, 0); }
+		public ITerminalNode SET() { return GetToken(VBParser.SET, 0); }
+		public ITerminalNode APPEND() { return GetToken(VBParser.APPEND, 0); }
+		public ITerminalNode AND() { return GetToken(VBParser.AND, 0); }
+		public ITerminalNode WEND() { return GetToken(VBParser.WEND, 0); }
+		public ITerminalNode ATTRIBUTE() { return GetToken(VBParser.ATTRIBUTE, 0); }
+		public ITerminalNode ALIAS() { return GetToken(VBParser.ALIAS, 0); }
+		public ITerminalNode WHILE() { return GetToken(VBParser.WHILE, 0); }
+		public ITerminalNode ON() { return GetToken(VBParser.ON, 0); }
+		public ITerminalNode BOOLEAN() { return GetToken(VBParser.BOOLEAN, 0); }
+		public ITerminalNode GLOBAL() { return GetToken(VBParser.GLOBAL, 0); }
+		public ITerminalNode BEEP() { return GetToken(VBParser.BEEP, 0); }
+		public ITerminalNode LSET() { return GetToken(VBParser.LSET, 0); }
+		public ITerminalNode SAVESETTING() { return GetToken(VBParser.SAVESETTING, 0); }
+		public ITerminalNode UNTIL() { return GetToken(VBParser.UNTIL, 0); }
+		public ITerminalNode REM() { return GetToken(VBParser.REM, 0); }
+		public ITerminalNode LEN() { return GetToken(VBParser.LEN, 0); }
+		public ITerminalNode PRINT() { return GetToken(VBParser.PRINT, 0); }
+		public ITerminalNode DATABASE() { return GetToken(VBParser.DATABASE, 0); }
+		public ITerminalNode XOR() { return GetToken(VBParser.XOR, 0); }
+		public ITerminalNode DEFOBJ() { return GetToken(VBParser.DEFOBJ, 0); }
+		public ITerminalNode SELECT() { return GetToken(VBParser.SELECT, 0); }
+		public ITerminalNode DEFDBL() { return GetToken(VBParser.DEFDBL, 0); }
+		public ITerminalNode PUT() { return GetToken(VBParser.PUT, 0); }
+		public ITerminalNode FILECOPY() { return GetToken(VBParser.FILECOPY, 0); }
+		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
+		public ITerminalNode FUNCTION() { return GetToken(VBParser.FUNCTION, 0); }
+		public ITerminalNode OUTPUT() { return GetToken(VBParser.OUTPUT, 0); }
+		public ITerminalNode REDIM() { return GetToken(VBParser.REDIM, 0); }
+		public ITerminalNode DEFBOOL() { return GetToken(VBParser.DEFBOOL, 0); }
+		public ITerminalNode INTEGER() { return GetToken(VBParser.INTEGER, 0); }
+		public ITerminalNode SUB() { return GetToken(VBParser.SUB, 0); }
+		public ITerminalNode SEEK() { return GetToken(VBParser.SEEK, 0); }
+		public ITerminalNode END() { return GetToken(VBParser.END, 0); }
 		public AmbiguousKeywordContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_ambiguousKeyword; } }
 		public override void EnterRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.EnterAmbiguousKeyword(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
-			IVisualBasic6Listener typedListener = listener as IVisualBasic6Listener;
+			IVBListener typedListener = listener as IVBListener;
 			if (typedListener != null) typedListener.ExitAmbiguousKeyword(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVisualBasic6Visitor<TResult> typedVisitor = visitor as IVisualBasic6Visitor<TResult>;
+			IVBVisitor<TResult> typedVisitor = visitor as IVBVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAmbiguousKeyword(this);
 			else return visitor.VisitChildren(this);
 		}

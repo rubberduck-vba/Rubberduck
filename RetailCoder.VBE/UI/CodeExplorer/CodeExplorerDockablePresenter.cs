@@ -17,7 +17,6 @@ using Selection = Rubberduck.Extensions.Selection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    [ComVisible(false)]
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
         private readonly IRubberduckParser _parser;
@@ -46,7 +45,7 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
-        private void NavigateExplorerTreeNode(object sender, CodeExplorerNavigateArgs e)
+        private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
             if (!e.Node.IsExpanded)
             {
@@ -126,7 +125,7 @@ namespace Rubberduck.UI.CodeExplorer
                     root.Nodes.Add(node);
 
                     var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
-                    node.Nodes.AddRange(moduleNode.Nodes.Cast<TreeNode>().ToArray());
+                    node.Nodes.AddRange(moduleNode.Context.Nodes.Cast<TreeNode>().ToArray());
 
                     node.Text = component.Name;
                     node.ImageKey = "StandardModule";

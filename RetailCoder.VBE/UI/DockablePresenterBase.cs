@@ -5,7 +5,6 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public abstract class DockablePresenterBase : IDisposable
     {
         private readonly AddIn _addin;
@@ -40,7 +39,7 @@ namespace Rubberduck.UI
             }
             catch (Exception)
             {
-                // note: there's a COM exception here if the window was X-closed
+                // bug: there's a COM exception here if the window was X-closed before. see issue #169.
                 return null;
             }
         }
@@ -72,7 +71,11 @@ namespace Rubberduck.UI
             }
             catch (COMException e)
             {
-                // bug: this exception shouldn't be happening. issue #169.
+                // bug: this exception shouldn't be happening. see issue #169.
+            }
+            catch (NullReferenceException e)
+            {
+                // bug: this exception shouldn't be happening either. may be related to #169... or not.
             }
         }
 
