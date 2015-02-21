@@ -77,7 +77,7 @@ namespace Rubberduck.UI.CodeExplorer
                     node.ImageKey = "Hourglass";
                     node.SelectedImageKey = node.ImageKey;
 
-                    Control.Invoke((MethodInvoker) delegate
+                    Control.Invoke((MethodInvoker)delegate
                     {
                         Control.SolutionTree.Nodes.Add(node);
                         AddProjectNodes(project, node);
@@ -90,15 +90,23 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void RefreshExplorerTreeView(object sender, System.EventArgs e)
         {
-            Control.Cursor = Cursors.WaitCursor;
-            RefreshExplorerTreeView();
-            Control.Cursor = Cursors.Default;
+            //todo: Unblock the UI and display a wait cursor.
+            try
+            {
+                Control.Cursor = Cursors.WaitCursor;
+                RefreshExplorerTreeView();
+            }
+            finally
+            {
+                Control.Cursor = Cursors.Default;
+            }
+
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
         {
             var treeView = Control.SolutionTree;
-            Control.Invoke((MethodInvoker) async delegate
+            Control.Invoke((MethodInvoker)async delegate
             {
                 await AddModuleNodesAsync(project, treeView.Font, root);
                 root.Text = project.Name;
@@ -109,24 +117,26 @@ namespace Rubberduck.UI.CodeExplorer
 
         private async Task AddModuleNodesAsync(VBProject project, Font font, TreeNode root)
         {
+            //todo: this complains that it will run synchronously because there are no `await` calls.
+            //todo: parsing modules async is great, but we'll never see modules "(parsing...)" because the project nodes are collapsed.
             foreach (VBComponent vbComponent in project.VBComponents)
             {
                 var component = vbComponent;
-                    var qualifiedName = component.QualifiedName();
-                    var node = new TreeNode(component.Name + " (parsing...)");
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
-                    node.NodeFont = new Font(font, FontStyle.Regular);
+                var qualifiedName = component.QualifiedName();
+                var node = new TreeNode(component.Name + " (parsing...)");
+                node.ImageKey = "Hourglass";
+                node.SelectedImageKey = node.ImageKey;
+                node.NodeFont = new Font(font, FontStyle.Regular);
 
-                    root.Nodes.Add(node);
+                root.Nodes.Add(node);
 
-                    var getModuleNode = new Task<TreeNode[]>(() => ParseModule(component, ref qualifiedName));
-                    getModuleNode.Start();
-                    node.Nodes.AddRange(getModuleNode.Result);
+                var getModuleNode = new Task<TreeNode[]>(() => ParseModule(component, ref qualifiedName));
+                getModuleNode.Start();
+                node.Nodes.AddRange(getModuleNode.Result);
 
-                    node.Text = component.Name;
-                    node.ImageKey = "StandardModule";
-                    node.SelectedImageKey = node.ImageKey;
+                node.Text = component.Name;
+                node.ImageKey = "StandardModule";
+                node.SelectedImageKey = node.ImageKey;
             }
         }
 
