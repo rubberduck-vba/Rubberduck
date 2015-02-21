@@ -123,9 +123,7 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var codePane = component.CodeModule.CodePane;
-
             codePane.SetSelection(e.SelectedItem.GetSelection().Selection);
-            codePane.ForceFocus();
         }
     }
 }
