@@ -63,32 +63,17 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
+        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        {
+            RefreshExplorerTreeView();
+        }
+
         private async void RefreshExplorerTreeView()
         {
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                Control.SolutionTree.Nodes.Clear();
-
-                var projects = VBE.VBProjects.Cast<VBProject>();
-                foreach (var vbProject in projects)
-                {
-                    var project = vbProject;
-                    await Task.Run(() =>
-                    {
-                        var node = new TreeNode(project.Name + " (parsing...)");
-                        node.ImageKey = "Hourglass";
-                        node.SelectedImageKey = node.ImageKey;
-
-                        Control.Invoke((MethodInvoker)delegate
-                        {
-                            Control.SolutionTree.Nodes.Add(node);
-                            AddProjectNodes(project, node);
-                        });
-                    });
-                }
-
-                Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
+                await RefreshRootNode();
             }
             finally
             {
@@ -96,9 +81,29 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        private async Task RefreshRootNode()
         {
-            RefreshExplorerTreeView();
+            Control.SolutionTree.Nodes.Clear();
+
+            var projects = VBE.VBProjects.Cast<VBProject>();
+            foreach (var vbProject in projects)
+            {
+                var project = vbProject;
+                await Task.Run(() =>
+                {
+                    var node = new TreeNode(project.Name + " (parsing...)");
+                    node.ImageKey = "Hourglass";
+                    node.SelectedImageKey = node.ImageKey;
+
+                    Control.Invoke((MethodInvoker)delegate
+                    {
+                        Control.SolutionTree.Nodes.Add(node);
+                        AddProjectNodes(project, node);
+                    });
+                });
+            }
+
+            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
@@ -115,7 +120,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private async Task AddModuleNodesAsync(VBProject project, Font font, TreeNode root)
         {
-            //todo: this complains that it will run synchronously because there are no `await` calls.
             //todo: parsing modules async is great, but we'll never see modules "(parsing...)" because the project nodes are collapsed.
             foreach (VBComponent vbComponent in project.VBComponents)
             {
