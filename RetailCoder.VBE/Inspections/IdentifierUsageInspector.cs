@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedGlobals()
         {
-            var unassignedGlobals = _globals
+            var unassignedGlobals = _globals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(global => _assignments.Where(assignment => assignment.QualifiedName == global.QualifiedName)
                     .All(assignment => global.Context.GetText() != assignment.Context.GetText()));
 
@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedFields()
         {
-            var unassignedFields = _fields
+            var unassignedFields = _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(field => _assignments.Where(assignment => assignment.QualifiedName == field.QualifiedName)
                     .All(assignment => field.Context.GetText() != assignment.Context.GetText()));
 
@@ -84,7 +84,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedLocals()
         {
-            var unassignedFields = _locals
+            var unassignedFields = _locals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(local => _assignments.Where(assignment => assignment.QualifiedName == local.QualifiedName)
                     .All(assignment => local.Context.GetText() != assignment.Context.GetText()));
 
