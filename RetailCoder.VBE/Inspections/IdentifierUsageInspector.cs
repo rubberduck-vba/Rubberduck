@@ -15,6 +15,8 @@ namespace Rubberduck.Inspections
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _globals;
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
+        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
+
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
         private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
 
@@ -24,6 +26,7 @@ namespace Rubberduck.Inspections
             _globals = GetGlobals();
             _fields = GetFields(_globals);
             _locals = GetLocals();
+            _parameters = GetParameters();
             _assignments = GetAssignments();
             _usages = GetIdentifierUsages(_assignments);
         }
@@ -122,11 +125,22 @@ namespace Rubberduck.Inspections
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedLocals()
         {
             var unusedLocals = _locals.Where(context => 
-                _usages.Where(usage => usage.QualifiedName == context.QualifiedName 
-                                    && usage.MemberName == context.MemberName)
+                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
                     .All(usage => context.Context.GetText() != usage.Context.GetText()));
 
             foreach (var context in unusedLocals)
+            {
+                yield return context;
+            }
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedParameters()
+        {
+            var unusedParameters = _parameters.Where(context =>
+                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
+
+            foreach (var context in unusedParameters)
             {
                 yield return context;
             }
@@ -189,6 +203,19 @@ namespace Rubberduck.Inspections
                 var listener = new LocalDeclarationListener(module.QualifiedName);
                 result.AddRange(module.ParseTree
                     .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(listener));
+            }
+
+            return result;
+        }
+
+        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
+        {
+            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            foreach (var module in _parseResult)
+            {
+                var listener = new ParameterListener(module.QualifiedName);
+                result.AddRange(module.ParseTree
+                    .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener));
             }
 
             return result;

@@ -151,6 +151,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter is not used.
+        /// </summary>
+        internal static string ParameterNotUsed {
+            get {
+                return ResourceManager.GetString("ParameterNotUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable is never assigned.
         /// </summary>
         internal static string VariableNotAssigned {

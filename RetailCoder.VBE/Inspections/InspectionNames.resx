@@ -147,6 +147,9 @@
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>
   </data>
+  <data name="ParameterNotUsed" xml:space="preserve">
+    <value>Parameter is not used</value>
+  </data>
   <data name="VariableNotAssigned" xml:space="preserve">
     <value>Variable is never assigned</value>
   </data>
