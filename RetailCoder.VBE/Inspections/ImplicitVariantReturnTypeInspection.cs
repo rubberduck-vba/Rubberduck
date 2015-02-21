@@ -10,7 +10,6 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class ImplicitVariantReturnTypeInspection : IInspection
     {
         public ImplicitVariantReturnTypeInspection()

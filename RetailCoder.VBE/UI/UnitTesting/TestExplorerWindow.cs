@@ -8,7 +8,6 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public partial class TestExplorerWindow : UserControl
     {
         private BindingList<TestExplorerItem> _allTests;

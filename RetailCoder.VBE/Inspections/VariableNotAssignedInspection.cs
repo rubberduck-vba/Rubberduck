@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
     {
         public VariableNotAssignedInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Hint;
         }
 
         public string Name { get { return InspectionNames.VariableNotAssigned; } }

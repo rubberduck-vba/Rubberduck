@@ -91,9 +91,9 @@
     <Compile Include="Inspections\IdentifierUsageInspector.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
-    <Compile Include="Inspections\ObsoleteCallStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementUsageInspectionResult.cs" />
-    <Compile Include="Inspections\ObsoleteLetStatementUsageInspection.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementUsageInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteTypeHintInspection.cs" />
     <Compile Include="Inspections\ObsoleteTypeHintInspectionResult.cs" />
@@ -101,7 +101,7 @@
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
-    <Compile Include="Inspections\VariableUsageInspection.cs" />
+    <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspectionResult.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />

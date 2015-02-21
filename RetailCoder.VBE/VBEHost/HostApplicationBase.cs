@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public abstract class HostApplicationBase<TApplication> : IHostApplication
     {
         protected readonly TApplication _application;

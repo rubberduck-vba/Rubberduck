@@ -11,7 +11,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;

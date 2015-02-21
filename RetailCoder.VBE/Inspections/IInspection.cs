@@ -10,7 +10,6 @@ namespace Rubberduck.Inspections
     /// <summary>
     /// An interface that abstracts a code inspection.
     /// </summary>
-    [ComVisible(false)]
     public interface IInspection 
     {
         /// <summary>

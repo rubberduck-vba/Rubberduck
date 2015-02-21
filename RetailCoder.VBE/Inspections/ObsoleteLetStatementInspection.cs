@@ -9,15 +9,15 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    public class ObsoleteLetStatementUsageInspection : IInspection
+    public class ObsoleteLetStatementInspection : IInspection
     {
-        public ObsoleteLetStatementUsageInspection()
+        public ObsoleteLetStatementInspection()
         {
             Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ObsoleteLet; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)

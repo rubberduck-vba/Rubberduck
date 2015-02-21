@@ -4,7 +4,6 @@ using System;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public interface IHostApplication
     {
         /// <summary>   Runs VBA procedure specified by name. </summary>

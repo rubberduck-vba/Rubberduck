@@ -2,7 +2,6 @@
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public enum CodeInspectionSeverity
     {
         DoNotShow,

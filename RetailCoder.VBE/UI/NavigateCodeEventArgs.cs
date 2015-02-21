@@ -6,7 +6,6 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public class NavigateCodeEventArgs : EventArgs
     {
         public NavigateCodeEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)

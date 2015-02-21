@@ -23,7 +23,6 @@ namespace Rubberduck.Extensions
         }
     }
 
-    [ComVisible(false)]
     public struct Selection
     {
         public Selection(int startLine, int startColumn, int endLine, int endColumn)

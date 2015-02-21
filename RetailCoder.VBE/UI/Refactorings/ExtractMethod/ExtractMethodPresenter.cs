@@ -170,7 +170,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             return ValueTypes.Contains(typeName);
         }
 
-        [ComVisible(false)]
         private string GetExtractedMethod()
         {
             const string newLine = "\r\n";

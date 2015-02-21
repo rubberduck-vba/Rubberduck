@@ -4,7 +4,6 @@ using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    [ComVisible(false)]
     public class ToDoItemClickEventArgs : EventArgs
     {
         public ToDoItemClickEventArgs(ToDoItem selectedItem)

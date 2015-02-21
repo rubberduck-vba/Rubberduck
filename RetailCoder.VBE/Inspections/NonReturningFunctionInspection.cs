@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         public NonReturningFunctionInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.NonReturningFunction; } }

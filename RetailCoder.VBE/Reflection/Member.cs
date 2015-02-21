@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection
 {
-    [ComVisible(false)]
     public enum MemberType
     {
         Field,
@@ -19,7 +18,6 @@ namespace Rubberduck.Reflection
         PropertySet
     }
 
-    [ComVisible(false)]
     public enum MemberVisibility
     {
         Public,
@@ -27,7 +25,6 @@ namespace Rubberduck.Reflection
         Friend
     }
 
-    [ComVisible(false)]
     public class Member
     {
         public Member(MemberVisibility visibility, 
@@ -172,7 +169,6 @@ namespace Rubberduck.Reflection
         }
     }
 
-    [ComVisible(false)]
     public class MemberAttribute
     {
         private const string AttributeSyntax = 

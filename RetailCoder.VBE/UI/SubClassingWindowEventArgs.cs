@@ -4,7 +4,6 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public class SubClassingWindowEventArgs : EventArgs
     {
         private readonly Message _msg;

@@ -10,7 +10,6 @@ using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public class CodeInspectionResultGridViewItem
     {
         public CodeInspectionResultGridViewItem(CodeInspectionResultBase result)

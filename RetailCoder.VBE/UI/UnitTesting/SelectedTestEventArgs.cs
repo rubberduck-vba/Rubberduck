@@ -6,7 +6,6 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public class SelectedTestEventArgs : EventArgs
     {
         public SelectedTestEventArgs(IEnumerable<TestExplorerItem> items)

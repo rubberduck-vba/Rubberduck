@@ -8,7 +8,6 @@ namespace Rubberduck.ToDoItems
     /// Represents a Todo comment and the necessary information to display and navigate to that comment.
     /// This is a binding item. Changing it's properties changes how it is displayed.
     /// </summary>
-    [ComVisible(false)]
     public class ToDoItem
     {
         private readonly TaskPriority _priority;

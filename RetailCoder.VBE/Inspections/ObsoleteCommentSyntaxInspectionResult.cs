@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
 using Rubberduck.Extensions;
+using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class ObsoleteCommentSyntaxInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteCommentSyntaxInspectionResult(string inspection, CodeInspectionSeverity type, CommentNode comment) 

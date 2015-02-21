@@ -9,7 +9,6 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class MultipleDeclarationsInspection : IInspection
     {
         public MultipleDeclarationsInspection()

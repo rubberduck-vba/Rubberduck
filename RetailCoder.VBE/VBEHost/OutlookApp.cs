@@ -4,7 +4,6 @@ using System;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class OutlookApp : HostApplicationBase<Application>
     {
         public OutlookApp() : base("Outlook") { }

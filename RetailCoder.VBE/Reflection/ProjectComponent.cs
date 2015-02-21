@@ -4,7 +4,6 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Reflection
 {
-    [ComVisible(false)]
     public class ProjectComponent
     {
         private readonly CodeModule _module;

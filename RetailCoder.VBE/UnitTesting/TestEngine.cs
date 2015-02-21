@@ -8,7 +8,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(false)]
     public class TestEngine : IDisposable
     {
         private readonly VBE _vbe;

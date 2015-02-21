@@ -8,7 +8,6 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public static class WindowExtensions
     {
         public static IntPtr Handle(this Window window)

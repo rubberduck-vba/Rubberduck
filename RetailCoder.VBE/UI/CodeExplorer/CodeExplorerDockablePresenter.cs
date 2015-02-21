@@ -17,7 +17,6 @@ using Selection = Rubberduck.Extensions.Selection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    [ComVisible(false)]
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
         private readonly IRubberduckParser _parser;

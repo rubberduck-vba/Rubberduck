@@ -6,7 +6,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    [ComVisible(false)]
     public partial class CodeExplorerWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D809";

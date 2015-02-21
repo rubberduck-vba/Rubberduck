@@ -3,7 +3,6 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.VBA
 {
-    [ComVisible(false)]
     public class QualifiedContext<TContext>
     {
         public QualifiedContext(QualifiedMemberName memberName, TContext context)

@@ -10,7 +10,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    [ComVisible(false)]
     public class TestExplorerDockablePresenter : DockablePresenterBase
     {
         // todo: move stuff from TestEngine into here.

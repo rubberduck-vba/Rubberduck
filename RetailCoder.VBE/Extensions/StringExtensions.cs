@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Extensions
 {
-    [System.Runtime.InteropServices.ComVisible(false)]
     public static class StringExtensions
     {
         public static bool Contains(this string source, string toCheck, StringComparison comp)

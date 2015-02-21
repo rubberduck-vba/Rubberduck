@@ -6,7 +6,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(false)]
     public static class NewUnitTestModuleCommand
     {
         private static readonly string TestModuleEmptyTemplate = string.Concat(

@@ -6,7 +6,6 @@ using Rubberduck.Reflection;
 
 namespace Rubberduck.VBA
 {
-    [ComVisible(false)]
     public static class VBComponentExtensions
     {
         internal const string ClassExtesnion = ".cls";

@@ -2,7 +2,6 @@
 
 namespace Rubberduck.ToDoItems
 {
-    [ComVisible(false)]
     public enum TaskPriority
     {
         Low,

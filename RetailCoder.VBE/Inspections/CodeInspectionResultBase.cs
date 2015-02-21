@@ -10,7 +10,6 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public abstract class CodeInspectionResultBase
     {
         /// <summary>

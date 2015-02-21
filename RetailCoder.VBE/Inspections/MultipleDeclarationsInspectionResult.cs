@@ -11,7 +11,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
     {
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 

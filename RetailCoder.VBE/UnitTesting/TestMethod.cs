@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(false)]
     public class TestMethod : IEquatable<TestMethod>
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();

@@ -6,7 +6,6 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.Extensions
 {
-    [ComVisible(false)]
     public static class ProjectExtensions
     {
         public static IEnumerable<string> ComponentNames(this VBProject project)

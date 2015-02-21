@@ -9,7 +9,6 @@ namespace Rubberduck.Extensions
     /// <summary>
     /// VBE Code Pane extension methods. 
     /// </summary>
-    [ComVisible(false)]
     public static class CodePaneExtensions
     {
         /// <summary>   A CodePane extension method that gets the current selection. </summary>

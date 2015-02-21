@@ -14,7 +14,6 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public class RefactorMenu : Menu, IDisposable
     {
         private readonly IRubberduckParser _parser;

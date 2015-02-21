@@ -2,9 +2,9 @@
 
 namespace Rubberduck.Inspections
 {
-    [ComVisible(false)]
     public enum CodeInspectionType
     {
+        LanguageOpportunities,
         MaintainabilityAndReadabilityIssues,
         CodeQualityIssues
     }

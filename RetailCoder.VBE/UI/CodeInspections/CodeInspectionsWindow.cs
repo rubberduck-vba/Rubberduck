@@ -13,7 +13,6 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";

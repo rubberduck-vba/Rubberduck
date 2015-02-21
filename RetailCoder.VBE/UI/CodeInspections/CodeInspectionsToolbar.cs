@@ -16,7 +16,6 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    [ComVisible(false)]
     public class CodeInspectionsToolbar
     {
         private readonly VBE _vbe;

@@ -4,7 +4,6 @@ using System;
 
 namespace Rubberduck
 {
-    [ComVisible(false)]
     public class PublisherApp : HostApplicationBase<Application>
     {
         public PublisherApp() : base("Publisher") { }

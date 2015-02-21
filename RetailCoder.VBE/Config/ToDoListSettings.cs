@@ -8,7 +8,6 @@ namespace Rubberduck.Config
         ToDoMarker[] ToDoMarkers { get; set; }
     }
 
-    [ComVisible(false)]
     [XmlTypeAttribute(AnonymousType = true)]
     public class ToDoListSettings : IToDoListSettings
     {

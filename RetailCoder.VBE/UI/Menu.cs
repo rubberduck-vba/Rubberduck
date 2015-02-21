@@ -8,7 +8,6 @@ using Rubberduck.Properties;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(false)]
     public class Menu : IDisposable
     {
         private VBE vbe;
