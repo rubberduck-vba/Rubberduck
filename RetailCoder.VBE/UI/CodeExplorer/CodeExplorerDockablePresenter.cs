@@ -26,7 +26,6 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, view)
         {
             _parser = parser;
-            //Control.SolutionTree.Font = new Font(Control.SolutionTree.Font, FontStyle.Bold);
             RegisterControlEvents();
             RefreshExplorerTreeView();
             Control.SolutionTree.Refresh();
@@ -113,9 +112,6 @@ namespace Rubberduck.UI.CodeExplorer
             foreach (VBComponent vbComponent in project.VBComponents)
             {
                 var component = vbComponent;
-                // todo: find a way to avoid blocking UI here (a 'TreeNode' cannot be 'invoked')
-//                Task.Run(() =>
-//                {
                     var qualifiedName = component.QualifiedName();
                     var node = new TreeNode(component.Name + " (parsing...)");
                     node.ImageKey = "Hourglass";
@@ -124,14 +120,20 @@ namespace Rubberduck.UI.CodeExplorer
 
                     root.Nodes.Add(node);
 
-                    var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
-                    node.Nodes.AddRange(moduleNode.Context.Nodes.Cast<TreeNode>().ToArray());
+                    var getModuleNode = new Task<TreeNode[]>(() => ParseModule(component, ref qualifiedName));
+                    getModuleNode.Start();
+                    node.Nodes.AddRange(getModuleNode.Result);
 
                     node.Text = component.Name;
                     node.ImageKey = "StandardModule";
                     node.SelectedImageKey = node.ImageKey;
-//                });
             }
+        }
+
+        private TreeNode[] ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
+        {
+            var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
+            return moduleNode.Context.Nodes.Cast<TreeNode>().ToArray();
         }
 
         private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
