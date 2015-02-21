@@ -130,7 +130,7 @@ namespace Rubberduck.UI.CodeExplorer
 
                 var getModuleNode = new Task<TreeNode[]>(() => ParseModule(component, ref qualifiedName));
                 getModuleNode.Start();
-                node.Nodes.AddRange(getModuleNode.Result);
+                node.Nodes.AddRange(await getModuleNode);
 
                 node.Text = component.Name;
                 node.ImageKey = "StandardModule";
