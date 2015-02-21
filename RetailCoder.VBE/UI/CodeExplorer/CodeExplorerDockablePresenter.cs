@@ -70,19 +70,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private async void RefreshExplorerTreeView()
         {
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                await RefreshRootNode();
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
-        }
-
-        private async Task RefreshRootNode()
-        {
             Control.SolutionTree.Nodes.Clear();
 
             var projects = VBE.VBProjects.Cast<VBProject>();
