@@ -34,7 +34,7 @@ namespace Rubberduck.UI.ToDoItems
             RefreshToDoList(this, EventArgs.Empty);
         }
 
-        void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
             IOrderedEnumerable<ToDoItem> resortedItems = null;
