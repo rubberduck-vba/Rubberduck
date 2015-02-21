@@ -100,14 +100,17 @@ namespace Rubberduck.Inspections
         }
 
         /// <summary>
-        /// Gets all unassigned parameters, regardless of how they are passed.
+        /// Gets all unassigned ByRef parameters.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedParameters()
         {
-            var unassigned = _parameters.Where(context =>
-                _assignments.Where(usage => usage.MemberName.Equals(context.MemberName))
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
+            var byValParams =
+                _parameters.Where(parameter => ((VBParser.ArgContext) parameter.Context.Parent).BYVAL() != null);
+
+            var unassigned = _parameters.Where(parameter => !byValParams.Contains(parameter)
+                && _assignments.Where(usage => usage.MemberName.Equals(parameter.MemberName))
+                    .All(usage => parameter.Context.GetText() != usage.Context.GetText()));
 
             foreach (var context in unassigned)
             {

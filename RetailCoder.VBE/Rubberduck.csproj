@@ -99,6 +99,8 @@
     <Compile Include="Inspections\ObsoleteTypeHintInspectionResult.cs" />
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspection.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />

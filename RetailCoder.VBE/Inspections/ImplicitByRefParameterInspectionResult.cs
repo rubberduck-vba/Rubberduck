@@ -30,7 +30,9 @@ namespace Rubberduck.Inspections
 
             return new Dictionary<string, Action<VBE>>
                 {
-                    {"Pass parameter by value", PassParameterByVal},
+                    // this inspection doesn't know if parameter is assigned; suggest to pass ByRef explicitly
+                    // and then let ParameterCanBeByVal inspection do its job.
+                    //{"Pass parameter by value", PassParameterByVal},
                     {"Pass parameter by reference explicitly", PassParameterByRef}
                 };
         }

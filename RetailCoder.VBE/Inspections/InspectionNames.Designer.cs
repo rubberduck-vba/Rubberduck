@@ -151,6 +151,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter can be passed by value.
+        /// </summary>
+        internal static string ParameterCanBeByVal {
+            get {
+                return ResourceManager.GetString("ParameterCanBeByVal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter is not used.
         /// </summary>
         internal static string ParameterNotUsed {

@@ -147,6 +147,9 @@
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>
   </data>
+  <data name="ParameterCanBeByVal" xml:space="preserve">
+    <value>Parameter can be passed by value</value>
+  </data>
   <data name="ParameterNotUsed" xml:space="preserve">
     <value>Parameter is not used</value>
   </data>
