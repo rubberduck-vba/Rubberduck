@@ -38,7 +38,7 @@ namespace Rubberduck.UI.ToDoItems
         private void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
             var markers = _settings.ToDoMarkers;
-            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, _vbe, _addIn);
+            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, _vbe, _addIn, new ToDoExplorerWindow());
             presenter.Show();
         }
     }

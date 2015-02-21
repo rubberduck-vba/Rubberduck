@@ -20,10 +20,10 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
-        private ToDoExplorerWindow Control { get { return UserControl as ToDoExplorerWindow; } }
+        private IToDoExplorerWindow Control { get { return UserControl as IToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
-            : base(vbe, addin, new ToDoExplorerWindow())
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window) 
+            : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;

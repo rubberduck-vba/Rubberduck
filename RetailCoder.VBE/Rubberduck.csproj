@@ -124,6 +124,7 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="VBA\Nodes\OptionNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
