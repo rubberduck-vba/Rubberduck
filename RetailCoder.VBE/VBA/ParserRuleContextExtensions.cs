@@ -9,7 +9,7 @@ namespace Rubberduck.VBA
 {
     public static class ParserRuleContextExtensions
     {
-        public static QualifiedContext<TContext> ToQualifiedContext<TContext>(this TContext context, QualifiedModuleName name)
+        public static QualifiedContext<TContext> ToQualifiedContext<TContext>(this TContext context, QualifiedModuleName name) where TContext : ParserRuleContext
         {
             return new QualifiedContext<TContext>(name, context);
         }
