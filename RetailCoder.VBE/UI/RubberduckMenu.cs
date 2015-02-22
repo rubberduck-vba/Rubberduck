@@ -40,7 +40,6 @@ namespace Rubberduck.UI
             var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
-
             var inspectionExplorer = new CodeInspections.CodeInspectionsWindow();
             var inspectionPresenter = new CodeInspectionsDockablePresenter(parser, inspections, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
