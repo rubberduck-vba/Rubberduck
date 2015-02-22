@@ -348,22 +348,39 @@ namespace Rubberduck.UnitTesting
 
         public void Dispose()
         {
-            _explorer.OnRefreshListButtonClick -= OnExplorerRefreshListButtonClick;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            _explorer.OnRunAllTestsButtonClick -= OnExplorerRunAllTestsButtonClick;
-            _explorer.OnRunFailedTestsButtonClick -= OnExplorerRunFailedTestsButtonClick;
-            _explorer.OnRunLastRunTestsButtonClick -= OnExplorerRunLastRunTestsButtonClick;
-            _explorer.OnRunNotRunTestsButtonClick -= OnExplorerRunNotRunTestsButtonClick;
-            _explorer.OnRunPassedTestsButtonClick -= OnExplorerRunPassedTestsButtonClick;
-            _explorer.OnRunSelectedTestButtonClick -= OnExplorerRunSelectedTestButtonClick;
+        bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
 
-            _explorer.OnGoToSelectedTest -= OnExplorerGoToSelectedTest;
+            if (disposing && _explorer != null)
+            {
+                _explorer.OnRefreshListButtonClick -= OnExplorerRefreshListButtonClick;
 
-            _explorer.OnAddExpectedErrorTestMethodButtonClick -= OnExplorerAddExpectedErrorTestMethodButtonClick;
-            _explorer.OnAddTestMethodButtonClick -= OnExplorerAddTestMethodButtonClick;
-            _explorer.OnAddTestModuleButtonClick -= OnExplorerAddTestModuleButtonClick;
+                _explorer.OnRunAllTestsButtonClick -= OnExplorerRunAllTestsButtonClick;
+                _explorer.OnRunFailedTestsButtonClick -= OnExplorerRunFailedTestsButtonClick;
+                _explorer.OnRunLastRunTestsButtonClick -= OnExplorerRunLastRunTestsButtonClick;
+                _explorer.OnRunNotRunTestsButtonClick -= OnExplorerRunNotRunTestsButtonClick;
+                _explorer.OnRunPassedTestsButtonClick -= OnExplorerRunPassedTestsButtonClick;
+                _explorer.OnRunSelectedTestButtonClick -= OnExplorerRunSelectedTestButtonClick;
 
-            _explorer.Dispose();
+                _explorer.OnGoToSelectedTest -= OnExplorerGoToSelectedTest;
+
+                _explorer.OnAddExpectedErrorTestMethodButtonClick -= OnExplorerAddExpectedErrorTestMethodButtonClick;
+                _explorer.OnAddTestMethodButtonClick -= OnExplorerAddTestMethodButtonClick;
+                _explorer.OnAddTestModuleButtonClick -= OnExplorerAddTestModuleButtonClick;
+
+                _explorer.Dispose();
+            }
+
+            disposed = true;
         }
     }
 }

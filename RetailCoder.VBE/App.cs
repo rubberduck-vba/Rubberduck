@@ -47,7 +47,16 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _menu.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && _menu != null)
+            {
+                _menu.Dispose();
+            }
         }
 
         public void CreateExtUi()

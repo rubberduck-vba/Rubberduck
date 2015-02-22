@@ -77,7 +77,7 @@ namespace Rubberduck.Config
                 }
                 else
                 {
-                    throw ex;
+                    throw;
                 }
             }
         }

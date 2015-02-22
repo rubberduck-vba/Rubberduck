@@ -5,42 +5,31 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class CodeInspectionsMenu
+    public class CodeInspectionsMenu : Menu
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
-        private readonly IEnumerable<IInspection> _inspections;
-        private readonly IRubberduckParser _parser;
+        private CommandBarButton _codeInspectionsButton;
         private readonly CodeInspectionsWindow _window;
+        private readonly CodeInspectionsDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
-        public CodeInspectionsMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsMenu(VBE vbe, AddIn addIn, CodeInspectionsWindow view, CodeInspectionsDockablePresenter presenter)
+            :base(vbe, addIn)
         {
-            _vbe = vbe;
-            _addin = addin;
-            _parser = parser;
-            _inspections = inspections;
-            _window = new CodeInspectionsWindow();
+            _window = view;
+            _presenter = presenter;
         }
 
-        private CommandBarButton _codeInspectionsButton;
-
-        public void Initialize(CommandBarControls menuControls)
+        public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeInspectionsButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            Debug.Assert(_codeInspectionsButton != null);
-
-            _codeInspectionsButton.Caption = "Code &Inspections";
-
-            _codeInspectionsButton.Click += OnCodeInspectionsButtonClick;
+            _codeInspectionsButton = AddButton(parentMenu, "Code &Inspections", false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
         }
 
         private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
         {
-            var presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, _vbe, _addin, _window);
-            presenter.Show();
+            _presenter.Show();
         }
     }
 }
