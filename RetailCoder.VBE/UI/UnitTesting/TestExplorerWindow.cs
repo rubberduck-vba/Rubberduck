@@ -8,10 +8,20 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public partial class TestExplorerWindow : UserControl
+    public partial class TestExplorerWindow : UserControl, IDockableUserControl
     {
         private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
+
+        public string ClassId
+        {
+            get { return "9CF1392A-2DC9-48A6-AC0B-E601A9802608"; }
+        }
+
+        public string Caption
+        {
+            get { return "Test Explorer"; }
+        }
 
         public TestExplorerWindow()
         {
@@ -245,6 +255,6 @@ namespace Rubberduck.UI.UnitTesting
 
             UpdateProgress();
             testOutputGridView.Refresh();
-        }    
+        }
     }
 }

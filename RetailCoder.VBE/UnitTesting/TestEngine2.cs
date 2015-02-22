@@ -13,11 +13,10 @@ namespace Rubberduck.UnitTesting
         public event EventHandler<TestCompleteEventArg> TestComplete;
         public event EventHandler<EventArgs> AllTestsComplete;
 
-        //public TestEngine2()
-        //{
-        //    TestComplete += TestComplete;
-        //    AllTestsComplete += AllTestsComplete;
-        //}
+        public TestEngine2()
+        {
+            this.AllTests = new Dictionary<TestMethod, TestResult>();
+        }
 
         void TestEngine2_AllTestsComplete(object sender, EventArgs e)
         {
@@ -83,21 +82,6 @@ namespace Rubberduck.UnitTesting
             {
                 _lastRun = null;
             }
-        }
-
-        public void RunFailedTests()
-        {
-            Run(FailedTests());
-        }
-
-        public void RunNotRunTests()
-        {
-            Run(NotRunTests());
-        }
-
-        public void RunPassedTests()
-        {
-            Run(PassedTests());
         }
 
         private void AssignResults(IEnumerable<TestMethod> testMethods)

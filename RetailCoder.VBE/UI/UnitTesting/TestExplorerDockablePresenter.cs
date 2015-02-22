@@ -17,14 +17,12 @@ namespace Rubberduck.UI.UnitTesting
     {
         // todo: move stuff from TestEngine into here.
 
-        private readonly IRubberduckParser _parser;
         private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
         private readonly ITestEngine _testEngine;
 
-        public TestExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
             : base(vbe, addin, control)
         {
-            _parser = parser;
             _testEngine = testEngine;
             RegisterTestExplorerEvents();
         }
@@ -35,10 +33,10 @@ namespace Rubberduck.UI.UnitTesting
             Control.Refresh(_testEngine.AllTests);
         }
 
-        public void ShowExplorer()
+        public override void Show()
         {
             Synchronize();
-            Control.Show();
+            base.Show();
         }
 
         public void SynchronizeEngineWithIDE()
@@ -58,6 +56,14 @@ namespace Rubberduck.UI.UnitTesting
                     "Warning", System.Windows.Forms.MessageBoxButtons.OK,
                     System.Windows.Forms.MessageBoxIcon.Exclamation);
             }
+        }
+
+        public void RunTests(IEnumerable<TestMethod> tests)
+        {
+            Control.ClearResults();
+            Control.SetPlayList(tests);
+            Control.ClearProgress();
+            _testEngine.Run(tests);
         }
 
         private void RegisterTestExplorerEvents()
@@ -98,38 +104,32 @@ namespace Rubberduck.UI.UnitTesting
 
         private void OnExplorerRunAllTestsButtonClick(object sender, EventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.Run();
+            RunTests(_testEngine.AllTests.Keys);
         }
 
         private void OnExplorerRunFailedTestsButtonClick(object sender, EventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.RunFailedTests();
+            RunTests(_testEngine.FailedTests());
         }
 
         private void OnExplorerRunLastRunTestsButtonClick(object sender, EventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.LastRunTests();
+            RunTests(_testEngine.LastRunTests());
         }
 
         private void OnExplorerRunNotRunTestsButtonClick(object sender, EventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.RunNotRunTests();
+            RunTests(_testEngine.NotRunTests());
         }
 
         private void OnExplorerRunPassedTestsButtonClick(object sender, EventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.RunPassedTests();
+            RunTests(_testEngine.PassedTests());
         }
 
         private void OnExplorerRunSelectedTestButtonClick(object sender, SelectedTestEventArgs e)
         {
-            Control.ClearResults();
-            _testEngine.Run(e.Selection);
+            RunTests(e.Selection);
         }
 
         private void OnExplorerGoToSelectedTest(object sender, SelectedTestEventArgs e)

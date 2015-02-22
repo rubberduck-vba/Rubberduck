@@ -12,6 +12,7 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI
 {
@@ -29,7 +30,12 @@ namespace Rubberduck.UI
         {
             _configService = configService;
 
-            _testMenu = new TestMenu(vbe, addIn);
+            var testExplorer = new TestExplorerWindow();
+            var testEngine = new TestEngine2();
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
+            _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
+
+            //_testMenu = new TestMenu(vbe, addIn);
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);

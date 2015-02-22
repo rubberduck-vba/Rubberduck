@@ -20,15 +20,24 @@ namespace Rubberduck.UI.UnitTesting
         //private readonly VBE _vbe;
         private readonly TestEngine _engine;
 
-        public TestMenu(VBE vbe, AddIn addInInstance)
-            : base(vbe, addInInstance)
-        {
-            var testExplorer = new TestExplorerWindow();
-            var toolWindow = CreateToolWindow("Test Explorer", testExplorer);
-            _engine = new TestEngine(vbe, testExplorer, toolWindow);
+        //public TestMenu(VBE vbe, AddIn addInInstance)
+        //    : base(vbe, addInInstance)
+        //{
+        //    var testExplorer = new TestExplorerWindow();
+        //    var toolWindow = CreateToolWindow("Test Explorer", testExplorer);
+        //    _engine = new TestEngine(vbe, testExplorer, toolWindow);
 
-            //hack: to keep testexplorer from being visible when testmenu is added
-            toolWindow.Visible = false;
+        //    //hack: to keep testexplorer from being visible when testmenu is added
+        //    toolWindow.Visible = false;
+        //}
+
+        private readonly TestExplorerWindow _view;
+        private readonly TestExplorerDockablePresenter _presenter;
+        public TestMenu(VBE vbe, AddIn addIn, TestExplorerWindow view, TestExplorerDockablePresenter presenter)
+            :base(vbe, addIn)
+        {
+            _view = view;
+            _presenter = presenter;
         }
 
         private CommandBarButton _runAllTestsButton;
@@ -45,13 +54,13 @@ namespace Rubberduck.UI.UnitTesting
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            _engine.SynchronizeTests();
-            _engine.Run();
+            //_engine.SynchronizeTests();
+            //_engine.Run();
         }
 
         void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            _engine.ShowExplorer();
+            _presenter.Show();
         }
 
         bool disposed = false;
