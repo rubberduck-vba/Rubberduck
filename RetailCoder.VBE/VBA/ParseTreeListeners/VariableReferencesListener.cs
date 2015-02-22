@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LibGit2Sharp;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
@@ -22,7 +23,8 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterAmbiguousIdentifier(VBParser.AmbiguousIdentifierContext context)
         {
-            if (context.Parent.GetType() == typeof (VBParser.VariableCallStmtContext))
+            if (context.Parent.GetType() == typeof (VBParser.VariableCallStmtContext) 
+                || context.Parent.GetType() == typeof(VBParser.ForNextStmtContext))
             {
                 _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context));
             }

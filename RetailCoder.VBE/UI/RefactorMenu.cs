@@ -28,7 +28,7 @@ namespace Rubberduck.UI
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
-            _extractMethodButton = AddButton(menu, "Extract &Method", false, new CommandBarButtonClickEvent(OnExtractMethodButtonClick), Resources.ExtractMethod_6786_32);
+            _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
