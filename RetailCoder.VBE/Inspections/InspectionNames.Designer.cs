@@ -79,6 +79,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module options should be specified first.
+        /// </summary>
+        internal static string ModuleOptionsNotSpeciifedFirst {
+            get {
+                return ResourceManager.GetString("ModuleOptionsNotSpeciifedFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instruction contains multiple declarations.
         /// </summary>
         internal static string MultipleDeclarations {

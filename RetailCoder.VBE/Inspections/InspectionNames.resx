@@ -123,6 +123,9 @@
   <data name="ImplicitVariantReturnType" xml:space="preserve">
     <value>Function returns an implicit Variant</value>
   </data>
+  <data name="ModuleOptionsNotSpeciifedFirst" xml:space="preserve">
+    <value>Module options should be specified first</value>
+  </data>
   <data name="MultipleDeclarations" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
