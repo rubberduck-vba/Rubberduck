@@ -94,6 +94,7 @@
     <Compile Include="Inspections\ParameterCanBeByValInspection.cs" />
     <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
+    <Compile Include="Inspections\ParameterNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />

@@ -7,7 +7,7 @@ namespace Rubberduck.Inspections
     {
         public ParameterNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Hint;
         }
 
         public string Name { get { return InspectionNames.ParameterNotUsed; } }

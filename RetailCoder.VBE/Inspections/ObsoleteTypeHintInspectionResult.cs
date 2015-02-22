@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action<VBE>>
             {
-                { "Remove type hint", null }
+                //{ "Remove type hint", null }
             };
         }
     }

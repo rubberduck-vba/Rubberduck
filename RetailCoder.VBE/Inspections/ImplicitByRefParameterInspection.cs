@@ -9,9 +9,9 @@ using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {
-    public class ImplicitByRefSubParameterInspection : IInspection
+    public class ImplicitByRefParameterInspection : IInspection
     {
-        public ImplicitByRefSubParameterInspection()
+        public ImplicitByRefParameterInspection()
         {
             Severity = CodeInspectionSeverity.Warning;
         }

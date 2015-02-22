@@ -123,7 +123,7 @@
   <data name="ImplicitVariantReturnType" xml:space="preserve">
     <value>Function returns an implicit Variant</value>
   </data>
-  <data name="ModuleOptionsNotSpeciifedFirst" xml:space="preserve">
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
   </data>
   <data name="MultipleDeclarations" xml:space="preserve">
@@ -159,6 +159,9 @@
   <data name="ParameterNotUsed" xml:space="preserve">
     <value>Parameter is not used</value>
   </data>
+  <data name="UnassignedVariableUsage" xml:space="preserve">
+    <value>Use of unassigned variable</value>
+  </data>
   <data name="VariableNotAssigned" xml:space="preserve">
     <value>Variable is never assigned</value>
   </data>
@@ -166,7 +169,7 @@
     <value>Variable is not declared</value>
   </data>
   <data name="VariableNotUsed" xml:space="preserve">
-    <value>Variable value is never retrieved</value>
+    <value>Variable value is never used</value>
   </data>
   <data name="VariableTypeNotDeclared" xml:space="preserve">
     <value>Variable type is implicitly Variant</value>

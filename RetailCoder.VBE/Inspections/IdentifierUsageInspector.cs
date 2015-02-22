@@ -70,6 +70,43 @@ namespace Rubberduck.Inspections
         }
 
         /// <summary>
+        /// Gets all globals, fields and locals that are not assigned in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the declaration context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnassignedVariables()
+        {
+            return UnassignedGlobals().Union(UnassignedFields().Union(UnassignedLocals()));
+        }
+
+        /// <summary>
+        /// Gets all globals, fields and locals that are not used and not assigned in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the declaration context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnusedVariables()
+        {
+            return UnusedGlobals().Union(UnusedFields().Union(UnusedLocals()));
+        }
+
+
+        /// <summary>
+        /// Gets all globals, fields and locals that are unassigned (used or not) in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the variable call context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnassignedVariableUsages()
+        {
+            var variables = AllUnassignedVariables();
+            return _usages.Where(usage => 
+                variables.Any(variable => usage.QualifiedName == variable.QualifiedName
+                                        && usage.Context.GetText() == variable.Context.GetText()));
+        }
+
+        /// <summary>
         /// Gets all module-scope fields that are not assigned.
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedFields()
@@ -102,13 +139,16 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets all unassigned ByRef parameters.
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedParameters()
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedByRefParameters()
         {
-            var byValParams =
-                _parameters.Where(parameter => ((VBParser.ArgContext) parameter.Context.Parent).BYVAL() != null);
+            var byRefParams = 
+                (from parameter in _parameters
+                let byRef = ((VBParser.ArgContext) parameter.Context.Parent).BYREF()
+                let byVal = ((VBParser.ArgContext) parameter.Context.Parent).BYVAL()
+                where byRef != null || (byRef == null && byVal == null)
+                select parameter).ToList();
 
-            var unassigned = _parameters.Where(parameter => !byValParams.Contains(parameter)
+            var unassigned = _parameters.Where(parameter => byRefParams.Contains(parameter)
                 && _assignments.Where(usage => usage.MemberName.Equals(parameter.MemberName))
                     .All(usage => parameter.Context.GetText() != usage.Context.GetText()));
 

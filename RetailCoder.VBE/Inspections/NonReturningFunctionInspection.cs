@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
                 var module = result;
 
                 var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
-                var functions = procedures.OfType<VBParser.FunctionStmtContext>()
+                var functions = procedures.Select(context => context.Context).OfType<VBParser.FunctionStmtContext>()
                     .Where(function => function.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener(module.QualifiedName))
                         .All(assignment => assignment.Context.GetText() != function.AmbiguousIdentifier().GetText()));
 

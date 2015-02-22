@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ModuleOptionsNotSpeciifedFirst; } }
+        public string Name { get { return InspectionNames.ModuleOptionsNotSpecifiedFirst; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 

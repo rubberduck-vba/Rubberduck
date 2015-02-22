@@ -81,9 +81,9 @@ namespace Rubberduck.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module options should be specified first.
         /// </summary>
-        internal static string ModuleOptionsNotSpeciifedFirst {
+        internal static string ModuleOptionsNotSpecifiedFirst {
             get {
-                return ResourceManager.GetString("ModuleOptionsNotSpeciifedFirst", resourceCulture);
+                return ResourceManager.GetString("ModuleOptionsNotSpecifiedFirst", resourceCulture);
             }
         }
         
@@ -187,6 +187,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of unassigned variable.
+        /// </summary>
+        internal static string UnassignedVariableUsage {
+            get {
+                return ResourceManager.GetString("UnassignedVariableUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable is never assigned.
         /// </summary>
         internal static string VariableNotAssigned {
@@ -205,7 +214,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable value is never retrieved.
+        ///   Looks up a localized string similar to Variable value is never used.
         /// </summary>
         internal static string VariableNotUsed {
             get {

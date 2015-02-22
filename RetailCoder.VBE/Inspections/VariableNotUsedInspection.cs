@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
     {
         public VariableNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Hint;
         }
 
         public string Name { get { return InspectionNames.VariableNotUsed; } }
@@ -18,9 +18,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
             var inspector = new IdentifierUsageInspector(parseResult);
-            var issues = inspector.UnusedGlobals()
-                .Union(inspector.UnusedFields())
-                .Union(inspector.UnusedLocals());
+            var issues = inspector.AllUnusedVariables();
 
             foreach (var issue in issues)
             {

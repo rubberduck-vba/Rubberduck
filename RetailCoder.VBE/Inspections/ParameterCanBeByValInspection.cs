@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
             var inspector = new IdentifierUsageInspector(parseResult);
-            var issues = inspector.UnassignedParameters();
+            var issues = inspector.UnassignedByRefParameters();
 
             foreach (var issue in issues)
             {

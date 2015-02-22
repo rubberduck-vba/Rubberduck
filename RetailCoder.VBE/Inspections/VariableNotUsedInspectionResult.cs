@@ -7,24 +7,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterNotUsedInspectionResult : CodeInspectionResultBase
-    {
-        public ParameterNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
-            ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, type, qualifiedName.ModuleScope, context)
-        {
-        }
-
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
-        {
-            // don't bother implementing this without implementing a ChangeSignatureRefactoring
-            return new Dictionary<string, Action<VBE>>
-            {
-                //{"Remove unused parameter", RemoveUnusedParameter}
-            };
-        }
-    }
-
     public class VariableNotDeclaredInspectionResult : CodeInspectionResultBase
     {
         public VariableNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type,
