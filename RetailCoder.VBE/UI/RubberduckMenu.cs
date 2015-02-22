@@ -56,7 +56,7 @@ namespace Rubberduck.UI
             _codeExplorerMenu.Initialize(menu);
             _refactorMenu.Initialize(menu.Controls);
             _todoItemsMenu.Initialize(menu);
-            _codeInspectionsMenu.Initialize(menu.Controls);
+            _codeInspectionsMenu.Initialize(menu);
 
             //note: disabled for 1.2 release
             //_sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));

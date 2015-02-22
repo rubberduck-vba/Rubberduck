@@ -11,12 +11,15 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private readonly IRubberduckParser _parser;
         private readonly CodeExplorerWindow _window;
+        private readonly CodeExplorerDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
         public CodeExplorerMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
             :base(vbe, addin)
         {
             _parser = parser;
+            //todo: inject dependencies
             _window = new CodeExplorerWindow();
+            _presenter = new CodeExplorerDockablePresenter(_parser, this.IDE, this.addInInstance, _window);
         }
 
         private CommandBarButton _codeExplorerButton;
@@ -28,8 +31,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool cancelDefault)
         {
-            var presenter = new CodeExplorerDockablePresenter(_parser, this.IDE, this.addInInstance, _window);
-            presenter.Show();
+            _presenter.Show();
         }
 
         bool disposed = false;

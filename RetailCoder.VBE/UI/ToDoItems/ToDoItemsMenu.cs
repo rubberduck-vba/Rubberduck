@@ -13,7 +13,8 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly ToDoListSettings _settings;
         private readonly IRubberduckParser _parser;
-        private IToDoExplorerWindow _userControl;
+        private readonly IToDoExplorerWindow _userControl;
+        private readonly ToDoExplorerDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
         private CommandBarButton _todoItemsButton;
 
@@ -22,6 +23,9 @@ namespace Rubberduck.UI.ToDoItems
         {
             _settings = settings;
             _parser = parser;
+            //todo: inject dependencies
+            _userControl = new ToDoExplorerWindow();
+            _presenter = new ToDoExplorerDockablePresenter(_parser, _settings.ToDoMarkers, this.IDE, this.addInInstance, _userControl);
         }
 
         public void Initialize(CommandBarPopup menu)
@@ -32,13 +36,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
-            var markers = _settings.ToDoMarkers;
-            if (_userControl == null)
-            {
-                _userControl = new ToDoExplorerWindow();
-            }
-            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, this.IDE, this.addInInstance, _userControl);
-            presenter.Show();
+            _presenter.Show();
         }
 
         bool disposed = false;
