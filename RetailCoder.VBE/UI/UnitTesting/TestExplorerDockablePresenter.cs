@@ -60,7 +60,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            //Control.ClearResults();
+            Control.ClearResults(); //if it doesn't work, get rid of this
             Control.SetPlayList(tests);
             Control.ClearProgress();
             _testEngine.Run(tests);

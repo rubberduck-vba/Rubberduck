@@ -85,7 +85,8 @@ namespace Rubberduck.UI.UnitTesting
                                                                           .Cast<DataGridViewRow>()
                                                                           .Select(row => row.DataBoundItem as TestExplorerItem)
                                                                           .Select(item => item.GetTestMethod())
-                                                                          .Contains(test.GetTestMethod()));
+                                                                          .Contains(test.GetTestMethod()))
+                                                                          .ToList(); //ToList should force immediate execution so clearing the gui won't cause us to lose the selection.
 
                 handler(this, new SelectedTestEventArgs(selection));
             }
