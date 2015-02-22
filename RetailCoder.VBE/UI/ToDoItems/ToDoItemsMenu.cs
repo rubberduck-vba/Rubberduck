@@ -11,21 +11,15 @@ namespace Rubberduck.UI.ToDoItems
 {
     public class ToDoItemsMenu : Menu
     {
-        private readonly ToDoListSettings _settings;
-        private readonly IRubberduckParser _parser;
         private readonly IToDoExplorerWindow _userControl;
         private readonly ToDoExplorerDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
-
         private CommandBarButton _todoItemsButton;
 
-        public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, IRubberduckParser parser)
-            :base(vbe, addInInstance)
+        public ToDoItemsMenu(VBE vbe, AddIn addIn, IToDoExplorerWindow view, ToDoExplorerDockablePresenter presenter)
+            :base(vbe, addIn)
         {
-            _settings = settings;
-            _parser = parser;
-            //todo: inject dependencies
-            _userControl = new ToDoExplorerWindow();
-            _presenter = new ToDoExplorerDockablePresenter(_parser, _settings.ToDoMarkers, this.IDE, this.addInInstance, _userControl);
+            _userControl = view;
+            _presenter = presenter;
         }
 
         public void Initialize(CommandBarPopup menu)

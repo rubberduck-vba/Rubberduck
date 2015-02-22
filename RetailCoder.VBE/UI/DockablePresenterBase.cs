@@ -31,6 +31,8 @@ namespace Rubberduck.UI
 
                 EnsureMinimumWindowSize(toolWindow);
 
+                toolWindow.Visible = false; //hide it again
+
                 userControlHost.AddUserControl(control as UserControl);
                 return toolWindow;
         }

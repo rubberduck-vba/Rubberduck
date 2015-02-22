@@ -9,20 +9,16 @@ namespace Rubberduck.UI.CodeExplorer
 {
     public class CodeExplorerMenu : Menu
     {
-        private readonly IRubberduckParser _parser;
+        private CommandBarButton _codeExplorerButton;
         private readonly CodeExplorerWindow _window;
         private readonly CodeExplorerDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
-        public CodeExplorerMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
-            :base(vbe, addin)
+        public CodeExplorerMenu(VBE vbe, AddIn addIn, CodeExplorerWindow view, CodeExplorerDockablePresenter presenter)
+            :base(vbe, addIn)
         {
-            _parser = parser;
-            //todo: inject dependencies
-            _window = new CodeExplorerWindow();
-            _presenter = new CodeExplorerDockablePresenter(_parser, this.IDE, this.addInInstance, _window);
+            _window = view;
+            _presenter = presenter;
         }
-
-        private CommandBarButton _codeExplorerButton;
 
         public void Initialize(CommandBarPopup parentMenu)
         {

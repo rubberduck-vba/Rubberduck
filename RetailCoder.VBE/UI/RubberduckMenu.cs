@@ -29,13 +29,22 @@ namespace Rubberduck.UI
         {
             _configService = configService;
 
-            _testMenu = new TestMenu(this.IDE, this.addInInstance);
-            _codeExplorerMenu = new CodeExplorerMenu(this.IDE, this.addInInstance, parser);
+            _testMenu = new TestMenu(vbe, addIn);
+
+            var codeExplorer = new CodeExplorerWindow();
+            var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
+            _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
-            _todoItemsMenu = new ToDoItemsMenu(this.IDE, this.addInInstance, todoSettings, parser);
+            var todoExplorer = new ToDoExplorerWindow();
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
+            _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
-            _codeInspectionsMenu = new CodeInspectionsMenu(this.IDE, this.addInInstance, parser, inspections);
+
+            var inspectionExplorer = new CodeInspections.CodeInspectionsWindow();
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(parser, inspections, vbe, addIn, inspectionExplorer);
+            _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
+
             _refactorMenu = new RefactorMenu(this.IDE, this.addInInstance, parser);
         }
 

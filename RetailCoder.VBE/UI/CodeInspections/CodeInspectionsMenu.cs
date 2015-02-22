@@ -11,22 +11,16 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class CodeInspectionsMenu : Menu
     {
-        private readonly IEnumerable<IInspection> _inspections;
-        private readonly IRubberduckParser _parser;
-        private readonly CodeInspectionsWindow _window;
-        private CodeInspectionsDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
-
-        public CodeInspectionsMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IEnumerable<IInspection> inspections)
-            :base(vbe, addin)
-        {
-            _parser = parser;
-            _inspections = inspections;
-            //todo: inject dependencies;
-            _window = new CodeInspectionsWindow();
-            _presenter = new CodeInspectionsDockablePresenter(_parser, _inspections, this.IDE, this.addInInstance, _window);
-        }
-
         private CommandBarButton _codeInspectionsButton;
+        private readonly CodeInspectionsWindow _window;
+        private readonly CodeInspectionsDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
+
+        public CodeInspectionsMenu(VBE vbe, AddIn addIn, CodeInspectionsWindow view, CodeInspectionsDockablePresenter presenter)
+            :base(vbe, addIn)
+        {
+            _window = view;
+            _presenter = presenter;
+        }
 
         public void Initialize(CommandBarPopup parentMenu)
         {
