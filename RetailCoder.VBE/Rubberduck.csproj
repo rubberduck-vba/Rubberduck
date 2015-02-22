@@ -117,6 +117,8 @@
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
+    <Compile Include="UnitTesting\ITestEngine.cs" />
+    <Compile Include="UnitTesting\TestEngine2.cs" />
     <Compile Include="VBA\Nodes\OptionNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />

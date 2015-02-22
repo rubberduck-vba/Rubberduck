@@ -8,7 +8,7 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestEngine : IDisposable
+    public class TestEngine : IDisposable, Rubberduck.UnitTesting.ITestEngine
     {
         private readonly VBE _vbe;
         private readonly TestExplorerWindow _explorer;
@@ -106,6 +106,7 @@ namespace Rubberduck.UnitTesting
         /// <summary>
         /// Finds all tests in all opened projects.
         /// </summary>
+        //note: belongs in presenter
         public void SynchronizeTests()
         {
             try

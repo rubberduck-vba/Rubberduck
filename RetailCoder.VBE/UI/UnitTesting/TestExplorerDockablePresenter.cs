@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
+using Rubberduck.UnitTesting;
+using Rubberduck.UI.UnitTesting;
+using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -16,12 +19,33 @@ namespace Rubberduck.UI.UnitTesting
 
         private readonly IRubberduckParser _parser;
         private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
+        private readonly ITestEngine _testEngine;
 
-        public TestExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addin, IDockableUserControl control) 
+        public TestExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
             : base(vbe, addin, control)
         {
             _parser = parser;
+            _testEngine = testEngine;
             RegisterTestExplorerEvents();
+        }
+
+        public void SynchronizeEngineWithIDE()
+        {
+            try
+            {
+                _testEngine.AllTests = this.VBE.VBProjects
+                                .Cast<VBProject>()
+                                .SelectMany(project => project.TestMethods())
+                                .ToDictionary(test => test, test => _testEngine.AllTests.ContainsKey(test) ? _testEngine.AllTests[test] : null);
+
+            }
+            catch (ArgumentException)
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
+                    "Warning", System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+            }
         }
 
         private void RegisterTestExplorerEvents()
