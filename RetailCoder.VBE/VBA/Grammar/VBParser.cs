@@ -2577,7 +2577,7 @@ public partial class VBParser : Parser {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
-		public ValueStmtContext valueStmt() {
+		public ValueStmtContext ValueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
 		public AmbiguousIdentifierContext AmbiguousIdentifier() {

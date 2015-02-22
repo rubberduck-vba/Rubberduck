@@ -5,6 +5,52 @@ using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
+    public class ParameterListener : VBListenerBase, IExtensionListener<VBParser.AmbiguousIdentifierContext>
+    {
+        private readonly QualifiedModuleName _qualifiedName;
+        private readonly IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _members =
+            new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+
+        private QualifiedMemberName _memberName;
+
+        public ParameterListener(QualifiedModuleName qualifiedName)
+        {
+            _qualifiedName = qualifiedName;
+        }
+
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
+
+        public override void EnterArg(VBParser.ArgContext context)
+        {
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+        }
+
+        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+
+        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        {
+            _memberName = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+        }
+    }
+
     public class LocalDeclarationListener : VBListenerBase, IExtensionListener<VBParser.AmbiguousIdentifierContext>
     {
         private readonly QualifiedModuleName _qualifiedName;
@@ -19,6 +65,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
         }
 
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
+
+        public override void EnterArg(VBParser.ArgContext context)
+        {
+            //note: args must be handled separately than variables; inspection fixes would destroy method signatures.
+            //_members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+            return;
+        }
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {

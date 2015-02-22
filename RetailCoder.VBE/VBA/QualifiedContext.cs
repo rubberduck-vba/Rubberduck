@@ -25,5 +25,21 @@ namespace Rubberduck.VBA
 
         private readonly TContext _context;
         public TContext Context { get { return _context; } }
+
+        public override int GetHashCode()
+        {
+            return Context.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as QualifiedContext<TContext>;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.GetHashCode() == GetHashCode();
+        }
     }
 }

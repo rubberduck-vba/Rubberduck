@@ -1,30 +1,27 @@
 using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotAssignedInspection : IInspection
+    public class ParameterCanBeByValInspection : IInspection
     {
-        public VariableNotAssignedInspection()
+        public ParameterCanBeByValInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.VariableNotAssigned; } }
+        public string Name { get { return InspectionNames.ParameterCanBeByVal; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
         {
             var inspector = new IdentifierUsageInspector(parseResult);
-            var issues = inspector.UnassignedGlobals()
-                  .Union(inspector.UnassignedFields())
-                  .Union(inspector.UnassignedLocals());
+            var issues = inspector.UnassignedParameters();
 
             foreach (var issue in issues)
             {
-                yield return new VariableNotAssignedInspectionResult(Name, Severity, issue.Context, issue.QualifiedName);
+                yield return new ParameterCanBeByValInspectionResult(Name, Severity, issue.Context, issue.MemberName);
             }
         }
     }

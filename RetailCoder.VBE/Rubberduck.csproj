@@ -87,7 +87,11 @@
     <Compile Include="Inspections\ObsoleteTypeHintInspectionResult.cs" />
     <Compile Include="Inspections\OptionBaseInspection.cs" />
     <Compile Include="Inspections\OptionBaseInspectionResult.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspection.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
+    <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Inspections\VariableNotUsedInspection.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspectionResult.cs" />
@@ -137,9 +141,10 @@
     <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ScopedDeclaration.cs" />
+    <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
+    <Compile Include="VBA\ParseTreeListeners\VariableUsageListener.cs" />
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
