@@ -60,7 +60,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            Control.ClearResults();
+            //Control.ClearResults();
             Control.SetPlayList(tests);
             Control.ClearProgress();
             _testEngine.Run(tests);
@@ -83,18 +83,12 @@ namespace Rubberduck.UI.UnitTesting
             Control.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
             Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
 
-            _testEngine.AllTestsComplete += AllTestsComplete;
             _testEngine.TestComplete += TestComplete;
         }
 
         private void TestComplete(object sender, TestCompleteEventArg e)
         {
             Control.WriteResult(e.Test, e.Result);
-        }
-
-        private void AllTestsComplete(object sender, EventArgs e)
-        {
-            // not sure if this is really needed
         }
 
         private void OnExplorerRefreshListButtonClick(object sender, EventArgs e)

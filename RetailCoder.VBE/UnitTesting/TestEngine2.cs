@@ -101,9 +101,6 @@ namespace Rubberduck.UnitTesting
                     this.AllTests[test] = null;
                 }
             }
-
-            //todo: fix up event
-            AllTestsComplete(this, EventArgs.Empty);
         }
 
         protected virtual void OnTestComplete(TestCompleteEventArg arg)

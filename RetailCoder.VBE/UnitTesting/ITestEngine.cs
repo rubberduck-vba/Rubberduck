@@ -14,7 +14,6 @@ namespace Rubberduck.UnitTesting
         void Run(System.Collections.Generic.IEnumerable<TestMethod> tests);
 
         event EventHandler<TestCompleteEventArg> TestComplete;
-        event EventHandler<EventArgs> AllTestsComplete;
     }
 
     public class TestCompleteEventArg : EventArgs
