@@ -3,43 +3,61 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.VBA;
+using System;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public class ToDoItemsMenu 
+    public class ToDoItemsMenu : Menu
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addIn;
         private readonly ToDoListSettings _settings;
         private readonly IRubberduckParser _parser;
+        private IToDoExplorerWindow _userControl;
 
         private CommandBarButton _todoItemsButton;
 
         public ToDoItemsMenu(VBE vbe, AddIn addInInstance, ToDoListSettings settings, IRubberduckParser parser)
+            :base(vbe, addInInstance)
         {
-            _vbe = vbe;
-            _addIn = addInInstance;
             _settings = settings;
             _parser = parser;
         }
 
-        public void Initialize(CommandBarControls menuControls)
+        public void Initialize(CommandBarPopup menu)
         {
-            _todoItemsButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            Debug.Assert(_todoItemsButton != null);
-
-            _todoItemsButton.Caption = "&ToDo Items";
-
             const int clipboardWithCheck = 837;
-            _todoItemsButton.FaceId = clipboardWithCheck;
-            _todoItemsButton.Click += OnShowTaskListButtonClick;
+            _todoItemsButton = AddButton(menu, "&ToDo Items", false, new CommandBarButtonClickEvent(OnShowTaskListButtonClick), clipboardWithCheck);
         }
 
         private void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
         {
             var markers = _settings.ToDoMarkers;
-            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, _vbe, _addIn, new ToDoExplorerWindow());
+            if (_userControl == null)
+            {
+                _userControl = new ToDoExplorerWindow();
+            }
+            var presenter = new ToDoExplorerDockablePresenter(_parser, markers, this.IDE, this.addInInstance, _userControl);
             presenter.Show();
+        }
+
+        bool disposed = false;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing && _userControl != null)
+            {
+                var uc = (System.Windows.Forms.UserControl)_userControl;
+                uc.Dispose();
+            }
+
+            disposed = true;
+
+            base.Dispose();
         }
     }
 }

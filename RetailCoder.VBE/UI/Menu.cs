@@ -5,6 +5,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
 using Rubberduck.Properties;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
@@ -21,30 +22,47 @@ namespace Rubberduck.UI
             this.addInInstance = addInInstance;
         }
 
-        protected CommandBarButton AddMenuButton(CommandBarPopup menu, string caption, Bitmap image)
+        protected CommandBarButton AddButton(CommandBarPopup parentMenu, string caption)
         {
-            var result = menu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            if (result == null)
-            {
-                throw new InvalidOperationException("Failed to create menu control.");
-            }
+            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            button.Caption = caption;
 
-            result.Caption = caption;
-            SetButtonImage(result, image);
-
-            return result;
+            return button;
         }
 
-
-
-        public static void SetButtonImage(CommandBarButton result, Bitmap image)
+        protected CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler)
         {
-            result.FaceId = 0;
+            var button = AddButton(parentMenu, caption);
+            button.BeginGroup = beginGroup;
+            button.Click += buttonClickHandler;
+
+            return button;
+        }
+
+        protected CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler, int faceId)
+        {
+            var button = AddButton(parentMenu, caption, beginGroup, buttonClickHandler);
+            button.FaceId = faceId;
+
+            return button;
+        }
+
+        protected CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler, Bitmap image)
+        {
+            var button = AddButton(parentMenu, caption, beginGroup, buttonClickHandler);
+            SetButtonImage(button, image);
+
+            return button;
+        }
+
+        public static void SetButtonImage(CommandBarButton button, Bitmap image)
+        {
+            button.FaceId = 0;
 
             if (image != null)
             {
                 Clipboard.SetDataObject(image, true);
-                result.PasteFace();
+                button.PasteFace();
             }
         }
 
@@ -79,7 +97,7 @@ namespace Rubberduck.UI
             Object userControlObject = null;
             _DockableWindowHost userControlHost;
             Window toolWindow;
-            const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost"; //DockableWindowHost progId
+            const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost";
             const string dockableWindowHostGUID = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
             toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
@@ -90,9 +108,14 @@ namespace Rubberduck.UI
             userControlHost.AddUserControl(toolWindowUserControl);
 
             return toolWindow;
-
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) { }
     }
 }

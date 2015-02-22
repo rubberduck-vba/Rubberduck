@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Rubberduck.SourceControl
 {
+    [Serializable]
     public class SourceControlException : Exception
     {
         public SourceControlException() { }
         public SourceControlException(string message) : base(message) { }
         public SourceControlException(string message, Exception inner) : base(message, inner) { }
-        protected SourceControlException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context)
+
+        protected SourceControlException(SerializationInfo info,StreamingContext context)
             : base(info, context) { }
     }
 

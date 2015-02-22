@@ -8,7 +8,7 @@ namespace Rubberduck.UI
     public abstract class DockablePresenterBase : IDisposable
     {
         private readonly AddIn _addin;
-        private readonly Window _window;
+        private Window _window;
         protected readonly UserControl UserControl;
 
         protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
@@ -40,6 +40,7 @@ namespace Rubberduck.UI
             catch (Exception)
             {
                 // bug: there's a COM exception here if the window was X-closed before. see issue #169.
+                // this is causing all kinds of havoc after changing the code to properly dispose of things.
                 return null;
             }
         }
@@ -67,6 +68,10 @@ namespace Rubberduck.UI
         {
             try
             {
+                if (_window == null)
+                {
+                    _window = CreateToolWindow((IDockableUserControl)UserControl);
+                }
                 _window.Visible = true;
             }
             catch (COMException e)
@@ -84,9 +89,21 @@ namespace Rubberduck.UI
             _window.Close();
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
-            UserControl.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (UserControl != null)
+                {
+                    UserControl.Dispose();
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Rubberduck.VBA
     /// An exception thrown by an <c>IParseTreeListener</c> implementation 
     /// that does not need to traverse an entire parse tree.
     /// </summary>
+    [Serializable]
     public class WalkerCancelledException : Exception
     {
         public WalkerCancelledException()

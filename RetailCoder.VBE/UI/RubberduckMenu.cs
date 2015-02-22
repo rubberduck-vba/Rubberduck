@@ -15,10 +15,8 @@ using Rubberduck.VBA;
 
 namespace Rubberduck.UI
 {
-    public class RubberduckMenu : IDisposable
+    public class RubberduckMenu : Menu
     {
-        private readonly VBE _vbe;
-
         private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
@@ -27,25 +25,18 @@ namespace Rubberduck.UI
         private readonly IConfigurationService _configService;
 
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IEnumerable<IInspection> inspections)
+               :base(vbe, addIn)
         {
-            _vbe = vbe;
             _configService = configService;
 
-            _testMenu = new TestMenu(_vbe, addIn);
-            _codeExplorerMenu = new CodeExplorerMenu(_vbe, addIn, parser);
+            _testMenu = new TestMenu(this.IDE, this.addInInstance);
+            _codeExplorerMenu = new CodeExplorerMenu(this.IDE, this.addInInstance, parser);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
-            _todoItemsMenu = new ToDoItemsMenu(_vbe, addIn, todoSettings, parser);
+            _todoItemsMenu = new ToDoItemsMenu(this.IDE, this.addInInstance, todoSettings, parser);
 
-            _codeInspectionsMenu = new CodeInspectionsMenu(_vbe, addIn, parser, inspections);
-            _refactorMenu = new RefactorMenu(_vbe, addIn, parser);
-
-        }
-
-        public void Dispose()
-        {
-            _testMenu.Dispose();
-            _refactorMenu.Dispose();
+            _codeInspectionsMenu = new CodeInspectionsMenu(this.IDE, this.addInInstance, parser, inspections);
+            _refactorMenu = new RefactorMenu(this.IDE, this.addInInstance, parser);
         }
 
         private CommandBarButton _about;
@@ -54,17 +45,17 @@ namespace Rubberduck.UI
 
         public void Initialize()
         {
-            var menuBarControls = _vbe.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls);
+            var menuBarControls = this.IDE.CommandBars[1].Controls;
+            var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
             var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             Debug.Assert(menu != null, "menu != null");
 
             menu.Caption = "Ru&bberduck";
 
             _testMenu.Initialize(menu.Controls);
-            _codeExplorerMenu.Initialize(menu.Controls);
+            _codeExplorerMenu.Initialize(menu);
             _refactorMenu.Initialize(menu.Controls);
-            _todoItemsMenu.Initialize(menu.Controls);
+            _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu.Controls);
 
             //note: disabled for 1.2 release
@@ -72,25 +63,15 @@ namespace Rubberduck.UI
 
             _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
             _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));
-            
+
         }
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new SourceControl.DummyGitView(_vbe.ActiveVBProject))
+            using (var window = new SourceControl.DummyGitView(this.IDE.ActiveVBProject))
             {
                 window.ShowDialog();
             }
-        }
-
-        private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption, bool beginGroup, CommandBarButtonClickEvent buttonClickHandler)
-        {
-            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            button.Caption = caption;
-            button.BeginGroup = beginGroup;
-            button.Click += buttonClickHandler;
-
-            return button;
         }
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -109,18 +90,39 @@ namespace Rubberduck.UI
             }
         }
 
-        private int FindMenuInsertionIndex(CommandBarControls controls)
+        bool disposed = false;
+        protected override void Dispose(bool disposing)
         {
-            for (var i = 1; i <= controls.Count; i++)
+            if (disposed)
             {
-                // insert menu before "Window" built-in menu:
-                if (controls[i].BuiltIn && controls[i].Caption == "&Window")
+                return;
+            }
+
+            if (disposing)
+            {
+                if (_todoItemsMenu != null)
                 {
-                    return i;
+                    _todoItemsMenu.Dispose();
+                }
+
+                if (_refactorMenu != null)
+                {
+                    _refactorMenu.Dispose();
+                }
+
+                if (_codeExplorerMenu != null)
+                {
+                    _codeExplorerMenu.Dispose();
+                }
+                if (_testMenu != null)
+                {
+                    _testMenu.Dispose();
                 }
             }
 
-            return controls.Count;
+            disposed = true;
+
+            base.Dispose(disposing);
         }
     }
 }

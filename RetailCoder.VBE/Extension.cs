@@ -55,7 +55,13 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            if (_app != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing & _app != null)
             {
                 _app.Dispose();
             }

@@ -3,44 +3,50 @@ using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    public class CodeExplorerMenu
+    public class CodeExplorerMenu : Menu
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
         private readonly IRubberduckParser _parser;
-
         private readonly CodeExplorerWindow _window;
 
         public CodeExplorerMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
+            :base(vbe, addin)
         {
-            _vbe = vbe;
-            _addin = addin;
             _parser = parser;
-
             _window = new CodeExplorerWindow();
         }
 
         private CommandBarButton _codeExplorerButton;
 
-        public void Initialize(CommandBarControls menuControls)
+        public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeExplorerButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            Debug.Assert(_codeExplorerButton != null);
-
-            _codeExplorerButton.Caption = "&Code Explorer";
-            _codeExplorerButton.BeginGroup = true;
-
-            _codeExplorerButton.FaceId = 3039;
-            _codeExplorerButton.Click += OnCodeExplorerButtonClick;
+            _codeExplorerButton = AddButton(parentMenu, "&Code Explorer", true, new CommandBarButtonClickEvent(OnCodeExplorerButtonClick), 3039);
         }
 
         private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool cancelDefault)
         {
-            var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin, _window);
+            var presenter = new CodeExplorerDockablePresenter(_parser, this.IDE, this.addInInstance, _window);
             presenter.Show();
+        }
+
+        bool disposed = false;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing && _window != null)
+            {
+                _window.Dispose();
+            }
+
+            disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

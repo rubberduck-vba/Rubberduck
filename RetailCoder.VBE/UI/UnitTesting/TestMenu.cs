@@ -6,6 +6,8 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Properties;
 using Rubberduck.UnitTesting;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -18,7 +20,8 @@ namespace Rubberduck.UI.UnitTesting
         //private readonly VBE _vbe;
         private readonly TestEngine _engine;
 
-        public TestMenu(VBE vbe, AddIn addInInstance):base(vbe, addInInstance)
+        public TestMenu(VBE vbe, AddIn addInInstance)
+            : base(vbe, addInInstance)
         {
             var testExplorer = new TestExplorerWindow();
             var toolWindow = CreateToolWindow("Test Explorer", testExplorer);
@@ -34,16 +37,10 @@ namespace Rubberduck.UI.UnitTesting
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
-            Debug.Assert(menu != null);
-
             menu.Caption = "Te&st";
 
-            _windowsTestExplorerButton = AddMenuButton(menu, "&Test Explorer", Resources.TestManager_8590_32);
-            _windowsTestExplorerButton.Click += OnTestExplorerButtonClick;
-
-            _runAllTestsButton = AddMenuButton(menu, "&Run All Tests", Resources.AllLoadedTests_8644_24);
-            _runAllTestsButton.BeginGroup = true;
-            _runAllTestsButton.Click += OnRunAllTestsButtonClick;
+            _windowsTestExplorerButton = AddButton(menu, "&Test Explorer", false, new CommandBarButtonClickEvent(OnTestExplorerButtonClick), Resources.TestManager_8590_32);
+            _runAllTestsButton = AddButton(menu, "&Run All Tests", true, new CommandBarButtonClickEvent(OnRunAllTestsButtonClick), Resources.AllLoadedTests_8644_24);
         }
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -57,10 +54,21 @@ namespace Rubberduck.UI.UnitTesting
             _engine.ShowExplorer();
         }
 
-        public new void Dispose()
+        bool disposed = false;
+        protected override void Dispose(bool disposing)
         {
-            _engine.Dispose();
-            base.Dispose();
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing && _engine != null)
+            {
+                _engine.Dispose();
+            }
+
+            disposed = true;
+            base.Dispose(disposing);
         }
     }
 }
