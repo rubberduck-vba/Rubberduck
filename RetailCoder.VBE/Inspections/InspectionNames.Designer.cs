@@ -115,6 +115,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete Global access modifier.
+        /// </summary>
+        internal static string ObsoleteGlobal {
+            get {
+                return ResourceManager.GetString("ObsoleteGlobal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of obsolete Let statement.
         /// </summary>
         internal static string ObsoleteLet {

@@ -93,6 +93,8 @@
     <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementUsageInspectionResult.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspection.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementInspection.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementUsageInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteTypeHintInspection.cs" />

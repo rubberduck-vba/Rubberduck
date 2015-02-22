@@ -144,6 +144,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
+        public override void EnterVisibility(VBParser.VisibilityContext context)
+        {
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
+        }
+
         public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
         {
             _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));

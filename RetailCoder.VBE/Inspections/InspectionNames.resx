@@ -135,6 +135,9 @@
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Use of obsolete Rem comment syntax</value>
   </data>
+  <data name="ObsoleteGlobal" xml:space="preserve">
+    <value>Use of obsolete Global access modifier</value>
+  </data>
   <data name="ObsoleteLet" xml:space="preserve">
     <value>Use of obsolete Let statement</value>
   </data>
