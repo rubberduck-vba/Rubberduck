@@ -10,8 +10,19 @@ namespace Rubberduck.UnitTesting
     {
         private IEnumerable<TestMethod> _lastRun;
 
-        public event EventHandler<EventArgs> TestComplete;
+        public event EventHandler<TestCompleteEventArg> TestComplete;
         public event EventHandler<EventArgs> AllTestsComplete;
+
+        //public TestEngine2()
+        //{
+        //    TestComplete += TestComplete;
+        //    AllTestsComplete += AllTestsComplete;
+        //}
+
+        void TestEngine2_AllTestsComplete(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         public IDictionary<TestMethod, TestResult> AllTests
         {
@@ -45,6 +56,7 @@ namespace Rubberduck.UnitTesting
 
         public void ReRun()
         {
+            //todo: implement or remove
             throw new NotImplementedException();
         }
 
@@ -98,8 +110,7 @@ namespace Rubberduck.UnitTesting
                 {
                     var result = test.Run();
                     this.AllTests[test] = result;
-                    //todo: fix up event
-                    TestComplete(this, EventArgs.Empty);
+                    OnTestComplete(new TestCompleteEventArg(test, result));
                 }
                 else
                 {
@@ -109,6 +120,11 @@ namespace Rubberduck.UnitTesting
 
             //todo: fix up event
             AllTestsComplete(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnTestComplete(TestCompleteEventArg arg)
+        {
+            TestComplete(this, arg);
         }
     }
 }

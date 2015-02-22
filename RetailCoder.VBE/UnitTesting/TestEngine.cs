@@ -8,7 +8,7 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestEngine : IDisposable, Rubberduck.UnitTesting.ITestEngine
+    public class TestEngine : IDisposable
     {
         private readonly VBE _vbe;
         private readonly TestExplorerWindow _explorer;

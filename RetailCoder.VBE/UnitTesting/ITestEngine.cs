@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace Rubberduck.UnitTesting
 {
-    interface ITestEngine
+    public interface ITestEngine
     {
         IDictionary<TestMethod, TestResult> AllTests { get; set; }
         IEnumerable<TestMethod> FailedTests();
@@ -16,7 +16,19 @@ namespace Rubberduck.UnitTesting
         void RunNotRunTests();
         void RunPassedTests();
 
-        event EventHandler<EventArgs> TestComplete;
+        event EventHandler<TestCompleteEventArg> TestComplete;
         event EventHandler<EventArgs> AllTestsComplete;
+    }
+
+    public class TestCompleteEventArg : EventArgs
+    {
+        public TestResult Result { get; private set; }
+        public TestMethod Test { get; private set; }
+
+        public TestCompleteEventArg(TestMethod test, TestResult result)
+        {
+            this.Test = test;
+            this.Result = result;
+        }
     }
 }

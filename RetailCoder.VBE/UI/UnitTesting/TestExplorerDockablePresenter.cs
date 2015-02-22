@@ -29,6 +29,18 @@ namespace Rubberduck.UI.UnitTesting
             RegisterTestExplorerEvents();
         }
 
+        public void Synchronize()
+        {
+            SynchronizeEngineWithIDE();
+            Control.Refresh(_testEngine.AllTests);
+        }
+
+        public void ShowExplorer()
+        {
+            Synchronize();
+            Control.Show();
+        }
+
         public void SynchronizeEngineWithIDE()
         {
             try
@@ -64,61 +76,106 @@ namespace Rubberduck.UI.UnitTesting
             Control.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
             Control.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
             Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
+
+            _testEngine.AllTestsComplete += AllTestsComplete;
+            _testEngine.TestComplete += TestComplete;
+        }
+
+        private void TestComplete(object sender, TestCompleteEventArg e)
+        {
+            Control.WriteResult(e.Test, e.Result);
+        }
+
+        private void AllTestsComplete(object sender, EventArgs e)
+        {
+            // not sure if this is really needed
         }
 
         private void OnExplorerRefreshListButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Synchronize();
         }
 
         private void OnExplorerRunAllTestsButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.Run();
         }
 
         private void OnExplorerRunFailedTestsButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.RunFailedTests();
         }
 
         private void OnExplorerRunLastRunTestsButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.LastRunTests();
         }
 
         private void OnExplorerRunNotRunTestsButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.RunNotRunTests();
         }
 
         private void OnExplorerRunPassedTestsButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.RunPassedTests();
         }
 
         private void OnExplorerRunSelectedTestButtonClick(object sender, SelectedTestEventArgs e)
         {
-            throw new NotImplementedException();
+            Control.ClearResults();
+            _testEngine.Run(e.Selection);
         }
 
         private void OnExplorerGoToSelectedTest(object sender, SelectedTestEventArgs e)
         {
-            throw new NotImplementedException();
+            var controlSelection = e.Selection.FirstOrDefault();
+            if (controlSelection == null)
+            {
+                return;
+            }
+
+            var startLine = 1;
+            var startColumn = 1;
+            var endLine = -1;
+            var endColumn = -1;
+
+            var signature = string.Concat("Public Sub ", controlSelection.MethodName, "()");
+
+            var codeModule = this.VBE.VBProjects.Cast<VBProject>()
+                     .First(project => project.Name == controlSelection.ProjectName)
+                     .VBComponents.Cast<VBComponent>()
+                     .First(component => component.Name == controlSelection.ModuleName)
+                     .CodeModule;
+
+            if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
+            {
+                var selection = new Selection(startLine, startColumn, endLine, endColumn);
+                codeModule.CodePane.SetSelection(selection);
+            }
         }
 
         private void OnExplorerAddExpectedErrorTestMethodButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            NewTestMethodCommand.NewExpectedErrorTestMethod(this.VBE);
+            Synchronize();
         }
 
         private void OnExplorerAddTestMethodButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            NewTestMethodCommand.NewTestMethod(this.VBE);
+            Synchronize();
         }
 
         private void OnExplorerAddTestModuleButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            NewUnitTestModuleCommand.NewUnitTestModule(this.VBE);
+            Synchronize();
         }
     }
 }
