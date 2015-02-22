@@ -3,44 +3,48 @@ using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    public class CodeExplorerMenu
+    public class CodeExplorerMenu : Menu
     {
-        private readonly VBE _vbe;
-        private readonly AddIn _addin;
-        private readonly IRubberduckParser _parser;
-
+        private CommandBarButton _codeExplorerButton;
         private readonly CodeExplorerWindow _window;
+        private readonly CodeExplorerDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
-        public CodeExplorerMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
+        public CodeExplorerMenu(VBE vbe, AddIn addIn, CodeExplorerWindow view, CodeExplorerDockablePresenter presenter)
+            :base(vbe, addIn)
         {
-            _vbe = vbe;
-            _addin = addin;
-            _parser = parser;
-
-            _window = new CodeExplorerWindow();
+            _window = view;
+            _presenter = presenter;
         }
 
-        private CommandBarButton _codeExplorerButton;
-
-        public void Initialize(CommandBarControls menuControls)
+        public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeExplorerButton = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            Debug.Assert(_codeExplorerButton != null);
-
-            _codeExplorerButton.Caption = "&Code Explorer";
-            _codeExplorerButton.BeginGroup = true;
-
-            _codeExplorerButton.FaceId = 3039;
-            _codeExplorerButton.Click += OnCodeExplorerButtonClick;
+            _codeExplorerButton = AddButton(parentMenu, "&Code Explorer", true, new CommandBarButtonClickEvent(OnCodeExplorerButtonClick), 3039);
         }
 
         private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool cancelDefault)
         {
-            var presenter = new CodeExplorerDockablePresenter(_parser, _vbe, _addin, _window);
-            presenter.Show();
+            _presenter.Show();
+        }
+
+        bool disposed = false;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            if (disposing && _window != null)
+            {
+                _window.Dispose();
+            }
+
+            disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

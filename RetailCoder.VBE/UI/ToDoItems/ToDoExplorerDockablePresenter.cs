@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.ToDoItems
@@ -21,10 +20,10 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
-        private ToDoExplorerWindow Control { get { return UserControl as ToDoExplorerWindow; } }
+        private IToDoExplorerWindow Control { get { return UserControl as IToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin) 
-            : base(vbe, addin, new ToDoExplorerWindow())
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window) 
+            : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
@@ -35,7 +34,7 @@ namespace Rubberduck.UI.ToDoItems
             RefreshToDoList(this, EventArgs.Empty);
         }
 
-        void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
             IOrderedEnumerable<ToDoItem> resortedItems = null;
@@ -53,16 +52,26 @@ namespace Rubberduck.UI.ToDoItems
                 Control.SortedAscending = true;
             }
 
-
             Control.TodoItems = resortedItems;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
         {
-            Refresh();
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => GetItems());
+                getItems.Start();
+
+                Control.TodoItems = getItems.Result;
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
-        private void Refresh()
+        private IOrderedEnumerable<ToDoItem> GetItems()
         {
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>();
@@ -85,7 +94,7 @@ namespace Rubberduck.UI.ToDoItems
                                     .ThenByDescending(item => item.Priority)
                                     .ThenBy(item => item.LineNumber);
 
-            Control.SetItems(sortedItems);
+            return sortedItems;
         }
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
@@ -114,9 +123,7 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var codePane = component.CodeModule.CodePane;
-
             codePane.SetSelection(e.SelectedItem.GetSelection().Selection);
-            codePane.ForceFocus();
         }
     }
 }

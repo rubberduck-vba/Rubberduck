@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -11,10 +6,12 @@ using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
 using Rubberduck.VBA.ParseTreeListeners;
+using System.Linq;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
-    public class RefactorMenu : Menu, IDisposable
+    public class RefactorMenu : Menu
     {
         private readonly IRubberduckParser _parser;
 
@@ -31,9 +28,7 @@ namespace Rubberduck.UI
             var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
-            _extractMethodButton = AddMenuButton(menu,"Extract &Method", Resources.ExtractMethod_6786_32);
-            _extractMethodButton.Click += OnExtractMethodButtonClick;
-
+            _extractMethodButton = AddButton(menu, "Extract &Method", false, new CommandBarButtonClickEvent(OnExtractMethodButtonClick), Resources.ExtractMethod_6786_32);
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -76,11 +71,6 @@ namespace Rubberduck.UI
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
             return menu.Controls.Add(MsoControlType.msoControlButton) as CommandBarButton;
-        }
-
-        public void Dispose()
-        {
-            
         }
     }
 }
