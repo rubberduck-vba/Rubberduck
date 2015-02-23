@@ -1,5 +1,3 @@
-#Every programmer needs a Rubberduck.
-
 ![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
@@ -8,78 +6,7 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 [**Follow us on Twitter!**](https://twitter.com/rubberduckvba)
 
-
----
-
-#Features
-
-##Code Explorer
-
-The VBE's *Project Explorer* was nice... in 1999. Get the same bird's eye view of your project and navigate anywhere, with the *Code Explorer* dockable toolwindow:
-
-![Code Explorer Window](http://i.stack.imgur.com/yilHM.png)
-
-This tree view drills down to *member* level, so not only you can see modules with their properties, functions and procedures, you also get to see a module's fields, constants, enums (and their members) and user-defined types (and their members) - without having to bring up the *object browser*.
-
-##To-do Items
-
-Ever wish you had a task list built into the VBA IDE? You don't have to wish anymore: it's here! Rubberduck searches your code for `TODO:` comments (or whatever you configure as "todo" markers) and displays them all in a convenient dockable toolwindow. Double-click on an item in the list to navigate to that location in the code.
-
-![Todo Explorer dockable toolwindow](http://imgur.com/Xl1hfcQ.png)
-
-Rubberduck comes with default markers and priority levels, but that's 100% configurable.
-
-##Test Explorer
-
-Fully integrated unit testing, with zero boiler plate code (a little comment doesn't really count, right?). Use late-binding to create a `Rubberduk.AssertClass` object, or let Rubberduck automatically add a reference to its type library, and start writing unit tests for your VBA code:
-
-    '@TestModule
-    Private Assert As New Rubberduck.AssertClass
-    
-    '@TestMethod
-    Public Sub MyMethodReturnsTrue()
-        Assert.IsTrue MyMethod
-    End Sub
-    
-    Public Sub TestReferenceEquals()
-        Dim collection1 As New Collection
-        Dim collection2 As Collection
-        Set collection2 = collection1
-        Assert.AreSame collection1, collection2
-    End Sub
-
-The `'@TestModule` marker is merely a hint to tell Rubberduck to search that module for test methods; the `'@TestMethod` marker isn't needed if the method starts with the word `Test`. 
-The *Test Explorer* dockable toolwindow lists all tests found in all opened VBProjects, and makes it easy to add new test modules and methods - and run them:
-
-![Test Explorer dockable toolwindow](http://i.stack.imgur.com/gOMfO.png)
-
-##Code Inspections
-
-Find various code issues in your code - and fix them, with just a few clicks! 
-
-![Code Inspections dockable toolwindow](http://i.imgur.com/djvt8H5.png)
-
-In the event where you would have too many docked windows, Rubberduck offers you a toolbar to quickly navigate and fix code issues:
-
-![Code Inspections toolbar](http://i.stack.imgur.com/0MSot.png)
-
----
-
-#Coming Up
-
-The following features are currently under development and scheduled for the next version (v1.2):
-
-###ANTLR-Powered Parser: More Code Inspections
-
-Rubberduck's most powerful features will make extensive use of parse trees. We are currently working on re-implementing everything that needs a parser, to open the door to deeper code analysis, and... refactorings:
-
-![extract method](http://i.stack.imgur.com/FhUwt.png)
-
-More refactorings are planned for v1.3; see our [milestones](https://github.com/retailcoder/Rubberduck/milestones) for all the details.
-
-###GitHub/Source Control Integration
-
-This feature will make it possible to push your VBA code to your GitHub repository in separate code files, and to pull commits into the IDE, straight from the IDE. Read that again if you don't believe it, it's real.
+[**Rubberduck Wiki**](https://github.com/retailcoder/Rubberduck/wiki)
 
 ---
 
