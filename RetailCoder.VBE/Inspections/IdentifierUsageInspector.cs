@@ -93,10 +93,10 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UndeclaredVariableUsages()
         {
-            return _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName && local.Context.GetText() != usage.Context.GetText())
-                                        && _fields.All(field => field.QualifiedName != usage.QualifiedName && field.Context.GetText() != usage.Context.GetText())
+            return _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName || local.Context.GetText() != usage.Context.GetText())
+                                        && _fields.All(field => field.QualifiedName != usage.QualifiedName || field.Context.GetText() != usage.Context.GetText())
                                         && _globals.All(global => global.Context.GetText() != usage.Context.GetText())
-                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName && parameter.Context.GetText() != usage.Context.GetText()));
+                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName || parameter.Context.GetText() != usage.Context.GetText()));
         }
 
         /// <summary>
