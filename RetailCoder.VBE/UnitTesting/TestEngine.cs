@@ -1,299 +1,72 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.UI.UnitTesting;
-using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestEngine : IDisposable
+    public class TestEngine : ITestEngine
     {
-        private readonly VBE _vbe;
-        private readonly TestExplorerWindow _explorer;
-        private readonly Window _hostWindow;
-
-        public TestEngine(VBE vbe, TestExplorerWindow explorer, Window hostWindow)
-        {
-            _vbe = vbe;
-            _allTests = new Dictionary<TestMethod, TestResult>();
-            _explorer = explorer;
-            _hostWindow = hostWindow;
-            RegisterTestExplorerEvents();
-        }
-
-        private IDictionary<TestMethod,TestResult> _allTests;
         private IEnumerable<TestMethod> _lastRun;
 
-        private void ShowExplorerWindow()
-        {
-            _explorer.Refresh(_allTests);
-            if (!_explorer.Visible)
-            {
-                _explorer.Visible = true;
-                _explorer.Show();
-            }
+        public event EventHandler<TestCompleteEventArgs> TestComplete;
+        public event EventHandler<EventArgs> AllTestsComplete;
 
-            _hostWindow.Visible = true;
+        public TestEngine()
+        {
+            this.AllTests = new Dictionary<TestMethod, TestResult>();
         }
 
-        public void Run(IEnumerable<TestMethod> tests)
+        void TestEngine2_AllTestsComplete(object sender, EventArgs e)
         {
-            _explorer.ClearProgress();
-            var methods = tests.ToDictionary(test => test, test => null as TestResult);
+            throw new NotImplementedException();
+        }
 
-            _explorer.SetPlayList(methods);
-            AssignResults(methods.Keys);
+        public IDictionary<TestMethod, TestResult> AllTests
+        {
+            get;
+            set;
+        }
 
-            _lastRun = methods.Keys;
-            ShowExplorerWindow();
+        public IEnumerable<TestMethod> FailedTests()
+        {
+            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
+                                .Select(test => test.Key);
+        }
+
+        public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
+        {
+            return this.AllTests.Where(test => test.Value != null
+                 && test.Value.Outcome == (outcome ?? test.Value.Outcome))
+                 .Select(test => test.Key);
+        }
+
+        public IEnumerable<TestMethod> NotRunTests()
+        {
+            return this.AllTests.Where(test => test.Value == null)
+                                .Select(test => test.Key);
+        }
+
+        public IEnumerable<TestMethod> PassedTests()
+        {
+            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
+                                .Select(test => test.Key);
         }
 
         public void Run()
         {
-            _explorer.ClearProgress();
-
-            SynchronizeTests();
-            _explorer.SetPlayList(_allTests);
-
-            if (!_allTests.Any())
-            {
-                _explorer.ClearResults();
-                _lastRun = null;
-                return;
-            }
-
-            var tests = _allTests.Keys;
-            AssignResults(tests);
-
-            _lastRun = tests;
-            ShowExplorerWindow();
+            Run(this.AllTests.Keys);
         }
 
-        public void ReRun()
+        public void Run(IEnumerable<TestMethod> tests)
         {
-            if (_lastRun == null)
-            {
-                var tests = _allTests.Keys.ToList();
-                foreach (var test in tests)
-                {
-                    _allTests[test] = null;
-                }
-
-                return;
-            }
-
-            _explorer.ClearProgress();
-            _explorer.SetPlayList(_lastRun.ToDictionary(test => test, test => null as TestResult));
-
-            AssignResults(_lastRun);
-            ShowExplorerWindow();
-        }
-
-        /// <summary>
-        /// Gets the tests from the previous run.
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <returns></returns>
-        public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
-        {
-            return _allTests.Where(test => test.Value != null 
-                             && test.Value.Outcome == (outcome ?? test.Value.Outcome))
-                             .Select(test => test.Key);
-        }
-        
-        /// <summary>
-        /// Finds all tests in all opened projects.
-        /// </summary>
-        //note: belongs in presenter
-        public void SynchronizeTests()
-        {
-            try
-            {
-                var tests = _vbe.VBProjects
-                                .Cast<VBProject>()
-                                .SelectMany(project => project.TestMethods())
-                                .ToDictionary(test => test, test => _allTests.ContainsKey(test) ? _allTests[test] : null);
-
-                _allTests = tests;
-            }
-            catch(ArgumentException)
-            {
-                System.Windows.Forms.MessageBox.Show(
-                    "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
-                    "Warning", System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
-            }
-        }
-
-        public void ShowExplorer()
-        {
-            SynchronizeTests();
-            ShowExplorerWindow();
-        }
-
-        private void RegisterTestExplorerEvents()
-        {
-            _explorer.OnRefreshListButtonClick += OnExplorerRefreshListButtonClick;
-
-            _explorer.OnRunAllTestsButtonClick += OnExplorerRunAllTestsButtonClick;
-            _explorer.OnRunFailedTestsButtonClick += OnExplorerRunFailedTestsButtonClick;
-            _explorer.OnRunLastRunTestsButtonClick += OnExplorerRunLastRunTestsButtonClick;
-            _explorer.OnRunNotRunTestsButtonClick += OnExplorerRunNotRunTestsButtonClick;
-            _explorer.OnRunPassedTestsButtonClick += OnExplorerRunPassedTestsButtonClick;
-            _explorer.OnRunSelectedTestButtonClick += OnExplorerRunSelectedTestButtonClick;
-
-            _explorer.OnGoToSelectedTest += OnExplorerGoToSelectedTest;
-            
-            _explorer.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
-            _explorer.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
-            _explorer.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
-        }
-
-        void OnExplorerRunSelectedTestButtonClick(object sender, SelectedTestEventArgs e)
-        {
-            this.Run(e.Selection);
-        }
-
-        void OnExplorerRunPassedTestsButtonClick(object sender, EventArgs e)
-        {
-            this.RunPassedTests();
-        }
-
-        void OnExplorerRunNotRunTestsButtonClick(object sender, EventArgs e)
-        {
-            this.RunNotRunTests();
-        }
-
-        void OnExplorerRunLastRunTestsButtonClick(object sender, EventArgs e)
-        {
-            this.ReRun();
-        }
-
-        void OnExplorerRunFailedTestsButtonClick(object sender, EventArgs e)
-        {
-            this.RunFailedTests();
-        }
-
-        void OnExplorerRunAllTestsButtonClick(object sender, EventArgs e)
-        {
-            this.Run();
-        }
-
-        void OnExplorerAddTestModuleButtonClick(object sender, EventArgs e)
-        {
-            NewUnitTestModuleCommand.NewUnitTestModule(_vbe);
-            SynchronizeTests();
-            _explorer.Refresh(_allTests);
-        }
-
-        void OnExplorerAddTestMethodButtonClick(object sender, EventArgs e)
-        {
-            NewTestMethodCommand.NewTestMethod(_vbe);
-            SynchronizeTests();
-            _explorer.Refresh(_allTests);
-        }
-
-        void OnExplorerAddExpectedErrorTestMethodButtonClick(object sender, EventArgs e)
-        {
-            NewTestMethodCommand.NewExpectedErrorTestMethod(_vbe);
-            SynchronizeTests();
-            _explorer.Refresh(_allTests);
-        }
-
-        void OnExplorerRefreshListButtonClick(object sender, EventArgs e)
-        {
-            SynchronizeTests();
-            _explorer.Refresh(_allTests);
-        }
-
-        void OnExplorerGoToSelectedTest(object sender, SelectedTestEventArgs e)
-        {
-            var selection = e.Selection.FirstOrDefault();
-            if (selection == null)
-            {
-                return;
-            }
-
-            var startLine = 1;
-            var startColumn = 1;
-            var endLine = -1;
-            var endColumn = -1;
-
-            var signature = string.Concat("Public Sub ", selection.MethodName, "()");
-
-            var codeModule = _vbe.VBProjects.Cast<VBProject>()
-                                 .First(project => project.Name == selection.ProjectName)
-                                 .VBComponents.Cast<VBComponent>()
-                                 .First(component => component.Name == selection.ModuleName)
-                                 .CodeModule;
-
-            if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
-            {
-                codeModule.CodePane.SetSelection(startLine, startColumn, endLine, endColumn);
-                codeModule.CodePane.ForceFocus();
-            }
-        }
-
-        public IDictionary<TestMethod, TestResult> AllTests { get { return _allTests; } }
-
-        public IEnumerable<TestMethod> PassedTests
-        {
-            get
-            {
-                return _allTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
-                             .Select(test => test.Key);
-            }
-        }
-
-        public void RunPassedTests()
-        {
-            _explorer.ClearProgress();
-
-            var tests = PassedTests;
-            _explorer.SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
-
             if (tests.Any())
             {
-                AssignResults(tests);
-
-                _lastRun = tests;
-                ShowExplorerWindow();
+                var methods = tests.ToDictionary(test => test, test => null as TestResult);
+                AssignResults(methods.Keys);
+                _lastRun = methods.Keys;
             }
             else
             {
-                _explorer.ClearResults();
-                _lastRun = null;
-            }
-        }
-
-        public IEnumerable<TestMethod> FailedTests
-        {
-            get
-            {
-                return _allTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
-                             .Select(test => test.Key);
-            }
-        }
-
-        public void RunFailedTests()
-        {
-            _explorer.ClearProgress();
-
-            var tests = FailedTests;
-            _explorer.SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
-
-            if (tests.Any())
-            {
-                AssignResults(tests);
-
-                _lastRun = tests;
-                ShowExplorerWindow();
-            }
-            else
-            {
-                _explorer.ClearResults();
                 _lastRun = null;
             }
         }
@@ -301,87 +74,25 @@ namespace Rubberduck.UnitTesting
         private void AssignResults(IEnumerable<TestMethod> testMethods)
         {
             var tests = testMethods.ToList();
-            var keys = _allTests.Keys.ToList();
+            var keys = this.AllTests.Keys.ToList();
             foreach (var test in keys)
             {
                 if (tests.Contains(test))
                 {
                     var result = test.Run();
-                    _explorer.WriteResult(test, result);
-                    _allTests[test] = result;
+                    this.AllTests[test] = result;
+                    OnTestComplete(new TestCompleteEventArgs(test, result));
                 }
                 else
                 {
-                    _allTests[test] = null;
+                    this.AllTests[test] = null;
                 }
             }
         }
 
-        public IEnumerable<TestMethod> NotRunTests 
+        protected virtual void OnTestComplete(TestCompleteEventArgs arg)
         {
-            get 
-            {
-                return _allTests.Where(test => test.Value == null)
-                                .Select(test => test.Key);
-            }
-        }
-
-        public void RunNotRunTests()
-        {
-            _explorer.ClearProgress();
-
-            var tests = NotRunTests.ToList();
-            if (tests.Any())
-            {
-                _explorer.SetPlayList(tests);
-
-                AssignResults(tests);
-
-                _lastRun = tests;
-                ShowExplorerWindow();
-            }
-            else
-            {
-                _explorer.ClearResults();
-                _lastRun = null;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        bool disposed = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            if (disposing && _explorer != null)
-            {
-                _explorer.OnRefreshListButtonClick -= OnExplorerRefreshListButtonClick;
-
-                _explorer.OnRunAllTestsButtonClick -= OnExplorerRunAllTestsButtonClick;
-                _explorer.OnRunFailedTestsButtonClick -= OnExplorerRunFailedTestsButtonClick;
-                _explorer.OnRunLastRunTestsButtonClick -= OnExplorerRunLastRunTestsButtonClick;
-                _explorer.OnRunNotRunTestsButtonClick -= OnExplorerRunNotRunTestsButtonClick;
-                _explorer.OnRunPassedTestsButtonClick -= OnExplorerRunPassedTestsButtonClick;
-                _explorer.OnRunSelectedTestButtonClick -= OnExplorerRunSelectedTestButtonClick;
-
-                _explorer.OnGoToSelectedTest -= OnExplorerGoToSelectedTest;
-
-                _explorer.OnAddExpectedErrorTestMethodButtonClick -= OnExplorerAddExpectedErrorTestMethodButtonClick;
-                _explorer.OnAddTestMethodButtonClick -= OnExplorerAddTestMethodButtonClick;
-                _explorer.OnAddTestModuleButtonClick -= OnExplorerAddTestModuleButtonClick;
-
-                _explorer.Dispose();
-            }
-
-            disposed = true;
+            TestComplete(this, arg);
         }
     }
 }

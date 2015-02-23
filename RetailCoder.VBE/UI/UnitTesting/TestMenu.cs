@@ -8,7 +8,6 @@ using Rubberduck.Properties;
 using Rubberduck.UnitTesting;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
-
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestMenu : Menu

@@ -31,7 +31,7 @@ namespace Rubberduck.UI
             _configService = configService;
 
             var testExplorer = new TestExplorerWindow();
-            var testEngine = new TestEngine2();
+            var testEngine = new TestEngine();
             var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
