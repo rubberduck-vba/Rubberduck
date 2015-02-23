@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using LibGit2Sharp;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 

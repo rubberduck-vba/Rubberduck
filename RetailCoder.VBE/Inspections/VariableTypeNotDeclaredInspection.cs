@@ -31,13 +31,13 @@ namespace Rubberduck.Inspections
                 var constants = declarations.Where(declaration => declaration.Context is VBParser.ConstSubStmtContext)
                                             .Select(declaration => declaration.Context)
                                             .Cast<VBParser.ConstSubStmtContext>()
-                                            .Where(constant => constant.AsTypeClause() == null)
+                                            .Where(constant => constant.AsTypeClause() == null && constant.TypeHint() == null)
                                             .Select(constant => new VariableTypeNotDeclaredInspectionResult(Name, Severity, constant, module.QualifiedName));
 
                 var variables = declarations.Where(declaration => declaration.Context is VBParser.VariableSubStmtContext)
                                             .Select(declaration => declaration.Context)
                                             .Cast<VBParser.VariableSubStmtContext>()
-                                            .Where(variable => variable.AsTypeClause() == null)
+                                            .Where(variable => variable.AsTypeClause() == null && variable.TypeHint() == null)
                                             .Select(variable => new VariableTypeNotDeclaredInspectionResult(Name, Severity, variable, module.QualifiedName));
 
                 foreach (var inspectionResult in constants.Concat(variables))
