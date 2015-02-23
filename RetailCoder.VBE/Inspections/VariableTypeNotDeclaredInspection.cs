@@ -12,11 +12,11 @@ namespace Rubberduck.Inspections
     {
         public VariableTypeNotDeclaredInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.VariableTypeNotDeclared; } }
-        public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
@@ -27,6 +27,8 @@ namespace Rubberduck.Inspections
                     result.ParseTree.GetContexts<
                         DeclarationListener, ParserRuleContext>(new DeclarationListener(result.QualifiedName)).ToList();
                 var module = result; // to avoid access to modified closure in below lambdas
+
+                // we want declarations with a null AsTypeClause() and a null TypeHint().
 
                 var constants = declarations.Where(declaration => declaration.Context is VBParser.ConstSubStmtContext)
                                             .Select(declaration => declaration.Context)

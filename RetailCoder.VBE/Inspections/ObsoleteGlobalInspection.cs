@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteGlobalInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.ObsoleteGlobal; } }
