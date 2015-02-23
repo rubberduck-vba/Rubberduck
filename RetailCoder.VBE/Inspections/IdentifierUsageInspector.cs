@@ -113,7 +113,7 @@ namespace Rubberduck.Inspections
         {
             var unassignedFields = _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
-                    .All(assignment => field.Context.GetText() != assignment.Context.GetText()));
+                        .All(assignment => field.Context.GetText() != assignment.Context.GetText()));
 
             foreach (var field in unassignedFields)
             {

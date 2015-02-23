@@ -96,6 +96,8 @@
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
+    <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
+    <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
