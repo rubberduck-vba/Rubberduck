@@ -31,6 +31,8 @@ namespace Rubberduck.UnitTesting
 
         public TestResult Run()
         {
+            _assertResults.Clear(); //clear previous results to account for changes being made
+
             TestResult result;
             var duration = new TimeSpan();
             try

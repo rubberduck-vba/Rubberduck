@@ -12,12 +12,13 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBA;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI
 {
     public class RubberduckMenu : Menu
     {
-        private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
+        private readonly TestMenu _testMenu; 
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
@@ -25,11 +26,14 @@ namespace Rubberduck.UI
         private readonly IConfigurationService _configService;
 
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IEnumerable<IInspection> inspections)
-               :base(vbe, addIn)
+            : base(vbe, addIn)
         {
             _configService = configService;
 
-            _testMenu = new TestMenu(vbe, addIn);
+            var testExplorer = new TestExplorerWindow();
+            var testEngine = new TestEngine();
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
+            _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);

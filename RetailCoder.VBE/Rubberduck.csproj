@@ -122,6 +122,8 @@
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
+    <Compile Include="UnitTesting\ITestEngine.cs" />
+    <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="VBA\Nodes\OptionNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
@@ -318,7 +320,6 @@
     <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
