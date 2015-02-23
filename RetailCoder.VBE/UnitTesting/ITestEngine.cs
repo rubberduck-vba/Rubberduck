@@ -11,17 +11,17 @@ namespace Rubberduck.UnitTesting
         IEnumerable<TestMethod> PassedTests();
 
         void Run();
-        void Run(System.Collections.Generic.IEnumerable<TestMethod> tests);
+        void Run(IEnumerable<TestMethod> tests);
 
-        event EventHandler<TestCompleteEventArg> TestComplete;
+        event EventHandler<TestCompleteEventArgs> TestComplete;
     }
 
-    public class TestCompleteEventArg : EventArgs
+    public class TestCompleteEventArgs : EventArgs
     {
         public TestResult Result { get; private set; }
         public TestMethod Test { get; private set; }
 
-        public TestCompleteEventArg(TestMethod test, TestResult result)
+        public TestCompleteEventArgs(TestMethod test, TestResult result)
         {
             this.Test = test;
             this.Result = result;

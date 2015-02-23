@@ -1,22 +1,14 @@
-﻿using System;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.UnitTesting;
-using Rubberduck.UI.UnitTesting;
-using Rubberduck.Extensions;
 
 namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerDockablePresenter : DockablePresenterBase
     {
-        // todo: move stuff from TestEngine into here.
-
         private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
         private readonly ITestEngine _testEngine;
 
@@ -58,9 +50,14 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        public void RunTests()
+        {
+            RunTests(_testEngine.AllTests.Keys);
+        }
+
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            Control.ClearResults(); //if it doesn't work, get rid of this
+            Control.ClearResults(); 
             Control.SetPlayList(tests);
             Control.ClearProgress();
             _testEngine.Run(tests);
@@ -86,7 +83,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.TestComplete += TestComplete;
         }
 
-        private void TestComplete(object sender, TestCompleteEventArg e)
+        private void TestComplete(object sender, TestCompleteEventArgs e)
         {
             Control.WriteResult(e.Test, e.Result);
         }

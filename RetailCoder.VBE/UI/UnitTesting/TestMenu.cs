@@ -17,24 +17,10 @@ namespace Rubberduck.UI.UnitTesting
         // 3039: module icon || 3119 || 621 || 589 || 472
         // 3170: class module icon
 
-        //private readonly VBE _vbe;
-        private readonly TestEngine _engine;
-
-        //public TestMenu(VBE vbe, AddIn addInInstance)
-        //    : base(vbe, addInInstance)
-        //{
-        //    var testExplorer = new TestExplorerWindow();
-        //    var toolWindow = CreateToolWindow("Test Explorer", testExplorer);
-        //    _engine = new TestEngine(vbe, testExplorer, toolWindow);
-
-        //    //hack: to keep testexplorer from being visible when testmenu is added
-        //    toolWindow.Visible = false;
-        //}
-
         private readonly TestExplorerWindow _view;
         private readonly TestExplorerDockablePresenter _presenter;
         public TestMenu(VBE vbe, AddIn addIn, TestExplorerWindow view, TestExplorerDockablePresenter presenter)
-            :base(vbe, addIn)
+            : base(vbe, addIn)
         {
             _view = view;
             _presenter = presenter;
@@ -54,8 +40,8 @@ namespace Rubberduck.UI.UnitTesting
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            //_engine.SynchronizeTests();
-            //_engine.Run();
+            _presenter.Show();
+            _presenter.RunTests();
         }
 
         void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -71,9 +57,17 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            if (disposing && _engine != null)
+            if (disposing)
             {
-                _engine.Dispose();
+                if (_view != null)
+                {
+                    _view.Dispose();
+                }
+
+                if (_presenter != null)
+                {
+                    _presenter.Dispose();
+                }
             }
 
             disposed = true;

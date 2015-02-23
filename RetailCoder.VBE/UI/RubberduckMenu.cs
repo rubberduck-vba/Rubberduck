@@ -18,7 +18,7 @@ namespace Rubberduck.UI
 {
     public class RubberduckMenu : Menu
     {
-        private readonly TestMenu _testMenu; // todo: implement as DockablePresenter.
+        private readonly TestMenu _testMenu; 
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
@@ -26,7 +26,7 @@ namespace Rubberduck.UI
         private readonly IConfigurationService _configService;
 
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IEnumerable<IInspection> inspections)
-               :base(vbe, addIn)
+            : base(vbe, addIn)
         {
             _configService = configService;
 
@@ -34,8 +34,6 @@ namespace Rubberduck.UI
             var testEngine = new TestEngine2();
             var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
-
-            //_testMenu = new TestMenu(vbe, addIn);
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);

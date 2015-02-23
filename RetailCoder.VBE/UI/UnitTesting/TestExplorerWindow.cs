@@ -29,7 +29,7 @@ namespace Rubberduck.UI.UnitTesting
 
             _allTests = new BindingList<TestExplorerItem>();
             _playList = new List<TestExplorerItem>();
-            
+
             InitializeGrid();
             RegisterUIEvents();
         }
@@ -86,7 +86,7 @@ namespace Rubberduck.UI.UnitTesting
                                                                           .Select(row => row.DataBoundItem as TestExplorerItem)
                                                                           .Select(item => item.GetTestMethod())
                                                                           .Contains(test.GetTestMethod()))
-                                                                          .ToList(); //ToList should force immediate execution so clearing the gui won't cause us to lose the selection.
+                                                                          .ToList(); //ToList forces immediate execution so clearing the gui of previous results won't cause us to lose the selection.
 
                 handler(this, new SelectedTestEventArgs(selection));
             }
@@ -161,7 +161,7 @@ namespace Rubberduck.UI.UnitTesting
             testOutputGridView.DataSource = _allTests;
         }
 
-        private int _completedCount; 
+        private int _completedCount;
         private void UpdateProgress()
         {
             UpdateCompletedTestsLabels();
@@ -190,7 +190,7 @@ namespace Rubberduck.UI.UnitTesting
                                                  && item.MethodName == test.MethodName);
         }
 
-        public void Refresh(IDictionary<TestMethod,TestResult> tests)
+        public void Refresh(IDictionary<TestMethod, TestResult> tests)
         {
             _allTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
             testOutputGridView.DataSource = _allTests;
@@ -202,7 +202,7 @@ namespace Rubberduck.UI.UnitTesting
             SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));
         }
 
-        public void SetPlayList(IDictionary<TestMethod,TestResult> tests)
+        public void SetPlayList(IDictionary<TestMethod, TestResult> tests)
         {
             _playList = tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList();
             UpdateCompletedTestsLabels();

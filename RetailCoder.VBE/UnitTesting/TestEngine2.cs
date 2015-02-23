@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UnitTesting
 {
@@ -10,7 +8,7 @@ namespace Rubberduck.UnitTesting
     {
         private IEnumerable<TestMethod> _lastRun;
 
-        public event EventHandler<TestCompleteEventArg> TestComplete;
+        public event EventHandler<TestCompleteEventArgs> TestComplete;
         public event EventHandler<EventArgs> AllTestsComplete;
 
         public TestEngine2()
@@ -25,13 +23,14 @@ namespace Rubberduck.UnitTesting
 
         public IDictionary<TestMethod, TestResult> AllTests
         {
-            get; set;
+            get;
+            set;
         }
 
         public IEnumerable<TestMethod> FailedTests()
         {
-                return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
-                                    .Select(test => test.Key);
+            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
+                                .Select(test => test.Key);
         }
 
         public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
@@ -43,30 +42,18 @@ namespace Rubberduck.UnitTesting
 
         public IEnumerable<TestMethod> NotRunTests()
         {
-                return this.AllTests.Where(test => test.Value == null)
-                                    .Select(test => test.Key);
+            return this.AllTests.Where(test => test.Value == null)
+                                .Select(test => test.Key);
         }
 
         public IEnumerable<TestMethod> PassedTests()
         {
-                return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
-                                    .Select(test => test.Key);
-        }
-
-        public void ReRun()
-        {
-            //todo: implement or remove
-            throw new NotImplementedException();
+            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
+                                .Select(test => test.Key);
         }
 
         public void Run()
         {
-            if (!this.AllTests.Any())
-            {
-                _lastRun = null;
-                return;
-            }
-
             Run(this.AllTests.Keys);
         }
 
@@ -94,7 +81,7 @@ namespace Rubberduck.UnitTesting
                 {
                     var result = test.Run();
                     this.AllTests[test] = result;
-                    OnTestComplete(new TestCompleteEventArg(test, result));
+                    OnTestComplete(new TestCompleteEventArgs(test, result));
                 }
                 else
                 {
@@ -103,7 +90,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        protected virtual void OnTestComplete(TestCompleteEventArg arg)
+        protected virtual void OnTestComplete(TestCompleteEventArgs arg)
         {
             TestComplete(this, arg);
         }
