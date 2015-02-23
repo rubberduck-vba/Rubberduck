@@ -7,9 +7,9 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotUsedInspectionResult : CodeInspectionResultBase
+    public class VariableNotDeclaredInspectionResult : CodeInspectionResultBase
     {
-        public VariableNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public VariableNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, type, qualifiedName, context)
         {
@@ -17,14 +17,14 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return
-                new Dictionary<string, Action<VBE>>
-                {
-                    {"Remove unused variable declaration", RemoveUnusedDeclaration}
-                };
+            return new Dictionary<string, Action<VBE>>
+            {
+                // no, really. this one's on the user.
+                //{"Remove variable usage", RemoveVariableUsage}
+            };
         }
 
-        protected virtual void RemoveUnusedDeclaration(VBE vbe)
+        private void RemoveVariableUsage(VBE vbe)
         {
             var module = vbe.FindCodeModules(QualifiedName).First();
             var selection = QualifiedSelection.Selection;

@@ -91,6 +91,13 @@ namespace Rubberduck.Inspections
             return UnusedGlobals().Union(UnusedFields().Union(UnusedLocals()));
         }
 
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UndeclaredVariableUsages()
+        {
+            return _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName && local.Context.GetText() != usage.Context.GetText())
+                                        && _fields.All(field => field.QualifiedName != usage.QualifiedName && field.Context.GetText() != usage.Context.GetText())
+                                        && _globals.All(global => global.Context.GetText() != usage.Context.GetText())
+                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName && parameter.Context.GetText() != usage.Context.GetText()));
+        }
 
         /// <summary>
         /// Gets all globals, fields and locals that are unassigned (used or not) in their respective scope.
@@ -303,7 +310,8 @@ namespace Rubberduck.Inspections
 
                 // includes assignments
                 var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
-                result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
+                //result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
+                result.AddRange(usages);
             }
 
             return result;

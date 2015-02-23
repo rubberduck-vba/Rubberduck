@@ -98,6 +98,8 @@
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
+    <Compile Include="Inspections\VariableNotDeclaredInspection.cs" />
+    <Compile Include="Inspections\VariableNotDeclaredInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />
     <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
