@@ -22,7 +22,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterArg(VBParser.ArgContext context)
         {
-            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+            if (context.Parent.Parent.GetType() != typeof (VBParser.EventStmtContext))
+            {
+                _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+            }
         }
 
         public override void EnterSubStmt(VBParser.SubStmtContext context)
@@ -75,7 +78,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;
@@ -86,7 +89,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;

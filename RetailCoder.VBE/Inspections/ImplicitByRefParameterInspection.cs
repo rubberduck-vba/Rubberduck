@@ -16,13 +16,13 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.ImplicitByRef; } }
+        public string Name { get { return InspectionNames.ImplicitByRef_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult) 
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult) 
         {
-            foreach (var module in parseResult)
+            foreach (var module in parseResult.ComponentParseResults)
             {
                 var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
                 foreach (var procedure in procedures)
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
                     foreach (var arg in args.Where(arg => arg.BYREF() == null && arg.BYVAL() == null))
                     {
                         var context = new QualifiedContext<VBParser.ArgContext>(module.QualifiedName, arg);
-                        yield return new ImplicitByRefParameterInspectionResult(Name, Severity, context);
+                        yield return new ImplicitByRefParameterInspectionResult(string.Format(Name, arg.AmbiguousIdentifier().GetText()), Severity, context);
                     }
                 }
             }

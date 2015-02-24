@@ -168,6 +168,7 @@
     <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\QualifiedMemberName.cs" />
     <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\ParameterNode.cs" />
     <Compile Include="VBA\Nodes\TypeNode.cs" />
+    <Compile Include="VBA\Nodes\VBProjectParseResult.cs" />
     <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />

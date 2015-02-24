@@ -17,9 +17,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult)
+            foreach (var module in parseResult.ComponentParseResults)
             {
                 var declarationLines = module.Component.CodeModule.CountOfDeclarationLines;
                 if (declarationLines == 0)
