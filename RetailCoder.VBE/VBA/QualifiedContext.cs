@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+using System.Linq;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.VBA
@@ -40,6 +40,26 @@ namespace Rubberduck.VBA
             }
 
             return other.GetHashCode() == GetHashCode();
+        }
+
+        public static bool operator ==(QualifiedContext<TContext> context1, QualifiedContext<TContext> context2)
+        {
+            if (((object)context1) == null)
+            {
+                return ((object)context2) == null;
+            }
+
+            return context1.Equals(context2);
+        }
+
+        public static bool operator !=(QualifiedContext<TContext> context1, QualifiedContext<TContext> context2)
+        {
+            if (((object)context1) == null)
+            {
+                return ((object)context2) != null;
+            }
+
+            return !context1.Equals(context2);
         }
     }
 }
