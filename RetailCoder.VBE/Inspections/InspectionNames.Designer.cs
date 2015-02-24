@@ -214,7 +214,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The assigned value of variable &apos;{0}&apos; is never used.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never used.
         /// </summary>
         internal static string VariableNotUsed_ {
             get {

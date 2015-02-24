@@ -169,7 +169,7 @@
     <value>Variable '{0}' is not declared</value>
   </data>
   <data name="VariableNotUsed_" xml:space="preserve">
-    <value>The assigned value of variable '{0}' is never used</value>
+    <value>Variable '{0}' is never used</value>
   </data>
   <data name="VariableTypeNotDeclared_" xml:space="preserve">
     <value>Variable '{0}' is implicitly Variant</value>

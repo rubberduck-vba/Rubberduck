@@ -3,7 +3,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotDeclaredInspection : IInspection
+    public class VariableNotDeclaredInspection //: IInspection //disabled
     {
         public VariableNotDeclaredInspection()
         {

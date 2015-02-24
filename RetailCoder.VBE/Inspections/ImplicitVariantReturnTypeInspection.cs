@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
                     var asTypeClause = GetAsTypeClause(procedure.Context);
                     if (asTypeClause == null)
                     {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, procedure.MemberName.Name), Severity, procedure);
+                        yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, ((dynamic)procedure.Context).AmbiguousIdentifier().GetText()), Severity, procedure);
                     }
                 }
             }

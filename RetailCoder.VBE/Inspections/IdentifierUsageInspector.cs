@@ -276,7 +276,7 @@ namespace Rubberduck.Inspections
             }
 
             _unusedParameters = _parameters.Where(context =>
-                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
+                _usages.Where(usage => usage == context)
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
                     .ToList();
             return _unusedParameters;
@@ -378,10 +378,8 @@ namespace Rubberduck.Inspections
             {
                 var listener = new VariableReferencesListener(module.QualifiedName);
 
-                // includes assignments
                 var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
-                //result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
-                result.AddRange(usages);
+                result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
             }
 
             return result;

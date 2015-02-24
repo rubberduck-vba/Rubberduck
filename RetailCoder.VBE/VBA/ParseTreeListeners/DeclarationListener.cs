@@ -75,7 +75,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;
@@ -86,7 +86,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;
