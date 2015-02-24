@@ -11,6 +11,7 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
+    [System.Runtime.InteropServices.ComVisible(true)]
     public partial class ConfigurationTreeViewControl : UserControl
     {
 

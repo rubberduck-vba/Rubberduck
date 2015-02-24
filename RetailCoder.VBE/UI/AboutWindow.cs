@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
+    [System.Runtime.InteropServices.ComVisible(true)]
     public partial class AboutWindow : Form
     {
         public AboutWindow()

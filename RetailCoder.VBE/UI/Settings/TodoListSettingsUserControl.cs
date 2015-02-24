@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.Settings
 {
+    [System.Runtime.InteropServices.ComVisible(true)]
     public partial class TodoListSettingsUserControl : UserControl, ITodoSettingsView
     {
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
