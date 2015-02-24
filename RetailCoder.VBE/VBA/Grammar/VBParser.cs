@@ -13976,14 +13976,14 @@ public partial class VBParser : Parser {
 	public partial class AmbiguousIdentifierContext : ParserRuleContext {
 		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBParser.R_SQUARE_BRACKET, 0); }
 		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBParser.L_SQUARE_BRACKET, 0); }
-		public AmbiguousKeywordContext ambiguousKeyword(int i) {
+		public AmbiguousKeywordContext AmbiguousKeyword(int i) {
 			return GetRuleContext<AmbiguousKeywordContext>(i);
 		}
 		public ITerminalNode IDENTIFIER(int i) {
 			return GetToken(VBParser.IDENTIFIER, i);
 		}
 		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBParser.IDENTIFIER); }
-		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
+		public IReadOnlyList<AmbiguousKeywordContext> AmbiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
 		public AmbiguousIdentifierContext(ParserRuleContext parent, int invokingState)

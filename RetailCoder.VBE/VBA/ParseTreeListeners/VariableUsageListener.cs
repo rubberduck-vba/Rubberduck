@@ -21,6 +21,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
 
+        protected void AddMember(VBParser.AmbiguousIdentifierContext context)
+        {
+            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context));
+        }
+
         public override void EnterForNextStmt(VBParser.ForNextStmtContext context)
         {
             _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context.AmbiguousIdentifier().First()));

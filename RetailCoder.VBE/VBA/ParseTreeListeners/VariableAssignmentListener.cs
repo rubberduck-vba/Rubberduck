@@ -16,6 +16,14 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
+        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
+        {
+            if (context.AsTypeClause() != null && context.AsTypeClause().NEW() != null)
+            {
+                AddMember(context.AmbiguousIdentifier());
+            }
+        }
+
         public VariableAssignmentListener(QualifiedModuleName qualifiedName) 
             : base(qualifiedName)
         {
