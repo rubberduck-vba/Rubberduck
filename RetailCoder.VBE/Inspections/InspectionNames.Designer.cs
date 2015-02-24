@@ -61,20 +61,20 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is passed ByRef implicitly.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
         /// </summary>
-        internal static string ImplicitByRef {
+        internal static string ImplicitByRef_ {
             get {
-                return ResourceManager.GetString("ImplicitByRef", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRef_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function returns an implicit Variant.
+        ///   Looks up a localized string similar to Function &apos;{0}&apos; returns an implicit Variant.
         /// </summary>
-        internal static string ImplicitVariantReturnType {
+        internal static string ImplicitVariantReturnType_ {
             get {
-                return ResourceManager.GetString("ImplicitVariantReturnType", resourceCulture);
+                return ResourceManager.GetString("ImplicitVariantReturnType_", resourceCulture);
             }
         }
         
@@ -97,11 +97,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function does not return anything.
+        ///   Looks up a localized string similar to Function &apos;{0}&apos; returns no value.
         /// </summary>
-        internal static string NonReturningFunction {
+        internal static string NonReturningFunction_ {
             get {
-                return ResourceManager.GetString("NonReturningFunction", resourceCulture);
+                return ResourceManager.GetString("NonReturningFunction_", resourceCulture);
             }
         }
         
@@ -142,11 +142,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of obsolete type hints in identifier.
+        ///   Looks up a localized string similar to Use of obsolete type hints in identifier &apos;{0}&apos;.
         /// </summary>
-        internal static string ObsoleteTypeHint {
+        internal static string ObsoleteTypeHint_ {
             get {
-                return ResourceManager.GetString("ObsoleteTypeHint", resourceCulture);
+                return ResourceManager.GetString("ObsoleteTypeHint_", resourceCulture);
             }
         }
         
@@ -169,65 +169,65 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter can be passed by value.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; can be passed by value.
         /// </summary>
-        internal static string ParameterCanBeByVal {
+        internal static string ParameterCanBeByVal_ {
             get {
-                return ResourceManager.GetString("ParameterCanBeByVal", resourceCulture);
+                return ResourceManager.GetString("ParameterCanBeByVal_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is not used.
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is not used.
         /// </summary>
-        internal static string ParameterNotUsed {
+        internal static string ParameterNotUsed_ {
             get {
-                return ResourceManager.GetString("ParameterNotUsed", resourceCulture);
+                return ResourceManager.GetString("ParameterNotUsed_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of unassigned variable.
+        ///   Looks up a localized string similar to Use of unassigned variable &apos;{0}&apos;.
         /// </summary>
-        internal static string UnassignedVariableUsage {
+        internal static string UnassignedVariableUsage_ {
             get {
-                return ResourceManager.GetString("UnassignedVariableUsage", resourceCulture);
+                return ResourceManager.GetString("UnassignedVariableUsage_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is never assigned.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
         /// </summary>
-        internal static string VariableNotAssigned {
+        internal static string VariableNotAssigned_ {
             get {
-                return ResourceManager.GetString("VariableNotAssigned", resourceCulture);
+                return ResourceManager.GetString("VariableNotAssigned_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is not declared.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not declared.
         /// </summary>
-        internal static string VariableNotDeclared {
+        internal static string VariableNotDeclared_ {
             get {
-                return ResourceManager.GetString("VariableNotDeclared", resourceCulture);
+                return ResourceManager.GetString("VariableNotDeclared_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable value is never used.
+        ///   Looks up a localized string similar to The assigned value of variable &apos;{0}&apos; is never used.
         /// </summary>
-        internal static string VariableNotUsed {
+        internal static string VariableNotUsed_ {
             get {
-                return ResourceManager.GetString("VariableNotUsed", resourceCulture);
+                return ResourceManager.GetString("VariableNotUsed_", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable type is implicitly Variant.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is implicitly Variant.
         /// </summary>
-        internal static string VariableTypeNotDeclared {
+        internal static string VariableTypeNotDeclared_ {
             get {
-                return ResourceManager.GetString("VariableTypeNotDeclared", resourceCulture);
+                return ResourceManager.GetString("VariableTypeNotDeclared_", resourceCulture);
             }
         }
     }

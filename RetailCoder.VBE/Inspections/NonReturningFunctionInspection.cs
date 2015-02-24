@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.NonReturningFunction; } }
+        public string Name { get { return InspectionNames.NonReturningFunction_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
 
                 foreach (var unassignedFunction in functions)
                 {
-                    yield return new NonReturningFunctionInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, unassignedFunction));
+                    yield return new NonReturningFunctionInspectionResult(string.Format(Name, unassignedFunction.AmbiguousIdentifier().GetText()), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, unassignedFunction));
                 }
             }
         }

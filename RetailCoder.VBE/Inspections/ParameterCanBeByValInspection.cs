@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ParameterCanBeByVal; } }
+        public string Name { get { return InspectionNames.ParameterCanBeByVal_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in issues)
             {
-                yield return new ParameterCanBeByValInspectionResult(Name, Severity, issue.Context, issue.MemberName);
+                yield return new ParameterCanBeByValInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.MemberName);
             }
         }
     }

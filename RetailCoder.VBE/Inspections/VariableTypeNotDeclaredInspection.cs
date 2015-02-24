@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.VariableTypeNotDeclared; } }
+        public string Name { get { return InspectionNames.VariableTypeNotDeclared_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -34,13 +34,13 @@ namespace Rubberduck.Inspections
                                             .Select(declaration => declaration.Context)
                                             .Cast<VBParser.ConstSubStmtContext>()
                                             .Where(constant => constant.AsTypeClause() == null && constant.TypeHint() == null)
-                                            .Select(constant => new VariableTypeNotDeclaredInspectionResult(Name, Severity, constant, module.QualifiedName));
+                                            .Select(constant => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, constant.AmbiguousIdentifier().GetText()), Severity, constant, module.QualifiedName));
 
                 var variables = declarations.Where(declaration => declaration.Context is VBParser.VariableSubStmtContext)
                                             .Select(declaration => declaration.Context)
                                             .Cast<VBParser.VariableSubStmtContext>()
                                             .Where(variable => variable.AsTypeClause() == null && variable.TypeHint() == null)
-                                            .Select(variable => new VariableTypeNotDeclaredInspectionResult(Name, Severity, variable, module.QualifiedName));
+                                            .Select(variable => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, variable.AmbiguousIdentifier().GetText()), Severity, variable, module.QualifiedName));
 
                 foreach (var inspectionResult in constants.Concat(variables))
                 {

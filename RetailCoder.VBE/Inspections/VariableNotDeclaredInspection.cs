@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Error;
         }
 
-        public string Name { get { return InspectionNames.VariableNotDeclared; } }
+        public string Name { get { return InspectionNames.VariableNotDeclared_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
             var issues = parseResult.IdentifierUsageInspector.UndeclaredVariableUsages();
             foreach (var issue in issues)
             {
-                yield return new VariableNotDeclaredInspectionResult(Name, Severity, issue.Context, issue.QualifiedName);
+                yield return new VariableNotDeclaredInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
             }
         }
     }

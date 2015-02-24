@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
         public QualifiedModuleName ModuleScope { get { return _moduleScope; } }
 
         private readonly string _member;
-        public string MemberName { get { return _member; } }
+        public string Name { get { return _member; } }
 
         public override int GetHashCode()
         {
@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
 
         public override bool Equals(object obj)
         {
-            return _moduleScope.Equals(obj) && _member == ((QualifiedMemberName)obj).MemberName;
+            return _moduleScope.Equals(obj) && _member == ((QualifiedMemberName)obj).Name;
         }
 
         public static bool operator ==(QualifiedMemberName a, QualifiedMemberName b)

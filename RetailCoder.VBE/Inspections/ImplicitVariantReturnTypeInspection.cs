@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ImplicitVariantReturnType; } }
+        public string Name { get { return InspectionNames.ImplicitVariantReturnType_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
                     var asTypeClause = GetAsTypeClause(procedure.Context);
                     if (asTypeClause == null)
                     {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(Name, Severity, procedure);
+                        yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, procedure.MemberName.Name), Severity, procedure);
                     }
                 }
             }

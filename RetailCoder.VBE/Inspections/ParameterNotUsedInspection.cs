@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Hint;
         }
 
-        public string Name { get { return InspectionNames.ParameterNotUsed; } }
+        public string Name { get { return InspectionNames.ParameterNotUsed_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
             var issues = parseResult.IdentifierUsageInspector.UnusedParameters();
             foreach (var issue in issues)
             {
-                yield return new ParameterNotUsedInspectionResult(Name, Severity, issue.Context, issue.MemberName);
+                yield return new ParameterNotUsedInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.MemberName);
             }
         }
     }

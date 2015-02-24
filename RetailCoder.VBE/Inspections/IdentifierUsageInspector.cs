@@ -322,10 +322,10 @@ namespace Rubberduck.Inspections
                                             .Select(context => 
                         context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
 
-                result.AddRange(declarations.Select(declaration => declaration.Context)
-                                            .OfType<VBParser.TypeStmtContext>()
-                                            .Select(context => 
-                        context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
+                //result.AddRange(declarations.Select(declaration => declaration.Context)
+                //                            .OfType<VBParser.TypeStmtContext>()
+                //                            .Select(context => 
+                //        context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
             }
 
             return result;
