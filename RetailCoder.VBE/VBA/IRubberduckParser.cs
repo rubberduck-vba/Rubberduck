@@ -10,16 +10,6 @@ namespace Rubberduck.VBA
     public interface IRubberduckParser
     {
         /// <summary>
-        /// Parses specified code into a COM-visible code tree.
-        /// Use the <c>(QualifiedModuleName,string)</c> overload for managed clients.
-        /// </summary>
-        /// <param name="projectName">The name of the VBA project the code belongs to.</param>
-        /// <param name="componentName">The name of the VBA component (module) the code belongs to.</param>
-        /// <param name="code">The code fragment or module content to be parsed.</param>
-        /// <returns>Returns a COM-visible code tree.</returns>
-        INode Parse(string projectName, string componentName, string code);
-
-        /// <summary>
         /// Parses specified code into a parse tree.
         /// </summary>
         /// <param name="code">The code fragment or module content to be parsed.</param>

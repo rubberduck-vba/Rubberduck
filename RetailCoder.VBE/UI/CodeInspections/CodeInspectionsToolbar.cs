@@ -156,7 +156,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void RefreshAsync()
         {
-            var code = (_parser.Parse(_vbe.ActiveVBProject)).ToList();
+            var code = new VBProjectParseResult(_parser.Parse(_vbe.ActiveVBProject));;
 
             var results = new ConcurrentBag<CodeInspectionResultBase>();
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);

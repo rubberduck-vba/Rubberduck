@@ -14,11 +14,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var inspector = new IdentifierUsageInspector(parseResult);
-            var issues = inspector.AllUnassignedVariables();
-
+            var issues = parseResult.IdentifierUsageInspector.AllUnassignedVariables();
             foreach (var issue in issues)
             {
                 yield return new VariableNotAssignedInspectionResult(Name, Severity, issue.Context, issue.QualifiedName);

@@ -19,9 +19,9 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var result in parseResult)
+            foreach (var result in parseResult.ComponentParseResults)
             {
                 // todo: in Microsoft Access, this inspection should only return a result for private functions.
                 //       changing an unassigned function to a "Sub" could break Access macros that reference it.

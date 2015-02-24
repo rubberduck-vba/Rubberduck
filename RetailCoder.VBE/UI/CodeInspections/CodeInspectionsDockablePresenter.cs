@@ -10,6 +10,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -73,7 +74,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void Refresh()
         {
-            var code = (_parser.Parse(VBE.ActiveVBProject)).ToList();
+            var code = new VBProjectParseResult(_parser.Parse(VBE.ActiveVBProject));
 
             var results = new ConcurrentBag<CodeInspectionResultBase>();
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)

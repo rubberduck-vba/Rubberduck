@@ -19,10 +19,10 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var inspectionResults = new List<CodeInspectionResultBase>();
-            foreach (var module in parseResult)
+            foreach (var module in parseResult.ComponentParseResults)
             {
                 var local = module;
                 var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener(module.QualifiedName));
