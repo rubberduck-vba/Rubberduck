@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
         }
 
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedGlobals;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedGlobals;
         /// <summary>
         /// Gets all global-scope fields that are not assigned in any standard or class module.
         /// </summary>
@@ -63,7 +63,7 @@ namespace Rubberduck.Inspections
                 return _unassignedGlobals;
             }
 
-            _unassignedGlobals = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            _unassignedGlobals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
             var unassignedGlobals = _globals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(global => _assignments.Where(assignment => assignment.QualifiedName.Equals(global.QualifiedName))
@@ -82,7 +82,7 @@ namespace Rubberduck.Inspections
             return _unassignedGlobals;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariables;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariables;
         /// <summary>
         /// Gets all globals, fields and locals that are not assigned in their respective scope.
         /// </summary>
@@ -96,11 +96,11 @@ namespace Rubberduck.Inspections
                 return _allUnassignedVariables;
             }
 
-            _allUnassignedVariables = UnassignedGlobals().Union(UnassignedFields().Union(UnassignedLocals())).ToList();
+            _allUnassignedVariables = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(UnassignedGlobals().Union(UnassignedFields().Union(UnassignedLocals())));
             return _allUnassignedVariables;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnusedVariables;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnusedVariables;
         /// <summary>
         /// Gets all globals, fields and locals that are not used and not assigned in their respective scope.
         /// </summary>
@@ -114,11 +114,11 @@ namespace Rubberduck.Inspections
                 return _allUnusedVariables;
             }
 
-            _allUnusedVariables = UnusedGlobals().Union(UnusedFields().Union(UnusedLocals())).ToList();
+            _allUnusedVariables = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(UnusedGlobals().Union(UnusedFields().Union(UnusedLocals())));
             return _allUnusedVariables;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _undeclaredVariableUsages;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _undeclaredVariableUsages;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UndeclaredVariableUsages()
         {
             if (_undeclaredVariableUsages != null)
@@ -126,15 +126,16 @@ namespace Rubberduck.Inspections
                 return _undeclaredVariableUsages;
             }
 
-            _undeclaredVariableUsages = _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName && local.Context.GetText() != usage.Context.GetText())
+            var undeclared = _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName && local.Context.GetText() != usage.Context.GetText())
                                         && _fields.All(field => field.QualifiedName != usage.QualifiedName && field.Context.GetText() != usage.Context.GetText())
                                         && _globals.All(global => global.Context.GetText() != usage.Context.GetText())
-                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName && parameter.Context.GetText() != usage.Context.GetText()))
-                                        .ToList();
+                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName && parameter.Context.GetText() != usage.Context.GetText()));
+
+            _undeclaredVariableUsages = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(undeclared);
             return _undeclaredVariableUsages;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariableUsages;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariableUsages;
         /// <summary>
         /// Gets all globals, fields and locals that are unassigned (used or not) in their respective scope.
         /// </summary>
@@ -149,15 +150,15 @@ namespace Rubberduck.Inspections
             }
 
             var variables = AllUnassignedVariables();
-            _allUnassignedVariableUsages = 
-                _usages.Where(usage => variables.Any(variable => usage.QualifiedName == variable.QualifiedName
+            _allUnassignedVariableUsages = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                                                              _usages.Where(usage => variables.Any(variable => usage.QualifiedName == variable.QualifiedName
                                                               && usage.Context.GetText() == variable.Context.GetText()))
-                       .ToList();
+                                                              );
 
             return _allUnassignedVariableUsages;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedFields;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedFields;
         /// <summary>
         /// Gets all module-scope fields that are not assigned.
         /// </summary>
@@ -168,15 +169,16 @@ namespace Rubberduck.Inspections
                 return _unassignedFields;
             }
 
-            _unassignedFields= _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
-                .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
-                        .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
-                        .ToList();
+            _unassignedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                            _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
+                            .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
+                                    .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
+                            );
 
             return _unassignedFields;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedLocals;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedLocals;
         /// <summary>
         /// Gets all procedure-scope locals that are not assigned.
         /// </summary>
@@ -187,15 +189,16 @@ namespace Rubberduck.Inspections
                 return _unassignedLocals;
             }
 
-            _unassignedLocals = _locals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
+            _unassignedLocals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _locals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(local => _assignments.Where(assignment => assignment.QualifiedName.Equals(local.QualifiedName))
                     .All(assignment => local.Context.GetText() != assignment.Context.GetText()))
-                    .ToList();
+                );
 
             return _unassignedLocals;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedByRefParameters;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedByRefParameters;
         /// <summary>
         /// Gets all unassigned ByRef parameters.
         /// </summary>
@@ -213,15 +216,16 @@ namespace Rubberduck.Inspections
                 where byRef != null || (byRef == null && byVal == null)
                 select parameter).ToList();
 
-            _unassignedByRefParameters = _parameters.Where(parameter => byRefParams.Contains(parameter)
+            _unassignedByRefParameters = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _parameters.Where(parameter => byRefParams.Contains(parameter)
                 && _assignments.Where(usage => usage.MemberName.Equals(parameter.MemberName))
                     .All(usage => parameter.Context.GetText() != usage.Context.GetText()))
-                    .ToList();
+                );
 
             return _unassignedByRefParameters;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedGlobals;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedGlobals;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedGlobals()
         {
             if (_unusedGlobals != null)
@@ -229,14 +233,15 @@ namespace Rubberduck.Inspections
                 return _unusedGlobals;
             }
 
-            _unusedGlobals = _globals.Where(context => _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
+            _unusedGlobals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                    _globals.Where(context => _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
-                    .ToList();
+                    );
 
             return _unusedGlobals;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedFields;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedFields;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedFields()
         {
             if (_unusedFields != null)
@@ -244,15 +249,16 @@ namespace Rubberduck.Inspections
                 return _unusedFields;
             }
 
-            _unusedFields = _fields.Where(context =>
+            _unusedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _fields.Where(context =>
                 _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
-                    .ToList();
+               );
 
             return _unusedFields;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedLocals;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedLocals;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedLocals()
         {
             if (_unusedLocals != null)
@@ -260,14 +266,15 @@ namespace Rubberduck.Inspections
                 return _unusedLocals;
             }
 
-            _unusedLocals = _locals.Where(context => 
+            _unusedLocals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _locals.Where(context => 
                 _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
-                    .ToList();
+                );
             return _unusedLocals;
         }
 
-        private IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedParameters;
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedParameters;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedParameters()
         {
             if (_unusedParameters != null)
@@ -275,10 +282,11 @@ namespace Rubberduck.Inspections
                 return _unusedParameters;
             }
 
-            _unusedParameters = _parameters.Where(context =>
+            _unusedParameters = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _parameters.Where(context =>
                 _usages.Where(usage => usage == context)
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
-                    .ToList();
+                );
             return _unusedParameters;
         }
 
@@ -310,9 +318,9 @@ namespace Rubberduck.Inspections
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var listener = new DeclarationSectionListener(module.QualifiedName);
+                var HashSetener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
-                    .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
+                    .GetContexts<DeclarationSectionListener, ParserRuleContext>(HashSetener)
                     .Where(field => globals.All(global => global.QualifiedName.ModuleName == field.QualifiedName.ModuleName 
                                                        && global.Context.GetText() != field.Context.GetText()))
                     .ToList();
@@ -336,9 +344,9 @@ namespace Rubberduck.Inspections
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var listener = new LocalDeclarationListener(module.QualifiedName);
+                var HashSetener = new LocalDeclarationListener(module.QualifiedName);
                 result.AddRange(module.ParseTree
-                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(listener));
+                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(HashSetener));
             }
 
             return result;
@@ -362,9 +370,9 @@ namespace Rubberduck.Inspections
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var listener = new VariableAssignmentListener(module.QualifiedName);
+                var HashSetener = new VariableAssignmentListener(module.QualifiedName);
                 result.AddRange(module.ParseTree
-                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener)
+                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(HashSetener)
                     .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
             }
 
@@ -376,9 +384,9 @@ namespace Rubberduck.Inspections
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var listener = new VariableReferencesListener(module.QualifiedName);
+                var HashSetener = new VariableReferencesListener(module.QualifiedName);
 
-                var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
+                var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(HashSetener);
                 result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
             }
 
