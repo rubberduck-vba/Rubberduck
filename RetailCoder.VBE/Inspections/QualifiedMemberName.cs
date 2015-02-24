@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections
 
         public override bool Equals(object obj)
         {
-            return _moduleScope.Equals(obj) && _member == ((QualifiedMemberName)obj).Name;
+            var other = (QualifiedMemberName)obj;
+            return _moduleScope.Equals(other.ModuleScope) && _member == other.Name;
         }
 
         public static bool operator ==(QualifiedMemberName a, QualifiedMemberName b)

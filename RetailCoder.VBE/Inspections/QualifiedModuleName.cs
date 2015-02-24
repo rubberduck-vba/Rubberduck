@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Rubberduck.Inspections
 {
     public struct QualifiedModuleName
@@ -37,7 +39,11 @@ namespace Rubberduck.Inspections
 
         public override bool Equals(object obj)
         {
-            return obj.GetHashCode() == GetHashCode();
+            var other = (QualifiedModuleName)obj;
+
+            return other.ProjectName == ProjectName
+                   && other.ModuleName == ModuleName
+                   && other.ContentHashCode == ContentHashCode;
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)
