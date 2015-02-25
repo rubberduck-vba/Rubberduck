@@ -1,3 +1,4 @@
+using System.Linq;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 
@@ -16,6 +17,16 @@ namespace Rubberduck.VBA.ParseTreeListeners
         public override void EnterFunctionOrArrayCallStmt(VBParser.FunctionOrArrayCallStmtContext context)
         {
             AddMember(context.AmbiguousIdentifier());
+        }
+
+        public override void EnterForNextStmt(VBParser.ForNextStmtContext context)
+        {
+            AddMember(context.AmbiguousIdentifier().First());
+        }
+
+        public override void EnterForEachStmt(VBParser.ForEachStmtContext context)
+        {
+            AddMember(context.AmbiguousIdentifier().First());
         }
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)

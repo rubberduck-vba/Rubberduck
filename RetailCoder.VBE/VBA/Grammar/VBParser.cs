@@ -3827,14 +3827,14 @@ public partial class VBParser : Parser {
 		}
 		public ITerminalNode IN() { return GetToken(VBParser.IN, 0); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+		public IReadOnlyList<AmbiguousIdentifierContext> AmbiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
 		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+		public AmbiguousIdentifierContext AmbiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
 		public ForEachStmtContext(ParserRuleContext parent, int invokingState)
