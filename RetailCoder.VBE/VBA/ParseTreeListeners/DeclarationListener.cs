@@ -22,7 +22,8 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterArg(VBParser.ArgContext context)
         {
-            if (context.Parent.Parent.GetType() != typeof (VBParser.EventStmtContext))
+            if (context.Parent.Parent.GetType() != typeof (VBParser.EventStmtContext)
+                && context.Parent.Parent.GetType() != typeof(VBParser.DeclareStmtContext))
             {
                 _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
             }
