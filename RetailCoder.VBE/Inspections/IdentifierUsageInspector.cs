@@ -1,5 +1,7 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
@@ -283,9 +285,8 @@ namespace Rubberduck.Inspections
             }
 
             _unusedParameters = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                _parameters.Where(context =>
-                _usages.Where(usage => usage == context)
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()))
+                _parameters.Where(context => _usages
+                    .Where(usage => usage.QualifiedName == context.QualifiedName).All(usage => context.Context.GetText() != usage.Context.GetText()))
                 );
             return _unusedParameters;
         }
@@ -330,11 +331,6 @@ namespace Rubberduck.Inspections
                                             .OfType<VBParser.VariableSubStmtContext>()
                                             .Select(context => 
                         context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
-
-                //result.AddRange(declarations.Select(declaration => declaration.Context)
-                //                            .OfType<VBParser.TypeStmtContext>()
-                //                            .Select(context => 
-                //        context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
             }
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
@@ -342,54 +338,66 @@ namespace Rubberduck.Inspections
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetLocals()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
-                var HashSetener = new LocalDeclarationListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
-                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(HashSetener));
-            }
+                var listener = new LocalDeclarationListener(module.QualifiedName);
+                foreach (var local in module.ParseTree
+                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(listener))
+                {
+                    result.Add(local);
+                }
+            });
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new ParameterListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
-                    .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener));
-            }
+                foreach (var parameter in module.ParseTree
+                    .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener))
+                {
+                    result.Add(parameter);
+                }
+            });
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetAssignments()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
-                var HashSetener = new VariableAssignmentListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
-                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(HashSetener)
-                    .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
-            }
+                var listener = new VariableAssignmentListener(module.QualifiedName);
+                foreach (var assignment in module.ParseTree
+                    .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener)
+                    .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)))
+                {
+                    result.Add(assignment);
+                }
+            });
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new VariableReferencesListener(module.QualifiedName);
 
                 var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
-                result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
-            }
+                foreach (var usage in usages.Where(usage => assignments.Any(assignment => assignment != usage)))
+                {
+                    result.Add(usage);
+                }
+            });
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
