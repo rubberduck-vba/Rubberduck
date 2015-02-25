@@ -13173,7 +13173,7 @@ public partial class VBParser : Parser {
 
 	public partial class FunctionOrArrayCallStmtContext : ParserRuleContext {
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ArgsCallContext argsCall() {
