@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                 foreach (var procedure in procedures)
                 {
                     var args = GetArguments(procedure);
-                    foreach (var arg in args.Where(arg => arg.BYREF() == null && arg.BYVAL() == null))
+                    foreach (var arg in args.Where(arg => arg.BYREF() == null && arg.BYVAL() == null && arg.PARAMARRAY() == null))
                     {
                         var context = new QualifiedContext<VBParser.ArgContext>(module.QualifiedName, arg);
                         yield return new ImplicitByRefParameterInspectionResult(string.Format(Name, arg.AmbiguousIdentifier().GetText()), Severity, context);
