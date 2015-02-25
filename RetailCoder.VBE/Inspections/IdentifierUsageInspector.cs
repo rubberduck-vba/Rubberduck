@@ -12,13 +12,13 @@ namespace Rubberduck.Inspections
     public class IdentifierUsageInspector
     {
         private readonly IEnumerable<VBComponentParseResult> _parseResult;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _globals;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _globals;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
 
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
 
         public IdentifierUsageInspector(IEnumerable<VBComponentParseResult> parseResult)
         {
@@ -290,37 +290,38 @@ namespace Rubberduck.Inspections
             return _unusedParameters;
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetGlobals()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetGlobals()
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
             var modules = _parseResult.Where(e => e.Component.Type == vbext_ComponentType.vbext_ct_StdModule);
             foreach (var module in modules)
             {
+                var scope = module;
                 var listener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
                     .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
-                    .ToList();
-
-                result.AddRange(declarations.Select(declaration => declaration.Context)
+                    .Select(declaration => declaration.Context)
                                             .OfType<VBParser.VariableStmtContext>()
                     .Where(declaration => IsGlobal(declaration.Visibility()))
                     .SelectMany(declaration => declaration.VariableListStmt().VariableSubStmt())
-                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
+                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(scope.QualifiedName));
+
+                result.AddRange(declarations);
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
             GetFields(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> globals)
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var HashSetener = new DeclarationSectionListener(module.QualifiedName);
+                var listener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
-                    .GetContexts<DeclarationSectionListener, ParserRuleContext>(HashSetener)
+                    .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
                     .Where(field => globals.All(global => global.QualifiedName.ModuleName == field.QualifiedName.ModuleName 
                                                        && global.Context.GetText() != field.Context.GetText()))
                     .ToList();
@@ -336,10 +337,10 @@ namespace Rubberduck.Inspections
                 //        context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetLocals()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetLocals()
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
@@ -349,10 +350,10 @@ namespace Rubberduck.Inspections
                     .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(HashSetener));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
@@ -362,10 +363,10 @@ namespace Rubberduck.Inspections
                     .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetAssignments()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetAssignments()
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
@@ -376,21 +377,21 @@ namespace Rubberduck.Inspections
                     .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             foreach (var module in _parseResult)
             {
-                var HashSetener = new VariableReferencesListener(module.QualifiedName);
+                var listener = new VariableReferencesListener(module.QualifiedName);
 
-                var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(HashSetener);
+                var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
                 result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
         private static bool IsConstant(VBParser.AmbiguousIdentifierContext context)
