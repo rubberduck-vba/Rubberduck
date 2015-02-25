@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public class ModuleOptionsNotSpecifiedFirstInspection : IInspection
+    public class ModuleOptionsNotSpecifiedFirstInspection //: IInspection // disabled
     {
         public ModuleOptionsNotSpecifiedFirstInspection()
         {
@@ -27,8 +28,13 @@ namespace Rubberduck.Inspections
                     declarationLines = 1;
                 }
 
+                var commentLines = module.Comments
+                    .Where(node => node.QualifiedSelection.Selection.StartColumn == 1
+                        && node.QualifiedSelection.Selection.StartLine <= declarationLines)
+                    .Select(node => node.QualifiedSelection.Selection);
+
                 var lines = GetIndexedOptionLines(module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n')
-                    .Select(line => line.Replace("\r", string.Empty)).ToArray());
+                    .Select(line => line.Replace("\r", string.Empty)).Where(line => !string.IsNullOrEmpty(line.Trim())).ToArray());
 
                 if (lines.Any() && lines.Count != lines.Keys.Max() + 1)
                 {
@@ -43,9 +49,13 @@ namespace Rubberduck.Inspections
             var result = new Dictionary<int, string>();
             for (var i = 0; i < lines.Length; i++)
             {
-                if (lines[i].StartsWith(Tokens.Option))
+                if (lines[i].StartsWith(Tokens.Option) || string.IsNullOrEmpty(lines[i]))
                 {
-                    result.Add(i, lines[i]);
+                    var trimmed = lines[i].TrimStart();
+                    if (trimmed.StartsWith(Tokens.CommentMarker) || trimmed.StartsWith(Tokens.Rem))
+                    {
+                        result.Add(i, lines[i]);
+                    }
                 }
             }
 
