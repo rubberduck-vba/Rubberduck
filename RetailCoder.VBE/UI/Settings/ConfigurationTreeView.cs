@@ -11,19 +11,18 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public partial class _ConfigurationTreeViewControl : UserControl
+    public partial class ConfigurationTreeViewControl : UserControl
     {
 
         private Configuration _config;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public _ConfigurationTreeViewControl()
+        public ConfigurationTreeViewControl()
         {
             InitializeComponent();
         }
 
-        public _ConfigurationTreeViewControl(Configuration config) : this()
+        public ConfigurationTreeViewControl(Configuration config) : this()
         {
             _config = config;
             InitializeTreeView();

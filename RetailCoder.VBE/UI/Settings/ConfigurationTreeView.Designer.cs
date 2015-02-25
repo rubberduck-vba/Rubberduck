@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Settings
 {
-    partial class _ConfigurationTreeViewControl
+    partial class ConfigurationTreeViewControl
     {
         /// <summary> 
         /// Required designer variable.

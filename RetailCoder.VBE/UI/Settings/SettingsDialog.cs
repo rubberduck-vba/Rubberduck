@@ -16,11 +16,11 @@ namespace Rubberduck.UI.Settings
     {
         private Configuration _config;
         private IConfigurationService _configService;
-        private _ConfigurationTreeViewControl _treeview;
+        private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
         private TodoSettingPresenter _todoController;
-        private _TodoListSettingsUserControl _todoView;
+        private TodoListSettingsUserControl _todoView;
 
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
@@ -35,13 +35,13 @@ namespace Rubberduck.UI.Settings
         {
             _configService = configService;
             _config = _configService.LoadConfiguration();
-            _treeview = new _ConfigurationTreeViewControl(_config);
+            _treeview = new ConfigurationTreeViewControl(_config);
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
-            _todoView = new _TodoListSettingsUserControl(markers);
+            _todoView = new TodoListSettingsUserControl(markers);
 
             ActivateControl(_todoView);
             _todoController = new TodoSettingPresenter(_todoView);
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Code Inpsections")
             {
-                controlToActivate = new _CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 
             ActivateControl(controlToActivate);

@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Settings
 {
-    partial class _CodeInspectionControl
+    partial class CodeInspectionControl
     {
         /// <summary> 
         /// Required designer variable.

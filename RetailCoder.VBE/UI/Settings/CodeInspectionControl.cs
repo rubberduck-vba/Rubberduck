@@ -11,18 +11,17 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public partial class _CodeInspectionControl : UserControl
+    public partial class CodeInspectionControl : UserControl
     {
         private BindingList<CodeInspection> _inspections;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public _CodeInspectionControl()
+        public CodeInspectionControl()
         {
             InitializeComponent();
         }
 
-        public _CodeInspectionControl(List<CodeInspection> inspections)
+        public CodeInspectionControl(List<CodeInspection> inspections)
             : this()
         {
             _inspections = new BindingList<CodeInspection>(inspections
