@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI
 {
-    partial class AboutWindow
+    partial class _AboutWindow
     {
         /// <summary>
         /// Required designer variable.

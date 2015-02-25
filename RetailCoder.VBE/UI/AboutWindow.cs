@@ -5,9 +5,9 @@ using System.Windows.Forms;
 namespace Rubberduck.UI
 {
     [System.Runtime.InteropServices.ComVisible(true)]
-    public partial class AboutWindow : Form
+    public partial class _AboutWindow : Form
     {
-        public AboutWindow()
+        public _AboutWindow()
         {
             InitializeComponent();
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

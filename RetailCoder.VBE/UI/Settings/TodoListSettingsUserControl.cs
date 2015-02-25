@@ -8,15 +8,15 @@ using System.Windows.Forms;
 namespace Rubberduck.UI.Settings
 {
     [System.Runtime.InteropServices.ComVisible(true)]
-    public partial class TodoListSettingsUserControl : UserControl, ITodoSettingsView
+    public partial class _TodoListSettingsUserControl : UserControl, ITodoSettingsView
     {
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public TodoListSettingsUserControl()
+        public _TodoListSettingsUserControl()
         {
             InitializeComponent();
         }
 
-        public TodoListSettingsUserControl(List<ToDoMarker> markers)
+        public _TodoListSettingsUserControl(List<ToDoMarker> markers)
             : this()
         {
             this.tokenListBox.DataSource = new BindingList<ToDoMarker>(markers);

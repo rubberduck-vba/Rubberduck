@@ -12,36 +12,36 @@ using Rubberduck.Config;
 namespace Rubberduck.UI.Settings
 {
     [System.Runtime.InteropServices.ComVisible(true)]
-    public partial class SettingsDialog : Form
+    public partial class _SettingsDialog : Form
     {
         private Configuration _config;
         private IConfigurationService _configService;
-        private ConfigurationTreeViewControl _treeview;
+        private _ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
         private TodoSettingPresenter _todoController;
-        private TodoListSettingsUserControl _todoView;
+        private _TodoListSettingsUserControl _todoView;
 
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
         /// </summary>
-        public SettingsDialog()
+        public _SettingsDialog()
         {
             InitializeComponent();
         }
 
-        public SettingsDialog(IConfigurationService configService)
+        public _SettingsDialog(IConfigurationService configService)
             : this()
         {
             _configService = configService;
             _config = _configService.LoadConfiguration();
-            _treeview = new ConfigurationTreeViewControl(_config);
+            _treeview = new _ConfigurationTreeViewControl(_config);
 
             this.splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
-            _todoView = new TodoListSettingsUserControl(markers);
+            _todoView = new _TodoListSettingsUserControl(markers);
 
             ActivateControl(_todoView);
             _todoController = new TodoSettingPresenter(_todoView);
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Code Inpsections")
             {
-                controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                controlToActivate = new _CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 
             ActivateControl(controlToActivate);
