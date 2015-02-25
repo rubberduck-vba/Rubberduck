@@ -171,8 +171,19 @@ namespace Rubberduck.Inspections
                 return _unassignedFields;
             }
 
+            var userTypes = _fields.Select(field => field.Context.Parent)
+                .OfType<VBParser.TypeStmtContext>()
+                .Select(t => t.AmbiguousIdentifier());
+
+            var userTypeFields = _fields.Select(field => field.Context.Parent)
+                .OfType<VBParser.VariableSubStmtContext>()
+                .Where(v => v.AsTypeClause() != null
+                            && userTypes.Any(udt => udt.GetText() == v.AsTypeClause().Type().GetText()))
+                .Select(v => v.AmbiguousIdentifier());
+
             _unassignedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                            _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
+                            _fields.Where(context => userTypeFields.Any(f => f.GetText() == context.Context.GetText())
+                                && context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                             .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
                                     .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
                             );
