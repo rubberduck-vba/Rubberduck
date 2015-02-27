@@ -31,7 +31,13 @@ namespace Rubberduck.UI.ToDoItems
             Control.RefreshToDoItems += RefreshToDoList;
             Control.SortColumn += SortColumn;
 
+            //RefreshToDoList(this, EventArgs.Empty);
+        }
+
+        public override void Show()
+        {
             RefreshToDoList(this, EventArgs.Empty);
+            base.Show();
         }
 
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
