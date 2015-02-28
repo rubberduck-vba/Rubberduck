@@ -16,18 +16,15 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class CodeInspectionsDockablePresenter : DockablePresenterBase
     {
-        private readonly IRubberduckParser _parser;
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
-        private readonly IList<IInspection> _inspections;
-        private List<CodeInspectionResultBase> _results;
+        private IList<ICodeInspectionResult> _results;
+        private IInspector _inspector;
 
-        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin, CodeInspectionsWindow window) 
-            : base(vbe, addin, window)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
+            :base(vbe, addin, window)
         {
-            _parser = parser;
-            _inspections = inspections.ToList();
-
+            _inspector = inspector;
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
             Control.QuickFix += OnQuickFix;
@@ -75,28 +72,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void Refresh()
         {
-            var code = new VBProjectParseResult(_parser.Parse(VBE.ActiveVBProject));
-
-            var results = new ConcurrentBag<CodeInspectionResultBase>();
-            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
-                .Select(inspection =>
-                    new Task(() =>
-                    {
-                        var result = inspection.GetInspectionResults(code);
-                        foreach (var inspectionResult in result)
-                        {
-                            results.Add(inspectionResult);
-                        }
-                    })).ToArray();
-
-            foreach (var inspection in inspections)
-            {
-                inspection.Start();
-            }
-
-            Task.WaitAll(inspections);
-
-            _results = results.ToList();
+            _results = this._inspector.FindIssues(VBE.ActiveVBProject);
             Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
         }
     }
