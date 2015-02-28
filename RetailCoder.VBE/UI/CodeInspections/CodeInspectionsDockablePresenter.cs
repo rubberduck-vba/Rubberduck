@@ -41,11 +41,12 @@ namespace Rubberduck.UI.CodeInspections
 
         public override void Show()
         {
+            base.Show();
+
             if (VBE.ActiveVBProject != null)
             {
                 OnRefreshCodeInspections(this, EventArgs.Empty);
             }
-            base.Show();
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
