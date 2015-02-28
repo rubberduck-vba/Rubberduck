@@ -1,5 +1,7 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
@@ -12,13 +14,13 @@ namespace Rubberduck.Inspections
     public class IdentifierUsageInspector
     {
         private readonly IEnumerable<VBComponentParseResult> _parseResult;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _globals;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _globals;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
 
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
-        private readonly IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
 
         public IdentifierUsageInspector(IEnumerable<VBComponentParseResult> parseResult)
         {
@@ -39,6 +41,8 @@ namespace Rubberduck.Inspections
         /// </remarks>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AmbiguousFieldNames()
         {
+            // not used.... yet.
+
             foreach (var field in _fields)
             {
                 var fieldName = field.Context.GetText();
@@ -49,11 +53,20 @@ namespace Rubberduck.Inspections
             }
         }
 
+
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedGlobals;
         /// <summary>
         /// Gets all global-scope fields that are not assigned in any standard or class module.
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedGlobals()
         {
+            if (_unassignedGlobals != null)
+            {
+                return _unassignedGlobals;
+            }
+
+            _unassignedGlobals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+
             var unassignedGlobals = _globals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                 .Where(global => _assignments.Where(assignment => assignment.QualifiedName.Equals(global.QualifiedName))
                     .All(assignment => global.Context.GetText() != assignment.Context.GetText()));
@@ -64,130 +77,255 @@ namespace Rubberduck.Inspections
                 if (_assignments.Where(assignment => assignment.QualifiedName != global.QualifiedName)
                     .All(assignment => global.Context.GetText() != assignment.Context.GetText()))
                 {
-                    yield return global;
+                    _unassignedGlobals.Add(global);
                 }
             }
+
+            return _unassignedGlobals;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariables;
+        /// <summary>
+        /// Gets all globals, fields and locals that are not assigned in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the declaration context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnassignedVariables()
+        {
+            if (_allUnassignedVariables != null)
+            {
+                return _allUnassignedVariables;
+            }
+
+            _allUnassignedVariables = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(UnassignedGlobals().Union(UnassignedFields().Union(UnassignedLocals())));
+            return _allUnassignedVariables;
+        }
+
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnusedVariables;
+        /// <summary>
+        /// Gets all globals, fields and locals that are not used and not assigned in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the declaration context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnusedVariables()
+        {
+            if (_allUnusedVariables != null)
+            {
+                return _allUnusedVariables;
+            }
+
+            _allUnusedVariables = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(UnusedGlobals().Union(UnusedFields().Union(UnusedLocals())));
+            return _allUnusedVariables;
+        }
+
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _undeclaredVariableUsages;
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UndeclaredVariableUsages()
+        {
+            if (_undeclaredVariableUsages != null)
+            {
+                return _undeclaredVariableUsages;
+            }
+
+            var undeclared = _usages.Where(usage => _locals.All(local => local.MemberName != usage.MemberName && local.Context.GetText() != usage.Context.GetText())
+                                        && _fields.All(field => field.QualifiedName != usage.QualifiedName && field.Context.GetText() != usage.Context.GetText())
+                                        && _globals.All(global => global.Context.GetText() != usage.Context.GetText())
+                                        && _parameters.All(parameter => parameter.MemberName != usage.MemberName && parameter.Context.GetText() != usage.Context.GetText()));
+
+            _undeclaredVariableUsages = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(undeclared);
+            return _undeclaredVariableUsages;
+        }
+
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _allUnassignedVariableUsages;
+        /// <summary>
+        /// Gets all globals, fields and locals that are unassigned (used or not) in their respective scope.
+        /// </summary>
+        /// <returns>
+        /// Returns the variable call context's identifier.
+        /// </returns>
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> AllUnassignedVariableUsages()
+        {
+            if (_allUnassignedVariableUsages != null)
+            {
+                return _allUnassignedVariableUsages;
+            }
+
+            var variables = AllUnassignedVariables();
+            _allUnassignedVariableUsages = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                                                              _usages.Where(usage => variables.Any(variable => usage.QualifiedName == variable.QualifiedName
+                                                              && usage.Context.GetText() == variable.Context.GetText()))
+                                                              );
+
+            return _allUnassignedVariableUsages;
+        }
+
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedFields;
         /// <summary>
         /// Gets all module-scope fields that are not assigned.
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedFields()
         {
-            var unassignedFields = _fields.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
-                .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
-                    .All(assignment => field.Context.GetText() != assignment.Context.GetText()));
-
-            foreach (var field in unassignedFields)
+            if (_unassignedFields != null)
             {
-                yield return field;
+                return _unassignedFields;
             }
+
+            var userTypes = _fields.Select(field => field.Context.Parent)
+                .OfType<VBParser.TypeStmtContext>()
+                .Select(t => t.AmbiguousIdentifier());
+
+            var userTypeFields = _fields.Select(field => field.Context.Parent)
+                .OfType<VBParser.VariableSubStmtContext>()
+                .Where(v => v.AsTypeClause() != null
+                            && userTypes.Any(udt => udt.GetText() == v.AsTypeClause().Type().GetText()))
+                .Select(v => v.AmbiguousIdentifier());
+
+            _unassignedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                            _fields.Where(context => userTypeFields.Any(f => f.GetText() == context.Context.GetText())
+                                && context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
+                            .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
+                                    .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
+                            );
+
+            return _unassignedFields;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedLocals;
         /// <summary>
         /// Gets all procedure-scope locals that are not assigned.
         /// </summary>
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedLocals()
         {
-            var unassignedFields = _locals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
-                .Where(local => _assignments.Where(assignment => assignment.QualifiedName.Equals(local.QualifiedName))
-                    .All(assignment => local.Context.GetText() != assignment.Context.GetText()));
-
-            foreach (var field in unassignedFields)
+            if (_unassignedLocals != null)
             {
-                yield return field;
+                return _unassignedLocals;
             }
+
+            _unassignedLocals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _locals.Where(context => context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
+                .Where(local => _assignments.Where(assignment => assignment.QualifiedName.Equals(local.QualifiedName))
+                    .All(assignment => local.Context.GetText() != assignment.Context.GetText()))
+                );
+
+            return _unassignedLocals;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedByRefParameters;
         /// <summary>
         /// Gets all unassigned ByRef parameters.
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedParameters()
+        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnassignedByRefParameters()
         {
-            var byValParams =
-                _parameters.Where(parameter => ((VBParser.ArgContext) parameter.Context.Parent).BYVAL() != null);
-
-            var unassigned = _parameters.Where(parameter => !byValParams.Contains(parameter)
-                && _assignments.Where(usage => usage.MemberName.Equals(parameter.MemberName))
-                    .All(usage => parameter.Context.GetText() != usage.Context.GetText()));
-
-            foreach (var context in unassigned)
+            if (_unassignedByRefParameters != null)
             {
-                yield return context;
+                return _unassignedByRefParameters;
             }
+
+            var byRefParams = 
+                (from parameter in _parameters
+                let byRef = ((VBParser.ArgContext) parameter.Context.Parent).BYREF()
+                let byVal = ((VBParser.ArgContext) parameter.Context.Parent).BYVAL()
+                where byRef != null || (byRef == null && byVal == null)
+                select parameter).ToList();
+
+            _unassignedByRefParameters = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _parameters.Where(parameter => byRefParams.Contains(parameter)
+                && _assignments.Where(usage => usage.MemberName.Equals(parameter.MemberName))
+                    .All(usage => parameter.Context.GetText() != usage.Context.GetText()))
+                );
+
+            return _unassignedByRefParameters;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedGlobals;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedGlobals()
         {
-            var unusedGlobals = _globals.Where(context => _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
-
-            foreach (var context in unusedGlobals)
+            if (_unusedGlobals != null)
             {
-                yield return context;
+                return _unusedGlobals;
             }
+
+            _unusedGlobals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                    _globals.Where(context => _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()))
+                    );
+
+            return _unusedGlobals;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedFields;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedFields()
         {
-            var unusedFields = _fields.Where(context =>
-                _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
-
-            foreach (var context in unusedFields)
+            if (_unusedFields != null)
             {
-                yield return context;
+                return _unusedFields;
             }
+
+            _unusedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _fields.Where(context =>
+                _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()))
+               );
+
+            return _unusedFields;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedLocals;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedLocals()
         {
-            var unusedLocals = _locals.Where(context => 
-                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
-
-            foreach (var context in unusedLocals)
+            if (_unusedLocals != null)
             {
-                yield return context;
+                return _unusedLocals;
             }
+
+            _unusedLocals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _locals.Where(context => 
+                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
+                    .All(usage => context.Context.GetText() != usage.Context.GetText()))
+                );
+            return _unusedLocals;
         }
 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unusedParameters;
         public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> UnusedParameters()
         {
-            var unusedParameters = _parameters.Where(context =>
-                _usages.Where(usage => usage.MemberName.Equals(context.MemberName))
-                    .All(usage => context.Context.GetText() != usage.Context.GetText()));
-
-            foreach (var context in unusedParameters)
+            if (_unusedParameters != null)
             {
-                yield return context;
+                return _unusedParameters;
             }
+
+            _unusedParameters = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
+                _parameters.Where(context => _usages
+                    .Where(usage => usage.QualifiedName == context.QualifiedName).All(usage => context.Context.GetText() != usage.Context.GetText()))
+                );
+            return _unusedParameters;
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetGlobals()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetGlobals()
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
             var modules = _parseResult.Where(e => e.Component.Type == vbext_ComponentType.vbext_ct_StdModule);
             foreach (var module in modules)
             {
+                var scope = module;
                 var listener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
                     .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
-                    .ToList();
-
-                result.AddRange(declarations.Select(declaration => declaration.Context)
+                    .Select(declaration => declaration.Context)
                                             .OfType<VBParser.VariableStmtContext>()
                     .Where(declaration => IsGlobal(declaration.Visibility()))
                     .SelectMany(declaration => declaration.VariableListStmt().VariableSubStmt())
-                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
+                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(scope.QualifiedName));
+
+                result.AddRange(declarations);
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> 
             GetFields(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> globals)
         {
             var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
@@ -204,69 +342,75 @@ namespace Rubberduck.Inspections
                                             .OfType<VBParser.VariableSubStmtContext>()
                                             .Select(context => 
                         context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
-
-                result.AddRange(declarations.Select(declaration => declaration.Context)
-                                            .OfType<VBParser.TypeStmtContext>()
-                                            .Select(context => 
-                        context.AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName)));
             }
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetLocals()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetLocals()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new LocalDeclarationListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
-                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(listener));
-            }
+                foreach (var local in module.ParseTree
+                    .GetContexts<LocalDeclarationListener, VBParser.AmbiguousIdentifierContext>(listener))
+                {
+                    result.Add(local);
+                }
+            });
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetParameters()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new ParameterListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
-                    .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener));
-            }
+                foreach (var parameter in module.ParseTree
+                    .GetContexts<ParameterListener, VBParser.AmbiguousIdentifierContext>(listener))
+                {
+                    result.Add(parameter);
+                }
+            });
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetAssignments()
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetAssignments()
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new VariableAssignmentListener(module.QualifiedName);
-                result.AddRange(module.ParseTree
+                foreach (var assignment in module.ParseTree
                     .GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(listener)
-                    .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)));
-            }
+                    .Where(identifier => !IsConstant(identifier.Context) && !IsJoinedAssignemntDeclaration(identifier.Context)))
+                {
+                    result.Add(assignment);
+                }
+            });
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
-        private IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
+        private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
         {
-            var result = new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
-            foreach (var module in _parseResult)
+            var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+            Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new VariableReferencesListener(module.QualifiedName);
 
-                // includes assignments
                 var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
-                result.AddRange(usages.Where(usage => assignments.Any(assignment => !usage.Equals(assignment))));
-            }
+                foreach (var usage in usages.Where(usage => assignments.Any(assignment => assignment != usage)))
+                {
+                    result.Add(usage);
+                }
+            });
 
-            return result;
+            return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
         }
 
         private static bool IsConstant(VBParser.AmbiguousIdentifierContext context)

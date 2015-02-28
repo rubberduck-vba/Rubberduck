@@ -3827,14 +3827,14 @@ public partial class VBParser : Parser {
 		}
 		public ITerminalNode IN() { return GetToken(VBParser.IN, 0); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBParser.NEWLINE); }
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+		public IReadOnlyList<AmbiguousIdentifierContext> AmbiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
 		public ITerminalNode FOR() { return GetToken(VBParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+		public AmbiguousIdentifierContext AmbiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
 		public ForEachStmtContext(ParserRuleContext parent, int invokingState)
@@ -13173,7 +13173,7 @@ public partial class VBParser : Parser {
 
 	public partial class FunctionOrArrayCallStmtContext : ParserRuleContext {
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBParser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
+		public AmbiguousIdentifierContext AmbiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ArgsCallContext argsCall() {
@@ -13976,14 +13976,14 @@ public partial class VBParser : Parser {
 	public partial class AmbiguousIdentifierContext : ParserRuleContext {
 		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBParser.R_SQUARE_BRACKET, 0); }
 		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBParser.L_SQUARE_BRACKET, 0); }
-		public AmbiguousKeywordContext ambiguousKeyword(int i) {
+		public AmbiguousKeywordContext AmbiguousKeyword(int i) {
 			return GetRuleContext<AmbiguousKeywordContext>(i);
 		}
 		public ITerminalNode IDENTIFIER(int i) {
 			return GetToken(VBParser.IDENTIFIER, i);
 		}
 		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBParser.IDENTIFIER); }
-		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
+		public IReadOnlyList<AmbiguousKeywordContext> AmbiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
 		public AmbiguousIdentifierContext(ParserRuleContext parent, int invokingState)

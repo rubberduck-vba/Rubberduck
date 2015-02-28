@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            module.InsertLines(1, Tokens.Option + " " + Tokens.Explicit + "\n");
+            module.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + "\n");
         }
     }
 }

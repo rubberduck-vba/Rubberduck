@@ -30,8 +30,33 @@ namespace Rubberduck.UI.ToDoItems
             Control.NavigateToDoItem += NavigateToDoItem;
             Control.RefreshToDoItems += RefreshToDoList;
             Control.SortColumn += SortColumn;
+        }
 
-            RefreshToDoList(this, EventArgs.Empty);
+        public override void Show()
+        {
+            Refresh();
+            base.Show();
+        }
+
+        public void Refresh()
+        {
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => GetItems());
+                getItems.Start();
+
+                Control.TodoItems = getItems.Result;
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void RefreshToDoList(object sender, EventArgs e)
+        {
+            Refresh();
         }
 
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
@@ -53,22 +78,6 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             Control.TodoItems = resortedItems;
-        }
-
-        private void RefreshToDoList(object sender, EventArgs e)
-        {
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => GetItems());
-                getItems.Start();
-
-                Control.TodoItems = getItems.Result;
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
         }
 
         private IOrderedEnumerable<ToDoItem> GetItems()

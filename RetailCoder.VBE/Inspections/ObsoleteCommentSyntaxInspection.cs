@@ -17,12 +17,12 @@ namespace Rubberduck.Inspections
         }
 
         public string Name { get { return InspectionNames.ObsoleteComment; } }
-        public CodeInspectionType InspectionType { get {return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(IEnumerable<VBComponentParseResult> parseResult)
+        public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var modules = parseResult.ToList();
+            var modules = parseResult.ComponentParseResults.ToList();
             foreach (var comment in modules.SelectMany(module => module.Comments))
             {
                 if (comment.Marker == Tokens.Rem)

@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Settings
 {
-    partial class SettingsDialog
+    partial class _SettingsDialog
     {
         /// <summary>
         /// Required designer variable.

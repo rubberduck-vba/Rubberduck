@@ -11,7 +11,8 @@ using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
-    public partial class SettingsDialog : Form
+    [System.Runtime.InteropServices.ComVisible(true)]
+    public partial class _SettingsDialog : Form
     {
         private Configuration _config;
         private IConfigurationService _configService;
@@ -24,12 +25,12 @@ namespace Rubberduck.UI.Settings
         /// <summary>
         ///  Default constructor for GUI Designer. DO NOT USE.
         /// </summary>
-        public SettingsDialog()
+        public _SettingsDialog()
         {
             InitializeComponent();
         }
 
-        public SettingsDialog(IConfigurationService configService)
+        public _SettingsDialog(IConfigurationService configService)
             : this()
         {
             _configService = configService;

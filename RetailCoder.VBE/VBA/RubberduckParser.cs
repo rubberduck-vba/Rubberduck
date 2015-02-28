@@ -10,7 +10,6 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.VBA
 {
@@ -18,20 +17,6 @@ namespace Rubberduck.VBA
     {
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
-
-        /// <summary>
-        /// An overload for the COM API.
-        /// </summary>
-        public INode Parse(string projectName, string componentName, string code)
-        {
-            var result = Parse(code);
-            var walker = new ParseTreeWalker();
-            
-            var listener = new NodeBuildingListener(projectName, componentName);
-            walker.Walk(listener, result);
-
-            return listener.Root;
-        }
 
         public IParseTree Parse(string code)
         {

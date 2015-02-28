@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {
@@ -20,19 +21,14 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action<VBE>>
             {
-                {"Pass parameter by value", PassParameterByVal}
+                {"Pass parameter by value", PassParameterByValue}
             };
         }
 
-        private void PassParameterByVal(VBE vbe)
+        private void PassParameterByValue(VBE vbe)
         {
-            ChangeParameterPassing(vbe, Tokens.ByVal);
-        }
-
-        private void ChangeParameterPassing(VBE vbe, string newValue)
-        {
-            var parameter = Context.GetText().Replace(Tokens.ByRef, string.Empty).Trim();
-            var newContent = string.Concat(newValue, " ", parameter);
+            var parameter = Context.Parent.GetText();
+            var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = QualifiedSelection.Selection;
 
             var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();

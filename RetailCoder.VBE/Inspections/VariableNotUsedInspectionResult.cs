@@ -7,64 +7,6 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterNotUsedInspectionResult : CodeInspectionResultBase
-    {
-        public ParameterNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
-            ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, type, qualifiedName.ModuleScope, context)
-        {
-        }
-
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
-        {
-            // don't bother implementing this without implementing a ChangeSignatureRefactoring
-            return new Dictionary<string, Action<VBE>>
-            {
-                //{"Remove unused parameter", RemoveUnusedParameter}
-            };
-        }
-    }
-
-    public class VariableNotDeclaredInspectionResult : CodeInspectionResultBase
-    {
-        public VariableNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type,
-            ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
-        {
-        }
-
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
-        {
-            return new Dictionary<string, Action<VBE>>
-            {
-                {"Remove variable usage", RemoveVariableUsage}
-            };
-        }
-
-        private void RemoveVariableUsage(VBE vbe)
-        {
-            var module = vbe.FindCodeModules(QualifiedName).First();
-            var selection = QualifiedSelection.Selection;
-
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                .Replace("\r\n", " ")
-                .Replace("_", string.Empty);
-
-            var originalInstruction = Context.GetText();
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = string.Empty;
-            var newCodeLines = string.IsNullOrEmpty(newInstruction)
-                ? string.Empty
-                : originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            if (!string.IsNullOrEmpty(newCodeLines))
-            {
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
-        }
-    }
-
     public class VariableNotUsedInspectionResult : CodeInspectionResultBase
     {
         public VariableNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,

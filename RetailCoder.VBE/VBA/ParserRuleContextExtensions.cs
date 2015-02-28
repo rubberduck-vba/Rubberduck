@@ -29,14 +29,14 @@ namespace Rubberduck.VBA
             // 1 is the default value that will select all lines. Replace zeros with ones.
             // See also: https://msdn.microsoft.com/en-us/library/aa443952(v=vs.60).aspx
 
-            var startLine = context.start.Line == 0 ? 1 : context.start.Line;
-            var startCol = context.start.StartIndex == 0 ? 1 : context.start.StartIndex;
-            var endLine = context.stop.Line == 0 ? 1 : context.stop.Line;
-            var endCol = context.stop.StopIndex == 0 ? 1 : context.stop.StopIndex + 1;
+            var startLine = context.Start.Line == 0 ? 1 : context.Start.Line;
+            var startCol = context.Start.Column + 1;
+            var endLine = context.Stop.Line == 0 ? 1 : context.Stop.Line;
+            var endCol = startCol + context.Stop.Text.Length - 1;
 
             return new Selection(
                 startLine,
-                startCol, //todo: figure out why start col is off; see also https://github.com/retailcoder/Rubberduck/commit/e831a7aa1ced1498374f92a8dd3e9f37a587a3b8#commitcomment-9637108
+                startCol,
                 endLine,
                 endCol
                 );

@@ -88,7 +88,7 @@ namespace Rubberduck.UI
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new Settings.SettingsDialog(_configService))
+            using (var window = new Settings._SettingsDialog(_configService))
             {
                 window.ShowDialog();
             }
@@ -96,7 +96,7 @@ namespace Rubberduck.UI
 
         private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new AboutWindow())
+            using (var window = new _AboutWindow())
             {
                 window.ShowDialog();
             }

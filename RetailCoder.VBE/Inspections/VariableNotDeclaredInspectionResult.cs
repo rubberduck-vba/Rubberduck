@@ -7,30 +7,30 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotAssignedInspectionResult : VariableNotUsedInspectionResult
+    public class VariableNotDeclaredInspectionResult : CodeInspectionResultBase
     {
-        public VariableNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public VariableNotDeclaredInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, context, qualifiedName)
+            : base(inspection, type, qualifiedName, context)
         {
         }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return
-                new Dictionary<string, Action<VBE>>
-                {
-                    {"Remove unassigned variable", RemoveUnusedDeclaration}
-                };
+            return new Dictionary<string, Action<VBE>>
+            {
+                // no, really. this one's on the user.
+                //{"Remove variable usage", RemoveVariableUsage}
+            };
         }
 
-        protected override void RemoveUnusedDeclaration(VBE vbe)
+        private void RemoveVariableUsage(VBE vbe)
         {
             var module = vbe.FindCodeModules(QualifiedName).First();
             var selection = QualifiedSelection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                .Replace(Environment.NewLine, " ")
+                .Replace("\r\n", " ")
                 .Replace("_", string.Empty);
 
             var originalInstruction = Context.GetText();

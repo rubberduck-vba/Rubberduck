@@ -22,7 +22,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterArg(VBParser.ArgContext context)
         {
-            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+            if (context.Parent.Parent.GetType() != typeof (VBParser.EventStmtContext)
+                && context.Parent.Parent.GetType() != typeof(VBParser.DeclareStmtContext))
+            {
+                _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_memberName, context.AmbiguousIdentifier()));
+            }
         }
 
         public override void EnterSubStmt(VBParser.SubStmtContext context)
@@ -75,7 +79,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;
@@ -86,7 +90,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
         {
-            if (_memberName == default(QualifiedMemberName))
+            if (string.IsNullOrEmpty(_memberName.Name))
             {
                 // ignore fields
                 return;
@@ -142,6 +146,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
             {
                 _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, child));
             }
+        }
+
+        public override void EnterVisibility(VBParser.VisibilityContext context)
+        {
+            _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
         public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)

@@ -7,11 +7,11 @@ using Rubberduck.Extensions;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotAssignedInspectionResult : VariableNotUsedInspectionResult
+    public class UnassignedVariableUsageInspectionResult : CodeInspectionResultBase
     {
-        public VariableNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public UnassignedVariableUsageInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, context, qualifiedName)
+            : base(inspection, type, qualifiedName, context)
         {
         }
 
@@ -20,11 +20,11 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove unassigned variable", RemoveUnusedDeclaration}
+                    {"Remove usage (breaks code)", RemoveUsage}
                 };
         }
 
-        protected override void RemoveUnusedDeclaration(VBE vbe)
+        private void RemoveUsage(VBE vbe)
         {
             var module = vbe.FindCodeModules(QualifiedName).First();
             var selection = QualifiedSelection.Selection;
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = string.Empty;
+            var newInstruction = "TODO";
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

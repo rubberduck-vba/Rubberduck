@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ImplicitByRef" xml:space="preserve">
-    <value>Parameter is passed ByRef implicitly</value>
+  <data name="ImplicitByRef_" xml:space="preserve">
+    <value>Parameter '{0}' is passed ByRef implicitly</value>
   </data>
-  <data name="ImplicitVariantReturnType" xml:space="preserve">
-    <value>Function returns an implicit Variant</value>
+  <data name="ImplicitVariantReturnType_" xml:space="preserve">
+    <value>Function '{0}' returns an implicit Variant</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Module options should be specified first</value>
   </data>
   <data name="MultipleDeclarations" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
-  <data name="NonReturningFunction" xml:space="preserve">
-    <value>Function does not return anything</value>
+  <data name="NonReturningFunction_" xml:space="preserve">
+    <value>Function '{0}' returns no value</value>
   </data>
   <data name="ObsoleteCall" xml:space="preserve">
     <value>Use of obsolete Call statement</value>
@@ -135,11 +138,14 @@
   <data name="ObsoleteComment" xml:space="preserve">
     <value>Use of obsolete Rem comment syntax</value>
   </data>
+  <data name="ObsoleteGlobal" xml:space="preserve">
+    <value>Use of obsolete Global access modifier</value>
+  </data>
   <data name="ObsoleteLet" xml:space="preserve">
     <value>Use of obsolete Let statement</value>
   </data>
-  <data name="ObsoleteTypeHint" xml:space="preserve">
-    <value>Use of obsolete type hints in identifier</value>
+  <data name="ObsoleteTypeHint_" xml:space="preserve">
+    <value>Use of obsolete type hints in identifier '{0}'</value>
   </data>
   <data name="OptionBase" xml:space="preserve">
     <value>Potentially confusing implicit array lower bound</value>
@@ -147,22 +153,25 @@
   <data name="OptionExplicit" xml:space="preserve">
     <value>Option Explicit is not specified</value>
   </data>
-  <data name="ParameterCanBeByVal" xml:space="preserve">
-    <value>Parameter can be passed by value</value>
+  <data name="ParameterCanBeByVal_" xml:space="preserve">
+    <value>Parameter '{0}' can be passed by value</value>
   </data>
-  <data name="ParameterNotUsed" xml:space="preserve">
-    <value>Parameter is not used</value>
+  <data name="ParameterNotUsed_" xml:space="preserve">
+    <value>Parameter '{0}' is not used</value>
   </data>
-  <data name="VariableNotAssigned" xml:space="preserve">
-    <value>Variable is never assigned</value>
+  <data name="UnassignedVariableUsage_" xml:space="preserve">
+    <value>Use of unassigned variable '{0}'</value>
   </data>
-  <data name="VariableNotDeclared" xml:space="preserve">
-    <value>Variable is not declared</value>
+  <data name="VariableNotAssigned_" xml:space="preserve">
+    <value>Variable '{0}' is never assigned</value>
   </data>
-  <data name="VariableNotUsed" xml:space="preserve">
-    <value>Variable value is never retrieved</value>
+  <data name="VariableNotDeclared_" xml:space="preserve">
+    <value>Variable '{0}' is not declared</value>
   </data>
-  <data name="VariableTypeNotDeclared" xml:space="preserve">
-    <value>Variable type is implicitly Variant</value>
+  <data name="VariableNotUsed_" xml:space="preserve">
+    <value>Variable '{0}' is never used</value>
+  </data>
+  <data name="VariableTypeNotDeclared_" xml:space="preserve">
+    <value>Variable '{0}' is implicitly Variant</value>
   </data>
 </root>
