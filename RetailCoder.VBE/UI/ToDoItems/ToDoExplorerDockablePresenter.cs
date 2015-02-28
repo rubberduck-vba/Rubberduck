@@ -38,15 +38,12 @@ namespace Rubberduck.UI.ToDoItems
             base.Show();
         }
 
-        public void Refresh()
+        public async void Refresh()
         {
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                var getItems = new Task<IOrderedEnumerable<ToDoItem>>(() => GetItems());
-                getItems.Start();
-
-                Control.TodoItems = getItems.Result;
+                Control.TodoItems = await GetItems();
             }
             finally
             {
@@ -80,8 +77,9 @@ namespace Rubberduck.UI.ToDoItems
             Control.TodoItems = resortedItems;
         }
 
-        private IOrderedEnumerable<ToDoItem> GetItems()
+        private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
+            await Task.Yield();
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>();
             Parallel.ForEach(projects,
