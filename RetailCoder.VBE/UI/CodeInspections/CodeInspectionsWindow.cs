@@ -19,6 +19,13 @@ namespace Rubberduck.UI.CodeInspections
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return "Code Inspections"; } }
 
+        public int IssueCount {get; set;}
+        public string IssueCountText 
+        {
+            get { return StatusLabel.Text; }
+            set { StatusLabel.Text = value; }
+        }
+
         public CodeInspectionsWindow()
         {
             InitializeComponent();
@@ -131,7 +138,7 @@ namespace Rubberduck.UI.CodeInspections
         public void SetContent(IEnumerable<CodeInspectionResultGridViewItem> inspectionResults)
         {
             var results = inspectionResults.ToList();
-            StatusLabel.Text = string.Format("{0} issue" + (results.Count > 1 ? "s" : string.Empty), results.Count);
+            //StatusLabel.Text = string.Format("{0} issue" + (results.Count > 1 ? "s" : string.Empty), results.Count);
 
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(results);
             CodeIssuesGridView.Refresh();

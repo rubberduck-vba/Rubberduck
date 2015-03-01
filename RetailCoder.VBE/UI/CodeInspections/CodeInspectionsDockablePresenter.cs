@@ -35,7 +35,9 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
-            //throw new NotImplementedException();
+            var newCount = Control.IssueCount + e.Count;
+            Control.IssueCount = newCount;
+            Control.IssueCountText = string.Format("{0} issue" + (newCount > 1 ? "s" : string.Empty), newCount);
         }
 
         private void OnQuickFix(object sender, QuickFixEventArgs e)
@@ -80,6 +82,9 @@ namespace Rubberduck.UI.CodeInspections
 
         private void Refresh()
         {
+            Control.IssueCount = 0;
+            Control.IssueCountText = "0 issues";
+
             _results = this._inspector.FindIssues(VBE.ActiveVBProject);
             Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
         }
