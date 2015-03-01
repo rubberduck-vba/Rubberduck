@@ -24,6 +24,8 @@ namespace Rubberduck.Inspections
         {
             await Task.Yield();
 
+            RaiseResetEvent();
+
             var code = new VBProjectParseResult(_parser.Parse(project));
             var results = new ConcurrentBag<ICodeInspectionResult>();
 
@@ -35,7 +37,7 @@ namespace Rubberduck.Inspections
                         var count = result.Count();
                         if (count > 0)
                         {
-                            RaiseIssuesFound(count);
+                            RaiseIssuesFoundEvent(count);
 
                             foreach (var inspectionResult in result)
                             {
@@ -55,7 +57,7 @@ namespace Rubberduck.Inspections
         }
 
         public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
-        private void RaiseIssuesFound(int count)
+        private void RaiseIssuesFoundEvent(int count)
         {
             var handler = IssuesFound;
             if (handler == null)
@@ -65,6 +67,18 @@ namespace Rubberduck.Inspections
 
             var args = new InspectorIssuesFoundEventArg(count);
             handler(this, args);
+        }
+
+        public event EventHandler<EventArgs> Reset;
+        private void RaiseResetEvent()
+        {
+            var handler = Reset;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, EventArgs.Empty);
         }
     }
 }

@@ -21,15 +21,23 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly IRubberduckParser _parser;
+        private readonly IInspector _inspector;
 
-        private CodeInspectionResultBase[] _issues;
+        private List<ICodeInspectionResult> _issues;
         private int _currentIssue;
+        private int _issueCount;
 
         public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _vbe = vbe;
             _parser = parser;
             _inspections = inspections;
+        }
+
+        public CodeInspectionsToolbar(VBE vbe, IInspector inspector)
+        {
+            _vbe = vbe;
+            _inspector = inspector;
         }
 
         private CommandBarButton _refreshButton;
@@ -78,16 +86,19 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixButton.Click += _quickFixButton_Click;
             _navigatePreviousButton.Click += _navigatePreviousButton_Click;
             _navigateNextButton.Click += _navigateNextButton_Click;
+
+            _inspector.IssuesFound += OnIssuesFound;
+            _inspector.Reset += OnReset;
         }
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (_issues.Length == 0)
+            if (_issues.Count == 0)
             {
                 return;
             }
 
-            if (_currentIssue == _issues.Length - 1)
+            if (_currentIssue == _issues.Count - 1)
             {
                 _currentIssue = - 1;
             }
@@ -98,14 +109,14 @@ namespace Rubberduck.UI.CodeInspections
 
         private void _navigatePreviousButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (_issues.Length == 0)
+            if (_issues.Count == 0)
             {
                 return;
             }
 
             if (_currentIssue == 0)
             {
-                _currentIssue = _issues.Length;
+                _currentIssue = _issues.Count;
             }
 
             _currentIssue--;
@@ -154,35 +165,33 @@ namespace Rubberduck.UI.CodeInspections
             RefreshAsync();
         }
 
+        private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
+        {
+            _issueCount = _issueCount + e.Count;
+            _statusButton.Caption = string.Format("{0} issue" + (_issueCount == 1 ? string.Empty : "s"), _issueCount);
+        }
+
         private async void RefreshAsync()
         {
-            var code = new VBProjectParseResult(_parser.Parse(_vbe.ActiveVBProject));;
+            var result = await _inspector.FindIssues(_vbe.ActiveVBProject);
+            _issues = result.ToList();
 
-            var results = new ConcurrentBag<CodeInspectionResultBase>();
-            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
-            Parallel.ForEach(inspections, inspection =>
-            {
-                var result = inspection.GetInspectionResults(code);
-                foreach (var inspectionResult in result)
-                {
-                    results.Add(inspectionResult);
-                }
-            });
-
-            _issues = results.ToArray();
-            _currentIssue = 0;
-
-            var hasIssues = results.Any();
+            var hasIssues = _issues.Any();
             _quickFixButton.Enabled = hasIssues;
             SetQuickFixTooltip();
             _navigateNextButton.Enabled = hasIssues;
             _navigatePreviousButton.Enabled = hasIssues;
-            _statusButton.Caption = string.Format("{0} issue" + (results.Count == 1 ? string.Empty : "s"), results.Count);
+        }
+
+        private void OnReset(object sender, EventArgs e)
+        {
+            _currentIssue = 0;
+            _issueCount = 0;
         }
 
         private void SetQuickFixTooltip()
         {
-            if (_issues.Length == 0)
+            if (_issues.Count == 0)
             {
                 _quickFixButton.TooltipText = string.Empty;
                 _statusButton.TooltipText = string.Empty;

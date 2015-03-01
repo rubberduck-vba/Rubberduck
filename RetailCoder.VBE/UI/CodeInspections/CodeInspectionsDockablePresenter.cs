@@ -19,8 +19,8 @@ namespace Rubberduck.UI.CodeInspections
             :base(vbe, addin, window)
         {
             _inspector = inspector;
-
             _inspector.IssuesFound += OnIssuesFound;
+            _inspector.Reset += OnReset;
 
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
@@ -74,10 +74,6 @@ namespace Rubberduck.UI.CodeInspections
 
             try
             {
-                Control.IssueCount = 0;
-                Control.IssueCountText = "0 issues";
-                Control.InspectionResults.Clear();
-
                 if (this.VBE != null)
                 {
                     _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
@@ -88,6 +84,13 @@ namespace Rubberduck.UI.CodeInspections
             {
                 Control.Cursor = Cursors.Default;
             }
+        }
+
+        private void OnReset(object sender, EventArgs e)
+        {
+            Control.IssueCount = 0;
+            Control.IssueCountText = "0 issues";
+            Control.InspectionResults.Clear();
         }
     }
 }

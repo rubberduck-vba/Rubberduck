@@ -9,6 +9,7 @@ namespace Rubberduck.Inspections
     {
         Task<IList<ICodeInspectionResult>> FindIssues(VBProject project);
         event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
+        event EventHandler<EventArgs> Reset;
     }
 
     public class InspectorIssuesFoundEventArg : EventArgs

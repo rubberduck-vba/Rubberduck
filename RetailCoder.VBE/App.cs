@@ -27,8 +27,9 @@ namespace Rubberduck
             EnableCodeInspections(config);
             var parser = new RubberduckParser();
 
-            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, _inspections);
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, parser, _inspections);
+            var inspector = new Rubberduck.Inspections.Inspector(parser, _inspections);
+            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, inspector);
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, inspector);
         }
 
         private void EnableCodeInspections(Configuration config)
