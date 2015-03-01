@@ -84,6 +84,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             Control.IssueCount = 0;
             Control.IssueCountText = "0 issues";
+            Control.InspectionResults.Clear();
 
             _results = this._inspector.FindIssues(VBE.ActiveVBProject);
             Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));

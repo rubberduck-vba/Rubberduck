@@ -18,6 +18,12 @@ namespace Rubberduck.UI.CodeInspections
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return "Code Inspections"; } }
+        
+        public BindingList<CodeInspectionResultGridViewItem> InspectionResults 
+        {
+            get { return CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>; }
+            set { CodeIssuesGridView.DataSource = value; }
+        }
 
         public int IssueCount {get; set;}
         public string IssueCountText 
@@ -38,6 +44,7 @@ namespace Rubberduck.UI.CodeInspections
             var items = new List<CodeInspectionResultGridViewItem>();
             CodeIssuesGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(items);
+
             CodeIssuesGridView.AutoResizeColumns();
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
@@ -138,7 +145,6 @@ namespace Rubberduck.UI.CodeInspections
         public void SetContent(IEnumerable<CodeInspectionResultGridViewItem> inspectionResults)
         {
             var results = inspectionResults.ToList();
-            //StatusLabel.Text = string.Format("{0} issue" + (results.Count > 1 ? "s" : string.Empty), results.Count);
 
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(results);
             CodeIssuesGridView.Refresh();
