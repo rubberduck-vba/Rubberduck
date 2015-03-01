@@ -101,6 +101,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             {
                 _view.ReturnValue = _output.Single();
             }
+            else
+            {
+                _view.ReturnValue = returnValues.First();
+            }
 
             _view.RefreshPreview += _view_RefreshPreview;
             _view.OnRefreshPreview();
@@ -123,10 +127,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _view.CanSetReturnValue =
                 hasReturnValue && !IsValueType(_view.ReturnValue.TypeName);
 
-            Preview();
+            GeneratePreview();
         }
 
-        private void Preview()
+        private void GeneratePreview()
         {
             _view.Preview = GetExtractedMethod();
         }
@@ -195,9 +199,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .OfType<VBParser.VariableSubStmtContext>()
                 .Where(e => _view.Parameters.All(param => param.Name != e.AmbiguousIdentifier().GetText()))
                 .Select(e => "    " + Tokens.Dim + ' ' + e.AmbiguousIdentifier().GetText() + ' ' + e.AsTypeClause().GetText());
-            var locals = string.Join(newLine, localConsts.Union(localVariables).ToArray());
+            var locals = string.Join(newLine, localConsts.Union(localVariables)
+                            .Where(local => !_selectedCode.Contains(local)).ToArray()) + newLine;
 
-            result += newLine + locals + newLine + _selectedCode + newLine;
+            result += locals + _selectedCode + newLine;
 
             if (isFunction)
             {
