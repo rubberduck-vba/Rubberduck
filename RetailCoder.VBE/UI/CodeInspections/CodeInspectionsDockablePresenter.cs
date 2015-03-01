@@ -25,9 +25,17 @@ namespace Rubberduck.UI.CodeInspections
             :base(vbe, addin, window)
         {
             _inspector = inspector;
+
+            _inspector.IssuesFound += OnIssuesFound;
+
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
             Control.QuickFix += OnQuickFix;
+        }
+
+        private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void OnQuickFix(object sender, QuickFixEventArgs e)

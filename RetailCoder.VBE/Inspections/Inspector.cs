@@ -11,7 +11,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public class Inspector : Rubberduck.Inspections.IInspector
+    public class Inspector : IInspector
     {
         private readonly IRubberduckParser _parser;
         private readonly IList<IInspection> _inspections;
@@ -32,9 +32,15 @@ namespace Rubberduck.Inspections
                     new Task(() =>
                     {
                         var result = inspection.GetInspectionResults(code);
-                        foreach (var inspectionResult in result)
+                        var count = result.Count();
+                        if (count > 0)
                         {
-                            results.Add(inspectionResult);
+                            RaiseIssuesFound(count);
+
+                            foreach (var inspectionResult in result)
+                            {
+                                results.Add(inspectionResult);
+                            }
                         }
                     })).ToArray();
 
@@ -46,6 +52,19 @@ namespace Rubberduck.Inspections
             Task.WaitAll(inspections);
 
             return results.ToList();
+        }
+
+        public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
+        private void RaiseIssuesFound(int count)
+        {
+            var handler = IssuesFound;
+            if (handler == null)
+            {
+                return;
+            }
+
+            var args = new InspectorIssuesFoundEventArg(count);
+            handler(this, args);
         }
     }
 }
