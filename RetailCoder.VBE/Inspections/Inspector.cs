@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
-using Rubberduck.Inspections;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Nodes;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections
 {
@@ -22,11 +20,13 @@ namespace Rubberduck.Inspections
             _inspections = inspections.ToList();
         }
 
-        public IList<ICodeInspectionResult> FindIssues(VBProject project)
+        public async Task<IList<ICodeInspectionResult>> FindIssues(VBProject project)
         {
-            var code = new VBProjectParseResult(_parser.Parse(project));
+            await Task.Yield();
 
+            var code = new VBProjectParseResult(_parser.Parse(project));
             var results = new ConcurrentBag<ICodeInspectionResult>();
+
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                 .Select(inspection =>
                     new Task(() =>

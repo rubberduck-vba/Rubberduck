@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections
 {
     public interface IInspector
     {
-        IList<ICodeInspectionResult> FindIssues(VBProject project);
+        Task<IList<ICodeInspectionResult>> FindIssues(VBProject project);
         event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
     }
 

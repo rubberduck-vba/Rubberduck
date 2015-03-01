@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -75,19 +69,26 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            Control.Cursor = Cursors.WaitCursor;
             Refresh();
-            Control.Cursor = Cursors.Default;
         }
 
-        private void Refresh()
+        private async void Refresh()
         {
-            Control.IssueCount = 0;
-            Control.IssueCountText = "0 issues";
-            Control.InspectionResults.Clear();
+            Control.Cursor = Cursors.WaitCursor;
 
-            _results = this._inspector.FindIssues(VBE.ActiveVBProject);
-            Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+            try
+            {
+                Control.IssueCount = 0;
+                Control.IssueCountText = "0 issues";
+                Control.InspectionResults.Clear();
+
+                _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
+                Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+            }
+            finally
+            {
+                Control.Cursor = Cursors.Default;
+            }
         }
     }
 }
