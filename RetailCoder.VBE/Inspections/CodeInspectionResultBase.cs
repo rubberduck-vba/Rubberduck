@@ -10,7 +10,7 @@ using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
-    public abstract class CodeInspectionResultBase
+    public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
         /// <summary>
         /// Creates a comment inspection result.

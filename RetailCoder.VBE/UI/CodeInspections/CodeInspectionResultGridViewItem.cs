@@ -12,7 +12,7 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class CodeInspectionResultGridViewItem
     {
-        public CodeInspectionResultGridViewItem(CodeInspectionResultBase result)
+        public CodeInspectionResultGridViewItem(ICodeInspectionResult result)
         {
             _item = result;
             _severity = GetSeverityIcon(result.Severity);
@@ -24,8 +24,8 @@ namespace Rubberduck.UI.CodeInspections
             _component = _selection.QualifiedName.ModuleName;
         }
 
-        private readonly CodeInspectionResultBase _item;
-        public CodeInspectionResultBase GetInspectionResultItem()
+        private readonly ICodeInspectionResult _item;
+        public ICodeInspectionResult GetInspectionResultItem()
         {
             return _item;
         }

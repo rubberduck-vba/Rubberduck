@@ -28,23 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeInspectionsWindow));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.CodeIssuesGridView = new System.Windows.Forms.DataGridView();
-            this.InspectionProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
+            this.InspectionProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.StatusLabel = new System.Windows.Forms.ToolStripLabel();
             this.QuickFixButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.GoButton = new System.Windows.Forms.ToolStripButton();
             this.PreviousButton = new System.Windows.Forms.ToolStripButton();
             this.NextButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.configureButton = new System.Windows.Forms.ToolStripButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.CodeIssuesGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CodeIssuesGridView)).BeginInit();
@@ -71,45 +71,14 @@
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator3
+            // RefreshButton
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.CodeIssuesGridView);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(555, 100);
-            this.panel1.TabIndex = 1;
-            // 
-            // CodeIssuesGridView
-            // 
-            this.CodeIssuesGridView.AllowUserToAddRows = false;
-            this.CodeIssuesGridView.AllowUserToDeleteRows = false;
-            this.CodeIssuesGridView.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.CodeIssuesGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.CodeIssuesGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.CodeIssuesGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CodeIssuesGridView.Location = new System.Drawing.Point(0, 0);
-            this.CodeIssuesGridView.MultiSelect = false;
-            this.CodeIssuesGridView.Name = "CodeIssuesGridView";
-            this.CodeIssuesGridView.ReadOnly = true;
-            this.CodeIssuesGridView.Size = new System.Drawing.Size(555, 100);
-            this.CodeIssuesGridView.TabIndex = 0;
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = ((System.Drawing.Image)(resources.GetObject("RefreshButton.Image")));
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Run code inspections";
             // 
             // InspectionProgressBar
             // 
@@ -119,14 +88,10 @@
             this.InspectionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.InspectionProgressBar.Visible = false;
             // 
-            // RefreshButton
+            // toolStripSeparator3
             // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = ((System.Drawing.Image)(resources.GetObject("RefreshButton.Image")));
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Run code inspections";
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // StatusLabel
             // 
@@ -146,6 +111,11 @@
             this.QuickFixButton.Size = new System.Drawing.Size(53, 22);
             this.QuickFixButton.Text = "Fix";
             this.QuickFixButton.ToolTipText = "Address the issue";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // GoButton
             // 
@@ -177,6 +147,11 @@
             this.NextButton.Text = "Next";
             this.NextButton.ToolTipText = "Navigate to next issue.";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -195,6 +170,31 @@
             this.configureButton.Name = "configureButton";
             this.configureButton.Size = new System.Drawing.Size(23, 22);
             this.configureButton.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.CodeIssuesGridView);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(555, 100);
+            this.panel1.TabIndex = 1;
+            // 
+            // CodeIssuesGridView
+            // 
+            this.CodeIssuesGridView.AllowUserToAddRows = false;
+            this.CodeIssuesGridView.AllowUserToDeleteRows = false;
+            this.CodeIssuesGridView.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CodeIssuesGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            this.CodeIssuesGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.CodeIssuesGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CodeIssuesGridView.Location = new System.Drawing.Point(0, 0);
+            this.CodeIssuesGridView.MultiSelect = false;
+            this.CodeIssuesGridView.Name = "CodeIssuesGridView";
+            this.CodeIssuesGridView.ReadOnly = true;
+            this.CodeIssuesGridView.Size = new System.Drawing.Size(555, 100);
+            this.CodeIssuesGridView.TabIndex = 0;
             // 
             // CodeInspectionsWindow
             // 

@@ -149,7 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IdentifierUsageInspector.cs" />
+    <Compile Include="Inspections\IInspector.cs" />
+    <Compile Include="Inspections\Inspector.cs" />
     <Compile Include="Inspections\ModuleOptionsNotSpecifiedFirstInspection.cs" />
     <Compile Include="Inspections\ModuleOptionsNotSpecifiedFirstInspectionResult.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />

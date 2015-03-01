@@ -63,26 +63,6 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.Run(tests);
         }
 
-        private void RegisterTestExplorerEvents()
-        {
-            Control.OnRefreshListButtonClick += OnExplorerRefreshListButtonClick;
-
-            Control.OnRunAllTestsButtonClick += OnExplorerRunAllTestsButtonClick;
-            Control.OnRunFailedTestsButtonClick += OnExplorerRunFailedTestsButtonClick;
-            Control.OnRunLastRunTestsButtonClick += OnExplorerRunLastRunTestsButtonClick;
-            Control.OnRunNotRunTestsButtonClick += OnExplorerRunNotRunTestsButtonClick;
-            Control.OnRunPassedTestsButtonClick += OnExplorerRunPassedTestsButtonClick;
-            Control.OnRunSelectedTestButtonClick += OnExplorerRunSelectedTestButtonClick;
-
-            Control.OnGoToSelectedTest += OnExplorerGoToSelectedTest;
-
-            Control.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
-            Control.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
-            Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
-
-            _testEngine.TestComplete += TestComplete;
-        }
-
         private void TestComplete(object sender, TestCompleteEventArgs e)
         {
             Control.WriteResult(e.Test, e.Result);
@@ -167,6 +147,26 @@ namespace Rubberduck.UI.UnitTesting
         {
             NewUnitTestModuleCommand.NewUnitTestModule(this.VBE);
             Synchronize();
+        }
+
+        private void RegisterTestExplorerEvents()
+        {
+            Control.OnRefreshListButtonClick += OnExplorerRefreshListButtonClick;
+
+            Control.OnRunAllTestsButtonClick += OnExplorerRunAllTestsButtonClick;
+            Control.OnRunFailedTestsButtonClick += OnExplorerRunFailedTestsButtonClick;
+            Control.OnRunLastRunTestsButtonClick += OnExplorerRunLastRunTestsButtonClick;
+            Control.OnRunNotRunTestsButtonClick += OnExplorerRunNotRunTestsButtonClick;
+            Control.OnRunPassedTestsButtonClick += OnExplorerRunPassedTestsButtonClick;
+            Control.OnRunSelectedTestButtonClick += OnExplorerRunSelectedTestButtonClick;
+
+            Control.OnGoToSelectedTest += OnExplorerGoToSelectedTest;
+
+            Control.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
+            Control.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
+            Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
+
+            _testEngine.TestComplete += TestComplete;
         }
     }
 }

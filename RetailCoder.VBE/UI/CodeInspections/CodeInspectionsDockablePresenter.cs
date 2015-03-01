@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.CodeInspections
 {
     public class CodeInspectionsDockablePresenter : DockablePresenterBase
     {
-        private readonly IRubberduckParser _parser;
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
-        private readonly IList<IInspection> _inspections;
-        private List<CodeInspectionResultBase> _results;
+        private IList<ICodeInspectionResult> _results;
+        private IInspector _inspector;
 
-        public CodeInspectionsDockablePresenter(IRubberduckParser parser, IEnumerable<IInspection> inspections, VBE vbe, AddIn addin, CodeInspectionsWindow window) 
-            : base(vbe, addin, window)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
+            :base(vbe, addin, window)
         {
-            _parser = parser;
-            _inspections = inspections.ToList();
+            _inspector = inspector;
+            _inspector.IssuesFound += OnIssuesFound;
+            _inspector.Reset += OnReset;
 
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
             Control.QuickFix += OnQuickFix;
+        }
+
+        private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
+        {
+            var newCount = Control.IssueCount + e.Count;
+            Control.IssueCount = newCount;
+            Control.IssueCountText = string.Format("{0} issue" + (newCount > 1 ? "s" : string.Empty), newCount);
         }
 
         private void OnQuickFix(object sender, QuickFixEventArgs e)
@@ -41,11 +42,8 @@ namespace Rubberduck.UI.CodeInspections
 
         public override void Show()
         {
-            if (VBE.ActiveVBProject != null)
-            {
-                OnRefreshCodeInspections(this, EventArgs.Empty);
-            }
             base.Show();
+            Refresh();
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
@@ -67,36 +65,32 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            Control.Cursor = Cursors.WaitCursor;
             Refresh();
-            Control.Cursor = Cursors.Default;
         }
 
-        private void Refresh()
+        private async void Refresh()
         {
-            var code = new VBProjectParseResult(_parser.Parse(VBE.ActiveVBProject));
+            Control.Cursor = Cursors.WaitCursor;
 
-            var results = new ConcurrentBag<CodeInspectionResultBase>();
-            var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
-                .Select(inspection =>
-                    new Task(() =>
-                    {
-                        var result = inspection.GetInspectionResults(code);
-                        foreach (var inspectionResult in result)
-                        {
-                            results.Add(inspectionResult);
-                        }
-                    })).ToArray();
-
-            foreach (var inspection in inspections)
+            try
             {
-                inspection.Start();
+                if (this.VBE != null)
+                {
+                    _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
+                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+                }
             }
+            finally
+            {
+                Control.Cursor = Cursors.Default;
+            }
+        }
 
-            Task.WaitAll(inspections);
-
-            _results = results.ToList();
-            Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+        private void OnReset(object sender, EventArgs e)
+        {
+            Control.IssueCount = 0;
+            Control.IssueCountText = "0 issues";
+            Control.InspectionResults.Clear();
         }
     }
 }

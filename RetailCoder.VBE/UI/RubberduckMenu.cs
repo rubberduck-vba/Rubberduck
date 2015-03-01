@@ -25,7 +25,7 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IConfigurationService _configService;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IEnumerable<IInspection> inspections)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
             : base(vbe, addIn)
         {
             _configService = configService;
@@ -45,7 +45,7 @@ namespace Rubberduck.UI
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspections.CodeInspectionsWindow();
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(parser, inspections, vbe, addIn, inspectionExplorer);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(this.IDE, this.addInInstance, parser);
