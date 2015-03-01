@@ -43,11 +43,7 @@ namespace Rubberduck.UI.CodeInspections
         public override void Show()
         {
             base.Show();
-
-            if (VBE.ActiveVBProject != null)
-            {
-                OnRefreshCodeInspections(this, EventArgs.Empty);
-            }
+            Refresh();
         }
 
         private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
@@ -82,8 +78,11 @@ namespace Rubberduck.UI.CodeInspections
                 Control.IssueCountText = "0 issues";
                 Control.InspectionResults.Clear();
 
-                _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
-                Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+                if (this.VBE != null)
+                {
+                    _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
+                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+                }
             }
             finally
             {
