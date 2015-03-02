@@ -23,10 +23,16 @@ Some issues are tagged with [help-wanted](https://github.com/retailcoder/Rubberd
 
 Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.1), and run the Setup.exe.
 
-Please note that this software has only been tested on Office 2007 & 2010.
-Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
+If you're **upgrading** from version 1.0, you will need to completely uninstall it before installing the newest release. This isn't necessary when upgrading from newer versions. Also, be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
 
-If you're **upgrading** from a previous version, you will need to completely uninstall it before installing the newest release. Be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
+##System Requirements
+
+- Windows Vista, 7, or 8
+- .Net Framework 4.5
+- Microsoft Office 
+
+Please note that this software has only been tested on Office 97, 2007, & 2010.
+Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
 
 ---
 
