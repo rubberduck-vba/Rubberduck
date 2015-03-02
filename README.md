@@ -29,11 +29,10 @@ If you're **upgrading** from version 1.0, you will need to completely uninstall 
 
 ##System Requirements
 
-- Windows Vista, 7, or 8
+- Windows Vista or more recent (tested on Win7 and Win8.1)
 - .Net Framework 4.5
-- Microsoft Office 
+- Microsoft Office 97-2003 or higher
 
-Please note that this software has only been tested on Office 97, 2007, & 2010.
 Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
 
 ---
