@@ -120,6 +120,9 @@
   <data name="ImplicitByRef_" xml:space="preserve">
     <value>Parameter '{0}' is passed ByRef implicitly</value>
   </data>
+  <data name="ImplicitPublicMember_" xml:space="preserve">
+    <value>Member '{0}' is implicitly Public</value>
+  </data>
   <data name="ImplicitVariantReturnType_" xml:space="preserve">
     <value>Function '{0}' returns an implicit Variant</value>
   </data>

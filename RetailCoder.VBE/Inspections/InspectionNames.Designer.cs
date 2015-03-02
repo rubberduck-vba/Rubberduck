@@ -70,6 +70,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly Public.
+        /// </summary>
+        internal static string ImplicitPublicMember_ {
+            get {
+                return ResourceManager.GetString("ImplicitPublicMember_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &apos;{0}&apos; returns an implicit Variant.
         /// </summary>
         internal static string ImplicitVariantReturnType_ {
