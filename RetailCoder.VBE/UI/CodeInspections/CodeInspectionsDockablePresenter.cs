@@ -25,13 +25,35 @@ namespace Rubberduck.UI.CodeInspections
             Control.RefreshCodeInspections += OnRefreshCodeInspections;
             Control.NavigateCodeIssue += OnNavigateCodeIssue;
             Control.QuickFix += OnQuickFix;
+            Control.CopyResults += OnCopyResultsToClipboard;
+        }
+
+        private void OnCopyResultsToClipboard(object sender, EventArgs e)
+        {
+            var results = string.Join("\n", _results.Select(FormatResultForClipboard));
+            var text = string.Format("Rubberduck Code Inspections - {0}\n{1} issue" + (_results.Count != 1 ? "s" : string.Empty) + " found.\n",
+                            DateTime.Now, _results.Count) + results;
+
+            Clipboard.SetText(text);
+        }
+
+        private string FormatResultForClipboard(ICodeInspectionResult result)
+        {
+            var module = result.QualifiedSelection.QualifiedName;
+            return string.Format(
+                "{0}: {1} - {2}.{3}, line {4}",
+                result.Severity,
+                result.Name,
+                module.ProjectName,
+                module.ModuleName,
+                result.QualifiedSelection.Selection.StartLine);
         }
 
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
-            var newCount = Control.IssueCount + e.Count;
+            var newCount = Control.IssueCount + e.Issues.Count;
             Control.IssueCount = newCount;
-            Control.IssueCountText = string.Format("{0} issue" + (newCount > 1 ? "s" : string.Empty), newCount);
+            Control.IssueCountText = string.Format("{0} issue" + (newCount != 1 ? "s" : string.Empty), newCount);
         }
 
         private void OnQuickFix(object sender, QuickFixEventArgs e)
@@ -74,10 +96,12 @@ namespace Rubberduck.UI.CodeInspections
 
             try
             {
-                if (this.VBE != null)
+                if (VBE != null)
                 {
-                    _results = await this._inspector.FindIssues(VBE.ActiveVBProject);
-                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item)).OrderBy(item => item.Component).ThenBy(item => item.Line));
+                    _results = await _inspector.FindIssuesAsync(VBE.ActiveVBProject);
+                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
+                                               .OrderBy(item => item.Component)
+                                               .ThenBy(item => item.Line));
                 }
             }
             finally

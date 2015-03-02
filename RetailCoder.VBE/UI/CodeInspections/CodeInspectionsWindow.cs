@@ -34,6 +34,7 @@ namespace Rubberduck.UI.CodeInspections
             GoButton.Click += GoButton_Click;
             PreviousButton.Click += PreviousButton_Click;
             NextButton.Click += NextButton_Click;
+            CopyButton.Click += CopyButton_Click;
 
             var items = new List<CodeInspectionResultGridViewItem>();
             CodeIssuesGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -44,6 +45,16 @@ namespace Rubberduck.UI.CodeInspections
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
+        }
+
+        public event EventHandler CopyResults;
+        private void CopyButton_Click(object sender, EventArgs e)
+        {
+            var handler = CopyResults;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         private void QuickFixButton_Click(object sender, EventArgs e)
@@ -60,11 +71,6 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.Rows[previousIssueIndex].Selected = true;
             var item = CodeIssuesGridView.Rows[previousIssueIndex].DataBoundItem as CodeInspectionResultGridViewItem;
             OnNavigateCodeIssue(item);
-        }
-
-        public void FindNextIssue()
-        {
-            NextButton_Click(this, EventArgs.Empty);
         }
 
         private void NextButton_Click(object sender, EventArgs e)
@@ -90,6 +96,7 @@ namespace Rubberduck.UI.CodeInspections
             NextButton.Enabled = enableNavigation;
             PreviousButton.Enabled = enableNavigation;
             GoButton.Enabled = enableNavigation;
+            CopyButton.Enabled = enableNavigation;
 
             var quickFixMenu = QuickFixButton.DropDownItems;
             if (quickFixMenu.Count > 0)
@@ -181,6 +188,8 @@ namespace Rubberduck.UI.CodeInspections
             {
                 return;
             }
+
+            toolStrip1.Refresh();
 
             handler(this, EventArgs.Empty);
         }

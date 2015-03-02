@@ -167,13 +167,13 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
-            _issueCount = _issueCount + e.Count;
+            _issueCount = _issueCount + e.Issues.Count;
             _statusButton.Caption = string.Format("{0} issue" + (_issueCount == 1 ? string.Empty : "s"), _issueCount);
         }
 
         private async void RefreshAsync()
         {
-            var result = await _inspector.FindIssues(_vbe.ActiveVBProject);
+            var result = await _inspector.FindIssuesAsync(_vbe.ActiveVBProject);
             _issues = result.ToList();
 
             var hasIssues = _issues.Any();

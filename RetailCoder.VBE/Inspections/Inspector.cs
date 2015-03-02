@@ -20,28 +20,29 @@ namespace Rubberduck.Inspections
             _inspections = inspections.ToList();
         }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssues(VBProject project)
+        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProject project)
         {
             await Task.Yield();
 
             RaiseResetEvent();
 
             var code = new VBProjectParseResult(_parser.Parse(project));
-            var results = new ConcurrentBag<ICodeInspectionResult>();
+            var allIssues = new ConcurrentBag<ICodeInspectionResult>();
 
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                 .Select(inspection =>
                     new Task(() =>
                     {
-                        var result = inspection.GetInspectionResults(code);
-                        var count = result.Count();
-                        if (count > 0)
-                        {
-                            RaiseIssuesFoundEvent(count);
+                        var inspectionResults = inspection.GetInspectionResults(code);
+                        var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
 
-                            foreach (var inspectionResult in result)
+                        if (results.Any())
+                        {
+                            RaiseIssuesFoundEvent(results);
+
+                            foreach (var inspectionResult in results)
                             {
-                                results.Add(inspectionResult);
+                                allIssues.Add(inspectionResult);
                             }
                         }
                     })).ToArray();
@@ -53,11 +54,11 @@ namespace Rubberduck.Inspections
 
             Task.WaitAll(inspections);
 
-            return results.ToList();
+            return allIssues.ToList();
         }
 
         public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
-        private void RaiseIssuesFoundEvent(int count)
+        private void RaiseIssuesFoundEvent(IList<CodeInspectionResultBase> issues)
         {
             var handler = IssuesFound;
             if (handler == null)
@@ -65,7 +66,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            var args = new InspectorIssuesFoundEventArg(count);
+            var args = new InspectorIssuesFoundEventArg(issues);
             handler(this, args);
         }
 

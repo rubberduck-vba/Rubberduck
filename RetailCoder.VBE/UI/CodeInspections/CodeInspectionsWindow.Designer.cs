@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeInspectionsWindow));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
-            this.InspectionProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.StatusLabel = new System.Windows.Forms.ToolStripLabel();
             this.QuickFixButton = new System.Windows.Forms.ToolStripSplitButton();
@@ -41,7 +40,7 @@
             this.PreviousButton = new System.Windows.Forms.ToolStripButton();
             this.NextButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.CopyButton = new System.Windows.Forms.ToolStripButton();
             this.configureButton = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.CodeIssuesGridView = new System.Windows.Forms.DataGridView();
@@ -54,7 +53,6 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshButton,
-            this.InspectionProgressBar,
             this.toolStripSeparator3,
             this.StatusLabel,
             this.QuickFixButton,
@@ -63,7 +61,7 @@
             this.PreviousButton,
             this.NextButton,
             this.toolStripSeparator2,
-            this.toolStripButton1,
+            this.CopyButton,
             this.configureButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -79,14 +77,6 @@
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(23, 22);
             this.RefreshButton.ToolTipText = "Run code inspections";
-            // 
-            // InspectionProgressBar
-            // 
-            this.InspectionProgressBar.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.InspectionProgressBar.Name = "InspectionProgressBar";
-            this.InspectionProgressBar.Size = new System.Drawing.Size(100, 22);
-            this.InspectionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.InspectionProgressBar.Visible = false;
             // 
             // toolStripSeparator3
             // 
@@ -152,15 +142,15 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton1
+            // CopyButton
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Enabled = false;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Visible = false;
+            this.CopyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.CopyButton.Enabled = false;
+            this.CopyButton.Image = ((System.Drawing.Image)(resources.GetObject("CopyButton.Image")));
+            this.CopyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.CopyButton.Name = "CopyButton";
+            this.CopyButton.Size = new System.Drawing.Size(23, 22);
+            this.CopyButton.ToolTipText = "Copy inspection results to clipboard";
             // 
             // configureButton
             // 
@@ -185,8 +175,8 @@
             this.CodeIssuesGridView.AllowUserToAddRows = false;
             this.CodeIssuesGridView.AllowUserToDeleteRows = false;
             this.CodeIssuesGridView.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.CodeIssuesGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CodeIssuesGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.CodeIssuesGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.CodeIssuesGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CodeIssuesGridView.Location = new System.Drawing.Point(0, 0);
@@ -228,8 +218,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripLabel StatusLabel;
         private System.Windows.Forms.DataGridView CodeIssuesGridView;
-        private System.Windows.Forms.ToolStripProgressBar InspectionProgressBar;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton CopyButton;
         private System.Windows.Forms.ToolStripButton configureButton;
     }
 }
