@@ -17,11 +17,13 @@ If you're a C# developer looking for a fun project to contribute to, feel free t
 
 Some issues are tagged with [help-wanted](https://github.com/retailcoder/Rubberduck/labels/help-wanted), but that doesn't mean we can't use some help with anything else in the project - if this project interests you, we want to hear from you!
 
+There is additonal information about [building the project in the project wiki](https://github.com/retailcoder/Rubberduck/wiki/Building-&-Installation).
+
 ---
 
 #Installation
 
-Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/tag/v1.1), and run the Setup.exe.
+Visit our releases page, [download the installer](https://github.com/retailcoder/Rubberduck/releases/latest), and run the Setup.exe.
 
 If you're **upgrading** from version 1.0, you will need to completely uninstall it before installing the newest release. This isn't necessary when upgrading from newer versions. Also, be sure to back up the `rubberduck.config` file in the `\AppData\Roaming\Rubberduck\` directory prior to installation.
 
