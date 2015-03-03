@@ -204,6 +204,12 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\SourceControl\SourceControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
+      <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
@@ -527,6 +533,9 @@
     <EmbeddedResource Include="UI\SourceControl\GitView.resx">
       <DependentUpon>GitView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
+      <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VBA\Tokens.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
@@ -616,6 +625,11 @@
     <None Include="Resources\creative-commons.png" />
     <None Include="Resources\gear.png" />
     <None Include="Resources\control-000-small.png" />
+    <None Include="Resources\git.png" />
+    <None Include="Resources\arrow-merge-090.png" />
+    <None Include="Resources\arrow-split.png" />
+    <None Include="Resources\drive-download.png" />
+    <None Include="Resources\drive-upload.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

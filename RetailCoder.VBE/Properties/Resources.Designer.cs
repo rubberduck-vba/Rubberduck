@@ -133,6 +133,26 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_merge_090 {
+            get {
+                object obj = ResourceManager.GetObject("arrow-merge-090", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_split {
+            get {
+                object obj = ResourceManager.GetObject("arrow-split", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Collapse_large {
             get {
                 object obj = ResourceManager.GetObject("Collapse_large", resourceCulture);
@@ -176,6 +196,26 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap document_copy {
             get {
                 object obj = ResourceManager.GetObject("document_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap drive_download {
+            get {
+                object obj = ResourceManager.GetObject("drive-download", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap drive_upload {
+            get {
+                object obj = ResourceManager.GetObject("drive-upload", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -276,6 +316,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap gear {
             get {
                 object obj = ResourceManager.GetObject("gear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap git {
+            get {
+                object obj = ResourceManager.GetObject("git", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
