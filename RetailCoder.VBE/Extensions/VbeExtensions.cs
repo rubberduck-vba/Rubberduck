@@ -7,6 +7,7 @@ using Rubberduck.Inspections;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBEHost;
 
 namespace Rubberduck.Extensions
 {

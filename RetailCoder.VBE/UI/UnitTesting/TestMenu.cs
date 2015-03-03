@@ -30,11 +30,12 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
-            menu.Caption = "Te&st";
+            var menu = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            menu.Caption = "&Test Explorer";
+            menu.Click += OnTestExplorerButtonClick;
 
-            _windowsTestExplorerButton = AddButton(menu, "&Test Explorer", false, new CommandBarButtonClickEvent(OnTestExplorerButtonClick), Resources.TestManager_8590_32);
-            _runAllTestsButton = AddButton(menu, "&Run All Tests", true, new CommandBarButtonClickEvent(OnRunAllTestsButtonClick), Resources.AllLoadedTests_8644_24);
+            //_windowsTestExplorerButton = AddButton(menu, , false, OnTestExplorerButtonClick, Resources.TestManager_8590_32);
+            //_runAllTestsButton = AddButton(menu, "&Run All Tests", true, OnRunAllTestsButtonClick, Resources.AllLoadedTests_8644_24);
         }
 
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -48,10 +49,10 @@ namespace Rubberduck.UI.UnitTesting
             _presenter.Show();
         }
 
-        bool disposed = false;
+        private bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
             {
                 return;
             }
@@ -69,7 +70,7 @@ namespace Rubberduck.UI.UnitTesting
                 }
             }
 
-            disposed = true;
+            _disposed = true;
             base.Dispose(disposing);
         }
     }

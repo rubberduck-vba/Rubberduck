@@ -38,17 +38,21 @@
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Size = new System.Drawing.Size(799, 297);
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.White;
+            this.splitContainer1.Size = new System.Drawing.Size(799, 339);
             this.splitContainer1.SplitterDistance = 266;
             this.splitContainer1.TabIndex = 0;
             // 
-            // SettingsDialog
+            // _SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(799, 297);
+            this.ClientSize = new System.Drawing.Size(799, 339);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "SettingsDialog";
+            this.Name = "_SettingsDialog";
             this.Text = "SettingsDialog";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsDialog_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

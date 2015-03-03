@@ -8,6 +8,7 @@ using Rubberduck.Extensions;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 using Rubberduck.VBA;
+using Rubberduck.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {

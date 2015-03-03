@@ -2,19 +2,20 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck
+namespace Rubberduck.VBEHost
 {
     public abstract class HostApplicationBase<TApplication> : IHostApplication
+        where TApplication : class
     {
-        protected readonly TApplication _application;
+        protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
         {
-            _application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+            Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
         }
 
         ~HostApplicationBase()
         {
-            Marshal.ReleaseComObject(_application);
+            Marshal.ReleaseComObject(Application);
         }
 
         public abstract void Run(string target);

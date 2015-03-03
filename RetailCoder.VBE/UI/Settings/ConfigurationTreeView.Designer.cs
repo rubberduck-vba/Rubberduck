@@ -33,7 +33,7 @@
             // 
             // settingsTreeView
             // 
-            this.settingsTreeView.BackColor = System.Drawing.SystemColors.Control;
+            this.settingsTreeView.BackColor = System.Drawing.Color.White;
             this.settingsTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.settingsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.settingsTreeView.Location = new System.Drawing.Point(0, 0);
@@ -43,12 +43,12 @@
             this.settingsTreeView.TabIndex = 0;
             this.settingsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.settingsTreeView_AfterSelect);
             // 
-            // ConfigurationTreeView
+            // ConfigurationTreeViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.settingsTreeView);
-            this.Name = "ConfigurationTreeView";
+            this.Name = "ConfigurationTreeViewControl";
             this.Size = new System.Drawing.Size(302, 314);
             this.ResumeLayout(false);
 

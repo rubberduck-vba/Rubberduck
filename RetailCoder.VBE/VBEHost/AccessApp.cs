@@ -1,7 +1,6 @@
-using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Access;
 
-namespace Rubberduck
+namespace Rubberduck.VBEHost
 {
     public class AccessApp : HostApplicationBase<Application>
     {
@@ -9,7 +8,7 @@ namespace Rubberduck
 
         public override void Run(string target)
         {
-            base._application.Run(target);
+            base.Application.Run(target);
         }
 
         protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)

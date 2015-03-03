@@ -1,8 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
 using Microsoft.Office.Interop.Excel;
-using System;
 
-namespace Rubberduck
+namespace Rubberduck.VBEHost
 {
     public class PublisherApp : HostApplicationBase<Application>
     {

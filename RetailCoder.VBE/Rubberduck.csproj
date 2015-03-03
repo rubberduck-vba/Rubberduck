@@ -266,6 +266,7 @@
     <Compile Include="Config\CodeInspectionSettings.cs" />
     <Compile Include="VBEHost\ExcelApp.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
+    <Compile Include="VBEHost\IVBEAdapter.cs" />
     <Compile Include="VBEHost\OutlookApp.cs" />
     <Compile Include="Extensions\Selection.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />

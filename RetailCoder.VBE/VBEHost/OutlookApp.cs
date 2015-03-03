@@ -1,8 +1,7 @@
-using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
 using System;
+using Microsoft.Vbe.Interop;
 
-namespace Rubberduck
+namespace Rubberduck.VBEHost
 {
     public class OutlookApp : HostApplicationBase<Application>
     {

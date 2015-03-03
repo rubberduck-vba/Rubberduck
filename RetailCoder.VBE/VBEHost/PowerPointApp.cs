@@ -1,7 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 
-namespace Rubberduck
+namespace Rubberduck.VBEHost
 {
     public class PowerPointApp : HostApplicationBase<Application>
     {
@@ -10,7 +9,7 @@ namespace Rubberduck
         public override void Run(string target)
         {
             object[] paramArray = { }; //powerpoint requires a paramarray, so we pass it an empty array.
-            base._application.Run(target, paramArray);
+            base.Application.Run(target, paramArray);
         }
 
         protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)

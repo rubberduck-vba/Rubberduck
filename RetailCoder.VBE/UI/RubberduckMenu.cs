@@ -57,7 +57,7 @@ namespace Rubberduck.UI
 
         public void Initialize()
         {
-            var menuBarControls = this.IDE.CommandBars[1].Controls;
+            var menuBarControls = IDE.CommandBars[1].Controls;
             var beforeIndex = FindMenuInsertionIndex(menuBarControls, "&Window");
             var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             Debug.Assert(menu != null, "menu != null");
