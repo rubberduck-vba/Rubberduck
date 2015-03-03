@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
