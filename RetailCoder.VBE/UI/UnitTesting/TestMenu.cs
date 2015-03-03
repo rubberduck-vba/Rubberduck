@@ -24,9 +24,6 @@ namespace Rubberduck.UI.UnitTesting
             var menu = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
             menu.Caption = "&Test Explorer";
             menu.Click += OnTestExplorerButtonClick;
-
-            //_windowsTestExplorerButton = AddButton(menu, , false, OnTestExplorerButtonClick, Resources.TestManager_8590_32);
-            //_runAllTestsButton = AddButton(menu, "&Run All Tests", true, OnRunAllTestsButtonClick, Resources.AllLoadedTests_8644_24);
         }
 
         private void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
