@@ -1,18 +1,17 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Settings;
+using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.UI.CodeExplorer;
-using Rubberduck.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBA;
+using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
@@ -44,11 +43,11 @@ namespace Rubberduck.UI
             var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
-            var inspectionExplorer = new CodeInspections.CodeInspectionsWindow();
+            var inspectionExplorer = new CodeInspectionsWindow();
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(this.IDE, this.addInInstance, parser);
+            _refactorMenu = new RefactorMenu(IDE, addInInstance, parser);
         }
 
         private CommandBarButton _about;
@@ -73,14 +72,14 @@ namespace Rubberduck.UI
             //note: disabled for 1.2 release
             //_sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
 
-            _settings = AddButton(menu, "&Options", true, new CommandBarButtonClickEvent(OnOptionsClick));
-            _about = AddButton(menu, "&About...", true, new CommandBarButtonClickEvent(OnAboutClick));
+            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
+            _about = AddButton(menu, "&About...", true, OnAboutClick);
 
         }
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new SourceControl.DummyGitView(this.IDE.ActiveVBProject))
+            using (var window = new DummyGitView(IDE.ActiveVBProject))
             {
                 window.ShowDialog();
             }
@@ -88,7 +87,7 @@ namespace Rubberduck.UI
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new Settings._SettingsDialog(_configService))
+            using (var window = new _SettingsDialog(_configService))
             {
                 window.ShowDialog();
             }
@@ -102,10 +101,10 @@ namespace Rubberduck.UI
             }
         }
 
-        bool disposed = false;
+        bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
             {
                 return;
             }
@@ -132,7 +131,7 @@ namespace Rubberduck.UI
                 }
             }
 
-            disposed = true;
+            _disposed = true;
 
             base.Dispose(disposing);
         }
