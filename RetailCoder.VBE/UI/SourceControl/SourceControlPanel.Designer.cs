@@ -654,7 +654,6 @@
             // 
             // SyncButton
             // 
-            this.SyncButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
             this.SyncButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.SyncButton.Location = new System.Drawing.Point(9, 40);
             this.SyncButton.Name = "SyncButton";
