@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -71,13 +72,13 @@ namespace Rubberduck.UI
         /// Returns the last position if the given beforeControl caption is not found.
         /// </summary>
         /// <param name="controls">The collection to insert into.</param>
-        /// <param name="beforeControl">Caption of the control to insert before.</param>
+        /// <param name="beforeId">Caption of the control to insert before.</param>
         /// <returns></returns>
-        protected int FindMenuInsertionIndex(CommandBarControls controls, string beforeControl)
+        protected int FindMenuInsertionIndex(CommandBarControls controls, int beforeId)
         {
             for (var i = 1; i <= controls.Count; i++)
             {
-                if (controls[i].BuiltIn && controls[i].Caption == beforeControl)
+                if (controls[i].BuiltIn && controls[i].Id == beforeId)
                 {
                     return i;
                 }
