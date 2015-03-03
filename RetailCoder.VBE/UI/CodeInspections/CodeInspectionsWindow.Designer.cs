@@ -175,7 +175,7 @@
             this.CodeIssuesGridView.AllowUserToAddRows = false;
             this.CodeIssuesGridView.AllowUserToDeleteRows = false;
             this.CodeIssuesGridView.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
             this.CodeIssuesGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.CodeIssuesGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.CodeIssuesGridView.Dock = System.Windows.Forms.DockStyle.Fill;

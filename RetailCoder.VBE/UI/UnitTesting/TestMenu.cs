@@ -1,11 +1,5 @@
-﻿using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Microsoft.Office.Core;
+﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Properties;
-using Rubberduck.UnitTesting;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.UnitTesting
@@ -25,9 +19,6 @@ namespace Rubberduck.UI.UnitTesting
             _presenter = presenter;
         }
 
-        private CommandBarButton _runAllTestsButton;
-        private CommandBarButton _windowsTestExplorerButton;
-
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
@@ -38,13 +29,7 @@ namespace Rubberduck.UI.UnitTesting
             //_runAllTestsButton = AddButton(menu, "&Run All Tests", true, OnRunAllTestsButtonClick, Resources.AllLoadedTests_8644_24);
         }
 
-        void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            _presenter.Show();
-            _presenter.RunTests();
-        }
-
-        void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _presenter.Show();
         }

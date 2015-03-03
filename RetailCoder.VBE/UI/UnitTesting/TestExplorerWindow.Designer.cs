@@ -183,7 +183,7 @@
             this.testOutputGridView.AllowUserToDeleteRows = false;
             this.testOutputGridView.AllowUserToOrderColumns = true;
             this.testOutputGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;

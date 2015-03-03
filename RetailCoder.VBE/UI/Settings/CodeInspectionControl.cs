@@ -13,27 +13,28 @@ namespace Rubberduck.UI.Settings
 {
     public partial class CodeInspectionControl : UserControl
     {
-        private BindingList<CodeInspection> _inspections;
-
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
         public CodeInspectionControl()
         {
             InitializeComponent();
         }
 
-        public CodeInspectionControl(List<CodeInspection> inspections)
+        public CodeInspectionControl(IEnumerable<CodeInspection> inspections)
             : this()
         {
-            _inspections = new BindingList<CodeInspection>(inspections
-                                                            .OrderBy(c => c.InspectionType.ToString())
-                                                            .ThenBy(c => c.Name)
-                                                            .ToList()
-                                                            );
+            var allInspections = new BindingList<CodeInspection>(inspections
+                .OrderBy(c => c.InspectionType.ToString())
+                .ThenBy(c => c.Name)
+                .ToList()
+                );
             
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.DataSource = _inspections;
+            codeInspectionsGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
+            codeInspectionsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            this.dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            codeInspectionsGrid.AutoGenerateColumns = false;
+            codeInspectionsGrid.DataSource = allInspections;
+
+            codeInspectionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             var nameColumn = new DataGridViewTextBoxColumn();
             nameColumn.Name = "InspectionName";
@@ -41,21 +42,21 @@ namespace Rubberduck.UI.Settings
             nameColumn.HeaderText = "Name";
             nameColumn.FillWeight = 150;
             nameColumn.ReadOnly = true;
-            this.dataGridView1.Columns.Add(nameColumn);
+            codeInspectionsGrid.Columns.Add(nameColumn);
 
             var typeColumn = new DataGridViewTextBoxColumn();
             typeColumn.Name = "InspectionType";
             typeColumn.DataPropertyName = "InspectionType";
             typeColumn.HeaderText = "Type";
             typeColumn.ReadOnly = true;
-            this.dataGridView1.Columns.Add(typeColumn);
+            codeInspectionsGrid.Columns.Add(typeColumn);
 
             var severityColumn = new DataGridViewComboBoxColumn();
             severityColumn.Name = "InspectionSeverity";
             severityColumn.DataPropertyName = "Severity";
             severityColumn.HeaderText = "Severity";
             severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
-            this.dataGridView1.Columns.Add(severityColumn);
+            codeInspectionsGrid.Columns.Add(severityColumn);
 
         }
     }

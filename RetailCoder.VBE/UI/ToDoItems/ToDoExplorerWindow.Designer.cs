@@ -46,7 +46,7 @@
             this.todoItemsGridView.AllowUserToAddRows = false;
             this.todoItemsGridView.AllowUserToDeleteRows = false;
             this.todoItemsGridView.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
             this.todoItemsGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.todoItemsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -54,6 +54,7 @@
             this.todoItemsGridView.Location = new System.Drawing.Point(0, 0);
             this.todoItemsGridView.Name = "todoItemsGridView";
             this.todoItemsGridView.ReadOnly = true;
+            this.todoItemsGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.todoItemsGridView.Size = new System.Drawing.Size(319, 206);
             this.todoItemsGridView.TabIndex = 0;
             this.todoItemsGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ColumnHeaderMouseClicked);
