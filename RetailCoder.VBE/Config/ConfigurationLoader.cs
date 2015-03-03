@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using System.Runtime.InteropServices;
 using System.IO;
 using Rubberduck.Inspections;
 using System.Reflection;
@@ -12,15 +11,23 @@ namespace Rubberduck.Config
 {
     public class ConfigurationLoader : IConfigurationService
     {
-        private static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
+        private static readonly string ConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
 
-        /// <summary>   Saves a Configuration to Rubberduck.config XML file via Serialization.</summary>
+        /// <summary>
+        /// Saves a Configuration to Rubberduck.config XML file via Serialization.
+        /// </summary>
         public void SaveConfiguration<T>(T toSerialize)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-            using (TextWriter textWriter = new StreamWriter(configFile))
+            var folder = Path.GetDirectoryName(ConfigFile);
+            if (!Directory.Exists(folder))
             {
-                xmlSerializer.Serialize(textWriter, toSerialize);
+                Directory.CreateDirectory(folder);
+            }
+
+            var serializer = new XmlSerializer(toSerialize.GetType());
+            using (var writer = new StreamWriter(ConfigFile))
+            {
+                serializer.Serialize(writer, toSerialize);
             }
         }
 
@@ -30,7 +37,7 @@ namespace Rubberduck.Config
         {
             try
             {
-                using (StreamReader reader = new StreamReader(configFile))
+                using (var reader = new StreamReader(ConfigFile))
                 {
                     var deserializer = new XmlSerializer(typeof(Configuration));
                     var config = (Configuration)deserializer.Deserialize(reader);
@@ -63,7 +70,7 @@ namespace Rubberduck.Config
             catch (InvalidOperationException ex)
             {
                 var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
-                        configFile + System.Environment.NewLine + System.Environment.NewLine +
+                        ConfigFile + System.Environment.NewLine + System.Environment.NewLine +
                         "Would you like to restore default configuration?" + System.Environment.NewLine + 
                         "Warning: All customized settings will be lost.";
 
