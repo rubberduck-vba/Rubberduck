@@ -204,7 +204,6 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
-    <Compile Include="UI\SourceControl\GitHubSourceControlDockablePresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

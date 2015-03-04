@@ -11,12 +11,12 @@ namespace Rubberduck.UI
         private Window _window;
         protected readonly UserControl UserControl;
 
-        protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl window)
+        protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
         {
             _vbe = vbe;
             _addin = addin;
-            UserControl = window as UserControl;
-            _window = CreateToolWindow(window);
+            UserControl = control as UserControl;
+            _window = CreateToolWindow(control);
         }
 
         private readonly VBE _vbe;

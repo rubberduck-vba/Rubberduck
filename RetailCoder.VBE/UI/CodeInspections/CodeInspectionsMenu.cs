@@ -11,17 +11,20 @@ namespace Rubberduck.UI.CodeInspections
 {
     public class CodeInspectionsMenu : Menu
     {
-        private readonly CodeInspectionsDockablePresenter _presenter; //if presenter goes out of scope, so does its toolwindow Issue #169
+        private CommandBarButton _codeInspectionsButton;
+        private readonly CodeInspectionsWindow _window;
+        private readonly CodeInspectionsDockablePresenter _presenter; //if presenter goes out of scope, so does it's toolwindow Issue #169
 
-        public CodeInspectionsMenu(VBE vbe, AddIn addIn, CodeInspectionsDockablePresenter presenter)
+        public CodeInspectionsMenu(VBE vbe, AddIn addIn, CodeInspectionsWindow view, CodeInspectionsDockablePresenter presenter)
             :base(vbe, addIn)
         {
+            _window = view;
             _presenter = presenter;
         }
 
         public void Initialize(CommandBarPopup parentMenu)
         {
-            AddButton(parentMenu, "Code &Inspections", false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
+            _codeInspectionsButton = AddButton(parentMenu, "Code &Inspections", false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
         }
 
         private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)

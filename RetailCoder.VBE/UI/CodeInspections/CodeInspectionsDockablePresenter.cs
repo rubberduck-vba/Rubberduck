@@ -13,7 +13,7 @@ namespace Rubberduck.UI.CodeInspections
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
         private IList<ICodeInspectionResult> _results;
-        private readonly IInspector _inspector;
+        private IInspector _inspector;
 
         public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
