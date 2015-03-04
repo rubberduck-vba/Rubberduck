@@ -12,8 +12,8 @@ namespace Rubberduck.UI.UnitTesting
         private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
         private readonly ITestEngine _testEngine;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
-            : base(vbe, addin, control)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl window, ITestEngine testEngine)
+            : base(vbe, addin, window)
         {
             _testEngine = testEngine;
             RegisterTestExplorerEvents();

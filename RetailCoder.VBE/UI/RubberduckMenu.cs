@@ -24,6 +24,8 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IConfigurationService _configService;
 
+        private DockablePresenterBase _sourceControlPresenter;
+
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
             : base(vbe, addIn)
         {
@@ -45,7 +47,10 @@ namespace Rubberduck.UI
 
             var inspectionExplorer = new CodeInspectionsWindow();
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
-            _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
+            _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionPresenter);
+
+            var sourceControlPanel = new SourceControlPanel();
+            _sourceControlPresenter = new GitHubSourceControlDockablePresenter(vbe, addIn, sourceControlPanel);
 
             _refactorMenu = new RefactorMenu(IDE, addInInstance, parser);
         }
@@ -71,7 +76,7 @@ namespace Rubberduck.UI
             _codeInspectionsMenu.Initialize(menu);
 
             //note: disabled for 1.2 release
-            //_sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
+            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
 
             _settings = AddButton(menu, "&Options", true, OnOptionsClick);
             _about = AddButton(menu, "&About...", true, OnAboutClick);
@@ -80,10 +85,7 @@ namespace Rubberduck.UI
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new DummyGitView(IDE.ActiveVBProject))
-            {
-                window.ShowDialog();
-            }
+            _sourceControlPresenter.Show();
         }
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -129,6 +131,10 @@ namespace Rubberduck.UI
                 if (_testMenu != null)
                 {
                     _testMenu.Dispose();
+                }
+                if (_sourceControlPresenter != null)
+                {
+                    _sourceControlPresenter.Dispose();
                 }
             }
 
