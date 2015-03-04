@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
@@ -15,11 +14,6 @@ namespace Rubberduck.UI.SourceControl
         public SourceControlPanel()
         {
             InitializeComponent();
-        }
-
-        private void PullButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

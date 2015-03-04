@@ -630,6 +630,11 @@
     <None Include="Resources\arrow-split.png" />
     <None Include="Resources\drive-download.png" />
     <None Include="Resources\drive-upload.png" />
+    <None Include="Resources\arrow-step.png" />
+    <None Include="Resources\github-alt.png" />
+    <None Include="Resources\icon-github.png" />
+    <None Include="Resources\arrow-branch-090.png" />
+    <None Include="Resources\folder-horizontal-open.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />
