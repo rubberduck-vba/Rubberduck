@@ -1,5 +1,11 @@
-﻿using Microsoft.Office.Core;
+﻿using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Properties;
+using Rubberduck.UnitTesting;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.UnitTesting
@@ -19,22 +25,33 @@ namespace Rubberduck.UI.UnitTesting
             _presenter = presenter;
         }
 
+        private CommandBarButton _runAllTestsButton;
+        private CommandBarButton _windowsTestExplorerButton;
+
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
-            menu.Caption = "&Test Explorer";
-            menu.Click += OnTestExplorerButtonClick;
+            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            menu.Caption = "Te&st";
+
+            _windowsTestExplorerButton = AddButton(menu, "&Test Explorer", false, new CommandBarButtonClickEvent(OnTestExplorerButtonClick), Resources.TestManager_8590_32);
+            _runAllTestsButton = AddButton(menu, "&Run All Tests", true, new CommandBarButtonClickEvent(OnRunAllTestsButtonClick), Resources.AllLoadedTests_8644_24);
         }
 
-        private void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            _presenter.Show();
+            _presenter.RunTests();
+        }
+
+        void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _presenter.Show();
         }
 
-        private bool _disposed;
+        bool disposed = false;
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (disposed)
             {
                 return;
             }
@@ -52,7 +69,7 @@ namespace Rubberduck.UI.UnitTesting
                 }
             }
 
-            _disposed = true;
+            disposed = true;
             base.Dispose(disposing);
         }
     }
