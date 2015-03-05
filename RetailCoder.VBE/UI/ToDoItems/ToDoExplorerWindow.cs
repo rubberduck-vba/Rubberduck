@@ -25,6 +25,7 @@ namespace Rubberduck.UI.ToDoItems
             { 
                 _todoItems = new BindingList<ToDoItem>(value.ToList());
                 todoItemsGridView.DataSource = _todoItems;
+                todoItemsGridView.Refresh();
             }
         }
 

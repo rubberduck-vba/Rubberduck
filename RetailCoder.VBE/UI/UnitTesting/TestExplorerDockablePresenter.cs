@@ -118,11 +118,21 @@ namespace Rubberduck.UI.UnitTesting
 
             var signature = string.Concat("Public Sub ", controlSelection.MethodName, "()");
 
-            var codeModule = this.VBE.VBProjects.Cast<VBProject>()
-                     .First(project => project.Name == controlSelection.ProjectName)
-                     .VBComponents.Cast<VBComponent>()
-                     .First(component => component.Name == controlSelection.ModuleName)
-                     .CodeModule;
+            var projects = this.VBE.VBProjects.Cast<VBProject>()
+                    .Where(project => project.Name == controlSelection.ProjectName
+                                && project.VBComponents
+                                    .Cast<VBComponent>()
+                                    .Any(c => c.Name == controlSelection.ModuleName)
+                           );
+
+            var codeModule = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
+                                     .First(component => component.Name == controlSelection.ModuleName)
+                                     .CodeModule;
+
+            if (codeModule == null)
+            {
+                return;
+            }
 
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {

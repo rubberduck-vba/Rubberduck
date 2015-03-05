@@ -113,16 +113,19 @@ namespace Rubberduck.UI.ToDoItems
 
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
         {
-            var project = VBE.VBProjects.Cast<VBProject>()
-                .FirstOrDefault(p => p.Name == e.SelectedItem.ProjectName);
+            var projects = VBE.VBProjects.Cast<VBProject>()
+                .Where(p => p.Name == e.SelectedItem.ProjectName
+                                    && p.VBComponents.Cast<VBComponent>()
+                                        .Any(c => c.Name == e.SelectedItem.ModuleName)
+                                );
 
-            if (project == null)
+            if (projects == null)
             {
                 return;
             }
 
-            var component = project.VBComponents.Cast<VBComponent>()
-                .FirstOrDefault(c => c.Name == e.SelectedItem.ModuleName);
+            var component = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
+                                    .First(c => c.Name == e.SelectedItem.ModuleName);
 
             if (component == null)
             {
