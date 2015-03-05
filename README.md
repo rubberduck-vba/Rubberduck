@@ -13,11 +13,18 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 #Contributing
 
 If you're a C# developer looking for a fun project to contribute to, feel free to fork the project and 
-[come meet the devs in Code Review's "VBA" chatroom](http://chat.stackexchange.com/rooms/14929/vba) - we'll be happy to answer your questions and help you help us take the VBE into the 21st century!
+[come meet the devs in Code Review's "VBA" chatroom][chat] - we'll be happy to answer your questions and help you help us take the VBE into the 21st century!
 
-Some issues are tagged with [help-wanted](https://github.com/retailcoder/Rubberduck/labels/help-wanted), but that doesn't mean we can't use some help with anything else in the project - if this project interests you, we want to hear from you!
+Some issues are tagged with [help-wanted][helpwanted], but that doesn't mean we can't use some help with anything else in the project - if this project interests you, we want to hear from you!
 
-There is additonal information about [building the project in the project wiki](https://github.com/retailcoder/Rubberduck/wiki/Building-&-Installation).
+We follow a [development branch workflow][branch], so please submit any Pull Requests to the `next` branch.
+
+There is additonal information about [building the project in our wiki][install].
+
+  [chat]:http://chat.stackexchange.com/rooms/14929/vba
+  [helpwanted]:https://github.com/retailcoder/Rubberduck/labels/help-wanted
+  [install]:https://github.com/retailcoder/Rubberduck/wiki/Building-&-Installation
+  [branch]:https://github.com/retailcoder/Rubberduck/issues/288
 
 ---
 
