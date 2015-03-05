@@ -125,9 +125,14 @@ namespace Rubberduck.UI.UnitTesting
                                     .Any(c => c.Name == controlSelection.ModuleName)
                            );
 
-            var codeModule = projects.First().VBComponents.Cast<VBComponent>()
-                                .First(component => component.Name == controlSelection.ModuleName)
-                                .CodeModule;
+            var codeModule = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
+                                     .First(component => component.Name == controlSelection.ModuleName)
+                                     .CodeModule;
+
+            if (codeModule == null)
+            {
+                return;
+            }
 
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {
