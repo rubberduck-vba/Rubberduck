@@ -61,6 +61,7 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 handler(this, EventArgs.Empty);
             }
+            ShowFoldersToggleButton.Checked = !ShowFoldersToggleButton.Checked;
         }
 
         public event EventHandler<AddComponentEventArgs> AddComponent;
