@@ -31,11 +31,16 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeExplorerWindow));
             this.CodeExplorerToolbar = new System.Windows.Forms.ToolStrip();
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SolutionTree = new System.Windows.Forms.TreeView();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
+            this.ShowFoldersToggleButton = new System.Windows.Forms.ToolStripButton();
+            this.AddClassButton = new System.Windows.Forms.ToolStripButton();
+            this.AddStdModuleButton = new System.Windows.Forms.ToolStripButton();
+            this.AddFormButton = new System.Windows.Forms.ToolStripButton();
+            this.ShowDesignerButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -44,26 +49,17 @@
             // 
             this.CodeExplorerToolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshButton,
-            this.toolStripSeparator1});
+            this.ShowFoldersToggleButton,
+            this.ShowDesignerButton,
+            this.toolStripSeparator3,
+            this.AddClassButton,
+            this.AddStdModuleButton,
+            this.AddFormButton});
             this.CodeExplorerToolbar.Location = new System.Drawing.Point(0, 0);
             this.CodeExplorerToolbar.Name = "CodeExplorerToolbar";
             this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Refresh";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // panel1
             // 
@@ -130,6 +126,67 @@
             this.TreeNodeIcons.Images.SetKeyName(41, "Locked");
             this.TreeNodeIcons.Images.SetKeyName(42, "OfficeDocument");
             // 
+            // RefreshButton
+            // 
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Refresh";
+            // 
+            // ShowFoldersToggleButton
+            // 
+            this.ShowFoldersToggleButton.Checked = true;
+            this.ShowFoldersToggleButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ShowFoldersToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ShowFoldersToggleButton.Image = global::Rubberduck.Properties.Resources.folder_horizontal;
+            this.ShowFoldersToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowFoldersToggleButton.Name = "ShowFoldersToggleButton";
+            this.ShowFoldersToggleButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowFoldersToggleButton.ToolTipText = "Toggle folders";
+            // 
+            // AddClassButton
+            // 
+            this.AddClassButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddClassButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
+            this.AddClassButton.ImageTransparentColor = System.Drawing.Color.Transparent;
+            this.AddClassButton.Name = "AddClassButton";
+            this.AddClassButton.Size = new System.Drawing.Size(23, 22);
+            this.AddClassButton.ToolTipText = "New class module (.cls)";
+            // 
+            // AddStdModuleButton
+            // 
+            this.AddStdModuleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddStdModuleButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
+            this.AddStdModuleButton.ImageTransparentColor = System.Drawing.Color.Transparent;
+            this.AddStdModuleButton.Name = "AddStdModuleButton";
+            this.AddStdModuleButton.Size = new System.Drawing.Size(23, 22);
+            this.AddStdModuleButton.ToolTipText = "New standard module (.bas)";
+            // 
+            // AddFormButton
+            // 
+            this.AddFormButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddFormButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
+            this.AddFormButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.AddFormButton.Name = "AddFormButton";
+            this.AddFormButton.Size = new System.Drawing.Size(23, 22);
+            this.AddFormButton.ToolTipText = "New form";
+            // 
+            // ShowDesignerButton
+            // 
+            this.ShowDesignerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ShowDesignerButton.Image = global::Rubberduck.Properties.Resources.application_resize;
+            this.ShowDesignerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowDesignerButton.Name = "ShowDesignerButton";
+            this.ShowDesignerButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowDesignerButton.ToolTipText = "Open designer";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
             // CodeExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -151,8 +208,13 @@
         private System.Windows.Forms.ToolStrip CodeExplorerToolbar;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripButton RefreshButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         public System.Windows.Forms.TreeView SolutionTree;
         private System.Windows.Forms.ImageList TreeNodeIcons;
+        private System.Windows.Forms.ToolStripButton AddClassButton;
+        private System.Windows.Forms.ToolStripButton AddStdModuleButton;
+        private System.Windows.Forms.ToolStripButton AddFormButton;
+        private System.Windows.Forms.ToolStripButton ShowFoldersToggleButton;
+        public System.Windows.Forms.ToolStripButton ShowDesignerButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }

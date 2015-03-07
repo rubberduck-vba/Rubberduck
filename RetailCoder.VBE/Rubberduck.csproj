@@ -635,6 +635,8 @@
     <None Include="Resources\icon-github.png" />
     <None Include="Resources\arrow-branch-090.png" />
     <None Include="Resources\folder-horizontal-open.png" />
+    <None Include="Resources\folder-horizontal.png" />
+    <None Include="Resources\application-resize.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

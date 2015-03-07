@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
@@ -37,6 +38,51 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
+            Control.AddComponent += AddComponent;
+            Control.ToggleFolders += ToggleFolders;
+            Control.ShowDesigner += ShowDesigner;
+        }
+
+        private void ShowDesigner(object sender, System.EventArgs e)
+        {
+            var node = Control.SolutionTree.SelectedNode;
+            if (node != null && node.Tag != null)
+            {
+                var selection = (QualifiedSelection)node.Tag;
+                var module = VBE.FindCodeModules(selection.QualifiedName).FirstOrDefault();
+                if (module == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    module.Parent.DesignerWindow().Visible = true;
+                }
+                catch
+                {
+                    Control.ShowDesignerButton.Enabled = false;
+                }
+            }
+        }
+
+        private bool _showFolders = true;
+        private void ToggleFolders(object sender, System.EventArgs e)
+        {
+            _showFolders = !_showFolders;
+            RefreshExplorerTreeView();
+        }
+
+        private void AddComponent(object sender, AddComponentEventArgs e)
+        {
+            var project = VBE.ActiveVBProject;
+            if (project == null)
+            {
+                return;
+            }
+
+            project.VBComponents.Add(e.ComponentType);
+            RefreshExplorerTreeView();
         }
 
         private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
@@ -97,9 +143,9 @@ namespace Rubberduck.UI.CodeExplorer
                 else
                 {
                     root.ImageKey = "ClosedFolder";
-                    root.Expand();
                     var nodes = (await CreateModuleNodesAsync(project, treeView.Font)).ToArray();
                     AddProjectFolders(project, root, nodes);
+                    root.Expand();
                 }
             });
         }
@@ -156,10 +202,18 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void AddFolderNode(TreeNode root, string text, string imageKey, TreeNode[] nodes)
         {
-            var node = root.Nodes.Add(text);
-            node.ImageKey = imageKey;
-            node.SelectedImageKey = imageKey;
-            node.Nodes.AddRange(nodes);
+            if (_showFolders)
+            {
+                var node = root.Nodes.Add(text);
+                node.ImageKey = imageKey;
+                node.SelectedImageKey = imageKey;
+                node.Nodes.AddRange(nodes);
+                node.Expand();
+            }
+            else
+            {
+                root.Nodes.AddRange(nodes);
+            }
         }
 
         private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project, Font font)

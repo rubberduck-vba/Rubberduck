@@ -73,6 +73,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddForm_369_32 {
+            get {
+                object obj = ResourceManager.GetObject("AddForm_369_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AddModule_368_32 {
             get {
                 object obj = ResourceManager.GetObject("AddModule_368_32", resourceCulture);
@@ -96,6 +106,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap AllLoadedTests_8644_24 {
             get {
                 object obj = ResourceManager.GetObject("AllLoadedTests_8644_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap application_resize {
+            get {
+                object obj = ResourceManager.GetObject("application-resize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -326,6 +346,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap flask_plus {
             get {
                 object obj = ResourceManager.GetObject("flask_plus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap folder_horizontal {
+            get {
+                object obj = ResourceManager.GetObject("folder-horizontal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

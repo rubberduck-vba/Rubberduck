@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.Extensions;
 
@@ -15,6 +16,13 @@ namespace Rubberduck.UI.CodeExplorer
         public CodeExplorerWindow()
         {
             InitializeComponent();
+
+            ShowFoldersToggleButton.Click += ShowFoldersToggleButtonClick;
+            ShowDesignerButton.Click += ShowDesignerButtonClick;
+            AddClassButton.Click += AddClassButton_Click;
+            AddStdModuleButton.Click += AddStdModuleButton_Click;
+            AddFormButton.Click += AddFormButton_Click;
+
             RefreshButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
             SolutionTree.MouseDown += SolutionTreeMouseDown;
@@ -22,10 +30,66 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.AfterCollapse += SolutionTreeAfterCollapse;
             SolutionTree.BeforeExpand += SolutionTreeBeforeExpand;
             SolutionTree.BeforeCollapse += SolutionTreeBeforeCollapse;
+            SolutionTree.AfterSelect += SolutionTreeClick;
             SolutionTree.ShowLines = false;
             SolutionTree.ImageList = TreeNodeIcons;
             SolutionTree.ShowNodeToolTips = true;
             SolutionTree.LabelEdit = false;
+        }
+
+        private void SolutionTreeClick(object sender, EventArgs e)
+        {
+            var node = SolutionTree.SelectedNode;
+            ShowDesignerButton.Enabled = (node != null && node.ImageKey == "Form");
+        }
+
+        public event EventHandler ShowDesigner;
+        private void ShowDesignerButtonClick(object sender, EventArgs e)
+        {
+            var handler = ShowDesigner;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler ToggleFolders;
+        private void ShowFoldersToggleButtonClick(object sender, EventArgs e)
+        {
+            var handler = ToggleFolders;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<AddComponentEventArgs> AddComponent;
+
+        private void AddFormButton_Click(object sender, EventArgs e)
+        {
+            var handler = AddComponent;
+            if (handler != null)
+            {
+                handler(this, new AddComponentEventArgs(vbext_ComponentType.vbext_ct_MSForm));
+            }
+        }
+
+        private void AddStdModuleButton_Click(object sender, EventArgs e)
+        {
+            var handler = AddComponent;
+            if (handler != null)
+            {
+                handler(this, new AddComponentEventArgs(vbext_ComponentType.vbext_ct_StdModule));
+            }
+        }
+
+        private void AddClassButton_Click(object sender, EventArgs e)
+        {
+            var handler = AddComponent;
+            if (handler != null)
+            {
+                handler(this, new AddComponentEventArgs(vbext_ComponentType.vbext_ct_ClassModule));
+            }
         }
 
         private void SolutionTreeAfterCollapse(object sender, TreeViewEventArgs e)
@@ -111,5 +175,16 @@ namespace Rubberduck.UI.CodeExplorer
 
             handler(this, EventArgs.Empty);
         }
+    }
+
+    public class AddComponentEventArgs : EventArgs
+    {
+        public AddComponentEventArgs(vbext_ComponentType type)
+        {
+            _type = type;
+        }
+
+        private readonly vbext_ComponentType _type;
+        public vbext_ComponentType ComponentType { get { return _type; } }
     }
 }
