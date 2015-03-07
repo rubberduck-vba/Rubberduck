@@ -24,11 +24,7 @@ namespace Rubberduck.UnitTesting
             "TestExit:\n",
             "    Exit Sub\n",
             "TestFail:\n",
-            "    If Err.Number <> 0 Then\n",
-            "        Assert.Fail \"Test raised an error: #\" & Err.Number & \" - \" & Err.Description\n",
-            "    Else\n",
-            "        Resume TestExit\n",
-            "    End If\n",
+            "    Assert.Fail \"Test raised an error: #\" & Err.Number & \" - \" & Err.Description\n",
             "End Sub\n"
             );
 
