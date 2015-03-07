@@ -31,6 +31,11 @@ namespace Rubberduck.VBA
 
         public IEnumerable<VBComponentParseResult> Parse(VBProject project)
         {
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                yield break;
+            }
+
             var modules = project.VBComponents.Cast<VBComponent>();
             foreach(var module in modules)
             {
