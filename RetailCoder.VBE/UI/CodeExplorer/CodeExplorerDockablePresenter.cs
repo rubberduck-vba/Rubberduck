@@ -94,10 +94,17 @@ namespace Rubberduck.UI.CodeExplorer
             var treeView = Control.SolutionTree;
             Control.Invoke((MethodInvoker)async delegate
             {
-                await AddModuleNodesAsync(project, treeView.Font, root);
                 root.Text = project.Name;
-                root.Tag = new QualifiedSelection();
-                root.ImageKey = "ClosedFolder";
+                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    root.ImageKey = "Locked";
+                }
+                else
+                {
+                    await AddModuleNodesAsync(project, treeView.Font, root);
+                    root.Tag = new QualifiedSelection();
+                    root.ImageKey = "ClosedFolder";
+                }
             });
         }
 
