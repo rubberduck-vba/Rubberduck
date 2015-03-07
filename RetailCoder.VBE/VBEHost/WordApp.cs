@@ -6,12 +6,13 @@ namespace Rubberduck.VBEHost
     {
         public WordApp() : base("Word") { }
 
-        public override void Run(string target)
+        public override void Run(string projectName, string moduleName, string methodName)
         {
-            base.Application.Run(target);
+            var call = GenerateMethodCall(projectName, moduleName, methodName);
+            Application.Run(call);
         }
 
-        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
+        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
         {
             return string.Concat(moduleName, ".", methodName);
         }

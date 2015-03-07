@@ -6,13 +6,15 @@ namespace Rubberduck.VBEHost
     {
         public PowerPointApp() : base("PowerPoint") { }
 
-        public override void Run(string target)
+        public override void Run(string projectName, string moduleName, string methodName)
         {
-            object[] paramArray = { }; //powerpoint requires a paramarray, so we pass it an empty array.
-            base.Application.Run(target, paramArray);
+            object[] paramArray = { }; //PowerPoint requires a paramarray, so we pass it an empty array.
+
+            var call = GenerateMethodCall(projectName, moduleName, methodName);
+            Application.Run(call, paramArray);
         }
 
-        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
+        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
         {
             /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax, 
              * but that would require significant changes to the Unit Testing Framework.

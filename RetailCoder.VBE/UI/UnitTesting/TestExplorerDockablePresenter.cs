@@ -4,6 +4,7 @@ using Rubberduck.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Reflection;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -16,7 +17,49 @@ namespace Rubberduck.UI.UnitTesting
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
+
+            _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
+            _testEngine.ModuleCleanup += _testEngine_ModuleCleanup;
+            _testEngine.MethodInitialize += TestEngineMethodInitialize;
+            _testEngine.MethodCleanup += TestEngineMethodCleanup;
+
             RegisterTestExplorerEvents();
+        }
+
+        private void TestEngineMethodCleanup(object sender, TestModuleEventArgs e)
+        {
+            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
+            foreach (var codeModule in modules)
+            {
+                codeModule.Parent.RunMethodsWithAttribute<TestCleanupAttribute>();
+            }
+        }
+
+        private void TestEngineMethodInitialize(object sender, TestModuleEventArgs e)
+        {
+            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
+            foreach (var codeModule in modules)
+            {
+                codeModule.Parent.RunMethodsWithAttribute<TestInitializeAttribute>();
+            }
+        }
+
+        private void _testEngine_ModuleCleanup(object sender, TestModuleEventArgs e)
+        {
+            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
+            foreach (var codeModule in modules)
+            {
+                codeModule.Parent.RunMethodsWithAttribute<ModuleCleanupAttribute>();
+            }
+        }
+
+        private void _testEngine_ModuleInitialize(object sender, TestModuleEventArgs e)
+        {
+            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
+            foreach (var codeModule in modules)
+            {
+                codeModule.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
+            }
         }
 
         public void Synchronize()

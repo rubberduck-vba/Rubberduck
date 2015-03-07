@@ -47,12 +47,8 @@ namespace Rubberduck.UI
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, addInInstance, parser);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
         }
-
-        private CommandBarButton _about;
-        private CommandBarButton _settings;
-        private CommandBarButton _sourceControl;
 
         public void Initialize()
         {
@@ -70,12 +66,9 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            //note: disabled for 1.2 release
-            //_sourceControl = AddButton(menu, "Source Control", false, new CommandBarButtonClickEvent(OnSourceControlClick));
-
-            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
-            _about = AddButton(menu, "&About...", true, OnAboutClick);
-
+            AddButton(menu, "Source Control", false, OnSourceControlClick);
+            AddButton(menu, "&Options", true, OnOptionsClick);
+            AddButton(menu, "&About...", true, OnAboutClick);
         }
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)

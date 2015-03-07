@@ -46,7 +46,11 @@ namespace Rubberduck.Reflection
         }
 
         private readonly string _projectName;
+        public string ProjectName { get { return _projectName; } }
+
         private readonly string _moduleName;
+        public string ModuleName { get { return _moduleName; } }
+
         public string QualifiedName { get { return string.Concat(_projectName, ".", _moduleName, ".", _name); } }
 
         private readonly MemberType _memberType;

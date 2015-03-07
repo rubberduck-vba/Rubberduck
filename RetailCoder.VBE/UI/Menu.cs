@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System.Windows.Forms;
-using Rubberduck.Properties;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
     public class Menu : IDisposable
     {
-        private VBE vbe;
-        protected readonly AddIn addInInstance;
+        private readonly VBE _vbe;
+        protected readonly AddIn AddIn;
 
-        protected VBE IDE { get { return this.vbe; } }
+        protected VBE IDE { get { return this._vbe; } }
 
-        public Menu(VBE vbe, AddIn addInInstance)
+        protected Menu(VBE vbe, AddIn addIn)
         {
-            this.vbe = vbe;
-            this.addInInstance = addInInstance;
+            AddIn = addIn;
+            _vbe = vbe;
         }
 
-        protected CommandBarButton AddButton(CommandBarPopup parentMenu, string caption)
+        private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption)
         {
             var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
             button.Caption = caption;
@@ -93,23 +90,21 @@ namespace Rubberduck.UI
         /// <param name="toolWindowCaption">Text to display as the window title.</param>
         /// <param name="toolWindowUserControl">User control to attach to the window.</param>
         /// <returns>Microsoft.Vbe.Interop.Window</returns>
-        protected Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
-        {
-            Object userControlObject = null;
-            _DockableWindowHost userControlHost;
-            Window toolWindow;
-            const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost";
-            const string dockableWindowHostGUID = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
+        //protected Window CreateToolWindow(string toolWindowCaption, UserControl toolWindowUserControl)
+        //{
+        //    // note: R# flags is method as not used
+        //    Object userControlObject = null;
+        //    const string dockableWindowHostProgId = "Rubberduck.UI.DockableWindowHost";
+        //    const string dockableWindowHostGuid = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
-            toolWindow = this.vbe.Windows.CreateToolWindow(this.addInInstance, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGUID, ref userControlObject);
+        //    var toolWindow = _vbe.Windows.CreateToolWindow(AddIn, dockableWindowHostProgId, toolWindowCaption, dockableWindowHostGuid, ref userControlObject);
+        //    var userControlHost = (_DockableWindowHost)userControlObject;
 
-            userControlHost = (_DockableWindowHost)userControlObject;
-            toolWindow.Visible = true; //window resizing doesn't work without this
+        //    toolWindow.Visible = true; //window resizing doesn't work without this
 
-            userControlHost.AddUserControl(toolWindowUserControl);
-
-            return toolWindow;
-        }
+        //    userControlHost.AddUserControl(toolWindowUserControl);
+        //    return toolWindow;
+        //}
 
         public void Dispose()
         {
@@ -117,6 +112,8 @@ namespace Rubberduck.UI
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) { }
+        protected virtual void Dispose(bool disposing)
+        {            
+        }
     }
 }

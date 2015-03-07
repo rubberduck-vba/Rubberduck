@@ -6,12 +6,12 @@ namespace Rubberduck.VBEHost
     {
         public ExcelApp() : base("Excel") { }
 
-        public override void Run(string target)
+        public override void Run(string projectName, string moduleName, string methodName)
         {
-            base.Application.Run(target);
+            Application.Run(GenerateMethodCall(projectName, moduleName, methodName));
         }
 
-        protected override string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName)
+        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
         {
             return string.Concat(projectName, ".", moduleName, ".", methodName);
         }

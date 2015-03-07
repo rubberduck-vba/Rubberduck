@@ -34,4 +34,14 @@ namespace Rubberduck.Reflection
     /// An attribute that marks a public procedure as a method to execute after each test is executed.
     /// </summary>
     public class TestCleanupAttribute : MemberAttributeBase { }
+
+    /// <summary>
+    /// An attribute that marks a public procedure as a method to execute before the first test is executed.
+    /// </summary>
+    public class ModuleInitializeAttribute : MemberAttributeBase { }
+
+    /// <summary>
+    /// An attribute that marks a public procedure as a method to execute after all tests in the module have executed.
+    /// </summary>
+    public class ModuleCleanupAttribute : MemberAttributeBase { }
 }

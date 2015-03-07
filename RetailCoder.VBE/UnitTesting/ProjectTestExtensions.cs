@@ -14,22 +14,36 @@ namespace Rubberduck.UnitTesting
 {
     internal static class ProjectTestExtensions
     {
-        public static IEnumerable<VBComponent> TestModules(this VBProject project)
+        /// <summary>
+        /// Runs all methods with specified attribute.
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="component"></param>
+        /// <remarks>
+        /// Order of execution cannot be garanteed.
+        /// </remarks>
+        public static void RunMethodsWithAttribute<TAttribute>(this VBComponent component)
+            where TAttribute : MemberAttributeBase, new()
         {
-            return project.VBComponents
-                          .Cast<VBComponent>()
-                          .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>());
+            var hostApp = component.VBE.HostApplication();
+            var methods = component.GetMembers(vbext_ProcKind.vbext_pk_Proc)
+                                   .Where(member => member.HasAttribute<TAttribute>());
+            foreach (var method in methods)
+            {
+                hostApp.Run(method.ProjectName, method.ModuleName, method.Name);
+            }
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBProject project)
         {
-            IHostApplication hostApp = project.VBE.HostApplication();
+            var hostApp = project.VBE.HostApplication();
 
             return project.VBComponents
                           .Cast<VBComponent>()
-                          .Where(component => component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
-                          .Select(component => new { Component = component, Members = component.GetMembers().Where(member => IsTestMethod(member))})
-                          .SelectMany(component => component.Members.Select(method => new TestMethod(project.Name, component.Component.Name, method.Name, hostApp)));
+                          .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
+                          .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
+                          .SelectMany(component => component.Members.Select(method => 
+                              new TestMethod(project.Name, component.Component.Name, method.Name, hostApp)));
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
@@ -38,17 +52,21 @@ namespace Rubberduck.UnitTesting
 
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
             {
-                return component.GetMembers().Where(member => IsTestMethod(member))
-                                .Select(member => new TestMethod(component.Collection.Parent.Name, component.Name, member.Name, hostApp));
+                return component.GetMembers().Where(IsTestMethod)
+                                .Select(member => 
+                                    new TestMethod(component.Collection.Parent.Name, component.Name, member.Name, hostApp));
             }
 
             return new List<TestMethod>();
         }
 
+        private static readonly string[] ReservedTestAttributeNames = {"TestInitialize", "TestCleanup"};
+
         private static bool IsTestMethod(Member member)
         {
             return (member.Name.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
                  && member.Signature.Contains(member.Name + "()")
+                 && !ReservedTestAttributeNames.Contains(member.Name)
                  && member.MemberType == MemberType.Sub
                  && member.MemberVisibility == MemberVisibility.Public;
         }

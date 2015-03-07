@@ -18,14 +18,14 @@ namespace Rubberduck.VBEHost
             Marshal.ReleaseComObject(Application);
         }
 
-        public abstract void Run(string target);
-        protected abstract string GenerateFullyQualifiedName(string projectName, string moduleName, string methodName);
+        public abstract void Run(string projectName, string moduleName, string methodName);
+        protected abstract string GenerateMethodCall(string projectName, string moduleName, string methodName);
 
         public TimeSpan TimedMethodCall(string projectName, string moduleName, string methodName)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            Run(GenerateFullyQualifiedName(projectName, moduleName, methodName));
+            Run(projectName, moduleName, methodName);
 
             stopwatch.Stop();
             return stopwatch.Elapsed;

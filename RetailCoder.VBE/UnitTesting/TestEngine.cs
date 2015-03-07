@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
-        private IEnumerable<TestMethod> _lastRun;
-
         public event EventHandler<TestCompleteEventArgs> TestComplete;
-        public event EventHandler<EventArgs> AllTestsComplete;
 
         public TestEngine()
         {
-            this.AllTests = new Dictionary<TestMethod, TestResult>();
-        }
-
-        void TestEngine2_AllTestsComplete(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
+            AllTests = new Dictionary<TestMethod, TestResult>();
         }
 
         public IDictionary<TestMethod, TestResult> AllTests
@@ -29,32 +22,72 @@ namespace Rubberduck.UnitTesting
 
         public IEnumerable<TestMethod> FailedTests()
         {
-            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
+            return AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Failed)
                                 .Select(test => test.Key);
         }
 
         public IEnumerable<TestMethod> LastRunTests(TestOutcome? outcome = null)
         {
-            return this.AllTests.Where(test => test.Value != null
+            return AllTests.Where(test => test.Value != null
                  && test.Value.Outcome == (outcome ?? test.Value.Outcome))
                  .Select(test => test.Key);
         }
 
         public IEnumerable<TestMethod> NotRunTests()
         {
-            return this.AllTests.Where(test => test.Value == null)
+            return AllTests.Where(test => test.Value == null)
                                 .Select(test => test.Key);
         }
 
         public IEnumerable<TestMethod> PassedTests()
         {
-            return this.AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
+            return AllTests.Where(test => test.Value != null && test.Value.Outcome == TestOutcome.Succeeded)
                                 .Select(test => test.Key);
+        }
+
+        public event EventHandler<TestModuleEventArgs> ModuleInitialize;
+        private void RunModuleInitialize(string projectName, string moduleName)
+        {
+            var handler = ModuleInitialize;
+            if (handler != null)
+            {
+                handler(this, new TestModuleEventArgs(projectName, moduleName));
+            }
+        }
+
+        public event EventHandler<TestModuleEventArgs> ModuleCleanup;
+        private void RunModuleCleanup(string projectName, string moduleName)
+        {
+            var handler = ModuleCleanup;
+            if (handler != null)
+            {
+                handler(this, new TestModuleEventArgs(projectName, moduleName));
+            }
+        }
+
+        public event EventHandler<TestModuleEventArgs> MethodInitialize;
+        private void RunMethodInitialize(string projectName, string moduleName)
+        {
+            var handler = MethodInitialize;
+            if (handler != null)
+            {
+                handler(this, new TestModuleEventArgs(projectName, moduleName));
+            }
+        }
+
+        public event EventHandler<TestModuleEventArgs> MethodCleanup;
+        private void RunMethodCleanup(string projectName, string moduleName)
+        {
+            var handler = MethodCleanup;
+            if (handler != null)
+            {
+                handler(this, new TestModuleEventArgs(projectName, moduleName));
+            }
         }
 
         public void Run()
         {
-            Run(this.AllTests.Keys);
+            Run(AllTests.Keys);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -63,36 +96,49 @@ namespace Rubberduck.UnitTesting
             {
                 var methods = tests.ToDictionary(test => test, test => null as TestResult);
                 AssignResults(methods.Keys);
-                _lastRun = methods.Keys;
-            }
-            else
-            {
-                _lastRun = null;
             }
         }
 
         private void AssignResults(IEnumerable<TestMethod> testMethods)
         {
             var tests = testMethods.ToList();
-            var keys = this.AllTests.Keys.ToList();
-            foreach (var test in keys)
+
+            var modules = tests.GroupBy(t => new {Project = t.ProjectName, Module = t.ModuleName});
+
+            foreach (var module in modules)
             {
-                if (tests.Contains(test))
+                RunModuleInitialize(module.Key.Project, module.Key.Module);
+
+                foreach (var test in module)
                 {
-                    var result = test.Run();
-                    this.AllTests[test] = result;
-                    OnTestComplete(new TestCompleteEventArgs(test, result));
+                    if (tests.Contains(test))
+                    {
+                        RunMethodInitialize(test.ProjectName, test.ModuleName);
+                    
+                        var result = test.Run();
+                        AllTests[test] = result;
+
+                        RunMethodCleanup(test.ProjectName, test.ModuleName);
+
+
+                        OnTestComplete(new TestCompleteEventArgs(test, result));
+                    }
+                    else
+                    {
+                        AllTests[test] = null;
+                    }
                 }
-                else
-                {
-                    this.AllTests[test] = null;
-                }
+
+                RunModuleCleanup(module.Key.Project, module.Key.Module);
             }
         }
 
         protected virtual void OnTestComplete(TestCompleteEventArgs arg)
         {
-            TestComplete(this, arg);
+            if (TestComplete != null)
+            {
+                TestComplete(this, arg);
+            }
         }
     }
 }

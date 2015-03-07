@@ -30,7 +30,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
         public IEnumerable<QualifiedContext<TreeNode>> Members
         {
-            get { return new QualifiedContext<TreeNode>[] {new QualifiedContext<TreeNode>(_name , _tree)}; }
+            get { return new[] {new QualifiedContext<TreeNode>(_name , _tree)}; }
         }
 
         public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
