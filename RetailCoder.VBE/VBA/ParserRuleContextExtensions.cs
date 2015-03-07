@@ -23,7 +23,7 @@ namespace Rubberduck.VBA
         public static Selection GetSelection(this ParserRuleContext context)
         {
             if (context == null)
-                return Selection.Empty;
+                return Selection.Home;
 
             // ANTLR indexes are 0-based, but VBE's are 1-based.
             // 1 is the default value that will select all lines. Replace zeros with ones.

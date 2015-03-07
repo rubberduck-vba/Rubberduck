@@ -33,7 +33,7 @@ namespace Rubberduck.Extensions
             _endColumn = endColumn;
         }
 
-        public static Selection Empty { get { return new Selection(1, 1, 1, 1); } }
+        public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
 
         public bool Contains(Selection selection)
         {

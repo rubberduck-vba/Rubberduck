@@ -128,6 +128,7 @@
             this.TreeNodeIcons.Images.SetKeyName(39, "Label");
             this.TreeNodeIcons.Images.SetKeyName(40, "Hourglass");
             this.TreeNodeIcons.Images.SetKeyName(41, "Locked");
+            this.TreeNodeIcons.Images.SetKeyName(42, "OfficeDocument");
             // 
             // CodeExplorerWindow
             // 

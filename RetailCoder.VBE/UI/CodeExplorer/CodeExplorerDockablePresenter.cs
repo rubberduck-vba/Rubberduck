@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
@@ -36,20 +37,14 @@ namespace Rubberduck.UI.CodeExplorer
 
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
-            Control.SolutionTree.AfterExpand += TreeViewAfterExpandNode;
-            Control.SolutionTree.AfterCollapse += TreeViewAfterCollapseNode;
         }
 
         private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (!e.Node.IsExpanded)
-            {
-                e.Node.Expand();
-            }
-
             if (e.Selection.StartLine != 0)
             {
                 //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
+                //todo: determiner if this "temp fix" is still needed.
                 var selection = new Selection(e.Selection.StartLine,
                                                 1,
                                                 e.Selection.EndLine,
@@ -101,63 +96,97 @@ namespace Rubberduck.UI.CodeExplorer
                 }
                 else
                 {
-                    await AddModuleNodesAsync(project, treeView.Font, root);
-                    root.Tag = new QualifiedSelection();
                     root.ImageKey = "ClosedFolder";
+                    root.Expand();
+                    var nodes = (await CreateModuleNodesAsync(project, treeView.Font)).ToArray();
+                    AddProjectFolders(project, root, nodes);
                 }
             });
         }
 
-        private async Task AddModuleNodesAsync(VBProject project, Font font, TreeNode root)
+        private static readonly IDictionary<vbext_ComponentType, string> ComponentTypeIcons =
+            new Dictionary<vbext_ComponentType, string>
+            {
+                { vbext_ComponentType.vbext_ct_StdModule, "StandardModule"},
+                { vbext_ComponentType.vbext_ct_ClassModule, "ClassModule"},
+                { vbext_ComponentType.vbext_ct_Document, "OfficeDocument"},
+                { vbext_ComponentType.vbext_ct_ActiveXDesigner, "ClassModule"},
+                { vbext_ComponentType.vbext_ct_MSForm, "Form"}
+            };
+
+        private void AddProjectFolders(VBProject project, TreeNode root, TreeNode[] components)
         {
-            //todo: parsing modules async is great, but we'll never see modules "(parsing...)" because the project nodes are collapsed.
+            var documentNodes = components.Where(node => node.ImageKey == "OfficeDocument")
+                                          .OrderBy(node => node.Text)
+                                          .ToArray();
+            if (project.VBComponents.Cast<VBComponent>()
+                       .Any(component => component.Type == vbext_ComponentType.vbext_ct_Document))
+            {
+                AddFolderNode(root, "Documents", "ClosedFolder", documentNodes);
+            }
+
+            var formsNodes = components.Where(node => node.ImageKey == "Form")
+                                       .OrderBy(node => node.Text)
+                                       .ToArray();
+            if (project.VBComponents.Cast<VBComponent>()
+                       .Any(component => component.Type == vbext_ComponentType.vbext_ct_MSForm))
+            {
+                AddFolderNode(root, "Forms", "ClosedFolder", formsNodes);
+            }
+
+            var stdModulesNodes = components.Where(node => node.ImageKey == "StandardModule")
+                                            .OrderBy(node => node.Text)
+                                            .ToArray();
+            if (project.VBComponents.Cast<VBComponent>()
+                       .Any(component => component.Type == vbext_ComponentType.vbext_ct_StdModule))
+            {
+                AddFolderNode(root, "Standard Modules", "ClosedFolder", stdModulesNodes);
+            }
+
+            var classModulesNodes = components.Where(node => node.ImageKey == "ClassModule")
+                                              .OrderBy(node => node.Text)
+                                              .ToArray();
+            if (project.VBComponents.Cast<VBComponent>()
+                       .Any(component => component.Type == vbext_ComponentType.vbext_ct_ClassModule
+                                      || component.Type == vbext_ComponentType.vbext_ct_ActiveXDesigner))
+            {
+                AddFolderNode(root, "Class Modules", "ClosedFolder", classModulesNodes);
+            }
+        }
+
+        private void AddFolderNode(TreeNode root, string text, string imageKey, TreeNode[] nodes)
+        {
+            var node = root.Nodes.Add(text);
+            node.ImageKey = imageKey;
+            node.SelectedImageKey = imageKey;
+            node.Nodes.AddRange(nodes);
+        }
+
+        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project, Font font)
+        {
+            var result = new List<TreeNode>();
             foreach (VBComponent vbComponent in project.VBComponents)
             {
                 var component = vbComponent;
                 var qualifiedName = component.QualifiedName();
-                var node = new TreeNode(component.Name + " (parsing...)");
-                node.ImageKey = "Hourglass";
+
+                var members = await Task.Run(() => ParseModule(component, ref qualifiedName));
+
+                var node = members.Context;
+                node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.NodeFont = new Font(font, FontStyle.Regular);
+                //node.NodeFont = new Font(font, FontStyle.Regular);
+                //node.Text = component.Name;
 
-                root.Nodes.Add(node);
-
-                var getModuleNode = new Task<TreeNode[]>(() => ParseModule(component, ref qualifiedName));
-                getModuleNode.Start();
-                node.Nodes.AddRange(await getModuleNode);
-
-                node.Text = component.Name;
-                node.ImageKey = "StandardModule";
-                node.SelectedImageKey = node.ImageKey;
-            }
-        }
-
-        private TreeNode[] ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
-        {
-            var moduleNode = _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
-            return moduleNode.Context.Nodes.Cast<TreeNode>().ToArray();
-        }
-
-        private void TreeViewAfterExpandNode(object sender, TreeViewEventArgs e)
-        {
-            if (!e.Node.ImageKey.Contains("Folder"))
-            {
-                return;
+                result.Add(node);
             }
 
-            e.Node.ImageKey = "OpenFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
+            return result;
         }
 
-        private void TreeViewAfterCollapseNode(object sender, TreeViewEventArgs e)
+        private QualifiedContext<TreeNode> ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
         {
-            if (!e.Node.ImageKey.Contains("Folder"))
-            {
-                return;
-            }
-
-            e.Node.ImageKey = "ClosedFolder";
-            e.Node.SelectedImageKey = e.Node.ImageKey;
+            return _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
         }
     }
 }

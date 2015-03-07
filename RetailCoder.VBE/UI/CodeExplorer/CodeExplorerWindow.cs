@@ -18,6 +18,8 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
             SolutionTree.MouseDown += SolutionTreeMouseDown;
+            SolutionTree.AfterExpand += SolutionTreeAfterExpand;
+            SolutionTree.AfterCollapse += SolutionTreeAfterCollapse;
             SolutionTree.BeforeExpand += SolutionTreeBeforeExpand;
             SolutionTree.BeforeCollapse += SolutionTreeBeforeCollapse;
             SolutionTree.ShowLines = false;
@@ -26,29 +28,64 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.LabelEdit = false;
         }
 
+        private void SolutionTreeAfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
+
+            e.Node.ImageKey = "ClosedFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
+
+        private void SolutionTreeAfterExpand(object sender, TreeViewEventArgs e)
+        {
+            if (!e.Node.ImageKey.Contains("Folder"))
+            {
+                return;
+            }
+
+            e.Node.ImageKey = "OpenFolder";
+            e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
+
         #region Hack to disable double click node expansion
-        private bool doubleClicked;
+        private bool _doubleClicked;
         private void SolutionTreeMouseDown(object sender, MouseEventArgs e)
         {
-            doubleClicked = (e.Clicks > 1);
+            _doubleClicked = (e.Clicks > 1);
         }
 
         private void SolutionTreeBeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
-            e.Cancel = doubleClicked;
-            doubleClicked = false;
+            e.Cancel = _doubleClicked;
+            if (_doubleClicked && NavigateTreeNode != null)
+            {
+                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
+            }
+            _doubleClicked = false;
         }
 
         private void SolutionTreeBeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            e.Cancel = doubleClicked;
-            doubleClicked = false;
+            e.Cancel = _doubleClicked;
+            if (_doubleClicked && NavigateTreeNode != null)
+            {
+                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
+            }
+            _doubleClicked = false;
         }
         #endregion
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)
         {
+            if (e.Node.ImageKey.Contains("Folder"))
+            {
+                e.Node.Toggle();
+            }
+
             var handler = NavigateTreeNode;
             if (handler == null)
             {

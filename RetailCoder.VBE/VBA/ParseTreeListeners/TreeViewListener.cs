@@ -25,7 +25,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _name = name;
             _displayStyle = displayStyle;
-            _tree = new TreeNode(name.ModuleName) {Tag = new QualifiedSelection(_name, Selection.Empty)};
+            _tree = new TreeNode(name.ModuleName) {Tag = new QualifiedSelection(_name, Selection.Home)};
         }
 
         public IEnumerable<QualifiedContext<TreeNode>> Members
@@ -185,6 +185,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
+            if (_displayStyle == TreeViewDisplayStyle.MemberNames)
+            {
+                node.Text += (" (" + Tokens.Get + ")");
+            }
             _tree.Nodes.Add(node);
         }
 
@@ -201,6 +205,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
+            if (_displayStyle == TreeViewDisplayStyle.MemberNames)
+            {
+                node.Text += (" (" + Tokens.Let + ")");
+            }
             _tree.Nodes.Add(node);
         }
 
@@ -217,6 +225,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
                     : "PublicProperty";
 
             var node = CreateProcedureNode(context, imageKey);
+            if (_displayStyle == TreeViewDisplayStyle.MemberNames)
+            {
+                node.Text += (" (" + Tokens.Set + ")");
+            }
             _tree.Nodes.Add(node);
         }
 

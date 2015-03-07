@@ -87,7 +87,7 @@ namespace Rubberduck.Extensions
                 var text = " ";
                 if (context == null)
                 {
-                    selection = Selection.Empty;
+                    selection = Selection.Home;
                 }
                 else
                 {
@@ -102,7 +102,7 @@ namespace Rubberduck.Extensions
                 }
             }
 
-            return new CodeModuleSelection(modules.First(), Selection.Empty);
+            return new CodeModuleSelection(modules.First(), Selection.Home);
         }
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)

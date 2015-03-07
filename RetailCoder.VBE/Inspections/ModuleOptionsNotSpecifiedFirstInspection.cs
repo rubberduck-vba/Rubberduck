@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
                 if (lines.Any() && lines.Count != lines.Keys.Max() + 1)
                 {
                     // todo: figure this one out
-                    yield return new ModuleOptionsNotSpecifiedFirstInspectionResult(Name, Severity, new CommentNode(string.Empty, new QualifiedSelection(module.QualifiedName, Selection.Empty)));
+                    yield return new ModuleOptionsNotSpecifiedFirstInspectionResult(Name, Severity, new CommentNode(string.Empty, new QualifiedSelection(module.QualifiedName, Selection.Home)));
                 }
             }
         }
