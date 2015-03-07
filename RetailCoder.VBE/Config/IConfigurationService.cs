@@ -6,7 +6,7 @@ namespace Rubberduck.Config
 {
     public interface IConfigurationService
     {
-        CodeInspection[] GetDefaultCodeInspections();
+        CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
         IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
