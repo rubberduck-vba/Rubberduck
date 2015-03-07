@@ -108,6 +108,7 @@ namespace Rubberduck.UI.CodeExplorer
         private async void RefreshExplorerTreeView()
         {
             Control.SolutionTree.Nodes.Clear();
+            Control.ShowDesignerButton.Enabled = false;
 
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
