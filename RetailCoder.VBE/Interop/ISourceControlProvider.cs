@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Rubberduck.SourceControl;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Rubberduck.Interop
 {
@@ -23,51 +24,67 @@ namespace Rubberduck.Interop
         IEnumerable Branches { get; }
 
         [DispId(3)]
+        [Description("Clones a remote repository to the local file system.")]
         IRepository Clone(string remotePathOrUrl, string workingDirectory);
 
         [DispId(4)]
+        [Description("Creates a new repository in/from the specified directory.")]
         IRepository Init(string directory, bool bare = false);
 
         [DispId(5)]
+        [Description("Creates a new repository and sets the CurrentRepository property from the VBProject passed to the ISourceControlProvider upon creation.")]
         IRepository InitVBAProject(string directory);
 
         [DispId(6)]
+        [Description("Pushes commits in the CurrentBranch of the Local repo to the Remote.")]
         void Push();
 
         [DispId(7)]
+        [Description("Fetches the specified remote for tracking.\n If argument is not supplied, returns a default remote defined by implementation.")]
         void Fetch([Optional] string remoteName);
 
         [DispId(8)]
+        [Description("Fetches the currently tracking remote and merges it into the CurrentBranch.")]
         void Pull();
 
         [DispId(9)]
+        [Description("Stages all modified files and commits to CurrentBranch.")]
         void Commit(string message);
 
         [DispId(10)]
+        [Description("Merges the source branch into the desitnation.")]
         void Merge(string sourceBranch, string destinationBranch);
 
         [DispId(11)]
+        [Description("Checks out the target branch.")]
         void Checkout(string branch);
 
         [DispId(12)]
+        [Description("Creates and checks out a new branch.")]
         void CreateBranch(string branch);
 
         [DispId(18)]
+        [Description("Deletes the specified branch from the local repository.")]
         void DeleteBranch(string branch);
 
         [DispId(13)]
+        [Description("Undoes uncommitted changes to a particular file.")]
         void Undo(string filePath);
 
         [DispId(14)]
+        [Description("Reverts entire branch to the last commit.")]
         void Revert();
 
         [DispId(15)]
+        [Description("Adds untracked file to repository.")]
         void AddFile(string filePath);
 
         [DispId(16)]
+        [Description("Removes file from tracking.")]
         void RemoveFile(string filePath);
 
         [DispId(17)]
+        [Description("Returns a collection of file status entries.\n Semantically the same as calling $git status.")]
         IEnumerable Status();
     }
 }
