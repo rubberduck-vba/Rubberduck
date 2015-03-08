@@ -19,6 +19,7 @@ namespace Rubberduck.UI.CodeExplorer
 
             ShowFoldersToggleButton.Click += ShowFoldersToggleButtonClick;
             ShowDesignerButton.Click += ShowDesignerButtonClick;
+            ShowDesignerContextButton.Click += ShowDesignerButtonClick;
             AddClassButton.Click += AddClassButton_Click;
             AddStdModuleButton.Click += AddStdModuleButton_Click;
             AddFormButton.Click += AddFormButton_Click;
