@@ -37,6 +37,12 @@ namespace Rubberduck.UI.UnitTesting
             _runAllTestsButton = AddButton(menu, "&Run All Tests", true, new CommandBarButtonClickEvent(OnRunAllTestsButtonClick), Resources.AllLoadedTests_8644_24);
         }
 
+        public void RunAllTests()
+        {
+            var cancelDefault = false;
+            OnRunAllTestsButtonClick(null, ref cancelDefault);
+        }
+
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _presenter.Show();

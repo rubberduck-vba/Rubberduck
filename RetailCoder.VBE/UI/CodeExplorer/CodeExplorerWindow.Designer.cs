@@ -48,8 +48,22 @@
             this.DisplayModeButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.DisplayMemberNamesButton = new System.Windows.Forms.ToolStripMenuItem();
             this.DisplaySignaturesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.CodeExplorerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.NavigateContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.ShowDesignerContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.RunAllTestsContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.SelectedNodeLabel = new System.Windows.Forms.ToolStripLabel();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddClassContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddStdModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddFormContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddTestModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.CodeExplorerContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // CodeExplorerToolbar
@@ -60,8 +74,9 @@
             this.toolStripSeparator2,
             this.ShowDesignerButton,
             this.toolStripSeparator3,
+            this.AddButton,
             this.DisplayModeButton,
-            this.AddButton});
+            this.SelectedNodeLabel});
             this.CodeExplorerToolbar.Location = new System.Drawing.Point(0, 0);
             this.CodeExplorerToolbar.Name = "CodeExplorerToolbar";
             this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
@@ -84,6 +99,7 @@
             // 
             // SolutionTree
             // 
+            this.SolutionTree.ContextMenuStrip = this.CodeExplorerContextMenu;
             this.SolutionTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SolutionTree.Location = new System.Drawing.Point(0, 0);
             this.SolutionTree.Name = "SolutionTree";
@@ -177,8 +193,9 @@
             this.AddTestModuleButton});
             this.AddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(42, 22);
-            this.AddButton.Text = "Add";
+            this.AddButton.Size = new System.Drawing.Size(44, 22);
+            this.AddButton.Text = "New";
+            this.AddButton.ToolTipText = "Add a component to the active project";
             // 
             // AddClassButton
             // 
@@ -191,20 +208,20 @@
             // 
             this.AddStdModuleButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
             this.AddStdModuleButton.Name = "AddStdModuleButton";
-            this.AddStdModuleButton.Size = new System.Drawing.Size(247, 22);
+            this.AddStdModuleButton.Size = new System.Drawing.Size(197, 22);
             this.AddStdModuleButton.Text = "&Standard module (.bas)";
             // 
             // AddFormButton
             // 
             this.AddFormButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
             this.AddFormButton.Name = "AddFormButton";
-            this.AddFormButton.Size = new System.Drawing.Size(247, 22);
+            this.AddFormButton.Size = new System.Drawing.Size(197, 22);
             this.AddFormButton.Text = "User &form";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(244, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(194, 6);
             // 
             // AddTestModuleButton
             // 
@@ -228,6 +245,7 @@
             this.DisplayModeButton.Name = "DisplayModeButton";
             this.DisplayModeButton.Size = new System.Drawing.Size(29, 22);
             this.DisplayModeButton.Text = "toolStripSplitButton1";
+            this.DisplayModeButton.ToolTipText = "Display style";
             // 
             // DisplayMemberNamesButton
             // 
@@ -246,6 +264,103 @@
             this.DisplaySignaturesButton.Size = new System.Drawing.Size(198, 22);
             this.DisplaySignaturesButton.Text = "Display full &signatures";
             // 
+            // CodeExplorerContextMenu
+            // 
+            this.CodeExplorerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.NavigateContextButton,
+            this.ShowDesignerContextButton,
+            this.toolStripSeparator5,
+            this.RunAllTestsContextButton});
+            this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 104);
+            // 
+            // NavigateContextButton
+            // 
+            this.NavigateContextButton.Name = "NavigateContextButton";
+            this.NavigateContextButton.Size = new System.Drawing.Size(189, 22);
+            this.NavigateContextButton.Text = "Navi&gate";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
+            // 
+            // ShowDesignerContextButton
+            // 
+            this.ShowDesignerContextButton.Enabled = false;
+            this.ShowDesignerContextButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
+            this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
+            this.ShowDesignerContextButton.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.ShowDesignerContextButton.Size = new System.Drawing.Size(189, 22);
+            this.ShowDesignerContextButton.Text = "Show &designer";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(186, 6);
+            // 
+            // RunAllTestsContextButton
+            // 
+            this.RunAllTestsContextButton.Name = "RunAllTestsContextButton";
+            this.RunAllTestsContextButton.Size = new System.Drawing.Size(189, 22);
+            this.RunAllTestsContextButton.Text = "&Run all tests";
+            // 
+            // SelectedNodeLabel
+            // 
+            this.SelectedNodeLabel.Enabled = false;
+            this.SelectedNodeLabel.Name = "SelectedNodeLabel";
+            this.SelectedNodeLabel.Size = new System.Drawing.Size(0, 22);
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddClassContextButton,
+            this.AddStdModuleContextButton,
+            this.AddFormContextButton,
+            this.toolStripSeparator6,
+            this.AddTestModuleContextButton});
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.newToolStripMenuItem.Text = "&New";
+            // 
+            // AddClassContextButton
+            // 
+            this.AddClassContextButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
+            this.AddClassContextButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.AddClassContextButton.Name = "AddClassContextButton";
+            this.AddClassContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddClassContextButton.Text = "&Class module";
+            // 
+            // AddStdModuleContextButton
+            // 
+            this.AddStdModuleContextButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
+            this.AddStdModuleContextButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.AddStdModuleContextButton.Name = "AddStdModuleContextButton";
+            this.AddStdModuleContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddStdModuleContextButton.Text = "Standard &module";
+            // 
+            // AddFormContextButton
+            // 
+            this.AddFormContextButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
+            this.AddFormContextButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.AddFormContextButton.Name = "AddFormContextButton";
+            this.AddFormContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddFormContextButton.Text = "User &form";
+            // 
+            // AddTestModuleContextButton
+            // 
+            this.AddTestModuleContextButton.Name = "AddTestModuleContextButton";
+            this.AddTestModuleContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddTestModuleContextButton.Text = "&Test module";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
+            // 
             // CodeExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -257,6 +372,7 @@
             this.CodeExplorerToolbar.ResumeLayout(false);
             this.CodeExplorerToolbar.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.CodeExplorerContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -282,5 +398,18 @@
         private System.Windows.Forms.ToolStripDropDownButton DisplayModeButton;
         private System.Windows.Forms.ToolStripMenuItem DisplayMemberNamesButton;
         private System.Windows.Forms.ToolStripMenuItem DisplaySignaturesButton;
+        private System.Windows.Forms.ContextMenuStrip CodeExplorerContextMenu;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem NavigateContextButton;
+        private System.Windows.Forms.ToolStripMenuItem ShowDesignerContextButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem RunAllTestsContextButton;
+        private System.Windows.Forms.ToolStripLabel SelectedNodeLabel;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddClassContextButton;
+        private System.Windows.Forms.ToolStripMenuItem AddStdModuleContextButton;
+        private System.Windows.Forms.ToolStripMenuItem AddFormContextButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem AddTestModuleContextButton;
     }
 }

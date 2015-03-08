@@ -44,6 +44,17 @@ namespace Rubberduck.UI.CodeExplorer
             Control.ToggleFolders += ToggleFolders;
             Control.ShowDesigner += ShowDesigner;
             Control.DisplayStyleChanged += DisplayStyleChanged;
+            Control.RunAllTests += ContextMenuRunAllTests;
+        }
+
+        public event EventHandler RunAllTests;
+        private void ContextMenuRunAllTests(object sender, EventArgs e)
+        {
+            var handler = RunAllTests;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         private void DisplayStyleChanged(object sender, EventArgs e)

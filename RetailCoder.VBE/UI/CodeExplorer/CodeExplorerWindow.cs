@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.Extensions;
+using Rubberduck.Properties;
 using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.CodeExplorer
@@ -37,6 +36,23 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.ImageList = TreeNodeIcons;
             SolutionTree.ShowNodeToolTips = true;
             SolutionTree.LabelEdit = false;
+
+            AddClassContextButton.Click += AddClassButton_Click;
+            AddStdModuleContextButton.Click += AddStdModuleButton_Click;
+            AddFormContextButton.Click += AddFormButton_Click;
+            AddTestModuleContextButton.Click += AddTestModuleButtonClick;
+            NavigateContextButton.Click += SolutionTreeClick;
+            RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
+        }
+
+        public event EventHandler RunAllTests;
+        private void RunAllTestsContextButton_Click(object sender, EventArgs e)
+        {
+            var handler = RunAllTests;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         private TreeViewDisplayStyle _displayStyle;
@@ -74,8 +90,8 @@ namespace Rubberduck.UI.CodeExplorer
             DisplaySignaturesButton.Checked = DisplayStyle == TreeViewDisplayStyle.Signatures;
             DisplayMemberNamesButton.Checked = DisplayStyle == TreeViewDisplayStyle.MemberNames;
             DisplayModeButton.Image = DisplayStyle == TreeViewDisplayStyle.Signatures
-                ? Properties.Resources.DisplayFullSignature_13393_32
-                : Properties.Resources.DisplayName_13394_32;
+                ? Resources.DisplayFullSignature_13393_32
+                : Resources.DisplayName_13394_32;
         }
 
         public event EventHandler AddTestModule;
@@ -92,10 +108,10 @@ namespace Rubberduck.UI.CodeExplorer
         {
             var node = SolutionTree.SelectedNode;
             ShowDesignerButton.Enabled = (node != null && node.ImageKey == "Form");
-            DeleteButton.Enabled = CanDeleteNode(node);
+            ShowDesignerContextButton.Enabled = ShowDesignerButton.Enabled;
 
             SelectedNodeLabel.Text =
-                node == null || node.Tag == null
+                node == null
                     ? string.Empty
                     : node.Text;
         }
