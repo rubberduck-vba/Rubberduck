@@ -8,9 +8,9 @@ using Rubberduck.VBA.Nodes;
 namespace Rubberduck.Inspections
 {
     /// <summary>
-    /// An interface that abstracts a code inspection.
+    /// An interface that abstracts the data structure for a code inspection
     /// </summary>
-    public interface IInspection 
+    public interface IInspectionModel
     {
         /// <summary>
         /// Gets a short description for the code inspection.
@@ -26,7 +26,13 @@ namespace Rubberduck.Inspections
         /// Gets a value indicating the severity level of the code inspection.
         /// </summary>
         CodeInspectionSeverity Severity { get; set; }
+    }
 
+    /// <summary>
+    /// An interface that abstracts a runnable code inspection.
+    /// </summary>
+    public interface IInspection : IInspectionModel
+    {
         /// <summary>
         /// Runs code inspection on specified parse trees.
         /// </summary>

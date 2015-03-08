@@ -19,10 +19,10 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public CodeInspectionControl(IEnumerable<CodeInspection> inspections)
+        public CodeInspectionControl(IEnumerable<CodeInspectionSetting> inspections)
             : this()
         {
-            var allInspections = new BindingList<CodeInspection>(inspections
+            var allInspections = new BindingList<CodeInspectionSetting>(inspections
                 .OrderBy(c => c.InspectionType.ToString())
                 .ThenBy(c => c.Name)
                 .ToList()

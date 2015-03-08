@@ -89,7 +89,7 @@ namespace Rubberduck.Config
             }
         }
 
-        private List<CodeInspection> MergeImplementedInspectionsNotInConfig(List<CodeInspection> configInspections, IList<IInspection> implementedInspections)
+        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
         {
             bool found;
             foreach (var implementedInspection in implementedInspections)
@@ -106,7 +106,7 @@ namespace Rubberduck.Config
 
                 if (!found)
                 {
-                    configInspections.Add(new CodeInspection(implementedInspection));
+                    configInspections.Add(new CodeInspectionSetting(implementedInspection));
                 }
             }
             return configInspections;
@@ -133,12 +133,12 @@ namespace Rubberduck.Config
 
         /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>
         /// <returns>   An array of Config.CodeInspection. </returns>
-        public CodeInspection[] GetDefaultCodeInspections()
+        public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            var configInspections = new List<CodeInspection>();
+            var configInspections = new List<CodeInspectionSetting>();
             foreach (var inspection in GetImplementedCodeInspections())
             {
-                configInspections.Add(new CodeInspection(inspection));
+                configInspections.Add(new CodeInspectionSetting(inspection));
             }
 
             return configInspections.ToArray();
