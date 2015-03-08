@@ -325,6 +325,21 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override void DeleteBranch(string branch)
+        {
+            try
+            {
+                if (repo.Branches.Any(b => b.Name == branch && !b.IsRemote))
+                {
+                    repo.Branches.Remove(branch);
+                }
+            }
+            catch(LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Branch deletion failed.", ex);
+            }
+        }
+
         private Signature GetSignature()
         {
             return this.repo.Config.BuildSignature(DateTimeOffset.Now);

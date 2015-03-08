@@ -32,6 +32,7 @@ namespace Rubberduck.SourceControl
         public abstract void AddFile(string filePath);
         public abstract void RemoveFile(string filePath);
         public abstract void CreateBranch(string branch);
+        public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
 
         public virtual IRepository InitVBAProject(string directory)

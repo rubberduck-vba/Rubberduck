@@ -14,7 +14,7 @@ namespace Rubberduck.Interop
         ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] string userName, [Optional] string passWord);
 
         [DispId(2)]
-        IRepository CreateRepository(string name, string localDirectory, string remotePathOrUrl);
+        IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl);
     }
 
     [ComVisible(true)]
@@ -44,8 +44,13 @@ namespace Rubberduck.Interop
         }
 
         [Description("Returns new instance of repository struct.")]
-        public IRepository CreateRepository(string name, string localDirectory, string remotePathOrUrl)
+        public IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl)
         {
+            if (remotePathOrUrl == null)
+            {
+                remotePathOrUrl = string.Empty;
+            }
+
             return new Repository(name, localDirectory, remotePathOrUrl);
         }
     }
