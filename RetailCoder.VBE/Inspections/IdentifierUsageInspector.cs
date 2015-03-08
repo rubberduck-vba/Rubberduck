@@ -334,7 +334,7 @@ namespace Rubberduck.Inspections
                 var listener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
                     .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
-                    .Where(field => globals.All(global => global.QualifiedName.ModuleName == field.QualifiedName.ModuleName 
+                    .Where(field => globals.All(global => global.QualifiedName.ModuleName != field.QualifiedName.ModuleName 
                                                        && global.Context.GetText() != field.Context.GetText()))
                     .ToList();
 
