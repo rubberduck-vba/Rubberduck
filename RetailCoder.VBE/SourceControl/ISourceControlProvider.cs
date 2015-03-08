@@ -42,7 +42,7 @@ namespace Rubberduck.SourceControl
         /// Fetches the specified remote for tracking.
         /// If argument is not supplied, returns a default remote defined by implementation.
         /// </summary>
-        /// <param name="remoteName"></param>
+        /// <param name="remoteName">Name of the remote to be fetched.</param>
         void Fetch([Optional] string remoteName);
 
         /// <summary>
@@ -53,27 +53,33 @@ namespace Rubberduck.SourceControl
         /// <summary>
         /// Stages all modified files and commits to CurrentBranch.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">Commit message.</param>
         void Commit(string message);
 
         /// <summary>
         /// Merges the source branch into the desitnation.
         /// </summary>
-        /// <param name="sourceBranch"></param>
-        /// <param name="destinationBranch"></param>
+        /// <param name="sourceBranch">Name of the source branch.</param>
+        /// <param name="destinationBranch">Name of the target branch.</param>
         void Merge(string sourceBranch, string destinationBranch);
 
         /// <summary>
         /// Checks out the target branch.
         /// </summary>
-        /// <param name="branch"></param>
+        /// <param name="branch">Name of the branch to be checked out.</param>
         void Checkout(string branch);
 
         /// <summary>
         /// Creates and checks out a new branch.
         /// </summary>
-        /// <param name="branch"></param>
+        /// <param name="branch">Name of the branch to be created.</param>
         void CreateBranch(string branch);
+
+        /// <summary>
+        /// Deletes the specified branch from the local repository.
+        /// </summary>
+        /// <param name="branch">Name of the branch to be deleted.</param>
+        void DeleteBranch(string branch);
 
         /// <summary>
         /// Undoes uncommitted changes to a particular file.

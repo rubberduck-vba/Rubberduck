@@ -52,6 +52,9 @@ namespace Rubberduck.Interop
         [DispId(12)]
         void CreateBranch(string branch);
 
+        [DispId(18)]
+        void DeleteBranch(string branch);
+
         [DispId(13)]
         void Undo(string filePath);
 
