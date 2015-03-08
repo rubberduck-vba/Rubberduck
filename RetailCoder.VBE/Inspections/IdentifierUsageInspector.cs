@@ -18,6 +18,7 @@ namespace Rubberduck.Inspections
         private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _fields;
         private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _locals;
         private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _parameters;
+        private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _userDefinedTypes = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
 
         private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _assignments;
         private readonly HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _usages;
@@ -171,24 +172,30 @@ namespace Rubberduck.Inspections
                 return _unassignedFields;
             }
 
-            var userTypes = _fields.Select(field => field.Context.Parent)
-                .OfType<VBParser.TypeStmtContext>()
-                .Select(t => t.AmbiguousIdentifier());
-
-            var userTypeFields = _fields.Select(field => field.Context.Parent)
-                .OfType<VBParser.VariableSubStmtContext>()
-                .Where(v => v.AsTypeClause() != null
-                            && userTypes.Any(udt => udt.GetText() == v.AsTypeClause().Type().GetText()))
-                .Select(v => v.AmbiguousIdentifier());
-
             _unassignedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                            _fields.Where(context => userTypeFields.All(f => f.GetText() != context.Context.GetText()) // note: weak
+                            _fields.Where(context => !IsUserDefinedType(context.Context.Parent as VBParser.VariableSubStmtContext) 
                                 && context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                             .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
                                     .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
                             );
 
             return _unassignedFields;
+        }
+
+        private bool IsUserDefinedType(VBParser.VariableSubStmtContext context)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+
+            var type = context.AsTypeClause() == null
+                ? string.Empty
+                : context.AsTypeClause().Type().GetText();
+
+            // note: scoping issue; a private type could be used in another module (but that wouldn't compile)
+            // Rubberduck inspections assume VBA code compiles though.
+            return _userDefinedTypes.Any(udt => udt.Context.GetText() == type);
         }
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _unassignedLocals;
@@ -313,11 +320,11 @@ namespace Rubberduck.Inspections
                 var listener = new DeclarationSectionListener(module.QualifiedName);
                 var declarations = module.ParseTree
                     .GetContexts<DeclarationSectionListener, ParserRuleContext>(listener)
-                    .Select(declaration => declaration.Context)
-                                            .OfType<VBParser.VariableStmtContext>()
+                    .Select(declaration => declaration.Context).OfType<VBParser.VariableStmtContext>()
                     .Where(declaration => IsGlobal(declaration.Visibility()))
                     .SelectMany(declaration => declaration.VariableListStmt().VariableSubStmt())
-                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(scope.QualifiedName));
+                    .Select(identifier => identifier.AmbiguousIdentifier().ToQualifiedContext(scope.QualifiedName))
+                    .ToList();
 
                 result.AddRange(declarations);
             }
@@ -337,6 +344,11 @@ namespace Rubberduck.Inspections
                     .Where(field => globals.All(global => global.QualifiedName.ModuleName != field.QualifiedName.ModuleName 
                                                        && global.Context.GetText() != field.Context.GetText()))
                     .ToList();
+
+                foreach (var udt in declarations.Where(declaration => declaration.Context.Parent is VBParser.TypeStmtContext))
+                {
+                    _userDefinedTypes.Add(((VBParser.TypeStmtContext)udt.Context.Parent).AmbiguousIdentifier().ToQualifiedContext(module.QualifiedName));
+                }
 
                 result.AddRange(declarations.Select(declaration => declaration.Context)
                                             .OfType<VBParser.VariableSubStmtContext>()
