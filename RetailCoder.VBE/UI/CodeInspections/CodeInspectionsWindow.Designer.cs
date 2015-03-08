@@ -211,7 +211,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton GoButton;
-        private System.Windows.Forms.ToolStripSplitButton QuickFixButton;
+        public System.Windows.Forms.ToolStripSplitButton QuickFixButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton PreviousButton;
         private System.Windows.Forms.ToolStripButton NextButton;

@@ -4,6 +4,7 @@ using Rubberduck.Inspections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.CodeInspections
@@ -100,9 +101,18 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     _results = await _inspector.FindIssuesAsync(VBE.ActiveVBProject);
                     Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
-                                               .OrderBy(item => item.Component)
-                                               .ThenBy(item => item.Line));
+                        .OrderBy(item => item.Component)
+                        .ThenBy(item => item.Line));
+
+                    if (!_results.Any())
+                    {
+                        Control.QuickFixButton.Enabled = false;
+                    }
                 }
+            }
+            catch (COMException)
+            {
+                // swallow
             }
             finally
             {
