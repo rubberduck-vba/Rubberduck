@@ -61,6 +61,7 @@
             this.AddFormContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.AddTestModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.RefreshContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.CodeExplorerContextMenu.SuspendLayout();
@@ -267,6 +268,7 @@
             // CodeExplorerContextMenu
             // 
             this.CodeExplorerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RefreshContextButton,
             this.newToolStripMenuItem,
             this.toolStripSeparator4,
             this.NavigateContextButton,
@@ -274,18 +276,18 @@
             this.toolStripSeparator5,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 104);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 148);
             // 
             // NavigateContextButton
             // 
             this.NavigateContextButton.Name = "NavigateContextButton";
-            this.NavigateContextButton.Size = new System.Drawing.Size(189, 22);
+            this.NavigateContextButton.Size = new System.Drawing.Size(170, 22);
             this.NavigateContextButton.Text = "Navi&gate";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(167, 6);
             // 
             // ShowDesignerContextButton
             // 
@@ -294,18 +296,18 @@
             this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
             this.ShowDesignerContextButton.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.ShowDesignerContextButton.Size = new System.Drawing.Size(189, 22);
+            this.ShowDesignerContextButton.Size = new System.Drawing.Size(170, 22);
             this.ShowDesignerContextButton.Text = "Show &designer";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(186, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(167, 6);
             // 
             // RunAllTestsContextButton
             // 
             this.RunAllTestsContextButton.Name = "RunAllTestsContextButton";
-            this.RunAllTestsContextButton.Size = new System.Drawing.Size(189, 22);
+            this.RunAllTestsContextButton.Size = new System.Drawing.Size(170, 22);
             this.RunAllTestsContextButton.Text = "&Run all tests";
             // 
             // SelectedNodeLabel
@@ -361,6 +363,13 @@
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
             // 
+            // RefreshContextButton
+            // 
+            this.RefreshContextButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshContextButton.Name = "RefreshContextButton";
+            this.RefreshContextButton.Size = new System.Drawing.Size(170, 22);
+            this.RefreshContextButton.Text = "Refresh";
+            // 
             // CodeExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -411,5 +420,6 @@
         private System.Windows.Forms.ToolStripMenuItem AddFormContextButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem AddTestModuleContextButton;
+        private System.Windows.Forms.ToolStripMenuItem RefreshContextButton;
     }
 }

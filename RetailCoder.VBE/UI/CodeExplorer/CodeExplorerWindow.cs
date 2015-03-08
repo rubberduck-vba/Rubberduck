@@ -29,6 +29,7 @@ namespace Rubberduck.UI.CodeExplorer
             DisplaySignaturesButton.Click += DisplaySignaturesButton_Click;
 
             RefreshButton.Click += RefreshButtonClicked;
+            RefreshContextButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
             SolutionTree.AfterExpand += SolutionTreeAfterExpand;
             SolutionTree.AfterCollapse += SolutionTreeAfterCollapse;
