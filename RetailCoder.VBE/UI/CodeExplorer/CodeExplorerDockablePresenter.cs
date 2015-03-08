@@ -45,6 +45,17 @@ namespace Rubberduck.UI.CodeExplorer
             Control.ShowDesigner += ShowDesigner;
             Control.DisplayStyleChanged += DisplayStyleChanged;
             Control.RunAllTests += ContextMenuRunAllTests;
+            Control.RunInspections += ContextMenuRunInspections;
+        }
+
+        public event EventHandler RunInspections;
+        private void ContextMenuRunInspections(object sender, EventArgs e)
+        {
+            var handler = RunInspections;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler RunAllTests;

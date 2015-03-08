@@ -27,9 +27,14 @@ namespace Rubberduck.UI.CodeInspections
             _codeInspectionsButton = AddButton(parentMenu, "Code &Inspections", false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
         }
 
-        private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
+        public void Inspect()
         {
             _presenter.Show();
+        }
+
+        private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
+        {
+            Inspect();
         }
     }
 }

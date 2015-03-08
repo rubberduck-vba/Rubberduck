@@ -8,7 +8,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
     {
         public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
         {
-            if (!(context.Parent is VBParser.AsTypeClauseContext))
+            if (context.Parent is VBParser.ICS_S_VariableCallContext 
+             && context.Parent.Parent is VBParser.ImplicitCallStmt_InStmtContext
+             && (context.Parent.Parent.Parent is VBParser.LetStmtContext)
+              || context.Parent.Parent.Parent is VBParser.SetStmtContext)
             {
                 base.EnterVariableCallStmt(context);
             }

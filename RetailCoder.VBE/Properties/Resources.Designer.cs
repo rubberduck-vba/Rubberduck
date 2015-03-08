@@ -453,6 +453,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap light_bulb_code {
+            get {
+                object obj = ResourceManager.GetObject("light-bulb-code", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ListsofTests_8643_24 {
             get {
                 object obj = ResourceManager.GetObject("ListsofTests_8643_24", resourceCulture);

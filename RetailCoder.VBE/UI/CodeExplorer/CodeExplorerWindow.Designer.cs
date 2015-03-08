@@ -35,33 +35,34 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.SolutionTree = new System.Windows.Forms.TreeView();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
-            this.ShowFoldersToggleButton = new System.Windows.Forms.ToolStripButton();
-            this.ShowDesignerButton = new System.Windows.Forms.ToolStripButton();
             this.AddButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.AddClassButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddStdModuleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddFormButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.AddTestModuleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.DisplayModeButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.DisplayMemberNamesButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.DisplaySignaturesButton = new System.Windows.Forms.ToolStripMenuItem();
             this.CodeExplorerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NavigateContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.ShowDesignerContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.RunAllTestsContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.SelectedNodeLabel = new System.Windows.Forms.ToolStripLabel();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddClassContextButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddStdModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddFormContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.AddTestModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.RefreshContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddClassContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddStdModuleContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddFormContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowDesignerContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.InspectContextButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
+            this.ShowFoldersToggleButton = new System.Windows.Forms.ToolStripButton();
+            this.ShowDesignerButton = new System.Windows.Forms.ToolStripButton();
+            this.AddClassButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddStdModuleButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddFormButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.DisplayModeButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.DisplayMemberNamesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.DisplaySignaturesButton = new System.Windows.Forms.ToolStripMenuItem();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.CodeExplorerContextMenu.SuspendLayout();
@@ -155,35 +156,6 @@
             this.TreeNodeIcons.Images.SetKeyName(41, "Locked");
             this.TreeNodeIcons.Images.SetKeyName(42, "OfficeDocument");
             // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.ToolTipText = "Refresh";
-            // 
-            // ShowFoldersToggleButton
-            // 
-            this.ShowFoldersToggleButton.Checked = true;
-            this.ShowFoldersToggleButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowFoldersToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ShowFoldersToggleButton.Image = global::Rubberduck.Properties.Resources.VSFolder_closed;
-            this.ShowFoldersToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ShowFoldersToggleButton.Name = "ShowFoldersToggleButton";
-            this.ShowFoldersToggleButton.Size = new System.Drawing.Size(23, 22);
-            this.ShowFoldersToggleButton.ToolTipText = "Toggle folders";
-            // 
-            // ShowDesignerButton
-            // 
-            this.ShowDesignerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ShowDesignerButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
-            this.ShowDesignerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ShowDesignerButton.Name = "ShowDesignerButton";
-            this.ShowDesignerButton.Size = new System.Drawing.Size(23, 22);
-            this.ShowDesignerButton.ToolTipText = "Open designer";
-            // 
             // AddButton
             // 
             this.AddButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -197,27 +169,6 @@
             this.AddButton.Size = new System.Drawing.Size(44, 22);
             this.AddButton.Text = "New";
             this.AddButton.ToolTipText = "Add a component to the active project";
-            // 
-            // AddClassButton
-            // 
-            this.AddClassButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
-            this.AddClassButton.Name = "AddClassButton";
-            this.AddClassButton.Size = new System.Drawing.Size(197, 22);
-            this.AddClassButton.Text = "&Class module (.cls)";
-            // 
-            // AddStdModuleButton
-            // 
-            this.AddStdModuleButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
-            this.AddStdModuleButton.Name = "AddStdModuleButton";
-            this.AddStdModuleButton.Size = new System.Drawing.Size(197, 22);
-            this.AddStdModuleButton.Text = "&Standard module (.bas)";
-            // 
-            // AddFormButton
-            // 
-            this.AddFormButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
-            this.AddFormButton.Name = "AddFormButton";
-            this.AddFormButton.Size = new System.Drawing.Size(197, 22);
-            this.AddFormButton.Text = "User &form";
             // 
             // toolStripSeparator1
             // 
@@ -235,36 +186,6 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // DisplayModeButton
-            // 
-            this.DisplayModeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.DisplayModeButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.DisplayMemberNamesButton,
-            this.DisplaySignaturesButton});
-            this.DisplayModeButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
-            this.DisplayModeButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.DisplayModeButton.Name = "DisplayModeButton";
-            this.DisplayModeButton.Size = new System.Drawing.Size(29, 22);
-            this.DisplayModeButton.Text = "toolStripSplitButton1";
-            this.DisplayModeButton.ToolTipText = "Display style";
-            // 
-            // DisplayMemberNamesButton
-            // 
-            this.DisplayMemberNamesButton.Checked = true;
-            this.DisplayMemberNamesButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DisplayMemberNamesButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
-            this.DisplayMemberNamesButton.Name = "DisplayMemberNamesButton";
-            this.DisplayMemberNamesButton.Size = new System.Drawing.Size(198, 22);
-            this.DisplayMemberNamesButton.Text = "Display member &names";
-            // 
-            // DisplaySignaturesButton
-            // 
-            this.DisplaySignaturesButton.Image = global::Rubberduck.Properties.Resources.DisplayFullSignature_13393_32;
-            this.DisplaySignaturesButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.DisplaySignaturesButton.Name = "DisplaySignaturesButton";
-            this.DisplaySignaturesButton.Size = new System.Drawing.Size(198, 22);
-            this.DisplaySignaturesButton.Text = "Display full &signatures";
-            // 
             // CodeExplorerContextMenu
             // 
             this.CodeExplorerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -274,9 +195,10 @@
             this.NavigateContextButton,
             this.ShowDesignerContextButton,
             this.toolStripSeparator5,
+            this.InspectContextButton,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 148);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 170);
             // 
             // NavigateContextButton
             // 
@@ -288,16 +210,6 @@
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(167, 6);
-            // 
-            // ShowDesignerContextButton
-            // 
-            this.ShowDesignerContextButton.Enabled = false;
-            this.ShowDesignerContextButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
-            this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
-            this.ShowDesignerContextButton.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.ShowDesignerContextButton.Size = new System.Drawing.Size(170, 22);
-            this.ShowDesignerContextButton.Text = "Show &designer";
             // 
             // toolStripSeparator5
             // 
@@ -328,6 +240,24 @@
             this.newToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.newToolStripMenuItem.Text = "&New";
             // 
+            // AddTestModuleContextButton
+            // 
+            this.AddTestModuleContextButton.Name = "AddTestModuleContextButton";
+            this.AddTestModuleContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddTestModuleContextButton.Text = "&Test module";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
+            // 
+            // RefreshContextButton
+            // 
+            this.RefreshContextButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshContextButton.Name = "RefreshContextButton";
+            this.RefreshContextButton.Size = new System.Drawing.Size(170, 22);
+            this.RefreshContextButton.Text = "Refresh";
+            // 
             // AddClassContextButton
             // 
             this.AddClassContextButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
@@ -352,23 +282,102 @@
             this.AddFormContextButton.Size = new System.Drawing.Size(165, 22);
             this.AddFormContextButton.Text = "User &form";
             // 
-            // AddTestModuleContextButton
+            // ShowDesignerContextButton
             // 
-            this.AddTestModuleContextButton.Name = "AddTestModuleContextButton";
-            this.AddTestModuleContextButton.Size = new System.Drawing.Size(165, 22);
-            this.AddTestModuleContextButton.Text = "&Test module";
+            this.ShowDesignerContextButton.Enabled = false;
+            this.ShowDesignerContextButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
+            this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
+            this.ShowDesignerContextButton.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.ShowDesignerContextButton.Size = new System.Drawing.Size(170, 22);
+            this.ShowDesignerContextButton.Text = "Show &designer";
             // 
-            // toolStripSeparator6
+            // InspectContextButton
             // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
+            this.InspectContextButton.Image = global::Rubberduck.Properties.Resources.light_bulb_code;
+            this.InspectContextButton.Name = "InspectContextButton";
+            this.InspectContextButton.Size = new System.Drawing.Size(170, 22);
+            this.InspectContextButton.Text = "&Inspect";
             // 
-            // RefreshContextButton
+            // RefreshButton
             // 
-            this.RefreshContextButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshContextButton.Name = "RefreshContextButton";
-            this.RefreshContextButton.Size = new System.Drawing.Size(170, 22);
-            this.RefreshContextButton.Text = "Refresh";
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.ToolTipText = "Refresh";
+            // 
+            // ShowFoldersToggleButton
+            // 
+            this.ShowFoldersToggleButton.Checked = true;
+            this.ShowFoldersToggleButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ShowFoldersToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ShowFoldersToggleButton.Image = global::Rubberduck.Properties.Resources.VSFolder_closed;
+            this.ShowFoldersToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowFoldersToggleButton.Name = "ShowFoldersToggleButton";
+            this.ShowFoldersToggleButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowFoldersToggleButton.ToolTipText = "Toggle folders";
+            // 
+            // ShowDesignerButton
+            // 
+            this.ShowDesignerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ShowDesignerButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
+            this.ShowDesignerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ShowDesignerButton.Name = "ShowDesignerButton";
+            this.ShowDesignerButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowDesignerButton.ToolTipText = "Open designer";
+            // 
+            // AddClassButton
+            // 
+            this.AddClassButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
+            this.AddClassButton.Name = "AddClassButton";
+            this.AddClassButton.Size = new System.Drawing.Size(197, 22);
+            this.AddClassButton.Text = "&Class module (.cls)";
+            // 
+            // AddStdModuleButton
+            // 
+            this.AddStdModuleButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
+            this.AddStdModuleButton.Name = "AddStdModuleButton";
+            this.AddStdModuleButton.Size = new System.Drawing.Size(197, 22);
+            this.AddStdModuleButton.Text = "&Standard module (.bas)";
+            // 
+            // AddFormButton
+            // 
+            this.AddFormButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
+            this.AddFormButton.Name = "AddFormButton";
+            this.AddFormButton.Size = new System.Drawing.Size(197, 22);
+            this.AddFormButton.Text = "User &form";
+            // 
+            // DisplayModeButton
+            // 
+            this.DisplayModeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.DisplayModeButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DisplayMemberNamesButton,
+            this.DisplaySignaturesButton});
+            this.DisplayModeButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
+            this.DisplayModeButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.DisplayModeButton.Name = "DisplayModeButton";
+            this.DisplayModeButton.Size = new System.Drawing.Size(29, 22);
+            this.DisplayModeButton.Text = "toolStripSplitButton1";
+            this.DisplayModeButton.ToolTipText = "Display style";
+            // 
+            // DisplayMemberNamesButton
+            // 
+            this.DisplayMemberNamesButton.Checked = true;
+            this.DisplayMemberNamesButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DisplayMemberNamesButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
+            this.DisplayMemberNamesButton.Name = "DisplayMemberNamesButton";
+            this.DisplayMemberNamesButton.Size = new System.Drawing.Size(198, 22);
+            this.DisplayMemberNamesButton.Text = "Display member &names";
+            // 
+            // DisplaySignaturesButton
+            // 
+            this.DisplaySignaturesButton.Image = global::Rubberduck.Properties.Resources.DisplayFullSignature_13393_32;
+            this.DisplaySignaturesButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.DisplaySignaturesButton.Name = "DisplaySignaturesButton";
+            this.DisplaySignaturesButton.Size = new System.Drawing.Size(198, 22);
+            this.DisplaySignaturesButton.Text = "Display full &signatures";
             // 
             // CodeExplorerWindow
             // 
@@ -421,5 +430,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem AddTestModuleContextButton;
         private System.Windows.Forms.ToolStripMenuItem RefreshContextButton;
+        private System.Windows.Forms.ToolStripMenuItem InspectContextButton;
     }
 }

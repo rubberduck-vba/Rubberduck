@@ -639,6 +639,7 @@
     <None Include="Resources\folder-horizontal-open.png" />
     <None Include="Resources\folder-horizontal.png" />
     <None Include="Resources\application-resize.png" />
+    <None Include="Resources\light-bulb-code.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

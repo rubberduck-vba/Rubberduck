@@ -37,6 +37,7 @@ namespace Rubberduck.UI
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
             codePresenter.RunAllTests += codePresenter_RunAllTests;
+            codePresenter.RunInspections += codePresenter_RunInspections;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
@@ -49,6 +50,11 @@ namespace Rubberduck.UI
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
+        }
+
+        private void codePresenter_RunInspections(object sender, System.EventArgs e)
+        {
+            _codeInspectionsMenu.Inspect();
         }
 
         private void codePresenter_RunAllTests(object sender, System.EventArgs e)

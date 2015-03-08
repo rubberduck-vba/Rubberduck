@@ -182,7 +182,7 @@ namespace Rubberduck.Inspections
                 .Select(v => v.AmbiguousIdentifier());
 
             _unassignedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                            _fields.Where(context => userTypeFields.Any(f => f.GetText() == context.Context.GetText())
+                            _fields.Where(context => userTypeFields.All(f => f.GetText() != context.Context.GetText()) // note: weak
                                 && context.Context.Parent.GetType() != typeof(VBParser.ConstSubStmtContext))
                             .Where(field => _assignments.Where(assignment => assignment.QualifiedName.Equals(field.QualifiedName))
                                     .All(assignment => field.Context.GetText() != assignment.Context.GetText()))
@@ -247,7 +247,7 @@ namespace Rubberduck.Inspections
             }
 
             _unusedGlobals = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                    _globals.Where(context => _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
+                    _globals.Where(context => _usages.Where(usage => usage.Context.GetText() == context.Context.GetText())
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
                     );
 
@@ -263,7 +263,7 @@ namespace Rubberduck.Inspections
             }
 
             _unusedFields = new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(
-                _fields.Where(context =>
+                _fields.Where(context => _globals.All(global => global != context) &&
                 _usages.Where(usage => usage.QualifiedName.Equals(context.QualifiedName))
                     .All(usage => context.Context.GetText() != usage.Context.GetText()))
                );
@@ -398,19 +398,30 @@ namespace Rubberduck.Inspections
 
         private HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>> GetIdentifierUsages(IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
         {
+            if (_usages != null)
+            {
+                return _usages;
+            }
+
             var result = new ConcurrentBag<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
             Parallel.ForEach(_parseResult, module =>
             {
                 var listener = new VariableReferencesListener(module.QualifiedName);
 
                 var usages = module.ParseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(listener);
-                foreach (var usage in usages.Where(usage => assignments.Any(assignment => assignment != usage)))
+                foreach (var usage in usages.Where(usage => !IsAssignmentUsage(usage, assignments)))
                 {
                     result.Add(usage);
                 }
             });
 
             return new HashSet<QualifiedContext<VBParser.AmbiguousIdentifierContext>>(result);
+        }
+
+        private bool IsAssignmentUsage(QualifiedContext<VBParser.AmbiguousIdentifierContext> usage,
+            IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> assignments)
+        {
+            return assignments.Any(assignment => assignment == usage);
         }
 
         private static bool IsConstant(VBParser.AmbiguousIdentifierContext context)

@@ -44,7 +44,19 @@ namespace Rubberduck.UI.CodeExplorer
             AddFormContextButton.Click += AddFormButton_Click;
             AddTestModuleContextButton.Click += AddTestModuleButtonClick;
             NavigateContextButton.Click += SolutionTreeClick;
+
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
+            InspectContextButton.Click += InspectContextButton_Click;
+        }
+
+        public event EventHandler RunInspections;
+        private void InspectContextButton_Click(object sender, EventArgs e)
+        {
+            var handler = RunInspections;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler RunAllTests;
