@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.Extensions;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -22,14 +23,15 @@ namespace Rubberduck.UI.CodeExplorer
             AddClassButton.Click += AddClassButton_Click;
             AddStdModuleButton.Click += AddStdModuleButton_Click;
             AddFormButton.Click += AddFormButton_Click;
+            AddTestModuleButton.Click += AddTestModuleButtonClick;
+
+            DisplayMemberNamesButton.Click += DisplayMemberNamesButton_Click;
+            DisplaySignaturesButton.Click += DisplaySignaturesButton_Click;
 
             RefreshButton.Click += RefreshButtonClicked;
             SolutionTree.NodeMouseDoubleClick += SolutionTreeNodeMouseDoubleClicked;
-            SolutionTree.MouseDown += SolutionTreeMouseDown;
             SolutionTree.AfterExpand += SolutionTreeAfterExpand;
             SolutionTree.AfterCollapse += SolutionTreeAfterCollapse;
-            SolutionTree.BeforeExpand += SolutionTreeBeforeExpand;
-            SolutionTree.BeforeCollapse += SolutionTreeBeforeCollapse;
             SolutionTree.AfterSelect += SolutionTreeClick;
             SolutionTree.ShowLines = false;
             SolutionTree.ImageList = TreeNodeIcons;
@@ -37,10 +39,70 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.LabelEdit = false;
         }
 
+        private TreeViewDisplayStyle _displayStyle;
+        public event EventHandler DisplayStyleChanged;
+
+        public TreeViewDisplayStyle DisplayStyle
+        {
+            get { return _displayStyle; }
+            private set
+            {
+                _displayStyle = value;
+
+                var handler = DisplayStyleChanged;
+                if (handler != null)
+                {
+                    handler(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private void DisplaySignaturesButton_Click(object sender, EventArgs e)
+        {
+            DisplayStyle = TreeViewDisplayStyle.Signatures;
+            CheckDisplayStyleButton();
+        }
+
+        private void DisplayMemberNamesButton_Click(object sender, EventArgs e)
+        {
+            DisplayStyle = TreeViewDisplayStyle.MemberNames;
+            CheckDisplayStyleButton();
+        }
+
+        private void CheckDisplayStyleButton()
+        {
+            DisplaySignaturesButton.Checked = DisplayStyle == TreeViewDisplayStyle.Signatures;
+            DisplayMemberNamesButton.Checked = DisplayStyle == TreeViewDisplayStyle.MemberNames;
+            DisplayModeButton.Image = DisplayStyle == TreeViewDisplayStyle.Signatures
+                ? Properties.Resources.DisplayFullSignature_13393_32
+                : Properties.Resources.DisplayName_13394_32;
+        }
+
+        public event EventHandler AddTestModule;
+        private void AddTestModuleButtonClick(object sender, EventArgs e)
+        {
+            var handler = AddTestModule;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
         private void SolutionTreeClick(object sender, EventArgs e)
         {
             var node = SolutionTree.SelectedNode;
             ShowDesignerButton.Enabled = (node != null && node.ImageKey == "Form");
+            DeleteButton.Enabled = CanDeleteNode(node);
+
+            SelectedNodeLabel.Text =
+                node == null || node.Tag == null
+                    ? string.Empty
+                    : node.Text;
+        }
+
+        private bool CanDeleteNode(TreeNode node)
+        {
+            return (node != null && !node.ImageKey.Contains("Folder"));
         }
 
         public event EventHandler ShowDesigner;
@@ -114,34 +176,6 @@ namespace Rubberduck.UI.CodeExplorer
             e.Node.ImageKey = "OpenFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
         }
-
-        #region Hack to disable double click node expansion
-        private bool _doubleClicked;
-        private void SolutionTreeMouseDown(object sender, MouseEventArgs e)
-        {
-            _doubleClicked = (e.Clicks > 1);
-        }
-
-        private void SolutionTreeBeforeCollapse(object sender, TreeViewCancelEventArgs e)
-        {
-            e.Cancel = _doubleClicked;
-            if (_doubleClicked && NavigateTreeNode != null)
-            {
-                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
-            }
-            _doubleClicked = false;
-        }
-
-        private void SolutionTreeBeforeExpand(object sender, TreeViewCancelEventArgs e)
-        {
-            e.Cancel = _doubleClicked;
-            if (_doubleClicked && NavigateTreeNode != null)
-            {
-                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
-            }
-            _doubleClicked = false;
-        }
-        #endregion
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> NavigateTreeNode;
         private void SolutionTreeNodeMouseDoubleClicked(object sender, TreeNodeMouseClickEventArgs e)

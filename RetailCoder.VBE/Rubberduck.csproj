@@ -590,6 +590,8 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\minus-circle1.png" />
+    <None Include="Resources\plus-circle1.png" />
     <None Include="Resources\question-white.png" />
     <None Include="Resources\tick-circle.png" />
     <None Include="Resources\navigation-180.png" />

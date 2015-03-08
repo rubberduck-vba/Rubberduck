@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.UnitTesting;
 using AddIn = Microsoft.Vbe.Interop.AddIn;
 using Font = System.Drawing.Font;
 using Selection = Rubberduck.Extensions.Selection;
@@ -39,8 +40,21 @@ namespace Rubberduck.UI.CodeExplorer
             Control.RefreshTreeView += RefreshExplorerTreeView;
             Control.NavigateTreeNode += NavigateExplorerTreeNode;
             Control.AddComponent += AddComponent;
+            Control.AddTestModule += AddTestModule;
             Control.ToggleFolders += ToggleFolders;
             Control.ShowDesigner += ShowDesigner;
+            Control.DisplayStyleChanged += DisplayStyleChanged;
+        }
+
+        private void DisplayStyleChanged(object sender, EventArgs e)
+        {
+            RefreshExplorerTreeView();
+        }
+
+        private void AddTestModule(object sender, EventArgs e)
+        {
+            NewUnitTestModuleCommand.NewUnitTestModule(VBE);
+            RefreshExplorerTreeView();
         }
 
         private void ShowDesigner(object sender, System.EventArgs e)
@@ -241,7 +255,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private QualifiedContext<TreeNode> ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
         {
-            return _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName)).Single();
+            return _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName, Control.DisplayStyle)).Single();
         }
     }
 }

@@ -233,6 +233,26 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DisplayFullSignature_13393_32 {
+            get {
+                object obj = ResourceManager.GetObject("DisplayFullSignature_13393_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DisplayName_13394_32 {
+            get {
+                object obj = ResourceManager.GetObject("DisplayName_13394_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap document_copy {
             get {
                 object obj = ResourceManager.GetObject("document_copy", resourceCulture);
@@ -443,6 +463,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap minus_circle {
+            get {
+                object obj = ResourceManager.GetObject("minus-circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap navigation {
             get {
                 object obj = ResourceManager.GetObject("navigation", resourceCulture);
@@ -456,6 +486,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap navigation_180 {
             get {
                 object obj = ResourceManager.GetObject("navigation_180", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap plus_circle {
+            get {
+                object obj = ResourceManager.GetObject("plus-circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -543,9 +583,29 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap VSFolder_closed {
+            get {
+                object obj = ResourceManager.GetObject("VSFolder_closed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap VSObject_Module {
             get {
                 object obj = ResourceManager.GetObject("VSObject_Module", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VSProject_form {
+            get {
+                object obj = ResourceManager.GetObject("VSProject_form", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

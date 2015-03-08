@@ -5,6 +5,7 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.VBA;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
@@ -240,7 +241,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 SelectedImageKey = imageKey,
                 Tag = ((ParserRuleContext) context).GetQualifiedSelection(_name),
                 Text = _displayStyle == TreeViewDisplayStyle.Signatures
-                    ? context.Signature()
+                    ? ParserRuleContextExtensions.Signature(context)
                     : context.AmbiguousIdentifier().GetText()
             };
             return node;
