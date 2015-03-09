@@ -34,6 +34,9 @@ namespace Rubberduck.UI.CodeExplorer
             SolutionTree.AfterExpand += SolutionTreeAfterExpand;
             SolutionTree.AfterCollapse += SolutionTreeAfterCollapse;
             SolutionTree.AfterSelect += SolutionTreeClick;
+            SolutionTree.MouseDown += SolutionTreeMouseDown;
+            SolutionTree.BeforeExpand += SolutionTreeBeforeExpand;
+            SolutionTree.BeforeCollapse += SolutionTreeBeforeCollapse;
             SolutionTree.ShowLines = false;
             SolutionTree.ImageList = TreeNodeIcons;
             SolutionTree.ShowNodeToolTips = true;
@@ -205,6 +208,32 @@ namespace Rubberduck.UI.CodeExplorer
 
             e.Node.ImageKey = "OpenFolder";
             e.Node.SelectedImageKey = e.Node.ImageKey;
+        }
+
+        private bool _doubleClicked;
+        private void SolutionTreeMouseDown(object sender, MouseEventArgs e)
+        {
+            _doubleClicked = (e.Clicks > 1);
+        }
+
+        private void SolutionTreeBeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = _doubleClicked;
+            if (_doubleClicked && NavigateTreeNode != null)
+            {
+                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
+            }
+            _doubleClicked = false;
+        }
+
+        private void SolutionTreeBeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            e.Cancel = _doubleClicked;
+            if (_doubleClicked && NavigateTreeNode != null)
+            {
+                //NavigateTreeNode(sender, new TreeNodeNavigateCodeEventArgs(e.Node, (QualifiedSelection)e.Node.Tag));
+            }
+            _doubleClicked = false;
         }
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> NavigateTreeNode;

@@ -123,11 +123,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (!e.Node.IsExpanded)
-            {
-                e.Node.Expand();
-            }
-
             if (e.Selection.StartLine != 0)
             {
                 //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
