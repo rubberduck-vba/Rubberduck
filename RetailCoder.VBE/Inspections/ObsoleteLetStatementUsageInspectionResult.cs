@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
@@ -11,12 +12,12 @@ namespace Rubberduck.Inspections
     public class ObsoleteLetStatementUsageInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteLetStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<VBParser.LetStmtContext> qualifiedContext)
+            QualifiedContext<VBAParser.LetStmtContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VBParser.LetStmtContext Context { get { return base.Context as VBParser.LetStmtContext; } }
+        private new VBAParser.LetStmtContext Context { get { return base.Context as VBAParser.LetStmtContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {

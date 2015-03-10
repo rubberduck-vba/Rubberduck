@@ -1,21 +1,22 @@
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
     public class IdentifierNode : Node
     {
-        private readonly VBParser.CertainIdentifierContext _certainContext;
-        private readonly VBParser.AmbiguousIdentifierContext _ambiguousContext;
-        private readonly VBParser.AsTypeClauseContext _asTypeClauseContext;
+        private readonly VBAParser.CertainIdentifierContext _certainContext;
+        private readonly VBAParser.AmbiguousIdentifierContext _ambiguousContext;
+        private readonly VBAParser.AsTypeClauseContext _asTypeClauseContext;
 
-        public IdentifierNode(VBParser.CertainIdentifierContext context, string scope, VBParser.AsTypeClauseContext asTypeClause = null)
+        public IdentifierNode(VBAParser.CertainIdentifierContext context, string scope, VBAParser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _certainContext = context;
             _asTypeClauseContext = asTypeClause;
         }
 
-        public IdentifierNode(VBParser.AmbiguousIdentifierContext context, string scope, VBParser.AsTypeClauseContext asTypeClause = null)
+        public IdentifierNode(VBAParser.AmbiguousIdentifierContext context, string scope, VBAParser.AsTypeClauseContext asTypeClause = null)
             : base(context, scope)
         {
             _ambiguousContext = context;

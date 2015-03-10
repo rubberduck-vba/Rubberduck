@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.VBA;
@@ -15,7 +16,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
         Signatures
     }
 
-    public class TreeViewListener : VBListenerBase, IExtensionListener<TreeNode>
+    public class TreeViewListener : VBABaseListener, IExtensionListener<TreeNode>
     {
         private readonly QualifiedModuleName _name;
         private readonly TreeViewDisplayStyle _displayStyle;
@@ -34,7 +35,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             get { return new[] {new QualifiedContext<TreeNode>(_name , _tree)}; }
         }
 
-        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
+        public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
@@ -43,13 +44,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
             var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
                 ? context.GetText()
-                : context.AmbiguousIdentifier().GetText();
+                : context.ambiguousIdentifier().GetText();
 
             var node = new TreeNode(nodeText);
-            var parent = context.Parent as VBParser.VariableStmtContext;
-            var accessibility = parent == null || parent.Visibility() == null 
+            var parent = context.Parent as VBAParser.VariableStmtContext;
+            var accessibility = parent == null || parent.visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.Visibility().GetAccessibility();
+                : parent.visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicField"
@@ -60,7 +61,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterConstSubStmt(VBParser.ConstSubStmtContext context)
+        public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)
         {
             if (!_isInDeclarationsSection)
             {
@@ -69,13 +70,13 @@ namespace Rubberduck.VBA.ParseTreeListeners
 
             var nodeText = _displayStyle == TreeViewDisplayStyle.Signatures
                 ? context.GetText()
-                : context.AmbiguousIdentifier().GetText();
+                : context.ambiguousIdentifier().GetText();
 
             var node = new TreeNode(nodeText);
-            var parent = context.Parent as VBParser.ConstStmtContext;
-            var accessibility = parent == null || parent.Visibility() == null 
+            var parent = context.Parent as VBAParser.ConstStmtContext;
+            var accessibility = parent == null || parent.visibility() == null 
                 ? VBAccessibility.Implicit 
-                : parent.Visibility().GetAccessibility();
+                : parent.visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicConst"
@@ -86,9 +87,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
-            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
+            var node = new TreeNode(context.ambiguousIdentifier().GetText());
             var members = context.enumerationStmt_Constant();
             foreach (var member in members)
             {
@@ -98,9 +99,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.Visibility() == null 
+            var accessibility = context.visibility() == null 
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicEnum"
@@ -111,15 +112,15 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
         {
-            var node = new TreeNode(context.AmbiguousIdentifier().GetText());
-            var members = context.TypeStmt_Element();
+            var node = new TreeNode(context.ambiguousIdentifier().GetText());
+            var members = context.typeStmt_Element();
             foreach (var member in members)
             {
                 var memberNodeText = _displayStyle == TreeViewDisplayStyle.Signatures
                     ? member.GetText()
-                    : member.AmbiguousIdentifier().GetText();
+                    : member.ambiguousIdentifier().GetText();
 
                 var memberNode = node.Nodes.Add(memberNodeText);
                 memberNode.ImageKey = "PublicField";
@@ -127,9 +128,9 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 memberNode.Tag = member.GetQualifiedSelection(_name);
             }
 
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             node.ImageKey = (accessibility == VBAccessibility.Public || 
                              accessibility == VBAccessibility.Global)
                 ? "PublicType"
@@ -141,12 +142,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
@@ -157,12 +158,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateMethod"
                 : accessibility == VBAccessibility.Friend
@@ -173,12 +174,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
@@ -193,12 +194,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
@@ -213,12 +214,12 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _tree.Nodes.Add(node);
         }
 
-        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _isInDeclarationsSection = false;
-            var accessibility = context.Visibility() == null
+            var accessibility = context.visibility() == null
                 ? VBAccessibility.Implicit
-                : context.Visibility().GetAccessibility();
+                : context.visibility().GetAccessibility();
             var imageKey = accessibility == VBAccessibility.Private
                 ? "PrivateProperty"
                 : accessibility == VBAccessibility.Friend
@@ -242,7 +243,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
                 Tag = ((ParserRuleContext) context).GetQualifiedSelection(_name),
                 Text = _displayStyle == TreeViewDisplayStyle.Signatures
                     ? ParserRuleContextExtensions.Signature(context)
-                    : context.AmbiguousIdentifier().GetText()
+                    : context.ambiguousIdentifier().GetText()
             };
             return node;
         }

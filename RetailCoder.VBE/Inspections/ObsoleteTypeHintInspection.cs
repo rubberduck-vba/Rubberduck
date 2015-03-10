@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -26,11 +27,11 @@ namespace Rubberduck.Inspections
             {
                 var local = module;
                 var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                var results = declarations.Select(declaration => declaration.Context).OfType<VBParser.VariableSubStmtContext>()
-                    .Where(variable => variable.TypeHint() != null
-                                       && !string.IsNullOrEmpty(variable.TypeHint().GetText()))
-                    .Select(variable => new { Context = variable, Hint = variable.TypeHint().GetText() })
-                    .Select(result => new ObsoleteTypeHintInspectionResult(string.Format(Name, result.Context.AmbiguousIdentifier().GetText()), Severity, new QualifiedContext<VBParser.VariableSubStmtContext>(local.QualifiedName, result.Context)));
+                var results = declarations.Select(declaration => declaration.Context).OfType<VBAParser.VariableSubStmtContext>()
+                    .Where(variable => variable.typeHint() != null
+                                       && !string.IsNullOrEmpty(variable.typeHint().GetText()))
+                    .Select(variable => new { Context = variable, Hint = variable.typeHint().GetText() })
+                    .Select(result => new ObsoleteTypeHintInspectionResult(string.Format(Name, result.Context.ambiguousIdentifier().GetText()), Severity, new QualifiedContext<VBAParser.VariableSubStmtContext>(local.QualifiedName, result.Context)));
 
                 inspectionResults.AddRange(results);
             }

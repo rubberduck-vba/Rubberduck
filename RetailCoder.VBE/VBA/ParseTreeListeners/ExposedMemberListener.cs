@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
@@ -12,7 +13,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
     /// <summary>
     /// A listener that gets all module members that are visible outside the module.
     /// </summary>
-    public class ExposedMemberListener : VBListenerBase, IExtensionListener<ParserRuleContext>
+    public class ExposedMemberListener : VBABaseListener, IExtensionListener<ParserRuleContext>
     {
         private readonly QualifiedModuleName _qualifiedName;
 
@@ -32,7 +33,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             get { return _members; }
         }
 
-        private void AddIfExposed(VBParser.VisibilityContext context)
+        private void AddIfExposed(VBAParser.VisibilityContext context)
         {
             if (context == null)
             {
@@ -46,59 +47,59 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
-        public override void EnterVariableStmt(VBParser.VariableStmtContext context)
+        public override void EnterVariableStmt(VBAParser.VariableStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterEnumerationStmt(VBParser.EnumerationStmtContext context)
+        public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterConstStmt(VBParser.ConstStmtContext context)
+        public override void EnterConstStmt(VBAParser.ConstStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterTypeStmt(VBParser.TypeStmtContext context)
+        public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterDeclareStmt(VBParser.DeclareStmtContext context)
+        public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterEventStmt(VBParser.EventStmtContext context)
+        public override void EnterEventStmt(VBAParser.EventStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
 
-        public override void ExitPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            AddIfExposed(context.Visibility());
+            AddIfExposed(context.visibility());
         }
     }
 }

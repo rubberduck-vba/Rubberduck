@@ -5,6 +5,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections
         {
         }
 
-        private new VBParser.FunctionStmtContext Context { get { return base.Context as VBParser.FunctionStmtContext; } }
+        private new VBAParser.FunctionStmtContext Context { get { return base.Context as VBAParser.FunctionStmtContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
@@ -30,10 +31,10 @@ namespace Rubberduck.Inspections
 
         private void ConvertFunctionToProcedure(VBE vbe)
         {
-            var visibility = Context.Visibility() == null ? string.Empty : Context.Visibility().GetText() + ' ';
-            var name = ' ' + Context.AmbiguousIdentifier().GetText();
-            var args = Context.ArgList().GetText();
-            var asType = Context.AsTypeClause() == null ? string.Empty : ' ' + Context.AsTypeClause().GetText();
+            var visibility = Context.visibility() == null ? string.Empty : Context.visibility().GetText() + ' ';
+            var name = ' ' + Context.ambiguousIdentifier().GetText();
+            var args = Context.argList().GetText();
+            var asType = Context.asTypeClause() == null ? string.Empty : ' ' + Context.asTypeClause().GetText();
 
             var oldSignature = visibility + Tokens.Function + name + args + asType;
             var newSignature = visibility +  Tokens.Sub + name + args;

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
@@ -13,41 +14,41 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _name = name;
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            if (context.AmbiguousIdentifier().GetText() == _name)
+            if (context.ambiguousIdentifier().GetText() == _name)
             {
                 base.EnterFunctionStmt(context);
             }
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            if (context.AmbiguousIdentifier().GetText() == _name)
+            if (context.ambiguousIdentifier().GetText() == _name)
             {
                 base.EnterSubStmt(context);
             }
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            if (context.AmbiguousIdentifier().GetText() == _name)
+            if (context.ambiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyGetStmt(context);
             }
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            if (context.AmbiguousIdentifier().GetText() == _name)
+            if (context.ambiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertyLetStmt(context);
             }
         }
 
-        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            if (context.AmbiguousIdentifier().GetText() == _name)
+            if (context.ambiguousIdentifier().GetText() == _name)
             {
                 base.EnterPropertySetStmt(context);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
@@ -10,12 +11,12 @@ namespace Rubberduck.Inspections
 {
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBParser.ArgContext> qualifiedContext)
+        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
             : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VBParser.ArgContext Context { get { return base.Context as VBParser.ArgContext; } }
+        private new VBAParser.ArgContext Context { get { return base.Context as VBAParser.ArgContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {

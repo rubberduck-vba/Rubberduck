@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -27,9 +28,9 @@ namespace Rubberduck.Inspections
                 var module = result;
                 var results = module.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener(module.QualifiedName))
                     .Select(context => context.Context)
-                    .OfType<VBParser.LetStmtContext>()
+                    .OfType<VBAParser.LetStmtContext>()
                     .Where(context => context.LET() != null && !string.IsNullOrEmpty(context.LET().GetText()))
-                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VBParser.LetStmtContext>(module.QualifiedName, context)));
+                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VBAParser.LetStmtContext>(module.QualifiedName, context)));
                 foreach (var inspectionResult in results)
                 {
                     yield return inspectionResult;

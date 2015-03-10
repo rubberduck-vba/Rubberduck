@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.ParseTreeListeners;
@@ -11,20 +12,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     public class ExtractMethodRefactoring
     {
-        public static IDictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, QualifiedSelection selection)
+        public static IDictionary<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> GetParentMethodDeclarations(IParseTree parseTree, QualifiedSelection selection)
         {
             var declarations = parseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(selection.QualifiedName)).ToList();
 
-            var constants = declarations.Select(d => d.Context).OfType<VBParser.ConstSubStmtContext>().Select(constant => constant.AmbiguousIdentifier());
-            var variables = declarations.Select(d => d.Context).OfType<VBParser.VariableSubStmtContext>().Select(variable => variable.AmbiguousIdentifier());
-            var arguments = declarations.Select(d => d.Context).OfType<VBParser.ArgContext>().Select(arg => arg.AmbiguousIdentifier());
+            var constants = declarations.Select(d => d.Context).OfType<VBAParser.ConstSubStmtContext>().Select(constant => constant.ambiguousIdentifier());
+            var variables = declarations.Select(d => d.Context).OfType<VBAParser.VariableSubStmtContext>().Select(variable => variable.ambiguousIdentifier());
+            var arguments = declarations.Select(d => d.Context).OfType<VBAParser.ArgContext>().Select(arg => arg.ambiguousIdentifier());
 
             var identifiers = constants.Union(variables)
                                        .Union(arguments)
                                        .ToDictionary(declaration => declaration.GetText(),
                                                      declaration => declaration);
 
-            var references = parseTree.GetContexts<VariableReferencesListener, VBParser.AmbiguousIdentifierContext>(new VariableReferencesListener(selection.QualifiedName))
+            var references = parseTree.GetContexts<VariableReferencesListener, VBAParser.AmbiguousIdentifierContext>(new VariableReferencesListener(selection.QualifiedName))
                                       .GroupBy(usage => new { Identifier = usage.Context.GetText() })
                                       .ToList();
 
@@ -43,12 +44,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                                     .Select(usage => usage.Key);
 
 
-            var result = new Dictionary<VBParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>();
+            var result = new Dictionary<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>();
 
             // temporal coupling: references used after selection must be added first
             foreach (var reference in usedAfterSelection)
             {
-                VBParser.AmbiguousIdentifierContext key;
+                VBAParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -60,7 +61,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in usedBeforeSelection)
             {
-                VBParser.AmbiguousIdentifierContext key;
+                VBAParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -72,7 +73,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in usedOnlyWithinSelection)
             {
-                VBParser.AmbiguousIdentifierContext key;
+                VBAParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))
@@ -84,7 +85,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             foreach (var reference in notUsedInSelection)
             {
-                VBParser.AmbiguousIdentifierContext key;
+                VBAParser.AmbiguousIdentifierContext key;
                 if (identifiers.TryGetValue(reference.Identifier, out key))
                 {
                     if (!result.ContainsKey(key))

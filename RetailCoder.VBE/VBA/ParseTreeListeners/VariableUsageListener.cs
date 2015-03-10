@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class VariableUsageListener : VBListenerBase, IExtensionListener<VBParser.AmbiguousIdentifierContext>
+    public class VariableUsageListener : VBABaseListener, IExtensionListener<VBAParser.AmbiguousIdentifierContext>
     {
-        private readonly IList<QualifiedContext<VBParser.AmbiguousIdentifierContext>> _members = 
-            new List<QualifiedContext<VBParser.AmbiguousIdentifierContext>>();
+        private readonly IList<QualifiedContext<VBAParser.AmbiguousIdentifierContext>> _members = 
+            new List<QualifiedContext<VBAParser.AmbiguousIdentifierContext>>();
 
         private readonly QualifiedModuleName _qualifiedName;
         private QualifiedMemberName _currentMember;
@@ -19,46 +20,46 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _currentMember = new QualifiedMemberName(_qualifiedName, "(declarations)");
         }
 
-        public IEnumerable<QualifiedContext<VBParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
+        public IEnumerable<QualifiedContext<VBAParser.AmbiguousIdentifierContext>> Members { get { return _members; } }
 
-        protected void AddMember(VBParser.AmbiguousIdentifierContext context)
+        protected void AddMember(VBAParser.AmbiguousIdentifierContext context)
         {
-            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context));
+            _members.Add(new QualifiedContext<VBAParser.AmbiguousIdentifierContext>(_currentMember, context));
         }
 
-        public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
+        public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context.AmbiguousIdentifier()));
+            _members.Add(new QualifiedContext<VBAParser.AmbiguousIdentifierContext>(_currentMember, context.ambiguousIdentifier()));
         }
 
-        public override void EnterWithStmt(VBParser.WithStmtContext context)
+        public override void EnterWithStmt(VBAParser.WithStmtContext context)
         {
-            _members.Add(new QualifiedContext<VBParser.AmbiguousIdentifierContext>(_currentMember, context.ImplicitCallStmt_InStmt().ICS_S_VariableCall().VariableCallStmt().AmbiguousIdentifier()));
+            _members.Add(new QualifiedContext<VBAParser.AmbiguousIdentifierContext>(_currentMember, context.implicitCallStmt_InStmt().iCS_S_VariableOrProcedureCall().ambiguousIdentifier()));
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            _currentMember = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+            _currentMember = new QualifiedMemberName(_qualifiedName, context.ambiguousIdentifier().GetText());
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            _currentMember = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+            _currentMember = new QualifiedMemberName(_qualifiedName, context.ambiguousIdentifier().GetText());
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            _currentMember = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+            _currentMember = new QualifiedMemberName(_qualifiedName, context.ambiguousIdentifier().GetText());
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            _currentMember = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+            _currentMember = new QualifiedMemberName(_qualifiedName, context.ambiguousIdentifier().GetText());
         }
 
-        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            _currentMember = new QualifiedMemberName(_qualifiedName, context.AmbiguousIdentifier().GetText());
+            _currentMember = new QualifiedMemberName(_qualifiedName, context.ambiguousIdentifier().GetText());
         }
     }
 }

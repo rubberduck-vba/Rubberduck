@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
     public class EnumNode : Node
     {
-        private readonly VBParser.EnumerationStmtContext _context;
+        private readonly VBAParser.EnumerationStmtContext _context;
         private readonly IdentifierNode _identifier;
 
-        public EnumNode(VBParser.EnumerationStmtContext context, string scope)
+        public EnumNode(VBAParser.EnumerationStmtContext context, string scope)
             : base(context, scope, null, new List<Node>())
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
 
             var children = context.enumerationStmt_Constant();
             foreach (var child in children)
@@ -29,20 +30,20 @@ namespace Rubberduck.VBA.Nodes
 
         public VBAccessibility Accessibility
         {
-            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.Visibility().GetText()); }
+            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.visibility().GetText()); }
         }
     }
 
     public class EnumConstNode : Node
     {
-        private readonly VBParser.EnumerationStmt_ConstantContext _context;
+        private readonly VBAParser.EnumerationStmt_ConstantContext _context;
         private readonly IdentifierNode _identifier;
 
-        public EnumConstNode(VBParser.EnumerationStmt_ConstantContext context, string scope)
+        public EnumConstNode(VBAParser.EnumerationStmt_ConstantContext context, string scope)
             : base(context, scope)
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
         }
 
         public string IdentifierName
@@ -52,7 +53,7 @@ namespace Rubberduck.VBA.Nodes
 
         public string SpecifiedValue
         {
-            get { return _context.ValueStmt().GetText(); }
+            get { return _context.valueStmt().GetText(); }
         }
     }
 }

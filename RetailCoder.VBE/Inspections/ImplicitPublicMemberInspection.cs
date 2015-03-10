@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -26,9 +27,9 @@ namespace Rubberduck.Inspections
                 foreach (var procedure in procedures)
                 {
                     var context = (dynamic) procedure.Context;
-                    if (((context.Visibility() as VBParser.VisibilityContext).GetAccessibility() == VBAccessibility.Implicit))
+                    if (((context.visibility() as VBAParser.VisibilityContext).GetAccessibility() == VBAccessibility.Implicit))
                     {
-                        yield return new ImplicitPublicMemberInspectionResult(string.Format(Name,context.AmbiguousIdentifier().GetText()), Severity, procedure);
+                        yield return new ImplicitPublicMemberInspectionResult(string.Format(Name,context.ambiguousIdentifier().GetText()), Severity, procedure);
                     }
                 }
             }

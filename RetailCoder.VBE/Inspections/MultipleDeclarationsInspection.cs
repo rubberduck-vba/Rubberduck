@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -24,15 +25,15 @@ namespace Rubberduck.Inspections
             foreach (var module in parseResult.ComponentParseResults)
             {
                 var declarations = module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                foreach (var declaration in declarations.Where(declaration => declaration.Context is VBParser.ConstStmtContext || declaration.Context is VBParser.VariableStmtContext))
+                foreach (var declaration in declarations.Where(declaration => declaration.Context is VBAParser.ConstStmtContext || declaration.Context is VBAParser.VariableStmtContext))
                 {
-                    var variables = declaration.Context as VBParser.VariableStmtContext;                    
+                    var variables = declaration.Context as VBAParser.VariableStmtContext;                    
                     if (variables != null && HasMultipleDeclarations(variables))
                     {
-                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.VariableListStmt()));
+                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.variableListStmt()));
                     }
 
-                    var consts = declaration.Context as VBParser.ConstStmtContext;
+                    var consts = declaration.Context as VBAParser.ConstStmtContext;
                     if (consts != null && HasMultipleDeclarations(consts))
                     {
                         yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));
@@ -41,14 +42,14 @@ namespace Rubberduck.Inspections
             }
         }
 
-        private bool HasMultipleDeclarations(VBParser.VariableStmtContext context)
+        private bool HasMultipleDeclarations(VBAParser.VariableStmtContext context)
         {
-            return context.VariableListStmt().VariableSubStmt().Count > 1;
+            return context.variableListStmt().variableSubStmt().Count > 1;
         }
 
-        private bool HasMultipleDeclarations(VBParser.ConstStmtContext context)
+        private bool HasMultipleDeclarations(VBAParser.ConstStmtContext context)
         {
-            return context.ConstSubStmt().Count > 1;
+            return context.constSubStmt().Count > 1;
         }
     }
 }

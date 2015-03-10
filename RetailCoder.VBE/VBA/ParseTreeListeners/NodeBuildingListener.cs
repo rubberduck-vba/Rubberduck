@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class NodeBuildingListener : VBListenerBase
+    public class NodeBuildingListener : VBABaseListener
     {
         private readonly string _project;
         private readonly string _module;
@@ -31,27 +32,27 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _currentNode = null;
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
 
-        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _currentNode = CreateProcedureNode(context);
         }
@@ -61,10 +62,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
             var procedureName = context.ambiguousIdentifier().GetText();
             var node = new ProcedureNode(context, _currentScope, procedureName);
 
-            var args = context.argList().arg() as IReadOnlyList<VBParser.ArgContext>;
+            var args = context.argList().arg() as IReadOnlyList<VBAParser.ArgContext>;
             if (args != null)
             {
-                foreach (var arg in args)
+                foreach (VBAParser.ArgContext arg in args)
                 {
                     node.AddChild(new ParameterNode(arg, _currentScope));
                 }
@@ -74,52 +75,52 @@ namespace Rubberduck.VBA.ParseTreeListeners
             return node;
         }
 
-        public override void ExitOptionExplicitStmt(VBParser.OptionExplicitStmtContext context)
+        public override void ExitOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitOptionBaseStmt(VBParser.OptionBaseStmtContext context)
+        public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitOptionCompareStmt(VBParser.OptionCompareStmtContext context)
+        public override void ExitOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
         {
             _members.Add(new OptionNode(context, _currentScope));
         }
 
-        public override void ExitEnumerationStmt(VBParser.EnumerationStmtContext context)
+        public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)
         {
             _members.Add(new EnumNode(context, _currentScope));
         }
 
-        public override void ExitSubStmt(VBParser.SubStmtContext context)
+        public override void ExitSubStmt(VBAParser.SubStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             AddCurrentMember();
         }
 
-        public override void ExitVariableStmt(VBParser.VariableStmtContext context)
+        public override void ExitVariableStmt(VBAParser.VariableStmtContext context)
         {
             var node = new VariableDeclarationNode(context, _currentScope);
             if (_currentNode == null)
@@ -132,7 +133,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
-        public override void ExitConstStmt(VBParser.ConstStmtContext context)
+        public override void ExitConstStmt(VBAParser.ConstStmtContext context)
         {
             var node = new ConstDeclarationNode(context, _currentScope);
             if (_currentNode == null)
@@ -145,7 +146,7 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
         }
 
-        public override void ExitTypeStmt(VBParser.TypeStmtContext context)
+        public override void ExitTypeStmt(VBAParser.TypeStmtContext context)
         {
             _members.Add(new TypeNode(context, _currentScope));
         }

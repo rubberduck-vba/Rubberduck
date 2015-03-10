@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -30,13 +31,13 @@ namespace Rubberduck.Inspections
                 var module = result;
 
                 var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
-                var functions = procedures.Select(context => context.Context).OfType<VBParser.FunctionStmtContext>()
-                    .Where(function => function.GetContexts<VariableAssignmentListener, VBParser.AmbiguousIdentifierContext>(new VariableAssignmentListener(module.QualifiedName))
-                        .All(assignment => assignment.Context.GetText() != function.AmbiguousIdentifier().GetText()));
+                var functions = procedures.Select(context => context.Context).OfType<VBAParser.FunctionStmtContext>()
+                    .Where(function => function.GetContexts<VariableAssignmentListener, VBAParser.AmbiguousIdentifierContext>(new VariableAssignmentListener(module.QualifiedName))
+                        .All(assignment => assignment.Context.GetText() != function.ambiguousIdentifier().GetText()));
 
                 foreach (var unassignedFunction in functions)
                 {
-                    yield return new NonReturningFunctionInspectionResult(string.Format(Name, unassignedFunction.AmbiguousIdentifier().GetText()), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, unassignedFunction));
+                    yield return new NonReturningFunctionInspectionResult(string.Format(Name, unassignedFunction.ambiguousIdentifier().GetText()), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, unassignedFunction));
                 }
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -30,17 +31,17 @@ namespace Rubberduck.Inspections
 
                 // we want declarations with a null AsTypeClause() and a null TypeHint().
 
-                var constants = declarations.Where(declaration => declaration.Context is VBParser.ConstSubStmtContext)
+                var constants = declarations.Where(declaration => declaration.Context is VBAParser.ConstSubStmtContext)
                                             .Select(declaration => declaration.Context)
-                                            .Cast<VBParser.ConstSubStmtContext>()
-                                            .Where(constant => constant.AsTypeClause() == null && constant.TypeHint() == null)
-                                            .Select(constant => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, constant.AmbiguousIdentifier().GetText()), Severity, constant, module.QualifiedName));
+                                            .Cast<VBAParser.ConstSubStmtContext>()
+                                            .Where(constant => constant.asTypeClause() == null && constant.typeHint() == null)
+                                            .Select(constant => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, constant.ambiguousIdentifier().GetText()), Severity, constant, module.QualifiedName));
 
-                var variables = declarations.Where(declaration => declaration.Context is VBParser.VariableSubStmtContext)
+                var variables = declarations.Where(declaration => declaration.Context is VBAParser.VariableSubStmtContext)
                                             .Select(declaration => declaration.Context)
-                                            .Cast<VBParser.VariableSubStmtContext>()
-                                            .Where(variable => variable.AsTypeClause() == null && variable.TypeHint() == null)
-                                            .Select(variable => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, variable.AmbiguousIdentifier().GetText()), Severity, variable, module.QualifiedName));
+                                            .Cast<VBAParser.VariableSubStmtContext>()
+                                            .Where(variable => variable.asTypeClause() == null && variable.typeHint() == null)
+                                            .Select(variable => new VariableTypeNotDeclaredInspectionResult(string.Format(Name, variable.ambiguousIdentifier().GetText()), Severity, variable, module.QualifiedName));
 
                 foreach (var inspectionResult in constants.Concat(variables))
                 {

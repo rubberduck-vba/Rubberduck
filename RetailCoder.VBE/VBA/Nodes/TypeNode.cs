@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
     public class TypeNode : Node
     {
-        private readonly VBParser.TypeStmtContext _context;
+        private readonly VBAParser.TypeStmtContext _context;
         private readonly IdentifierNode _identifier;
 
-        public TypeNode(VBParser.TypeStmtContext context, string scope)
+        public TypeNode(VBAParser.TypeStmtContext context, string scope)
             : base(context, scope, null, new List<Node>())
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
 
-            var children = context.TypeStmt_Element();
+            var children = context.typeStmt_Element();
             foreach (var child in children)
             {
                 AddChild(new TypeElementNode(child, scope));
@@ -29,20 +30,20 @@ namespace Rubberduck.VBA.Nodes
 
         public VBAccessibility Accessibility
         {
-            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.Visibility().GetText()); }
+            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.visibility().GetText()); }
         }
     }
 
     public class TypeElementNode : Node
     {
-        private readonly VBParser.TypeStmt_ElementContext _context;
+        private readonly VBAParser.TypeStmt_ElementContext _context;
         private readonly IdentifierNode _identifier;
 
-        public TypeElementNode(VBParser.TypeStmt_ElementContext context, string scope)
+        public TypeElementNode(VBAParser.TypeStmt_ElementContext context, string scope)
             : base(context, scope)
         {
             _context = context;
-            _identifier = new IdentifierNode(_context.AmbiguousIdentifier(), scope);
+            _identifier = new IdentifierNode(_context.ambiguousIdentifier(), scope);
         }
 
         public string IdentifierName

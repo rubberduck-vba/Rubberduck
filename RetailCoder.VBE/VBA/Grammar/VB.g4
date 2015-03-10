@@ -50,7 +50,6 @@
 /*
  Changes for VBA / C#:
 	- Added "Option Compare Database"
-	- Renamed parser rules to PascalCase
 */
 
 grammar VB;
@@ -64,7 +63,6 @@ Module :
 	(ModuleHeader NEWLINE+)?
 	ModuleConfig? NEWLINE*
 	ModuleAttributes? NEWLINE*
-	ModuleOptions? NEWLINE*
 	ModuleBody? NEWLINE*
 	WS?
 ;
@@ -89,7 +87,8 @@ ModuleOption :
 ;
 
 ModuleBody : 
-	ModuleBodyElement (NEWLINE+ ModuleBodyElement)*
+	ModuleOptions? NEWLINE*
+	| ModuleBodyElement (NEWLINE+ ModuleBodyElement)*
 ;
 
 ModuleBodyElement : 

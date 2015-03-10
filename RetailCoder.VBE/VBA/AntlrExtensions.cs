@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.ParseTreeListeners;
 
@@ -37,9 +38,9 @@ namespace Rubberduck.VBA
         /// returns <c>true</c> if its name matches that of the used variable.
         /// </summary>
         /// <returns></returns>
-        public static bool IsIdentifierUsage(this VBParser.VariableCallStmtContext usage, VBParser.AmbiguousIdentifierContext identifier)
+        public static bool IsIdentifierUsage(this VBAParser.ICS_S_VariableOrProcedureCallContext usage, VBAParser.AmbiguousIdentifierContext identifier)
         {
-            return usage.AmbiguousIdentifier().GetText() == identifier.GetText();
+            return usage.ambiguousIdentifier().GetText() == identifier.GetText();
         }
     }
 }

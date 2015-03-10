@@ -8,6 +8,7 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
@@ -21,11 +22,11 @@ namespace Rubberduck.VBA
         public IParseTree Parse(string code)
         {
             var input = new AntlrInputStream(code);
-            var lexer = new VBLexer(input);
+            var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new VBParser(tokens);
+            var parser = new VBAParser(tokens);
             
-            var result = parser.StartRule();
+            var result = parser.startRule();
             return result;
         }
 

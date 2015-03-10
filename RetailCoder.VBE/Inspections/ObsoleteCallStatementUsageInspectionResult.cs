@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 
@@ -11,12 +12,12 @@ namespace Rubberduck.Inspections
     public class ObsoleteCallStatementUsageInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteCallStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type,
-            QualifiedContext<VBParser.ExplicitCallStmtContext> qualifiedContext)
+            QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
         {
         }
 
-        private new VBParser.ExplicitCallStmtContext Context { get { return base.Context as VBParser.ExplicitCallStmtContext;} }
+        private new VBAParser.ExplicitCallStmtContext Context { get { return base.Context as VBAParser.ExplicitCallStmtContext;} }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
@@ -39,16 +40,16 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
 
             string procedure;
-            VBParser.ArgsCallContext arguments;
-            if (Context.ECS_MemberProcedureCall() != null)
+            VBAParser.ArgsCallContext arguments;
+            if (Context.eCS_MemberProcedureCall() != null)
             {
-                procedure = Context.ECS_MemberProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.ECS_MemberProcedureCall().argsCall();
+                procedure = Context.eCS_MemberProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.eCS_MemberProcedureCall().argsCall();
             }
             else
             {
-                procedure = Context.ECS_ProcedureCall().ambiguousIdentifier().GetText();
-                arguments = Context.ECS_ProcedureCall().argsCall();
+                procedure = Context.eCS_ProcedureCall().ambiguousIdentifier().GetText();
+                arguments = Context.eCS_ProcedureCall().argsCall();
             }
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

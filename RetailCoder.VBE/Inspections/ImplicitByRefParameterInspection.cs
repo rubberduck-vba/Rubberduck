@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -30,15 +31,15 @@ namespace Rubberduck.Inspections
                     var args = GetArguments(procedure);
                     foreach (var arg in args.Where(arg => arg.BYREF() == null && arg.BYVAL() == null && arg.PARAMARRAY() == null))
                     {
-                        var context = new QualifiedContext<VBParser.ArgContext>(module.QualifiedName, arg);
-                        yield return new ImplicitByRefParameterInspectionResult(string.Format(Name, arg.AmbiguousIdentifier().GetText()), Severity, context);
+                        var context = new QualifiedContext<VBAParser.ArgContext>(module.QualifiedName, arg);
+                        yield return new ImplicitByRefParameterInspectionResult(string.Format(Name, arg.ambiguousIdentifier().GetText()), Severity, context);
                     }
                 }
             }
         }
 
-        private static readonly IEnumerable<Func<ParserRuleContext, VBParser.ArgListContext>> Converters =
-            new List<Func<ParserRuleContext, VBParser.ArgListContext>>
+        private static readonly IEnumerable<Func<ParserRuleContext, VBAParser.ArgListContext>> Converters =
+            new List<Func<ParserRuleContext, VBAParser.ArgListContext>>
             {
                 GetSubArgsList,
                 GetFunctionArgsList,
@@ -47,45 +48,45 @@ namespace Rubberduck.Inspections
                 GetPropertySetArgsList
             };
 
-        private IEnumerable<VBParser.ArgContext> GetArguments(QualifiedContext<ParserRuleContext> procedureContext)
+        private IEnumerable<VBAParser.ArgContext> GetArguments(QualifiedContext<ParserRuleContext> procedureContext)
         {
             var argsList = Converters.Select(converter => converter(procedureContext.Context)).FirstOrDefault(args => args != null);
             if (argsList == null)
             {
-                return new List<VBParser.ArgContext>();
+                return new List<VBAParser.ArgContext>();
             }
 
-            return argsList.Arg();
+            return argsList.arg();
         }
 
-        private static VBParser.ArgListContext GetSubArgsList(ParserRuleContext procedureContext)
+        private static VBAParser.ArgListContext GetSubArgsList(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.SubStmtContext;
-            return context == null ? null : context.ArgList();
+            var context = procedureContext as VBAParser.SubStmtContext;
+            return context == null ? null : context.argList();
         }
 
-        private static VBParser.ArgListContext GetFunctionArgsList(ParserRuleContext procedureContext)
+        private static VBAParser.ArgListContext GetFunctionArgsList(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.FunctionStmtContext;
-            return context == null ? null : context.ArgList();
+            var context = procedureContext as VBAParser.FunctionStmtContext;
+            return context == null ? null : context.argList();
         }
 
-        private static VBParser.ArgListContext GetPropertyGetArgsList(ParserRuleContext procedureContext)
+        private static VBAParser.ArgListContext GetPropertyGetArgsList(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.PropertyGetStmtContext;
-            return context == null ? null : context.ArgList();
+            var context = procedureContext as VBAParser.PropertyGetStmtContext;
+            return context == null ? null : context.argList();
         }
 
-        private static VBParser.ArgListContext GetPropertyLetArgsList(ParserRuleContext procedureContext)
+        private static VBAParser.ArgListContext GetPropertyLetArgsList(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.PropertyLetStmtContext;
-            return context == null ? null : context.ArgList();
+            var context = procedureContext as VBAParser.PropertyLetStmtContext;
+            return context == null ? null : context.argList();
         }
 
-        private static VBParser.ArgListContext GetPropertySetArgsList(ParserRuleContext procedureContext)
+        private static VBAParser.ArgListContext GetPropertySetArgsList(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.PropertySetStmtContext;
-            return context == null ? null : context.ArgList();
+            var context = procedureContext as VBAParser.PropertySetStmtContext;
+            return context == null ? null : context.argList();
         }
     }
 }

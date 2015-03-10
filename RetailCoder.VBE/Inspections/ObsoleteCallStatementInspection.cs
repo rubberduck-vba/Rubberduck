@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -27,13 +28,13 @@ namespace Rubberduck.Inspections
                                         .Select(context => context.Context).ToList();
                 var module = result;
                 foreach (var inspectionResult in 
-                    statements.OfType<VBParser.ECS_MemberProcedureCallContext>()
-                              .Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText())).Select(node => node.Parent).Union(statements.OfType<VBParser.ECS_ProcedureCallContext>().Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText()))
+                    statements.OfType<VBAParser.ECS_MemberProcedureCallContext>()
+                              .Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText())).Select(node => node.Parent).Union(statements.OfType<VBAParser.ECS_ProcedureCallContext>().Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText()))
                               .Select(node => node.Parent))
-                              .Cast<VBParser.ExplicitCallStmtContext>()
+                              .Cast<VBAParser.ExplicitCallStmtContext>()
                               .Select(context => 
                                   new ObsoleteCallStatementUsageInspectionResult(Name, Severity, 
-                                      new QualifiedContext<VBParser.ExplicitCallStmtContext>(module.QualifiedName, context))))
+                                      new QualifiedContext<VBAParser.ExplicitCallStmtContext>(module.QualifiedName, context))))
                     yield return inspectionResult;
             }
         }

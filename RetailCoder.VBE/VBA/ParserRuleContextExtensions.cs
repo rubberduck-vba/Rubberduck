@@ -2,6 +2,7 @@ using System;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
@@ -51,7 +52,7 @@ namespace Rubberduck.VBA
             return selection.Contains(contextSelection);
         }
 
-        public static VBAccessibility GetAccessibility(this VBParser.VisibilityContext context)
+        public static VBAccessibility GetAccessibility(this VBAParser.VisibilityContext context)
         {
             if (context == null)
                 return VBAccessibility.Implicit;
@@ -59,63 +60,63 @@ namespace Rubberduck.VBA
             return (VBAccessibility) Enum.Parse(typeof (VBAccessibility), context.GetText());
         }
 
-        public static string Signature(this VBParser.FunctionStmtContext context)
+        public static string Signature(this VBAParser.FunctionStmtContext context)
         {
-            var visibility = context.Visibility();
+            var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.AmbiguousIdentifier().GetText();
-            var argsText = context.ArgList().GetText();
+            var identifierText = context.ambiguousIdentifier().GetText();
+            var argsText = context.argList().GetText();
             
-            var asType = context.AsTypeClause();
+            var asType = context.asTypeClause();
             var asTypeText = asType == null ? string.Empty : asType.GetText();
 
             return (visibilityText + ' ' + Tokens.Function + ' ' + identifierText + argsText + ' ' + asTypeText).Trim();
         }
 
-        public static string Signature(this VBParser.SubStmtContext context)
+        public static string Signature(this VBAParser.SubStmtContext context)
         {
-            var visibility = context.Visibility();
+            var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.AmbiguousIdentifier().GetText();
-            var argsText = context.ArgList().GetText();
+            var identifierText = context.ambiguousIdentifier().GetText();
+            var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Sub + ' ' + identifierText + argsText).Trim();
         }
 
-        public static string Signature(this VBParser.PropertyGetStmtContext context)
+        public static string Signature(this VBAParser.PropertyGetStmtContext context)
         {
-            var visibility = context.Visibility();
+            var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.AmbiguousIdentifier().GetText();
-            var argsText = context.ArgList().GetText();
+            var identifierText = context.ambiguousIdentifier().GetText();
+            var argsText = context.argList().GetText();
 
-            var asType = context.AsTypeClause();
+            var asType = context.asTypeClause();
             var asTypeText = asType == null ? string.Empty : asType.GetText();
 
             return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Get + ' ' + identifierText + argsText + ' ' + asTypeText).Trim();
         }
 
-        public static string Signature(this VBParser.PropertyLetStmtContext context)
+        public static string Signature(this VBAParser.PropertyLetStmtContext context)
         {
-            var visibility = context.Visibility();
+            var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.AmbiguousIdentifier().GetText();
-            var argsText = context.ArgList().GetText();
+            var identifierText = context.ambiguousIdentifier().GetText();
+            var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Let + ' ' + identifierText + argsText).Trim();
         }
 
-        public static string Signature(this VBParser.PropertySetStmtContext context)
+        public static string Signature(this VBAParser.PropertySetStmtContext context)
         {
-            var visibility = context.Visibility();
+            var visibility = context.visibility();
             var visibilityText = visibility == null ? string.Empty : visibility.GetText();
 
-            var identifierText = context.AmbiguousIdentifier().GetText();
-            var argsText = context.ArgList().GetText();
+            var identifierText = context.ambiguousIdentifier().GetText();
+            var argsText = context.argList().GetText();
 
             return (visibilityText + ' ' + Tokens.Property + ' ' + Tokens.Set + ' ' + identifierText + argsText).Trim();
         }

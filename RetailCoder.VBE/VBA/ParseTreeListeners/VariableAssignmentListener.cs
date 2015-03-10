@@ -1,43 +1,38 @@
 using System.Linq;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
     public class VariableAssignmentListener : VariableUsageListener
     {
-        public override void EnterVariableCallStmt(VBParser.VariableCallStmtContext context)
+        public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            if (context.Parent is VBParser.ICS_S_VariableCallContext 
-             && context.Parent.Parent is VBParser.ImplicitCallStmt_InStmtContext
-             && (context.Parent.Parent.Parent is VBParser.LetStmtContext)
-              || context.Parent.Parent.Parent is VBParser.SetStmtContext)
+            if (context.Parent is VBAParser.ImplicitCallStmt_InStmtContext
+                && (context.Parent.Parent is VBAParser.LetStmtContext
+                    || context.Parent.Parent is VBAParser.SetStmtContext))
             {
-                base.EnterVariableCallStmt(context);
+                base.EnterICS_S_VariableOrProcedureCall(context);
             }
         }
 
-        public override void EnterFunctionOrArrayCallStmt(VBParser.FunctionOrArrayCallStmtContext context)
+        public override void EnterForNextStmt(VBAParser.ForNextStmtContext context)
         {
-            AddMember(context.AmbiguousIdentifier());
+            AddMember(context.ambiguousIdentifier().First());
         }
 
-        public override void EnterForNextStmt(VBParser.ForNextStmtContext context)
+        public override void EnterForEachStmt(VBAParser.ForEachStmtContext context)
         {
-            AddMember(context.AmbiguousIdentifier().First());
+            AddMember(context.ambiguousIdentifier().First());
         }
 
-        public override void EnterForEachStmt(VBParser.ForEachStmtContext context)
-        {
-            AddMember(context.AmbiguousIdentifier().First());
-        }
-
-        public override void EnterVariableSubStmt(VBParser.VariableSubStmtContext context)
+        public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
         {
             // consider "As New [classname]" as an assignemnt:
-            if (context.AsTypeClause() != null && context.AsTypeClause().NEW() != null)
+            if (context.asTypeClause() != null && context.asTypeClause().NEW() != null)
             {
-                AddMember(context.AmbiguousIdentifier());
+                AddMember(context.ambiguousIdentifier());
             }
         }
 

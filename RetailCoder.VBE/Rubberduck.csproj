@@ -223,7 +223,6 @@
     <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
@@ -245,12 +244,6 @@
     <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
-    <Compile Include="VBA\Grammar\VBListenerBase.cs" />
-    <Compile Include="VBA\Grammar\IVBBaseVisitor.cs" />
-    <Compile Include="VBA\Grammar\VBLexer.cs" />
-    <Compile Include="VBA\Grammar\IVBListener.cs" />
-    <Compile Include="VBA\Grammar\VBParser.cs" />
-    <Compile Include="VBA\Grammar\IVBVisitor.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />
@@ -550,10 +543,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\rubberduck.config" />
-    <None Include="VBA\Grammar\VB.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.VBA.Grammar</CustomToolNamespace>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\minus-circle.png" />
@@ -582,6 +571,7 @@
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
     <Folder Include="Refactoring\" />
+    <Folder Include="VBA\Grammar\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />
@@ -754,6 +744,12 @@
     <Content Include="Resources\Microsoft\VSObject_ValueType_Shortcut.bmp" />
     <Content Include="Resources\Microsoft\VSProject_form.bmp" />
     <Content Include="Resources\Microsoft\VSProject_reference.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

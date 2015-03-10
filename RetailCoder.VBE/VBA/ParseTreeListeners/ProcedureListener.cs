@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class ProcedureListener : VBListenerBase, IExtensionListener<ParserRuleContext>
+    public class ProcedureListener : VBABaseListener, IExtensionListener<ParserRuleContext>
     {
         protected readonly QualifiedModuleName _qualifiedName;
         private readonly IList<QualifiedContext<ParserRuleContext>> _members = 
@@ -23,27 +24,27 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterSubStmt(VBParser.SubStmtContext context)
+        public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             AddMember(context);
         }
 
-        public override void EnterFunctionStmt(VBParser.FunctionStmtContext context)
+        public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             AddMember(context);
         }
 
-        public override void EnterPropertyGetStmt(VBParser.PropertyGetStmtContext context)
+        public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             AddMember(context);
         }
 
-        public override void EnterPropertyLetStmt(VBParser.PropertyLetStmtContext context)
+        public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             AddMember(context);
         }
 
-        public override void EnterPropertySetStmt(VBParser.PropertySetStmtContext context)
+        public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             AddMember(context);
         }

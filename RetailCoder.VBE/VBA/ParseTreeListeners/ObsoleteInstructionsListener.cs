@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {
-    public class ObsoleteInstrutionsListener : VBListenerBase, IExtensionListener<ParserRuleContext>
+    public class ObsoleteInstrutionsListener : VBABaseListener, IExtensionListener<ParserRuleContext>
     {
         private readonly QualifiedModuleName _qualifiedName;
         private readonly IList<QualifiedContext<ParserRuleContext>> _members = 
@@ -23,23 +24,23 @@ namespace Rubberduck.VBA.ParseTreeListeners
             _members.Add(new QualifiedContext<ParserRuleContext>(_qualifiedName, context));
         }
 
-        public override void EnterLetStmt(VBParser.LetStmtContext context)
+        public override void EnterLetStmt(VBAParser.LetStmtContext context)
         {
             AddMember(context);
         }
 
-        public override void EnterExplicitCallStmt(VBParser.ExplicitCallStmtContext context)
+        public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
         {
 
-            if (context.ECS_MemberProcedureCall() != null 
-                && context.ECS_MemberProcedureCall().CALL() != null)
+            if (context.eCS_MemberProcedureCall() != null 
+                && context.eCS_MemberProcedureCall().CALL() != null)
             {
-                AddMember(context.ECS_MemberProcedureCall());
+                AddMember(context.eCS_MemberProcedureCall());
             }
-            else if (context.ECS_ProcedureCall() != null
-                && context.ECS_ProcedureCall().CALL() != null)
+            else if (context.eCS_ProcedureCall() != null
+                && context.eCS_ProcedureCall().CALL() != null)
             {
-                AddMember(context.ECS_ProcedureCall());
+                AddMember(context.eCS_ProcedureCall());
             }
         }
     }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections
                     .Select(context => context.Context).ToList();
                 var module = result;
                 foreach (var inspectionResult in
-                    statements.OfType<VBParser.VisibilityContext>()
+                    statements.OfType<VBAParser.VisibilityContext>()
                         .Where(context => context.GetText() == Tokens.Global)
                         .Select(context => new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, context.Parent as ParserRuleContext))))
                 {

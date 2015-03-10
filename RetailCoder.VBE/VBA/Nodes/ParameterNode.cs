@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBA.Grammar;
+﻿using Rubberduck.Parsing;
+using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {
@@ -11,12 +12,12 @@ namespace Rubberduck.VBA.Nodes
             ByVal
         }
 
-        public ParameterNode(VBParser.ArgContext context, string scope)
+        public ParameterNode(VBAParser.ArgContext context, string scope)
             : base(context, scope)
         {
         }
 
-        private new VBParser.ArgContext Context { get { return Context;} }
+        private new VBAParser.ArgContext Context { get { return Context;} }
 
         public VBParameterType PassedBy
         {
@@ -30,14 +31,14 @@ namespace Rubberduck.VBA.Nodes
             }
         }
 
-        public string Name { get { return Context.AmbiguousIdentifier().GetText(); } }
+        public string Name { get { return Context.ambiguousIdentifier().GetText(); } }
         public string TypeName 
         { 
             get 
             { 
-                return Context.AsTypeClause() == null || string.IsNullOrEmpty(Context.AsTypeClause().GetText())
+                return Context.asTypeClause() == null || string.IsNullOrEmpty(Context.asTypeClause().GetText())
                     ? Tokens.Variant
-                    : Context.AsTypeClause().Type().GetText(); 
+                    : Context.asTypeClause().type().GetText(); 
             } 
         }
 
