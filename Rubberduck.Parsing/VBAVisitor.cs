@@ -1255,6 +1255,13 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitICS_S_MemberCall([NotNull] VBAParser.ICS_S_MemberCallContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.lineNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLineNumber([NotNull] VBAParser.LineNumberContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.macroElseBlockStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

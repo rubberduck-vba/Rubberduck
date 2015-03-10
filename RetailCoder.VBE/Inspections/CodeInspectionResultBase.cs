@@ -83,7 +83,7 @@ namespace Rubberduck.Inspections
                       .SelectMany(project =>
                                     project.VBComponents.Cast<VBComponent>()
                                            .Where(component => component.Name == QualifiedName.ModuleName))
-                      .SingleOrDefault();
+                      .FirstOrDefault();
         }
     }
 }

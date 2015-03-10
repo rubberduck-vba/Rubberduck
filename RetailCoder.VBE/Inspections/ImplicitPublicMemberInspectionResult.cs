@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(oldContent, newContent);
-            module.DeleteLines(selection.StartLine, selection.EndLine - 1);
+            module.DeleteLines(selection.StartLine, selection.LineCount);
             module.InsertLines(selection.StartLine, result);
         }
     }

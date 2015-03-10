@@ -1971,6 +1971,17 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitICS_S_MemberCall([NotNull] VBAParser.ICS_S_MemberCallContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.lineNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLineNumber([NotNull] VBAParser.LineNumberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.lineNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLineNumber([NotNull] VBAParser.LineNumberContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.macroElseBlockStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

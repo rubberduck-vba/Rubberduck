@@ -58,14 +58,6 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
     </None>
-    <AntlrTokens Include="VBA.tokens">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
-    </AntlrTokens>
-    <AntlrTokens Include="VBALexer.tokens">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
-    </AntlrTokens>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

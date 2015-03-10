@@ -48,7 +48,8 @@
 *   - renamed to VBA; goal is to support VBA, and a shorter name is more practical.
 *   - added moduleDeclarations rule, moved moduleOptions there; options can now be
 *     located anywhere in declarations section, without breaking the parser.
-*   - added support for Option Compare Database
+*   - added support for Option Compare Database.
+*   - added support for numbered lines (amended lineLabel rule).
 * 
 *======================================================================================
 *
@@ -135,7 +136,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : lineLabel? blockStmt (NEWLINE+ WS? blockStmt)*;
+block : lineLabel? blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
 
 blockStmt : 
 	appactivateStmt
@@ -629,7 +630,9 @@ fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
 letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
-lineLabel : (ambiguousIdentifier ':') | (INTEGERLITERAL WS);
+lineLabel : (ambiguousIdentifier ':' WS) | lineNumber;
+
+lineNumber : (INTEGERLITERAL WS);
 
 literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | FILENUMBER | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
