@@ -46,8 +46,9 @@
 *
 * v1.4 Rubberduck
 *   - renamed to VBA; goal is to support VBA, and a shorter name is more practical.
-*   - added ModuleDeclarations rule, moved ModuleOptions there; options can now be
+*   - added moduleDeclarations rule, moved moduleOptions there; options can now be
 *     located anywhere in declarations section, without breaking the parser.
+*   - added support for Option Compare Database
 * 
 *======================================================================================
 *
@@ -76,6 +77,7 @@ module :
 	(moduleHeader NEWLINE+)?
 	moduleConfig? NEWLINE*
 	moduleAttributes? NEWLINE*
+	moduleDeclarations? NEWLINE*
 	moduleBody? NEWLINE*
 	WS?
 ;
@@ -94,11 +96,11 @@ moduleConfigElement :
 
 moduleAttributes : (attributeStmt NEWLINE+)+;
 
-moduleDeclarations : (moduleDeclarationsElement NEWLINE+)+;
+moduleDeclarations : moduleDeclarationsElement (NEWLINE+ moduleDeclarationsElement)*;
 
 moduleOption : 
 	OPTION_BASE WS INTEGERLITERAL 			# optionBaseStmt
-	| OPTION_COMPARE WS (BINARY | TEXT) 	# optionCompareStmt
+	| OPTION_COMPARE WS (BINARY | TEXT | DATABASE) 	# optionCompareStmt
 	| OPTION_EXPLICIT 						# optionExplicitStmt
 	| OPTION_PRIVATE_MODULE 				# optionPrivateModuleStmt
 ;
@@ -133,7 +135,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (NEWLINE+ WS? blockStmt)*;
+block : lineLabel? blockStmt (NEWLINE+ WS? blockStmt)*;
 
 blockStmt : 
 	appactivateStmt
@@ -165,7 +167,6 @@ blockStmt :
 	| killStmt
 	| letStmt
 	| lineInputStmt
-	| lineLabel
 	| loadStmt
 	| lockStmt
 	| lsetStmt
@@ -628,7 +629,7 @@ fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
 letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
-lineLabel : ambiguousIdentifier ':';
+lineLabel : (ambiguousIdentifier ':') | (INTEGERLITERAL WS);
 
 literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | FILENUMBER | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
@@ -644,7 +645,7 @@ ambiguousKeyword :
 	ACCESS | ADDRESSOF | ALIAS | AND | ATTRIBUTE | APPACTIVATE | APPEND | AS |
 	BEEP | BEGIN | BINARY | BOOLEAN | BYVAL | BYREF | BYTE | 
 	CALL | CASE | CLASS | CLOSE | CHDIR | CHDRIVE | COLLECTION | CONST | 
-	DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFDEC | DEFINT | DEFLNG | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
+	DATABASE | DATE | DECLARE | DEFBOOL | DEFBYTE | DEFCUR | DEFDBL | DEFDATE | DEFDEC | DEFINT | DEFLNG | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DELETESETTING | DIM | DO | DOUBLE | 
 	EACH | ELSE | ELSEIF | END | ENUM | EQV | ERASE | ERROR | EVENT | 
 	FALSE | FILECOPY | FRIEND | FOR | FUNCTION | 
 	GET | GLOBAL | GOSUB | GOTO | 
@@ -692,6 +693,7 @@ CLASS : C L A S S;
 CLOSE : C L O S E;
 COLLECTION : C O L L E C T I O N;
 CONST : C O N S T;
+DATABASE : D A T A B A S E;
 DATE : D A T E;
 DECLARE : D E C L A R E;
 DEFBOOL : D E F B O O L; 
