@@ -42,6 +42,8 @@ If you're **upgrading** from version 1.0, you will need to completely uninstall 
 
 Please feel free to test it on other versions and [submit any bugs on our issue tracker](https://github.com/retailcoder/Rubberduck/issues).
 
+**Note:** The 1.2 installer doesn't work for 64 bit versions of office. You can find the [work around here](https://github.com/retailcoder/Rubberduck/issues/305#event-250213562).
+
 ---
 
 #License
