@@ -50,7 +50,8 @@
 *     located anywhere in declarations section, without breaking the parser.
 *   - added support for Option Compare Database.
 *   - added support for numbered lines (amended lineLabel rule).
-* 
+*   - todo: define a rule for library functions like MsgBox, Split and Format
+*
 *======================================================================================
 *
 * v1.3

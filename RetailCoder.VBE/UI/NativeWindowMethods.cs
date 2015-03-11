@@ -21,7 +21,7 @@ namespace Rubberduck.UI
         /// <param name="lParam">   The parameter. </param>
         /// <returns>   An IntPtr handle. </returns>
         [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>   EnumChildWindows delegate. </summary>
         ///
@@ -37,7 +37,7 @@ namespace Rubberduck.UI
         /// <param name="lParam">               The parameter. </param>
         /// <returns>   An int. </returns>
         [DllImport("user32", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        public static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
+        internal static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
 
         /// <summary>   Gets window text. </summary>
         ///
@@ -46,20 +46,20 @@ namespace Rubberduck.UI
         /// <param name="nMaxCount">    Number of maximums. </param>
         /// <returns>   Integer Success Code </returns>
         [DllImport("user32", EntryPoint = "GetWindowTextW", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         /// <summary>   Gets the parent window of this item. </summary>
         ///
         /// <param name="hWnd"> The window handle. </param>
         /// <returns>   The parent window IntPtr handle. </returns>
         [DllImport("User32.dll")]
-        public static extern IntPtr GetParent(IntPtr hWnd);
+        internal static extern IntPtr GetParent(IntPtr hWnd);
 
         /// <summary>   Gets window caption text by handle. </summary>
         ///
         /// <param name="windowHandle"> Handle of the window to be activated. </param>
         /// <returns>   The window caption text. </returns>
-        public static string GetWindowTextByHwnd(IntPtr windowHandle)
+        internal static string GetWindowTextByHwnd(IntPtr windowHandle)
         {
             const int MAX_BUFFER = 300;
 
@@ -82,7 +82,7 @@ namespace Rubberduck.UI
         ///
         /// <param name="windowHandle">         Handle of the window to be activated. </param>
         /// <param name="parentWindowHandle">   Handle of the parent window. </param>
-        public static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
+        internal static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
         {
             const int WM_MOUSEACTIVATE = 0x21;
             const int HTCAPTION = 2;

@@ -135,6 +135,10 @@ namespace Rubberduck.UI
                 {
                     _testMenu.Dispose();
                 }
+                if (_codeInspectionsMenu != null)
+                {
+                    _codeInspectionsMenu.Dispose();
+                }
             }
 
             _disposed = true;

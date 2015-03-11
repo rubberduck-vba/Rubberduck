@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 using LibGit2Sharp;
-using IRepository = Rubberduck.SourceControl.IRepository;
+using LibGit2Sharp.Handlers;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.SourceControl
 {
-    public class GitProvider : SourceControlProviderBase
+    public class GitProvider : SourceControlProviderBase, IDisposable
     {
         private LibGit2Sharp.Repository repo;
         private Credentials credentials;
-        private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
+        private CredentialsHandler credHandler;
 
         public GitProvider(VBProject project) 
             : base(project) { }
@@ -39,7 +35,7 @@ namespace Rubberduck.SourceControl
             this.credHandler = (url, user, cred) => credentials;
         }
 
-        ~GitProvider()
+        public void Dispose()
         {
             if (repo != null)
             {
