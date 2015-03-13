@@ -24,7 +24,7 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IConfigurationService _configService;
 
-        //These need to stay in scope for their click events to fire.
+        //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _about;
         // ReSharper disable once NotAccessedField.Local
