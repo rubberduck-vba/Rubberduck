@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 using LibGit2Sharp;
-using IRepository = Rubberduck.SourceControl.IRepository;
+using LibGit2Sharp.Handlers;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.SourceControl
 {
     public class GitProvider : SourceControlProviderBase
     {
-        private LibGit2Sharp.Repository repo;
-        private Credentials credentials;
-        private LibGit2Sharp.Handlers.CredentialsHandler credHandler;
+        private readonly LibGit2Sharp.Repository _repo;
+        private readonly Credentials _credentials;
+        private readonly CredentialsHandler _credentialsHandler;
 
         public GitProvider(VBProject project) 
             : base(project) { }
@@ -24,26 +20,26 @@ namespace Rubberduck.SourceControl
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
-            repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+            _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
         }
 
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
-            this.credentials = new UsernamePasswordCredentials()
+            _credentials = new UsernamePasswordCredentials()
             {
                 Username = userName,
                 Password = passWord
             };
 
-            this.credHandler = (url, user, cred) => credentials;
+            _credentialsHandler = (url, user, cred) => _credentials;
         }
 
         ~GitProvider()
         {
-            if (repo != null)
+            if (_repo != null)
             {
-                repo.Dispose();
+                _repo.Dispose();
             }
         }
 
@@ -51,8 +47,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return repo.Branches.Where(b => !b.IsRemote && b.IsCurrentRepositoryHead)
-                                    .First().Name;
+                return _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Name;
             }
         }
 
@@ -60,7 +55,7 @@ namespace Rubberduck.SourceControl
         {
             get
             {
-                return repo.Branches.Where(b => !b.IsRemote)
+                return _repo.Branches.Where(b => !b.IsRemote)
                                     .Select(b => b.Name);
             }
         }
@@ -83,20 +78,10 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                string workingDir;
-
-                if (bare)
-                {
-                    workingDir = string.Empty;
-                }
-                else
-                {
-                    workingDir = directory;
-                }
+                var workingDir = (bare) ? string.Empty : directory;
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                var projectName = GetProjectNameFromDirectory(directory);
                 return new Repository(this.project.Name, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
@@ -118,16 +103,16 @@ namespace Rubberduck.SourceControl
             {
                 //Only use credentials if we've been given credentials to use in the constructor.
                 PushOptions options = null;
-                if (this.credentials != null)
+                if (_credentials != null)
                 {
                     options = new PushOptions()
                     {
-                        CredentialsProvider = credHandler
+                        CredentialsProvider = _credentialsHandler
                     };
                 }
 
-                var branch = repo.Branches[this.CurrentBranch];
-                repo.Network.Push(branch, options);
+                var branch = _repo.Branches[this.CurrentBranch];
+                _repo.Network.Push(branch, options);
             }
             catch (LibGit2SharpException ex)
             {
@@ -148,8 +133,8 @@ namespace Rubberduck.SourceControl
 
             try
             {
-                var remote = repo.Network.Remotes[remoteName];
-                repo.Network.Fetch(remote);
+                var remote = _repo.Network.Remotes[remoteName];
+                _repo.Network.Fetch(remote);
             }
             catch (LibGit2SharpException ex)
             {
@@ -171,7 +156,7 @@ namespace Rubberduck.SourceControl
                 };
 
                 var signature = GetSignature();
-                repo.Network.Pull(signature, options);
+                _repo.Network.Pull(signature, options);
 
                 base.Pull();
             }
@@ -187,10 +172,10 @@ namespace Rubberduck.SourceControl
             {
                 base.Commit(message);
 
-                RepositoryStatus status = repo.RetrieveStatus();
+                RepositoryStatus status = _repo.RetrieveStatus();
                 List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-                repo.Stage(filePaths);
-                repo.Commit(message);
+                _repo.Stage(filePaths);
+                _repo.Commit(message);
             }
             catch (LibGit2SharpException ex)
             {
@@ -200,16 +185,16 @@ namespace Rubberduck.SourceControl
 
         public override void Merge(string sourceBranch, string destinationBranch)
         {
-            repo.Checkout(repo.Branches[destinationBranch]);
+            _repo.Checkout(_repo.Branches[destinationBranch]);
 
-            var oldHeadCommit = repo.Head.Tip;
+            var oldHeadCommit = _repo.Head.Tip;
             var signature = GetSignature();
-            var result = repo.Merge(repo.Branches[sourceBranch], signature);
+            var result = _repo.Merge(_repo.Branches[sourceBranch], signature);
 
             switch (result.Status)
             {
                 case MergeStatus.Conflicts:
-                    repo.Reset(ResetMode.Hard, oldHeadCommit);
+                    _repo.Reset(ResetMode.Hard, oldHeadCommit);
                     break;
                 case MergeStatus.NonFastForward:
                     //https://help.github.com/articles/dealing-with-non-fast-forward-errors/
@@ -226,7 +211,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                repo.Checkout(repo.Branches[branch]);
+                _repo.Checkout(_repo.Branches[branch]);
                 base.Checkout(branch);
             }
             catch (LibGit2SharpException ex)
@@ -239,8 +224,8 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                repo.CreateBranch(branch);
-                repo.Checkout(branch);
+                _repo.CreateBranch(branch);
+                _repo.Checkout(branch);
             }
             catch (LibGit2SharpException ex)
             {
@@ -252,7 +237,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                var results = repo.Revert(repo.Head.Tip, GetSignature());
+                var results = _repo.Revert(_repo.Head.Tip, GetSignature());
 
                 if (results.Status == RevertStatus.Conflicts)
                 {
@@ -272,7 +257,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 // https://github.com/libgit2/libgit2sharp/wiki/Git-add
-                repo.Stage(filePath);
+                _repo.Stage(filePath);
             }
             catch (LibGit2SharpException ex)
             {
@@ -288,7 +273,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                repo.Remove(filePath, false);
+                _repo.Remove(filePath, false);
             }
             catch (LibGit2SharpException ex)
             {
@@ -301,7 +286,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 base.Status();
-                return repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
+                return _repo.RetrieveStatus().Select(item => new FileStatusEntry(item));
             }
             catch (LibGit2SharpException ex)
             {
@@ -313,10 +298,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                var paths = new List<string>();
-                paths.Add(filePath);
-
-                repo.CheckoutPaths(this.CurrentBranch, paths);
+                _repo.CheckoutPaths(this.CurrentBranch, new List<string> {filePath});
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)
@@ -329,9 +311,9 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                if (repo.Branches.Any(b => b.Name == branch && !b.IsRemote))
+                if (_repo.Branches.Any(b => b.Name == branch && !b.IsRemote))
                 {
-                    repo.Branches.Remove(branch);
+                    _repo.Branches.Remove(branch);
                 }
             }
             catch(LibGit2SharpException ex)
@@ -342,7 +324,7 @@ namespace Rubberduck.SourceControl
 
         private Signature GetSignature()
         {
-            return this.repo.Config.BuildSignature(DateTimeOffset.Now);
+            return _repo.Config.BuildSignature(DateTimeOffset.Now);
         }
     }
 }
