@@ -29,12 +29,17 @@
         private void InitializeComponent()
         {
             this.SourceControlToolbar = new System.Windows.Forms.ToolStrip();
+            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
+            this.OpenWorkingFolderButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.StatusMessage = new System.Windows.Forms.ToolStripLabel();
             this.SourceControlTabs = new System.Windows.Forms.TabControl();
             this.ChangesTab = new System.Windows.Forms.TabPage();
             this.ChangesPanel = new System.Windows.Forms.Panel();
+            this.ChangesBranchNameLabel = new System.Windows.Forms.Label();
             this.IncludedChangesBox = new System.Windows.Forms.GroupBox();
             this.IncludedChangesGrid = new System.Windows.Forms.DataGridView();
+            this.CommitButton = new System.Windows.Forms.Button();
             this.CommitAction = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.CommitMessage = new System.Windows.Forms.TextBox();
@@ -47,14 +52,20 @@
             this.BranchesPanel = new System.Windows.Forms.Panel();
             this.PublishedBranchesBox = new System.Windows.Forms.GroupBox();
             this.PublishedBranchesGrid = new System.Windows.Forms.DataGridView();
+            this.MergeBranchButton = new System.Windows.Forms.Button();
             this.UnpublishedBranchesBox = new System.Windows.Forms.GroupBox();
             this.UnpublishedBranchesGrid = new System.Windows.Forms.DataGridView();
             this.CurrentBranchSelector = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.NewBranchButton = new System.Windows.Forms.Button();
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.UnsyncedCommitsPanel = new System.Windows.Forms.Panel();
+            this.UnsyncedCommitsBranchNameLabel = new System.Windows.Forms.Label();
             this.SyncButton = new System.Windows.Forms.Button();
+            this.FetchIncomingCommitsButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.PushButton = new System.Windows.Forms.Button();
+            this.PullButton = new System.Windows.Forms.Button();
             this.OutgoingCommitsBox = new System.Windows.Forms.GroupBox();
             this.OutgoingCommitsGrid = new System.Windows.Forms.DataGridView();
             this.IncomingCommitsBox = new System.Windows.Forms.GroupBox();
@@ -74,17 +85,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.UserName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.CommitButton = new System.Windows.Forms.Button();
-            this.MergeBranchButton = new System.Windows.Forms.Button();
-            this.NewBranchButton = new System.Windows.Forms.Button();
-            this.FetchIncomingCommitsButton = new System.Windows.Forms.Button();
-            this.PushButton = new System.Windows.Forms.Button();
-            this.PullButton = new System.Windows.Forms.Button();
-            this.RefreshButton = new System.Windows.Forms.ToolStripButton();
-            this.StatusMessage = new System.Windows.Forms.ToolStripLabel();
-            this.OpenWorkingFolderButton = new System.Windows.Forms.ToolStripButton();
-            this.ChangesBranchNameLabel = new System.Windows.Forms.Label();
-            this.UnsyncedCommitsBranchNameLabel = new System.Windows.Forms.Label();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             this.ChangesTab.SuspendLayout();
@@ -126,10 +126,39 @@
             this.SourceControlToolbar.TabIndex = 0;
             this.SourceControlToolbar.Text = "toolStrip1";
             // 
+            // RefreshButton
+            // 
+            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RefreshButton.Enabled = false;
+            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.ToolTipText = "Refreshes pending changes";
+            // 
+            // OpenWorkingFolderButton
+            // 
+            this.OpenWorkingFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.OpenWorkingFolderButton.Image = global::Rubberduck.Properties.Resources.folder_horizontal_open;
+            this.OpenWorkingFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.OpenWorkingFolderButton.Name = "OpenWorkingFolderButton";
+            this.OpenWorkingFolderButton.Size = new System.Drawing.Size(23, 22);
+            this.OpenWorkingFolderButton.ToolTipText = "Open working folder";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // StatusMessage
+            // 
+            this.StatusMessage.Enabled = false;
+            this.StatusMessage.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            this.StatusMessage.Image = global::Rubberduck.Properties.Resources.icon_github;
+            this.StatusMessage.Name = "StatusMessage";
+            this.StatusMessage.Size = new System.Drawing.Size(59, 22);
+            this.StatusMessage.Text = "Offline";
             // 
             // SourceControlTabs
             // 
@@ -174,6 +203,16 @@
             this.ChangesPanel.Size = new System.Drawing.Size(241, 417);
             this.ChangesPanel.TabIndex = 0;
             // 
+            // ChangesBranchNameLabel
+            // 
+            this.ChangesBranchNameLabel.AutoSize = true;
+            this.ChangesBranchNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ChangesBranchNameLabel.Location = new System.Drawing.Point(56, 14);
+            this.ChangesBranchNameLabel.Name = "ChangesBranchNameLabel";
+            this.ChangesBranchNameLabel.Size = new System.Drawing.Size(45, 13);
+            this.ChangesBranchNameLabel.TabIndex = 18;
+            this.ChangesBranchNameLabel.Text = "Master";
+            // 
             // IncludedChangesBox
             // 
             this.IncludedChangesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -182,7 +221,7 @@
             this.IncludedChangesBox.Location = new System.Drawing.Point(9, 119);
             this.IncludedChangesBox.Name = "IncludedChangesBox";
             this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncludedChangesBox.Size = new System.Drawing.Size(209, 141);
+            this.IncludedChangesBox.Size = new System.Drawing.Size(192, 141);
             this.IncludedChangesBox.TabIndex = 15;
             this.IncludedChangesBox.TabStop = false;
             this.IncludedChangesBox.Text = "Included changes";
@@ -204,8 +243,22 @@
             this.IncludedChangesGrid.Location = new System.Drawing.Point(10, 23);
             this.IncludedChangesGrid.Name = "IncludedChangesGrid";
             this.IncludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncludedChangesGrid.Size = new System.Drawing.Size(190, 109);
+            this.IncludedChangesGrid.Size = new System.Drawing.Size(173, 109);
             this.IncludedChangesGrid.TabIndex = 0;
+            // 
+            // CommitButton
+            // 
+            this.CommitButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.CommitButton.Enabled = false;
+            this.CommitButton.Image = global::Rubberduck.Properties.Resources.tick;
+            this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.CommitButton.Location = new System.Drawing.Point(136, 86);
+            this.CommitButton.Name = "CommitButton";
+            this.CommitButton.Size = new System.Drawing.Size(65, 23);
+            this.CommitButton.TabIndex = 14;
+            this.CommitButton.Text = "Go";
+            this.CommitButton.UseVisualStyleBackColor = true;
             // 
             // CommitAction
             // 
@@ -238,7 +291,7 @@
             this.CommitMessage.Multiline = true;
             this.CommitMessage.Name = "CommitMessage";
             this.CommitMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.CommitMessage.Size = new System.Drawing.Size(209, 29);
+            this.CommitMessage.Size = new System.Drawing.Size(192, 29);
             this.CommitMessage.TabIndex = 11;
             // 
             // label1
@@ -258,7 +311,7 @@
             this.ExcludedChangesBox.Location = new System.Drawing.Point(9, 266);
             this.ExcludedChangesBox.Name = "ExcludedChangesBox";
             this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.ExcludedChangesBox.Size = new System.Drawing.Size(209, 141);
+            this.ExcludedChangesBox.Size = new System.Drawing.Size(192, 141);
             this.ExcludedChangesBox.TabIndex = 16;
             this.ExcludedChangesBox.TabStop = false;
             this.ExcludedChangesBox.Text = "Excluded changes";
@@ -280,7 +333,7 @@
             this.ExcludedChangesGrid.Location = new System.Drawing.Point(10, 22);
             this.ExcludedChangesGrid.Name = "ExcludedChangesGrid";
             this.ExcludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ExcludedChangesGrid.Size = new System.Drawing.Size(190, 110);
+            this.ExcludedChangesGrid.Size = new System.Drawing.Size(173, 110);
             this.ExcludedChangesGrid.TabIndex = 1;
             // 
             // UntrackedFilesBox
@@ -291,7 +344,7 @@
             this.UntrackedFilesBox.Location = new System.Drawing.Point(9, 413);
             this.UntrackedFilesBox.Name = "UntrackedFilesBox";
             this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.UntrackedFilesBox.Size = new System.Drawing.Size(209, 141);
+            this.UntrackedFilesBox.Size = new System.Drawing.Size(192, 141);
             this.UntrackedFilesBox.TabIndex = 17;
             this.UntrackedFilesBox.TabStop = false;
             this.UntrackedFilesBox.Text = "Untracked files";
@@ -313,7 +366,7 @@
             this.UntrackedFilesGrid.Location = new System.Drawing.Point(10, 22);
             this.UntrackedFilesGrid.Name = "UntrackedFilesGrid";
             this.UntrackedFilesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UntrackedFilesGrid.Size = new System.Drawing.Size(190, 110);
+            this.UntrackedFilesGrid.Size = new System.Drawing.Size(173, 110);
             this.UntrackedFilesGrid.TabIndex = 1;
             // 
             // BranchesTab
@@ -376,6 +429,19 @@
             this.PublishedBranchesGrid.Size = new System.Drawing.Size(207, 109);
             this.PublishedBranchesGrid.TabIndex = 0;
             // 
+            // MergeBranchButton
+            // 
+            this.MergeBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.MergeBranchButton.Image = global::Rubberduck.Properties.Resources.arrow_merge_090;
+            this.MergeBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.MergeBranchButton.Location = new System.Drawing.Point(160, 38);
+            this.MergeBranchButton.Name = "MergeBranchButton";
+            this.MergeBranchButton.Size = new System.Drawing.Size(75, 23);
+            this.MergeBranchButton.TabIndex = 14;
+            this.MergeBranchButton.Text = "Merge";
+            this.MergeBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.MergeBranchButton.UseVisualStyleBackColor = true;
+            // 
             // UnpublishedBranchesBox
             // 
             this.UnpublishedBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -429,6 +495,18 @@
             this.label8.TabIndex = 11;
             this.label8.Text = "Branch:";
             // 
+            // NewBranchButton
+            // 
+            this.NewBranchButton.Image = global::Rubberduck.Properties.Resources.arrow_branch_090;
+            this.NewBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.NewBranchButton.Location = new System.Drawing.Point(56, 38);
+            this.NewBranchButton.Name = "NewBranchButton";
+            this.NewBranchButton.Size = new System.Drawing.Size(98, 23);
+            this.NewBranchButton.TabIndex = 13;
+            this.NewBranchButton.Text = "New Branch";
+            this.NewBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.NewBranchButton.UseVisualStyleBackColor = true;
+            // 
             // UnsyncedCommitsTab
             // 
             this.UnsyncedCommitsTab.Controls.Add(this.UnsyncedCommitsPanel);
@@ -458,6 +536,16 @@
             this.UnsyncedCommitsPanel.Size = new System.Drawing.Size(241, 417);
             this.UnsyncedCommitsPanel.TabIndex = 0;
             // 
+            // UnsyncedCommitsBranchNameLabel
+            // 
+            this.UnsyncedCommitsBranchNameLabel.AutoSize = true;
+            this.UnsyncedCommitsBranchNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UnsyncedCommitsBranchNameLabel.Location = new System.Drawing.Point(56, 14);
+            this.UnsyncedCommitsBranchNameLabel.Name = "UnsyncedCommitsBranchNameLabel";
+            this.UnsyncedCommitsBranchNameLabel.Size = new System.Drawing.Size(45, 13);
+            this.UnsyncedCommitsBranchNameLabel.TabIndex = 19;
+            this.UnsyncedCommitsBranchNameLabel.Text = "Master";
+            // 
             // SyncButton
             // 
             this.SyncButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -469,6 +557,18 @@
             this.SyncButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.SyncButton.UseVisualStyleBackColor = true;
             // 
+            // FetchIncomingCommitsButton
+            // 
+            this.FetchIncomingCommitsButton.Image = global::Rubberduck.Properties.Resources.arrow_step;
+            this.FetchIncomingCommitsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.FetchIncomingCommitsButton.Location = new System.Drawing.Point(9, 39);
+            this.FetchIncomingCommitsButton.Name = "FetchIncomingCommitsButton";
+            this.FetchIncomingCommitsButton.Size = new System.Drawing.Size(63, 23);
+            this.FetchIncomingCommitsButton.TabIndex = 13;
+            this.FetchIncomingCommitsButton.Text = "Fetch";
+            this.FetchIncomingCommitsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.FetchIncomingCommitsButton.UseVisualStyleBackColor = true;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -478,6 +578,30 @@
             this.label3.TabIndex = 9;
             this.label3.Text = "Branch:";
             // 
+            // PushButton
+            // 
+            this.PushButton.Image = global::Rubberduck.Properties.Resources.drive_upload;
+            this.PushButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.PushButton.Location = new System.Drawing.Point(147, 39);
+            this.PushButton.Name = "PushButton";
+            this.PushButton.Size = new System.Drawing.Size(63, 23);
+            this.PushButton.TabIndex = 14;
+            this.PushButton.Text = "Push";
+            this.PushButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.PushButton.UseVisualStyleBackColor = true;
+            // 
+            // PullButton
+            // 
+            this.PullButton.Image = global::Rubberduck.Properties.Resources.drive_download;
+            this.PullButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.PullButton.Location = new System.Drawing.Point(78, 39);
+            this.PullButton.Name = "PullButton";
+            this.PullButton.Size = new System.Drawing.Size(63, 23);
+            this.PullButton.TabIndex = 12;
+            this.PullButton.Text = "Pull";
+            this.PullButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.PullButton.UseVisualStyleBackColor = true;
+            // 
             // OutgoingCommitsBox
             // 
             this.OutgoingCommitsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -486,7 +610,7 @@
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(9, 269);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
             this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.OutgoingCommitsBox.Size = new System.Drawing.Size(203, 162);
+            this.OutgoingCommitsBox.Size = new System.Drawing.Size(186, 162);
             this.OutgoingCommitsBox.TabIndex = 16;
             this.OutgoingCommitsBox.TabStop = false;
             this.OutgoingCommitsBox.Text = "Outgoing commits";
@@ -508,7 +632,7 @@
             this.OutgoingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.OutgoingCommitsGrid.Name = "OutgoingCommitsGrid";
             this.OutgoingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(184, 131);
+            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(167, 131);
             this.OutgoingCommitsGrid.TabIndex = 0;
             // 
             // IncomingCommitsBox
@@ -519,7 +643,7 @@
             this.IncomingCommitsBox.Location = new System.Drawing.Point(9, 101);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
             this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncomingCommitsBox.Size = new System.Drawing.Size(203, 162);
+            this.IncomingCommitsBox.Size = new System.Drawing.Size(186, 162);
             this.IncomingCommitsBox.TabIndex = 15;
             this.IncomingCommitsBox.TabStop = false;
             this.IncomingCommitsBox.Text = "Incoming commits";
@@ -541,7 +665,7 @@
             this.IncomingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.IncomingCommitsGrid.Name = "IncomingCommitsGrid";
             this.IncomingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncomingCommitsGrid.Size = new System.Drawing.Size(184, 131);
+            this.IncomingCommitsGrid.Size = new System.Drawing.Size(167, 131);
             this.IncomingCommitsGrid.TabIndex = 0;
             // 
             // SettingsTab
@@ -701,130 +825,6 @@
             this.label5.Size = new System.Drawing.Size(60, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "User Name";
-            // 
-            // CommitButton
-            // 
-            this.CommitButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.CommitButton.Enabled = false;
-            this.CommitButton.Image = global::Rubberduck.Properties.Resources.tick;
-            this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CommitButton.Location = new System.Drawing.Point(136, 86);
-            this.CommitButton.Name = "CommitButton";
-            this.CommitButton.Size = new System.Drawing.Size(82, 23);
-            this.CommitButton.TabIndex = 14;
-            this.CommitButton.Text = "Go";
-            this.CommitButton.UseVisualStyleBackColor = true;
-            // 
-            // MergeBranchButton
-            // 
-            this.MergeBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MergeBranchButton.Image = global::Rubberduck.Properties.Resources.arrow_merge_090;
-            this.MergeBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.MergeBranchButton.Location = new System.Drawing.Point(160, 38);
-            this.MergeBranchButton.Name = "MergeBranchButton";
-            this.MergeBranchButton.Size = new System.Drawing.Size(75, 23);
-            this.MergeBranchButton.TabIndex = 14;
-            this.MergeBranchButton.Text = "Merge";
-            this.MergeBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.MergeBranchButton.UseVisualStyleBackColor = true;
-            // 
-            // NewBranchButton
-            // 
-            this.NewBranchButton.Image = global::Rubberduck.Properties.Resources.arrow_branch_090;
-            this.NewBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.NewBranchButton.Location = new System.Drawing.Point(56, 38);
-            this.NewBranchButton.Name = "NewBranchButton";
-            this.NewBranchButton.Size = new System.Drawing.Size(98, 23);
-            this.NewBranchButton.TabIndex = 13;
-            this.NewBranchButton.Text = "New Branch";
-            this.NewBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.NewBranchButton.UseVisualStyleBackColor = true;
-            // 
-            // FetchIncomingCommitsButton
-            // 
-            this.FetchIncomingCommitsButton.Image = global::Rubberduck.Properties.Resources.arrow_step;
-            this.FetchIncomingCommitsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.FetchIncomingCommitsButton.Location = new System.Drawing.Point(9, 39);
-            this.FetchIncomingCommitsButton.Name = "FetchIncomingCommitsButton";
-            this.FetchIncomingCommitsButton.Size = new System.Drawing.Size(63, 23);
-            this.FetchIncomingCommitsButton.TabIndex = 13;
-            this.FetchIncomingCommitsButton.Text = "Fetch";
-            this.FetchIncomingCommitsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.FetchIncomingCommitsButton.UseVisualStyleBackColor = true;
-            // 
-            // PushButton
-            // 
-            this.PushButton.Image = global::Rubberduck.Properties.Resources.drive_upload;
-            this.PushButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.PushButton.Location = new System.Drawing.Point(147, 39);
-            this.PushButton.Name = "PushButton";
-            this.PushButton.Size = new System.Drawing.Size(63, 23);
-            this.PushButton.TabIndex = 14;
-            this.PushButton.Text = "Push";
-            this.PushButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.PushButton.UseVisualStyleBackColor = true;
-            // 
-            // PullButton
-            // 
-            this.PullButton.Image = global::Rubberduck.Properties.Resources.drive_download;
-            this.PullButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.PullButton.Location = new System.Drawing.Point(78, 39);
-            this.PullButton.Name = "PullButton";
-            this.PullButton.Size = new System.Drawing.Size(63, 23);
-            this.PullButton.TabIndex = 12;
-            this.PullButton.Text = "Pull";
-            this.PullButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.PullButton.UseVisualStyleBackColor = true;
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RefreshButton.Enabled = false;
-            this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
-            this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
-            this.RefreshButton.Text = "Refresh";
-            this.RefreshButton.ToolTipText = "Refreshes pending changes";
-            // 
-            // StatusMessage
-            // 
-            this.StatusMessage.Enabled = false;
-            this.StatusMessage.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.StatusMessage.Image = global::Rubberduck.Properties.Resources.icon_github;
-            this.StatusMessage.Name = "StatusMessage";
-            this.StatusMessage.Size = new System.Drawing.Size(59, 22);
-            this.StatusMessage.Text = "Offline";
-            // 
-            // OpenWorkingFolderButton
-            // 
-            this.OpenWorkingFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.OpenWorkingFolderButton.Image = global::Rubberduck.Properties.Resources.folder_horizontal_open;
-            this.OpenWorkingFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.OpenWorkingFolderButton.Name = "OpenWorkingFolderButton";
-            this.OpenWorkingFolderButton.Size = new System.Drawing.Size(23, 22);
-            this.OpenWorkingFolderButton.ToolTipText = "Open working folder";
-            // 
-            // ChangesBranchNameLabel
-            // 
-            this.ChangesBranchNameLabel.AutoSize = true;
-            this.ChangesBranchNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ChangesBranchNameLabel.Location = new System.Drawing.Point(56, 14);
-            this.ChangesBranchNameLabel.Name = "ChangesBranchNameLabel";
-            this.ChangesBranchNameLabel.Size = new System.Drawing.Size(45, 13);
-            this.ChangesBranchNameLabel.TabIndex = 18;
-            this.ChangesBranchNameLabel.Text = "Master";
-            // 
-            // UnsyncedCommitsBranchNameLabel
-            // 
-            this.UnsyncedCommitsBranchNameLabel.AutoSize = true;
-            this.UnsyncedCommitsBranchNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UnsyncedCommitsBranchNameLabel.Location = new System.Drawing.Point(56, 14);
-            this.UnsyncedCommitsBranchNameLabel.Name = "UnsyncedCommitsBranchNameLabel";
-            this.UnsyncedCommitsBranchNameLabel.Size = new System.Drawing.Size(45, 13);
-            this.UnsyncedCommitsBranchNameLabel.TabIndex = 19;
-            this.UnsyncedCommitsBranchNameLabel.Text = "Master";
             // 
             // SourceControlPanel
             // 

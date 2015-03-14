@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
@@ -86,18 +87,26 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            // note: disabled for 1.21 release (RepositoryNotFoundException on click)
-            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
+            _sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
             _settings = AddButton(menu, "&Options", true, OnOptionsClick);
             _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
 
+        private SourceControlPresenter _sourceControlPresenter;
+        private ISourceControlView _sourceControlView;
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new DummyGitView(IDE.ActiveVBProject))
+            if (_sourceControlView == null)
             {
-                window.ShowDialog();
+                _sourceControlView = new SourceControlPanel();
             }
+
+            if (_sourceControlPresenter == null)
+            {
+                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView);
+            }
+
+            _sourceControlPresenter.Show();
         }
 
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -116,7 +125,7 @@ namespace Rubberduck.UI
             }
         }
 
-        bool _disposed;
+        private bool _disposed;
         protected override void Dispose(bool disposing)
         {
             if (_disposed)
