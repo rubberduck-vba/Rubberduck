@@ -346,8 +346,8 @@
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{07670957-F887-48F1-A047-1C3BCA3319A9}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.Primary_output</td><td>{8A995879-03C7-4F76-B358-B481A5B13B02}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.Source_Files</td><td>{8327FD04-D1B8-49B1-AB77-3BE39398C4A4}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.source_files</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Primary_output</td><td>{8A995879-03C7-4F76-B358-B481A5B13B02}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.tlb</td><td>{7CDB9690-05B1-4948-BC23-170BCE93D933}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1869,7 +1869,7 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output</td></row>
-		<row><td>AlwaysInstall</td><td>Rubberduck.Source_Files</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.tlb</td></row>
 	</table>
 
 	<table name="File">
@@ -1884,8 +1884,8 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
-		<row><td>rubberduck.source_files</td><td>Rubberduck.Source_Files</td><td>Rubberduck.Source Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|SourceFiles</td><td>3</td><td/></row>
+		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
+		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Mathieu\Source\Repos\Rubberduck\RetailCoder.VBE\bin\x64\Release64\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2032,7 +2032,7 @@
 		<col def="S0">Miscellaneous</col>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_0BCD28FB_7D80_4AE7_8A9A_283E94E02605_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_9FE50EF0_707D_4FAE_870F_627C5EBC0592_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Rubberduck.Source_Files</td><td/><td/><td>_A52E9569_C7F6_4592_AA02_B2F8CC884681_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.tlb</td><td/><td/><td>_7EC75726_A97F_4883_A517_23D742D453CA_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -3997,7 +3997,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{0DFDD6D1-586F-4F8E-B9A5-72B2E8DEDED1}</td></row>
 		<row><td>ISUSSignature</td><td>{B2356E6E-C215-476C-839C-42C0F7DD9C07}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewSystemSearch,viewCustomActions,viewSupportFiles,viewInstallScriptStd,viewRelease,viewDesignPatches,viewTextMessages,viewAppV,viewUpdateService,viewProject</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewSystemSearch,viewCustomActions,viewSupportFiles,viewInstallScriptStd,viewRelease,viewDesignPatches,viewTextMessages,viewAppV,viewUpdateService,viewProject,viewRealSetupDesign,viewSetupDesign,viewUpgradePaths,viewObjects,viewAppFiles</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
