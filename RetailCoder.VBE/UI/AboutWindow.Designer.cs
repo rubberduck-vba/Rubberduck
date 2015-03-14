@@ -63,13 +63,19 @@
             this.SpecialThanksList.ForeColor = System.Drawing.Color.DimGray;
             this.SpecialThanksList.FormattingEnabled = true;
             this.SpecialThanksList.Items.AddRange(new object[] {
-            "Code Review community, for reviewing our code",
-            "Carlos J. Quintero, for precious MZ-Tools articles",
-            "@Duga SE chat bot, for keeping us informed and motivated",
-            "Simon-André Forsberg and Frank Van Heeswijk",
-            "Philip Wales and Michal Krzych (vba4all.com)",
-            "All our contributors on GitHub",
-            "All our stargazers, likers and followers, for the warm fuzzies"});
+            "Code Review Stack Exchange",
+            "Carlos J. Quintero (MZ-Tools articles & help with VBE API)",
+            "JetBrains ReSharper Community Team",
+            "@Duga SE chat bot",
+            "Francis Veilleux-Gaboury",
+            "Simon Forsberg",
+            "Frank Van Heeswijk",
+            "Philip Wales",
+            "Michal Krzych (vba4all.com)",
+            "ClockAhead developer blog (clockahead.blogspot.jp)",
+            "All contributors to our GitHub repository",
+            "All our stargazers, likers & followers, for the warm fuzzies",
+            "...and anyone reading this!"});
             this.SpecialThanksList.Location = new System.Drawing.Point(187, 164);
             this.SpecialThanksList.Name = "SpecialThanksList";
             this.SpecialThanksList.SelectionMode = System.Windows.Forms.SelectionMode.None;
@@ -79,15 +85,16 @@
             // OfficialWebsiteLinkLabel
             // 
             this.OfficialWebsiteLinkLabel.ActiveLinkColor = System.Drawing.Color.DimGray;
-            this.OfficialWebsiteLinkLabel.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.OfficialWebsiteLinkLabel.AutoSize = true;
+            this.OfficialWebsiteLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.OfficialWebsiteLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OfficialWebsiteLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OfficialWebsiteLinkLabel.ForeColor = System.Drawing.Color.DimGray;
             this.OfficialWebsiteLinkLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.OfficialWebsiteLinkLabel.LinkColor = System.Drawing.Color.DimGray;
-            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(2, 124);
+            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(12, 125);
             this.OfficialWebsiteLinkLabel.Name = "OfficialWebsiteLinkLabel";
-            this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(172, 21);
+            this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(156, 17);
             this.OfficialWebsiteLinkLabel.TabIndex = 2;
             this.OfficialWebsiteLinkLabel.TabStop = true;
             this.OfficialWebsiteLinkLabel.Text = "rubberduck-vba.com";
@@ -202,7 +209,7 @@
             this.AcceptButton = this.CloseButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD_InstallWindow;
+            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD_AboutWindow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.CloseButton;
             this.ClientSize = new System.Drawing.Size(499, 310);

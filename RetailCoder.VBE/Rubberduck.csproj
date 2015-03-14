@@ -656,6 +656,10 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
+    <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
+    <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
+    <None Include="Resources\RD-AboutWindow.png" />
     <None Include="Resources\twitter_circle_black-512.png" />
     <None Include="Resources\RD-InstallWindow.png" />
     <None Include="Resources\minus-circle1.png" />
