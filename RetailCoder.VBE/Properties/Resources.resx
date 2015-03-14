@@ -127,6 +127,9 @@
   <data name="folder-horizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder-horizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="facebook-circle-256" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\facebook-circle-256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="folder-horizontal-open" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder-horizontal-open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -147,6 +150,9 @@
   </data>
   <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSProject_form" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSProject_form.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flask_arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flask--arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -169,11 +175,17 @@
   <data name="VSFolder_closed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\VSFolder_closed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="twitter_circle_black-512" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\twitter_circle_black-512.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Step_RunTest_8814_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Step-RunTest_8814_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Collapse_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Collapse_large.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RD-InstallWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RD-InstallWindow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow-branch-090" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-branch-090.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -223,11 +235,14 @@
   <data name="AllLoadedTests_8644_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\AllLoadedTests_8644_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\AddClass_5561_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddForm_369_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddForm_369_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="github_circle_black-128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\github_circle_black-128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DisplayFullSignature_13393_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\DisplayFullSignature_13393_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -250,11 +265,14 @@
   <data name="ExtractMethod_6786_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\ExtractMethod_6786_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddClass_5561_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="light-bulb-code" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="github-alt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\github-alt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="facebook-icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\facebook-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow-merge-090" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-merge-090.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -274,8 +292,8 @@
   <data name="question_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\question-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSProject_form" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSProject_form.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AddForm_369_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\AddForm_369_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -283,7 +301,7 @@
   <data name="navigation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\navigation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="light-bulb-code" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="google-circle-512" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\google-circle-512.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

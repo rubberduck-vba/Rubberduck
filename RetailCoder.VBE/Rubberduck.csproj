@@ -534,15 +534,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Publisher">
-      <Guid>{0002123C-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>1</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Word">
       <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>8</VersionMajor>
@@ -665,6 +656,8 @@
     <None Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\twitter_circle_black-512.png" />
+    <None Include="Resources\RD-InstallWindow.png" />
     <None Include="Resources\minus-circle1.png" />
     <None Include="Resources\plus-circle1.png" />
     <None Include="Resources\question-white.png" />
@@ -716,6 +709,10 @@
     <None Include="Resources\application-resize.png" />
     <None Include="Resources\light-bulb-code.png" />
     <Content Include="Ducky.ico" />
+    <None Include="Resources\facebook-icon.png" />
+    <None Include="Resources\github_circle_black-128.png" />
+    <None Include="Resources\facebook-circle-256.png" />
+    <None Include="Resources\google-circle-512.png" />
     <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />

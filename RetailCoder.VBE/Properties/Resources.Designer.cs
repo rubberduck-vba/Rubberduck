@@ -323,6 +323,26 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap facebook_circle_256 {
+            get {
+                object obj = ResourceManager.GetObject("facebook-circle-256", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap facebook_icon {
+            get {
+                object obj = ResourceManager.GetObject("facebook-icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap flask {
             get {
                 object obj = ResourceManager.GetObject("flask", resourceCulture);
@@ -416,6 +436,26 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap github_alt {
             get {
                 object obj = ResourceManager.GetObject("github-alt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap github_circle_black_128 {
+            get {
+                object obj = ResourceManager.GetObject("github_circle_black-128", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap google_circle_512 {
+            get {
+                object obj = ResourceManager.GetObject("google-circle-512", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -523,6 +563,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RD_InstallWindow {
+            get {
+                object obj = ResourceManager.GetObject("RD-InstallWindow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Refresh {
             get {
                 object obj = ResourceManager.GetObject("Refresh", resourceCulture);
@@ -586,6 +636,16 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap tick_circle {
             get {
                 object obj = ResourceManager.GetObject("tick_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap twitter_circle_black_512 {
+            get {
+                object obj = ResourceManager.GetObject("twitter_circle_black-512", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

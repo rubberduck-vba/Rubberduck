@@ -86,7 +86,8 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            _sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
+            // note: disabled for 1.21 release (RepositoryNotFoundException on click)
+            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
             _settings = AddButton(menu, "&Options", true, OnOptionsClick);
             _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
