@@ -852,7 +852,7 @@ if $(ConfigurationName) == Release (
 )
 
 if $(ConfigurationName) == Release64 (
-    Copy $(TargerDir)\NativeBinaries\amd64\git2-e0909fb.dll $(TargetDir)
+    Copy $(TargetDir)\NativeBinaries\amd64\git2-e0902fb.dll $(TargetDir)
 )
 </PostBuildEvent>
   </PropertyGroup>
