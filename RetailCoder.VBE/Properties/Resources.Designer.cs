@@ -563,9 +563,9 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap RD_InstallWindow {
+        internal static System.Drawing.Bitmap RD_AboutWindow {
             get {
-                object obj = ResourceManager.GetObject("RD-InstallWindow", resourceCulture);
+                object obj = ResourceManager.GetObject("RD-AboutWindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -576,16 +576,6 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap Refresh {
             get {
                 object obj = ResourceManager.GetObject("Refresh", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap rubberduck_adsize {
-            get {
-                object obj = ResourceManager.GetObject("rubberduck_adsize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
