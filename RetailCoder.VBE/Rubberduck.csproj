@@ -162,7 +162,8 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Release64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <Optimize>true</Optimize>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DebugType>full</DebugType>
@@ -178,7 +179,7 @@
     <Optimize>true</Optimize>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -843,11 +844,7 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Debug64 (
-    c:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe /codebase $(TargetPath) /tlb
-)
-
-if $(ConfigurationName) == Release (
+    <PostBuildEvent>if $(ConfigurationName) == Release (
     Copy $(TargetDir)\NativeBinaries\x86\git2-e0902fb.dll $(TargetDir)
 )
 
