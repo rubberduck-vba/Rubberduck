@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Symbols
+﻿using Antlr4.Runtime;
+
+namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// Defines a declared identifier.
@@ -7,7 +9,7 @@
     {
         public Declaration(int projectHashCode, string parentScope,
             string projectName, string componentName, string identifierName,
-            Accessibility accessibility, DeclarationType declarationType)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context)
         {
             _projectHashCode = projectHashCode;
             _parentScope = parentScope;
@@ -16,7 +18,17 @@
             _identifierName = identifierName;
             _accessibility = accessibility;
             _declarationType = declarationType;
+            _context = context;
         }
+
+        private readonly ParserRuleContext _context;
+        /// <summary>
+        /// Gets a reference to the parser rule context containing the declaration.
+        /// </summary>
+        /// <remarks>
+        /// Returns <c>null</c> for module identifiers.
+        /// </remarks>
+        public ParserRuleContext Context { get { return _context; } }
 
         private readonly int _projectHashCode;
         /// <summary>
