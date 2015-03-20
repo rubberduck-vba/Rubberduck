@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.Extensions;
+﻿using Rubberduck.Extensions;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.ToDoItems

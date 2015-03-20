@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI
 {
     partial class _AboutWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -286,21 +289,21 @@
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button CloseButton;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.Label versionLabel;
-        private System.Windows.Forms.LinkLabel repositoryLinkLabel;
-        private System.Windows.Forms.Label contributorsLabel;
-        private System.Windows.Forms.LinkLabel retailcoderLinkLabel;
-        private System.Windows.Forms.LinkLabel ckuhn203LinkLabel;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.LinkLabel codereviewLinkLabel;
-        private System.Windows.Forms.LinkLabel mztoolsLinkLabel;
-        private System.Windows.Forms.LinkLabel AntrLinkLabel;
-        private System.Windows.Forms.LinkLabel LibGit2SharpLinkLabel;
-        private System.Windows.Forms.Label label2;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Button CloseButton;
+        private PictureBox pictureBox1;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Label titleLabel;
+        private Label versionLabel;
+        private LinkLabel repositoryLinkLabel;
+        private Label contributorsLabel;
+        private LinkLabel retailcoderLinkLabel;
+        private LinkLabel ckuhn203LinkLabel;
+        private Label label1;
+        private LinkLabel codereviewLinkLabel;
+        private LinkLabel mztoolsLinkLabel;
+        private LinkLabel AntrLinkLabel;
+        private LinkLabel LibGit2SharpLinkLabel;
+        private Label label2;
     }
 }

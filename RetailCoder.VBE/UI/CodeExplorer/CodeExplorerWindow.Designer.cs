@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.CodeExplorer
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.CodeExplorer
 {
     partial class CodeExplorerWindow
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -398,38 +401,38 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip CodeExplorerToolbar;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ToolStripButton RefreshButton;
-        public System.Windows.Forms.TreeView SolutionTree;
-        private System.Windows.Forms.ImageList TreeNodeIcons;
-        private System.Windows.Forms.ToolStripButton ShowFoldersToggleButton;
-        public System.Windows.Forms.ToolStripButton ShowDesignerButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripDropDownButton AddButton;
-        private System.Windows.Forms.ToolStripMenuItem AddClassButton;
-        private System.Windows.Forms.ToolStripMenuItem AddStdModuleButton;
-        private System.Windows.Forms.ToolStripMenuItem AddFormButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem AddTestModuleButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripDropDownButton DisplayModeButton;
-        private System.Windows.Forms.ToolStripMenuItem DisplayMemberNamesButton;
-        private System.Windows.Forms.ToolStripMenuItem DisplaySignaturesButton;
-        private System.Windows.Forms.ContextMenuStrip CodeExplorerContextMenu;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripMenuItem NavigateContextButton;
-        private System.Windows.Forms.ToolStripMenuItem ShowDesignerContextButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem RunAllTestsContextButton;
-        private System.Windows.Forms.ToolStripLabel SelectedNodeLabel;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AddClassContextButton;
-        private System.Windows.Forms.ToolStripMenuItem AddStdModuleContextButton;
-        private System.Windows.Forms.ToolStripMenuItem AddFormContextButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem AddTestModuleContextButton;
-        private System.Windows.Forms.ToolStripMenuItem RefreshContextButton;
-        private System.Windows.Forms.ToolStripMenuItem InspectContextButton;
+        private ToolStrip CodeExplorerToolbar;
+        private Panel panel1;
+        private ToolStripButton RefreshButton;
+        public TreeView SolutionTree;
+        private ImageList TreeNodeIcons;
+        private ToolStripButton ShowFoldersToggleButton;
+        public ToolStripButton ShowDesignerButton;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripDropDownButton AddButton;
+        private ToolStripMenuItem AddClassButton;
+        private ToolStripMenuItem AddStdModuleButton;
+        private ToolStripMenuItem AddFormButton;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem AddTestModuleButton;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripDropDownButton DisplayModeButton;
+        private ToolStripMenuItem DisplayMemberNamesButton;
+        private ToolStripMenuItem DisplaySignaturesButton;
+        private ContextMenuStrip CodeExplorerContextMenu;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripMenuItem NavigateContextButton;
+        private ToolStripMenuItem ShowDesignerContextButton;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripMenuItem RunAllTestsContextButton;
+        private ToolStripLabel SelectedNodeLabel;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem AddClassContextButton;
+        private ToolStripMenuItem AddStdModuleContextButton;
+        private ToolStripMenuItem AddFormContextButton;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripMenuItem AddTestModuleContextButton;
+        private ToolStripMenuItem RefreshContextButton;
+        private ToolStripMenuItem InspectContextButton;
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Reflection
 {
@@ -225,7 +221,7 @@ namespace Rubberduck.Reflection
             foreach (var line in codeLines)
             {
                 MemberAttribute attribute;
-                if (MemberAttribute.TryParse(line, out attribute))
+                if (TryParse(line, out attribute))
                 {
                     yield return attribute;
                 }

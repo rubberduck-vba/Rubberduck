@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA

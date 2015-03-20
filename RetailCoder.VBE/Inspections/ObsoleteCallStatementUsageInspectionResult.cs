@@ -5,7 +5,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Inspections
 {

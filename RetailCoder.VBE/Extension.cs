@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Extensibility;
 using Microsoft.Vbe.Interop;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace Rubberduck
 {

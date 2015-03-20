@@ -1,5 +1,6 @@
 ﻿using System;
 using Antlr4.Runtime;
+using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
 
@@ -13,13 +14,13 @@ namespace Rubberduck.UI
             _selection = context.GetSelection();
         }
 
-        public NavigateCodeEventArgs(QualifiedModuleName qualifiedModuleName, Extensions.Selection selection)
+        public NavigateCodeEventArgs(QualifiedModuleName qualifiedModuleName, Selection selection)
         {
             _qualifiedName = qualifiedModuleName;
             _selection = selection;
         }
 
-        public    NavigateCodeEventArgs(Extensions.QualifiedSelection qualifiedSelection)
+        public    NavigateCodeEventArgs(QualifiedSelection qualifiedSelection)
             :this(qualifiedSelection.QualifiedName, qualifiedSelection.Selection)
         {
         }
@@ -27,7 +28,7 @@ namespace Rubberduck.UI
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
 
-        private readonly Extensions.Selection _selection;
-        public Extensions.Selection Selection { get { return _selection; } }
+        private readonly Selection _selection;
+        public Selection Selection { get { return _selection; } }
     }
 }

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 
 namespace Rubberduck.VBA.Nodes
 {

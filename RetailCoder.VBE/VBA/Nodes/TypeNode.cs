@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {

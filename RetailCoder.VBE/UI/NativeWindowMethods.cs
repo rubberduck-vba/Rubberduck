@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Rubberduck.UI
 {
@@ -99,7 +97,7 @@ namespace Rubberduck.UI
 
             if (result != 0)
             {
-                System.Diagnostics.Debug.WriteLine("EnumChildWindows failed");
+                Debug.WriteLine("EnumChildWindows failed");
             }
         }
 
@@ -121,7 +119,7 @@ namespace Rubberduck.UI
                 // By default it will continue enumeration after this call
                 result = 1;
 
-                caption = NativeWindowMethods.GetWindowTextByHwnd(windowHandle);
+                caption = GetWindowTextByHwnd(windowHandle);
 
 
                 if (_caption == caption)

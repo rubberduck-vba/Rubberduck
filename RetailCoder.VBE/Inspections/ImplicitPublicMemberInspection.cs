@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.VBA.ParseTreeListeners;
 

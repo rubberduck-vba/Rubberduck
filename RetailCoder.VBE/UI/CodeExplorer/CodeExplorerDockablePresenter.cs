@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using Rubberduck.VBA;
-using Rubberduck.VBA.ParseTreeListeners;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 using Rubberduck.UnitTesting;
-using AddIn = Microsoft.Vbe.Interop.AddIn;
-using Font = System.Drawing.Font;
-using Selection = Rubberduck.Extensions.Selection;
+using Rubberduck.VBA;
+using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -79,7 +76,7 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void ShowDesigner(object sender, System.EventArgs e)
+        private void ShowDesigner(object sender, EventArgs e)
         {
             var node = Control.SolutionTree.SelectedNode;
             if (node != null && node.Tag != null)
@@ -103,7 +100,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private bool _showFolders = true;
-        private void ToggleFolders(object sender, System.EventArgs e)
+        private void ToggleFolders(object sender, EventArgs e)
         {
             _showFolders = !_showFolders;
             RefreshExplorerTreeView();
@@ -136,7 +133,7 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        private void RefreshExplorerTreeView(object sender, EventArgs e)
         {
             RefreshExplorerTreeView();
         }

@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Settings
 {
     partial class TodoListSettingsUserControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -144,14 +147,14 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox tokenListBox;
-        private System.Windows.Forms.TextBox tokenTextBox;
-        private System.Windows.Forms.ComboBox priorityComboBox;
-        private System.Windows.Forms.Label priorityLabel;
-        private System.Windows.Forms.Label tokenLabel;
-        private System.Windows.Forms.Button addButton;
-        private System.Windows.Forms.Button saveChangesButton;
-        private System.Windows.Forms.Button removeButton;
-        private System.Windows.Forms.Label tokenListLabel;
+        private ListBox tokenListBox;
+        private TextBox tokenTextBox;
+        private ComboBox priorityComboBox;
+        private Label priorityLabel;
+        private Label tokenLabel;
+        private Button addButton;
+        private Button saveChangesButton;
+        private Button removeButton;
+        private Label tokenListLabel;
     }
 }

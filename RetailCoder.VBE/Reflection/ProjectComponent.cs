@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Reflection

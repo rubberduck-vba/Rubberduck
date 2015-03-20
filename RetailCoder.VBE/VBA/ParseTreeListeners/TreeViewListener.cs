@@ -5,9 +5,6 @@ using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {

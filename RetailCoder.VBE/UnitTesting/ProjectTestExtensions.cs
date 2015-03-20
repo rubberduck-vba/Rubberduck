@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Extensions;
-
 using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.Reflection;
 using Rubberduck.VBA;
 using Rubberduck.VBEHost;

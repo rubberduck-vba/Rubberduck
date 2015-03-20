@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.VBA

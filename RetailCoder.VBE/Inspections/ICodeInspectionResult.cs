@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {
     public interface ICodeInspectionResult
     {
-        Rubberduck.VBA.Nodes.CommentNode Comment { get; }
-        Antlr4.Runtime.ParserRuleContext Context { get; }
-        Microsoft.Vbe.Interop.VBComponent FindComponent(Microsoft.Vbe.Interop.VBE vbe);
-        System.Collections.Generic.IDictionary<string, Action<Microsoft.Vbe.Interop.VBE>> GetQuickFixes();
+        CommentNode Comment { get; }
+        ParserRuleContext Context { get; }
+        VBComponent FindComponent(VBE vbe);
+        IDictionary<string, Action<VBE>> GetQuickFixes();
         string Name { get; }
-        Rubberduck.Extensions.QualifiedSelection QualifiedSelection { get; }
+        QualifiedSelection QualifiedSelection { get; }
         CodeInspectionSeverity Severity { get; }
     }
 }

@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class SourceControlPanel
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -873,62 +876,62 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip SourceControlToolbar;
-        private System.Windows.Forms.ToolStripButton RefreshButton;
-        private System.Windows.Forms.TabControl SourceControlTabs;
-        private System.Windows.Forms.TabPage ChangesTab;
-        private System.Windows.Forms.TabPage BranchesTab;
-        private System.Windows.Forms.TabPage UnsyncedCommitsTab;
-        private System.Windows.Forms.TabPage SettingsTab;
-        private System.Windows.Forms.Panel ChangesPanel;
-        private System.Windows.Forms.GroupBox IncludedChangesBox;
-        private System.Windows.Forms.DataGridView IncludedChangesGrid;
-        private System.Windows.Forms.Button CommitButton;
-        private System.Windows.Forms.ComboBox CommitAction;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox CommitMessage;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox ExcludedChangesBox;
-        private System.Windows.Forms.DataGridView ExcludedChangesGrid;
-        private System.Windows.Forms.GroupBox UntrackedFilesBox;
-        private System.Windows.Forms.DataGridView UntrackedFilesGrid;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripLabel StatusMessage;
-        private System.Windows.Forms.Panel UnsyncedCommitsPanel;
-        private System.Windows.Forms.Button FetchIncomingCommitsButton;
-        private System.Windows.Forms.Button SyncButton;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button PushButton;
-        private System.Windows.Forms.Button PullButton;
-        private System.Windows.Forms.GroupBox OutgoingCommitsBox;
-        private System.Windows.Forms.DataGridView OutgoingCommitsGrid;
-        private System.Windows.Forms.GroupBox IncomingCommitsBox;
-        private System.Windows.Forms.DataGridView IncomingCommitsGrid;
-        private System.Windows.Forms.Panel BranchesPanel;
-        private System.Windows.Forms.GroupBox PublishedBranchesBox;
-        private System.Windows.Forms.DataGridView PublishedBranchesGrid;
-        private System.Windows.Forms.Button MergeBranchButton;
-        private System.Windows.Forms.GroupBox UnpublishedBranchesBox;
-        private System.Windows.Forms.DataGridView UnpublishedBranchesGrid;
-        private System.Windows.Forms.ComboBox CurrentBranchSelector;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button NewBranchButton;
-        private System.Windows.Forms.Panel SettingsPanel;
-        private System.Windows.Forms.GroupBox RepositorySettingsBox;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox GlobalSettingsBox;
-        private System.Windows.Forms.Button CancelGlobalSettingsButton;
-        private System.Windows.Forms.Button UpdateGlobalSettingsButton;
-        private System.Windows.Forms.Button BrowseDefaultRepositoryLocationButton;
-        private System.Windows.Forms.TextBox DefaultRepositoryLocation;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox EmailAddress;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox UserName;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ToolStripButton OpenWorkingFolderButton;
-        private System.Windows.Forms.Label ChangesBranchNameLabel;
-        private System.Windows.Forms.Label UnsyncedCommitsBranchNameLabel;
+        private ToolStrip SourceControlToolbar;
+        private ToolStripButton RefreshButton;
+        private TabControl SourceControlTabs;
+        private TabPage ChangesTab;
+        private TabPage BranchesTab;
+        private TabPage UnsyncedCommitsTab;
+        private TabPage SettingsTab;
+        private Panel ChangesPanel;
+        private GroupBox IncludedChangesBox;
+        private DataGridView IncludedChangesGrid;
+        private Button CommitButton;
+        private ComboBox CommitAction;
+        private Label label2;
+        private TextBox CommitMessage;
+        private Label label1;
+        private GroupBox ExcludedChangesBox;
+        private DataGridView ExcludedChangesGrid;
+        private GroupBox UntrackedFilesBox;
+        private DataGridView UntrackedFilesGrid;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripLabel StatusMessage;
+        private Panel UnsyncedCommitsPanel;
+        private Button FetchIncomingCommitsButton;
+        private Button SyncButton;
+        private Label label3;
+        private Button PushButton;
+        private Button PullButton;
+        private GroupBox OutgoingCommitsBox;
+        private DataGridView OutgoingCommitsGrid;
+        private GroupBox IncomingCommitsBox;
+        private DataGridView IncomingCommitsGrid;
+        private Panel BranchesPanel;
+        private GroupBox PublishedBranchesBox;
+        private DataGridView PublishedBranchesGrid;
+        private Button MergeBranchButton;
+        private GroupBox UnpublishedBranchesBox;
+        private DataGridView UnpublishedBranchesGrid;
+        private ComboBox CurrentBranchSelector;
+        private Label label8;
+        private Button NewBranchButton;
+        private Panel SettingsPanel;
+        private GroupBox RepositorySettingsBox;
+        private Button button2;
+        private Button button1;
+        private GroupBox GlobalSettingsBox;
+        private Button CancelGlobalSettingsButton;
+        private Button UpdateGlobalSettingsButton;
+        private Button BrowseDefaultRepositoryLocationButton;
+        private TextBox DefaultRepositoryLocation;
+        private Label label7;
+        private TextBox EmailAddress;
+        private Label label6;
+        private TextBox UserName;
+        private Label label5;
+        private ToolStripButton OpenWorkingFolderButton;
+        private Label ChangesBranchNameLabel;
+        private Label UnsyncedCommitsBranchNameLabel;
     }
 }

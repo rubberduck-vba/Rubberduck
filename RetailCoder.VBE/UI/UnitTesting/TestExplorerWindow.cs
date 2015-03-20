@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.UnitTesting;
 
@@ -209,7 +208,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public event EventHandler OnRefreshListButtonClick;
-        private void RefreshTestsButtonClick(object sender, System.EventArgs e)
+        private void RefreshTestsButtonClick(object sender, EventArgs e)
         {
             OnButtonClick(OnRefreshListButtonClick);
         }

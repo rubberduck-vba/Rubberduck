@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
@@ -9,7 +8,7 @@ namespace Rubberduck.Config
         CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
-        IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
+        IList<IInspection> GetImplementedCodeInspections();
         Configuration LoadConfiguration();
         void SaveConfiguration<T>(T toSerialize);
     }

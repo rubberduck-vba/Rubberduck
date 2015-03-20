@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -52,12 +53,12 @@ namespace Rubberduck.UI
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
         }
 
-        private void codePresenter_RunInspections(object sender, System.EventArgs e)
+        private void codePresenter_RunInspections(object sender, EventArgs e)
         {
             _codeInspectionsMenu.Inspect();
         }
 
-        private void codePresenter_RunAllTests(object sender, System.EventArgs e)
+        private void codePresenter_RunAllTests(object sender, EventArgs e)
         {
             _testMenu.RunAllTests();
         }

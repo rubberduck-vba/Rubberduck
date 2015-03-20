@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Config;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.Settings
 {
@@ -55,7 +53,7 @@ namespace Rubberduck.UI.Settings
             severityColumn.Name = "InspectionSeverity";
             severityColumn.DataPropertyName = "Severity";
             severityColumn.HeaderText = "Severity";
-            severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
+            severityColumn.DataSource = Enum.GetValues(typeof(CodeInspectionSeverity));
             codeInspectionsGrid.Columns.Add(severityColumn);
 
         }

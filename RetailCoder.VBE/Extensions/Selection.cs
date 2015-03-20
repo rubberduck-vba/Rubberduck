@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.Inspections;
+﻿using Rubberduck.Inspections;
 
 namespace Rubberduck.Extensions
 {

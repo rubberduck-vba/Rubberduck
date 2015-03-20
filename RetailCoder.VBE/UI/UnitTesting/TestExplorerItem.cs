@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting

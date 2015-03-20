@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 

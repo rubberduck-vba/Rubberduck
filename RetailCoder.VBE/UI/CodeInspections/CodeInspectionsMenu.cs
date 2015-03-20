@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
+﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
-using Rubberduck.VBA;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeInspections

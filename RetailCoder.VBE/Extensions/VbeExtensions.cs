@@ -1,11 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.VBEHost;
 
@@ -74,7 +73,7 @@ namespace Rubberduck.Extensions
             component.CodeModule.CodePane.SetSelection(selection.Selection);
         }
 
-        [System.Obsolete]
+        [Obsolete]
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, ParserRuleContext context)
         {
             var projectName = qualifiedModuleName.ProjectName;

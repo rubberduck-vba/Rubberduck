@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Rubberduck.Inspections
+﻿namespace Rubberduck.Inspections
 {
     public enum CodeInspectionSeverity
     {

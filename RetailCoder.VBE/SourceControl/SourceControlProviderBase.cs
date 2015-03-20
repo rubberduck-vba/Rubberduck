@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 
@@ -40,7 +39,7 @@ namespace Rubberduck.SourceControl
             var projectName = GetProjectNameFromDirectory(directory);
             if (projectName != string.Empty && projectName != this.project.Name)
             {
-                directory = System.IO.Path.Combine(directory, project.Name);
+                directory = Path.Combine(directory, project.Name);
             }
 
             this.project.ExportSourceFiles(directory);
@@ -72,7 +71,7 @@ namespace Rubberduck.SourceControl
         {
             //this might need to cherry pick from the tip instead.
 
-           var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+           var componentName = Path.GetFileNameWithoutExtension(filePath);
 
            //GetFileNameWithoutExtension returns empty string if it's not a file
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx

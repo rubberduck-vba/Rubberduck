@@ -1,11 +1,12 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -82,7 +83,7 @@ namespace Rubberduck.UI.CodeInspections
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Debug.Assert(false, exception.ToString());
+                Debug.Assert(false, exception.ToString());
             }
         }
 

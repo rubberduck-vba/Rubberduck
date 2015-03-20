@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.ToDoItems

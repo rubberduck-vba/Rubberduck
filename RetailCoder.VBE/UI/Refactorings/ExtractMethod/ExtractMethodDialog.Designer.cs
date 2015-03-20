@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Refactorings.ExtractMethod
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
     partial class ExtractMethodDialog
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -285,24 +288,24 @@
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.CheckBox SetReturnValueCheck;
-        private System.Windows.Forms.PictureBox InvalidNameValidationIcon;
-        private System.Windows.Forms.TextBox PreviewBox;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.DataGridView MethodParametersGrid;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ComboBox MethodAccessibilityCombo;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox MethodReturnValueCombo;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox MethodNameBox;
-        private System.Windows.Forms.Label label3;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Button CancelButton;
+        private Button OkButton;
+        private Panel panel2;
+        private Label label1;
+        private Label label2;
+        private Panel panel1;
+        private CheckBox SetReturnValueCheck;
+        private PictureBox InvalidNameValidationIcon;
+        private TextBox PreviewBox;
+        private Label label7;
+        private DataGridView MethodParametersGrid;
+        private Label label6;
+        private ComboBox MethodAccessibilityCombo;
+        private Label label5;
+        private ComboBox MethodReturnValueCombo;
+        private Label label4;
+        private TextBox MethodNameBox;
+        private Label label3;
     }
 }

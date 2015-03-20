@@ -1,10 +1,11 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
 using Rubberduck.Reflection;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -86,10 +87,10 @@ namespace Rubberduck.UI.UnitTesting
             }
             catch (ArgumentException)
             {
-                System.Windows.Forms.MessageBox.Show(
+                MessageBox.Show(
                     "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
-                    "Warning", System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                    "Warning", MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
             }
         }
 

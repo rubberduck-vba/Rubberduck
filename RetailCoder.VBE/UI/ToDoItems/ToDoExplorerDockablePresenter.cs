@@ -1,15 +1,15 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
-using Rubberduck.Extensions;
-using Rubberduck.ToDoItems;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
+using Rubberduck.Extensions;
+using Rubberduck.ToDoItems;
+using Rubberduck.VBA;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.ToDoItems
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.VBA;
@@ -48,8 +44,8 @@ namespace Rubberduck.Extensions
 
         public static void ImportSourceFile(this VBComponents components, string filePath)
         {
-            var ext = System.IO.Path.GetExtension(filePath);
-            var fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            var ext = Path.GetExtension(filePath);
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
 
             if (ext == VBComponentExtensions.DocClassExtension)
             {
@@ -58,7 +54,7 @@ namespace Rubberduck.Extensions
                 {
                     component.CodeModule.Clear();
 
-                    var text = System.IO.File.ReadAllText(filePath);
+                    var text = File.ReadAllText(filePath);
                     component.CodeModule.AddFromString(text);
                 }
 

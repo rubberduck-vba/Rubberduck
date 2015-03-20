@@ -1,6 +1,4 @@
 
-using System;
-
 namespace Rubberduck.Inspections
 {
     public struct QualifiedModuleName

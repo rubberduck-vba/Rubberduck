@@ -1,5 +1,3 @@
-﻿using System;
-
-namespace Rubberduck.VBA.Nodes
+﻿namespace Rubberduck.VBA.Nodes
 {
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.VBA

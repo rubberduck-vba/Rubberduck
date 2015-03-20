@@ -1,7 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
 using Microsoft.Vbe.Interop;
-using System;
-using Rubberduck.Inspections;
 using Rubberduck.UI;
 
 namespace Rubberduck.Extensions

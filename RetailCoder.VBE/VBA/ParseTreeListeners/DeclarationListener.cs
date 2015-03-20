@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {

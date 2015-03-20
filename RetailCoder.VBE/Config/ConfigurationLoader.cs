@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
 using System.IO;
-using Rubberduck.Inspections;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
@@ -69,9 +69,9 @@ namespace Rubberduck.Config
             }
             catch (InvalidOperationException ex)
             {
-                var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
-                        ConfigFile + System.Environment.NewLine + System.Environment.NewLine +
-                        "Would you like to restore default configuration?" + System.Environment.NewLine + 
+                var message = ex.Message + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + Environment.NewLine +
+                        ConfigFile + Environment.NewLine + Environment.NewLine +
+                        "Would you like to restore default configuration?" + Environment.NewLine + 
                         "Warning: All customized settings will be lost.";
 
                 DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);

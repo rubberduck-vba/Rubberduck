@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using System.Threading.Tasks;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Inspections
 {

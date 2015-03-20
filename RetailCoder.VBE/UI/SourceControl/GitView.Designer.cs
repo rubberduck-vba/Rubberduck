@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class DummyGitView
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -227,20 +230,20 @@
 
         #endregion
 
-        private System.Windows.Forms.Button Commit;
-        private System.Windows.Forms.Button Push;
-        private System.Windows.Forms.Button Pull;
-        private System.Windows.Forms.Button Fetch;
-        private System.Windows.Forms.Button NewBranch;
-        private System.Windows.Forms.Button Checkout;
-        private System.Windows.Forms.Button Merge;
-        private System.Windows.Forms.ComboBox SourceBranch;
-        private System.Windows.Forms.ComboBox DestinationBranch;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button Undo;
-        private System.Windows.Forms.Button Revert;
-        private System.Windows.Forms.Button Status;
-        private System.Windows.Forms.DataGridView StatusResults;
+        private Button Commit;
+        private Button Push;
+        private Button Pull;
+        private Button Fetch;
+        private Button NewBranch;
+        private Button Checkout;
+        private Button Merge;
+        private ComboBox SourceBranch;
+        private ComboBox DestinationBranch;
+        private Label label1;
+        private Label label2;
+        private Button Undo;
+        private Button Revert;
+        private Button Status;
+        private DataGridView StatusResults;
     }
 }

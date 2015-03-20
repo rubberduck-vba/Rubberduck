@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.SourceControl;
-using System.Runtime.InteropServices;
+﻿using System.Collections;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Interop
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.CodeInspections

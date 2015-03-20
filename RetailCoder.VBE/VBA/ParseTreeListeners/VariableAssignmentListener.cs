@@ -1,7 +1,6 @@
 using System.Linq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {

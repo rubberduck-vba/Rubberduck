@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Rubberduck.UI
+﻿namespace Rubberduck.UI
 {
     public interface IDockableUserControl
     {

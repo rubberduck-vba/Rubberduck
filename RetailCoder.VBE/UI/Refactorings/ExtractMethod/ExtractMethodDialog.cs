@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {

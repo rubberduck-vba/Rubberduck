@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    [System.Runtime.InteropServices.ComVisible(true)]
+    [ComVisible(true)]
     public partial class _AboutWindow : Form
     {
         public _AboutWindow()
         {
             InitializeComponent();
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             var name = assembly.GetName();
 
             titleLabel.Text = name.Name;

@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.CodeInspections
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.CodeInspections
 {
     partial class CodeInspectionsWindow
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -206,19 +209,19 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton RefreshButton;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton GoButton;
-        public System.Windows.Forms.ToolStripSplitButton QuickFixButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton PreviousButton;
-        private System.Windows.Forms.ToolStripButton NextButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripLabel StatusLabel;
-        private System.Windows.Forms.DataGridView CodeIssuesGridView;
-        private System.Windows.Forms.ToolStripButton CopyButton;
-        private System.Windows.Forms.ToolStripButton configureButton;
+        private ToolStrip toolStrip1;
+        private ToolStripButton RefreshButton;
+        private Panel panel1;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripButton GoButton;
+        public ToolStripSplitButton QuickFixButton;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton PreviousButton;
+        private ToolStripButton NextButton;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripLabel StatusLabel;
+        private DataGridView CodeIssuesGridView;
+        private ToolStripButton CopyButton;
+        private ToolStripButton configureButton;
     }
 }
