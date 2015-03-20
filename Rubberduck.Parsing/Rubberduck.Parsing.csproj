@@ -54,6 +54,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Symbols\Declaration.cs" />
     <Compile Include="Symbols\Accessibility.cs" />
+    <Compile Include="Symbols\DeclarationType.cs" />
+    <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="VBABaseListener.cs" />
     <Compile Include="VBABaseVisitor.cs" />
     <Compile Include="VBALexer.cs" />
