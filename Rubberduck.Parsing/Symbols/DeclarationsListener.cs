@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Parsing.Symbols
 {
-    internal class DeclarationsListener : VBABaseListener
+    public class DeclarationsListener : VBABaseListener
     {
         private readonly Declarations _declarations = new Declarations();
         public Declarations Declarations { get { return _declarations; } }
