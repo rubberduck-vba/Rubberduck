@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class DeclarationsListener : VBABaseListener
+    public class DeclarationSymbolsListener : VBABaseListener
     {
         private readonly Declarations _declarations = new Declarations();
         public Declarations Declarations { get { return _declarations; } }
@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private string _currentScope;
 
-        public DeclarationsListener(int projectHashCode, string projectName, string componentName, Accessibility componentAccessibility, DeclarationType declarationType)
+        public DeclarationSymbolsListener(int projectHashCode, string projectName, string componentName, Accessibility componentAccessibility, DeclarationType declarationType)
         {
             _projectHashCode = projectHashCode;
             _projectName = projectName;
