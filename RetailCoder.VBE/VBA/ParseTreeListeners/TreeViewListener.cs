@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.VBA;
@@ -49,10 +50,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
             var node = new TreeNode(nodeText);
             var parent = context.Parent as VBAParser.VariableStmtContext;
             var accessibility = parent == null || parent.visibility() == null 
-                ? VBAccessibility.Implicit 
+                ? Accessibility.Implicit 
                 : parent.visibility().GetAccessibility();
-            node.ImageKey = (accessibility == VBAccessibility.Public || 
-                             accessibility == VBAccessibility.Global)
+            node.ImageKey = (accessibility == Accessibility.Public || 
+                             accessibility == Accessibility.Global)
                 ? "PublicField"
                 : "PrivateField";
 
@@ -75,10 +76,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
             var node = new TreeNode(nodeText);
             var parent = context.Parent as VBAParser.ConstStmtContext;
             var accessibility = parent == null || parent.visibility() == null 
-                ? VBAccessibility.Implicit 
+                ? Accessibility.Implicit 
                 : parent.visibility().GetAccessibility();
-            node.ImageKey = (accessibility == VBAccessibility.Public || 
-                             accessibility == VBAccessibility.Global)
+            node.ImageKey = (accessibility == Accessibility.Public || 
+                             accessibility == Accessibility.Global)
                 ? "PublicConst"
                 : "PrivateConst";
 
@@ -100,10 +101,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var accessibility = context.visibility() == null 
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            node.ImageKey = (accessibility == VBAccessibility.Public || 
-                             accessibility == VBAccessibility.Global)
+            node.ImageKey = (accessibility == Accessibility.Public || 
+                             accessibility == Accessibility.Global)
                 ? "PublicEnum"
                 : "PrivateEnum";
 
@@ -129,10 +130,10 @@ namespace Rubberduck.VBA.ParseTreeListeners
             }
 
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            node.ImageKey = (accessibility == VBAccessibility.Public || 
-                             accessibility == VBAccessibility.Global)
+            node.ImageKey = (accessibility == Accessibility.Public || 
+                             accessibility == Accessibility.Global)
                 ? "PublicType"
                 : "PrivateType";
 
@@ -146,11 +147,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            var imageKey = accessibility == VBAccessibility.Private
+            var imageKey = accessibility == Accessibility.Private
                 ? "PrivateMethod"
-                : accessibility == VBAccessibility.Friend
+                : accessibility == Accessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
 
@@ -162,11 +163,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            var imageKey = accessibility == VBAccessibility.Private
+            var imageKey = accessibility == Accessibility.Private
                 ? "PrivateMethod"
-                : accessibility == VBAccessibility.Friend
+                : accessibility == Accessibility.Friend
                     ? "FriendMethod"
                     : "PublicMethod";
 
@@ -178,11 +179,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            var imageKey = accessibility == VBAccessibility.Private
+            var imageKey = accessibility == Accessibility.Private
                 ? "PrivateProperty"
-                : accessibility == VBAccessibility.Friend
+                : accessibility == Accessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
 
@@ -198,11 +199,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            var imageKey = accessibility == VBAccessibility.Private
+            var imageKey = accessibility == Accessibility.Private
                 ? "PrivateProperty"
-                : accessibility == VBAccessibility.Friend
+                : accessibility == Accessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
 
@@ -218,11 +219,11 @@ namespace Rubberduck.VBA.ParseTreeListeners
         {
             _isInDeclarationsSection = false;
             var accessibility = context.visibility() == null
-                ? VBAccessibility.Implicit
+                ? Accessibility.Implicit
                 : context.visibility().GetAccessibility();
-            var imageKey = accessibility == VBAccessibility.Private
+            var imageKey = accessibility == Accessibility.Private
                 ? "PrivateProperty"
-                : accessibility == VBAccessibility.Friend
+                : accessibility == Accessibility.Friend
                     ? "FriendProperty"
                     : "PublicProperty";
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
@@ -28,9 +29,9 @@ namespace Rubberduck.VBA.Nodes
             get { return _identifier; }
         }
 
-        public VBAccessibility Accessibility
+        public Accessibility Accessibility
         {
-            get { return (VBAccessibility)Enum.Parse(typeof(VBAccessibility), _context.visibility().GetText()); }
+            get { return (Accessibility)Enum.Parse(typeof(Accessibility), _context.visibility().GetText()); }
         }
     }
 

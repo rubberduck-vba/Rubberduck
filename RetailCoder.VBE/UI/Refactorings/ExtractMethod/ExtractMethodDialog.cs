@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
@@ -24,7 +25,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         ExtractedParameter ReturnValue { get; set; }
         IEnumerable<ExtractedParameter> ReturnValues { get; set; }
 
-        VBAccessibility Accessibility { get; set; }
+        Accessibility Accessibility { get; set; }
         string MethodName { get; set; }
         bool SetReturnValue { get; set; }
         bool CanSetReturnValue { get; set; }
@@ -51,9 +52,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             MethodAccessibilityCombo.DataSource = new[]
             {
-                VBAccessibility.Private,
-                VBAccessibility.Public,
-                VBAccessibility.Friend
+                Accessibility.Private,
+                Accessibility.Public,
+                Accessibility.Friend
             }.ToList();
         }
 
@@ -136,8 +137,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             ReturnValue = (ExtractedParameter) MethodReturnValueCombo.SelectedItem;
         }
 
-        private VBAccessibility _accessibility;
-        public VBAccessibility Accessibility
+        private Accessibility _accessibility;
+        public Accessibility Accessibility
         {
             get { return _accessibility; }
             set
@@ -149,7 +150,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private void MethodAccessibilityCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Accessibility = ((VBAccessibility) MethodAccessibilityCombo.SelectedItem);
+            Accessibility = ((Accessibility) MethodAccessibilityCombo.SelectedItem);
         }
 
         private void MethodNameBox_TextChanged(object sender, EventArgs e)

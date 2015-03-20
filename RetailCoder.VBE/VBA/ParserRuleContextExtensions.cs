@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
@@ -52,12 +53,12 @@ namespace Rubberduck.VBA
             return selection.Contains(contextSelection);
         }
 
-        public static VBAccessibility GetAccessibility(this VBAParser.VisibilityContext context)
+        public static Accessibility GetAccessibility(this VBAParser.VisibilityContext context)
         {
             if (context == null)
-                return VBAccessibility.Implicit;
+                return Accessibility.Implicit;
 
-            return (VBAccessibility) Enum.Parse(typeof (VBAccessibility), context.GetText());
+            return (Accessibility) Enum.Parse(typeof (Accessibility), context.GetText());
         }
 
         public static string Signature(this VBAParser.FunctionStmtContext context)

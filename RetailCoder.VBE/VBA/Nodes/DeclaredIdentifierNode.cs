@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
@@ -64,7 +65,7 @@ namespace Rubberduck.VBA.Nodes
                 _typeName = context.asTypeClause().type().GetText();
             }
 
-            _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
+            _accessibility = isLocal ? Accessibility.Private : visibility.GetAccessibility();
         }
 
         public DeclaredIdentifierNode(VBAParser.VariableSubStmtContext context, string scope,
@@ -91,7 +92,7 @@ namespace Rubberduck.VBA.Nodes
                 _typeName = context.asTypeClause().type().GetText();
             }
 
-            _accessibility = isLocal ? VBAccessibility.Private : visibility.GetAccessibility();
+            _accessibility = isLocal ? Accessibility.Private : visibility.GetAccessibility();
         }
 
         private readonly string _name;
@@ -106,7 +107,7 @@ namespace Rubberduck.VBA.Nodes
         private bool _isUsingTypeHint;
         public bool IsUsingTypeHint { get { return _isUsingTypeHint; } }
 
-        private readonly VBAccessibility _accessibility;
-        public VBAccessibility Accessibility { get { return _accessibility; } }
+        private readonly Accessibility _accessibility;
+        public Accessibility Accessibility { get { return _accessibility; } }
     }
 }

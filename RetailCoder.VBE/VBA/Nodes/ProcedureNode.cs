@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.VBA.Nodes
@@ -94,8 +95,8 @@ namespace Rubberduck.VBA.Nodes
         private readonly VBProcedureKind _kind;
         public VBProcedureKind Kind { get { return _kind; } }
 
-        private readonly VBAccessibility _accessibility;
-        public VBAccessibility Accessibility { get { return _accessibility; } }
+        private readonly Accessibility _accessibility;
+        public Accessibility Accessibility { get { return _accessibility; } }
 
         private readonly VBAParser.VisibilityContext _visibilityContext;
         private readonly VBAParser.ArgListContext _argsListContext;
