@@ -42,6 +42,9 @@
     <Reference Include="Antlr4.Runtime.net45">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Vbe.Interop, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Symbols\Declaration.cs" />
     <Compile Include="Symbols\Accessibility.cs" />
+    <Compile Include="Symbols\DeclarationsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\Declarations.cs" />
     <Compile Include="VBABaseListener.cs" />

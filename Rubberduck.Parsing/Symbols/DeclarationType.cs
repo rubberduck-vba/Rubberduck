@@ -13,7 +13,10 @@ namespace Rubberduck.Parsing.Symbols
         Variable,
         Constant,
         Enumeration,
+        EnumerationMember,
+        Event,
         UserDefinedType,
+        UserDefinedTypeMember,
         LibraryFunction
     }
 }
