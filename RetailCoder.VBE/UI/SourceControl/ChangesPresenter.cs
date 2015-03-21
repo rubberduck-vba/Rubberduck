@@ -17,10 +17,27 @@ namespace Rubberduck.UI.SourceControl
 
             _view.Commit += OnCommit;
             _view.RefreshData += OnRefresh;
+            _view.CommitMessageChanged += OnCommitMessageChanged;
+            _view.SelectedActionChanged += OnSelectedActionChanged;
 
             //todo: add ability to exclude changes
             _view.ExcludedChanges = new List<string>() {"Coming soon."};
             _view.UntrackedFiles = new List<string>() {"Coming soon."};
+        }
+
+        private void OnSelectedActionChanged(object sender, EventArgs e)
+        {
+            _view.CommitEnabled = ShouldEnableCommit();
+        }
+
+        private void OnCommitMessageChanged(object sender, EventArgs e)
+        {
+            _view.CommitEnabled = ShouldEnableCommit();
+        }
+
+        private bool ShouldEnableCommit()
+        {
+            return !string.IsNullOrEmpty(_view.CommitMessage) && _view.CommitAction != CommitAction.Unset;
         }
 
         public void Refresh()

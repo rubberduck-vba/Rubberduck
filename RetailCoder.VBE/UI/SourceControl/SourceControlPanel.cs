@@ -63,7 +63,36 @@ namespace Rubberduck.UI.SourceControl
             set { _untrackedFiles = new BindingList<string>(value);}
         }
 
+        public bool CommitEnabled
+        {
+            get { return this.CommitButton.Enabled; }
+            set { this.CommitButton.Enabled = value; }
+        }
+
         public event System.EventHandler<System.EventArgs> Commit;
         public event System.EventHandler<System.EventArgs> RefreshData;
+        public event System.EventHandler<System.EventArgs> SelectedActionChanged;
+        public event System.EventHandler<System.EventArgs> CommitMessageChanged;
+
+        private void CommitActionDropdown_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            var handler = SelectedActionChanged;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, e);
+        }
+
+        private void CommitMessageBox_TextChanged(object sender, System.EventArgs e)
+        {
+            var handler = CommitMessageChanged;
+            if (handler == null)
+            {
+                return;
+            }
+            handler(this, e);
+        }
     }
 }

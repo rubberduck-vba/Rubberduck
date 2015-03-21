@@ -85,5 +85,23 @@ namespace RubberduckTests.SourceControl
             //Assert
             Assert.AreEqual(2, _viewMock.Object.IncludedChanges.Count);
         }
+
+        [TestMethod]
+        public void  CommitEnabledAfterActionSelectedAndMessageEntered()
+        {
+            //arrange
+            _viewMock.SetupAllProperties();
+            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+
+            //act
+            _viewMock.Object.CommitMessage = "Test Message";
+            _viewMock.Raise(v => v.CommitMessageChanged += null, new EventArgs());
+
+            _viewMock.Object.CommitAction = CommitAction.Commit;
+            _viewMock.Raise(v => v.SelectedActionChanged += null, new EventArgs());
+
+            //assert
+            Assert.IsTrue(_viewMock.Object.CommitEnabled);
+        }
     }
 }

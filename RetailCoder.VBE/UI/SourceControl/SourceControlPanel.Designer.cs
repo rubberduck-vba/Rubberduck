@@ -272,6 +272,7 @@
             this.CommitActionDropdown.Name = "CommitActionDropdown";
             this.CommitActionDropdown.Size = new System.Drawing.Size(121, 21);
             this.CommitActionDropdown.TabIndex = 13;
+            this.CommitActionDropdown.SelectedIndexChanged += new System.EventHandler(this.CommitActionDropdown_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -293,6 +294,7 @@
             this.CommitMessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.CommitMessageBox.Size = new System.Drawing.Size(175, 29);
             this.CommitMessageBox.TabIndex = 11;
+            this.CommitMessageBox.TextChanged += new System.EventHandler(this.CommitMessageBox_TextChanged);
             // 
             // label1
             // 
