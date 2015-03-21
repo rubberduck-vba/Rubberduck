@@ -20,7 +20,7 @@ namespace Rubberduck.UI.SourceControl
         string CommitMessage { get; set; }
         CommitAction CommitAction { get; set; }
         //todo: support directories
-        IList<IFileStatusEntry> IncludedChanges { get; set; }
+        IList<string> IncludedChanges { get; set; }
         IList<string> ExcludedChanges { get; set; }
         IList<string> UntrackedFiles { get; set; } 
 

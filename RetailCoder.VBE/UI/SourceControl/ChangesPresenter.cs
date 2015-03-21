@@ -26,10 +26,11 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public void Refresh()
-        {
+        { 
             _view.IncludedChanges = _provider.Status()
-                                .Where(s => s.FileStatus.HasFlag(FileStatus.Modified))
-                                .ToList();
+                                        .Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified))
+                                        .Select(stat => stat.FilePath)
+                                        .ToList();
         }
 
         public void Commit()
