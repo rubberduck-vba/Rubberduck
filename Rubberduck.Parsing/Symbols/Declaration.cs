@@ -1,6 +1,4 @@
-﻿using Antlr4.Runtime;
-
-namespace Rubberduck.Parsing.Symbols
+﻿namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// Defines a declared identifier.

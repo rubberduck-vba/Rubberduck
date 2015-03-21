@@ -50,7 +50,7 @@
 *     located anywhere in declarations section, without breaking the parser.
 *   - added support for Option Compare Database.
 *   - added support for numbered lines (amended lineLabel rule).
-*   - todo: define a rule for library functions like MsgBox, Split and Format
+*   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
 *
 *======================================================================================
 *
@@ -227,7 +227,7 @@ constSubStmt : ambiguousIdentifier typeHint? (WS asTypeClause)? WS? EQ WS? value
 
 dateStmt : DATE WS? EQ WS? valueStmt;
 
-declareStmt : (visibility WS)? DECLARE WS (FUNCTION | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
+declareStmt : (visibility WS)? DECLARE WS (PTRSAFE WS)? (FUNCTION | SUB) WS ambiguousIdentifier WS LIB WS STRINGLITERAL (WS ALIAS WS STRINGLITERAL)? (WS? argList)? (WS asTypeClause)?;
 
 deftypeStmt : 
 	(
@@ -563,7 +563,7 @@ implicitCallStmt_InBlock :
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
 iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? ('.' | '!') ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls
@@ -625,7 +625,7 @@ certainIdentifier :
 
 comparisonOperator : LT | LEQ | GT | GEQ | EQ | NEQ | IS | LIKE;
 
-complexType : ambiguousIdentifier ('.' ambiguousIdentifier)*;
+complexType : ambiguousIdentifier (('.' | '!') ambiguousIdentifier)*;
 
 fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
@@ -799,6 +799,7 @@ PRIVATE : P R I V A T E;
 PROPERTY_GET : P R O P E R T Y ' ' G E T;
 PROPERTY_LET : P R O P E R T Y ' ' L E T;
 PROPERTY_SET : P R O P E R T Y ' ' S E T;
+PTRSAFE : P T R S A F E;
 PUBLIC : P U B L I C;
 PUT : P U T;
 RANDOM : R A N D O M;
