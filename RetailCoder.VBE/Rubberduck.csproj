@@ -825,14 +825,17 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (
+    <PostBuildEvent>if $(ConfigurationName) == Debug64 (
+c:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe $(TargetPath) /tlb
+)
+
+if $(ConfigurationName) == Release (
     Copy $(TargetDir)\NativeBinaries\x86\git2-e0902fb.dll $(TargetDir)
 )
 
 if $(ConfigurationName) == Release64 (
     Copy $(TargetDir)\NativeBinaries\amd64\git2-e0902fb.dll $(TargetDir)
-)
-</PostBuildEvent>
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
