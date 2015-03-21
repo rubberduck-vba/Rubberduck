@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using  Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
     public class ChangesPresenter
     {
-        private ISourceControlProvider _provider;
-        private IChangesView _view;
+        private readonly ISourceControlProvider _provider;
+        private readonly IChangesView _view;
 
         public ChangesPresenter(ISourceControlProvider provider, IChangesView view)
         {
