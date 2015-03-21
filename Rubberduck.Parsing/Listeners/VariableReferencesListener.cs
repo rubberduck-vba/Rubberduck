@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     public class VariableReferencesListener : VBABaseListener, IExtensionListener<VBAParser.AmbiguousIdentifierContext>
     {

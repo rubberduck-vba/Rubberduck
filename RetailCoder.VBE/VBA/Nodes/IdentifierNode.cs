@@ -1,4 +1,4 @@
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.VBA.Nodes
 {

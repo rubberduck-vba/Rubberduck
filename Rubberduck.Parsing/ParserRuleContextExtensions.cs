@@ -1,11 +1,48 @@
 using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing
 {
+    /// <summary>
+    /// An exception thrown by an <c>IParseTreeListener</c> implementation 
+    /// that does not need to traverse an entire parse tree.
+    /// </summary>
+    [Serializable]
+    public class WalkerCancelledException : Exception
+    {
+        public WalkerCancelledException()
+            : base("Tree walker was cancelled by listener.")
+        { }
+    }
+
     public static class ParserRuleContextExtensions
     {
+        public static IEnumerable<QualifiedContext<TContext>> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
+            where TListener : IExtensionListener<TContext>, IParseTreeListener
+            where TContext : class
+        {
+            try
+            {
+                var walker = new ParseTreeWalker();
+                walker.Walk(listener, parseTree);
+            }
+            catch (WalkerCancelledException)
+            {
+                // swallow. this exception is thrown when a listener doesn't need to walk an entire parse tree.
+            }
+            catch (NullReferenceException e)
+            {
+                // bug? swallow? is WalkerCancelledException thrown?
+            }
+
+            return listener.Members;
+        }
+
         public static QualifiedContext<TContext> ToQualifiedContext<TContext>(this TContext context, QualifiedModuleName name) where TContext : ParserRuleContext
         {
             return new QualifiedContext<TContext>(name, context);

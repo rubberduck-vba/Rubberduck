@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -12,6 +14,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly string _componentName;
 
         private string _currentScope;
+
+        public DeclarationSymbolsListener(VBComponentParseResult result)
+            : this(result.QualifiedName.ProjectHashCode, result.QualifiedName.ProjectName, result.QualifiedName.ModuleName, Accessibility.Implicit, result.Component.Type == vbext_ComponentType.vbext_ct_StdModule ? DeclarationType.Module : DeclarationType.Class)
+        { }
 
         public DeclarationSymbolsListener(int projectHashCode, string projectName, string componentName, Accessibility componentAccessibility, DeclarationType declarationType)
         {

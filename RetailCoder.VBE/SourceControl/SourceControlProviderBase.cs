@@ -106,13 +106,12 @@ namespace Rubberduck.SourceControl
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
-            var selection = this.project.VBE.ActiveCodePane.GetSelection();
-            var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Parent.QualifiedName();
+            var selection = project.VBE.ActiveCodePane.GetSelection();
 
-            this.project.RemoveAllComponents();
-            this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
+            project.RemoveAllComponents();
+            project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            this.project.VBE.SetSelection(selection);
+            project.VBE.SetSelection(selection);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     public class PublicSubListener : VBABaseListener, IExtensionListener<VBAParser.SubStmtContext>
     {

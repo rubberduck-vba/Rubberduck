@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.Inspections
 {

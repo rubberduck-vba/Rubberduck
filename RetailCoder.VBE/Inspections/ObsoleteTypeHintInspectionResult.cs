@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {

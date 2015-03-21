@@ -1,6 +1,6 @@
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA.Nodes
+namespace Rubberduck.Parsing.Nodes
 {
     /// <summary>
     /// Represents a comment.

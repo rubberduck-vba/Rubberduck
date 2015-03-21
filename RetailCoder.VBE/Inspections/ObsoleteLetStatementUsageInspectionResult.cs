@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {

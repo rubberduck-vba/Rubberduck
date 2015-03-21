@@ -16,6 +16,8 @@ namespace Rubberduck.Parsing.Symbols
             _declarations.Add(declaration);
         }
 
+        public IEnumerable<Declaration> Items { get { return _declarations; } }
+
         public IEnumerable<Declaration> this[string identifierName]
         {
             get

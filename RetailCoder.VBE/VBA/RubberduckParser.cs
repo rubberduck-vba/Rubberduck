@@ -6,9 +6,9 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.VBA
 {
@@ -39,7 +39,7 @@ namespace Rubberduck.VBA
             foreach(var module in modules)
             {
                 yield return Parse(module);
-            };
+            }
         }
 
         public VBComponentParseResult Parse(VBComponent component)
@@ -51,7 +51,7 @@ namespace Rubberduck.VBA
                 return cachedValue;
             }
 
-            var parseTree = Parse(component.CodeModule.Lines());
+            var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule));
             var comments = ParseComments(component);
             var result = new VBComponentParseResult(component, parseTree, comments);
 

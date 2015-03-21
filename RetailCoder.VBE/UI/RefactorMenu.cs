@@ -4,10 +4,10 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Listeners;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
-using Rubberduck.VBA.ParseTreeListeners;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI

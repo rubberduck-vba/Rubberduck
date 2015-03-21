@@ -4,9 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {

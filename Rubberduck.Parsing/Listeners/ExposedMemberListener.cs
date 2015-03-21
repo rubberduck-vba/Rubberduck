@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     /// <summary>
     /// A listener that gets all module members that are visible outside the module.

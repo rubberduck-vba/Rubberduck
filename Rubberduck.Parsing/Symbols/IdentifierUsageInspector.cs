@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 
-namespace Rubberduck.Inspections
+namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierUsageInspector
     {

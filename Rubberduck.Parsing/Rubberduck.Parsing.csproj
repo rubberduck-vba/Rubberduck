@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Listeners\DeclarationListener.cs" />
+    <Compile Include="Listeners\ExposedMemberListener.cs" />
+    <Compile Include="Listeners\IExtensionListener.cs" />
+    <Compile Include="Listeners\NodeBuildingListener.cs" />
+    <Compile Include="Listeners\ObsoleteInstructionsListener.cs" />
+    <Compile Include="Listeners\ProcedureListener.cs" />
+    <Compile Include="Listeners\ProcedureNameListener.cs" />
+    <Compile Include="Listeners\PublicSubListener.cs" />
+    <Compile Include="Listeners\TreeViewListener.cs" />
+    <Compile Include="Listeners\VariableAssignmentListener.cs" />
+    <Compile Include="Listeners\VariableReferencesListener.cs" />
+    <Compile Include="Listeners\VariableUsageListener.cs" />
+    <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualifiedContext.cs" />
@@ -66,32 +80,37 @@
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\Declarations.cs" />
-    <Compile Include="Tokens.Designer.cs">
+    <Compile Include="Grammar\Tokens.Designer.cs">
       <DependentUpon>Tokens.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="VBABaseListener.cs" />
-    <Compile Include="VBABaseVisitor.cs" />
-    <Compile Include="VBALexer.cs" />
-    <Compile Include="VBAListener.cs" />
-    <Compile Include="VBAParser.cs" />
-    <Compile Include="VBAVisitor.cs" />
+    <Compile Include="Grammar\VBABaseListener.cs" />
+    <Compile Include="Grammar\VBABaseVisitor.cs" />
+    <Compile Include="Grammar\VBALexer.cs" />
+    <Compile Include="Grammar\VBAListener.cs" />
+    <Compile Include="Grammar\VBAParser.cs" />
+    <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="Symbols\IdentifierUsageInspector.cs" />
+    <Compile Include="VBComponentExtensions.cs" />
+    <Compile Include="VBComponentParseResult.cs" />
+    <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="VBA.g4">
+    <None Include="Grammar\VBA.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tokens.resx">
+    <EmbeddedResource Include="Grammar\Tokens.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

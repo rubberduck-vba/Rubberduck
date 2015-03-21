@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Rubberduck.Parsing;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     public interface IExtensionListener<TContext>
         where TContext : class

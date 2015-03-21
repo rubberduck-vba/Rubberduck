@@ -151,7 +151,6 @@
     <Compile Include="Mocks\MockTodoSettingsView.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParserTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="AssertTests.cs" />
     <Compile Include="CodeInspectionTests.cs" />

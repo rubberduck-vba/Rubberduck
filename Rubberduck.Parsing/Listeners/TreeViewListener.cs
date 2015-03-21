@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     public enum TreeViewDisplayStyle
     {

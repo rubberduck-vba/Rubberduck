@@ -1,3 +1,0 @@
-﻿namespace Rubberduck.VBA.Nodes
-{
-}

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck.Parsing {
+namespace Rubberduck.Parsing.Grammar {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Parsing.Tokens", typeof(Tokens).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Parsing.Grammar.Tokens", typeof(Tokens).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

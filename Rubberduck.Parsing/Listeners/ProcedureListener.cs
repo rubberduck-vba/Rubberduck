@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.VBA.ParseTreeListeners
+namespace Rubberduck.Parsing.Listeners
 {
     public class ProcedureListener : VBABaseListener, IExtensionListener<ParserRuleContext>
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.Inspections
 {

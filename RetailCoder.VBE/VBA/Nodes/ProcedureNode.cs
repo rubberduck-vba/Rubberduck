@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.VBA.Nodes

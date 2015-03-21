@@ -2,10 +2,9 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
-using Rubberduck.VBA;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {

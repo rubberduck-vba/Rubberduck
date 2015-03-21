@@ -226,7 +226,6 @@
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
-    <Compile Include="Inspections\IdentifierUsageInspector.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
@@ -293,29 +292,12 @@
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\ParameterNode.cs" />
     <Compile Include="VBA\Nodes\TypeNode.cs" />
-    <Compile Include="VBA\Nodes\VBProjectParseResult.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
     <Compile Include="VBA\IRubberduckParser.cs" />
-    <Compile Include="VBA\Nodes\CommentNode.cs" />
     <Compile Include="VBA\Nodes\IdentifierNode.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\ModuleNode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
-    <Compile Include="VBA\Nodes\VBAccessibility.cs" />
-    <Compile Include="VBA\Nodes\VBComponentParseResult.cs" />
-    <Compile Include="VBA\AntlrExtensions.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\VariableUsageListener.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
-    <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\VBComponentsExtensions.cs" />

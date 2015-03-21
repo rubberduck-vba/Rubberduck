@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Listeners;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBA;
-using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.CodeExplorer
 {

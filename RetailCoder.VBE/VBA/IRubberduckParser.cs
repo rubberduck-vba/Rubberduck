@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.VBA
 {

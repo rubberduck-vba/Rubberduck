@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.Inspections
 {
