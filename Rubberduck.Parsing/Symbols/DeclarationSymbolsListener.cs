@@ -26,12 +26,12 @@ namespace Rubberduck.Parsing.Symbols
             _componentName = componentName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, null, componentAccessibility, declarationType, Selection.Home));
+            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, _componentName, false, componentAccessibility, declarationType, Selection.Home));
         }
 
-        private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, Selection selection)
+        private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, Selection selection, bool selfAssigned = false)
         {
-            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, asTypeName, accessibility, declarationType, selection);
+            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, asTypeName, selfAssigned, accessibility, declarationType, selection);
         }
 
         /// <summary>
@@ -220,7 +220,8 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, accessibility, DeclarationType.Variable, context.GetSelection()));
+            var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, accessibility, DeclarationType.Variable, context.GetSelection(), selfAssigned));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)

@@ -35,6 +35,7 @@ namespace Rubberduck.Parsing
 
         private readonly IEnumerable<VBComponentParseResult> _parseResults;
         private readonly Declarations _declarations;
+
         public IEnumerable<VBComponentParseResult> ComponentParseResults { get { return _parseResults; } }
 
         private readonly IdentifierUsageInspector _inspector;

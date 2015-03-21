@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.Parsing.Symbols
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
-    public struct Declaration
+    public class Declaration
     {
         public Declaration(int projectHashCode, string parentScope,
-            string projectName, string componentName, string identifierName, string asTypeName,
+            string projectName, string componentName, string identifierName, string asTypeName, bool isSelfAssigned,
             Accessibility accessibility, DeclarationType declarationType, Selection selection)
         {
             _projectHashCode = projectHashCode;
@@ -15,9 +18,18 @@
             _componentName = componentName;
             _identifierName = identifierName;
             _asTypeName = asTypeName;
+            _isSelfAssigned = isSelfAssigned;
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
+        }
+
+        private readonly IList<IdentifierReference> _references = new List<IdentifierReference>();
+        public IEnumerable<IdentifierReference> References { get { return _references; } }
+
+        public void AddReference(IdentifierReference reference)
+        {
+            _references.Add(reference);
         }
 
         private readonly Selection _selection;
@@ -71,6 +83,12 @@
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
+
+        private readonly bool _isSelfAssigned;
+        /// <summary>
+        /// Gets a value indicating whether the declaration is a joined assignment (e.g. "As New xxxxx")
+        /// </summary>
+        public bool IsSelfAssigned { get { return _isSelfAssigned; } }
 
         private readonly Accessibility _accessibility;
         /// <summary>
