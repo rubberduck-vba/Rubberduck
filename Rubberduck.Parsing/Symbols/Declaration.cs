@@ -6,7 +6,7 @@
     public struct Declaration
     {
         public Declaration(int projectHashCode, string parentScope,
-            string projectName, string componentName, string identifierName,
+            string projectName, string componentName, string identifierName, string asTypeName,
             Accessibility accessibility, DeclarationType declarationType, Selection selection)
         {
             _projectHashCode = projectHashCode;
@@ -14,6 +14,7 @@
             _projectName = projectName;
             _componentName = componentName;
             _identifierName = identifierName;
+            _asTypeName = asTypeName;
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
@@ -60,6 +61,16 @@
         /// Gets the declared name of the identifier.
         /// </summary>
         public string IdentifierName { get { return _identifierName; } }
+
+        private readonly string _asTypeName;
+        /// <summary>
+        /// Gets the name of the declared type.
+        /// </summary>
+        /// <remarks>
+        /// This value is <c>null</c> if not applicable, 
+        /// and <c>Variant</c> if applicable but unspecified.
+        /// </remarks>
+        public string AsTypeName { get { return _asTypeName; } }
 
         private readonly Accessibility _accessibility;
         /// <summary>

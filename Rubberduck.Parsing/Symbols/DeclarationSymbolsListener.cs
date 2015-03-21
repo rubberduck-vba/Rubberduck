@@ -20,12 +20,12 @@ namespace Rubberduck.Parsing.Symbols
             _componentName = componentName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, componentAccessibility, declarationType, Selection.Home));
+            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, TODO, componentAccessibility, declarationType, Selection.Home));
         }
 
         private Declaration CreateDeclaration(string identifierName, Accessibility accessibility, DeclarationType declarationType, Selection selection)
         {
-            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, accessibility, declarationType, selection);
+            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, TODO, accessibility, declarationType, selection);
         }
 
         /// <summary>
