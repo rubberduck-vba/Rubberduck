@@ -80,10 +80,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Antlr4 Include="VBA.g4">
+    <None Include="VBA.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing</CustomToolNamespace>
-    </Antlr4>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tokens.resx">
