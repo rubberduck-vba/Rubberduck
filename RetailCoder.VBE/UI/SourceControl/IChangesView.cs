@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -16,7 +17,7 @@ namespace Rubberduck.UI.SourceControl
         string CommitMessage { get; set; }
         CommitAction CommitAction { get; set; }
         //todo: support directories
-        IList<string> IncludedChanges { get; set; }
+        IList<IFileStatusEntry> IncludedChanges { get; set; }
         IList<string> ExcludedChanges { get; set; }
         IList<string> UntrackedFiles { get; set; }
         bool CommitEnabled { get; set; }

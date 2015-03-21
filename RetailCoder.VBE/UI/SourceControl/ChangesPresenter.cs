@@ -46,7 +46,6 @@ namespace Rubberduck.UI.SourceControl
         { 
             _view.IncludedChanges = _provider.Status()
                                         .Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified))
-                                        .Select(stat => stat.FilePath)
                                         .ToList();
         }
 

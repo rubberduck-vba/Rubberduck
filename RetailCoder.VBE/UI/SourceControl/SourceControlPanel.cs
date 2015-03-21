@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -42,25 +43,40 @@ namespace Rubberduck.UI.SourceControl
         }
 
         //bug: control panel isn't repainting
-        private BindingList<string> _includedChanges = new BindingList<string>();
-        public IList<string> IncludedChanges
+        private BindingList<IFileStatusEntry> _includedChanges = new BindingList<IFileStatusEntry>();
+        public IList<IFileStatusEntry> IncludedChanges
         {
             get { return _includedChanges; }
-            set { _includedChanges = new BindingList<string>(value); }
+            set
+            {
+                _includedChanges = new BindingList<IFileStatusEntry>(value);
+                this.IncludedChangesGrid.DataSource = _includedChanges;
+                this.IncludedChangesGrid.Refresh();
+            }
         }
 
         private BindingList<string> _excludedChanges = new BindingList<string>();
         public IList<string> ExcludedChanges
         {
             get { return _excludedChanges; }
-            set { _excludedChanges = new BindingList<string>(value); }
+            set
+            {
+                _excludedChanges = new BindingList<string>(value);
+                this.ExcludedChangesGrid.DataSource = _excludedChanges;
+                this.ExcludedChangesGrid.Refresh();
+            }
         }
 
         private BindingList<string> _untrackedFiles = new BindingList<string>();
         public IList<string> UntrackedFiles
         {
             get { return _untrackedFiles; }
-            set { _untrackedFiles = new BindingList<string>(value); }
+            set
+            {
+                _untrackedFiles = new BindingList<string>(value);
+                this.UntrackedFilesGrid.DataSource = _untrackedFiles;
+                this.UntrackedFilesGrid.Refresh();
+            }
         }
 
         public bool CommitEnabled
