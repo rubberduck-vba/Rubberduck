@@ -23,6 +23,8 @@ namespace Rubberduck.UI.SourceControl
             //todo: add ability to exclude changes
             _view.ExcludedChanges = new List<string>() {"Coming soon."};
             _view.UntrackedFiles = new List<string>() {"Coming soon."};
+
+            Refresh();
         }
 
         private void OnSelectedActionChanged(object sender, EventArgs e)
@@ -58,7 +60,6 @@ namespace Rubberduck.UI.SourceControl
                 _provider.Push();
             }
 
-
             if (_view.CommitAction == CommitAction.CommitAndPush)
             {
                 _provider.Push();
@@ -73,6 +74,8 @@ namespace Rubberduck.UI.SourceControl
         private void OnCommit(object sender, EventArgs e)
         {
             Commit();
+            _view.CommitMessage = string.Empty;
+            Refresh();
         }
     }
 }

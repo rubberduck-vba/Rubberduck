@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using  Rubberduck.SourceControl;
@@ -74,7 +75,6 @@ namespace RubberduckTests.SourceControl
                 new FileStatusEntry(@"C:\path\to\added.bas", FileStatus.Added | FileStatus.Modified)
             };
 
-            //_viewMock.SetupAllProperties();
             _viewMock.SetupProperty(v => v.IncludedChanges);
             _providerMock.Setup(git => git.Status()).Returns(fileStatusEntries);
 
@@ -102,6 +102,43 @@ namespace RubberduckTests.SourceControl
 
             //assert
             Assert.IsTrue(_viewMock.Object.CommitEnabled);
+        }
+
+        [TestMethod]
+        public void ClearCommitMessageAfterSuccessfulCommit()
+        {
+
+            _viewMock.SetupAllProperties();
+            _viewMock.Object.CommitMessage = "Test Commit";
+            _viewMock.Object.CommitAction = CommitAction.Commit;
+            _viewMock.Object.IncludedChanges = new List<string>(){@"C:\path\to\module.bas"};
+
+            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+
+            //act
+            _viewMock.Raise(v => v.Commit += null, new EventArgs());
+
+            //assert
+            Assert.AreEqual(string.Empty, _viewMock.Object.CommitMessage);
+        }
+
+        [TestMethod]
+        public void RefreshChangesAfterCommit()
+        {
+            //arrange
+            _viewMock.SetupAllProperties();
+            _viewMock.Object.CommitMessage = "Test Commit";
+            _viewMock.Object.CommitAction = CommitAction.Commit;
+            _viewMock.Object.IncludedChanges = new List<string>() { @"C:\path\to\module.bas" };
+
+            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+
+            //act
+            _viewMock.Raise(v => v.Commit += null, new EventArgs());
+            _providerMock.Setup(git => git.Status()).Returns(new List<FileStatusEntry>());
+            
+            //assert
+            Assert.IsFalse(_viewMock.Object.IncludedChanges.Any());
         }
     }
 }

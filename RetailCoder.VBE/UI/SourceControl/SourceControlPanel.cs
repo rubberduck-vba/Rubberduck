@@ -41,7 +41,7 @@ namespace Rubberduck.UI.SourceControl
             set { this.CommitActionDropdown.SelectedIndex = (int)value; }
         }
 
-
+        //bug: control panel isn't repainting
         private BindingList<string> _includedChanges = new BindingList<string>();
         public IList<string> IncludedChanges
         {
@@ -56,11 +56,11 @@ namespace Rubberduck.UI.SourceControl
             set { _excludedChanges = new BindingList<string>(value); }
         }
 
-        private BindingList<string> _untrackedFiles = new BindingList<string>(); 
+        private BindingList<string> _untrackedFiles = new BindingList<string>();
         public IList<string> UntrackedFiles
         {
             get { return _untrackedFiles; }
-            set { _untrackedFiles = new BindingList<string>(value);}
+            set { _untrackedFiles = new BindingList<string>(value); }
         }
 
         public bool CommitEnabled
@@ -69,30 +69,44 @@ namespace Rubberduck.UI.SourceControl
             set { this.CommitButton.Enabled = value; }
         }
 
-        public event System.EventHandler<System.EventArgs> Commit;
-        public event System.EventHandler<System.EventArgs> RefreshData;
         public event System.EventHandler<System.EventArgs> SelectedActionChanged;
-        public event System.EventHandler<System.EventArgs> CommitMessageChanged;
-
         private void CommitActionDropdown_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             var handler = SelectedActionChanged;
-            if (handler == null)
+            if (handler != null)
             {
-                return;
+                handler(this, e);
             }
-
-            handler(this, e);
         }
 
+        public event System.EventHandler<System.EventArgs> CommitMessageChanged;
         private void CommitMessageBox_TextChanged(object sender, System.EventArgs e)
         {
             var handler = CommitMessageChanged;
-            if (handler == null)
+            if (handler != null)
             {
-                return;
+                handler(this, e);
             }
-            handler(this, e);
+        }
+
+        public event System.EventHandler<System.EventArgs> Commit;
+        private void CommitButton_Click(object sender, System.EventArgs e)
+        {
+            var handler = Commit;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event System.EventHandler<System.EventArgs> RefreshData;
+        private void RefreshButton_Click(object sender, System.EventArgs e)
+        {
+            var handler = RefreshData;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
     }
 }
