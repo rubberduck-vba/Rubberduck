@@ -1,14 +1,11 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-
-namespace Rubberduck.UI
+﻿namespace Rubberduck.UI
 {
     partial class _AboutWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private IContainer components = null;
+        private System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -31,279 +28,235 @@ namespace Rubberduck.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.AppVersionLabel = new System.Windows.Forms.Label();
+            this.SpecialThanksList = new System.Windows.Forms.ListBox();
+            this.OfficialWebsiteLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.TwitterIcon = new System.Windows.Forms.PictureBox();
+            this.FacebookIcon = new System.Windows.Forms.PictureBox();
+            this.GitHubIcon = new System.Windows.Forms.PictureBox();
+            this.GooglePlusIcon = new System.Windows.Forms.PictureBox();
             this.CloseButton = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.titleLabel = new System.Windows.Forms.Label();
-            this.versionLabel = new System.Windows.Forms.Label();
-            this.repositoryLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.contributorsLabel = new System.Windows.Forms.Label();
-            this.retailcoderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.ckuhn203LinkLabel = new System.Windows.Forms.LinkLabel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.codereviewLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.mztoolsLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.AntrLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.LibGit2SharpLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.CopyrightLabel = new System.Windows.Forms.Label();
+            this.AttributionsLabel = new System.Windows.Forms.Label();
+            this.SpecialThanksLabel = new System.Windows.Forms.Label();
+            this.AttributionsList = new System.Windows.Forms.ListBox();
+            ((System.ComponentModel.ISupportInitialize)(this.TwitterIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FacebookIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GooglePlusIcon)).BeginInit();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // AppVersionLabel
             // 
-            this.tableLayoutPanel1.BackColor = System.Drawing.Color.White;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.CloseButton, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 356);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.AppVersionLabel.AutoSize = true;
+            this.AppVersionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.AppVersionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AppVersionLabel.Location = new System.Drawing.Point(180, 13);
+            this.AppVersionLabel.Name = "AppVersionLabel";
+            this.AppVersionLabel.Size = new System.Drawing.Size(90, 24);
+            this.AppVersionLabel.TabIndex = 0;
+            this.AppVersionLabel.Text = "[version]";
+            // 
+            // SpecialThanksList
+            // 
+            this.SpecialThanksList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.SpecialThanksList.ForeColor = System.Drawing.Color.DimGray;
+            this.SpecialThanksList.FormattingEnabled = true;
+            this.SpecialThanksList.Items.AddRange(new object[] {
+            "Code Review Stack Exchange",
+            "Carlos J. Quintero (MZ-Tools articles & help with VBE API)",
+            "JetBrains ReSharper Community Team",
+            "@Duga SE chat bot",
+            "Francis Veilleux-Gaboury",
+            "Simon Forsberg",
+            "Frank Van Heeswijk",
+            "Philip Wales",
+            "Michal Krzych (vba4all.com)",
+            "ClockAhead developer blog (clockahead.blogspot.jp)",
+            "All contributors to our GitHub repository",
+            "All our stargazers, likers & followers, for the warm fuzzies",
+            "...and anyone reading this!"});
+            this.SpecialThanksList.Location = new System.Drawing.Point(187, 164);
+            this.SpecialThanksList.Name = "SpecialThanksList";
+            this.SpecialThanksList.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.SpecialThanksList.Size = new System.Drawing.Size(300, 104);
+            this.SpecialThanksList.TabIndex = 1;
+            // 
+            // OfficialWebsiteLinkLabel
+            // 
+            this.OfficialWebsiteLinkLabel.ActiveLinkColor = System.Drawing.Color.DimGray;
+            this.OfficialWebsiteLinkLabel.AutoSize = true;
+            this.OfficialWebsiteLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.OfficialWebsiteLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OfficialWebsiteLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OfficialWebsiteLinkLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.OfficialWebsiteLinkLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.OfficialWebsiteLinkLabel.LinkColor = System.Drawing.Color.DimGray;
+            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(12, 125);
+            this.OfficialWebsiteLinkLabel.Name = "OfficialWebsiteLinkLabel";
+            this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(156, 17);
+            this.OfficialWebsiteLinkLabel.TabIndex = 2;
+            this.OfficialWebsiteLinkLabel.TabStop = true;
+            this.OfficialWebsiteLinkLabel.Text = "rubberduck-vba.com";
+            this.OfficialWebsiteLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // TwitterIcon
+            // 
+            this.TwitterIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.TwitterIcon.Image = global::Rubberduck.Properties.Resources.twitter_circle_black_512;
+            this.TwitterIcon.Location = new System.Drawing.Point(53, 266);
+            this.TwitterIcon.Name = "TwitterIcon";
+            this.TwitterIcon.Size = new System.Drawing.Size(32, 32);
+            this.TwitterIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.TwitterIcon.TabIndex = 3;
+            this.TwitterIcon.TabStop = false;
+            // 
+            // FacebookIcon
+            // 
+            this.FacebookIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.FacebookIcon.Image = global::Rubberduck.Properties.Resources.facebook_circle_256;
+            this.FacebookIcon.Location = new System.Drawing.Point(91, 267);
+            this.FacebookIcon.Name = "FacebookIcon";
+            this.FacebookIcon.Size = new System.Drawing.Size(30, 30);
+            this.FacebookIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.FacebookIcon.TabIndex = 3;
+            this.FacebookIcon.TabStop = false;
+            // 
+            // GitHubIcon
+            // 
+            this.GitHubIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.GitHubIcon.Image = global::Rubberduck.Properties.Resources.github_circle_black_128;
+            this.GitHubIcon.Location = new System.Drawing.Point(15, 266);
+            this.GitHubIcon.Name = "GitHubIcon";
+            this.GitHubIcon.Size = new System.Drawing.Size(32, 32);
+            this.GitHubIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.GitHubIcon.TabIndex = 3;
+            this.GitHubIcon.TabStop = false;
+            // 
+            // GooglePlusIcon
+            // 
+            this.GooglePlusIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.GooglePlusIcon.Image = global::Rubberduck.Properties.Resources.google_circle_512;
+            this.GooglePlusIcon.Location = new System.Drawing.Point(129, 267);
+            this.GooglePlusIcon.Name = "GooglePlusIcon";
+            this.GooglePlusIcon.Size = new System.Drawing.Size(30, 30);
+            this.GooglePlusIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.GooglePlusIcon.TabIndex = 3;
+            this.GooglePlusIcon.TabStop = false;
             // 
             // CloseButton
             // 
-            this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseButton.Location = new System.Drawing.Point(408, 331);
+            this.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CloseButton.Location = new System.Drawing.Point(46, 193);
             this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(75, 22);
-            this.CloseButton.TabIndex = 0;
+            this.CloseButton.Size = new System.Drawing.Size(0, 0);
+            this.CloseButton.TabIndex = 4;
             this.CloseButton.Text = "Close";
             this.CloseButton.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // CopyrightLabel
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.rubberduck_adsize;
-            this.pictureBox1.Location = new System.Drawing.Point(2, 2);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(229, 324);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.CopyrightLabel.AutoSize = true;
+            this.CopyrightLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CopyrightLabel.Font = new System.Drawing.Font("Arial Narrow", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CopyrightLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.CopyrightLabel.Location = new System.Drawing.Point(181, 282);
+            this.CopyrightLabel.Name = "CopyrightLabel";
+            this.CopyrightLabel.Size = new System.Drawing.Size(278, 15);
+            this.CopyrightLabel.TabIndex = 5;
+            this.CopyrightLabel.Text = "© Copyright 2014-2015 Mathieu Guindon & Christopher McClellan";
+            this.CopyrightLabel.UseMnemonic = false;
             // 
-            // flowLayoutPanel1
+            // AttributionsLabel
             // 
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel1.Controls.Add(this.titleLabel);
-            this.flowLayoutPanel1.Controls.Add(this.versionLabel);
-            this.flowLayoutPanel1.Controls.Add(this.repositoryLinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.contributorsLabel);
-            this.flowLayoutPanel1.Controls.Add(this.retailcoderLinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.ckuhn203LinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.label1);
-            this.flowLayoutPanel1.Controls.Add(this.codereviewLinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.mztoolsLinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.AntrLinkLabel);
-            this.flowLayoutPanel1.Controls.Add(this.LibGit2SharpLinkLabel);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(237, 4);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(245, 320);
-            this.flowLayoutPanel1.TabIndex = 2;
+            this.AttributionsLabel.AutoSize = true;
+            this.AttributionsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.AttributionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AttributionsLabel.Location = new System.Drawing.Point(184, 54);
+            this.AttributionsLabel.Name = "AttributionsLabel";
+            this.AttributionsLabel.Size = new System.Drawing.Size(91, 17);
+            this.AttributionsLabel.TabIndex = 6;
+            this.AttributionsLabel.Text = "Attributions";
             // 
-            // titleLabel
+            // SpecialThanksLabel
             // 
-            this.titleLabel.AutoSize = true;
-            this.titleLabel.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleLabel.Location = new System.Drawing.Point(6, 3);
-            this.titleLabel.Name = "titleLabel";
-            this.titleLabel.Size = new System.Drawing.Size(96, 17);
-            this.titleLabel.TabIndex = 0;
-            this.titleLabel.Text = "assemblyname";
+            this.SpecialThanksLabel.AutoSize = true;
+            this.SpecialThanksLabel.BackColor = System.Drawing.Color.Transparent;
+            this.SpecialThanksLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SpecialThanksLabel.Location = new System.Drawing.Point(184, 144);
+            this.SpecialThanksLabel.Name = "SpecialThanksLabel";
+            this.SpecialThanksLabel.Size = new System.Drawing.Size(119, 17);
+            this.SpecialThanksLabel.TabIndex = 6;
+            this.SpecialThanksLabel.Text = "Special Thanks";
             // 
-            // versionLabel
+            // AttributionsList
             // 
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(6, 20);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(69, 17);
-            this.versionLabel.TabIndex = 1;
-            this.versionLabel.Text = "versioninfo";
+            this.AttributionsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.AttributionsList.ForeColor = System.Drawing.Color.DimGray;
+            this.AttributionsList.FormattingEnabled = true;
+            this.AttributionsList.Items.AddRange(new object[] {
+            "Parsing powered by ANTLR",
+            "GitHub integration powered by LibGit2Sharp",
+            "Fugue icons by Yusuke Kamiyamane"});
+            this.AttributionsList.Location = new System.Drawing.Point(187, 74);
+            this.AttributionsList.Name = "AttributionsList";
+            this.AttributionsList.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.AttributionsList.Size = new System.Drawing.Size(288, 52);
+            this.AttributionsList.TabIndex = 1;
             // 
-            // repositoryLinkLabel
+            // _AboutWindow
             // 
-            this.repositoryLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.repositoryLinkLabel.AutoSize = true;
-            this.repositoryLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.repositoryLinkLabel.Location = new System.Drawing.Point(6, 47);
-            this.repositoryLinkLabel.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
-            this.repositoryLinkLabel.Name = "repositoryLinkLabel";
-            this.repositoryLinkLabel.Size = new System.Drawing.Size(111, 17);
-            this.repositoryLinkLabel.TabIndex = 2;
-            this.repositoryLinkLabel.TabStop = true;
-            this.repositoryLinkLabel.Text = "GitHub Repository";
-            this.repositoryLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
-            // contributorsLabel
-            // 
-            this.contributorsLabel.AutoSize = true;
-            this.contributorsLabel.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.contributorsLabel.Location = new System.Drawing.Point(6, 74);
-            this.contributorsLabel.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
-            this.contributorsLabel.Name = "contributorsLabel";
-            this.contributorsLabel.Size = new System.Drawing.Size(84, 17);
-            this.contributorsLabel.TabIndex = 3;
-            this.contributorsLabel.Text = "Contributors";
-            // 
-            // retailcoderLinkLabel
-            // 
-            this.retailcoderLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.retailcoderLinkLabel.AutoSize = true;
-            this.retailcoderLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.retailcoderLinkLabel.Location = new System.Drawing.Point(6, 91);
-            this.retailcoderLinkLabel.Name = "retailcoderLinkLabel";
-            this.retailcoderLinkLabel.Size = new System.Drawing.Size(106, 17);
-            this.retailcoderLinkLabel.TabIndex = 4;
-            this.retailcoderLinkLabel.TabStop = true;
-            this.retailcoderLinkLabel.Text = "Mathieu Guindon";
-            this.retailcoderLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
-            // ckuhn203LinkLabel
-            // 
-            this.ckuhn203LinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.ckuhn203LinkLabel.AutoSize = true;
-            this.ckuhn203LinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.ckuhn203LinkLabel.Location = new System.Drawing.Point(6, 108);
-            this.ckuhn203LinkLabel.Name = "ckuhn203LinkLabel";
-            this.ckuhn203LinkLabel.Size = new System.Drawing.Size(142, 17);
-            this.ckuhn203LinkLabel.TabIndex = 5;
-            this.ckuhn203LinkLabel.TabStop = true;
-            this.ckuhn203LinkLabel.Text = "Christopher J. McClellan";
-            this.ckuhn203LinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(6, 135);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 17);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Special thanks";
-            // 
-            // codereviewLinkLabel
-            // 
-            this.codereviewLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.codereviewLinkLabel.AutoSize = true;
-            this.codereviewLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.codereviewLinkLabel.Location = new System.Drawing.Point(6, 152);
-            this.codereviewLinkLabel.Name = "codereviewLinkLabel";
-            this.codereviewLinkLabel.Size = new System.Drawing.Size(170, 17);
-            this.codereviewLinkLabel.TabIndex = 8;
-            this.codereviewLinkLabel.TabStop = true;
-            this.codereviewLinkLabel.Text = "Code Review Stack Exchange";
-            this.codereviewLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
-            // mztoolsLinkLabel
-            // 
-            this.mztoolsLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.mztoolsLinkLabel.AutoSize = true;
-            this.mztoolsLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.mztoolsLinkLabel.Location = new System.Drawing.Point(6, 169);
-            this.mztoolsLinkLabel.Name = "mztoolsLinkLabel";
-            this.mztoolsLinkLabel.Size = new System.Drawing.Size(104, 17);
-            this.mztoolsLinkLabel.TabIndex = 7;
-            this.mztoolsLinkLabel.TabStop = true;
-            this.mztoolsLinkLabel.Text = "MZ-Tools Articles";
-            this.mztoolsLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            // 
-            // AntrLinkLabel
-            // 
-            this.AntrLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.AntrLinkLabel.AutoSize = true;
-            this.AntrLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.AntrLinkLabel.Location = new System.Drawing.Point(6, 213);
-            this.AntrLinkLabel.Name = "AntrLinkLabel";
-            this.AntrLinkLabel.Size = new System.Drawing.Size(46, 17);
-            this.AntrLinkLabel.TabIndex = 9;
-            this.AntrLinkLabel.TabStop = true;
-            this.AntrLinkLabel.Text = "ANTLR";
-            this.AntrLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            this.AntrLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.AntrLinkLabel_LinkClicked);
-            // 
-            // LibGit2SharpLinkLabel
-            // 
-            this.LibGit2SharpLinkLabel.ActiveLinkColor = System.Drawing.Color.Navy;
-            this.LibGit2SharpLinkLabel.AutoSize = true;
-            this.LibGit2SharpLinkLabel.LinkColor = System.Drawing.Color.Blue;
-            this.LibGit2SharpLinkLabel.Location = new System.Drawing.Point(6, 230);
-            this.LibGit2SharpLinkLabel.Name = "LibGit2SharpLinkLabel";
-            this.LibGit2SharpLinkLabel.Size = new System.Drawing.Size(80, 17);
-            this.LibGit2SharpLinkLabel.TabIndex = 10;
-            this.LibGit2SharpLinkLabel.TabStop = true;
-            this.LibGit2SharpLinkLabel.Text = "LibGit2Sharp";
-            this.LibGit2SharpLinkLabel.VisitedLinkColor = System.Drawing.Color.DarkSlateBlue;
-            this.LibGit2SharpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LibGit2SharpLinkLabel_LinkClicked);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(6, 196);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(118, 17);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Technologies Used";
-            // 
-            // AboutWindow
-            // 
+            this.AcceptButton = this.CloseButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 356);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD_AboutWindow;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.CancelButton = this.CloseButton;
+            this.ClientSize = new System.Drawing.Size(499, 310);
+            this.Controls.Add(this.SpecialThanksLabel);
+            this.Controls.Add(this.AttributionsLabel);
+            this.Controls.Add(this.CopyrightLabel);
+            this.Controls.Add(this.CloseButton);
+            this.Controls.Add(this.GitHubIcon);
+            this.Controls.Add(this.GooglePlusIcon);
+            this.Controls.Add(this.FacebookIcon);
+            this.Controls.Add(this.TwitterIcon);
+            this.Controls.Add(this.OfficialWebsiteLinkLabel);
+            this.Controls.Add(this.AttributionsList);
+            this.Controls.Add(this.SpecialThanksList);
+            this.Controls.Add(this.AppVersionLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AboutWindow";
+            this.Name = "_AboutWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "About";
+            this.Text = "About Rubberduck";
             this.TopMost = true;
-            this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TwitterIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FacebookIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GitHubIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GooglePlusIcon)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private TableLayoutPanel tableLayoutPanel1;
-        private Button CloseButton;
-        private PictureBox pictureBox1;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private Label titleLabel;
-        private Label versionLabel;
-        private LinkLabel repositoryLinkLabel;
-        private Label contributorsLabel;
-        private LinkLabel retailcoderLinkLabel;
-        private LinkLabel ckuhn203LinkLabel;
-        private Label label1;
-        private LinkLabel codereviewLinkLabel;
-        private LinkLabel mztoolsLinkLabel;
-        private LinkLabel AntrLinkLabel;
-        private LinkLabel LibGit2SharpLinkLabel;
-        private Label label2;
+        private System.Windows.Forms.Label AppVersionLabel;
+        private System.Windows.Forms.ListBox SpecialThanksList;
+        private System.Windows.Forms.LinkLabel OfficialWebsiteLinkLabel;
+        private System.Windows.Forms.PictureBox TwitterIcon;
+        private System.Windows.Forms.PictureBox FacebookIcon;
+        private System.Windows.Forms.PictureBox GitHubIcon;
+        private System.Windows.Forms.PictureBox GooglePlusIcon;
+        private System.Windows.Forms.Button CloseButton;
+        private System.Windows.Forms.Label CopyrightLabel;
+        private System.Windows.Forms.Label AttributionsLabel;
+        private System.Windows.Forms.Label SpecialThanksLabel;
+        private System.Windows.Forms.ListBox AttributionsList;
+
     }
 }

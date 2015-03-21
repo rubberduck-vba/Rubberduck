@@ -9,6 +9,7 @@ namespace Rubberduck.VBA.Nodes
         {
             _parseResults = parseResults;
             _inspector = new IdentifierUsageInspector(_parseResults);
+            // todo: replace _inspector with a Rubberduck.Parsing.Declarations instance.
         }
 
         private readonly IEnumerable<VBComponentParseResult> _parseResults;

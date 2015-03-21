@@ -18,12 +18,20 @@ namespace Rubberduck.UI
 {
     public class RubberduckMenu : Menu
     {
-        private readonly TestMenu _testMenu; 
+        private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
         private readonly IConfigurationService _configService;
+
+        //These need to stay in scope for their click events to fire. (32-bit only?)
+        // ReSharper disable once NotAccessedField.Local
+        private CommandBarButton _about;
+        // ReSharper disable once NotAccessedField.Local
+        private CommandBarButton _settings;
+        // ReSharper disable once NotAccessedField.Local
+        private CommandBarButton _sourceControl;
 
         public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
             : base(vbe, addIn)
@@ -79,9 +87,10 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            AddButton(menu, "Source Control", false, OnSourceControlClick);
-            AddButton(menu, "&Options", true, OnOptionsClick);
-            AddButton(menu, "&About...", true, OnAboutClick);
+            // note: disabled for 1.21 release (RepositoryNotFoundException on click)
+            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
+            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
+            _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
 
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)

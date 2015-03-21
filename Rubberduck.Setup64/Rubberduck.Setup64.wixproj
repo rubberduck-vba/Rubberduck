@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.9</ProductVersion>
+    <ProjectGuid>0df081b2-4462-4f36-a7cd-4c7bb04eb931</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>Rubberduck.Setup64</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ia64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ia64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="StandardUI.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="XSLT\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XSLT\readme.txt" />
+    <Content Include="XSLT\RegisterForCOM.xml" />
+    <Content Include="XSLT\XslFile.xslt" />
+    <Content Include="XSLT\XslProjectOutput.xslt" />
+    <Content Include="XSLT\XslRegisterForCOM.xslt" />
+    <Content Include="XSLT\_Rubberduck.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+      <Name>Rubberduck</Name>
+      <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>
+      </DoNotHarvest>
+      <RefProjectOutputGroups>Binaries</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLDIR</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="VDWExtension">
+      <HintPath>C:\Users\Mathieu\AppData\Local\Microsoft\VisualStudio\12.0\Extensions\rkwasp0k.2sm\WiX Extensions\v3.x\VDWExtension.dll</HintPath>
+      <Name>VDWExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="BeforeBuild">
+    <MakeDir Directories="$(IntermediateOutputPath)Harvested XML" />
+    <MakeDir Directories="$(IntermediateOutputPath)Harvested Output" />
+    <XslTransformation XmlInputPaths="XSLT\RegisterForCOM.xml" XslInputPath="XSLT\XslRegisterForCOM.xslt" OutputPaths="$(IntermediateOutputPath)_COMFiles.txt" Parameters="&lt;Parameter Name='operationType' Value='HeatFiles'/&gt;&lt;Parameter Name='intermediateDir' Value='$(IntermediateOutputPath)'/&gt;" />
+    <ReadLinesFromFile File="$(IntermediateOutputPath)_COMFiles.txt">
+      <Output TaskParameter="Lines" ItemName="COMFilelist" />
+    </ReadLinesFromFile>
+    <ConvertToAbsolutePath Paths="@(COMFilelist)">
+      <Output TaskParameter="AbsolutePaths" ItemName="ResolvedCOMFilelist" />
+    </ConvertToAbsolutePath>
+    <Exec Command="&quot;$(Wix)Bin\heat.exe&quot; file &quot;%(ResolvedCOMFilelist.Identity)&quot; -sw -gg -sfrag -nologo -srd -out &quot;$(IntermediateOutputPath)Harvested XML\_%(Filename).com.xml&quot;" IgnoreExitCode="false" WorkingDirectory="$(MSBuildProjectDirectory)" Condition="'%(ResolvedCOMFilelist.Identity)'!=''" />
+    <XslTransformation XmlInputPaths="XSLT\RegisterForCOM.xml" XslInputPath="XSLT\XslRegisterForCOM.xslt" OutputPaths="$(IntermediateOutputPath)_COMFiles.txt" Parameters="&lt;Parameter Name='operationType' Value='TransformFiles'/&gt;&lt;Parameter Name='intermediateDir' Value='$(IntermediateOutputPath)Harvested XML\'/&gt;" />
+    <ReadLinesFromFile File="$(IntermediateOutputPath)_COMFiles.txt">
+      <Output TaskParameter="Lines" ItemName="XMLFileList" />
+    </ReadLinesFromFile>
+    <XslTransformation XmlInputPaths="%(XMLFileList.Identity)" XslInputPath="XSLT\XslFile.xslt" OutputPaths="$(IntermediateOutputPath)Harvested Output\%(Filename).wsx" Parameters="&lt;Parameter Name='sourceFilePath' Value='%(XMLFileList.Identity)'/&gt;" Condition="'%(XMLFileList.Identity)'!=''" />
+    <Exec Command="&quot;$(Wix)Bin\heat.exe&quot; project &quot;%(ProjectReference.FullPath)&quot; -projectname &quot;%(ProjectReference.Name)&quot; -pog %(ProjectReference.RefProjectOutputGroups) -gg -sfrag -nologo -out &quot;$(IntermediateOutputPath)Harvested XML\_%(ProjectReference.Name).xml&quot;" IgnoreExitCode="false" WorkingDirectory="$(MSBuildProjectDirectory)" Condition="'%(ProjectReference.FullPath)'!='' And '%(ProjectReference.DoNotHarvest)'!='True' And '%(ProjectReference.ImportedFromVDProj)'=='True'" />
+    <HeatProject Project="%(ProjectReference.FullPath)" ProjectName="%(ProjectReference.Name)" OutputFile="$(IntermediateOutputPath)Harvested XML\_%(ProjectReference.Name).xml" ProjectOutputGroups="%(ProjectReference.RefProjectOutputGroups)" ToolPath="$(Wix)Bin\" SuppressAllWarnings="true" AutogenerateGuids="false" GenerateGuidsNow="true" SuppressFragments="true" SuppressUniqueIds="false" Condition="'%(ProjectReference.FullPath)'!='' And '%(ProjectReference.DoNotHarvest)'!='True' And '%(ProjectReference.ImportedFromVDProj)'!='True'" />
+    <XslTransformation XmlInputPaths="$(IntermediateOutputPath)Harvested XML\_%(ProjectReference.Name).xml" XslInputPath="XSLT\XslProjectOutput.xslt" OutputPaths="$(IntermediateOutputPath)Harvested Output\_%(ProjectReference.Name).wxs" Parameters="&lt;Parameter Name='projectName' Value='%(ProjectReference.Name)'/&gt;&lt;Parameter Name='projectFilePath' Value='%(ProjectReference.FullPath)'/&gt;&lt;Parameter Name='intermediateDir' Value='$(IntermediateOutputPath)Harvested Output\'/&gt;" Condition="'%(ProjectReference.FullPath)'!='' And '%(ProjectReference.DoNotHarvest)'!='True' And Exists('$(IntermediateOutputPath)Harvested XML\_%(ProjectReference.Name).xml')" />
+    <XslTransformation XmlInputPaths="XSLT\RegisterForCOM.xml" XslInputPath="XSLT\XslRegisterForCOM.xslt" OutputPaths="$(IntermediateOutputPath)_COMFiles.txt" Parameters="&lt;Parameter Name='operationType' Value='CompileFiles'/&gt;&lt;Parameter Name='intermediateDir' Value='$(IntermediateOutputPath)Harvested Output\'/&gt;" />
+    <ReadLinesFromFile File="$(IntermediateOutputPath)_COMFiles.txt">
+      <Output TaskParameter="Lines" ItemName="WSXFileList" />
+    </ReadLinesFromFile>
+    <CreateItem Include="$(IntermediateOutputPath)Harvested Output\_%(ProjectReference.Name).wxs" Condition="'%(ProjectReference.FullPath)'!='' And '%(ProjectReference.DoNotHarvest)'!='True' And Exists('$(IntermediateOutputPath)Harvested Output\_%(ProjectReference.Name).wxs')">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(WSXFileList)" Condition="Exists('%(WSXFileList.Identity)')">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+  </Target>
+  <Target Name="AfterBuild">
+    <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+      <BootstrapperFile Include=".NETFramework,Version=v4.5">
+        <ProductName>Microsoft .NET Framework 4.5 (x86 and x64)</ProductName>
+      </BootstrapperFile>
+    </ItemGroup>
+    <GenerateBootstrapper ApplicationFile="$(TargetFileName)" ApplicationName="Rubberduck" BootstrapperItems="@(BootstrapperFile)" ComponentsLocation="HomeSite" CopyComponents="False" OutputPath="$(OutputPath)" Path="C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\BootStrapper" ApplicationRequiresElevation="False" Culture="en-US" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+  </Target>
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>
