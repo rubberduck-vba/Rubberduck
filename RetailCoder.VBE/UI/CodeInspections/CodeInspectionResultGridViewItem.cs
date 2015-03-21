@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections

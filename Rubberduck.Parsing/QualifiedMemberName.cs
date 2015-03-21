@@ -1,4 +1,4 @@
-namespace Rubberduck.Inspections
+namespace Rubberduck.Parsing
 {
     public struct QualifiedMemberName
     {

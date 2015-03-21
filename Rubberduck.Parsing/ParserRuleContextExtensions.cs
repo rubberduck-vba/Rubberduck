@@ -1,11 +1,8 @@
 using System;
 using Antlr4.Runtime;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing
 {
     public static class ParserRuleContextExtensions
     {

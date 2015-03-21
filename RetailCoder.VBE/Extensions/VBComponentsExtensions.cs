@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 
 namespace Rubberduck.Extensions

@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.UI.CodeExplorer
 {

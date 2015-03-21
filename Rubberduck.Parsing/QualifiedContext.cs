@@ -1,6 +1,4 @@
-using Rubberduck.Inspections;
-
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing
 {
     public class QualifiedContext<TContext>
     {

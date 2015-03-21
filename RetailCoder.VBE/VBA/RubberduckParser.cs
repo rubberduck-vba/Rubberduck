@@ -8,7 +8,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBA.Grammar;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.VBA

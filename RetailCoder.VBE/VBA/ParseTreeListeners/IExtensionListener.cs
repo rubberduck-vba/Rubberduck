@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBA.ParseTreeListeners
 {

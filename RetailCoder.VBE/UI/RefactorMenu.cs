@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;

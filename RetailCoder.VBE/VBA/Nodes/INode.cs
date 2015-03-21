@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBA.Nodes
 {

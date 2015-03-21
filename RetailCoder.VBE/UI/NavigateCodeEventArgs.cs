@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 
 namespace Rubberduck.UI

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.ToDoItems

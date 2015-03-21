@@ -3,7 +3,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBA.Nodes
 {

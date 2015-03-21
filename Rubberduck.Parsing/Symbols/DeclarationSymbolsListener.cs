@@ -1,5 +1,4 @@
 ﻿using System;
-using Antlr4.Runtime;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -21,12 +20,12 @@ namespace Rubberduck.Parsing.Symbols
             _componentName = componentName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, componentAccessibility, declarationType, null));
+            _declarations.Add(new Declaration(_projectHashCode, _projectName, _projectName, _componentName, _componentName, componentAccessibility, declarationType, Selection.Home));
         }
 
-        private Declaration CreateDeclaration(string identifierName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context)
+        private Declaration CreateDeclaration(string identifierName, Accessibility accessibility, DeclarationType declarationType, Selection selection)
         {
-            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, accessibility, declarationType, context);
+            return new Declaration(_projectHashCode, _currentScope, _projectName, _componentName, identifierName, accessibility, declarationType, selection);
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Procedure, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Procedure, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -93,7 +92,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Function, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Function, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -107,7 +106,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertyGet, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertyGet, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -121,7 +120,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertyLet, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertyLet, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -135,7 +134,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertySet, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.PropertySet, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -149,7 +148,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetMemberAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Event, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Event, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -163,7 +162,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetMemberAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.LibraryFunction, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.LibraryFunction, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -177,7 +176,7 @@ namespace Rubberduck.Parsing.Symbols
             var args = context.arg();
             foreach (var argContext in args)
             {
-                _declarations.Add(CreateDeclaration(argContext.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.Parameter, argContext));
+                _declarations.Add(CreateDeclaration(argContext.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.Parameter, argContext.GetSelection()));
             }
         }
 
@@ -186,7 +185,7 @@ namespace Rubberduck.Parsing.Symbols
             var parent = (VBAParser.VariableStmtContext)context.Parent;
             var accessibility = GetMemberAccessibility(parent.visibility());
             
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), accessibility, DeclarationType.Variable, context));
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), accessibility, DeclarationType.Variable, context.GetSelection()));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)
@@ -194,7 +193,7 @@ namespace Rubberduck.Parsing.Symbols
             var parent = (VBAParser.ConstStmtContext)context.Parent;
             var accessibility = GetMemberAccessibility(parent.visibility());
 
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), accessibility, DeclarationType.Constant, context));
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), accessibility, DeclarationType.Constant, context.GetSelection()));
         }
 
         public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
@@ -202,7 +201,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetMemberAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.UserDefinedType, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.UserDefinedType, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -213,7 +212,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterTypeStmt_Element(VBAParser.TypeStmt_ElementContext context)
         {
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, context));
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, context.GetSelection()));
         }
 
         public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
@@ -221,7 +220,7 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetMemberAccessibility(context.visibility());
             var name = context.ambiguousIdentifier().GetText();
 
-            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Enumeration, context));
+            _declarations.Add(CreateDeclaration(name, accessibility, DeclarationType.Enumeration, context.GetSelection()));
             SetCurrentScope(name);
         }
 
@@ -232,7 +231,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterEnumerationStmt_Constant(VBAParser.EnumerationStmt_ConstantContext context)
         {
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.EnumerationMember, context));
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), Accessibility.Implicit, DeclarationType.EnumerationMember, context.GetSelection()));
         }
     }
 }

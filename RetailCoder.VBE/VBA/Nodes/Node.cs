@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBA.Nodes
 {

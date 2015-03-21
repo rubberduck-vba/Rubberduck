@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Rubberduck.Parsing;
 
-namespace Rubberduck.VBA.Grammar
+namespace Rubberduck.VBA
 {
     public static class StringExtensions
     {

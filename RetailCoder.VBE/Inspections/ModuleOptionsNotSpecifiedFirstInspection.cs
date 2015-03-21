@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Extensions;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {

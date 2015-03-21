@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 using Rubberduck.VBA.Nodes;
 using Rubberduck.VBEHost;

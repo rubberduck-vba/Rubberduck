@@ -249,8 +249,6 @@
     <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionResult.cs" />
-    <Compile Include="Inspections\QualifiedMemberName.cs" />
-    <Compile Include="Inspections\QualifiedModuleName.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotDeclaredInspection.cs" />
@@ -311,14 +309,12 @@
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\VBAccessibility.cs" />
     <Compile Include="VBA\Nodes\VBComponentParseResult.cs" />
-    <Compile Include="VBA\ParserRuleContextExtensions.cs" />
     <Compile Include="VBA\AntlrExtensions.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableReferencesListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\TreeViewListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableAssignmentListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\VariableUsageListener.cs" />
-    <Compile Include="VBA\QualifiedContext.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\ParseTreeListeners\NodeBuildingListener.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
@@ -343,7 +339,6 @@
     <Compile Include="VBEHost\ExcelApp.cs" />
     <Compile Include="Extensions\CodeModuleSelection.cs" />
     <Compile Include="VBEHost\OutlookApp.cs" />
-    <Compile Include="Extensions\Selection.cs" />
     <Compile Include="Extensions\VbeExtensions.cs" />
     <Compile Include="VBEHost\HostApplicationBase.cs" />
     <Compile Include="VBEHost\IHostApplication.cs" />
@@ -453,11 +448,6 @@
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
-    <Compile Include="VBA\Tokens.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Tokens.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
@@ -596,10 +586,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VBA\Tokens.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>

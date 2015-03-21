@@ -1,4 +1,5 @@
 ﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Extensions
 {

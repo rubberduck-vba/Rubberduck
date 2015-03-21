@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(int projectHashCode, string parentScope,
             string projectName, string componentName, string identifierName,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context)
+            Accessibility accessibility, DeclarationType declarationType, Selection selection)
         {
             _projectHashCode = projectHashCode;
             _parentScope = parentScope;
@@ -18,17 +18,17 @@ namespace Rubberduck.Parsing.Symbols
             _identifierName = identifierName;
             _accessibility = accessibility;
             _declarationType = declarationType;
-            _context = context;
+            _selection = selection;
         }
 
-        private readonly ParserRuleContext _context;
+        private readonly Selection _selection;
         /// <summary>
-        /// Gets a reference to the parser rule context containing the declaration.
+        /// Gets a <c>Selection</c> representing the position of the declaration in the code module.
         /// </summary>
         /// <remarks>
-        /// Returns <c>null</c> for module identifiers.
+        /// Returns <c>default(Selection)</c> for module identifiers.
         /// </remarks>
-        public ParserRuleContext Context { get { return _context; } }
+        public Selection Selection { get { return _selection; } }
 
         private readonly int _projectHashCode;
         /// <summary>
