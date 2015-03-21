@@ -297,7 +297,6 @@
     <Compile Include="VBA\ParseTreeListeners\ExposedMemberListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ProcedureNameListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\ObsoleteInstructionsListener.cs" />
-    <Compile Include="VBA\ParseTreeListeners\ModuleOptionsListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\DeclarationListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\PublicSubListener.cs" />
     <Compile Include="VBA\ParseTreeListeners\IExtensionListener.cs" />
