@@ -4,6 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.SourceControl;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -103,7 +104,15 @@ namespace Rubberduck.UI
 
             if (_sourceControlPresenter == null)
             {
-                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView);
+                var project = IDE.ActiveVBProject;
+                var repo = new Repository
+                           (
+                            "SourceControlTest", 
+                            @"C:\Users\Christopher\Documents\SourceControlTest",
+                            @"https://github.com/ckuhn203/SourceControlTest.git"
+                           );
+                var changesPresenter = new ChangesPresenter(new GitProvider(project, repo),_sourceControlView);
+                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter);
             }
 
             _sourceControlPresenter.Show();

@@ -16,7 +16,7 @@ namespace Rubberduck.UI.SourceControl
             _view = view;
 
             _view.Commit += OnCommit;
-            _view.Refresh += OnRefresh;
+            _view.RefreshData += OnRefresh;
 
             //todo: add ability to exclude changes
             _view.ExcludedChanges = new List<string>() {"Coming soon."};

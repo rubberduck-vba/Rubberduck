@@ -40,9 +40,9 @@
             this.IncludedChangesBox = new System.Windows.Forms.GroupBox();
             this.IncludedChangesGrid = new System.Windows.Forms.DataGridView();
             this.CommitButton = new System.Windows.Forms.Button();
-            this.CommitAction = new System.Windows.Forms.ComboBox();
+            this.CommitActionDropdown = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.CommitMessage = new System.Windows.Forms.TextBox();
+            this.CommitMessageBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ExcludedChangesBox = new System.Windows.Forms.GroupBox();
             this.ExcludedChangesGrid = new System.Windows.Forms.DataGridView();
@@ -190,9 +190,9 @@
             this.ChangesPanel.Controls.Add(this.ChangesBranchNameLabel);
             this.ChangesPanel.Controls.Add(this.IncludedChangesBox);
             this.ChangesPanel.Controls.Add(this.CommitButton);
-            this.ChangesPanel.Controls.Add(this.CommitAction);
+            this.ChangesPanel.Controls.Add(this.CommitActionDropdown);
             this.ChangesPanel.Controls.Add(this.label2);
-            this.ChangesPanel.Controls.Add(this.CommitMessage);
+            this.ChangesPanel.Controls.Add(this.CommitMessageBox);
             this.ChangesPanel.Controls.Add(this.label1);
             this.ChangesPanel.Controls.Add(this.ExcludedChangesBox);
             this.ChangesPanel.Controls.Add(this.UntrackedFilesBox);
@@ -221,7 +221,7 @@
             this.IncludedChangesBox.Location = new System.Drawing.Point(9, 119);
             this.IncludedChangesBox.Name = "IncludedChangesBox";
             this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncludedChangesBox.Size = new System.Drawing.Size(192, 141);
+            this.IncludedChangesBox.Size = new System.Drawing.Size(175, 141);
             this.IncludedChangesBox.TabIndex = 15;
             this.IncludedChangesBox.TabStop = false;
             this.IncludedChangesBox.Text = "Included changes";
@@ -243,7 +243,7 @@
             this.IncludedChangesGrid.Location = new System.Drawing.Point(10, 23);
             this.IncludedChangesGrid.Name = "IncludedChangesGrid";
             this.IncludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncludedChangesGrid.Size = new System.Drawing.Size(173, 109);
+            this.IncludedChangesGrid.Size = new System.Drawing.Size(156, 109);
             this.IncludedChangesGrid.TabIndex = 0;
             // 
             // CommitButton
@@ -255,23 +255,23 @@
             this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CommitButton.Location = new System.Drawing.Point(136, 86);
             this.CommitButton.Name = "CommitButton";
-            this.CommitButton.Size = new System.Drawing.Size(65, 23);
+            this.CommitButton.Size = new System.Drawing.Size(48, 23);
             this.CommitButton.TabIndex = 14;
             this.CommitButton.Text = "Go";
             this.CommitButton.UseVisualStyleBackColor = true;
             // 
-            // CommitAction
+            // CommitActionDropdown
             // 
-            this.CommitAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CommitAction.FormattingEnabled = true;
-            this.CommitAction.Items.AddRange(new object[] {
+            this.CommitActionDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CommitActionDropdown.FormattingEnabled = true;
+            this.CommitActionDropdown.Items.AddRange(new object[] {
             "Commit",
             "Commit and Push",
             "Commit and Sync"});
-            this.CommitAction.Location = new System.Drawing.Point(9, 87);
-            this.CommitAction.Name = "CommitAction";
-            this.CommitAction.Size = new System.Drawing.Size(121, 21);
-            this.CommitAction.TabIndex = 13;
+            this.CommitActionDropdown.Location = new System.Drawing.Point(9, 87);
+            this.CommitActionDropdown.Name = "CommitActionDropdown";
+            this.CommitActionDropdown.Size = new System.Drawing.Size(121, 21);
+            this.CommitActionDropdown.TabIndex = 13;
             // 
             // label2
             // 
@@ -282,17 +282,17 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Commit message:";
             // 
-            // CommitMessage
+            // CommitMessageBox
             // 
-            this.CommitMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.CommitMessageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CommitMessage.BackColor = System.Drawing.Color.LightYellow;
-            this.CommitMessage.Location = new System.Drawing.Point(9, 55);
-            this.CommitMessage.Multiline = true;
-            this.CommitMessage.Name = "CommitMessage";
-            this.CommitMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.CommitMessage.Size = new System.Drawing.Size(192, 29);
-            this.CommitMessage.TabIndex = 11;
+            this.CommitMessageBox.BackColor = System.Drawing.Color.LightYellow;
+            this.CommitMessageBox.Location = new System.Drawing.Point(9, 55);
+            this.CommitMessageBox.Multiline = true;
+            this.CommitMessageBox.Name = "CommitMessageBox";
+            this.CommitMessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.CommitMessageBox.Size = new System.Drawing.Size(175, 29);
+            this.CommitMessageBox.TabIndex = 11;
             // 
             // label1
             // 
@@ -311,7 +311,7 @@
             this.ExcludedChangesBox.Location = new System.Drawing.Point(9, 266);
             this.ExcludedChangesBox.Name = "ExcludedChangesBox";
             this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.ExcludedChangesBox.Size = new System.Drawing.Size(192, 141);
+            this.ExcludedChangesBox.Size = new System.Drawing.Size(175, 141);
             this.ExcludedChangesBox.TabIndex = 16;
             this.ExcludedChangesBox.TabStop = false;
             this.ExcludedChangesBox.Text = "Excluded changes";
@@ -333,7 +333,7 @@
             this.ExcludedChangesGrid.Location = new System.Drawing.Point(10, 22);
             this.ExcludedChangesGrid.Name = "ExcludedChangesGrid";
             this.ExcludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ExcludedChangesGrid.Size = new System.Drawing.Size(173, 110);
+            this.ExcludedChangesGrid.Size = new System.Drawing.Size(156, 110);
             this.ExcludedChangesGrid.TabIndex = 1;
             // 
             // UntrackedFilesBox
@@ -344,7 +344,7 @@
             this.UntrackedFilesBox.Location = new System.Drawing.Point(9, 413);
             this.UntrackedFilesBox.Name = "UntrackedFilesBox";
             this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.UntrackedFilesBox.Size = new System.Drawing.Size(192, 141);
+            this.UntrackedFilesBox.Size = new System.Drawing.Size(175, 141);
             this.UntrackedFilesBox.TabIndex = 17;
             this.UntrackedFilesBox.TabStop = false;
             this.UntrackedFilesBox.Text = "Untracked files";
@@ -366,7 +366,7 @@
             this.UntrackedFilesGrid.Location = new System.Drawing.Point(10, 22);
             this.UntrackedFilesGrid.Name = "UntrackedFilesGrid";
             this.UntrackedFilesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UntrackedFilesGrid.Size = new System.Drawing.Size(173, 110);
+            this.UntrackedFilesGrid.Size = new System.Drawing.Size(156, 110);
             this.UntrackedFilesGrid.TabIndex = 1;
             // 
             // BranchesTab
@@ -610,7 +610,7 @@
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(9, 269);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
             this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.OutgoingCommitsBox.Size = new System.Drawing.Size(186, 162);
+            this.OutgoingCommitsBox.Size = new System.Drawing.Size(169, 162);
             this.OutgoingCommitsBox.TabIndex = 16;
             this.OutgoingCommitsBox.TabStop = false;
             this.OutgoingCommitsBox.Text = "Outgoing commits";
@@ -632,7 +632,7 @@
             this.OutgoingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.OutgoingCommitsGrid.Name = "OutgoingCommitsGrid";
             this.OutgoingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(167, 131);
+            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(150, 131);
             this.OutgoingCommitsGrid.TabIndex = 0;
             // 
             // IncomingCommitsBox
@@ -643,7 +643,7 @@
             this.IncomingCommitsBox.Location = new System.Drawing.Point(9, 101);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
             this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncomingCommitsBox.Size = new System.Drawing.Size(186, 162);
+            this.IncomingCommitsBox.Size = new System.Drawing.Size(169, 162);
             this.IncomingCommitsBox.TabIndex = 15;
             this.IncomingCommitsBox.TabStop = false;
             this.IncomingCommitsBox.Text = "Incoming commits";
@@ -665,7 +665,7 @@
             this.IncomingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.IncomingCommitsGrid.Name = "IncomingCommitsGrid";
             this.IncomingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncomingCommitsGrid.Size = new System.Drawing.Size(167, 131);
+            this.IncomingCommitsGrid.Size = new System.Drawing.Size(150, 131);
             this.IncomingCommitsGrid.TabIndex = 0;
             // 
             // SettingsTab
@@ -884,9 +884,9 @@
         private System.Windows.Forms.GroupBox IncludedChangesBox;
         private System.Windows.Forms.DataGridView IncludedChangesGrid;
         private System.Windows.Forms.Button CommitButton;
-        private System.Windows.Forms.ComboBox CommitAction;
+        private System.Windows.Forms.ComboBox CommitActionDropdown;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox CommitMessage;
+        private System.Windows.Forms.TextBox CommitMessageBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox ExcludedChangesBox;
         private System.Windows.Forms.DataGridView ExcludedChangesGrid;

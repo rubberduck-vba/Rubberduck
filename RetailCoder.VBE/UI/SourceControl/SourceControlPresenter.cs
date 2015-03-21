@@ -9,8 +9,20 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SourceControlPresenter : DockablePresenterBase
     {
-        public SourceControlPresenter(VBE vbe, AddIn addin, IDockableUserControl control) : base(vbe, addin, control)
+        private ChangesPresenter _changesPresenter;
+        private ISourceControlView _view;
+
+        public SourceControlPresenter
+            (
+                VBE vbe, 
+                AddIn addin, 
+                ISourceControlView view, 
+                ChangesPresenter changesPresenter                        
+            ) 
+            : base(vbe, addin, view)
         {
+            _changesPresenter = changesPresenter;
+            _view = view;
         }
     }
 }

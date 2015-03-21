@@ -21,6 +21,6 @@ namespace Rubberduck.UI.SourceControl
         IList<string> UntrackedFiles { get; set; } 
 
         event EventHandler<EventArgs> Commit;
-        event EventHandler<EventArgs> Refresh;
+        event EventHandler<EventArgs> RefreshData;
     }
 }
