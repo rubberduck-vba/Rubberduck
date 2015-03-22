@@ -18,8 +18,8 @@ namespace Rubberduck.UI.SourceControl
         CommitAction CommitAction { get; set; }
         //todo: support directories
         IList<IFileStatusEntry> IncludedChanges { get; set; }
-        IList<string> ExcludedChanges { get; set; }
-        IList<string> UntrackedFiles { get; set; }
+        IList<IFileStatusEntry> ExcludedChanges { get; set; }
+        IList<IFileStatusEntry> UntrackedFiles { get; set; }
         bool CommitEnabled { get; set; }
 
         event EventHandler<EventArgs> SelectedActionChanged;

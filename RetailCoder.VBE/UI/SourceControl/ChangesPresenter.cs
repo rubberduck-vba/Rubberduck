@@ -20,10 +20,6 @@ namespace Rubberduck.UI.SourceControl
             _view.CommitMessageChanged += OnCommitMessageChanged;
             _view.SelectedActionChanged += OnSelectedActionChanged;
 
-            //todo: add ability to exclude changes
-            _view.ExcludedChanges = new List<string>() {"Coming soon."};
-            _view.UntrackedFiles = new List<string>() {"Coming soon."};
-
             Refresh();
         }
 
@@ -43,10 +39,11 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public void Refresh()
-        { 
-            _view.IncludedChanges = _provider.Status()
-                                        .Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified))
-                                        .ToList();
+        {
+            var fileStats = _provider.Status().ToList();
+
+            _view.IncludedChanges = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)).ToList();
+            _view.UntrackedFiles = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)).ToList();
         }
 
         public void Commit()

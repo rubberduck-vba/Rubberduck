@@ -72,10 +72,12 @@ namespace RubberduckTests.SourceControl
             {
                 new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified),
                 new FileStatusEntry(@"C:\path\to\class.cls", FileStatus.Unaltered),
-                new FileStatusEntry(@"C:\path\to\added.bas", FileStatus.Added | FileStatus.Modified)
+                new FileStatusEntry(@"C:\path\to\added.bas", FileStatus.Added | FileStatus.Modified),
+                new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
             };
 
             _viewMock.SetupProperty(v => v.IncludedChanges);
+            _viewMock.SetupProperty(v => v.UntrackedFiles);
             _providerMock.Setup(git => git.Status()).Returns(fileStatusEntries);
 
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
@@ -83,7 +85,8 @@ namespace RubberduckTests.SourceControl
             presenter.Refresh();
 
             //Assert
-            Assert.AreEqual(2, _viewMock.Object.IncludedChanges.Count);
+            Assert.AreEqual(2, _viewMock.Object.IncludedChanges.Count, "Incorrect Included Changes");
+            Assert.AreEqual(@"C:\path\to\untracked.frx", _viewMock.Object.UntrackedFiles[0].FilePath);
         }
 
         [TestMethod]

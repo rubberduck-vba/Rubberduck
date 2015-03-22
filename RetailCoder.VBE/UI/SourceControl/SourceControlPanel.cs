@@ -55,25 +55,25 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private BindingList<string> _excludedChanges = new BindingList<string>();
-        public IList<string> ExcludedChanges
+        private BindingList<IFileStatusEntry> _excludedChanges = new BindingList<IFileStatusEntry>();
+        public IList<IFileStatusEntry> ExcludedChanges
         {
             get { return _excludedChanges; }
             set
             {
-                _excludedChanges = new BindingList<string>(value);
+                _excludedChanges = new BindingList<IFileStatusEntry>(value);
                 this.ExcludedChangesGrid.DataSource = _excludedChanges;
                 this.ExcludedChangesGrid.Refresh();
             }
         }
 
-        private BindingList<string> _untrackedFiles = new BindingList<string>();
-        public IList<string> UntrackedFiles
+        private BindingList<IFileStatusEntry> _untrackedFiles = new BindingList<IFileStatusEntry>();
+        public IList<IFileStatusEntry> UntrackedFiles
         {
             get { return _untrackedFiles; }
             set
             {
-                _untrackedFiles = new BindingList<string>(value);
+                _untrackedFiles = new BindingList<IFileStatusEntry>(value);
                 this.UntrackedFilesGrid.DataSource = _untrackedFiles;
                 this.UntrackedFilesGrid.Refresh();
             }
