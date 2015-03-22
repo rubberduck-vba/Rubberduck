@@ -170,16 +170,35 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                base.Commit(message);
-
-                RepositoryStatus status = _repo.RetrieveStatus();
-                List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-                _repo.Stage(filePaths);
                 _repo.Commit(message);
             }
             catch (LibGit2SharpException ex)
             {
                 throw new SourceControlException("Commit Failed.", ex);
+            }
+        }
+
+        public override void Stage(string filePath)
+        {
+            try
+            {
+                _repo.Stage(filePath);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw  new SourceControlException("Failed to stage file.", ex);
+            }
+        }
+
+        public override void Stage(IEnumerable<string> filePaths)
+        {
+            try
+            {
+                _repo.Stage(filePaths);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to stage file.", ex);
             }
         }
 

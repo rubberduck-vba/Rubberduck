@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.SourceControl;
-using System.Runtime.InteropServices;
+﻿using System.Collections;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Interop
 {
@@ -48,7 +43,7 @@ namespace Rubberduck.Interop
         void Pull();
 
         [DispId(9)]
-        [Description("Stages all modified files and commits to CurrentBranch.")]
+        [Description("Stages and Commits all modified files to the CurrentBranch.")]
         void Commit(string message);
 
         [DispId(10)]

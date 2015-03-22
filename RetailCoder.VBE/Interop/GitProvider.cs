@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using Rubberduck.SourceControl;
-using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Interop
 {
@@ -14,7 +11,7 @@ namespace Rubberduck.Interop
     [Guid("0C22A01D-3255-4BB6-8D67-DCC40A548A32")]
     [ProgId("Rubberduck.GitProvider")]
     [ClassInterface(ClassInterfaceType.None)]
-    [System.ComponentModel.Description("VBA Editor integrated access to Git.")]
+    [Description("VBA Editor integrated access to Git.")]
     class GitProvider : SourceControl.GitProvider, ISourceControlProvider
     {
         public GitProvider(VBProject project) 
@@ -34,6 +31,16 @@ namespace Rubberduck.Interop
         public new IEnumerable Status()
         {
             return new FileStatusEntries(base.Status());
+        }
+
+        public override void Commit(string message)
+        {
+            var filePaths = base.Status()
+                .Where(s => s.FileStatus.HasFlag(FileStatus.Modified))
+                .Select(s => s.FilePath).ToList();
+
+            Stage(filePaths);
+            base.Commit(message);
         }
     }
 }

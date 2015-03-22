@@ -109,5 +109,17 @@ namespace Rubberduck.SourceControl
         /// Semantically the same as calling $git status.
         /// </summary>
         IEnumerable<IFileStatusEntry> Status();
+
+        /// <summary>
+        /// Stages a file to be committed.
+        /// </summary>
+        /// <param name="filePath"></param>
+        void Stage(string filePath);
+
+        /// <summary>
+        /// Stages a list of files to be committed.
+        /// </summary>
+        /// <param name="filePaths"></param>
+        void Stage(IEnumerable<string> filePaths);
     }
 }
