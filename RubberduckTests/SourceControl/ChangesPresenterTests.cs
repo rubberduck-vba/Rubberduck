@@ -111,7 +111,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.SetupAllProperties();
             _viewMock.Object.CommitMessage = "Test Commit";
             _viewMock.Object.CommitAction = CommitAction.Commit;
-            _viewMock.Object.IncludedChanges = new List<string>(){@"C:\path\to\module.bas"};
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified) };
 
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
 
@@ -129,7 +129,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.SetupAllProperties();
             _viewMock.Object.CommitMessage = "Test Commit";
             _viewMock.Object.CommitAction = CommitAction.Commit;
-            _viewMock.Object.IncludedChanges = new List<string>() { @"C:\path\to\module.bas" };
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() {new FileStatusEntry(@"C:\path\to\module.bas",FileStatus.Modified) };
 
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
 
