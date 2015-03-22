@@ -124,5 +124,83 @@ namespace Rubberduck.UI.SourceControl
                 handler(this, e);
             }
         }
+
+        private Rectangle _dragBox;
+        private int _row;
+
+        private void IncludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseDown((DataGridView)sender, e);
+        }
+
+        private void OnDataGridMouseDown(DataGridView sender, MouseEventArgs e)
+        {
+            _row = sender.HitTest(e.X, e.Y).RowIndex;
+            if (_row != -1)
+            {
+                var dragSize = SystemInformation.DragSize;
+                _dragBox = new Rectangle(
+                            new Point(e.X - dragSize.Width/2, e.Y - dragSize.Height/2),
+                            dragSize
+                            );
+            }
+            else
+            {
+                _dragBox = Rectangle.Empty;
+            }
+        }
+
+        private void IncludedChangesGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseMove((DataGridView)sender, e);
+        }
+
+        private void OnDataGridMouseMove(DataGridView sender, MouseEventArgs e)
+        {
+            if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                if (_dragBox != Rectangle.Empty && !_dragBox.Contains(e.X, e.Y))
+                {
+                    DragDropEffects dropEffect = sender.DoDragDrop(sender.Rows[_row], DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void ExcludedChangesGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void ExcludedChangesGrid_DragDrop(object sender, DragEventArgs e)
+        {
+            _excludedChanges.Add(_includedChanges[_row]);
+            this.ExcludedChangesGrid.DataSource = _excludedChanges;
+
+            _includedChanges.RemoveAt(_row);
+        }
+
+        private void ExcludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseDown((DataGridView)sender, e);
+        }
+
+        private void IncludedChangesGrid_DragDrop(object sender, DragEventArgs e)
+        {
+            _includedChanges.Add(_excludedChanges[_row]);
+            this.IncludedChangesGrid.DataSource = _includedChanges;
+            
+            _excludedChanges.RemoveAt(_row);
+        }
+
+        private void IncludedChangesGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void ExcludedChangesGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseMove((DataGridView)sender, e);
+        }
+
     }
 }
