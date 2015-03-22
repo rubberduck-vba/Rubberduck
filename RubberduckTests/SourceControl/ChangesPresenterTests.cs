@@ -25,7 +25,11 @@ namespace RubberduckTests.SourceControl
         public void ProviderCommitIsCalledOnCommit()
         {
             //arrange
+            _viewMock.SetupProperty(v => v.IncludedChanges);
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
+
             //act
             _viewMock.Raise(v => v.Commit += null, new EventArgs());
 
@@ -34,12 +38,32 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
+        public void ProviderStagesBeforeCommit()
+        {
+            //arrange
+            _viewMock.SetupProperty(v => v.IncludedChanges);
+            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
+
+            //act
+            _viewMock.Raise(v => v.Commit += null, new EventArgs());
+
+            //assert
+            _providerMock.Verify(git => git.Stage(It.IsAny<IEnumerable<string>>()));
+            _providerMock.Verify(git => git.Commit(It.IsAny<string>()));
+        }
+
+        [TestMethod]
         public void ProviderCommitsAndPushes()
         {
             //arrange
+            _viewMock.SetupProperty(v => v.IncludedChanges);
             _viewMock.SetupProperty(v => v.CommitAction, CommitAction.CommitAndPush);
 
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
+
             //act
             _viewMock.Raise(v => v.Commit += null, new EventArgs());
 
@@ -52,9 +76,12 @@ namespace RubberduckTests.SourceControl
         public void ProviderCommitsAndSyncs()
         {
             //arrange
+            _viewMock.SetupProperty(v => v.IncludedChanges);
             _viewMock.SetupProperty(v => v.CommitAction, CommitAction.CommitAndSync);
 
             var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
+
             //act
             _viewMock.Raise(v => v.Commit += null, new EventArgs());
 

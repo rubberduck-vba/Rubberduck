@@ -48,6 +48,13 @@ namespace Rubberduck.UI.SourceControl
 
         public void Commit()
         {
+            var changes = _view.IncludedChanges.Select(c => c.FilePath).ToList();
+            if (!changes.Any())
+            {
+                return;
+            }
+
+            _provider.Stage(changes);
             _provider.Commit(_view.CommitMessage);
 
             if (_view.CommitAction == CommitAction.CommitAndSync)
