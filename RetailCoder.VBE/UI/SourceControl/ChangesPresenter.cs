@@ -44,6 +44,8 @@ namespace Rubberduck.UI.SourceControl
 
             _view.IncludedChanges = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)).ToList();
             _view.UntrackedFiles = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)).ToList();
+
+            _view.ExcludedChanges = new List<IFileStatusEntry>();
         }
 
         public void Commit()

@@ -170,5 +170,22 @@ namespace RubberduckTests.SourceControl
             //assert
             Assert.IsFalse(_viewMock.Object.IncludedChanges.Any());
         }
+
+        [TestMethod]
+        public void ExcludedIsClearedAfterRefresh()
+        {
+            //arrange
+            _viewMock.SetupProperty(v => v.ExcludedChanges);
+            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            _viewMock.Object.ExcludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified) };
+
+            Assert.IsTrue(_viewMock.Object.ExcludedChanges.Any(), "No changes found prior to refresh. Issue with Test code.");
+
+            //act
+            presenter.Refresh();
+
+            //
+            Assert.IsFalse(_viewMock.Object.ExcludedChanges.Any());
+        }
     }
 }

@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
@@ -42,7 +39,6 @@ namespace Rubberduck.UI.SourceControl
             set { this.CommitActionDropdown.SelectedIndex = (int)value; }
         }
 
-        //bug: control panel isn't repainting
         private BindingList<IFileStatusEntry> _includedChanges = new BindingList<IFileStatusEntry>();
         public IList<IFileStatusEntry> IncludedChanges
         {
@@ -85,53 +81,43 @@ namespace Rubberduck.UI.SourceControl
             set { this.CommitButton.Enabled = value; }
         }
 
-        public event System.EventHandler<System.EventArgs> SelectedActionChanged;
-        private void CommitActionDropdown_SelectedIndexChanged(object sender, System.EventArgs e)
+        public event EventHandler<EventArgs> SelectedActionChanged;
+        private void CommitActionDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var handler = SelectedActionChanged;
+            RaiseGenericEvent(SelectedActionChanged, e);
+        }
+
+        public event EventHandler<EventArgs> CommitMessageChanged;
+        private void CommitMessageBox_TextChanged(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(CommitMessageChanged, e);
+        }
+
+        public event EventHandler<EventArgs> Commit;
+        private void CommitButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(Commit, e);
+        }
+
+        public event EventHandler<EventArgs> RefreshData;
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(RefreshData, e);
+        }
+
+        private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)
+        {
             if (handler != null)
             {
                 handler(this, e);
             }
         }
 
-        public event System.EventHandler<System.EventArgs> CommitMessageChanged;
-        private void CommitMessageBox_TextChanged(object sender, System.EventArgs e)
-        {
-            var handler = CommitMessageChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event System.EventHandler<System.EventArgs> Commit;
-        private void CommitButton_Click(object sender, System.EventArgs e)
-        {
-            var handler = Commit;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event System.EventHandler<System.EventArgs> RefreshData;
-        private void RefreshButton_Click(object sender, System.EventArgs e)
-        {
-            var handler = RefreshData;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
+        #region DragDropHandling
 
         private Rectangle _dragBox;
         private int _row;
-
-        private void IncludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
-        {
-            OnDataGridMouseDown((DataGridView)sender, e);
-        }
+        private Control _dragSource;
 
         private void OnDataGridMouseDown(DataGridView sender, MouseEventArgs e)
         {
@@ -140,7 +126,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 var dragSize = SystemInformation.DragSize;
                 _dragBox = new Rectangle(
-                            new Point(e.X - dragSize.Width/2, e.Y - dragSize.Height/2),
+                            new Point(e.X - dragSize.Width / 2, e.Y - dragSize.Height / 2),
                             dragSize
                             );
             }
@@ -150,46 +136,73 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private void IncludedChangesGrid_MouseMove(object sender, MouseEventArgs e)
-        {
-            OnDataGridMouseMove((DataGridView)sender, e);
-        }
-
         private void OnDataGridMouseMove(DataGridView sender, MouseEventArgs e)
         {
             if (e.Button.HasFlag(MouseButtons.Left))
             {
                 if (_dragBox != Rectangle.Empty && !_dragBox.Contains(e.X, e.Y))
                 {
-                    DragDropEffects dropEffect = sender.DoDragDrop(sender.Rows[_row], DragDropEffects.Move);
+                    _dragSource = sender;
+                    if (_dragSource == this.UntrackedFilesGrid)
+                    {
+                        this.ExcludedChangesGrid.AllowDrop = false;
+                    }
+
+                    try
+                    {
+                        DragDropEffects dropEffect = sender.DoDragDrop(sender.Rows[_row], DragDropEffects.Move);
+                    }
+                    finally
+                    {
+                        this.ExcludedChangesGrid.AllowDrop = true;
+                        _dragSource = null;
+                    }
                 }
             }
         }
 
-        private void ExcludedChangesGrid_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
         private void ExcludedChangesGrid_DragDrop(object sender, DragEventArgs e)
         {
-            _excludedChanges.Add(_includedChanges[_row]);
-            this.ExcludedChangesGrid.DataSource = _excludedChanges;
+            if (_dragSource != null && _dragSource != this.UntrackedFilesGrid)
+            {
+                this.ExcludedChangesGrid.DataSource = MoveFileStatusItem(_excludedChanges, _includedChanges, _row);
+            }
 
-            _includedChanges.RemoveAt(_row);
-        }
-
-        private void ExcludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
-        {
-            OnDataGridMouseDown((DataGridView)sender, e);
         }
 
         private void IncludedChangesGrid_DragDrop(object sender, DragEventArgs e)
         {
-            _includedChanges.Add(_excludedChanges[_row]);
-            this.IncludedChangesGrid.DataSource = _includedChanges;
-            
-            _excludedChanges.RemoveAt(_row);
+            if (_dragSource != null)
+            {
+                if (_dragSource == this.ExcludedChangesGrid)
+                {
+                    this.IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _excludedChanges, _row);
+                }
+
+                if (_dragSource == this.UntrackedFilesGrid)
+                {
+                    this.IncludedChangesGrid.DataSource = MoveFileStatusItem(_includedChanges, _untrackedFiles, _row);
+                }
+            }
+        }
+
+        private IList<IFileStatusEntry> MoveFileStatusItem(IList<IFileStatusEntry> destination,
+            IList<IFileStatusEntry> source, int index)
+        {
+            destination.Add(source[index]);
+            source.RemoveAt(index);
+
+            return destination;
+        }
+
+        private void IncludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseDown((DataGridView)sender, e);
+        }
+
+        private void IncludedChangesGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseMove((DataGridView)sender, e);
         }
 
         private void IncludedChangesGrid_DragOver(object sender, DragEventArgs e)
@@ -197,10 +210,31 @@ namespace Rubberduck.UI.SourceControl
             e.Effect = DragDropEffects.Move;
         }
 
+        private void ExcludedChangesGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseDown((DataGridView)sender, e);
+        }
+
         private void ExcludedChangesGrid_MouseMove(object sender, MouseEventArgs e)
         {
             OnDataGridMouseMove((DataGridView)sender, e);
         }
 
+        private void ExcludedChangesGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void UntrackedFilesGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseDown((DataGridView)sender, e);
+        }
+
+        private void UntrackedFilesGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnDataGridMouseMove((DataGridView)sender, e);
+        }
+
+        #endregion
     }
 }
