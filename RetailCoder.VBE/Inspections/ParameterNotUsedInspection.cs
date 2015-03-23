@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
@@ -20,11 +21,13 @@ namespace Rubberduck.Inspections
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Parameter
+                && !(declaration.Context.Parent.Parent is VBAParser.EventStmtContext)
+                && !(declaration.Context.Parent.Parent is VBAParser.DeclareStmtContext)
                 && !declaration.References.Any());
 
             foreach (var issue in declarations)
             {
-                yield return new ParameterNotUsedInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new ParameterNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName);
             }
         }
     }

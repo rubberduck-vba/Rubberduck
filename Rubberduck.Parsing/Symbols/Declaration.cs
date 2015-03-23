@@ -119,13 +119,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     case DeclarationType.Class:
                     case DeclarationType.Module:
-                        return _projectName;
+                        return _projectName + "." + _componentName;
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return _projectName + "." + _componentName;
+                        return _projectName + "." + _componentName + "." + _identifierName;
                     default:
                         return _parentScope;
                 }

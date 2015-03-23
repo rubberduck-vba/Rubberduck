@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in declarations)
             {
-                yield return new ParameterCanBeByValInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new ParameterCanBeByValInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName);
             }
         }
     }
