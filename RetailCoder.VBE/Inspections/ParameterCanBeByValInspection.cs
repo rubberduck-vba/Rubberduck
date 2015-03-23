@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -16,11 +19,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.IdentifierUsageInspector.UnassignedByRefParameters();
+            var declarations = 
+                parseResult.Declarations.Items.Where(declaration =>
+                    declaration.DeclarationType == DeclarationType.Parameter
+                    && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
+                    && !declaration.References.Any(reference => reference.IsAssignment));
 
-            foreach (var issue in issues)
+            foreach (var issue in declarations)
             {
-                yield return new ParameterCanBeByValInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.MemberName);
+                yield return new ParameterCanBeByValInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
             }
         }
     }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -38,25 +40,36 @@ namespace Rubberduck.VBA
             var modules = project.VBComponents.Cast<VBComponent>();
             foreach(var module in modules)
             {
-                yield return Parse(module);
+                var result = Parse(module);
+                if (result != null)
+                {
+                    yield return result;
+                }
             }
         }
 
         public VBComponentParseResult Parse(VBComponent component)
         {
-            VBComponentParseResult cachedValue;
-            var name = component.QualifiedName();
-            if (ParseResultCache.TryGetValue(name, out cachedValue))
+            try
             {
-                return cachedValue;
+                VBComponentParseResult cachedValue;
+                var name = component.QualifiedName();
+                if (ParseResultCache.TryGetValue(name, out cachedValue))
+                {
+                    return cachedValue;
+                }
+
+                var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule));
+                var comments = ParseComments(component);
+                var result = new VBComponentParseResult(component, parseTree, comments);
+
+                ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
+                return result;
             }
-
-            var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule));
-            var comments = ParseComments(component);
-            var result = new VBComponentParseResult(component, parseTree, comments);
-
-            ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
-            return result;
+            catch (COMException exception)
+            {
+                return null;
+            }
         }
 
         public IEnumerable<CommentNode> ParseComments(VBComponent component)

@@ -33,12 +33,21 @@ namespace Rubberduck.Parsing
             }
         }
 
+        public void IdentifySymbolUsages()
+        {
+            foreach (var componentParseResult in _parseResults)
+            {
+                var listener = new IdentifierReferenceListener(componentParseResult, _declarations);
+                var walker = new ParseTreeWalker();
+                walker.Walk(listener, componentParseResult.ParseTree);
+            }
+        }
+
         private readonly IEnumerable<VBComponentParseResult> _parseResults;
+        
         private readonly Declarations _declarations;
+        public Declarations Declarations { get { return _declarations; } }
 
         public IEnumerable<VBComponentParseResult> ComponentParseResults { get { return _parseResults; } }
-
-        private readonly IdentifierUsageInspector _inspector;
-        public IdentifierUsageInspector IdentifierUsageInspector { get { return _inspector; } }
     }
 }

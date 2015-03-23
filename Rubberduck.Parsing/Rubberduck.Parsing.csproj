@@ -93,7 +93,6 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\IdentifierUsageInspector.cs" />
     <Compile Include="VBComponentExtensions.cs" />
     <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />

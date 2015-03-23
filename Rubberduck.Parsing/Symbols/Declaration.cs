@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -8,21 +8,26 @@ namespace Rubberduck.Parsing.Symbols
     /// </summary>
     public class Declaration
     {
-        public Declaration(int projectHashCode, string parentScope,
-            string projectName, string componentName, string identifierName, string asTypeName, bool isSelfAssigned,
-            Accessibility accessibility, DeclarationType declarationType, Selection selection)
+        public Declaration(QualifiedMemberName qualifiedName, string parentScope,
+            string identifierName, string asTypeName, bool isSelfAssigned,
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context)
         {
-            _projectHashCode = projectHashCode;
+            _qualifiedName = qualifiedName;
             _parentScope = parentScope;
-            _projectName = projectName;
-            _componentName = componentName;
             _identifierName = identifierName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
             _accessibility = accessibility;
             _declarationType = declarationType;
-            _selection = selection;
+            _selection = context.GetSelection();
+            _context = context;
         }
+
+        private readonly QualifiedMemberName _qualifiedName;
+        public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
+
+        private readonly ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
 
         private readonly IList<IdentifierReference> _references = new List<IdentifierReference>();
         public IEnumerable<IdentifierReference> References { get { return _references; } }

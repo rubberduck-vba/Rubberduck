@@ -14,6 +14,10 @@ namespace Rubberduck.Parsing.Symbols
 
         private string _currentScope;
 
+        public IdentifierReferenceListener(VBComponentParseResult result, Declarations declarations)
+            : this(result.QualifiedName.ProjectHashCode, result.QualifiedName.ProjectName, result.QualifiedName.ModuleName, declarations)
+        { }
+
         public IdentifierReferenceListener(int projectHashCode, string projectName, string componentName, Declarations declarations)
         {
             _projectHashCode = projectHashCode;
@@ -126,7 +130,9 @@ namespace Rubberduck.Parsing.Symbols
             var matches = _declarations[name].Where(IsInScope);
 
             // ...but let's not make that assumption:
-            foreach (var declaration in matches)
+            // note: should this try to be smarter?
+            // e.g. if context is a member call, do we need to bother iterating matching global variable declarations?
+            foreach (var declaration in matches) 
             {
                 var isAssignment = IsAssignmentContext(context);
                 var reference = new IdentifierReference(_projectName, _componentName, name, selection, isAssignment);
@@ -191,8 +197,8 @@ namespace Rubberduck.Parsing.Symbols
         private bool IsAssignmentContext(RuleContext context)
         {
             var parent = context.Parent;
-            return parent is VBAParser.SetStmtContext // object reference assignment
-                   || parent is VBAParser.LetStmtContext // value assignment
+            return parent.Parent.Parent is VBAParser.SetStmtContext // object reference assignment
+                   || parent.Parent.Parent is VBAParser.LetStmtContext // value assignment
                    || parent is VBAParser.ForNextStmtContext // treat For loop as an assignment
                 // todo: verify that we're not missing anything here (likely)
                 ;

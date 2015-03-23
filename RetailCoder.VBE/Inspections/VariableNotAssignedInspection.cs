@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -16,10 +18,17 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.IdentifierUsageInspector.AllUnassignedVariables();
-            foreach (var issue in issues)
+            var declarations = parseResult.Declarations.Items.Where(declaration =>
+                declaration.DeclarationType == DeclarationType.Variable
+                && !parseResult.Declarations.Items.Any(item => 
+                    item.IdentifierName == declaration.AsTypeName 
+                    && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
+                && !declaration.IsSelfAssigned
+                && !declaration.References.Any(reference => reference.IsAssignment));
+
+            foreach (var issue in declarations)
             {
-                yield return new VariableNotAssignedInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new VariableNotAssignedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.ModuleScope);
             }
         }
     }
