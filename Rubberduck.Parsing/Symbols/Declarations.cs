@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class Declarations
     {
-        private readonly HashSet<Declaration> _declarations = new HashSet<Declaration>();
+        private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
 
         /// <summary>
         /// Adds specified declaration to available lookups.

@@ -225,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />

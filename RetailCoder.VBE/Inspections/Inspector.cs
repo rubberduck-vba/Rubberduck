@@ -26,10 +26,7 @@ namespace Rubberduck.Inspections
 
             RaiseResetEvent();
 
-            var code = new VBProjectParseResult(_parser.Parse(project));
-            code.IdentifySymbols();
-            code.IdentifySymbolUsages(); // surely a bottleneck
-
+            var code = _parser.Parse(project);
             var allIssues = new ConcurrentBag<ICodeInspectionResult>();
 
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)

@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove unused variable declaration", RemoveUnusedDeclaration}
+                    {"Remove unused declaration", RemoveUnusedDeclaration}
                 };
         }
 

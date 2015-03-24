@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Listeners;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBA;
@@ -56,8 +57,14 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent).ParseTree.GetContexts<ProcedureNameListener, ParserRuleContext>(new ProcedureNameListener(startScope, selection.QualifiedName)))
-                                .SingleOrDefault(proc => proc.Context.GetSelection().Contains(selection.Selection));
+            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent.Collection.Parent).Declarations.Items
+                                .SingleOrDefault(declaration => 
+                                    (declaration.DeclarationType == DeclarationType.Procedure
+                                    || declaration.DeclarationType == DeclarationType.Function
+                                    || declaration.DeclarationType == DeclarationType.PropertyGet
+                                    || declaration.DeclarationType == DeclarationType.PropertyLet
+                                    || declaration.DeclarationType == DeclarationType.PropertySet) 
+                                && declaration.Context.GetSelection().Contains(selection.Selection)));
 
             if (method == null)
             {

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
@@ -125,21 +127,17 @@ namespace Rubberduck.Parsing.Symbols
         private void EnterIdentifier(RuleContext context, Selection selection)
         {
             var name = context.GetText();
-
-            // there should only be one match here.. in theory...
             var matches = _declarations[name].Where(IsInScope);
 
-            // ...but let's not make that assumption:
-            // note: should this try to be smarter?
-            // e.g. if context is a member call, do we need to bother iterating matching global variable declarations?
-            foreach (var declaration in matches) 
+            var declaration = GetClosestScope(matches);
+            if (declaration != null)
             {
                 var isAssignment = IsAssignmentContext(context);
                 var reference = new IdentifierReference(_projectName, _componentName, name, selection, isAssignment);
-                declaration.AddReference(reference);
-            }
 
-            // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
+                declaration.AddReference(reference);
+                // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
+            }
         }
 
         private bool IsInScope(Declaration declaration)
@@ -148,6 +146,27 @@ namespace Rubberduck.Parsing.Symbols
                    || declaration.Scope == ModuleScope
                    || IsGlobalField(declaration) 
                    || IsGlobalProcedure(declaration);
+        }
+
+        private Declaration GetClosestScope(IEnumerable<Declaration> declarations)
+        {
+            // this method (as does the rest of Rubberduck) assumes the VBA code is compilable.
+
+            var matches = declarations as IList<Declaration> ?? declarations.ToList();
+            var currentScope = matches.FirstOrDefault(declaration => declaration.Scope == _currentScope);
+            if (currentScope != null)
+            {
+                return currentScope;
+            }
+
+            var moduleScope = matches.FirstOrDefault(declaration => declaration.Scope == ModuleScope);
+            if (moduleScope != null)
+            {
+                return moduleScope;
+            }
+
+            // multiple matches in global scope??
+            return matches.FirstOrDefault();
         }
 
         private bool IsGlobalField(Declaration declaration)

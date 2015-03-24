@@ -10,6 +10,8 @@ namespace Rubberduck.Parsing
         {
             _parseResults = parseResults;
             _declarations = new Declarations();
+            IdentifySymbols();
+            IdentifySymbolUsages();
         }
 
         /// <summary>
@@ -18,7 +20,7 @@ namespace Rubberduck.Parsing
         /// <remarks>
         /// This method walks the entire parse tree for each module.
         /// </remarks>
-        public void IdentifySymbols()
+        private void IdentifySymbols()
         {
             foreach (var componentParseResult in _parseResults)
             {
@@ -33,7 +35,7 @@ namespace Rubberduck.Parsing
             }
         }
 
-        public void IdentifySymbolUsages()
+        private void IdentifySymbolUsages()
         {
             foreach (var componentParseResult in _parseResults)
             {

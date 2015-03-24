@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBA;
 
@@ -156,11 +157,13 @@ namespace Rubberduck.UI.CodeExplorer
                     Control.Invoke((MethodInvoker)delegate
                     {
                         Control.SolutionTree.Nodes.Add(node);
+                        Control.SolutionTree.Refresh();
                         AddProjectNodes(project, node);
                     });
                 });
             }
 
+            // note: is this really needed?
             Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
         }
 
@@ -177,7 +180,7 @@ namespace Rubberduck.UI.CodeExplorer
                 else
                 {
                     root.ImageKey = "ClosedFolder";
-                    var nodes = (await CreateModuleNodesAsync(project, treeView.Font)).ToArray();
+                    var nodes = (await CreateModuleNodesAsync(project)).ToArray();
                     AddProjectFolders(project, root, nodes);
                     root.Expand();
                 }
@@ -250,21 +253,47 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project, Font font)
+        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
         {
             var result = new List<TreeNode>();
-            foreach (VBComponent vbComponent in project.VBComponents)
+            var parseResult = _parser.Parse(project);
+            foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
-                var component = vbComponent;
-                var qualifiedName = component.QualifiedName();
+                var component = componentParseResult.Component;
+                var members = parseResult.Declarations.Items
+                    .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name)
+                    .OrderBy(declaration => declaration.IdentifierName);
 
-                var members = await Task.Run(() => ParseModule(component, ref qualifiedName));
-
-                var node = members.Context;
+                var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                //node.NodeFont = new Font(font, FontStyle.Regular);
-                //node.Text = component.Name;
+                node.Tag = new QualifiedSelection(componentParseResult.QualifiedName, componentParseResult.Context.GetSelection());
+
+                foreach (var declaration in members)
+                {
+                    var text = GetNodeText(declaration);
+                    var child = new TreeNode(text);
+                    child.ImageKey = GetImageKeyForDeclaration(declaration);
+                    child.SelectedImageKey = child.ImageKey;
+                    child.Tag = new QualifiedSelection(declaration.QualifiedName.ModuleScope, declaration.Selection);
+
+                    if (declaration.DeclarationType == DeclarationType.UserDefinedType
+                        || declaration.DeclarationType == DeclarationType.Enumeration)
+                    {
+                        var subDeclaration = declaration;
+                        var subMembers = parseResult.Declarations.Items.Where(item => item.ParentScope == subDeclaration.Scope + "." + subDeclaration.IdentifierName);
+                        foreach (var subMember in subMembers)
+                        {
+                            var subChild = new TreeNode(subMember.IdentifierName);
+                            subChild.ImageKey = GetImageKeyForDeclaration(subMember);
+                            subChild.SelectedImageKey = subChild.ImageKey;
+                            subChild.Tag = new QualifiedSelection(subMember.QualifiedName.ModuleScope, subMember.Selection);
+                            child.Nodes.Add(subChild);
+                        }
+                    }
+
+                    node.Nodes.Add(child);
+                }
 
                 result.Add(node);
             }
@@ -272,9 +301,184 @@ namespace Rubberduck.UI.CodeExplorer
             return result;
         }
 
-        private QualifiedContext<TreeNode> ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
+        private string GetNodeText(Declaration declaration)
         {
-            return _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName, Control.DisplayStyle)).Single();
+            if (Control.DisplayStyle == TreeViewDisplayStyle.MemberNames)
+            {
+                var result = declaration.IdentifierName;
+                if (declaration.DeclarationType == DeclarationType.PropertyGet)
+                {
+                    result += " (" + Tokens.Get + ")";
+                }
+                else if (declaration.DeclarationType == DeclarationType.PropertyLet)
+                {
+                    result += " (" + Tokens.Let + ")";
+                }
+                else if (declaration.DeclarationType == DeclarationType.PropertySet)
+                {
+                    result += " (" + Tokens.Set + ")";
+                }
+
+                return result;
+            }
+
+            if (declaration.DeclarationType == DeclarationType.Procedure)
+            {
+                return ((VBAParser.SubStmtContext) declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.Function)
+            {
+                return ((VBAParser.FunctionStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertyGet)
+            {
+                return ((VBAParser.PropertyGetStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertyLet)
+            {
+                return ((VBAParser.PropertyLetStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                return ((VBAParser.PropertySetStmtContext)declaration.Context).Signature();
+            }
+
+            return declaration.IdentifierName;
+        }
+
+        private string GetImageKeyForDeclaration(Declaration declaration)
+        {
+            var result = string.Empty;
+            switch (declaration.DeclarationType)
+            {
+                case DeclarationType.Module:
+                    break;
+                case DeclarationType.Class:
+                    break;
+                case DeclarationType.Procedure:
+                case DeclarationType.Function:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateMethod";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendMethod";
+                        break;
+                    }
+                    result = "PublicMethod";
+                    break;
+
+                case DeclarationType.PropertyGet:
+                case DeclarationType.PropertyLet:
+                case DeclarationType.PropertySet:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateProperty";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendProperty";
+                        break;
+                    }
+                    result = "PublicProperty";
+                    break;
+
+                case DeclarationType.Parameter:
+                    break;
+                case DeclarationType.Variable:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateField";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendField";
+                        break;
+                    }
+                    result = "PublicField";
+                    break;
+
+                case DeclarationType.Constant:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateConst";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendConst";
+                        break;
+                    }
+                    result = "PublicConst";
+                    break;
+
+                case DeclarationType.Enumeration:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateEnum";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendEnum";
+                        break;
+                    }
+                    result = "PublicEnum";
+                    break;
+
+                case DeclarationType.EnumerationMember:
+                    result = "EnumItem";
+                    break;
+
+                case DeclarationType.Event:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateEvent";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendEvent";
+                        break;
+                    }
+                    result = "PublicEvent";
+                    break;
+
+                case DeclarationType.UserDefinedType:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateType";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendType";
+                        break;
+                    }
+                    result = "PublicType";
+                    break;
+
+                case DeclarationType.UserDefinedTypeMember:
+                    result = "PublicField";
+                    break;
+                
+                case DeclarationType.LibraryFunction:
+                    result = "Identifier";
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return result;
         }
     }
 }

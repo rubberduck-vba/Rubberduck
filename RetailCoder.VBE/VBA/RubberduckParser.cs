@@ -19,36 +19,32 @@ namespace Rubberduck.VBA
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
-        public IParseTree Parse(string code)
+        public VBProjectParseResult Parse(VBProject project)
+        {
+            var results = new List<VBComponentParseResult>();
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
+            {
+                return new VBProjectParseResult(results);
+            }
+
+            var modules = project.VBComponents.Cast<VBComponent>();
+            results.AddRange(modules.Select(Parse).Where(result => result != null));
+
+            return new VBProjectParseResult(results);
+        }
+
+        private IParseTree Parse(string code)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
-            
+
             var result = parser.startRule();
             return result;
         }
 
-        public IEnumerable<VBComponentParseResult> Parse(VBProject project)
-        {
-            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-            {
-                yield break;
-            }
-
-            var modules = project.VBComponents.Cast<VBComponent>();
-            foreach(var module in modules)
-            {
-                var result = Parse(module);
-                if (result != null)
-                {
-                    yield return result;
-                }
-            }
-        }
-
-        public VBComponentParseResult Parse(VBComponent component)
+        private VBComponentParseResult Parse(VBComponent component)
         {
             try
             {
@@ -72,7 +68,7 @@ namespace Rubberduck.VBA
             }
         }
 
-        public IEnumerable<CommentNode> ParseComments(VBComponent component)
+        private IEnumerable<CommentNode> ParseComments(VBComponent component)
         {
             var code = component.CodeModule.Code();
             var qualifiedName = component.QualifiedName();
