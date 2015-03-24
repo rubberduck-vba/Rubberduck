@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -20,23 +21,19 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var result in parseResult.ComponentParseResults)
+            var functions = parseResult.Declarations.Items.Where(declaration =>
+                declaration.DeclarationType == DeclarationType.Function
+                || declaration.DeclarationType == DeclarationType.PropertyGet);
+
+            var results = functions
+                .Where(declaration => declaration.References.Where(r => declaration.Selection.Contains(r.Selection)).All(r => !r.IsAssignment));
+
+            foreach (var result in results)
             {
                 // todo: in Microsoft Access, this inspection should only return a result for private functions.
                 //       changing an unassigned function to a "Sub" could break Access macros that reference it.
                 //       doing this right may require accessing the Access object model to find usages in macros.
-
-                var module = result;
-
-                var procedures = result.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
-                var functions = procedures.Select(context => context.Context).OfType<VBAParser.FunctionStmtContext>()
-                    .Where(function => function.GetContexts<VariableAssignmentListener, VBAParser.AmbiguousIdentifierContext>(new VariableAssignmentListener(module.QualifiedName))
-                        .All(assignment => assignment.Context.GetText() != function.ambiguousIdentifier().GetText()));
-
-                foreach (var unassignedFunction in functions)
-                {
-                    yield return new NonReturningFunctionInspectionResult(string.Format(Name, unassignedFunction.ambiguousIdentifier().GetText()), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, unassignedFunction));
-                }
+                yield return new NonReturningFunctionInspectionResult(string.Format(Name, result.IdentifierName), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, result.Context));
             }
         }
     }

@@ -46,26 +46,23 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public Selection Selection { get { return _selection; } }
 
-        private readonly int _projectHashCode;
         /// <summary>
         /// Gets an <c>int</c> representing the VBProject the declaration is made in.
         /// </summary>
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public int ProjectHashCode { get { return _projectHashCode; } }
+        public int ProjectHashCode { get { return _qualifiedName.ModuleScope.ProjectHashCode; } }
 
-        private readonly string _projectName;
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _projectName; } }
+        public string ProjectName { get { return _qualifiedName.ModuleScope.ProjectName; } }
 
-        private readonly string _componentName;
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName { get { return _componentName; } }
+        public string ComponentName { get { return _qualifiedName.ModuleScope.ModuleName; } }
 
         private readonly string _parentScope;
         /// <summary>
@@ -119,13 +116,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     case DeclarationType.Class:
                     case DeclarationType.Module:
-                        return _projectName + "." + _componentName;
+                        return _qualifiedName.ModuleScope.ProjectName + "." + _qualifiedName.ModuleScope.ModuleName;
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return _projectName + "." + _componentName + "." + _identifierName;
+                        return _qualifiedName.ModuleScope.ProjectName + "." + _qualifiedName.ModuleScope.ModuleName + "." + _identifierName;
                     default:
                         return _parentScope;
                 }
@@ -144,7 +141,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(_projectHashCode.ToString(), _projectName, _componentName, _parentScope, _identifierName).GetHashCode();
+            return string.Concat(ProjectHashCode.ToString(), ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
         }
     }
 }

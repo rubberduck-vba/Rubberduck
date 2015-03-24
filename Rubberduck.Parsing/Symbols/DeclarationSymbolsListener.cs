@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, bool selfAssigned = false)
         {
-            return new Declaration(new QualifiedMemberName(_qualifiedName, _currentMember), _currentScope, identifierName, asTypeName, selfAssigned, accessibility, declarationType, context);
+            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, identifierName, asTypeName, selfAssigned, accessibility, declarationType, context);
         }
 
         /// <summary>
@@ -102,7 +102,8 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant 
                 : asTypeClause.type().GetText();
 
-            _declarations.Add(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context));
+            var declaration = CreateDeclaration(name, asTypeName, accessibility, DeclarationType.Function, context);
+            _declarations.Add(declaration);
             SetCurrentScope(name);
         }
 
