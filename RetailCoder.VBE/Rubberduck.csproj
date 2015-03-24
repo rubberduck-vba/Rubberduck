@@ -266,6 +266,7 @@
     <Compile Include="SourceControl\IRepository.cs" />
     <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
+    <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />

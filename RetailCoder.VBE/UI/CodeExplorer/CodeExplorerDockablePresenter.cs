@@ -7,7 +7,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBA;

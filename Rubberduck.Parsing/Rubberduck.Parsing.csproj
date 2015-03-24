@@ -63,7 +63,6 @@
     <Compile Include="Listeners\ProcedureListener.cs" />
     <Compile Include="Listeners\ProcedureNameListener.cs" />
     <Compile Include="Listeners\PublicSubListener.cs" />
-    <Compile Include="Listeners\TreeViewListener.cs" />
     <Compile Include="Listeners\VariableAssignmentListener.cs" />
     <Compile Include="Listeners\VariableReferencesListener.cs" />
     <Compile Include="Listeners\VariableUsageListener.cs" />
