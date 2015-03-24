@@ -51,10 +51,8 @@
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.BranchesPanel = new System.Windows.Forms.Panel();
             this.PublishedBranchesBox = new System.Windows.Forms.GroupBox();
-            this.PublishedBranchesGrid = new System.Windows.Forms.DataGridView();
             this.MergeBranchButton = new System.Windows.Forms.Button();
             this.UnpublishedBranchesBox = new System.Windows.Forms.GroupBox();
-            this.UnpublishedBranchesGrid = new System.Windows.Forms.DataGridView();
             this.CurrentBranchSelector = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.NewBranchButton = new System.Windows.Forms.Button();
@@ -85,6 +83,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.UserName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.PublishedBranchesList = new System.Windows.Forms.ListBox();
+            this.UnpublishedBranchesList = new System.Windows.Forms.ListBox();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             this.ChangesTab.SuspendLayout();
@@ -98,9 +98,7 @@
             this.BranchesTab.SuspendLayout();
             this.BranchesPanel.SuspendLayout();
             this.PublishedBranchesBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PublishedBranchesGrid)).BeginInit();
             this.UnpublishedBranchesBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.UnpublishedBranchesGrid)).BeginInit();
             this.UnsyncedCommitsTab.SuspendLayout();
             this.UnsyncedCommitsPanel.SuspendLayout();
             this.OutgoingCommitsBox.SuspendLayout();
@@ -415,7 +413,7 @@
             // 
             this.PublishedBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.PublishedBranchesBox.Controls.Add(this.PublishedBranchesGrid);
+            this.PublishedBranchesBox.Controls.Add(this.PublishedBranchesList);
             this.PublishedBranchesBox.Location = new System.Drawing.Point(9, 67);
             this.PublishedBranchesBox.Name = "PublishedBranchesBox";
             this.PublishedBranchesBox.Padding = new System.Windows.Forms.Padding(6);
@@ -423,26 +421,6 @@
             this.PublishedBranchesBox.TabIndex = 15;
             this.PublishedBranchesBox.TabStop = false;
             this.PublishedBranchesBox.Text = "Published Branches";
-            // 
-            // PublishedBranchesGrid
-            // 
-            this.PublishedBranchesGrid.AllowUserToAddRows = false;
-            this.PublishedBranchesGrid.AllowUserToDeleteRows = false;
-            this.PublishedBranchesGrid.AllowUserToResizeColumns = false;
-            this.PublishedBranchesGrid.AllowUserToResizeRows = false;
-            this.PublishedBranchesGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PublishedBranchesGrid.BackgroundColor = System.Drawing.Color.White;
-            this.PublishedBranchesGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.PublishedBranchesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.PublishedBranchesGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.PublishedBranchesGrid.GridColor = System.Drawing.Color.White;
-            this.PublishedBranchesGrid.Location = new System.Drawing.Point(10, 23);
-            this.PublishedBranchesGrid.Name = "PublishedBranchesGrid";
-            this.PublishedBranchesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.PublishedBranchesGrid.Size = new System.Drawing.Size(207, 109);
-            this.PublishedBranchesGrid.TabIndex = 0;
             // 
             // MergeBranchButton
             // 
@@ -461,7 +439,7 @@
             // 
             this.UnpublishedBranchesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.UnpublishedBranchesBox.Controls.Add(this.UnpublishedBranchesGrid);
+            this.UnpublishedBranchesBox.Controls.Add(this.UnpublishedBranchesList);
             this.UnpublishedBranchesBox.Location = new System.Drawing.Point(9, 214);
             this.UnpublishedBranchesBox.Name = "UnpublishedBranchesBox";
             this.UnpublishedBranchesBox.Padding = new System.Windows.Forms.Padding(6);
@@ -469,26 +447,6 @@
             this.UnpublishedBranchesBox.TabIndex = 16;
             this.UnpublishedBranchesBox.TabStop = false;
             this.UnpublishedBranchesBox.Text = "Unpublished Branches";
-            // 
-            // UnpublishedBranchesGrid
-            // 
-            this.UnpublishedBranchesGrid.AllowUserToAddRows = false;
-            this.UnpublishedBranchesGrid.AllowUserToDeleteRows = false;
-            this.UnpublishedBranchesGrid.AllowUserToResizeColumns = false;
-            this.UnpublishedBranchesGrid.AllowUserToResizeRows = false;
-            this.UnpublishedBranchesGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.UnpublishedBranchesGrid.BackgroundColor = System.Drawing.Color.White;
-            this.UnpublishedBranchesGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.UnpublishedBranchesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.UnpublishedBranchesGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.UnpublishedBranchesGrid.GridColor = System.Drawing.Color.White;
-            this.UnpublishedBranchesGrid.Location = new System.Drawing.Point(10, 23);
-            this.UnpublishedBranchesGrid.Name = "UnpublishedBranchesGrid";
-            this.UnpublishedBranchesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UnpublishedBranchesGrid.Size = new System.Drawing.Size(207, 109);
-            this.UnpublishedBranchesGrid.TabIndex = 0;
             // 
             // CurrentBranchSelector
             // 
@@ -841,6 +799,24 @@
             this.label5.TabIndex = 0;
             this.label5.Text = "User Name";
             // 
+            // PublishedBranchesList
+            // 
+            this.PublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PublishedBranchesList.FormattingEnabled = true;
+            this.PublishedBranchesList.Location = new System.Drawing.Point(6, 19);
+            this.PublishedBranchesList.Name = "PublishedBranchesList";
+            this.PublishedBranchesList.Size = new System.Drawing.Size(214, 116);
+            this.PublishedBranchesList.TabIndex = 1;
+            // 
+            // UnpublishedBranchesList
+            // 
+            this.UnpublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UnpublishedBranchesList.FormattingEnabled = true;
+            this.UnpublishedBranchesList.Location = new System.Drawing.Point(6, 19);
+            this.UnpublishedBranchesList.Name = "UnpublishedBranchesList";
+            this.UnpublishedBranchesList.Size = new System.Drawing.Size(214, 116);
+            this.UnpublishedBranchesList.TabIndex = 0;
+            // 
             // SourceControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -866,9 +842,7 @@
             this.BranchesPanel.ResumeLayout(false);
             this.BranchesPanel.PerformLayout();
             this.PublishedBranchesBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.PublishedBranchesGrid)).EndInit();
             this.UnpublishedBranchesBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.UnpublishedBranchesGrid)).EndInit();
             this.UnsyncedCommitsTab.ResumeLayout(false);
             this.UnsyncedCommitsPanel.ResumeLayout(false);
             this.UnsyncedCommitsPanel.PerformLayout();
@@ -921,10 +895,8 @@
         private System.Windows.Forms.DataGridView IncomingCommitsGrid;
         private System.Windows.Forms.Panel BranchesPanel;
         private System.Windows.Forms.GroupBox PublishedBranchesBox;
-        private System.Windows.Forms.DataGridView PublishedBranchesGrid;
         private System.Windows.Forms.Button MergeBranchButton;
         private System.Windows.Forms.GroupBox UnpublishedBranchesBox;
-        private System.Windows.Forms.DataGridView UnpublishedBranchesGrid;
         private System.Windows.Forms.ComboBox CurrentBranchSelector;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button NewBranchButton;
@@ -945,5 +917,7 @@
         private System.Windows.Forms.ToolStripButton OpenWorkingFolderButton;
         private System.Windows.Forms.Label ChangesBranchNameLabel;
         private System.Windows.Forms.Label UnsyncedCommitsBranchNameLabel;
+        private System.Windows.Forms.ListBox PublishedBranchesList;
+        private System.Windows.Forms.ListBox UnpublishedBranchesList;
     }
 }

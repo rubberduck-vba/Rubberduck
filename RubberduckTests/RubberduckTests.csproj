@@ -155,6 +155,7 @@
   <ItemGroup>
     <Compile Include="Mocks\MockTodoSettingsView.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
+    <Compile Include="SourceControl\BranchesPresenterTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserTests.cs" />
