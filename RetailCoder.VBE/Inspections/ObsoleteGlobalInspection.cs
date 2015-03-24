@@ -4,6 +4,9 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 
 namespace Rubberduck.Inspections
 {

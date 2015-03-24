@@ -7,6 +7,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.VBA;
 
+using Rubberduck.Parsing;
 namespace Rubberduck.Inspections
 {
     public class Inspector : IInspector

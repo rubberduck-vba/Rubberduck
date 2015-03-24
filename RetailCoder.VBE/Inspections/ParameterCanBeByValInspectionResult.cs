@@ -6,6 +6,8 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
