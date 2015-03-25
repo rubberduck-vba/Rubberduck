@@ -25,7 +25,7 @@ namespace Rubberduck.Interop
 
         public new string CurrentBranch
         {
-            get { return base.CurrentBranch.FriendlyName; }
+            get { return base.CurrentBranch.Name; }
         }
 
         public new IEnumerable Branches
