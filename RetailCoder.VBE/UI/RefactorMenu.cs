@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBA;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
@@ -24,6 +25,7 @@ namespace Rubberduck.UI
         }
 
         private CommandBarButton _extractMethodButton;
+        private CommandBarButton _renameButton;
 
         public void Initialize(CommandBarControls menuControls)
         {
@@ -31,6 +33,7 @@ namespace Rubberduck.UI
             menu.Caption = "&Refactor";
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
+            _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -39,7 +42,6 @@ namespace Rubberduck.UI
             {
                 return;
             }
-
             var selection = IDE.ActiveCodePane.GetSelection();
             if (selection.Selection.StartLine <= IDE.ActiveCodePane.CodeModule.CountOfDeclarationLines)
             {
@@ -57,7 +59,7 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = (_parser.Parse(IDE.ActiveCodePane.CodeModule.Parent.Collection.Parent).Declarations.Items
+            var method = (_parser.Parse(IDE.ActiveVBProject).Declarations.Items
                                 .SingleOrDefault(declaration => 
                                     (declaration.DeclarationType == DeclarationType.Procedure
                                     || declaration.DeclarationType == DeclarationType.Function
@@ -74,6 +76,22 @@ namespace Rubberduck.UI
             var view = new ExtractMethodDialog();
             var presenter = new ExtractMethodPresenter(IDE, view, method.Context, selection);
             presenter.Show();
+
+            view.Dispose();
+        }
+
+        private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            if (IDE.ActiveCodePane == null)
+            {
+                return;
+            }
+            var selection = IDE.ActiveCodePane.GetSelection();
+            var view = new RenameDialog();
+            var presenter = new RenamePresenter(view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
+            presenter.Show();
+
+            view.Dispose();
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

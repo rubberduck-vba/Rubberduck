@@ -277,12 +277,21 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
+    <Compile Include="UI\Refactorings\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
       <DependentUpon>RenameDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\Rename\RenamePresenter.cs" />
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
@@ -559,6 +568,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
       <DependentUpon>CodeInspectionControl.cs</DependentUpon>
