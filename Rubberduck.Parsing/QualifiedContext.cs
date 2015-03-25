@@ -3,7 +3,7 @@ namespace Rubberduck.Parsing
     public class QualifiedContext<TContext>
     {
         public QualifiedContext(QualifiedMemberName memberName, TContext context)
-            : this(memberName.ModuleScope, context)
+            : this(memberName.QualifiedModuleName, context)
         {
             _member = memberName;
         }

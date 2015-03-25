@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ParameterNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, type, qualifiedName.ModuleScope, context)
+            : base(inspection, type, qualifiedName.QualifiedModuleName, context)
         {
         }
 

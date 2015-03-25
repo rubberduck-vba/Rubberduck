@@ -46,7 +46,7 @@ namespace Rubberduck.UnitTesting
         private readonly string _memberName;
 
         public TestMethodEventArgs(QualifiedMemberName qualifiedName)
-            : this(qualifiedName.ModuleScope.ProjectName, qualifiedName.ModuleScope.ModuleName, qualifiedName.Name)
+            : this(qualifiedName.QualifiedModuleName.ProjectName, qualifiedName.QualifiedModuleName.ModuleName, qualifiedName.Name)
         {
         }
 

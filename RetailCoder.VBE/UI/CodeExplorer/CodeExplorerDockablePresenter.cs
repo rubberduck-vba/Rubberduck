@@ -276,7 +276,7 @@ namespace Rubberduck.UI.CodeExplorer
                     var child = new TreeNode(text);
                     child.ImageKey = GetImageKeyForDeclaration(declaration);
                     child.SelectedImageKey = child.ImageKey;
-                    child.Tag = new QualifiedSelection(declaration.QualifiedName.ModuleScope, declaration.Selection);
+                    child.Tag = new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection);
 
                     if (declaration.DeclarationType == DeclarationType.UserDefinedType
                         || declaration.DeclarationType == DeclarationType.Enumeration)
@@ -288,7 +288,7 @@ namespace Rubberduck.UI.CodeExplorer
                             var subChild = new TreeNode(subMember.IdentifierName);
                             subChild.ImageKey = GetImageKeyForDeclaration(subMember);
                             subChild.SelectedImageKey = subChild.ImageKey;
-                            subChild.Tag = new QualifiedSelection(subMember.QualifiedName.ModuleScope, subMember.Selection);
+                            subChild.Tag = new QualifiedSelection(subMember.QualifiedName.QualifiedModuleName, subMember.Selection);
                             child.Nodes.Add(subChild);
                         }
                     }

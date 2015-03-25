@@ -36,26 +36,26 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.TitleLabel = new System.Windows.Forms.Label();
+            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SetReturnValueCheck = new System.Windows.Forms.CheckBox();
-            this.PreviewBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
-            this.label6 = new System.Windows.Forms.Label();
-            this.MethodAccessibilityCombo = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.MethodReturnValueCombo = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.MethodNameBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
+            this.PreviewBox = new System.Windows.Forms.TextBox();
+            this.PreviewLabel = new System.Windows.Forms.Label();
+            this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
+            this.ParametersLabel = new System.Windows.Forms.Label();
+            this.MethodAccessibilityCombo = new System.Windows.Forms.ComboBox();
+            this.AccessibilityLabel = new System.Windows.Forms.Label();
+            this.MethodReturnValueCombo = new System.Windows.Forms.ComboBox();
+            this.ReturnLabel = new System.Windows.Forms.Label();
+            this.MethodNameBox = new System.Windows.Forms.TextBox();
+            this.NameLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // flowLayoutPanel2
@@ -96,34 +96,34 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.TitleLabel);
+            this.panel2.Controls.Add(this.InstructionsLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(576, 68);
             this.panel2.TabIndex = 13;
             // 
-            // label1
+            // TitleLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(15, 9);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(2);
-            this.label1.Size = new System.Drawing.Size(107, 19);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Extract Method";
+            this.TitleLabel.AutoSize = true;
+            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleLabel.Location = new System.Drawing.Point(15, 9);
+            this.TitleLabel.Name = "TitleLabel";
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Size = new System.Drawing.Size(107, 19);
+            this.TitleLabel.TabIndex = 2;
+            this.TitleLabel.Text = "Extract Method";
             // 
-            // label2
+            // InstructionsLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 30);
-            this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(4);
-            this.label2.Size = new System.Drawing.Size(452, 21);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
+            this.InstructionsLabel.AutoSize = true;
+            this.InstructionsLabel.Location = new System.Drawing.Point(12, 30);
+            this.InstructionsLabel.Name = "InstructionsLabel";
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(452, 21);
+            this.InstructionsLabel.TabIndex = 3;
+            this.InstructionsLabel.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
     "her options.";
             // 
             // panel1
@@ -131,15 +131,15 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.panel1.Controls.Add(this.SetReturnValueCheck);
             this.panel1.Controls.Add(this.InvalidNameValidationIcon);
             this.panel1.Controls.Add(this.PreviewBox);
-            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.PreviewLabel);
             this.panel1.Controls.Add(this.MethodParametersGrid);
-            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.ParametersLabel);
             this.panel1.Controls.Add(this.MethodAccessibilityCombo);
-            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.AccessibilityLabel);
             this.panel1.Controls.Add(this.MethodReturnValueCombo);
-            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.ReturnLabel);
             this.panel1.Controls.Add(this.MethodNameBox);
-            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.NameLabel);
             this.panel1.Location = new System.Drawing.Point(0, 71);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(576, 372);
@@ -154,6 +154,16 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.SetReturnValueCheck.TabIndex = 11;
             this.SetReturnValueCheck.Text = "Set";
             this.SetReturnValueCheck.UseVisualStyleBackColor = true;
+            // 
+            // InvalidNameValidationIcon
+            // 
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
+            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
+            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
+            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.InvalidNameValidationIcon.TabIndex = 10;
+            this.InvalidNameValidationIcon.TabStop = false;
             // 
             // PreviewBox
             // 
@@ -170,14 +180,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.PreviewBox.TabIndex = 9;
             this.PreviewBox.WordWrap = false;
             // 
-            // label7
+            // PreviewLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 190);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(48, 13);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Preview:";
+            this.PreviewLabel.AutoSize = true;
+            this.PreviewLabel.Location = new System.Drawing.Point(15, 190);
+            this.PreviewLabel.Name = "PreviewLabel";
+            this.PreviewLabel.Size = new System.Drawing.Size(48, 13);
+            this.PreviewLabel.TabIndex = 8;
+            this.PreviewLabel.Text = "Preview:";
             // 
             // MethodParametersGrid
             // 
@@ -191,14 +201,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.MethodParametersGrid.Size = new System.Drawing.Size(546, 97);
             this.MethodParametersGrid.TabIndex = 7;
             // 
-            // label6
+            // ParametersLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 66);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(63, 13);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "Parameters:";
+            this.ParametersLabel.AutoSize = true;
+            this.ParametersLabel.Location = new System.Drawing.Point(15, 66);
+            this.ParametersLabel.Name = "ParametersLabel";
+            this.ParametersLabel.Size = new System.Drawing.Size(63, 13);
+            this.ParametersLabel.TabIndex = 6;
+            this.ParametersLabel.Text = "Parameters:";
             // 
             // MethodAccessibilityCombo
             // 
@@ -208,14 +218,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.MethodAccessibilityCombo.Size = new System.Drawing.Size(155, 21);
             this.MethodAccessibilityCombo.TabIndex = 5;
             // 
-            // label5
+            // AccessibilityLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(336, 37);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Accessibility:";
+            this.AccessibilityLabel.AutoSize = true;
+            this.AccessibilityLabel.Location = new System.Drawing.Point(336, 37);
+            this.AccessibilityLabel.Name = "AccessibilityLabel";
+            this.AccessibilityLabel.Size = new System.Drawing.Size(67, 13);
+            this.AccessibilityLabel.TabIndex = 4;
+            this.AccessibilityLabel.Text = "Accessibility:";
             // 
             // MethodReturnValueCombo
             // 
@@ -225,14 +235,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.MethodReturnValueCombo.Size = new System.Drawing.Size(185, 21);
             this.MethodReturnValueCombo.TabIndex = 3;
             // 
-            // label4
+            // ReturnLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 37);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Return:";
+            this.ReturnLabel.AutoSize = true;
+            this.ReturnLabel.Location = new System.Drawing.Point(15, 37);
+            this.ReturnLabel.Name = "ReturnLabel";
+            this.ReturnLabel.Size = new System.Drawing.Size(42, 13);
+            this.ReturnLabel.TabIndex = 2;
+            this.ReturnLabel.Text = "Return:";
             // 
             // MethodNameBox
             // 
@@ -241,24 +251,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.MethodNameBox.Size = new System.Drawing.Size(501, 20);
             this.MethodNameBox.TabIndex = 1;
             // 
-            // label3
+            // NameLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Name:";
-            // 
-            // InvalidNameValidationIcon
-            // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
-            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
-            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
-            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.InvalidNameValidationIcon.TabIndex = 10;
-            this.InvalidNameValidationIcon.TabStop = false;
+            this.NameLabel.AutoSize = true;
+            this.NameLabel.Location = new System.Drawing.Point(15, 10);
+            this.NameLabel.Name = "NameLabel";
+            this.NameLabel.Size = new System.Drawing.Size(38, 13);
+            this.NameLabel.TabIndex = 0;
+            this.NameLabel.Text = "Name:";
             // 
             // ExtractMethodDialog
             // 
@@ -280,8 +280,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MethodParametersGrid)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -292,20 +292,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private Button CancelButton;
         private Button OkButton;
         private Panel panel2;
-        private Label label1;
-        private Label label2;
+        private Label TitleLabel;
+        private Label InstructionsLabel;
         private Panel panel1;
         private CheckBox SetReturnValueCheck;
         private PictureBox InvalidNameValidationIcon;
         private TextBox PreviewBox;
-        private Label label7;
+        private Label PreviewLabel;
         private DataGridView MethodParametersGrid;
-        private Label label6;
+        private Label ParametersLabel;
         private ComboBox MethodAccessibilityCombo;
-        private Label label5;
+        private Label AccessibilityLabel;
         private ComboBox MethodReturnValueCombo;
-        private Label label4;
+        private Label ReturnLabel;
         private TextBox MethodNameBox;
-        private Label label3;
+        private Label NameLabel;
     }
 }

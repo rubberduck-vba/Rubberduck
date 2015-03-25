@@ -278,6 +278,12 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
+      <DependentUpon>RenameDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -550,6 +556,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
+      <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
       <DependentUpon>CodeInspectionControl.cs</DependentUpon>

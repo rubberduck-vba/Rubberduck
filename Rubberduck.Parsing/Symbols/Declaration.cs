@@ -52,17 +52,17 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public int ProjectHashCode { get { return _qualifiedName.ModuleScope.ProjectHashCode; } }
+        public int ProjectHashCode { get { return _qualifiedName.QualifiedModuleName.ProjectHashCode; } }
 
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _qualifiedName.ModuleScope.ProjectName; } }
+        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.ProjectName; } }
 
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName { get { return _qualifiedName.ModuleScope.ModuleName; } }
+        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.ModuleName; } }
 
         private readonly string _parentScope;
         /// <summary>
@@ -116,13 +116,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     case DeclarationType.Class:
                     case DeclarationType.Module:
-                        return _qualifiedName.ModuleScope.ProjectName + "." + _qualifiedName.ModuleScope.ModuleName;
+                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName;
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return _qualifiedName.ModuleScope.ProjectName + "." + _qualifiedName.ModuleScope.ModuleName + "." + _identifierName;
+                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName + "." + _identifierName;
                     default:
                         return _parentScope;
                 }
