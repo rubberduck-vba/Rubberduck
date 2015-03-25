@@ -24,8 +24,8 @@ namespace Rubberduck.SourceControl
         }
 
         public IRepository CurrentRepository { get; private set; }
-        public abstract string CurrentBranch { get; }
-        public abstract IEnumerable<string> Branches { get; }
+        public abstract IBranch CurrentBranch { get; }
+        public abstract IEnumerable<IBranch> Branches { get; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Interop
 {
@@ -17,9 +18,9 @@ namespace Rubberduck.Interop
     public class Branches : IEnumerable
     {
         private IEnumerable<string> branches;
-        internal Branches(IEnumerable<string> branches)
+        internal Branches(IEnumerable<IBranch> branches)
         {
-            this.branches = branches;
+            this.branches = branches.Select(b => b.Name);
         }
 
         [DispId(-4)]

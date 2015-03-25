@@ -10,8 +10,8 @@ namespace Rubberduck.SourceControl
     public interface ISourceControlProvider
     {
         IRepository CurrentRepository { get; }
-        string CurrentBranch { get; }
-        IEnumerable<string> Branches { get; }
+        IBranch CurrentBranch { get; }
+        IEnumerable<IBranch> Branches { get; }
 
         /// <summary>Clone a remote repository.</summary>
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>

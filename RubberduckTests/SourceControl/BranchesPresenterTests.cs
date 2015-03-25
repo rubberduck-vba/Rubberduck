@@ -13,13 +13,23 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void SelectedBranchShouldBeCurrentBranchAfterRefresh()
         {
+
             //arrange
             var _provider = new Mock<ISourceControlProvider>();
             var _view = new Mock<IBranchesView>();
 
-            var branches = new List<string>() { "master", "dev" };
+            var expectedBranch = new Branch("dev", "dev", false, false);
+
+            var branches = new List<IBranch>()
+            {
+                new Branch("master", "master", false, true),
+                expectedBranch,
+                new Branch("origin/master", "master", true, true),
+                new Branch("origin/dev", "dev", true, false)
+            };
+
             _provider.SetupGet(git => git.Branches).Returns(branches);
-            _provider.SetupGet(git => git.CurrentBranch).Returns("dev");
+            _provider.SetupGet(git => git.CurrentBranch).Returns(expectedBranch);
 
             _view.SetupProperty(v => v.CurrentBranch);
 
@@ -27,7 +37,7 @@ namespace RubberduckTests.SourceControl
             var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //assert
-            Assert.AreEqual(_provider.Object.CurrentBranch, _view.Object.CurrentBranch);
+            Assert.AreEqual(_provider.Object.CurrentBranch.Name, _view.Object.CurrentBranch);
         }
 
     }

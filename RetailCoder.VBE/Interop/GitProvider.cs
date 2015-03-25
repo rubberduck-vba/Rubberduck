@@ -23,6 +23,11 @@ namespace Rubberduck.Interop
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : base(project, repository, userName, passWord){}
 
+        public new string CurrentBranch
+        {
+            get { return base.CurrentBranch.FriendlyName; }
+        }
+
         public new IEnumerable Branches
         {
             get { return new Branches(base.Branches); }

@@ -265,6 +265,7 @@
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
+    <Compile Include="SourceControl\Branch.cs" />
     <Compile Include="SourceControl\IRepository.cs" />
     <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />

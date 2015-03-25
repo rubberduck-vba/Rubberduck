@@ -43,20 +43,20 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override string CurrentBranch
+        public override IBranch CurrentBranch
         {
             get
             {
-                return _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Name;
+                return this.Branches.First(b => !b.IsRemote && b.IsCurrentHead);
             }
         }
 
-        public override IEnumerable<string> Branches
+        public override IEnumerable<IBranch> Branches
         {
             get
             {
-                return _repo.Branches.Where(b => !b.IsRemote)
-                                    .Select(b => b.Name);
+                //note: consider doing this once and refreshing if necessary
+                return _repo.Branches.Select(b => new Branch(b));
             }
         }
 
@@ -111,7 +111,7 @@ namespace Rubberduck.SourceControl
                     };
                 }
 
-                var branch = _repo.Branches[this.CurrentBranch];
+                var branch = _repo.Branches[this.CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
             }
             catch (LibGit2SharpException ex)
@@ -317,7 +317,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.CheckoutPaths(this.CurrentBranch, new List<string> {filePath});
+                _repo.CheckoutPaths(this.CurrentBranch.Name, new List<string> {filePath});
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)

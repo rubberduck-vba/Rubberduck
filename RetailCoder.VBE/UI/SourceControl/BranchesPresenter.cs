@@ -22,8 +22,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            _view.Branches = _provider.Branches.ToList();
-            _view.CurrentBranch = _provider.CurrentBranch;
+            _view.Branches = _provider.Branches.Select(b => b.FriendlyName).ToList();
+            _view.CurrentBranch = _provider.CurrentBranch.FriendlyName;
         }
     }
 }
