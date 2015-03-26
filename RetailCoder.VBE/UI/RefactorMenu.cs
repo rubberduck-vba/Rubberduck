@@ -88,7 +88,7 @@ namespace Rubberduck.UI
             }
             var selection = IDE.ActiveCodePane.GetSelection();
             var view = new RenameDialog();
-            var presenter = new RenamePresenter(view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
+            var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
             presenter.Show();
 
             view.Dispose();

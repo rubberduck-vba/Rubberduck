@@ -70,6 +70,150 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to class.
+        /// </summary>
+        internal static string DeclarationType_Class {
+            get {
+                return ResourceManager.GetString("DeclarationType_Class", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to constant.
+        /// </summary>
+        internal static string DeclarationType_Constant {
+            get {
+                return ResourceManager.GetString("DeclarationType_Constant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enum.
+        /// </summary>
+        internal static string DeclarationType_Enumeration {
+            get {
+                return ResourceManager.GetString("DeclarationType_Enumeration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enum member.
+        /// </summary>
+        internal static string DeclarationType_EnumerationMember {
+            get {
+                return ResourceManager.GetString("DeclarationType_EnumerationMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to event.
+        /// </summary>
+        internal static string DeclarationType_Event {
+            get {
+                return ResourceManager.GetString("DeclarationType_Event", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to function.
+        /// </summary>
+        internal static string DeclarationType_Function {
+            get {
+                return ResourceManager.GetString("DeclarationType_Function", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to library function.
+        /// </summary>
+        internal static string DeclarationType_LibraryFunction {
+            get {
+                return ResourceManager.GetString("DeclarationType_LibraryFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to module.
+        /// </summary>
+        internal static string DeclarationType_Module {
+            get {
+                return ResourceManager.GetString("DeclarationType_Module", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to parameter.
+        /// </summary>
+        internal static string DeclarationType_Parameter {
+            get {
+                return ResourceManager.GetString("DeclarationType_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to procedure.
+        /// </summary>
+        internal static string DeclarationType_Procedure {
+            get {
+                return ResourceManager.GetString("DeclarationType_Procedure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property get accessor.
+        /// </summary>
+        internal static string DeclarationType_PropertyGet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertyGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property let accessor.
+        /// </summary>
+        internal static string DeclarationType_PropertyLet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertyLet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to property set accessor.
+        /// </summary>
+        internal static string DeclarationType_PropertySet {
+            get {
+                return ResourceManager.GetString("DeclarationType_PropertySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to user-defined type.
+        /// </summary>
+        internal static string DeclarationType_UserDefinedType {
+            get {
+                return ResourceManager.GetString("DeclarationType_UserDefinedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to user-defined type member.
+        /// </summary>
+        internal static string DeclarationType_UserDefinedTypeMember {
+            get {
+                return ResourceManager.GetString("DeclarationType_UserDefinedTypeMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to variable.
+        /// </summary>
+        internal static string DeclarationType_Variable {
+            get {
+                return ResourceManager.GetString("DeclarationType_Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
         internal static string NameLabelText {

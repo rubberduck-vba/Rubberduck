@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
@@ -9,29 +8,23 @@ namespace Rubberduck.Parsing.Symbols
     public class IdentifierReferenceListener : VBABaseListener
     {
         private readonly Declarations _declarations;
-
-        private readonly int _projectHashCode;
-        private readonly string _projectName;
-        private readonly string _componentName;
+        private readonly QualifiedModuleName _qualifiedName;
 
         private string _currentScope;
 
         public IdentifierReferenceListener(VBComponentParseResult result, Declarations declarations)
-            : this(result.QualifiedName.ProjectHashCode, result.QualifiedName.ProjectName, result.QualifiedName.ModuleName, declarations)
+            : this(result.QualifiedName, declarations)
         { }
 
-        public IdentifierReferenceListener(int projectHashCode, string projectName, string componentName, Declarations declarations)
+        public IdentifierReferenceListener(QualifiedModuleName qualifiedName, Declarations declarations)
         {
-            _projectHashCode = projectHashCode;
-            _projectName = projectName;
-            _componentName = componentName;
-
+            _qualifiedName = qualifiedName;
             _declarations = declarations;
 
             SetCurrentScope();
         }
 
-        private string ModuleScope { get { return _projectName + "." + _componentName; } }
+        private string ModuleScope { get { return _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName; } }
 
         /// <summary>
         /// Sets current scope to module-level.
@@ -47,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name)
         {
-            _currentScope = _projectName + "." + _componentName + "." + name;
+            _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
@@ -133,7 +126,7 @@ namespace Rubberduck.Parsing.Symbols
             if (declaration != null)
             {
                 var isAssignment = IsAssignmentContext(context);
-                var reference = new IdentifierReference(_projectName, _componentName, name, selection, isAssignment);
+                var reference = new IdentifierReference(_qualifiedName, name, selection, isAssignment, context, declaration);
 
                 declaration.AddReference(reference);
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
@@ -183,7 +176,7 @@ namespace Rubberduck.Parsing.Symbols
             var modules = moduleMatches.Where(match => match.DeclarationType == DeclarationType.Module);
 
             // Friend members are only visible within the same project.
-            var isSameProject = declaration.ProjectHashCode == _projectHashCode;
+            var isSameProject = declaration.ProjectHashCode == _qualifiedName.ProjectHashCode;
 
             // todo: verify that this isn't overkill. Friend modifier has restricted legal usage.
             return modules.Any()
@@ -205,7 +198,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // Friend members are only visible within the same project.
-            var isSameProject = declaration.ProjectHashCode == _projectHashCode;
+            var isSameProject = declaration.ProjectHashCode == _qualifiedName.ProjectHashCode;
 
             // implicit (unspecified) accessibility makes a member Public,
             // so if it's in the same project, it's public whenever it's not explicitly Private:

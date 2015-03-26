@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 
@@ -48,9 +41,14 @@ namespace Rubberduck.UI.Refactorings.Rename
             set
             {
                 _target = value;
-                NewName = value.IdentifierName;
-                InstructionsLabel.Text = string.Format(RubberduckUI.RenameDialog_InstructionsLabelText,
-                    value.DeclarationType.ToString().ToLower(), value.IdentifierName);
+                if (_target == null)
+                {
+                    return;
+                }
+
+                NewName = _target.IdentifierName;
+                var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + _target.DeclarationType);
+                InstructionsLabel.Text = string.Format(RubberduckUI.RenameDialog_InstructionsLabelText, declarationType, _target.IdentifierName);
             }
         }
 
