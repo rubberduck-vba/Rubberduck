@@ -10,6 +10,13 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             InitializeComponent();
             OkButton.Click += OkButtonClick;
+            Activated += RenameDialog_Activated;
+        }
+
+        private void RenameDialog_Activated(object sender, EventArgs e)
+        {
+            NewNameBox.SelectAll();
+            NewNameBox.Focus();
         }
 
         private void OkButtonClick(object sender, EventArgs e)
@@ -55,7 +62,20 @@ namespace Rubberduck.UI.Refactorings.Rename
         public string NewName
         {
             get { return NewNameBox.Text; }
-            set { NewNameBox.Text = value; }
+            set
+            {
+                NewNameBox.Text = value;
+                ValidateNewName();
+            }
+        }
+
+        private void ValidateNewName()
+        {
+            OkButton.Enabled = (NewName != Target.IdentifierName) 
+                && !string.IsNullOrWhiteSpace(NewName)
+                && !NewName.StartsWith("_"); // also invalid if it starts with a number...
+
+            InvalidNameValidationIcon.Visible = !OkButton.Enabled;
         }
     }
 }

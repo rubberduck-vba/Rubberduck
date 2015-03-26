@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RenameDialog));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.TitleLabel = new System.Windows.Forms.Label();
+            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelButton = new System.Windows.Forms.Button();
@@ -37,8 +39,6 @@
             this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.NewNameBox = new System.Windows.Forms.TextBox();
             this.NameLabel = new System.Windows.Forms.Label();
-            this.TitleLabel = new System.Windows.Forms.Label();
-            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -55,6 +55,27 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(513, 64);
             this.panel1.TabIndex = 0;
+            // 
+            // TitleLabel
+            // 
+            this.TitleLabel.AutoSize = true;
+            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleLabel.Location = new System.Drawing.Point(12, 9);
+            this.TitleLabel.Name = "TitleLabel";
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Size = new System.Drawing.Size(126, 19);
+            this.TitleLabel.TabIndex = 4;
+            this.TitleLabel.Text = "Rename identifier";
+            // 
+            // InstructionsLabel
+            // 
+            this.InstructionsLabel.AutoSize = true;
+            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
+            this.InstructionsLabel.Name = "InstructionsLabel";
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(174, 21);
+            this.InstructionsLabel.TabIndex = 5;
+            this.InstructionsLabel.Text = "Please specify new name for \'{0}\'.";
             // 
             // panel2
             // 
@@ -127,31 +148,12 @@
             this.NameLabel.TabIndex = 11;
             this.NameLabel.Text = "Name:";
             // 
-            // TitleLabel
-            // 
-            this.TitleLabel.AutoSize = true;
-            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleLabel.Location = new System.Drawing.Point(12, 9);
-            this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
-            this.TitleLabel.Size = new System.Drawing.Size(126, 19);
-            this.TitleLabel.TabIndex = 4;
-            this.TitleLabel.Text = "Rename identifier";
-            // 
-            // InstructionsLabel
-            // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
-            this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(174, 21);
-            this.InstructionsLabel.TabIndex = 5;
-            this.InstructionsLabel.Text = "Please specify new name for \'{0}\'.";
-            // 
             // RenameDialog
             // 
+            this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(513, 170);
             this.Controls.Add(this.InvalidNameValidationIcon);
             this.Controls.Add(this.NewNameBox);
