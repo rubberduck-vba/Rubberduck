@@ -28,16 +28,27 @@ namespace Rubberduck.Interop
             get { return base.CurrentBranch.Name; }
         }
 
+        /// <summary>
+        /// Returns only local branches to COM clients.
+        /// </summary>
         public new IEnumerable Branches
         {
-            get { return new Branches(base.Branches); }
+            get { return new Branches(base.Branches.Where(b => !b.IsRemote)); }
         }
 
+        /// <summary>
+        /// Returns Iterable Collection of FileStatusEntry objects.
+        /// </summary>
+        /// <returns></returns>
         public new IEnumerable Status()
         {
             return new FileStatusEntries(base.Status());
         }
 
+        /// <summary>
+        /// Stages and commits all modified files.
+        /// </summary>
+        /// <param name="message"></param>
         public override void Commit(string message)
         {
             var filePaths = base.Status()

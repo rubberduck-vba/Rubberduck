@@ -18,14 +18,14 @@ namespace RubberduckTests.SourceControl
             var _provider = new Mock<ISourceControlProvider>();
             var _view = new Mock<IBranchesView>();
 
-            var expectedBranch = new Branch("dev", "dev", false, false);
+            var expectedBranch = new Branch("dev", "ref/Heads/dev", false, false);
 
             var branches = new List<IBranch>()
             {
-                new Branch("master", "master", false, true),
+                new Branch("master", "refs/Heads/master", false, true),
                 expectedBranch,
-                new Branch("origin/master", "master", true, true),
-                new Branch("origin/dev", "dev", true, false)
+                new Branch("origin/master", "refs/remotes/origin/master", true, true),
+                new Branch("origin/dev", "refs/remotes/origin/dev", true, false)
             };
 
             _provider.SetupGet(git => git.Branches).Returns(branches);
