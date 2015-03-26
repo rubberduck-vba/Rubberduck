@@ -144,6 +144,13 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsInScope(Declaration declaration)
         {
+            if (declaration.DeclarationType == DeclarationType.Module ||
+                declaration.DeclarationType == DeclarationType.Class)
+            {
+                // todo: access component instancing properties to do this right
+                return true;
+            }
+
             if (ProcedureDeclarations.Contains(declaration.DeclarationType))
             {
                 if (declaration.Accessibility == Accessibility.Public)

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -36,8 +34,30 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            RenameDeclaration();
+            if (_view.Target.DeclarationType == DeclarationType.Class ||
+                _view.Target.DeclarationType == DeclarationType.Module)
+            {
+                RenameModule();
+            }
+            else
+            {
+                RenameDeclaration();
+            }
+
             RenameUsages();
+        }
+
+        private void RenameModule()
+        {
+            try
+            {
+                var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).Single();
+                module.Name = _view.NewName;
+            }
+            catch (COMException exception)
+            {
+                MessageBox.Show("Could not rename module.", RubberduckUI.RenameDialog_Caption);
+            }
         }
 
         private void RenameDeclaration()
