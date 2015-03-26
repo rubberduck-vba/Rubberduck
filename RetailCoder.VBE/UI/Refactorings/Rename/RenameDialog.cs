@@ -10,10 +10,16 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             InitializeComponent();
             OkButton.Click += OkButtonClick;
-            Activated += RenameDialog_Activated;
+            Shown += RenameDialog_Shown;
+            NewNameBox.TextChanged += NewNameBox_TextChanged;
         }
 
-        private void RenameDialog_Activated(object sender, EventArgs e)
+        private void NewNameBox_TextChanged(object sender, EventArgs e)
+        {
+            NewName = NewNameBox.Text;
+        }
+
+        private void RenameDialog_Shown(object sender, EventArgs e)
         {
             NewNameBox.SelectAll();
             NewNameBox.Focus();
