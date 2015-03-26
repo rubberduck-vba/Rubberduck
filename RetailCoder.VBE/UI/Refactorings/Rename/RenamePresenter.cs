@@ -84,9 +84,18 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 result = result.Replace(target + '.', newName + '.');
             }
+            else if (result.Contains('.' + target))
+            {
+                result = result.Replace('.' + target, '.'+ newName);
+            }
+
             if (result.Contains(target + '!'))
             {
                 result = result.Replace(target + '!', newName + '!');
+            }
+            else if (result.Contains('!' + target))
+            {
+                result = result.Replace('!' + target, '!' + newName);
             }
 
             return result.Substring(1);

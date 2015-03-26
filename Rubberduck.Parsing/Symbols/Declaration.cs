@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -52,7 +53,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public int ProjectHashCode { get { return _qualifiedName.QualifiedModuleName.ProjectHashCode; } }
+        public VBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
 
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
@@ -141,7 +142,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(ProjectHashCode.ToString(), ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
+            return string.Concat(Project.ToString(), ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
         }
     }
 }

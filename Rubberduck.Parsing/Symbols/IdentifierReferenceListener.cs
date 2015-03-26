@@ -133,8 +133,28 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private static readonly DeclarationType[] ProcedureDeclarations = new[]
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
         private bool IsInScope(Declaration declaration)
         {
+            if (ProcedureDeclarations.Contains(declaration.DeclarationType))
+            {
+                if (declaration.Accessibility == Accessibility.Public)
+                {
+                    var result = declaration.Project.Equals(_qualifiedName.Project);
+                    return result;
+                }
+
+                return declaration.QualifiedName.QualifiedModuleName == _qualifiedName;
+            }
+
             return declaration.Scope == _currentScope
                    || declaration.Scope == ModuleScope
                    || IsGlobalField(declaration) 
@@ -176,7 +196,7 @@ namespace Rubberduck.Parsing.Symbols
             var modules = moduleMatches.Where(match => match.DeclarationType == DeclarationType.Module);
 
             // Friend members are only visible within the same project.
-            var isSameProject = declaration.ProjectHashCode == _qualifiedName.ProjectHashCode;
+            var isSameProject = declaration.Project == _qualifiedName.Project;
 
             // todo: verify that this isn't overkill. Friend modifier has restricted legal usage.
             return modules.Any()
@@ -198,7 +218,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // Friend members are only visible within the same project.
-            var isSameProject = declaration.ProjectHashCode == _qualifiedName.ProjectHashCode;
+            var isSameProject = declaration.Project == _qualifiedName.Project;
 
             // implicit (unspecified) accessibility makes a member Public,
             // so if it's in the same project, it's public whenever it's not explicitly Private:
