@@ -250,6 +250,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not rename module..
+        /// </summary>
+        internal static string RenameDialog_ModuleRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_ModuleRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         internal static string RenameDialog_TitleText {

@@ -32,10 +32,15 @@ namespace Rubberduck.UI.Refactorings.Rename
             _view.ShowDialog();
         }
 
+        private static readonly DeclarationType[] ModuleDeclarationTypes =
+            {
+                DeclarationType.Class,
+                DeclarationType.Module
+            };
+
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            if (_view.Target.DeclarationType == DeclarationType.Class ||
-                _view.Target.DeclarationType == DeclarationType.Module)
+            if (ModuleDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
                 RenameModule();
             }
@@ -56,7 +61,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
             catch (COMException exception)
             {
-                MessageBox.Show("Could not rename module.", RubberduckUI.RenameDialog_Caption);
+                MessageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
             }
         }
 
@@ -109,6 +114,16 @@ namespace Rubberduck.UI.Refactorings.Rename
                 result = result.Replace('.' + target, '.'+ newName);
             }
 
+            if (result.Contains('(' + target))
+            {
+                result = result.Replace('(' + target, '(' + newName);
+            }
+
+            if (result.Contains(":=" + target))
+            {
+                result = result.Replace(":=" + target, ":=" + newName);
+            }
+
             if (result.Contains(target + '!'))
             {
                 result = result.Replace(target + '!', newName + '!');
@@ -121,6 +136,15 @@ namespace Rubberduck.UI.Refactorings.Rename
             return result.Substring(1);
         }
 
+        private static readonly DeclarationType[] ProcedureDeclarationTypes =
+            {
+                DeclarationType.Procedure,
+                DeclarationType.Function,
+                DeclarationType.PropertyGet,
+                DeclarationType.PropertyLet,
+                DeclarationType.PropertySet
+            };
+
         private void AcquireTarget(QualifiedSelection selection)
         {
             var targets = _declarations.Items.Where(declaration =>
@@ -129,11 +153,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 || declaration.References.Any(r => r.Selection.Contains(selection.Selection)))
                 .ToList();
 
-            var nonProcTarget = targets.Where(t => t.DeclarationType != DeclarationType.Function
-                                                   && t.DeclarationType != DeclarationType.Procedure
-                                                   && t.DeclarationType != DeclarationType.PropertyGet
-                                                   && t.DeclarationType != DeclarationType.PropertyLet
-                                                   && t.DeclarationType != DeclarationType.PropertySet).ToList();
+            var nonProcTarget = targets.Where(t => !ProcedureDeclarationTypes.Contains(t.DeclarationType)).ToList();
             if (nonProcTarget.Any())
             {
                 _view.Target = nonProcTarget.First();
@@ -148,8 +168,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 // no valid selection? no problem - let's rename the module:
                 _view.Target = _declarations.Items.SingleOrDefault(declaration =>
                     declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                    && declaration.DeclarationType == DeclarationType.Class ||
-                    declaration.DeclarationType == DeclarationType.Module);
+                    && ModuleDeclarationTypes.Contains(declaration.DeclarationType));
             }
         }
     }

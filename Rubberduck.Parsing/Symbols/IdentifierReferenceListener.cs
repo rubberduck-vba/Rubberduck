@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -133,14 +134,14 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private static readonly DeclarationType[] ProcedureDeclarations = new[]
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
+        private static readonly DeclarationType[] ProcedureDeclarations = 
+            {
+                DeclarationType.Procedure,
+                DeclarationType.Function,
+                DeclarationType.PropertyGet,
+                DeclarationType.PropertyLet,
+                DeclarationType.PropertySet
+            };
 
         private bool IsInScope(Declaration declaration)
         {
@@ -253,22 +254,27 @@ namespace Rubberduck.Parsing.Symbols
             return IsDeclarativeParentContext(context.Parent);
         }
 
+        private static readonly Type[] DeclarativeContextTypes =
+        {
+            typeof (VBAParser.VariableSubStmtContext),
+            typeof (VBAParser.ConstSubStmtContext),
+            typeof (VBAParser.ArgContext),
+            typeof (VBAParser.SubStmtContext),
+            typeof (VBAParser.FunctionStmtContext),
+            typeof (VBAParser.PropertyGetStmtContext),
+            typeof (VBAParser.PropertyLetStmtContext),
+            typeof (VBAParser.PropertySetStmtContext),
+            typeof (VBAParser.TypeStmtContext),
+            typeof (VBAParser.TypeStmt_ElementContext),
+            typeof (VBAParser.EnumerationStmtContext),
+            typeof (VBAParser.EnumerationStmt_ConstantContext),
+            typeof (VBAParser.DeclareStmtContext),
+            typeof (VBAParser.EventStmtContext)
+        };
+
         private bool IsDeclarativeParentContext(RuleContext parentContext)
         {
-            return parentContext is VBAParser.VariableSubStmtContext
-                   || parentContext is VBAParser.ConstSubStmtContext
-                   || parentContext is VBAParser.ArgContext
-                   || parentContext is VBAParser.SubStmtContext
-                   || parentContext is VBAParser.FunctionStmtContext
-                   || parentContext is VBAParser.PropertyGetStmtContext
-                   || parentContext is VBAParser.PropertyLetStmtContext
-                   || parentContext is VBAParser.PropertySetStmtContext
-                   || parentContext is VBAParser.TypeStmtContext
-                   || parentContext is VBAParser.TypeStmt_ElementContext
-                   || parentContext is VBAParser.EnumerationStmtContext
-                   || parentContext is VBAParser.EnumerationStmt_ConstantContext
-                   || parentContext is VBAParser.DeclareStmtContext
-                   || parentContext is VBAParser.EventStmtContext;
+            return DeclarativeContextTypes.Contains(parentContext.GetType());
         }
     }
 }

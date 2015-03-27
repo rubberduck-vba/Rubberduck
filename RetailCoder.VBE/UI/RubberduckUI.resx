@@ -181,6 +181,9 @@
     <value>Please specify new name for {0} '{1}'.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
+  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
+    <value>Could not rename module.</value>
+  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Rename identifier</value>
   </data>
