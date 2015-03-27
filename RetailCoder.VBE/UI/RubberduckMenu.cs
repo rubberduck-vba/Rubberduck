@@ -111,8 +111,11 @@ namespace Rubberduck.UI
                             @"C:\Users\Christopher\Documents\SourceControlTest",
                             @"https://github.com/ckuhn203/SourceControlTest.git"
                            );
-                var changesPresenter = new ChangesPresenter(new GitProvider(project, repo),_sourceControlView);
-                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter);
+                var gitProvider = new GitProvider(project, repo);
+                var changesPresenter = new ChangesPresenter(gitProvider,_sourceControlView);
+                var branchesPresenter = new BranchesPresenter(gitProvider, _sourceControlView);
+                branchesPresenter.RefreshView();
+                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter, branchesPresenter);
             }
 
             _sourceControlPresenter.Show();

@@ -236,5 +236,48 @@ namespace Rubberduck.UI.SourceControl
         }
 
         #endregion
+
+        private BindingList<string> _branches;
+        public IList<string> Branches
+        {
+            get { return _branches; }
+            set
+            {
+                _branches = new BindingList<string>(value);
+                this.CurrentBranchSelector.DataSource = _branches;
+            }
+        }
+
+        public string CurrentBranch
+        {
+            get { return this.CurrentBranchSelector.SelectedText; }
+            set { this.CurrentBranchSelector.SelectedText = value; }
+        }
+
+        private BindingList<string> _publishedBranches; 
+        public IList<string> PublishedBranches
+        {
+            get { return _publishedBranches; }
+            set
+            {
+                _publishedBranches = new BindingList<string>(value);
+                this.PublishedBranchesList.DataSource = _publishedBranches;
+            }
+        }
+
+        private BindingList<string> _unpublishedBranches; 
+        public IList<string> UnpublishedBranches
+        {
+            get { return _unpublishedBranches; }
+            set
+            {
+                _unpublishedBranches = new BindingList<string>(value);
+                this.UnpublishedBranchesList.DataSource = _unpublishedBranches;
+            }
+        }
+
+        public event EventHandler<EventArgs> SelectedBranchChanged;
+        public event EventHandler<EventArgs> Merge;
+        public event EventHandler<EventArgs> CreateBranch;
     }
 }
