@@ -16,14 +16,35 @@ namespace Rubberduck.UI.SourceControl
         {
             _provider = provider;
             _view = view;
-
-            RefreshView();
         }
 
         public void RefreshView()
         {
             _view.Branches = _provider.Branches.Select(b => b.Name).ToList();
             _view.CurrentBranch = _provider.CurrentBranch.Name;
+
+            var publishedBranchNames = GetFriendlyBranchNames(RemoteBranches());
+
+            _view.PublishedBranches = publishedBranchNames;
+            _view.UnpublishedBranches = _provider.Branches.Where(b => !b.IsRemote
+                                                                    && publishedBranchNames.All(p => b.Name != p)
+                                                                 )
+                                                                 .Select(b => b.Name)
+                                                                 .ToList();
+        }
+
+        private IList<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)
+        {
+            return branches.Select(
+                                    b => b.Name.Split(new[] {'/'})
+                                                .Last()
+                                   ).ToList();
+        } 
+
+        private IEnumerable<IBranch> RemoteBranches()
+        {
+            return _provider.Branches.Where(b => b.IsRemote);
         }
     }
+
 }
