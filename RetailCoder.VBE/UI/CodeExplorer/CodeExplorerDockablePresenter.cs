@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -47,16 +48,18 @@ namespace Rubberduck.UI.CodeExplorer
             Control.Rename += RenameSelection;
         }
 
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
         private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null)
+            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
             {
                 return;
             }
 
-            if (e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            var handler = Rename;
+            if (handler != null)
             {
-                
+                handler(this, e);
             }
         }
 
@@ -67,7 +70,14 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            VBE.ActiveVBProject = e.QualifiedName.Project;
+            try
+            {
+                VBE.ActiveVBProject = e.QualifiedName.Project;
+            }
+            catch (COMException)
+            {
+                // swallow "catastrophic failure"
+            }
         }
 
         public event EventHandler RunInspections;

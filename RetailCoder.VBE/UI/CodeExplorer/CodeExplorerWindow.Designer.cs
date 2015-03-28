@@ -241,7 +241,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.InspectContextButton,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 170);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 192);
             // 
             // RefreshContextButton
             // 
@@ -313,7 +313,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.RenameContextButton.Name = "RenameContextButton";
             this.RenameContextButton.Size = new System.Drawing.Size(170, 22);
             this.RenameContextButton.Text = "Re&name";
-            this.RenameContextButton.Visible = false;
             // 
             // ShowDesignerContextButton
             // 

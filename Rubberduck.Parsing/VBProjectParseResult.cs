@@ -28,6 +28,11 @@ namespace Rubberduck.Parsing
                 var walker = new ParseTreeWalker();
                 walker.Walk(listener, componentParseResult.ParseTree);
 
+                var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
+                var memberName = new QualifiedMemberName(new QualifiedModuleName(projectIdentifier, string.Empty, componentParseResult.QualifiedName.Project, 0), string.Empty);
+                var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, projectIdentifier, false, Accessibility.Global, DeclarationType.Project, null);
+                _declarations.Add(projectDeclaration);
+
                 foreach (var declaration in listener.Declarations.Items)
                 {
                     _declarations.Add(declaration);

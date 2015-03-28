@@ -4,6 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -47,6 +48,7 @@ namespace Rubberduck.UI
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
             codePresenter.RunAllTests += codePresenter_RunAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
+            codePresenter.Rename += codePresenter_Rename;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
@@ -59,6 +61,11 @@ namespace Rubberduck.UI
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
+        }
+
+        private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            _refactorMenu.Rename(new QualifiedSelection(e.QualifiedName, e.Selection));
         }
 
         private void codePresenter_RunInspections(object sender, EventArgs e)

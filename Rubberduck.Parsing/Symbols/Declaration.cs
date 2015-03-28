@@ -115,6 +115,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 switch (_declarationType)
                 {
+                    case DeclarationType.Project:
+                        return "VBE";
                     case DeclarationType.Class:
                     case DeclarationType.Module:
                         return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName;

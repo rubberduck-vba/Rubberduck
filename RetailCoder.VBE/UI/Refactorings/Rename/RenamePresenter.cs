@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -92,48 +93,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             // until we figure out how to replace actual tokens,
             // this is going to have to be done the ugly way...
-
-            // what we're trying to avoid here,
-            // is to replace all instances of "Foo" in "Foo = FooBar" when target is "Foo".
-
-            var result = ' ' + content;
-            if (result.Contains(' ' + target))
-            {
-                result = result.Replace(' ' + target, ' ' + newName);
-            }
-            if (result.Contains(target + ' '))
-            {
-                result = result.Replace(target + ' ', newName + ' ');
-            }
-            if (result.Contains(target + '.'))
-            {
-                result = result.Replace(target + '.', newName + '.');
-            }
-            else if (result.Contains('.' + target))
-            {
-                result = result.Replace('.' + target, '.'+ newName);
-            }
-
-            if (result.Contains('(' + target))
-            {
-                result = result.Replace('(' + target, '(' + newName);
-            }
-
-            if (result.Contains(":=" + target))
-            {
-                result = result.Replace(":=" + target, ":=" + newName);
-            }
-
-            if (result.Contains(target + '!'))
-            {
-                result = result.Replace(target + '!', newName + '!');
-            }
-            else if (result.Contains('!' + target))
-            {
-                result = result.Replace('!' + target, '!' + newName);
-            }
-
-            return result.Substring(1);
+            return Regex.Replace(content, "\\b" + target + "\\b", newName);
         }
 
         private static readonly DeclarationType[] ProcedureDeclarationTypes =

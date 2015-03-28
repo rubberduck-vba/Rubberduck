@@ -12,7 +12,6 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly QualifiedModuleName _qualifiedName;
 
-        private string _currentMember;
         private string _currentScope;
 
         public DeclarationSymbolsListener(VBComponentParseResult result)
@@ -74,7 +73,6 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name)
         {
-            _currentMember = name;
             _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
         }
 

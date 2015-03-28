@@ -105,11 +105,16 @@ namespace Rubberduck.UI
                 return;
             }
             var selection = IDE.ActiveCodePane.GetSelection();
-            var view = new RenameDialog();
-            var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
-            presenter.Show();
+            Rename(selection);
+        }
 
-            view.Dispose();
+        public void Rename(QualifiedSelection selection)
+        {
+            using (var view = new RenameDialog())
+            {
+                var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
+                presenter.Show();
+            }
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

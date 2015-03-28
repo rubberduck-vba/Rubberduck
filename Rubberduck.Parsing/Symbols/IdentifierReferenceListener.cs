@@ -134,6 +134,60 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public override void EnterVsAssign(VBAParser.VsAssignContext context)
+        {
+            var argCall = context.implicitCallStmt_InStmt();
+            var procCallA = argCall.iCS_S_ProcedureOrArrayCall();
+            var procCallB = argCall.iCS_S_VariableOrProcedureCall();
+
+            VBAParser.AmbiguousIdentifierContext namedParameter;
+            if (procCallA != null)
+            {
+                namedParameter = procCallA.ambiguousIdentifier();
+            }
+            else
+            {
+                namedParameter = procCallB.ambiguousIdentifier();
+            }
+
+            // one of these is null...
+            var callStatementA = context.Parent.Parent.Parent as VBAParser.ICS_S_ProcedureOrArrayCallContext;
+            var callStatementB = context.Parent.Parent.Parent as VBAParser.ICS_S_VariableOrProcedureCallContext;
+
+            string procedureName;
+            if (callStatementA != null)
+            {
+                procedureName = callStatementA.ambiguousIdentifier().GetText();
+            }
+            else
+            {
+                procedureName = callStatementB.ambiguousIdentifier().GetText();
+            }
+
+            var procedure = FindProcedureDeclaration(procedureName);
+            var procScope = procedure.ParentScope + "." + procedure.IdentifierName;
+
+            var arg = _declarations.Items.FirstOrDefault(declaration =>
+                        declaration.ParentScope == procScope 
+                        && declaration.DeclarationType == DeclarationType.Parameter);
+
+            if (arg != null)
+            {
+                var reference = new IdentifierReference(_qualifiedName, arg.IdentifierName, context.GetSelection(), false, context, arg);
+                arg.AddReference(reference);
+            }
+        }
+
+        private Declaration FindProcedureDeclaration(string procedureName)
+        {
+            var matches = _declarations[procedureName]
+                .Where(declaration => ProcedureDeclarations.Contains(declaration.DeclarationType))
+                .Where(IsInScope);
+
+            var procedure = GetClosestScope(matches);
+            return procedure;
+        }
+
         private static readonly DeclarationType[] ProcedureDeclarations = 
             {
                 DeclarationType.Procedure,
@@ -145,6 +199,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsInScope(Declaration declaration)
         {
+            if (declaration.DeclarationType == DeclarationType.Project)
+            {
+                return true; // a project name is always in scope anywhere
+            }
+
             if (declaration.DeclarationType == DeclarationType.Module ||
                 declaration.DeclarationType == DeclarationType.Class)
             {
