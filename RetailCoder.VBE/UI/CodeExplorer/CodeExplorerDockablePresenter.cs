@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -11,7 +10,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -45,6 +43,31 @@ namespace Rubberduck.UI.CodeExplorer
             Control.DisplayStyleChanged += DisplayStyleChanged;
             Control.RunAllTests += ContextMenuRunAllTests;
             Control.RunInspections += ContextMenuRunInspections;
+            Control.SelectionChanged += SelectionChanged;
+            Control.Rename += RenameSelection;
+        }
+
+        private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            if (e.Node == null)
+            {
+                return;
+            }
+
+            if (e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            {
+                
+            }
+        }
+
+        private void SelectionChanged(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            if (e.Node == null)
+            {
+                return;
+            }
+
+            VBE.ActiveVBProject = e.QualifiedName.Project;
         }
 
         public event EventHandler RunInspections;

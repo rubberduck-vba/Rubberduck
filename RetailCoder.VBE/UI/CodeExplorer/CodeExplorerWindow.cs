@@ -47,9 +47,23 @@ namespace Rubberduck.UI.CodeExplorer
             AddFormContextButton.Click += AddFormButton_Click;
             AddTestModuleContextButton.Click += AddTestModuleButtonClick;
             NavigateContextButton.Click += SolutionTreeClick;
+            RenameContextButton.Click += RenameContextButtonClick;
 
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
             InspectContextButton.Click += InspectContextButton_Click;
+        }
+
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
+        private void RenameContextButtonClick(object sender, EventArgs e)
+        {
+            var handler = Rename;
+            if (handler != null)
+            {
+                var selection = SolutionTree.SelectedNode != null && SolutionTree.SelectedNode.Tag != null
+                    ? (QualifiedSelection) SolutionTree.SelectedNode.Tag
+                    : default(QualifiedSelection);
+                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode, selection));
+            }
         }
 
         public event EventHandler RunInspections;
@@ -121,6 +135,7 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> SelectionChanged;
         private void SolutionTreeClick(object sender, EventArgs e)
         {
             var node = SolutionTree.SelectedNode;
@@ -131,6 +146,18 @@ namespace Rubberduck.UI.CodeExplorer
                 node == null
                     ? string.Empty
                     : node.Text;
+
+            var handler = SelectionChanged;
+            if (handler == null)
+            {
+                return;
+            }
+
+            var selection = node == null || node.Tag == null
+                ? default(QualifiedSelection)
+                : (QualifiedSelection) node.Tag;
+
+            handler(this, new TreeNodeNavigateCodeEventArgs(node, selection));
         }
 
         private bool CanDeleteNode(TreeNode node)

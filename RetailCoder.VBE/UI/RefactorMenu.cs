@@ -1,10 +1,10 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.UI.Refactorings.ExtractMethod;
@@ -34,6 +34,24 @@ namespace Rubberduck.UI
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
             _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
+
+            InitializeRefactorContextMenu();
+        }
+
+        private CommandBarButton _extractMethodContextButton;
+        private CommandBarButton _renameContextButton;
+
+        private void InitializeRefactorContextMenu()
+        {
+            var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
+            var menu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlPopup, Temporary: true, Before:beforeItem) as CommandBarPopup;
+            menu.BeginGroup = true;
+            menu.Caption = "&Refactor";
+
+            var extractMethodIcon = Resources.ExtractMethod_6786_32;
+            extractMethodIcon.MakeTransparent(Color.White);
+            _extractMethodContextButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
+            _renameContextButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
