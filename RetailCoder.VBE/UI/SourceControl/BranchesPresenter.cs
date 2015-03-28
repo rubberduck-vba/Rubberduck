@@ -20,13 +20,13 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            _view.Branches = _provider.Branches.Select(b => b.Name).ToList();
-            _view.CurrentBranch = _provider.CurrentBranch.Name;
+            _view.Local = _provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
+            _view.Current = _provider.CurrentBranch.Name;
 
             var publishedBranchNames = GetFriendlyBranchNames(RemoteBranches());
 
-            _view.PublishedBranches = publishedBranchNames;
-            _view.UnpublishedBranches = _provider.Branches.Where(b => !b.IsRemote
+            _view.Published = publishedBranchNames;
+            _view.Unpublished = _provider.Branches.Where(b => !b.IsRemote
                                                                     && publishedBranchNames.All(p => b.Name != p)
                                                                  )
                                                                  .Select(b => b.Name)
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.SourceControl
 
         private IEnumerable<IBranch> RemoteBranches()
         {
-            return _provider.Branches.Where(b => b.IsRemote);
+            return _provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
         }
     }
 

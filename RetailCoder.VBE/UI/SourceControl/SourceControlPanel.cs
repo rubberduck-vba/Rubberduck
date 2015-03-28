@@ -238,7 +238,7 @@ namespace Rubberduck.UI.SourceControl
         #endregion
 
         private BindingList<string> _branches;
-        public IList<string> Branches
+        public IList<string> Local
         {
             get { return _branches; }
             set
@@ -248,14 +248,14 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public string CurrentBranch
+        public string Current
         {
             get { return this.CurrentBranchSelector.SelectedText; }
             set { this.CurrentBranchSelector.SelectedText = value; }
         }
 
         private BindingList<string> _publishedBranches; 
-        public IList<string> PublishedBranches
+        public IList<string> Published
         {
             get { return _publishedBranches; }
             set
@@ -266,7 +266,7 @@ namespace Rubberduck.UI.SourceControl
         }
 
         private BindingList<string> _unpublishedBranches; 
-        public IList<string> UnpublishedBranches
+        public IList<string> Unpublished
         {
             get { return _unpublishedBranches; }
             set

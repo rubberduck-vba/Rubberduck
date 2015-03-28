@@ -8,10 +8,10 @@ namespace Rubberduck.UI.SourceControl
 {
     public interface IBranchesView
     {
-        IList<string> Branches { get; set; }
-        string CurrentBranch { get; set; }
-        IList<string> PublishedBranches { get; set; }
-        IList<string> UnpublishedBranches { get; set; } 
+        IList<string> Local { get; set; }
+        string Current { get; set; }
+        IList<string> Published { get; set; }
+        IList<string> Unpublished { get; set; } 
 
         event EventHandler<EventArgs> SelectedBranchChanged;
         event EventHandler<EventArgs> Merge;
