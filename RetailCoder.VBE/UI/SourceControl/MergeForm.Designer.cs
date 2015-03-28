@@ -72,6 +72,7 @@
             // CancelButton
             // 
             this.CancelButton.AccessibleDescription = "Cancel";
+            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelButton.Image = global::Rubberduck.Properties.Resources.cross_circle;
             this.CancelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CancelButton.Location = new System.Drawing.Point(205, 81);
@@ -127,7 +128,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MergeForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Merge Branch";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
