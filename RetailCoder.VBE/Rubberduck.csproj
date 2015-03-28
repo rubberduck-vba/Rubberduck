@@ -282,8 +282,15 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
+    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
@@ -602,6 +609,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\GitView.resx">
       <DependentUpon>GitView.cs</DependentUpon>

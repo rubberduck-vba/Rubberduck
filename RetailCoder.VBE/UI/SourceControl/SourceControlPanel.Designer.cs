@@ -51,8 +51,10 @@
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.BranchesPanel = new System.Windows.Forms.Panel();
             this.PublishedBranchesBox = new System.Windows.Forms.GroupBox();
+            this.PublishedBranchesList = new System.Windows.Forms.ListBox();
             this.MergeBranchButton = new System.Windows.Forms.Button();
             this.UnpublishedBranchesBox = new System.Windows.Forms.GroupBox();
+            this.UnpublishedBranchesList = new System.Windows.Forms.ListBox();
             this.CurrentBranchSelector = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.NewBranchButton = new System.Windows.Forms.Button();
@@ -83,8 +85,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.UserName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.PublishedBranchesList = new System.Windows.Forms.ListBox();
-            this.UnpublishedBranchesList = new System.Windows.Forms.ListBox();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             this.ChangesTab.SuspendLayout();
@@ -219,7 +219,7 @@
             this.IncludedChangesBox.Location = new System.Drawing.Point(9, 119);
             this.IncludedChangesBox.Name = "IncludedChangesBox";
             this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncludedChangesBox.Size = new System.Drawing.Size(141, 141);
+            this.IncludedChangesBox.Size = new System.Drawing.Size(124, 141);
             this.IncludedChangesBox.TabIndex = 15;
             this.IncludedChangesBox.TabStop = false;
             this.IncludedChangesBox.Text = "Included changes";
@@ -242,7 +242,7 @@
             this.IncludedChangesGrid.Location = new System.Drawing.Point(10, 23);
             this.IncludedChangesGrid.Name = "IncludedChangesGrid";
             this.IncludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncludedChangesGrid.Size = new System.Drawing.Size(122, 109);
+            this.IncludedChangesGrid.Size = new System.Drawing.Size(105, 109);
             this.IncludedChangesGrid.TabIndex = 0;
             this.IncludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragDrop);
             this.IncludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragOver);
@@ -258,7 +258,7 @@
             this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CommitButton.Location = new System.Drawing.Point(136, 86);
             this.CommitButton.Name = "CommitButton";
-            this.CommitButton.Size = new System.Drawing.Size(14, 23);
+            this.CommitButton.Size = new System.Drawing.Size(0, 23);
             this.CommitButton.TabIndex = 14;
             this.CommitButton.Text = "Go";
             this.CommitButton.UseVisualStyleBackColor = true;
@@ -296,7 +296,7 @@
             this.CommitMessageBox.Multiline = true;
             this.CommitMessageBox.Name = "CommitMessageBox";
             this.CommitMessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.CommitMessageBox.Size = new System.Drawing.Size(141, 29);
+            this.CommitMessageBox.Size = new System.Drawing.Size(124, 29);
             this.CommitMessageBox.TabIndex = 11;
             this.CommitMessageBox.TextChanged += new System.EventHandler(this.CommitMessageBox_TextChanged);
             // 
@@ -317,7 +317,7 @@
             this.ExcludedChangesBox.Location = new System.Drawing.Point(9, 266);
             this.ExcludedChangesBox.Name = "ExcludedChangesBox";
             this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.ExcludedChangesBox.Size = new System.Drawing.Size(141, 141);
+            this.ExcludedChangesBox.Size = new System.Drawing.Size(124, 141);
             this.ExcludedChangesBox.TabIndex = 16;
             this.ExcludedChangesBox.TabStop = false;
             this.ExcludedChangesBox.Text = "Excluded changes";
@@ -340,7 +340,7 @@
             this.ExcludedChangesGrid.Location = new System.Drawing.Point(10, 22);
             this.ExcludedChangesGrid.Name = "ExcludedChangesGrid";
             this.ExcludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ExcludedChangesGrid.Size = new System.Drawing.Size(122, 110);
+            this.ExcludedChangesGrid.Size = new System.Drawing.Size(105, 110);
             this.ExcludedChangesGrid.TabIndex = 1;
             this.ExcludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragDrop);
             this.ExcludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragOver);
@@ -355,7 +355,7 @@
             this.UntrackedFilesBox.Location = new System.Drawing.Point(9, 413);
             this.UntrackedFilesBox.Name = "UntrackedFilesBox";
             this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.UntrackedFilesBox.Size = new System.Drawing.Size(141, 141);
+            this.UntrackedFilesBox.Size = new System.Drawing.Size(124, 141);
             this.UntrackedFilesBox.TabIndex = 17;
             this.UntrackedFilesBox.TabStop = false;
             this.UntrackedFilesBox.Text = "Untracked files";
@@ -377,7 +377,7 @@
             this.UntrackedFilesGrid.Location = new System.Drawing.Point(10, 22);
             this.UntrackedFilesGrid.Name = "UntrackedFilesGrid";
             this.UntrackedFilesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UntrackedFilesGrid.Size = new System.Drawing.Size(122, 110);
+            this.UntrackedFilesGrid.Size = new System.Drawing.Size(105, 110);
             this.UntrackedFilesGrid.TabIndex = 1;
             this.UntrackedFilesGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseDown);
             this.UntrackedFilesGrid.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseMove);
@@ -422,6 +422,15 @@
             this.PublishedBranchesBox.TabStop = false;
             this.PublishedBranchesBox.Text = "Published Branches";
             // 
+            // PublishedBranchesList
+            // 
+            this.PublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PublishedBranchesList.FormattingEnabled = true;
+            this.PublishedBranchesList.Location = new System.Drawing.Point(6, 19);
+            this.PublishedBranchesList.Name = "PublishedBranchesList";
+            this.PublishedBranchesList.Size = new System.Drawing.Size(214, 116);
+            this.PublishedBranchesList.TabIndex = 1;
+            // 
             // MergeBranchButton
             // 
             this.MergeBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -434,6 +443,7 @@
             this.MergeBranchButton.Text = "Merge";
             this.MergeBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.MergeBranchButton.UseVisualStyleBackColor = true;
+            this.MergeBranchButton.Click += new System.EventHandler(this.OnMerge);
             // 
             // UnpublishedBranchesBox
             // 
@@ -447,6 +457,15 @@
             this.UnpublishedBranchesBox.TabIndex = 16;
             this.UnpublishedBranchesBox.TabStop = false;
             this.UnpublishedBranchesBox.Text = "Unpublished Branches";
+            // 
+            // UnpublishedBranchesList
+            // 
+            this.UnpublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UnpublishedBranchesList.FormattingEnabled = true;
+            this.UnpublishedBranchesList.Location = new System.Drawing.Point(6, 19);
+            this.UnpublishedBranchesList.Name = "UnpublishedBranchesList";
+            this.UnpublishedBranchesList.Size = new System.Drawing.Size(214, 116);
+            this.UnpublishedBranchesList.TabIndex = 0;
             // 
             // CurrentBranchSelector
             // 
@@ -479,6 +498,7 @@
             this.NewBranchButton.Text = "New Branch";
             this.NewBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.NewBranchButton.UseVisualStyleBackColor = true;
+            this.NewBranchButton.Click += new System.EventHandler(this.OnCreateBranch);
             // 
             // UnsyncedCommitsTab
             // 
@@ -583,7 +603,7 @@
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(9, 269);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
             this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.OutgoingCommitsBox.Size = new System.Drawing.Size(135, 162);
+            this.OutgoingCommitsBox.Size = new System.Drawing.Size(118, 162);
             this.OutgoingCommitsBox.TabIndex = 16;
             this.OutgoingCommitsBox.TabStop = false;
             this.OutgoingCommitsBox.Text = "Outgoing commits";
@@ -605,7 +625,7 @@
             this.OutgoingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.OutgoingCommitsGrid.Name = "OutgoingCommitsGrid";
             this.OutgoingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(116, 131);
+            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(99, 131);
             this.OutgoingCommitsGrid.TabIndex = 0;
             // 
             // IncomingCommitsBox
@@ -616,7 +636,7 @@
             this.IncomingCommitsBox.Location = new System.Drawing.Point(9, 101);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
             this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncomingCommitsBox.Size = new System.Drawing.Size(135, 162);
+            this.IncomingCommitsBox.Size = new System.Drawing.Size(118, 162);
             this.IncomingCommitsBox.TabIndex = 15;
             this.IncomingCommitsBox.TabStop = false;
             this.IncomingCommitsBox.Text = "Incoming commits";
@@ -638,7 +658,7 @@
             this.IncomingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.IncomingCommitsGrid.Name = "IncomingCommitsGrid";
             this.IncomingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncomingCommitsGrid.Size = new System.Drawing.Size(116, 131);
+            this.IncomingCommitsGrid.Size = new System.Drawing.Size(99, 131);
             this.IncomingCommitsGrid.TabIndex = 0;
             // 
             // SettingsTab
@@ -798,24 +818,6 @@
             this.label5.Size = new System.Drawing.Size(60, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "User Name";
-            // 
-            // PublishedBranchesList
-            // 
-            this.PublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PublishedBranchesList.FormattingEnabled = true;
-            this.PublishedBranchesList.Location = new System.Drawing.Point(6, 19);
-            this.PublishedBranchesList.Name = "PublishedBranchesList";
-            this.PublishedBranchesList.Size = new System.Drawing.Size(214, 116);
-            this.PublishedBranchesList.TabIndex = 1;
-            // 
-            // UnpublishedBranchesList
-            // 
-            this.UnpublishedBranchesList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UnpublishedBranchesList.FormattingEnabled = true;
-            this.UnpublishedBranchesList.Location = new System.Drawing.Point(6, 19);
-            this.UnpublishedBranchesList.Name = "UnpublishedBranchesList";
-            this.UnpublishedBranchesList.Size = new System.Drawing.Size(214, 116);
-            this.UnpublishedBranchesList.TabIndex = 0;
             // 
             // SourceControlPanel
             // 

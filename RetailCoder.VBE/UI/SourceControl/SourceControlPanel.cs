@@ -277,7 +277,21 @@ namespace Rubberduck.UI.SourceControl
         }
 
         public event EventHandler<EventArgs> SelectedBranchChanged;
+        public void OnSelectedBranchChanged(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(SelectedBranchChanged, e);
+        }
+
         public event EventHandler<EventArgs> Merge;
+        public void OnMerge(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(Merge, e);
+        }
+
         public event EventHandler<EventArgs> CreateBranch;
+        public void OnCreateBranch(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(CreateBranch, e);
+        }
     }
 }

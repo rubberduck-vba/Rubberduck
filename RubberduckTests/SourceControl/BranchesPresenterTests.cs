@@ -16,13 +16,15 @@ namespace RubberduckTests.SourceControl
         private Mock<IBranchesView> _view;
         private Branch _intialBranch;
         private List<IBranch> _branches;
+        private BranchesPresenter _presenter;
+        private Mock<ICreateBranchView> _createView;
 
         [TestInitialize]
         public void IntializeFixtures()
         {
-            //arrange
             _provider = new Mock<ISourceControlProvider>();
             _view = new Mock<IBranchesView>();
+            _createView = new Mock<ICreateBranchView>();
 
             _intialBranch = new Branch("master", "refs/Heads/master", false, true);
 
@@ -38,6 +40,8 @@ namespace RubberduckTests.SourceControl
 
             _provider.SetupGet(git => git.Branches).Returns(_branches);
             _provider.SetupGet(git => git.CurrentBranch).Returns(_intialBranch);
+
+            _presenter = new BranchesPresenter(_provider.Object, _view.Object, _createView.Object);
         }
 
         [TestMethod]
@@ -45,10 +49,9 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _view.SetupProperty(v => v.Current);            
-            var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //act
-            presenter.RefreshView();
+            _presenter.RefreshView();
 
             //assert
             Assert.AreEqual(_provider.Object.CurrentBranch.Name, _view.Object.Current);
@@ -59,10 +62,9 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _view.SetupProperty(v => v.Published);
-            var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //act
-            presenter.RefreshView();
+            _presenter.RefreshView();
 
             //assert
             var expected = new List<string>() {"master"};
@@ -74,10 +76,9 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _view.SetupProperty(v => v.Unpublished);
-            var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //act
-            presenter.RefreshView();
+            _presenter.RefreshView();
 
             //assert
             var expected = new List<string>() {"dev"};
@@ -89,10 +90,9 @@ namespace RubberduckTests.SourceControl
         {
             //arrange 
             _view.SetupProperty(v => v.Local);
-            var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //act
-            presenter.RefreshView();
+            _presenter.RefreshView();
 
             //assert
             var expected = new List<string>() {"master", "dev"};
@@ -104,15 +104,62 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _view.SetupProperty(v => v.Published);
-            var presenter = new BranchesPresenter(_provider.Object, _view.Object);
 
             //act 
-            presenter.RefreshView();
+            _presenter.RefreshView();
 
             //assert
             CollectionAssert.DoesNotContain(_view.Object.Published.ToList(), "HEAD");
         }
 
+        [TestMethod]
+        public void CreateBranchViewIsShownOnCreateBranch()
+        {
+            //arrange
+            //act
+            _view.Raise(v => v.CreateBranch += null, new EventArgs());
 
+            //Assert
+            _createView.Verify(c => c.Show(), Times.Once());
+        }
+
+        [TestMethod]
+        public void ProviderCallsCreateBranchOnCreateBranchConfirm()
+        {
+            //arrange
+            var expected = "testBranch";
+
+            //act
+            _createView.Raise(c => c.Confirm += null ,new BranchCreateArgs(expected));
+
+            //assert
+            _provider.Verify(git => git.CreateBranch(It.Is<string>(s => s == expected)));
+        }
+
+        [TestMethod]
+        public void CreateBranchViewIshiddenAfterSubmit()
+        {
+            //arrange
+            _createView.SetupProperty(c => c.UserInputText, "test");
+
+            //act
+            _createView.Raise(c => c.Confirm += null, new BranchCreateArgs(_createView.Object.UserInputText));
+
+            //assert
+            _createView.Verify(c => c.Hide(), Times.Once);
+        }
+
+        [TestMethod]
+        public void CreateBranchUserInputIsClearedAfterSubmit()
+        {
+            //arrange
+            _createView.SetupProperty(c => c.UserInputText, "test");
+
+            //act
+            _createView.Raise(c => c.Confirm += null, new BranchCreateArgs("test"));
+
+            //assert
+            Assert.AreEqual(string.Empty, _createView.Object.UserInputText);
+        }
     }
 }
