@@ -291,7 +291,14 @@
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
+    <Compile Include="UI\SourceControl\IMergeView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
+    <Compile Include="UI\SourceControl\MergeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
+      <DependentUpon>MergeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -615,6 +622,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\GitView.resx">
       <DependentUpon>GitView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
+      <DependentUpon>MergeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
