@@ -155,13 +155,13 @@
     <value>procedure</value>
   </data>
   <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>property get accessor</value>
+    <value>property</value>
   </data>
   <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>property let accessor</value>
+    <value>property</value>
   </data>
   <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>property set accessor</value>
+    <value>property</value>
   </data>
   <data name="DeclarationType_UserDefinedType" xml:space="preserve">
     <value>user-defined type</value>

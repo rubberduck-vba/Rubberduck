@@ -169,7 +169,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to property get accessor.
+        ///   Looks up a localized string similar to property.
         /// </summary>
         internal static string DeclarationType_PropertyGet {
             get {
@@ -178,7 +178,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to property let accessor.
+        ///   Looks up a localized string similar to property.
         /// </summary>
         internal static string DeclarationType_PropertyLet {
             get {
@@ -187,7 +187,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to property set accessor.
+        ///   Looks up a localized string similar to property.
         /// </summary>
         internal static string DeclarationType_PropertySet {
             get {

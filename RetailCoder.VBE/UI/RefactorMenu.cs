@@ -49,7 +49,7 @@ namespace Rubberduck.UI
             menu.Caption = "&Refactor";
 
             var extractMethodIcon = Resources.ExtractMethod_6786_32;
-            extractMethodIcon.MakeTransparent(Color.White);
+            //extractMethodIcon.MakeTransparent(Color.White);
             _extractMethodContextButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
         }
