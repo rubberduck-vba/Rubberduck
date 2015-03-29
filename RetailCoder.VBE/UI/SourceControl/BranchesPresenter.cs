@@ -110,6 +110,8 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _provider.Merge(_mergeView.SelectedSourceBranch, _mergeView.SelectedDestinationBranch);
+                _view.Current = _provider.CurrentBranch.Name;
+
                 _mergeView.Hide();
             }
             catch(SourceControlException ex)
