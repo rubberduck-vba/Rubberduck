@@ -41,20 +41,20 @@ namespace Rubberduck.UI.SourceControl
             set
             {
                 _destination = new BindingList<string>(value);
-                this.SourceSelector.DataSource = _destination;
+                this.DestinationSelector.DataSource = _destination;
             }
         }
 
         public string SelectedSourceBranch
         {
-            get { return this.SourceSelector.SelectedText; }
-            set { this.SourceSelector.SelectedText = value; }
+            get { return this.SourceSelector.SelectedItem.ToString(); }
+            set { this.SourceSelector.SelectedItem = value; }
         }
 
         public string SelectedDestinationBranch
         {
-            get { return this.DestinationSelector.SelectedText; }
-            set { this.DestinationSelector.SelectedText = value; }
+            get { return this.DestinationSelector.SelectedItem.ToString(); }
+            set { this.DestinationSelector.SelectedItem = value; }
         }
 
         public event EventHandler<EventArgs> Confirm;
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.SourceControl
         public event EventHandler<EventArgs> Cancel;
         private void OnCancel(object sender, EventArgs e)
         {
-            var handler = Confirm;
+            var handler = Cancel;
             if (handler != null)
             {
                 handler(this, e);

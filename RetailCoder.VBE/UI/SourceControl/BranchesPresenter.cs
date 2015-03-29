@@ -12,22 +12,31 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlProvider _provider;
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
+        private readonly IMergeView _mergeView;
 
-        public BranchesPresenter(ISourceControlProvider provider, IBranchesView view, ICreateBranchView createView)
+        public BranchesPresenter(ISourceControlProvider provider, IBranchesView view, ICreateBranchView createView,
+            IMergeView mergeView)
         {
             _provider = provider;
             _view = view;
             _createView = createView;
+            _mergeView = mergeView;
 
             _view.CreateBranch += OnShowCreateBranchView;
+            _view.Merge += OnShowMerge;
+
             _createView.Confirm += OnCreateBranch;
             _createView.Cancel += OnCreateViewCancel;
             _createView.UserInputTextChanged += OnCreateBranchTextChanged;
+
+            _mergeView.Confirm += OnMerge;
+            _mergeView.Cancel += OnCancelMerge;
         }
 
         ~BranchesPresenter()
         {
             _createView.Close();
+            _mergeView.Close();
         }
 
         public void RefreshView()
@@ -84,6 +93,35 @@ namespace Rubberduck.UI.SourceControl
         private void OnCreateBranchTextChanged(object sender, EventArgs e)
         {
             _createView.OkayButtonEnabled = !string.IsNullOrEmpty(_createView.UserInputText);
+        }
+
+        private void OnShowMerge(object sender, EventArgs e)
+        {
+            var localBranchNames = _view.Local.ToList();
+            _mergeView.SourceSelectorData = localBranchNames;
+            _mergeView.DestinationSelectorData = localBranchNames;
+            _mergeView.SelectedSourceBranch = _provider.CurrentBranch.Name;
+            
+            _mergeView.Show();
+        }
+
+        private void OnMerge(object sender, EventArgs e)
+        {
+            try
+            {
+                _provider.Merge(_mergeView.SelectedSourceBranch, _mergeView.SelectedDestinationBranch);
+                _mergeView.Hide();
+            }
+            catch(SourceControlException ex)
+            {
+                //todo: replace this with a message on the MergeView
+                System.Windows.Forms.MessageBox.Show(ex.InnerException.Message, ex.Message);
+            }
+        }
+
+        private void OnCancelMerge(object sender, EventArgs e)
+        {
+            _mergeView.Hide();
         }
     }
 

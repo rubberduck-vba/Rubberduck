@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.SourceControl;
@@ -18,6 +19,7 @@ namespace RubberduckTests.SourceControl
         private List<IBranch> _branches;
         private BranchesPresenter _presenter;
         private Mock<ICreateBranchView> _createView;
+        private Mock<IMergeView> _mergeView;
 
         [TestInitialize]
         public void IntializeFixtures()
@@ -25,6 +27,7 @@ namespace RubberduckTests.SourceControl
             _provider = new Mock<ISourceControlProvider>();
             _view = new Mock<IBranchesView>();
             _createView = new Mock<ICreateBranchView>();
+            _mergeView = new Mock<IMergeView>();
 
             _intialBranch = new Branch("master", "refs/Heads/master", false, true);
 
@@ -41,7 +44,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.Branches).Returns(_branches);
             _provider.SetupGet(git => git.CurrentBranch).Returns(_intialBranch);
 
-            _presenter = new BranchesPresenter(_provider.Object, _view.Object, _createView.Object);
+            _presenter = new BranchesPresenter(_provider.Object, _view.Object, _createView.Object, _mergeView.Object);
         }
 
         [TestMethod]
@@ -160,6 +163,101 @@ namespace RubberduckTests.SourceControl
 
             //assert
             Assert.AreEqual(string.Empty, _createView.Object.UserInputText);
+        }
+
+        [TestMethod]
+        public void MergeViewIsShownOnMergeClick()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Local, new List<string>());
+
+            //act
+            _view.Raise(v => v.Merge += null, new EventArgs());
+
+            //assert
+            _mergeView.Verify(m => m.Show(), Times.Once);
+        }
+
+        [TestMethod]
+        public void MergeViewSourceBranchesAreSetBeforeShowing()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.SourceSelectorData);
+            _view.SetupProperty(v => v.Local, new List<string>() {"master", "dev"});
+
+            //act
+            _view.Raise(v => v.Merge += null, new EventArgs());
+
+            //assert
+            CollectionAssert.AreEqual(_view.Object.Local.ToList(), _mergeView.Object.SourceSelectorData.ToList());
+        }
+
+        [TestMethod]
+        public void MergeViewSelectedSourceBranchIsCurrentBranch()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.SourceSelectorData);
+            _view.SetupProperty(v => v.Local, new List<string>() { "master", "dev" });
+
+            _mergeView.SetupProperty(m => m.SelectedSourceBranch);
+
+            //act
+            _view.Raise(v => v.Merge += null, new EventArgs());
+
+            //assert 
+            Assert.AreEqual(_intialBranch.Name, _mergeView.Object.SelectedSourceBranch);
+        }
+
+        [TestMethod]
+        public void MergeViewDestinationBranchesAreSetBeforeShowing()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.DestinationSelectorData);
+            _view.SetupProperty(v => v.Local, new List<string>() { "master", "dev" });
+
+            //act
+            _view.Raise(v => v.Merge += null, new EventArgs());
+
+            //assert
+            CollectionAssert.AreEqual(_view.Object.Local.ToList(), _mergeView.Object.DestinationSelectorData.ToList());
+        }
+
+        [TestMethod]
+        public void ProviderMergesOnMergeViewSubmit()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.SelectedSourceBranch, "dev");
+            _mergeView.SetupProperty(m => m.SelectedDestinationBranch, "master");
+
+            //act
+            _mergeView.Raise(m => m.Confirm += null, new EventArgs());
+
+            //assert
+            _provider.Verify(git => git.Merge("dev", "master"));
+        }
+
+        [TestMethod]
+        public void MergeViewIsHiddenOnSuccessfulMerge()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.SelectedSourceBranch, "dev");
+            _mergeView.SetupProperty(m => m.SelectedDestinationBranch, "master");
+
+            //act
+            _mergeView.Raise(m => m.Confirm += null, new EventArgs());
+
+            //assert
+            _mergeView.Verify(m => m.Hide());
+        }
+
+        [TestMethod]
+        public void MergeViewIsHiddenOnCancel()
+        {
+            //act
+            _mergeView.Raise(m => m.Cancel += null, new EventArgs());
+
+            //assert
+            _mergeView.Verify(m => m.Hide());
         }
     }
 }

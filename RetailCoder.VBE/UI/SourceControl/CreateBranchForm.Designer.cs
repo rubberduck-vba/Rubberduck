@@ -38,9 +38,11 @@
             // 
             this.OkayButton.AccessibleDescription = "Okay";
             this.OkayButton.Enabled = false;
+            this.OkayButton.Image = global::Rubberduck.Properties.Resources.tick;
+            this.OkayButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.OkayButton.Location = new System.Drawing.Point(42, 56);
             this.OkayButton.Name = "OkayButton";
-            this.OkayButton.Size = new System.Drawing.Size(75, 23);
+            this.OkayButton.Size = new System.Drawing.Size(79, 23);
             this.OkayButton.TabIndex = 1;
             this.OkayButton.Text = "OK";
             this.OkayButton.UseVisualStyleBackColor = true;
@@ -50,9 +52,11 @@
             // 
             this.CancelButton.AccessibleDescription = "Cancel";
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelButton.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.CancelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.CancelButton.Location = new System.Drawing.Point(154, 56);
             this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelButton.Size = new System.Drawing.Size(85, 23);
             this.CancelButton.TabIndex = 2;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = true;

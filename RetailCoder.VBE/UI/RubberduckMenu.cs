@@ -113,7 +113,7 @@ namespace Rubberduck.UI
                            );
                 var gitProvider = new GitProvider(project, repo);
                 var changesPresenter = new ChangesPresenter(gitProvider,_sourceControlView);
-                var branchesPresenter = new BranchesPresenter(gitProvider, _sourceControlView, new CreateBranchForm());
+                var branchesPresenter = new BranchesPresenter(gitProvider, _sourceControlView, new CreateBranchForm(), new MergeForm());
                 branchesPresenter.RefreshView();
                 _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter, branchesPresenter);
             }
