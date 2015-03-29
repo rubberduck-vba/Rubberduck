@@ -136,35 +136,36 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
         {
-            var argCall = context.implicitCallStmt_InStmt();
-            var procCallA = argCall.iCS_S_ProcedureOrArrayCall();
-            var procCallB = argCall.iCS_S_VariableOrProcedureCall();
-
-            VBAParser.AmbiguousIdentifierContext namedParameter;
-            if (procCallA != null)
-            {
-                namedParameter = procCallA.ambiguousIdentifier();
-            }
-            else
-            {
-                namedParameter = procCallB.ambiguousIdentifier();
-            }
-
             // one of these is null...
             var callStatementA = context.Parent.Parent.Parent as VBAParser.ICS_S_ProcedureOrArrayCallContext;
             var callStatementB = context.Parent.Parent.Parent as VBAParser.ICS_S_VariableOrProcedureCallContext;
+            var callStatementC = context.Parent.Parent.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
+            var callStatementD = context.Parent.Parent.Parent as VBAParser.ICS_B_ProcedureCallContext;
 
-            string procedureName;
+            var procedureName = string.Empty;
             if (callStatementA != null)
             {
                 procedureName = callStatementA.ambiguousIdentifier().GetText();
             }
-            else
+            else if(callStatementB != null)
             {
                 procedureName = callStatementB.ambiguousIdentifier().GetText();
             }
+            else if (callStatementC != null)
+            {
+                procedureName = callStatementC.ambiguousIdentifier().GetText();
+            }
+            else if (callStatementD != null)
+            {
+                procedureName = callStatementD.certainIdentifier().GetText();
+            }
 
             var procedure = FindProcedureDeclaration(procedureName);
+            if (procedure == null)
+            {
+                return;
+            }
+
             var procScope = procedure.ParentScope + "." + procedure.IdentifierName;
 
             var arg = _declarations.Items.FirstOrDefault(declaration =>

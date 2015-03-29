@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 
@@ -22,16 +23,19 @@ namespace Rubberduck.Parsing
         /// </remarks>
         private void IdentifySymbols()
         {
-            foreach (var componentParseResult in _parseResults)
+            foreach (var componentParseResult in _parseResults.Where(r => r.Component != null))
             {
                 var listener = new DeclarationSymbolsListener(componentParseResult);
                 var walker = new ParseTreeWalker();
                 walker.Walk(listener, componentParseResult.ParseTree);
 
-                var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
-                var memberName = new QualifiedMemberName(new QualifiedModuleName(projectIdentifier, string.Empty, componentParseResult.QualifiedName.Project, 0), string.Empty);
-                var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, projectIdentifier, false, Accessibility.Global, DeclarationType.Project, null);
-                _declarations.Add(projectDeclaration);
+                if (!_declarations.Items.Any())
+                { 
+                    var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
+                    var memberName = new QualifiedMemberName(new QualifiedModuleName(projectIdentifier, string.Empty, componentParseResult.QualifiedName.Project, 0), string.Empty);
+                    var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, projectIdentifier, false, Accessibility.Global, DeclarationType.Project, null, Selection.Home);
+                    _declarations.Add(projectDeclaration);
+                }
 
                 foreach (var declaration in listener.Declarations.Items)
                 {

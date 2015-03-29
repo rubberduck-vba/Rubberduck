@@ -12,6 +12,11 @@
 
         public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
 
+        public bool ContainsFirstCharacter(Selection selection)
+        {
+            return Contains(new Selection(selection.StartLine, selection.StartColumn, selection.StartLine, selection.StartColumn));
+        }
+
         public bool Contains(Selection selection)
         {
             // single line comparison

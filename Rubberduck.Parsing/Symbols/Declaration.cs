@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string identifierName, string asTypeName, bool isSelfAssigned,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Symbols
             _isSelfAssigned = isSelfAssigned;
             _accessibility = accessibility;
             _declarationType = declarationType;
-            _selection = context.GetSelection();
+            _selection = selection;
             _context = context;
         }
 

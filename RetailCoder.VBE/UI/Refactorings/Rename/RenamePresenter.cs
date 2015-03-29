@@ -107,29 +107,36 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            var targets = _declarations.Items.Where(declaration =>
-                declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                && (declaration.Selection.Contains(selection.Selection))
-                || declaration.References.Any(r => r.Selection.Contains(selection.Selection)))
-                .ToList();
+            _view.Target = _declarations.Items.SingleOrDefault(
+                item => IsSelectedDeclaration(selection, item) 
+                            || IsSelectedReference(selection, item));
 
-            var nonProcTarget = targets.Where(t => !ProcedureDeclarationTypes.Contains(t.DeclarationType)).ToList();
-            if (nonProcTarget.Any())
+            if (_view.Target == null)
             {
-                _view.Target = nonProcTarget.First();
-            }
-            else
-            {
-                _view.Target = targets.FirstOrDefault();
+                // rename the containing procedure:
+                _view.Target = _declarations.Items.SingleOrDefault(
+                    item => ProcedureDeclarationTypes.Contains(item.DeclarationType)
+                            && item.Context.GetSelection().Contains(selection.Selection));
             }
 
             if (_view.Target == null)
             {
-                // no valid selection? no problem - let's rename the module:
-                _view.Target = _declarations.Items.SingleOrDefault(declaration =>
-                    declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                    && ModuleDeclarationTypes.Contains(declaration.DeclarationType));
+                // rename the containing module:
+                _view.Target = _declarations.Items.SingleOrDefault(item =>
+                    ModuleDeclarationTypes.Contains(item.DeclarationType)
+                    && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
             }
+        }
+
+        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.References.Any(r => r.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
+                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
     }
 }

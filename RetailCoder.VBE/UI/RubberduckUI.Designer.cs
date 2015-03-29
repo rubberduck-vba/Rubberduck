@@ -61,6 +61,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All references: &apos;{0}&apos;.
+        /// </summary>
+        internal static string AllReferences_Caption {
+            get {
+                return ResourceManager.GetString("AllReferences_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string CancelButtonText {
