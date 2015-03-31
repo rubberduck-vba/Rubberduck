@@ -23,7 +23,7 @@ namespace Rubberduck.UI.SourceControl
             set { this.OkayButton.Enabled = value; }
         }
 
-        private BindingList<string> _source; 
+        private BindingList<string> _source;
         public IList<string> SourceSelectorData
         {
             get { return _source; }
@@ -34,7 +34,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private BindingList<string> _destination; 
+        private BindingList<string> _destination;
         public IList<string> DestinationSelectorData
         {
             get { return _destination; }
@@ -55,6 +55,36 @@ namespace Rubberduck.UI.SourceControl
         {
             get { return this.DestinationSelector.SelectedItem.ToString(); }
             set { this.DestinationSelector.SelectedItem = value; }
+        }
+
+        public string StatusText
+        {
+            get { return this.StatusTextBox.Text; }
+            set { this.StatusTextBox.Text = value; }
+        }
+
+        public bool StatusTextVisible
+        {
+            get { return this.StatusTextBox.Visible; }
+            set { this.StatusTextBox.Visible = value; }
+        }
+
+        public event EventHandler<EventArgs> MergeStatusChanged;
+
+        private MergeStatus _mergeStatus;
+        public MergeStatus Status
+        {
+            get { return _mergeStatus; }
+            set
+            {
+                _mergeStatus = value;
+
+                var handler = MergeStatusChanged;
+                if (handler != null)
+                {
+                    handler(this, EventArgs.Empty);
+                }
+            }
         }
 
         public event EventHandler<EventArgs> Confirm;

@@ -36,6 +36,7 @@
             this.SourceLabel = new System.Windows.Forms.Label();
             this.DestinationLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.StatusTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,7 +62,7 @@
             // 
             this.OkayButton.Image = global::Rubberduck.Properties.Resources.tick;
             this.OkayButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.OkayButton.Location = new System.Drawing.Point(41, 81);
+            this.OkayButton.Location = new System.Drawing.Point(41, 86);
             this.OkayButton.Name = "OkayButton";
             this.OkayButton.Size = new System.Drawing.Size(89, 23);
             this.OkayButton.TabIndex = 2;
@@ -75,7 +76,7 @@
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelButton.Image = global::Rubberduck.Properties.Resources.cross_circle;
             this.CancelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CancelButton.Location = new System.Drawing.Point(205, 81);
+            this.CancelButton.Location = new System.Drawing.Point(205, 86);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(87, 23);
             this.CancelButton.TabIndex = 3;
@@ -111,13 +112,24 @@
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
+            // StatusTextBox
+            // 
+            this.StatusTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.StatusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.StatusTextBox.Enabled = false;
+            this.StatusTextBox.Location = new System.Drawing.Point(21, 58);
+            this.StatusTextBox.Name = "StatusTextBox";
+            this.StatusTextBox.Size = new System.Drawing.Size(289, 20);
+            this.StatusTextBox.TabIndex = 7;
+            this.StatusTextBox.Visible = false;
+            // 
             // MergeForm
             // 
             this.AcceptButton = this.OkayButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(331, 132);
+            this.Controls.Add(this.StatusTextBox);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.DestinationLabel);
             this.Controls.Add(this.SourceLabel);
@@ -147,5 +159,6 @@
         private System.Windows.Forms.Label SourceLabel;
         private System.Windows.Forms.Label DestinationLabel;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox StatusTextBox;
     }
 }

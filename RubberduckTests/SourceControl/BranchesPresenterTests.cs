@@ -259,5 +259,81 @@ namespace RubberduckTests.SourceControl
             //assert
             _mergeView.Verify(m => m.Hide());
         }
+
+        [TestMethod]
+        public void MergeStatusHiddenWhenViewIsFirstShown()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.StatusTextVisible, false);
+
+            //act
+            _mergeView.Object.Show();
+
+            //assert
+            Assert.IsFalse(_mergeView.Object.StatusTextVisible, "Merge Status Is Visible");
+        }
+
+        [TestMethod]
+        public void MergeStatusIsUnknownWhenViewIsFirstShown()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.Status);
+            
+            //act
+            _mergeView.Object.Show();
+
+            //assert
+            Assert.AreEqual(MergeStatus.Unknown, _mergeView.Object.Status);
+        }
+
+        [TestMethod]
+        public void MergeStatusIsVisibleOnSuccess()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.StatusTextVisible, false);
+
+            //act
+            _mergeView.Object.Status = MergeStatus.Success;
+
+            //Assert
+            Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible");
+        }
+
+        [TestMethod]
+        public void MergeStatusIsVisibleOnFailure()
+        {
+            //arrange
+            _mergeView.SetupProperty(m => m.StatusTextVisible, false);
+
+            //act
+            _mergeView.Object.Status = MergeStatus.Failure;
+
+            //Assert
+            Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible"); 
+        }
+
+        [TestMethod]
+        public void MergeStatusTextIsEmptiedWhenStatusIsChanged()
+        {
+            Assert.Fail("Test not implemented yet.");
+        }
+
+        [TestMethod]
+        public void MergeStatusTextIsGreenOnSuccess()
+        {
+            Assert.Fail("Test not implemented yet.");
+        }
+
+        [TestMethod]
+        public void MergeStatusTextIsRedOnFailure()
+        {
+            Assert.Fail("Test not implemented yet.");
+        }
+
+        [TestMethod]
+        public void MergeStatusSetToFailIfProviderThrowsException()
+        {
+            Assert.Fail("Test not implemented yet.");
+        }
     }
 }
