@@ -1901,8 +1901,6 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols1</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
-		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
 		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Christopher\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
@@ -4396,9 +4394,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKAPPPOOLS</td><td>##IDS_PROGMSG_IIS_ROLLBACKAPPPOOLS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
-		<row><td>ProductCode</td><td>{5BFA486D-8F83-4F26-8CD5-788B1F64AE25}</td><td/></row>
+		<row><td>ProductCode</td><td>{5F7101F7-6176-42ED-84E2-E77F4B15E307}</td><td/></row>
 		<row><td>ProductName</td><td>Rubberduck</td><td/></row>
-		<row><td>ProductVersion</td><td>1.21.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>1.22.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4685,7 +4683,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
 		<row><td>{00000000-0000-0000-0000-000000000000}</td><td>***ALL_VERSIONS***</td><td></td><td></td><td>2</td><td/><td>ISFOUNDNEWERPRODUCTVERSION</td><td>ISPreventDowngrade</td></row>
-		<row><td>{43BFBEFB-88F2-4F12-AABC-576581E50AFA}</td><td>1.1.0000</td><td>1.21.0000</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeFrom1.1</td></row>
+		<row><td>{43BFBEFB-88F2-4F12-AABC-576581E50AFA}</td><td>1.1.0000</td><td>1.22.0000</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeFrom1.1</td></row>
 	</table>
 
 	<table name="Verb">
