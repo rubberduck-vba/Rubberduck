@@ -352,8 +352,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{27D99A2C-D7AB-4E62-9AB0-F5325839E076}</td><td>RUBBERDUCK2</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td>{E0E47258-EFF7-480A-A01A-C64C50C15A82}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols1</td><td>{A8CBBC11-7D97-486C-B799-DE34223F7393}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Debug_Symbols2</td><td>{8BBA82B1-44F9-4281-B41B-5C87B3C88153}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output</td><td>{4CF2D538-D4DF-4846-9399-1A726CE56730}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output1</td><td>{B16217C6-31EC-4F9E-98DA-7C60E8DD48BB}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Primary_output2</td><td>{FFBC32DC-54AD-419E-980B-6A38B0D7C184}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.tlb</td><td>{BD0D56AE-9F46-4C44-9BAF-652D8837CB8D}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1884,8 +1886,10 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols1</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output1</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.tlb</td></row>
 	</table>
 
@@ -1901,6 +1905,8 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
+		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols2</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
+		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output2</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
 		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Christopher\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
@@ -2051,8 +2057,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_D4E5052D_95D2_4DB1_9A2F_5245B61BA39D_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td/><td/><td>_758D6C88_6570_42F5_A44D_A400AFE7F824_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols1</td><td/><td/><td>_351AC032_9036_4F0C_99EC_5CD20ED676F9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Debug_Symbols2</td><td/><td/><td>_04A8FFF5_DE6A_4BA0_9483_46A38BBB13D4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_98663FF4_480C_4DF8_826D_08E13537E163_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_2CE720AE_CFDB_4F84_B04B_DCF26043675D_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Primary_output2</td><td/><td/><td>_98BBBBDE_9F9F_4942_BEC8_1CFEA7A90164_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.tlb</td><td/><td/><td>_F429FE9A_4434_49E7_953D_8AEFF7912214_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 

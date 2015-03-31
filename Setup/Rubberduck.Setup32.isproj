@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<!-- Select a Product Configuration -->
 		<InstallShieldProductConfiguration>Express</InstallShieldProductConfiguration>
@@ -30,4 +30,10 @@
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
 	<ItemGroup/>
 	<ItemGroup/>
+	<ItemGroup>
+		<ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+			<Name>Rubberduck</Name>
+			<Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
+		</ProjectReference>
+	</ItemGroup>
 </Project>
