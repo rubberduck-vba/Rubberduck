@@ -29,10 +29,5 @@
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
 	<ItemGroup/>
-	<ItemGroup>
-		<ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-			<Name>Rubberduck</Name>
-			<Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
-		</ProjectReference>
-	</ItemGroup>
+	<ItemGroup/>
 </Project>

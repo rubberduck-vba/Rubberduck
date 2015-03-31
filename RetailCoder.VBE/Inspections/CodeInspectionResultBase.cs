@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections
         public VBComponent FindComponent(VBE vbe)
         {
             return vbe.VBProjects.Cast<VBProject>()
-                      .Where(project => project.Name == QualifiedName.ProjectName)
+                      .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked && project.Name == QualifiedName.ProjectName)
                       .SelectMany(project =>
                                     project.VBComponents.Cast<VBComponent>()
                                            .Where(component => component.Name == QualifiedName.ModuleName))
