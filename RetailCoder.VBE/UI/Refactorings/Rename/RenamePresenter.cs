@@ -107,17 +107,14 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            // acquire FirstOrDefault instead of SingleOrDefault,
-            // because each property can have up to 3 matching procedure members.
-
-            _view.Target = _declarations.Items.FirstOrDefault(
+            _view.Target = _declarations.Items.SingleOrDefault(
                 item => IsSelectedDeclaration(selection, item) 
                             || IsSelectedReference(selection, item));
 
             if (_view.Target == null)
             {
                 // rename the containing procedure:
-                _view.Target = _declarations.Items.FirstOrDefault(
+                _view.Target = _declarations.Items.SingleOrDefault(
                     item => ProcedureDeclarationTypes.Contains(item.DeclarationType)
                             && item.Context.GetSelection().Contains(selection.Selection));
             }

@@ -1,16 +1,12 @@
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.Properties;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
-using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
@@ -53,7 +49,6 @@ namespace Rubberduck.UI
             codePresenter.RunAllTests += codePresenter_RunAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
             codePresenter.Rename += codePresenter_Rename;
-            codePresenter.FindIdentifierReferences += codePresenter_FindIdentifierReferences;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
@@ -66,15 +61,6 @@ namespace Rubberduck.UI
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
-        }
-
-        private void codePresenter_FindIdentifierReferences(object sender, TreeNodeNavigateCodeEventArgs e)
-        {
-            var target = e.Declaration;
-            using (var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, new IdentifierReferencesListControl(), target))
-            {
-                presenter.Show();
-            }
         }
 
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)

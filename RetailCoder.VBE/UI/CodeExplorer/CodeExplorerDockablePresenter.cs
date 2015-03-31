@@ -46,22 +46,6 @@ namespace Rubberduck.UI.CodeExplorer
             Control.RunInspections += ContextMenuRunInspections;
             Control.SelectionChanged += SelectionChanged;
             Control.Rename += RenameSelection;
-            Control.FindAllReferences += Control_FindAllReferences;
-        }
-
-        public event EventHandler<TreeNodeNavigateCodeEventArgs> FindIdentifierReferences;
-        private void Control_FindAllReferences(object sender, TreeNodeNavigateCodeEventArgs e)
-        {
-            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
-            {
-                return;
-            }
-
-            var handler = FindIdentifierReferences;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
         }
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
@@ -89,10 +73,8 @@ namespace Rubberduck.UI.CodeExplorer
             try
             {
                 VBE.ActiveVBProject = e.QualifiedName.Project;
-                var declaration = (Declaration) e.Node.Tag;
-                VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, e.Selection));
             }
-            catch (Exception)
+            catch (COMException)
             {
                 // swallow "catastrophic failure"
             }
@@ -313,38 +295,33 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var component = componentParseResult.Component;
                 var members = parseResult.Declarations.Items
-                    .Where(declaration => declaration.ParentScope == project.Name + "." + component.Name)
-                    .OrderBy(declaration => declaration.Selection.StartLine);
+                    .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name)
+                    .OrderBy(declaration => declaration.IdentifierName);
 
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
+                node.Tag = new QualifiedSelection(componentParseResult.QualifiedName, componentParseResult.Context.GetSelection());
 
-                var moduleDeclaration = parseResult.Declarations.Items.Single(
-                        d => d.Project == project && d.IdentifierName == component.Name
-                        && (d.DeclarationType == DeclarationType.Class || d.DeclarationType == DeclarationType.Module));
-
-                node.Tag = moduleDeclaration; // new QualifiedSelection(componentParseResult.QualifiedName, componentParseResult.Context.GetSelection());
-
-                foreach (var member in members)
+                foreach (var declaration in members)
                 {
-                    var text = GetNodeText(member);
+                    var text = GetNodeText(declaration);
                     var child = new TreeNode(text);
-                    child.ImageKey = GetImageKeyForDeclaration(member);
+                    child.ImageKey = GetImageKeyForDeclaration(declaration);
                     child.SelectedImageKey = child.ImageKey;
-                    child.Tag = member; //new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection);
+                    child.Tag = new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection);
 
-                    if (member.DeclarationType == DeclarationType.UserDefinedType
-                        || member.DeclarationType == DeclarationType.Enumeration)
+                    if (declaration.DeclarationType == DeclarationType.UserDefinedType
+                        || declaration.DeclarationType == DeclarationType.Enumeration)
                     {
-                        var subDeclaration = member;
+                        var subDeclaration = declaration;
                         var subMembers = parseResult.Declarations.Items.Where(item => item.ParentScope == subDeclaration.Scope + "." + subDeclaration.IdentifierName);
                         foreach (var subMember in subMembers)
                         {
                             var subChild = new TreeNode(subMember.IdentifierName);
                             subChild.ImageKey = GetImageKeyForDeclaration(subMember);
                             subChild.SelectedImageKey = subChild.ImageKey;
-                            subChild.Tag = subMember; // new QualifiedSelection(subMember.QualifiedName.QualifiedModuleName, subMember.Selection);
+                            subChild.Tag = new QualifiedSelection(subMember.QualifiedName.QualifiedModuleName, subMember.Selection);
                             child.Nodes.Add(subChild);
                         }
                     }

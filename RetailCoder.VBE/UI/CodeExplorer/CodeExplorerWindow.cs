@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Listeners;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeExplorer
@@ -52,20 +51,6 @@ namespace Rubberduck.UI.CodeExplorer
 
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
             InspectContextButton.Click += InspectContextButton_Click;
-            FindAllReferencesButton.Click += findAllReferencesButton_Click;
-        }
-
-        public event EventHandler<TreeNodeNavigateCodeEventArgs> FindAllReferences;
-        private void findAllReferencesButton_Click(object sender, EventArgs e)
-        {
-            var handler = FindAllReferences;
-            if (handler != null)
-            {
-                var declaration = SolutionTree.SelectedNode != null && SolutionTree.SelectedNode.Tag != null
-                    ? (Declaration)SolutionTree.SelectedNode.Tag
-                    : default(Declaration);
-                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode, declaration));
-            }
         }
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
@@ -74,10 +59,10 @@ namespace Rubberduck.UI.CodeExplorer
             var handler = Rename;
             if (handler != null)
             {
-                var declaration = SolutionTree.SelectedNode != null && SolutionTree.SelectedNode.Tag != null
-                    ? (Declaration) SolutionTree.SelectedNode.Tag
-                    : default(Declaration);
-                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode, declaration));
+                var selection = SolutionTree.SelectedNode != null && SolutionTree.SelectedNode.Tag != null
+                    ? (QualifiedSelection) SolutionTree.SelectedNode.Tag
+                    : default(QualifiedSelection);
+                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode, selection));
             }
         }
 
@@ -168,11 +153,11 @@ namespace Rubberduck.UI.CodeExplorer
                 return;
             }
 
-            var declaration = node == null || node.Tag == null
-                ? default(Declaration)
-                : (Declaration) node.Tag;
+            var selection = node == null || node.Tag == null
+                ? default(QualifiedSelection)
+                : (QualifiedSelection) node.Tag;
 
-            handler(this, new TreeNodeNavigateCodeEventArgs(node, declaration));
+            handler(this, new TreeNodeNavigateCodeEventArgs(node, selection));
         }
 
         private bool CanDeleteNode(TreeNode node)
@@ -294,8 +279,8 @@ namespace Rubberduck.UI.CodeExplorer
 
             if (e.Node.Tag != null)
             {
-                var declaration = (Declaration)e.Node.Tag;
-                handler(this, new TreeNodeNavigateCodeEventArgs(e.Node, declaration));
+                var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
+                handler(this, new TreeNodeNavigateCodeEventArgs(e.Node, qualifiedSelection));
             }
         }
 

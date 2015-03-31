@@ -67,7 +67,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.InspectContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.RunAllTestsContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.TreeNodeIcons = new System.Windows.Forms.ImageList(this.components);
-            this.FindAllReferencesButton = new System.Windows.Forms.ToolStripMenuItem();
             this.CodeExplorerToolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.CodeExplorerContextMenu.SuspendLayout();
@@ -236,14 +235,13 @@ namespace Rubberduck.UI.CodeExplorer
             this.newToolStripMenuItem,
             this.toolStripSeparator4,
             this.NavigateContextButton,
-            this.FindAllReferencesButton,
             this.RenameContextButton,
             this.ShowDesignerContextButton,
             this.toolStripSeparator5,
             this.InspectContextButton,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 214);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(171, 192);
             // 
             // RefreshContextButton
             // 
@@ -392,12 +390,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.TreeNodeIcons.Images.SetKeyName(41, "Locked");
             this.TreeNodeIcons.Images.SetKeyName(42, "OfficeDocument");
             // 
-            // FindAllReferencesButton
-            // 
-            this.FindAllReferencesButton.Name = "FindAllReferencesButton";
-            this.FindAllReferencesButton.Size = new System.Drawing.Size(170, 22);
-            this.FindAllReferencesButton.Text = "&Find all references";
-            // 
             // CodeExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -451,6 +443,5 @@ namespace Rubberduck.UI.CodeExplorer
         private ToolStripMenuItem RefreshContextButton;
         private ToolStripMenuItem InspectContextButton;
         private ToolStripMenuItem RenameContextButton;
-        private ToolStripMenuItem FindAllReferencesButton;
     }
 }

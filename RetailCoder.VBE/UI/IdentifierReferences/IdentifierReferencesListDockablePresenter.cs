@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 
@@ -26,28 +24,14 @@ namespace Rubberduck.UI.IdentifierReferences
 
     public class IdentifierReferencesListDockablePresenter : DockablePresenterBase
     {
-        private ListBox ReferencesList { get { return ((IdentifierReferencesListControl) UserControl).ResultBox; } }
-
         public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, IdentifierReferencesListControl control, Declaration target) 
             : base(vbe, addin, control)
         {
-            // todo: change to gridview - this listbox is just to see something work.
-            ReferencesList.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference)).ToList();
-            ReferencesList.DisplayMember = "Selection";
-            ReferencesList.ValueMember = "Selection";
-            ReferencesList.Refresh();
+            var listBox = ((IdentifierReferencesListControl) UserControl).ResultBox;
 
-            ReferencesList.DoubleClick += ReferencesList_DoubleClick;
-        }
-
-        private void ReferencesList_DoubleClick(object sender, EventArgs e)
-        {
-            if (ReferencesList.SelectedItem == null)
-            {
-                return;
-            }
-
-            VBE.SetSelection((QualifiedSelection)ReferencesList.SelectedItem);
+            listBox.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference));
+            listBox.DisplayMember = "IdentifierName";
+            listBox.ValueMember = "Selection";
         }
     }
 }
