@@ -29,7 +29,7 @@ namespace Rubberduck.Extensions
         {
             var matches = 
                 vbe.VBProjects.Cast<VBProject>()
-                              .Where(project => project.Name == projectName)
+                              .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked && project.Name == projectName)
                               .SelectMany(project => project.VBComponents.Cast<VBComponent>()
                                                                          .Where(component => component.Name == componentName))
                               .Select(component => component.CodeModule);
@@ -57,7 +57,7 @@ namespace Rubberduck.Extensions
         {
             //not a very robust method. Breaks if there are multiple projects with the same name.
             var project = vbe.VBProjects.Cast<VBProject>()
-                            .FirstOrDefault(p => p.Name == selection.QualifiedName.ProjectName);
+                            .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked && p.Name == selection.QualifiedName.ProjectName);
 
             VBComponent component = null;
             if (project != null)

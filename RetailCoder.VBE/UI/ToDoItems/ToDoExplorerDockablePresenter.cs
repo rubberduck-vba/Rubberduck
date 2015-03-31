@@ -81,7 +81,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             await Task.Yield();
             var items = new ConcurrentBag<ToDoItem>();
-            var projects = VBE.VBProjects.Cast<VBProject>();
+            var projects = VBE.VBProjects.Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked);
             Parallel.ForEach(projects,
                 project =>
                 {
@@ -114,9 +114,10 @@ namespace Rubberduck.UI.ToDoItems
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
         {
             var projects = VBE.VBProjects.Cast<VBProject>()
-                .Where(p => p.Name == e.SelectedItem.ProjectName
-                                    && p.VBComponents.Cast<VBComponent>()
-                                        .Any(c => c.Name == e.SelectedItem.ModuleName)
+                .Where(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked
+                            && p.Name == e.SelectedItem.ProjectName
+                            && p.VBComponents.Cast<VBComponent>()
+                                .Any(c => c.Name == e.SelectedItem.ModuleName)
                                 );
 
             if (projects == null)
