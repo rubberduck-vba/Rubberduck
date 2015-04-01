@@ -3780,7 +3780,7 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1033</td><td>The processor is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
-		<row><td>ID_STRING1</td><td>1033</td><td>http://www.rubberduck-vba.com</td><td>0</td><td/><td>1906513194</td></row>
+		<row><td>ID_STRING1</td><td>1033</td><td>http://www.rubberduck-vba.com</td><td>0</td><td/><td>-106717388</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>Rubberduck</td><td>0</td><td/><td>1906517290</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>COM Add-in for the VBA IDE</td><td>0</td><td/><td>1906541866</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>505566327</td></row>
@@ -4338,6 +4338,8 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<row><td>ARPCOMMENTS</td><td>##ID_STRING3##</td><td/></row>
 		<row><td>ARPINSTALLLOCATION</td><td/><td/></row>
+		<row><td>ARPNOMODIFY</td><td>1</td><td/></row>
+		<row><td>ARPNOREPAIR</td><td>1</td><td/></row>
 		<row><td>ARPPRODUCTICON</td><td>ARPPRODUCTICON.exe</td><td/></row>
 		<row><td>ARPSIZE</td><td/><td/></row>
 		<row><td>ARPURLINFOABOUT</td><td>##ID_STRING1##</td><td/></row>

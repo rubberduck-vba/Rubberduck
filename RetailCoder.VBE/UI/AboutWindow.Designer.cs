@@ -72,7 +72,7 @@
             "Frank Van Heeswijk",
             "Philip Wales",
             "Michal Krzych (vba4all.com)",
-            "ClockAhead developer blog (clockahead.blogspot.jp)",
+            "Knjname developer blog (clockahead.blogspot.jp)",
             "All contributors to our GitHub repository",
             "All our stargazers, likers & followers, for the warm fuzzies",
             "...and anyone reading this!"});
