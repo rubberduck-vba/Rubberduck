@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
         public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+            : base(inspection,type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 

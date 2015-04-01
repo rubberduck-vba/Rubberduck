@@ -20,6 +20,7 @@ namespace Rubberduck.Inspections
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 (declaration.DeclarationType == DeclarationType.Procedure)
+                && !declaration.IdentifierName.Contains("_") // assume underscore means interface implementation
                 && !declaration.References.Any());
 
             foreach (var issue in declarations)

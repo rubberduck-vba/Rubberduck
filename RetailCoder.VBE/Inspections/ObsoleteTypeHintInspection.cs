@@ -1,11 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Listeners;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Listeners;
 
 namespace Rubberduck.Inspections
 {
@@ -22,21 +17,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var inspectionResults = new List<CodeInspectionResultBase>();
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var local = module;
-                var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                var results = declarations.Select(declaration => declaration.Context).OfType<VBAParser.VariableSubStmtContext>()
-                    .Where(variable => variable.typeHint() != null
-                                       && !string.IsNullOrEmpty(variable.typeHint().GetText()))
-                    .Select(variable => new { Context = variable, Hint = variable.typeHint().GetText() })
-                    .Select(result => new ObsoleteTypeHintInspectionResult(string.Format(Name, result.Context.ambiguousIdentifier().GetText()), Severity, new QualifiedContext<VBAParser.VariableSubStmtContext>(local.QualifiedName, result.Context)));
+            var declarations = from item in parseResult.Declarations.Items
+                where item.HasTypeHint()
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context));
 
-                inspectionResults.AddRange(results);
-            }
+            var references = from item in parseResult.Declarations.Items.SelectMany(d => d.References)
+                where item.HasTypeHint()
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context));
 
-            return inspectionResults;
+            return declarations.Union(references);
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Rubberduck.Inspections
     public class ObsoleteTypeHintInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteTypeHintInspectionResult(string inspection, CodeInspectionSeverity type,
-            QualifiedContext<VBAParser.VariableSubStmtContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+            QualifiedContext qualifiedContext)
+            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 

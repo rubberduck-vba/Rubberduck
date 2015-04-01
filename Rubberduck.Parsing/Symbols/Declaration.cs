@@ -92,7 +92,19 @@ namespace Rubberduck.Parsing.Symbols
         {
             try
             {
-                return ((dynamic) Context).asTypeClause() != null;
+                return !HasTypeHint() && ((dynamic) Context).asTypeClause() != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool HasTypeHint()
+        {
+            try
+            {
+                return ((dynamic)Context).typeHint() != null;
             }
             catch (Exception)
             {

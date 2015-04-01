@@ -118,7 +118,7 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private void EnterIdentifier(RuleContext context, Selection selection)
+        private void EnterIdentifier(ParserRuleContext context, Selection selection)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
