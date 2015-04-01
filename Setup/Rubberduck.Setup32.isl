@@ -352,8 +352,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{27D99A2C-D7AB-4E62-9AB0-F5325839E076}</td><td>RUBBERDUCK2</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td>{E0E47258-EFF7-480A-A01A-C64C50C15A82}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Debug_Symbols1</td><td>{A8CBBC11-7D97-486C-B799-DE34223F7393}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Debug_Symbols2</td><td>{8BBA82B1-44F9-4281-B41B-5C87B3C88153}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output</td><td>{4CF2D538-D4DF-4846-9399-1A726CE56730}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output1</td><td>{B16217C6-31EC-4F9E-98DA-7C60E8DD48BB}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Primary_output2</td><td>{FFBC32DC-54AD-419E-980B-6A38B0D7C184}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.tlb</td><td>{BD0D56AE-9F46-4C44-9BAF-652D8837CB8D}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1884,8 +1886,10 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols1</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output1</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output2</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.tlb</td></row>
 	</table>
 
@@ -1901,8 +1905,8 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols1</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
-		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
+		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols2</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
+		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output2</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
 		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Christopher\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
@@ -2053,8 +2057,10 @@
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_D4E5052D_95D2_4DB1_9A2F_5245B61BA39D_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols</td><td/><td/><td>_758D6C88_6570_42F5_A44D_A400AFE7F824_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Debug_Symbols1</td><td/><td/><td>_351AC032_9036_4F0C_99EC_5CD20ED676F9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Debug_Symbols2</td><td/><td/><td>_04A8FFF5_DE6A_4BA0_9483_46A38BBB13D4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_98663FF4_480C_4DF8_826D_08E13537E163_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_2CE720AE_CFDB_4F84_B04B_DCF26043675D_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Primary_output2</td><td/><td/><td>_98BBBBDE_9F9F_4942_BEC8_1CFEA7A90164_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.tlb</td><td/><td/><td>_F429FE9A_4434_49E7_953D_8AEFF7912214_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
@@ -3774,7 +3780,7 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1033</td><td>The processor is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>505566327</td></row>
-		<row><td>ID_STRING1</td><td>1033</td><td>http://www.rubberduck-vba.com</td><td>0</td><td/><td>1906513194</td></row>
+		<row><td>ID_STRING1</td><td>1033</td><td>http://www.rubberduck-vba.com</td><td>0</td><td/><td>-106717388</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>Rubberduck</td><td>0</td><td/><td>1906517290</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>COM Add-in for the VBA IDE</td><td>0</td><td/><td>1906541866</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>505566327</td></row>
@@ -4033,6 +4039,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SccPath</td><td/></row>
 		<row><td>SchemaVersion</td><td>774</td></row>
 		<row><td>Type</td><td>MSIE</td></row>
+		<row><td>VSSccAuxPath</td><td/></row>
+		<row><td>VSSccLocalPath</td><td/></row>
+		<row><td>VSSccProvider</td><td/></row>
 	</table>
 
 	<table name="InstallUISequence">
@@ -4327,9 +4336,10 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col key="yes" def="s72">Property</col>
 		<col def="L0">Value</col>
 		<col def="S255">ISComments</col>
-		<row><td>ALLUSERS</td><td>1</td><td/></row>
 		<row><td>ARPCOMMENTS</td><td>##ID_STRING3##</td><td/></row>
 		<row><td>ARPINSTALLLOCATION</td><td/><td/></row>
+		<row><td>ARPNOMODIFY</td><td>1</td><td/></row>
+		<row><td>ARPNOREPAIR</td><td>1</td><td/></row>
 		<row><td>ARPPRODUCTICON</td><td>ARPPRODUCTICON.exe</td><td/></row>
 		<row><td>ARPSIZE</td><td/><td/></row>
 		<row><td>ARPURLINFOABOUT</td><td>##ID_STRING1##</td><td/></row>
@@ -4396,9 +4406,9 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKAPPPOOLS</td><td>##IDS_PROGMSG_IIS_ROLLBACKAPPPOOLS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
-		<row><td>ProductCode</td><td>{5BFA486D-8F83-4F26-8CD5-788B1F64AE25}</td><td/></row>
+		<row><td>ProductCode</td><td>{5F7101F7-6176-42ED-84E2-E77F4B15E307}</td><td/></row>
 		<row><td>ProductName</td><td>Rubberduck</td><td/></row>
-		<row><td>ProductVersion</td><td>1.21.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>1.22.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4685,7 +4695,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
 		<row><td>{00000000-0000-0000-0000-000000000000}</td><td>***ALL_VERSIONS***</td><td></td><td></td><td>2</td><td/><td>ISFOUNDNEWERPRODUCTVERSION</td><td>ISPreventDowngrade</td></row>
-		<row><td>{43BFBEFB-88F2-4F12-AABC-576581E50AFA}</td><td>1.1.0000</td><td>1.21.0000</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeFrom1.1</td></row>
+		<row><td>{43BFBEFB-88F2-4F12-AABC-576581E50AFA}</td><td>1.1.0000</td><td>1.22.0000</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP1</td><td>UpgradeFrom1.1</td></row>
 	</table>
 
 	<table name="Verb">

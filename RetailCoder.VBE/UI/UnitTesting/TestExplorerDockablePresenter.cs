@@ -79,7 +79,7 @@ namespace Rubberduck.UI.UnitTesting
             try
             {
                 _testEngine.AllTests = this.VBE.VBProjects
-                                .Cast<VBProject>()
+                                .Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked)
                                 .SelectMany(project => project.TestMethods())
                                 .ToDictionary(test => test, test => _testEngine.AllTests.ContainsKey(test) ? _testEngine.AllTests[test] : null);
 
@@ -162,7 +162,8 @@ namespace Rubberduck.UI.UnitTesting
             var signature = string.Concat("Public Sub ", controlSelection.MethodName, "()");
 
             var projects = this.VBE.VBProjects.Cast<VBProject>()
-                    .Where(project => project.Name == controlSelection.ProjectName
+                    .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
+                                && project.Name == controlSelection.ProjectName
                                 && project.VBComponents
                                     .Cast<VBComponent>()
                                     .Any(c => c.Name == controlSelection.ModuleName)
