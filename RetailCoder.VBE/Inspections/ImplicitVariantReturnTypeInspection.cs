@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -19,20 +21,25 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ProcedureTypes = 
+        {
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.LibraryFunction
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
+            var declarations = from item in parseResult.Declarations.Items
+                               where ProcedureTypes.Contains(item.DeclarationType)
+                               && !item.IsTypeSpecified()
+                               let parent = item.Context.Parent as ParserRuleContext
+                               where parent != null
+                               select new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, parent)};
+
+            foreach (var declaration in declarations)
             {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName))
-                    .Where(HasExpectedReturnType);
-                foreach (var procedure in procedures)
-                {
-                    var asTypeClause = GetAsTypeClause(procedure.Context);
-                    if (asTypeClause == null)
-                    {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, ((dynamic)procedure.Context).ambiguousIdentifier().GetText()), Severity, procedure);
-                    }
-                }
+                yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, declaration.Declaration.IdentifierName), Severity, declaration.QualifiedContext);
             }
         }
 

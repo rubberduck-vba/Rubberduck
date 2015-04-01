@@ -226,6 +226,7 @@
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
+    <Compile Include="Inspections\FunctionNotUsedInspection.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
@@ -249,13 +250,14 @@
     <Compile Include="Inspections\ParameterCanBeByValInspectionResult.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspection.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\ProcedureNotUsedInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotDeclaredInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />
-    <Compile Include="Inspections\VariableNotUsedInspectionResult.cs" />
+    <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
-    <Compile Include="Inspections\VariableNotAssignedInspectionResult.cs" />
+    <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
     <Compile Include="Interop\GitProvider.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 
@@ -86,6 +87,18 @@ namespace Rubberduck.Parsing.Symbols
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
+
+        public bool IsTypeSpecified()
+        {
+            try
+            {
+                return ((dynamic) Context).asTypeClause() != null;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         private readonly bool _isSelfAssigned;
         /// <summary>

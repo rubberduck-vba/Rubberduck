@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Listeners;
@@ -20,19 +22,25 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ProcedureTypes = 
+        {
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
+            var declarations = from item in parseResult.Declarations.Items
+                               where ProcedureTypes.Contains(item.DeclarationType)
+                               && item.Accessibility == Accessibility.Implicit
+                               select new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context.Parent as ParserRuleContext);
+
+            foreach (var declaration in declarations)
             {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
-                foreach (var procedure in procedures)
-                {
-                    var context = (dynamic) procedure.Context;
-                    if (((context.visibility() as VBAParser.VisibilityContext).GetAccessibility() == Accessibility.Implicit))
-                    {
-                        yield return new ImplicitPublicMemberInspectionResult(string.Format(Name,context.ambiguousIdentifier().GetText()), Severity, procedure);
-                    }
-                }
+                yield return new ImplicitPublicMemberInspectionResult(string.Format(Name, ((dynamic)declaration.Context).ambiguousIdentifier().GetText()), Severity, declaration);
             }
         }
     }

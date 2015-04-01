@@ -20,8 +20,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var functions = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Function
-                || declaration.DeclarationType == DeclarationType.PropertyGet);
+                declaration.DeclarationType == DeclarationType.Function);
 
             var results = functions
                 .Where(declaration => declaration.References.Where(r => declaration.Selection.Contains(r.Selection)).All(r => !r.IsAssignment));

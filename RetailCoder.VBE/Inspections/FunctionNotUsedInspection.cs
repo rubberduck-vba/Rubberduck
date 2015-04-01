@@ -5,21 +5,21 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class ConstantNotUsedInspection : IInspection
+    public class FunctionNotUsedInspection : IInspection
     {
-        public ConstantNotUsedInspection()
+        public FunctionNotUsedInspection()
         {
             Severity = CodeInspectionSeverity.Hint;
         }
 
-        public string Name { get { return InspectionNames.ConstantNotUsed_; } }
+        public string Name { get { return InspectionNames.FunctionNotUsed_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
-                (declaration.DeclarationType == DeclarationType.Constant)
+                (declaration.DeclarationType == DeclarationType.Function)
                 && !declaration.References.Any());
 
             foreach (var issue in declarations)

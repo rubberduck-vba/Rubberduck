@@ -70,6 +70,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function &apos;{0}&apos; is never used.
+        /// </summary>
+        internal static string FunctionNotUsed_ {
+            get {
+                return ResourceManager.GetString("FunctionNotUsed_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed ByRef implicitly.
         /// </summary>
         internal static string ImplicitByRef_ {
@@ -201,6 +210,15 @@ namespace Rubberduck.Inspections {
         internal static string ParameterNotUsed_ {
             get {
                 return ResourceManager.GetString("ParameterNotUsed_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Procedure &apos;{0}&apos; is never used.
+        /// </summary>
+        internal static string ProcedureNotUsed_ {
+            get {
+                return ResourceManager.GetString("ProcedureNotUsed_", resourceCulture);
             }
         }
         
