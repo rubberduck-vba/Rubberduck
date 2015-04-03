@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
     public class Declaration
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
-            string identifierName, string asTypeName, bool isSelfAssigned,
+            string identifierName, string asTypeName, bool isSelfAssigned, bool isWithEvents,
             Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection)
         {
             _qualifiedName = qualifiedName;
@@ -19,6 +19,7 @@ namespace Rubberduck.Parsing.Symbols
             _identifierName = identifierName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
+            _isWithEvents = isWithEvents;
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
@@ -130,6 +131,15 @@ namespace Rubberduck.Parsing.Symbols
         /// Gets a value specifying the type of declaration.
         /// </summary>
         public DeclarationType DeclarationType { get { return _declarationType; } }
+
+        private readonly bool _isWithEvents;
+        /// <summary>
+        /// Gets a value specifying whether the declared type is an event provider.
+        /// </summary>
+        /// <remarks>
+        /// WithEvents declarations are used to identify event handler procedures in a module.
+        /// </remarks>
+        public bool IsWithEvents { get { return _isWithEvents; } }
 
         /// <summary>
         /// Returns a string representing the scope of an identifier.

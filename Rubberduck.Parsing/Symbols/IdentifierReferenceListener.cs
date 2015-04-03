@@ -136,6 +136,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
         {
+            /* named parameter syntax */
+
             // one of these is null...
             var callStatementA = context.Parent.Parent.Parent as VBAParser.ICS_S_ProcedureOrArrayCallContext;
             var callStatementB = context.Parent.Parent.Parent as VBAParser.ICS_S_VariableOrProcedureCallContext;
@@ -208,7 +210,7 @@ namespace Rubberduck.Parsing.Symbols
             if (declaration.DeclarationType == DeclarationType.Module ||
                 declaration.DeclarationType == DeclarationType.Class)
             {
-                // todo: access component instancing properties to do this right
+                // todo: access component instancing properties to do this right (class)
                 return true;
             }
 
