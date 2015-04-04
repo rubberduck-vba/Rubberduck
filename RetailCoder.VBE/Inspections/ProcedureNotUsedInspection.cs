@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection : IInspection
+    public class ProcedureNotUsedInspection //: IInspection // disable until smarter way is implemented
     {
         public ProcedureNotUsedInspection()
         {
