@@ -35,5 +35,15 @@ namespace Rubberduck.Parsing.Symbols
         {
             return _declarations.Where(declaration => declaration.ParentScope == parent.Scope);
         }
+
+        /// <summary>
+        /// Finds all event handler procedures for specified control declaration.
+        /// </summary>
+        public IEnumerable<Declaration> FindEventHandlers(Declaration control)
+        {
+            return _declarations.Where(declaration => declaration.ParentScope == control.ParentScope
+                && declaration.DeclarationType == DeclarationType.Procedure
+                && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
+        }
     }
 }
