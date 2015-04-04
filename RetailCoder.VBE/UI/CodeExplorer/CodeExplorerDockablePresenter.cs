@@ -295,8 +295,8 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 var component = componentParseResult.Component;
                 var members = parseResult.Declarations.Items
-                    .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name)
-                    .OrderBy(declaration => declaration.IdentifierName);
+                    .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name
+                        && declaration.DeclarationType != DeclarationType.Control);
 
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
