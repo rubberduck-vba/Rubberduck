@@ -219,7 +219,7 @@ chdirStmt : CHDIR WS valueStmt;
 
 chdriveStmt : CHDRIVE WS valueStmt;
 
-closeStmt : CLOSE (WS valueStmt (WS? ',' WS? valueStmt)*)?;
+closeStmt : CLOSE (WS fileNumber (WS? ',' WS? fileNumber)*)?;
 
 constStmt : (visibility WS)? CONST WS constSubStmt (WS? ',' WS? constSubStmt)*;
 
@@ -322,13 +322,13 @@ ifElseBlockStmt :
 
 implementsStmt : IMPLEMENTS WS ambiguousIdentifier;
 
-inputStmt : INPUT WS valueStmt (WS? ',' WS? valueStmt)+;
+inputStmt : INPUT WS fileNumber (WS? ',' WS? valueStmt)+;
 
 killStmt : KILL WS valueStmt;
 
 letStmt : (LET WS)? implicitCallStmt_InStmt WS? (EQ | PLUS_EQ | MINUS_EQ) WS? valueStmt;
 
-lineInputStmt : LINE_INPUT WS valueStmt WS? ',' WS? valueStmt;
+lineInputStmt : LINE_INPUT WS fileNumber WS? ',' WS? valueStmt;
 
 loadStmt : LOAD WS valueStmt;
 
@@ -339,12 +339,12 @@ lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
-	MACRO_IF WS ifConditionStmt WS THEN NEWLINE+ 
+	MACRO_IF WS? ifConditionStmt WS THEN NEWLINE+ 
 	(moduleBody NEWLINE+)?
 ;
 
 macroElseIfBlockStmt : 
-	MACRO_ELSEIF WS ifConditionStmt WS THEN NEWLINE+ 
+	MACRO_ELSEIF WS? ifConditionStmt WS THEN NEWLINE+ 
 	(moduleBody NEWLINE+)?
 ;
 
@@ -369,7 +369,7 @@ openStmt :
 	OPEN WS valueStmt WS FOR WS (APPEND | BINARY | INPUT | OUTPUT | RANDOM) 
 	(WS ACCESS WS (READ | WRITE | READ_WRITE))?
 	(WS (SHARED | LOCK_READ | LOCK_WRITE | LOCK_READ_WRITE))?
-	WS AS WS valueStmt
+	WS AS WS fileNumber
 	(WS LEN WS? EQ WS? valueStmt)?
 ;
 
@@ -383,7 +383,7 @@ outputList_Expression :
 	| (SPC | TAB) (WS? LPAREN WS? argsCall WS? RPAREN)?
 ;
 
-printStmt : PRINT WS valueStmt WS? ',' (WS? outputList)?;
+printStmt : PRINT WS fileNumber WS? ',' (WS? outputList)?;
 
 propertyGetStmt : 
 	(visibility WS)? (STATIC WS)? PROPERTY_GET WS ambiguousIdentifier (WS? argList)? (WS asTypeClause)? NEWLINE+ 
@@ -403,7 +403,7 @@ propertyLetStmt :
 	END_PROPERTY
 ;
 
-putStmt : PUT WS valueStmt WS? ',' WS? valueStmt? WS? ',' WS? valueStmt;
+putStmt : PUT WS fileNumber WS? ',' WS? valueStmt? WS? ',' WS? valueStmt;
 
 raiseEventStmt : RAISEEVENT WS ambiguousIdentifier (WS? LPAREN WS? (argsCall WS?)? RPAREN)?;
 
@@ -536,7 +536,10 @@ withStmt :
 	END_WITH
 ;
 
-writeStmt : WRITE WS valueStmt WS? ',' (WS? outputList)?;
+writeStmt : WRITE WS fileNumber WS? ',' (WS? outputList)?;
+
+
+fileNumber : '#' (ambiguousIdentifier | literal);
 
 
 // complex call statements ----------------------------------
@@ -635,7 +638,7 @@ lineLabel : (ambiguousIdentifier ':' WS) | lineNumber;
 
 lineNumber : (INTEGERLITERAL WS);
 
-literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | FILENUMBER | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
+literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
 type : (baseType | complexType) (WS? LPAREN WS? RPAREN)?;
 
@@ -768,9 +771,9 @@ LOCK_READ : L O C K ' ' R E A D;
 LOCK_WRITE : L O C K ' ' W R I T E;
 LOCK_READ_WRITE : L O C K ' ' R E A D ' ' W R I T E;
 LSET : L S E T;
-MACRO_IF : '#' I F;
-MACRO_ELSEIF : '#' E L S E I F;
-MACRO_ELSE : '#' E L S E;
+MACRO_IF : '#' I F ' ';
+MACRO_ELSEIF : '#' E L S E I F ' ';
+MACRO_ELSE : '#' E L S E ' ';
 MACRO_END_IF : '#' E N D ' ' I F;
 ME : M E;
 MID : M I D;
@@ -879,7 +882,7 @@ DATELITERAL : '#' (~[#\r\n])* '#';
 COLORLITERAL : '&H' [0-9A-F]+ '&'?;
 INTEGERLITERAL : (PLUS|MINUS)? ('0'..'9')+ ( ('e' | 'E') INTEGERLITERAL)* ('#' | '&')?;
 DOUBLELITERAL : (PLUS|MINUS)? ('0'..'9')* '.' ('0'..'9')+ ( ('e' | 'E') (PLUS|MINUS)? ('0'..'9')+)* ('#' | '&')?;
-FILENUMBER : '#' LETTERORDIGIT+;
+BYTELITERAL : ('0'..'9')+;
 // identifier
 IDENTIFIER : LETTER (LETTERORDIGIT)*;
 // whitespace, line breaks, comments, ...

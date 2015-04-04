@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1628,6 +1628,17 @@ public partial class VBABaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	public virtual Result VisitResetStmt([NotNull] VBAParser.ResetStmtContext context) { return VisitChildren(context); }
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitFileNumber([NotNull] VBAParser.FileNumberContext context) { return VisitChildren(context); }
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.vsICS"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -1990,4 +2001,4 @@ public partial class VBABaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitSavepictureStmt([NotNull] VBAParser.SavepictureStmtContext context) { return VisitChildren(context); }
 }
-} // namespace Rubberduck.Parsing
+} // namespace Rubberduck.Parsing.Grammar

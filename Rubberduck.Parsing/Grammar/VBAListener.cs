@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1693,6 +1693,17 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitResetStmt([NotNull] VBAParser.ResetStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFileNumber([NotNull] VBAParser.FileNumberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFileNumber([NotNull] VBAParser.FileNumberContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>vsICS</c>
 	/// labeled alternative in <see cref="VBAParser.valueStmt"/>.
 	/// </summary>
@@ -2069,4 +2080,4 @@ public interface IVBAListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSavepictureStmt([NotNull] VBAParser.SavepictureStmtContext context);
 }
-} // namespace Rubberduck.Parsing
+} // namespace Rubberduck.Parsing.Grammar
