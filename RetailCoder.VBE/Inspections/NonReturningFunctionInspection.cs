@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
                 declaration.DeclarationType == DeclarationType.Function);
 
             var results = functions
-                .Where(declaration => declaration.References.Where(r => declaration.Selection.Contains(r.Selection)).All(r => !r.IsAssignment));
+                .Where(declaration => declaration.References.All(r => !r.IsAssignment));
 
             foreach (var result in results)
             {
