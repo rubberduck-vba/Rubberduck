@@ -59,7 +59,6 @@
     <Compile Include="Listeners\IExtensionListener.cs" />
     <Compile Include="Listeners\NodeBuildingListener.cs" />
     <Compile Include="Listeners\ObsoleteInstructionsListener.cs" />
-    <Compile Include="Listeners\ProcedureListener.cs" />
     <Compile Include="Listeners\VariableReferencesListener.cs" />
     <Compile Include="Listeners\VariableUsageListener.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
