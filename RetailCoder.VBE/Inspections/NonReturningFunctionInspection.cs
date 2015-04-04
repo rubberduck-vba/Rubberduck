@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
@@ -17,21 +18,43 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] InterfaceMemberTypes =
+        {
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        private static readonly DeclarationType[] ReturningMemberTypes =
+        {
+            DeclarationType.Function,
+            DeclarationType.PropertyGet
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
+            var interfaceMembers = parseResult.Declarations.Items
+                .Where(IsImplemented)
+                .SelectMany(iItem => parseResult.Declarations.FindMembers(iItem)
+                    .Where(member => InterfaceMemberTypes.Contains(member.DeclarationType)));
+
             var functions = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Function);
+                ReturningMemberTypes.Contains(declaration.DeclarationType)
+                && !interfaceMembers.Contains(declaration));
 
-            var results = functions
-                .Where(declaration => declaration.References.All(r => !r.IsAssignment));
+            var issues = functions
+                .Where(declaration => declaration.References.All(r => !r.IsAssignment))
+                .Select(issue => new NonReturningFunctionInspectionResult(string.Format(Name, issue.IdentifierName), Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context)));
 
-            foreach (var result in results)
-            {
-                // todo: in Microsoft Access, this inspection should only return a result for private functions.
-                //       changing an unassigned function to a "Sub" could break Access macros that reference it.
-                //       doing this right may require accessing the Access object model to find usages in macros.
-                yield return new NonReturningFunctionInspectionResult(string.Format(Name, result.IdentifierName), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, result.Context));
-            }
+            return issues;
+        }
+
+        private bool IsImplemented(Declaration item)
+        {
+            return item.DeclarationType == DeclarationType.Class
+                   && item.References.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext);
         }
     }
 }
