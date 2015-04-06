@@ -9,9 +9,9 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    public class ParameterCanBeByValInspectionResult : CodeInspectionResultBase
+    public class AssignedByValParameterInspectionResult : CodeInspectionResultBase
     {
-        public ParameterCanBeByValInspectionResult(string inspection, CodeInspectionSeverity type,
+        public AssignedByValParameterInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, type, qualifiedName.QualifiedModuleName, context)
         {
@@ -21,14 +21,15 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action<VBE>>
             {
-                {"Pass parameter by value", PassParameterByValue}
+                {"Pass parameter by reference", PassParameterByReference}
+                //,{"Introduce local variable", IntroduceLocalVariable}
             };
         }
 
-        private void PassParameterByValue(VBE vbe)
+        private void PassParameterByReference(VBE vbe)
         {
             var parameter = Context.GetText();
-            var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
+            var newContent = string.Concat(Tokens.ByRef, " ", parameter.Replace(Tokens.ByVal, string.Empty).Trim());
             var selection = QualifiedSelection.Selection;
 
             var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
@@ -36,6 +37,11 @@ namespace Rubberduck.Inspections
 
             var result = lines.Replace(parameter, newContent);
             module.ReplaceLine(selection.StartLine, result);
+        }
+
+        private void IntroduceLocalVariable(VBE vbe)
+        {
+            var parameter = Context.GetText().Replace(Tokens.ByVal, string.Empty).Trim();
         }
     }
 }

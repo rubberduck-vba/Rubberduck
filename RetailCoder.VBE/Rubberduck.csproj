@@ -225,8 +225,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
+    <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
-    <Compile Include="Inspections\FunctionNotUsedInspection.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />

@@ -61,6 +61,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ByVal parameter &apos;{0}&apos; is assigned.
+        /// </summary>
+        internal static string ByValParameterIsAssigned_ {
+            get {
+                return ResourceManager.GetString("ByValParameterIsAssigned_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constant &apos;{0}&apos; is never used.
         /// </summary>
         internal static string ConstantNotUsed_ {
