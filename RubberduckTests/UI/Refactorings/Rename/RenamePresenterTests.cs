@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings.Rename;
-using parsing = Rubberduck.Parsing;
+using Parsing = Rubberduck.Parsing;
 
 namespace RubberduckTests.UI.Refactorings.Rename
 {
@@ -17,7 +17,7 @@ namespace RubberduckTests.UI.Refactorings.Rename
         private static Mock<VBE> _vbe;
         private static Mock<VBProject> _vbProject;
         private static Declarations _declarations;
-        private static parsing.QualifiedModuleName _module;
+        private static Parsing.QualifiedModuleName _module;
         private static Mock<IRenameView> _view;
         private List<Declaration> _listDeclarations;
 
@@ -27,21 +27,21 @@ namespace RubberduckTests.UI.Refactorings.Rename
             _vbe = new Mock<VBE>();
             _vbProject = new Mock<VBProject>();
             _declarations = new Declarations();
-            _module = new parsing.QualifiedModuleName();
+            _module = new Parsing.QualifiedModuleName();
             _view = new Mock<IRenameView>();
         }
 
         /// <summary>Common method for adding declaration with some default values</summary>
         private void AddDeclarationItem(IMock<ParserRuleContext> context,
-            parsing.Selection selection,
-            parsing.QualifiedMemberName? qualifiedName = null,
+            Parsing.Selection selection,
+            Parsing.QualifiedMemberName? qualifiedName = null,
             DeclarationType declarationType = DeclarationType.Project,
             string identifierName = "identifierName")
         {
-            Declaration decItem = null;
-            var qualName = qualifiedName ?? new parsing.QualifiedMemberName(_module, "fakeModule");
+            Declaration declarationItem = null;
+            var qualName = qualifiedName ?? new Parsing.QualifiedMemberName(_module, "fakeModule");
 
-            decItem = new Declaration(qualName,
+            declarationItem = new Declaration(qualName,
                 accessibility: Accessibility.Public,
                 declarationType: declarationType,
                 context: context.Object,
@@ -51,9 +51,9 @@ namespace RubberduckTests.UI.Refactorings.Rename
                 asTypeName: "asTypeName",
                 isSelfAssigned: false);
 
-            _declarations.Add(decItem);
+            _declarations.Add(declarationItem);
             if (_listDeclarations == null) _listDeclarations = new List<Declaration>();
-            _listDeclarations.Add(decItem);
+            _listDeclarations.Add(declarationItem);
         }
 
         /// <summary>Common method for adding a reference to given declaration item</summary>
@@ -69,8 +69,8 @@ namespace RubberduckTests.UI.Refactorings.Rename
         public void ConstructorWorks_IsNotNull()
         {
             // arange
-            var symbolSelection = new parsing.Selection(1, 1, 2, 2);
-            var qualifiedSelection = new parsing.QualifiedSelection(_module, symbolSelection);
+            var symbolSelection = new Parsing.Selection(1, 1, 2, 2);
+            var qualifiedSelection = new Parsing.QualifiedSelection(_module, symbolSelection);
 
             //act
             var presenter = new RenamePresenter(_vbe.Object, _view.Object, _declarations, qualifiedSelection);
@@ -83,8 +83,8 @@ namespace RubberduckTests.UI.Refactorings.Rename
         public void NoTargetFound()
         {
             // arange
-            var symbolSelection = new parsing.Selection(1, 1, 2, 2);
-            var qualifiedSelection = new parsing.QualifiedSelection(_module, symbolSelection);
+            var symbolSelection = new Parsing.Selection(1, 1, 2, 2);
+            var qualifiedSelection = new Parsing.QualifiedSelection(_module, symbolSelection);
 
             var context = new Mock<ParserRuleContext>();
             AddDeclarationItem(context, symbolSelection);
@@ -102,8 +102,8 @@ namespace RubberduckTests.UI.Refactorings.Rename
         public void AcquireTarget_ProcedureRenaming_TargetIsNotNull()
         {
             // arange
-            var symbolSelection = new parsing.Selection(1, 1, 2, 4);
-            var qualifiedSelection = new parsing.QualifiedSelection(_module, symbolSelection);
+            var symbolSelection = new Parsing.Selection(1, 1, 2, 4);
+            var qualifiedSelection = new Parsing.QualifiedSelection(_module, symbolSelection);
 
             // just for passing null reference exception
             var context = new Mock<ParserRuleContext>();
@@ -132,8 +132,8 @@ namespace RubberduckTests.UI.Refactorings.Rename
         public void AcquireTarget_ModuleRenaming_TargetIsNotNull()
         {
             // arange
-            var symbolSelection = new parsing.Selection(1, 1, 2, 4);
-            var qualifiedSelection = new parsing.QualifiedSelection(_module, symbolSelection);
+            var symbolSelection = new Parsing.Selection(1, 1, 2, 4);
+            var qualifiedSelection = new Parsing.QualifiedSelection(_module, symbolSelection);
 
             // just for passing null reference exception
             var context = new Mock<ParserRuleContext>();
@@ -162,9 +162,9 @@ namespace RubberduckTests.UI.Refactorings.Rename
         public void AcquireTarget_MethodRenamingAtSameComponent_CorrectTargetChosen()
         {
             // arange
-            var symbolSelection = new parsing.Selection(8, 1, 8, 16);
-            var selectedComponent = new parsing.QualifiedModuleName("TestProject", "TestModule", _vbProject.Object, 1);
-            var qualifiedSelection = new parsing.QualifiedSelection(selectedComponent, symbolSelection);
+            var symbolSelection = new Parsing.Selection(8, 1, 8, 16);
+            var selectedComponent = new Parsing.QualifiedModuleName("TestProject", "TestModule", _vbProject.Object, 1);
+            var qualifiedSelection = new Parsing.QualifiedSelection(selectedComponent, symbolSelection);
 
             // just for passing null reference exception            
             var context = new Mock<ParserRuleContext>();
@@ -173,11 +173,11 @@ namespace RubberduckTests.UI.Refactorings.Rename
             context.SetupGet(c => c.Stop.Text).Returns("Four");
 
             // simulate all the components and symbols   
-            var member = new parsing.QualifiedMemberName(selectedComponent, "fakeModule");
+            var member = new Parsing.QualifiedMemberName(selectedComponent, "fakeModule");
             const string identifierName = "Foo";
             AddDeclarationItem(context, symbolSelection, member, DeclarationType.Procedure, identifierName);
-            AddDeclarationItem(context, new parsing.Selection(1, 1, 1, 16), member, DeclarationType.Procedure);
-            AddDeclarationItem(context, new parsing.Selection(1, 1, 1, 1), member, DeclarationType.Module);
+            AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 16), member, DeclarationType.Procedure);
+            AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 1), member, DeclarationType.Module);
 
             // allow Moq to set the Target property
             _view.Setup(view => view.ShowDialog()).Returns(DialogResult.Cancel);
@@ -198,9 +198,9 @@ namespace RubberduckTests.UI.Refactorings.Rename
         {
             // arange
             // initial selection
-            var symbolSelection = new parsing.Selection(4, 5, 4, 8);
-            var selectedComponent = new parsing.QualifiedModuleName("TestProject", "Module1", _vbProject.Object, 1);
-            var qualifiedSelection = new parsing.QualifiedSelection(selectedComponent, symbolSelection);
+            var symbolSelection = new Parsing.Selection(4, 5, 4, 8);
+            var selectedComponent = new Parsing.QualifiedModuleName("TestProject", "Module1", _vbProject.Object, 1);
+            var qualifiedSelection = new Parsing.QualifiedSelection(selectedComponent, symbolSelection);
 
             // just for passing null reference exception            
             var context = new Mock<ParserRuleContext>();
@@ -210,23 +210,23 @@ namespace RubberduckTests.UI.Refactorings.Rename
 
             // simulate all the components and symbols   
             IdentifierReference reference;
-            var differentComponent = new parsing.QualifiedModuleName("TestProject", "Module2", _vbProject.Object, 1);
-            var differentMember = new parsing.QualifiedMemberName(differentComponent, "Module2");
-            AddDeclarationItem(context, new parsing.Selection(4, 9, 4, 16), differentMember, DeclarationType.Variable,"FooTest");
+            var differentComponent = new Parsing.QualifiedModuleName("TestProject", "Module2", _vbProject.Object, 1);
+            var differentMember = new Parsing.QualifiedMemberName(differentComponent, "Module2");
+            AddDeclarationItem(context, new Parsing.Selection(4, 9, 4, 16), differentMember, DeclarationType.Variable,"FooTest");
 
             // add references to the Foo declaration item to simulate prod usage
-            AddDeclarationItem(context, new parsing.Selection(3, 5, 3, 8), differentMember, DeclarationType.Procedure, "Foo");
+            AddDeclarationItem(context, new Parsing.Selection(3, 5, 3, 8), differentMember, DeclarationType.Procedure, "Foo");
             var declarationItem = _listDeclarations[_listDeclarations.Count - 1];
-            reference = new IdentifierReference(selectedComponent, "Foo", new parsing.Selection(7, 5, 7, 11), false,context.Object, declarationItem);
+            reference = new IdentifierReference(selectedComponent, "Foo", new Parsing.Selection(7, 5, 7, 11), false,context.Object, declarationItem);
             AddReference(declarationItem, reference);
             reference = new IdentifierReference(selectedComponent, "Foo", symbolSelection, false, context.Object,declarationItem);
             AddReference(declarationItem, reference);
 
-            AddDeclarationItem(context, new parsing.Selection(1, 1, 1, 1), differentMember, DeclarationType.Module, "Module2");
-            var member = new parsing.QualifiedMemberName(selectedComponent, "fakeModule");
-            AddDeclarationItem(context, new parsing.Selection(7, 5, 7, 11), member, DeclarationType.Procedure, "RunFoo");
-            AddDeclarationItem(context, new parsing.Selection(3, 5, 3, 9), member, DeclarationType.Procedure, "Main");
-            AddDeclarationItem(context, new parsing.Selection(1, 1, 1, 1), member, DeclarationType.Module, "Module1");
+            AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 1), differentMember, DeclarationType.Module, "Module2");
+            var member = new Parsing.QualifiedMemberName(selectedComponent, "fakeModule");
+            AddDeclarationItem(context, new Parsing.Selection(7, 5, 7, 11), member, DeclarationType.Procedure, "RunFoo");
+            AddDeclarationItem(context, new Parsing.Selection(3, 5, 3, 9), member, DeclarationType.Procedure, "Main");
+            AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 1), member, DeclarationType.Module, "Module1");
 
             _view.Setup(view => view.ShowDialog()).Returns(DialogResult.Cancel);
             _view.SetupProperty(view => view.Target);
