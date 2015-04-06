@@ -108,22 +108,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
         {
-            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 
         public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
         {
-            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 
         public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
         {
-            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 
         public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
         {
-            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)

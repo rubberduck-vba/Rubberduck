@@ -32,10 +32,7 @@ namespace Rubberduck.Inspections
         private static readonly DeclarationType[] ProcedureTypes =
         {
             DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
+            DeclarationType.Function
         };
 
         private bool IsIgnoredProcedure(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers)
