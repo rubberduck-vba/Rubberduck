@@ -133,7 +133,14 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="Rubberduck">
+      <HintPath>..\RetailCoder.VBE\bin\Debug\Rubberduck.dll</HintPath>
+    </Reference>
+    <Reference Include="Rubberduck.Parsing">
+      <HintPath>..\Rubberduck.Parsing\bin\Debug\Rubberduck.Parsing.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -157,12 +164,7 @@
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="SourceControlTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Name>Rubberduck</Name>
-    </ProjectReference>
+    <Compile Include="UI\Refactorings\Rename\RenamePresenterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
