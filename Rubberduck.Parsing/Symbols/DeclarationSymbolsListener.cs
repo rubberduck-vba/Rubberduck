@@ -106,6 +106,26 @@ namespace Rubberduck.Parsing.Symbols
             _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
         }
 
+        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
+        {
+            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+        }
+
+        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
+        {
+            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+        }
+
+        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
+        {
+            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+        }
+
+        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
+        {
+            CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection());
+        }
+
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());

@@ -29,12 +29,20 @@ namespace Rubberduck.Inspections
             return issues;
         }
 
+        private static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
         private bool IsIgnoredProcedure(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers)
         {
-            var result = 
-                declaration.DeclarationType != DeclarationType.Procedure
-                || handlers.Contains(declaration)
+            var result = !ProcedureTypes.Contains(declaration.DeclarationType)
                 || declaration.References.Any()
+                || handlers.Contains(declaration)
                 || IsPublicModuleMember(declarations, declaration)
                 || IsClassLifeCycleHandler(declarations, declaration)
                 || IsInterfaceMember(declarations, declaration);
@@ -49,7 +57,8 @@ namespace Rubberduck.Inspections
         private bool IsPublicModuleMember(Declarations declarations, Declaration procedure)
         {
             var parent = declarations.Items.SingleOrDefault(item =>
-                        item.IdentifierName == procedure.ComponentName &&
+                        item.Project == procedure.Project &&
+                        item.IdentifierName == procedure.ComponentName && 
                         (item.DeclarationType == DeclarationType.Module));
 
             return parent != null && (procedure.Accessibility == Accessibility.Implicit
@@ -65,6 +74,7 @@ namespace Rubberduck.Inspections
         private bool IsClassLifeCycleHandler(Declarations declarations, Declaration procedure)
         {
             var parent = declarations.Items.SingleOrDefault(item =>
+                        item.Project == procedure.Project && 
                         item.IdentifierName == procedure.ComponentName &&
                         (item.DeclarationType == DeclarationType.Class));
 
@@ -81,7 +91,8 @@ namespace Rubberduck.Inspections
         {
             // get the procedure's parent module
             var parent = declarations.Items.SingleOrDefault(item =>
-                       item.IdentifierName == procedure.ComponentName &&
+                        item.Project == procedure.Project && 
+                        item.IdentifierName == procedure.ComponentName &&
                        (item.DeclarationType == DeclarationType.Class));
 
             if (parent == null)

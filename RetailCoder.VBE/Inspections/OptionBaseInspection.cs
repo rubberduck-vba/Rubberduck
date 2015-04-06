@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -20,35 +19,20 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var result = new List<CodeInspectionResultBase>();
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                try
-                {
-                    var declarationLines = module.Component.CodeModule.CountOfDeclarationLines;
-                    if (declarationLines == 0)
-                    {
-                        declarationLines = 1;
-                    }
+            var options = parseResult.Declarations.Items
+                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
+                                      && declaration.Context is VBAParser.OptionBaseStmtContext)
+                .ToList();
 
-                    if (module.Component.CodeModule.CountOfLines > 0)
-                    {
-                        var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n')
-                            .Select(line => line.Replace("\r", string.Empty));
-                        var option = Tokens.Option + " " + Tokens.Base + " 1";
-                        if (lines.Contains(option))
-                        {
-                            result.Add(new OptionBaseInspectionResult(Name, Severity, module.QualifiedName));
-                        }
-                    }
-                }
-                catch (COMException)
-                {
-                    // couldn't access the CodeModule. Whiskey Tango Foxtrot.
-                }
+            if (!options.Any())
+            {
+                return new List<CodeInspectionResultBase>();
             }
 
-            return result;
+            var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).INTEGERLITERAL().GetText() == "1")
+                                .Select(issue => new OptionBaseInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName));
+
+            return issues;
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Rubberduck.Parsing.Symbols
         Module,
         Class,
         Control,
+        ModuleOption,
         Procedure,
         Function,
         PropertyGet,
