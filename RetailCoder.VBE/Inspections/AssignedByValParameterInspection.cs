@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class AssignedByValParameterInspection : IInspection
+    public class AssignedByValParameterInspection //: IInspection /* note: deferred to v1.4 */
     {
         public AssignedByValParameterInspection()
         {
