@@ -24,6 +24,7 @@ namespace Rubberduck.UI.SourceControl
 
             _view.CreateBranch += OnShowCreateBranchView;
             _view.Merge += OnShowMerge;
+            _view.SelectedBranchChanged += OnSelectedBranchChanged;
 
             _createView.Confirm += OnCreateBranch;
             _createView.Cancel += OnCreateViewCancel;
@@ -31,6 +32,12 @@ namespace Rubberduck.UI.SourceControl
 
             _mergeView.Confirm += OnMerge;
             _mergeView.Cancel += OnCancelMerge;
+            _mergeView.MergeStatusChanged += OnMergeStatusChanged;
+        }
+
+        private void OnSelectedBranchChanged(object sender, EventArgs e)
+        {
+            _provider.Checkout(_view.Current);
         }
 
         ~BranchesPresenter()
@@ -109,21 +116,42 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
-                _provider.Merge(_mergeView.SelectedSourceBranch, _mergeView.SelectedDestinationBranch);
+                var source =_mergeView.SelectedSourceBranch;
+                var destination =_mergeView.SelectedDestinationBranch;
+
+                _provider.Merge(source, destination);
                 _view.Current = _provider.CurrentBranch.Name;
+
+                _mergeView.StatusText = string.Format("Successfully Merged {0} into {1}", source, destination);
+                _mergeView.Status = MergeStatus.Success; 
 
                 _mergeView.Hide();
             }
             catch(SourceControlException ex)
             {
-                //todo: replace this with a message on the MergeView
-                System.Windows.Forms.MessageBox.Show(ex.InnerException.Message, ex.Message);
+                _mergeView.Status = MergeStatus.Failure;
+                _mergeView.StatusText = ex.Message + ": " + ex.InnerException.Message;
             }
         }
 
         private void OnCancelMerge(object sender, EventArgs e)
         {
             _mergeView.Hide();
+        }
+
+        private void OnMergeStatusChanged(object sender, EventArgs e)
+        {
+            
+            if (_mergeView.Status == MergeStatus.Unknown)
+            {
+                _mergeView.StatusText = string.Empty;
+                _mergeView.StatusTextVisible = false;
+            }
+            else 
+            {
+                _mergeView.StatusTextVisible = true;
+            }
+
         }
     }
 

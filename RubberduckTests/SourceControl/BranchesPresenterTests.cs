@@ -291,10 +291,12 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _mergeView.SetupProperty(m => m.StatusTextVisible, false);
+            _mergeView.SetupProperty(m => m.Status);
 
             //act
             _mergeView.Object.Status = MergeStatus.Success;
-
+            _mergeView.Raise(m => m.MergeStatusChanged += null, EventArgs.Empty);
+            
             //Assert
             Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible");
         }
@@ -304,36 +306,60 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _mergeView.SetupProperty(m => m.StatusTextVisible, false);
+            _mergeView.SetupProperty(m => m.Status);
 
             //act
             _mergeView.Object.Status = MergeStatus.Failure;
+            _mergeView.Raise(m => m.MergeStatusChanged += null, EventArgs.Empty);
 
             //Assert
             Assert.IsTrue(_mergeView.Object.StatusTextVisible, "Merge Status Is Not Visible"); 
         }
 
         [TestMethod]
-        public void MergeStatusTextIsEmptiedWhenStatusIsChanged()
+        public void MergeStatusTextIsEmptiedWhenStatusIsChangedToUnknown()
         {
-            Assert.Fail("Test not implemented yet.");
+            //arrange
+            _mergeView.SetupProperty(m => m.StatusText, "Some Text");
+            _mergeView.SetupProperty(m => m.Status, MergeStatus.Failure);
+
+            //act
+            _mergeView.Object.Status = MergeStatus.Unknown;
+            _mergeView.Raise(m => m.MergeStatusChanged +=null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual(String.Empty, _mergeView.Object.StatusText);
         }
 
         [TestMethod]
-        public void MergeStatusTextIsGreenOnSuccess()
-        {
-            Assert.Fail("Test not implemented yet.");
-        }
-
-        [TestMethod]
-        public void MergeStatusTextIsRedOnFailure()
-        {
-            Assert.Fail("Test not implemented yet.");
-        }
-
-        [TestMethod]
+        [ExpectedException(typeof(SourceControlException))]
         public void MergeStatusSetToFailIfProviderThrowsException()
         {
-            Assert.Fail("Test not implemented yet.");
+            //arrange
+            _mergeView.SetupProperty(m => m.Status, MergeStatus.Unknown);
+            _provider.Setup(git => git.Merge(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(new SourceControlException());
+
+            //act
+            _provider.Object.Merge("dev", "master");
+
+            //assert
+            Assert.AreEqual(MergeStatus.Failure, _mergeView.Object.Status);
+        }
+
+        [TestMethod]
+        public void ChangingSelectedBranchChecksOutThatBranch()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Current, "master");
+            _provider.Setup(git => git.Checkout(It.IsAny<string>()));
+
+            //act
+            _view.Object.Current = "dev";
+            _view.Raise(v => v.SelectedBranchChanged+=null, EventArgs.Empty);
+
+            //assert
+            _provider.Verify(git => git.Checkout("dev"));
         }
     }
 }

@@ -250,8 +250,8 @@ namespace Rubberduck.UI.SourceControl
 
         public string Current
         {
-            get { return this.CurrentBranchSelector.SelectedText; }
-            set { this.CurrentBranchSelector.SelectedText = value; }
+            get { return this.CurrentBranchSelector.SelectedItem.ToString(); }
+            set { this.CurrentBranchSelector.SelectedItem = value; }
         }
 
         private BindingList<string> _publishedBranches; 
@@ -279,7 +279,10 @@ namespace Rubberduck.UI.SourceControl
         public event EventHandler<EventArgs> SelectedBranchChanged;
         public void OnSelectedBranchChanged(object sender, EventArgs e)
         {
-            RaiseGenericEvent(SelectedBranchChanged, e);
+            if (!string.IsNullOrWhiteSpace(this.Current))
+            {
+                RaiseGenericEvent(SelectedBranchChanged, e);
+            }
         }
 
         public event EventHandler<EventArgs> Merge;
