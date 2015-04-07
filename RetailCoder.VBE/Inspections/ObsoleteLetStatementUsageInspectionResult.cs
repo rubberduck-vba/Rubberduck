@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections
     public class ObsoleteLetStatementUsageInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteLetStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<VBAParser.LetStmtContext> qualifiedContext)
+            QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
