@@ -1,11 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Listeners;
 
 namespace Rubberduck.Inspections
 {
@@ -22,21 +18,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var result in parseResult.ComponentParseResults)
-            {
-                var statements = (result.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener(result.QualifiedName)))
-                                        .Select(context => context.Context).ToList();
-                var module = result;
-                foreach (var inspectionResult in 
-                    statements.OfType<VBAParser.ECS_MemberProcedureCallContext>()
-                              .Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText())).Select(node => node.Parent).Union(statements.OfType<VBAParser.ECS_ProcedureCallContext>().Where(call => call.CALL() != null && !string.IsNullOrEmpty(call.CALL().GetText()))
-                              .Select(node => node.Parent))
-                              .Cast<VBAParser.ExplicitCallStmtContext>()
-                              .Select(context => 
-                                  new ObsoleteCallStatementUsageInspectionResult(Name, Severity, 
-                                      new QualifiedContext<VBAParser.ExplicitCallStmtContext>(module.QualifiedName, context))))
-                    yield return inspectionResult;
-            }
+            var issues = parseResult.Declarations.Items.SelectMany(declaration => 
+                declaration.References.Where(reference => reference.HasExplicitCallStatement()))
+                .Select(issue => new ObsoleteCallStatementUsageInspectionResult(Name, Severity,
+                    new QualifiedContext<VBAParser.ExplicitCallStmtContext>(issue.QualifiedModuleName, issue.Context.Parent as VBAParser.ExplicitCallStmtContext)));
+
+            return issues;
         }
     }
 }
