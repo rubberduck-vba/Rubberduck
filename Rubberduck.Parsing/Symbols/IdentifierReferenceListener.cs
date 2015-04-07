@@ -126,8 +126,8 @@ namespace Rubberduck.Parsing.Symbols
             var declaration = GetClosestScope(matches);
             if (declaration != null)
             {
-                var isAssignment = IsAssignmentContext(context);
-                var reference = new IdentifierReference(_qualifiedName, name, selection, isAssignment, context, declaration);
+                IsAssignmentContext(context);
+                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration);
 
                 declaration.AddReference(reference);
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
@@ -176,7 +176,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (arg != null)
             {
-                var reference = new IdentifierReference(_qualifiedName, arg.IdentifierName, context.GetSelection(), false, context, arg);
+                var reference = new IdentifierReference(_qualifiedName, arg.IdentifierName, context.GetSelection(), context, arg);
                 arg.AddReference(reference);
             }
         }
