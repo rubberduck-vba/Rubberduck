@@ -7,14 +7,14 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, 
-            Selection selection, ParserRuleContext context, Declaration declaration)
+        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false)
         {
             _qualifiedName = qualifiedName;
             _identifierName = identifierName;
             _selection = selection;
             _context = context;
             _declaration = declaration;
+            _isAssignmentTarget = isAssignmentTarget;
         }
 
         private readonly QualifiedModuleName _qualifiedName;
@@ -26,7 +26,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
 
-        public bool IsAssignment { get { return FindValueAssignmentContext(Context) != null || FindReferenceAssignmentContext(Context) != null; } }
+        private readonly bool _isAssignmentTarget;
+        public bool IsAssignment { get { return _isAssignmentTarget; } }
 
         private readonly ParserRuleContext _context;
         public ParserRuleContext Context { get { return _context; } }

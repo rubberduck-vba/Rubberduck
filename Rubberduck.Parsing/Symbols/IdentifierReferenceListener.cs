@@ -94,16 +94,139 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
+        public override void EnterLetStmt(VBAParser.LetStmtContext context)
+        {
+            var leftSide = context.implicitCallStmt_InStmt();            
+            var target = FindAssignmentTarget(leftSide);
+            if (target != null)
+            {
+                EnterIdentifier(target, target.GetSelection(), true);
+            }
+        }
+
+        public override void EnterSetStmt(VBAParser.SetStmtContext context)
+        {
+            var leftSide = context.implicitCallStmt_InStmt();
+            var target = FindAssignmentTarget(leftSide);
+            if (target != null)
+            {
+                EnterIdentifier(target, target.GetSelection(), true);
+            }
+        }
+
+        private VBAParser.AmbiguousIdentifierContext FindAssignmentTarget(VBAParser.ImplicitCallStmt_InStmtContext leftSide)
+        {
+            // todo: refactor!!
+
+            var procedureOrArrayCall = leftSide.iCS_S_ProcedureOrArrayCall();
+            if (procedureOrArrayCall != null)
+            {
+                return EnterDictionaryCall(procedureOrArrayCall.dictionaryCallStmt(),
+                    procedureOrArrayCall.ambiguousIdentifier())
+                                   ?? procedureOrArrayCall.ambiguousIdentifier();
+            }
+
+            var variableOrProcedureCall = leftSide.iCS_S_VariableOrProcedureCall();
+            if (variableOrProcedureCall != null)
+            {
+                return EnterDictionaryCall(variableOrProcedureCall.dictionaryCallStmt(),
+                    variableOrProcedureCall.ambiguousIdentifier())
+                                   ?? variableOrProcedureCall.ambiguousIdentifier();
+            }
+
+            var dictionaryCall = leftSide.iCS_S_DictionaryCall();
+            if (dictionaryCall != null && dictionaryCall.dictionaryCallStmt() != null)
+            {
+                return EnterDictionaryCall(dictionaryCall.dictionaryCallStmt());
+            }
+
+            var membersCall = leftSide.iCS_S_MembersCall();
+            if (membersCall != null)
+            {
+                var members = membersCall.iCS_S_MemberCall();
+                for (var index = 0; index < members.Count; index++)
+                {
+                    var member = members[index];
+                    if (index < members.Count - 1)
+                    {
+                        var procOrArrayCall = member.iCS_S_ProcedureOrArrayCall();
+                        if (procOrArrayCall != null)
+                        {
+                            var reference = EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), procOrArrayCall.ambiguousIdentifier())
+                                         ?? procOrArrayCall.ambiguousIdentifier();
+
+                            if (reference != null)
+                            {
+                                EnterIdentifier(reference, reference.GetSelection());
+                            }
+                        }
+
+                        var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
+                        if (varOrProcCall != null)
+                        {
+                            var reference = EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), varOrProcCall.ambiguousIdentifier())
+                                         ?? varOrProcCall.ambiguousIdentifier();
+
+                            if (reference != null)
+                            {
+                                EnterIdentifier(reference, reference.GetSelection());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var procOrArrayCall = member.iCS_S_ProcedureOrArrayCall();
+                        if (procOrArrayCall != null)
+                        {
+                            return EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), procOrArrayCall.ambiguousIdentifier())
+                                ?? procOrArrayCall.ambiguousIdentifier();
+                        }
+
+                        var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
+                        if (varOrProcCall != null)
+                        {
+                            return EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), varOrProcCall.ambiguousIdentifier())
+                                ?? varOrProcCall.ambiguousIdentifier();
+                        }
+                    }
+                }
+            }
+
+            return null; // not possible unless grammar is modified.
+        }
+
+        private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
+        {
+            if (dictionaryCall == null)
+            {
+                return null;
+            }
+
+            if (parentIdentifier != null)
+            {
+                EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection()); // we're referencing "member" in "member!field"
+            }
+            
+            return dictionaryCall.ambiguousIdentifier();
+        }
+
         public override void EnterAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
         {
             if (IsDeclarativeContext(context))
             {
-                // skip declarations
                 return;
             }
 
             var selection = context.GetSelection();
-            EnterIdentifier(context, selection);
+
+            if (context.Parent is VBAParser.ForNextStmtContext)
+            {
+                EnterIdentifier(context, selection, true);
+            }
+            else
+            {
+                EnterIdentifier(context, selection);
+            }
         }
 
         public override void EnterCertainIdentifier(VBAParser.CertainIdentifierContext context)
@@ -118,7 +241,7 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private void EnterIdentifier(ParserRuleContext context, Selection selection)
+        private void EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
@@ -126,10 +249,12 @@ namespace Rubberduck.Parsing.Symbols
             var declaration = GetClosestScope(matches);
             if (declaration != null)
             {
-                IsAssignmentContext(context);
-                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration);
+                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget);
 
-                declaration.AddReference(reference);
+                if (!declaration.References.Select(r => r.Context).Contains(reference.Context))
+                {
+                    declaration.AddReference(reference);
+                }
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
             }
         }

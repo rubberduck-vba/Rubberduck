@@ -297,7 +297,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = context.ambiguousIdentifier().GetText();
 
             _declarations.Add(CreateDeclaration(name, null, accessibility, DeclarationType.UserDefinedType, context, context.ambiguousIdentifier().GetSelection()));
-            SetCurrentScope(name);
+            //SetCurrentScope(name);
         }
 
         public override void ExitTypeStmt(VBAParser.TypeStmtContext context)
@@ -321,7 +321,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = context.ambiguousIdentifier().GetText();
 
             _declarations.Add(CreateDeclaration(name, null, accessibility, DeclarationType.Enumeration, context, context.ambiguousIdentifier().GetSelection()));
-            SetCurrentScope(name);
+            //SetCurrentScope(name);
         }
 
         public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)
