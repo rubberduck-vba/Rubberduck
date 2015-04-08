@@ -421,16 +421,6 @@ namespace Rubberduck.Parsing.Symbols
                    || declaration.Accessibility != Accessibility.Private;
         }
 
-        private bool IsAssignmentContext(RuleContext context)
-        {
-            var parent = context.Parent;
-            return parent.Parent.Parent is VBAParser.SetStmtContext // object reference assignment
-                   || parent.Parent.Parent is VBAParser.LetStmtContext // value assignment
-                   || parent is VBAParser.ForNextStmtContext // treat For loop as an assignment
-                // todo: verify that we're not missing anything here (likely)
-                ;
-        }
-
         private bool IsDeclarativeContext(VBAParser.AmbiguousIdentifierContext context)
         {
             return IsDeclarativeParentContext(context.Parent);
