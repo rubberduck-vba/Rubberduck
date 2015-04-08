@@ -40,16 +40,19 @@ namespace RubberduckTests.UI.Refactorings.Rename
         {
             Declaration declarationItem = null;
             var qualName = qualifiedName ?? new Parsing.QualifiedMemberName(_module, "fakeModule");
-
-            declarationItem = new Declaration(qualName,
-                accessibility: Accessibility.Public,
-                declarationType: declarationType,
-                context: context.Object,
-                selection: selection,
-                parentScope: "parentScope",
+            
+            declarationItem = new Declaration(
+                qualifiedName:qualName,
+                parentScope:"module.proc",
                 identifierName: identifierName,
                 asTypeName: "asTypeName",
-                isSelfAssigned: false);
+                isSelfAssigned: false,
+                isWithEvents: false,
+                accessibility: Accessibility.Public, 
+                declarationType: declarationType,
+                context: context.Object,
+                selection: selection
+                );
 
             _declarations.Add(declarationItem);
             if (_listDeclarations == null) _listDeclarations = new List<Declaration>();
