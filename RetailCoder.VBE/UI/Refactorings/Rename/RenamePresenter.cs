@@ -130,7 +130,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             _view.Target = _declarations.Items
                 .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
-                .SingleOrDefault(item => IsSelectedDeclaration(selection, item) 
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
 
             if (_view.Target == null)
