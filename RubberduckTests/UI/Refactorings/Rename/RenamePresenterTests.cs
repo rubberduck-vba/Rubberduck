@@ -220,9 +220,9 @@ namespace RubberduckTests.UI.Refactorings.Rename
             // add references to the Foo declaration item to simulate prod usage
             AddDeclarationItem(context, new Parsing.Selection(3, 5, 3, 8), differentMember, DeclarationType.Procedure, "Foo");
             var declarationItem = _listDeclarations[_listDeclarations.Count - 1];
-            reference = new IdentifierReference(selectedComponent, "Foo", new Parsing.Selection(7, 5, 7, 11), false,context.Object, declarationItem);
+            reference = new IdentifierReference(selectedComponent, "Foo", new Parsing.Selection(7, 5, 7, 11), context.Object, declarationItem);
             AddReference(declarationItem, reference);
-            reference = new IdentifierReference(selectedComponent, "Foo", symbolSelection, false, context.Object,declarationItem);
+            reference = new IdentifierReference(selectedComponent, "Foo", symbolSelection, context.Object,declarationItem);
             AddReference(declarationItem, reference);
 
             AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 1), differentMember, DeclarationType.Module, "Module2");
