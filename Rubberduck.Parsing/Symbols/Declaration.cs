@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -91,11 +93,17 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsTypeSpecified()
         {
+            if (Context == null)
+            {
+                return false;
+            }
+
             try
             {
-                return !HasTypeHint() && ((dynamic) Context).asTypeClause() != null;
+                var asType = ((dynamic) Context).asTypeClause() as VBAParser.AsTypeClauseContext;
+                return asType != null || HasTypeHint();
             }
-            catch (Exception)
+            catch (RuntimeBinderException)
             {
                 return false;
             }
@@ -103,11 +111,17 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasTypeHint()
         {
+            if (Context == null)
+            {
+                return false;
+            }
+
             try
             {
-                return ((dynamic)Context).typeHint() != null;
+                var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+                return hint != null;
             }
-            catch (Exception)
+            catch (RuntimeBinderException)
             {
                 return false;
             }
