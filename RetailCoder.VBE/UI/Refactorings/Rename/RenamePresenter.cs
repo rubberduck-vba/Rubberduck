@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -6,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Refactorings.Rename
@@ -86,6 +88,25 @@ namespace Rubberduck.UI.Refactorings.Rename
                     var newContent = GetReplacementLine(content, _view.Target.IdentifierName, _view.NewName);
                     module.ReplaceLine(line.Key, newContent);
                 }
+
+                if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                {
+                    var members = _declarations.FindMembers(_view.Target);
+                    foreach (var member in members)
+                    {
+                        var oldMemberName = _view.Target.IdentifierName + '_' + member.IdentifierName;
+                        var newMemberName = _view.NewName + '_' + member.IdentifierName;
+                        var method = _declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
+                        if (method == null)
+                        {
+                            continue;
+                        }
+
+                        var content = module.get_Lines(method.Selection.StartLine, 1);
+                        var newContent = GetReplacementLine(content, oldMemberName, newMemberName);
+                        module.ReplaceLine(method.Selection.StartLine, newContent);
+                    }
+                }
             }
         }
 
@@ -107,9 +128,10 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            _view.Target = _declarations.Items.SingleOrDefault(
-                item => IsSelectedDeclaration(selection, item) 
-                            || IsSelectedReference(selection, item));
+            _view.Target = _declarations.Items
+                .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+                .SingleOrDefault(item => IsSelectedDeclaration(selection, item) 
+                                      || IsSelectedReference(selection, item));
 
             if (_view.Target == null)
             {
