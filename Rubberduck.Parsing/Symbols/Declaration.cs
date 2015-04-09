@@ -111,18 +111,27 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasTypeHint()
         {
+            string token;
+            return HasTypeHint(out token);
+        }
+
+        public bool HasTypeHint(out string token)
+        {
             if (Context == null)
             {
+                token = null;
                 return false;
             }
 
             try
             {
                 var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+                token = hint == null ? null : hint.GetText();
                 return hint != null;
             }
             catch (RuntimeBinderException)
             {
+                token = null;
                 return false;
             }
         }

@@ -96,11 +96,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterLetStmt(VBAParser.LetStmtContext context)
         {
-            var leftSide = context.implicitCallStmt_InStmt();            
+            var leftSide = context.implicitCallStmt_InStmt();
+            var letStatement = context.LET();
             var target = FindAssignmentTarget(leftSide);
             if (target != null)
             {
-                EnterIdentifier(target, target.GetSelection(), true);
+                EnterIdentifier(target, target.GetSelection(), true, letStatement != null);
             }
         }
 
@@ -241,7 +242,7 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private void EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false)
+        private void EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
@@ -249,7 +250,7 @@ namespace Rubberduck.Parsing.Symbols
             var declaration = GetClosestScope(matches);
             if (declaration != null)
             {
-                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget);
+                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
 
                 if (!declaration.References.Select(r => r.Context).Contains(reference.Context))
                 {

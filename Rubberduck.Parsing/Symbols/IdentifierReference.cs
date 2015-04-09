@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Linq;
 using Antlr4.Runtime;
+using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false)
+        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             _qualifiedName = qualifiedName;
             _identifierName = identifierName;
             _selection = selection;
             _context = context;
             _declaration = declaration;
+            _hasExplicitLetStatement = hasExplicitLetStatement;
             _isAssignmentTarget = isAssignmentTarget;
         }
 
@@ -35,51 +37,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }
 
-        public bool HasExplicitLetStatement()
-        {
-            var context = FindValueAssignmentContext(Context);
-            if (context == null)
-            {
-                return false;
-            }
-
-            var statement = context.LET();
-            return statement != null && statement.Symbol.Text == Tokens.Let;
-        }
-
-        private VBAParser.LetStmtContext FindValueAssignmentContext(RuleContext context)
-        {
-            var statement = context.Parent as VBAParser.LetStmtContext;
-            if (statement != null && context is VBAParser.ImplicitCallStmt_InStmtContext)
-            {
-                return statement;
-            }
-
-            var parent = context.Parent;
-            if (parent != null)
-            {
-                return FindValueAssignmentContext(parent);
-            }
-
-            return null;
-        }
-
-        private VBAParser.SetStmtContext FindReferenceAssignmentContext(RuleContext context)
-        {
-            var statement = context.Parent as VBAParser.SetStmtContext;
-            if (statement != null && context is VBAParser.ImplicitCallStmt_InStmtContext)
-            {
-                return statement;
-            }
-
-            var parent = context.Parent;
-            if (parent != null)
-            {
-                return FindReferenceAssignmentContext(parent);
-            }
-
-            return null;
-        }
+        private readonly bool _hasExplicitLetStatement;
+        public bool HasExplicitLetStatement { get { return _hasExplicitLetStatement; } }
 
         public bool HasExplicitCallStatement()
         {
@@ -111,13 +70,27 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasTypeHint()
         {
+            string token;
+            return HasTypeHint(out token);
+        }
+
+        public bool HasTypeHint(out string token)
+        {
+            if (Context == null)
+            {
+                token = null;
+                return false;
+            }
+
             try
             {
-                var hint = ((dynamic) Context.Parent).typeHint();
-                return hint != null && !string.IsNullOrEmpty(hint.GetText());
+                var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
+                token = hint == null ? null : hint.GetText();
+                return hint != null;
             }
-            catch (Exception)
+            catch (RuntimeBinderException)
             {
+                token = null;
                 return false;
             }
         }

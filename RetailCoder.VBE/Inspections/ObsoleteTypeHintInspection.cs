@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         {
             var declarations = from item in parseResult.Declarations.Items
                 where item.HasTypeHint()
-                               select new ObsoleteTypeHintInspectionResult(string.Format(Name, item.DeclarationType, item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, "declaration of " + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
 
             var references = from item in parseResult.Declarations.Items.SelectMany(d => d.References)
                 where item.HasTypeHint()

@@ -314,7 +314,6 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="VBA\Nodes\OptionNode.cs" />
     <Compile Include="VBA\Nodes\EnumNode.cs" />
-    <Compile Include="VBA\Nodes\DeclaredIdentifierNode.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
     <Compile Include="VBA\Nodes\ParameterNode.cs" />
     <Compile Include="VBA\Nodes\TypeNode.cs" />
