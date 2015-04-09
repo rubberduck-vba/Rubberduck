@@ -156,9 +156,6 @@
   <data name="ObsoleteLet" xml:space="preserve">
     <value>Use of obsolete Let statement</value>
   </data>
-  <data name="ObsoleteTypeHint_" xml:space="preserve">
-    <value>Use of obsolete type hints in identifier '{0}'</value>
-  </data>
   <data name="OptionBase" xml:space="preserve">
     <value>Potentially confusing implicit array lower bound</value>
   </data>
@@ -186,7 +183,10 @@
   <data name="VariableNotUsed_" xml:space="preserve">
     <value>Variable '{0}' is never used</value>
   </data>
-  <data name="VariableTypeNotDeclared_" xml:space="preserve">
-    <value>Variable '{0}' is implicitly Variant</value>
+  <data name="_ObsoleteTypeHint_" xml:space="preserve">
+    <value>Use of obsolete type hint in {0} '{1}'</value>
+  </data>
+  <data name="_TypeNotDeclared_" xml:space="preserve">
+    <value>{0} '{1}' is implicitly Variant</value>
   </data>
 </root>

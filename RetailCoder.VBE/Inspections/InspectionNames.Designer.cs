@@ -61,6 +61,24 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete type hint in {0} &apos;{1}&apos;.
+        /// </summary>
+        internal static string _ObsoleteTypeHint_ {
+            get {
+                return ResourceManager.GetString("_ObsoleteTypeHint_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly Variant.
+        /// </summary>
+        internal static string _TypeNotDeclared_ {
+            get {
+                return ResourceManager.GetString("_TypeNotDeclared_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ByVal parameter &apos;{0}&apos; is assigned.
         /// </summary>
         internal static string ByValParameterIsAssigned_ {
@@ -178,15 +196,6 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of obsolete type hints in identifier &apos;{0}&apos;.
-        /// </summary>
-        internal static string ObsoleteTypeHint_ {
-            get {
-                return ResourceManager.GetString("ObsoleteTypeHint_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Potentially confusing implicit array lower bound.
         /// </summary>
         internal static string OptionBase {
@@ -264,15 +273,6 @@ namespace Rubberduck.Inspections {
         internal static string VariableNotUsed_ {
             get {
                 return ResourceManager.GetString("VariableNotUsed_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is implicitly Variant.
-        /// </summary>
-        internal static string VariableTypeNotDeclared_ {
-            get {
-                return ResourceManager.GetString("VariableTypeNotDeclared_", resourceCulture);
             }
         }
     }
