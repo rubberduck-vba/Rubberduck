@@ -155,6 +155,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommonObjects\VbComponentsFake.cs" />
+    <Compile Include="CommonObjects\VbProjectFake.cs" />
     <Compile Include="Mocks\MockTodoSettingsView.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
