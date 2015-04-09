@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -42,6 +43,41 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope(string name)
         {
             _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
+        }
+
+        public override void EnterLiteral(VBAParser.LiteralContext context)
+        {
+            var stringLiteral = context.STRINGLITERAL();
+            if (stringLiteral != null)
+            {
+                HandleEmptyStringLiteral(stringLiteral);
+                return;
+            }
+
+            var numberLiteral = context.INTEGERLITERAL();
+            if (numberLiteral != null)
+            {
+                HandleNumberLiteral(numberLiteral);
+                return;
+            }
+        }
+
+        private void HandleEmptyStringLiteral(ITerminalNode stringLiteral)
+        {
+            if (stringLiteral.Symbol.Text.Length == 2) // string literal only contains opening & closing quotes
+            {
+                // todo: track that value + implement an inspection that recommends replacing it with vbNullString (#363)
+            }
+        }
+
+        private void HandleNumberLiteral(ITerminalNode numberLiteral)
+        {
+            // todo: verify whether the string representation ends with a type hint; flag as such if needed.
+
+            // todo: track that value + implement an inspection that checks for magic numbers (#359)
+            // also, don't do anything here if tree walker is currently in a ConstSubStmtContext
+
+            
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
