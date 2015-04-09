@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -10,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
     public class Declaration
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
-            string identifierName, string asTypeName, bool isSelfAssigned,
+            string identifierName, string asTypeName, bool isSelfAssigned, bool isWithEvents,
             Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection)
         {
             _qualifiedName = qualifiedName;
@@ -18,6 +21,7 @@ namespace Rubberduck.Parsing.Symbols
             _identifierName = identifierName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
+            _isWithEvents = isWithEvents;
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
@@ -87,6 +91,51 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
 
+        public bool IsTypeSpecified()
+        {
+            if (Context == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var asType = ((dynamic) Context).asTypeClause() as VBAParser.AsTypeClauseContext;
+                return asType != null || HasTypeHint();
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
+        }
+
+        public bool HasTypeHint()
+        {
+            string token;
+            return HasTypeHint(out token);
+        }
+
+        public bool HasTypeHint(out string token)
+        {
+            if (Context == null)
+            {
+                token = null;
+                return false;
+            }
+
+            try
+            {
+                var hint = ((dynamic)Context).typeHint() as VBAParser.TypeHintContext;
+                token = hint == null ? null : hint.GetText();
+                return hint != null;
+            }
+            catch (RuntimeBinderException)
+            {
+                token = null;
+                return false;
+            }
+        }
+
         private readonly bool _isSelfAssigned;
         /// <summary>
         /// Gets a value indicating whether the declaration is a joined assignment (e.g. "As New xxxxx")
@@ -105,6 +154,15 @@ namespace Rubberduck.Parsing.Symbols
         /// Gets a value specifying the type of declaration.
         /// </summary>
         public DeclarationType DeclarationType { get { return _declarationType; } }
+
+        private readonly bool _isWithEvents;
+        /// <summary>
+        /// Gets a value specifying whether the declared type is an event provider.
+        /// </summary>
+        /// <remarks>
+        /// WithEvents declarations are used to identify event handler procedures in a module.
+        /// </remarks>
+        public bool IsWithEvents { get { return _isWithEvents; } }
 
         /// <summary>
         /// Returns a string representing the scope of an identifier.

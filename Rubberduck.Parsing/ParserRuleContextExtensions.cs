@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing
     {
         public static IEnumerable<QualifiedContext<TContext>> GetContexts<TListener, TContext>(this IParseTree parseTree, TListener listener)
             where TListener : IExtensionListener<TContext>, IParseTreeListener
-            where TContext : class
+            where TContext : ParserRuleContext
         {
             try
             {

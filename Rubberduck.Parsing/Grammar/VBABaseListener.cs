@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1919,6 +1919,19 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitResetStmt([NotNull] VBAParser.ResetStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFileNumber([NotNull] VBAParser.FileNumberContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.fileNumber"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFileNumber([NotNull] VBAParser.FileNumberContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.vsICS"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2360,4 +2373,4 @@ public partial class VBABaseListener : IVBAListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace Rubberduck.Parsing
+} // namespace Rubberduck.Parsing.Grammar

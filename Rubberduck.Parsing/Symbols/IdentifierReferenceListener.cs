@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -42,6 +43,41 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope(string name)
         {
             _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
+        }
+
+        public override void EnterLiteral(VBAParser.LiteralContext context)
+        {
+            var stringLiteral = context.STRINGLITERAL();
+            if (stringLiteral != null)
+            {
+                HandleEmptyStringLiteral(stringLiteral);
+                return;
+            }
+
+            var numberLiteral = context.INTEGERLITERAL();
+            if (numberLiteral != null)
+            {
+                HandleNumberLiteral(numberLiteral);
+                return;
+            }
+        }
+
+        private void HandleEmptyStringLiteral(ITerminalNode stringLiteral)
+        {
+            if (stringLiteral.Symbol.Text.Length == 2) // string literal only contains opening & closing quotes
+            {
+                // todo: track that value + implement an inspection that recommends replacing it with vbNullString (#363)
+            }
+        }
+
+        private void HandleNumberLiteral(ITerminalNode numberLiteral)
+        {
+            // todo: verify whether the string representation ends with a type hint; flag as such if needed.
+
+            // todo: track that value + implement an inspection that checks for magic numbers (#359)
+            // also, don't do anything here if tree walker is currently in a ConstSubStmtContext
+
+            
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
@@ -94,16 +130,140 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
+        public override void EnterLetStmt(VBAParser.LetStmtContext context)
+        {
+            var leftSide = context.implicitCallStmt_InStmt();
+            var letStatement = context.LET();
+            var target = FindAssignmentTarget(leftSide);
+            if (target != null)
+            {
+                EnterIdentifier(target, target.GetSelection(), true, letStatement != null);
+            }
+        }
+
+        public override void EnterSetStmt(VBAParser.SetStmtContext context)
+        {
+            var leftSide = context.implicitCallStmt_InStmt();
+            var target = FindAssignmentTarget(leftSide);
+            if (target != null)
+            {
+                EnterIdentifier(target, target.GetSelection(), true);
+            }
+        }
+
+        private VBAParser.AmbiguousIdentifierContext FindAssignmentTarget(VBAParser.ImplicitCallStmt_InStmtContext leftSide)
+        {
+            // todo: refactor!!
+
+            var procedureOrArrayCall = leftSide.iCS_S_ProcedureOrArrayCall();
+            if (procedureOrArrayCall != null)
+            {
+                return EnterDictionaryCall(procedureOrArrayCall.dictionaryCallStmt(),
+                    procedureOrArrayCall.ambiguousIdentifier())
+                                   ?? procedureOrArrayCall.ambiguousIdentifier();
+            }
+
+            var variableOrProcedureCall = leftSide.iCS_S_VariableOrProcedureCall();
+            if (variableOrProcedureCall != null)
+            {
+                return EnterDictionaryCall(variableOrProcedureCall.dictionaryCallStmt(),
+                    variableOrProcedureCall.ambiguousIdentifier())
+                                   ?? variableOrProcedureCall.ambiguousIdentifier();
+            }
+
+            var dictionaryCall = leftSide.iCS_S_DictionaryCall();
+            if (dictionaryCall != null && dictionaryCall.dictionaryCallStmt() != null)
+            {
+                return EnterDictionaryCall(dictionaryCall.dictionaryCallStmt());
+            }
+
+            var membersCall = leftSide.iCS_S_MembersCall();
+            if (membersCall != null)
+            {
+                var members = membersCall.iCS_S_MemberCall();
+                for (var index = 0; index < members.Count; index++)
+                {
+                    var member = members[index];
+                    if (index < members.Count - 1)
+                    {
+                        var procOrArrayCall = member.iCS_S_ProcedureOrArrayCall();
+                        if (procOrArrayCall != null)
+                        {
+                            var reference = EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), procOrArrayCall.ambiguousIdentifier())
+                                         ?? procOrArrayCall.ambiguousIdentifier();
+
+                            if (reference != null)
+                            {
+                                EnterIdentifier(reference, reference.GetSelection());
+                            }
+                        }
+
+                        var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
+                        if (varOrProcCall != null)
+                        {
+                            var reference = EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), varOrProcCall.ambiguousIdentifier())
+                                         ?? varOrProcCall.ambiguousIdentifier();
+
+                            if (reference != null)
+                            {
+                                EnterIdentifier(reference, reference.GetSelection());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var procOrArrayCall = member.iCS_S_ProcedureOrArrayCall();
+                        if (procOrArrayCall != null)
+                        {
+                            return EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), procOrArrayCall.ambiguousIdentifier())
+                                ?? procOrArrayCall.ambiguousIdentifier();
+                        }
+
+                        var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
+                        if (varOrProcCall != null)
+                        {
+                            return EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), varOrProcCall.ambiguousIdentifier())
+                                ?? varOrProcCall.ambiguousIdentifier();
+                        }
+                    }
+                }
+            }
+
+            return null; // not possible unless grammar is modified.
+        }
+
+        private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
+        {
+            if (dictionaryCall == null)
+            {
+                return null;
+            }
+
+            if (parentIdentifier != null)
+            {
+                EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection()); // we're referencing "member" in "member!field"
+            }
+            
+            return dictionaryCall.ambiguousIdentifier();
+        }
+
         public override void EnterAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
         {
             if (IsDeclarativeContext(context))
             {
-                // skip declarations
                 return;
             }
 
             var selection = context.GetSelection();
-            EnterIdentifier(context, selection);
+
+            if (context.Parent is VBAParser.ForNextStmtContext)
+            {
+                EnterIdentifier(context, selection, true);
+            }
+            else
+            {
+                EnterIdentifier(context, selection);
+            }
         }
 
         public override void EnterCertainIdentifier(VBAParser.CertainIdentifierContext context)
@@ -118,7 +278,7 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private void EnterIdentifier(RuleContext context, Selection selection)
+        private void EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
@@ -126,16 +286,20 @@ namespace Rubberduck.Parsing.Symbols
             var declaration = GetClosestScope(matches);
             if (declaration != null)
             {
-                var isAssignment = IsAssignmentContext(context);
-                var reference = new IdentifierReference(_qualifiedName, name, selection, isAssignment, context, declaration);
+                var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
 
-                declaration.AddReference(reference);
+                if (!declaration.References.Select(r => r.Context).Contains(reference.Context))
+                {
+                    declaration.AddReference(reference);
+                }
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
             }
         }
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
         {
+            /* named parameter syntax */
+
             // one of these is null...
             var callStatementA = context.Parent.Parent.Parent as VBAParser.ICS_S_ProcedureOrArrayCallContext;
             var callStatementB = context.Parent.Parent.Parent as VBAParser.ICS_S_VariableOrProcedureCallContext;
@@ -174,7 +338,7 @@ namespace Rubberduck.Parsing.Symbols
 
             if (arg != null)
             {
-                var reference = new IdentifierReference(_qualifiedName, arg.IdentifierName, context.GetSelection(), false, context, arg);
+                var reference = new IdentifierReference(_qualifiedName, arg.IdentifierName, context.GetSelection(), context, arg);
                 arg.AddReference(reference);
             }
         }
@@ -208,7 +372,7 @@ namespace Rubberduck.Parsing.Symbols
             if (declaration.DeclarationType == DeclarationType.Module ||
                 declaration.DeclarationType == DeclarationType.Class)
             {
-                // todo: access component instancing properties to do this right
+                // todo: access component instancing properties to do this right (class)
                 return true;
             }
 
@@ -292,16 +456,6 @@ namespace Rubberduck.Parsing.Symbols
             // so if it's in the same project, it's public whenever it's not explicitly Private:
             return isSameProject && declaration.Accessibility == Accessibility.Friend
                    || declaration.Accessibility != Accessibility.Private;
-        }
-
-        private bool IsAssignmentContext(RuleContext context)
-        {
-            var parent = context.Parent;
-            return parent.Parent.Parent is VBAParser.SetStmtContext // object reference assignment
-                   || parent.Parent.Parent is VBAParser.LetStmtContext // value assignment
-                   || parent is VBAParser.ForNextStmtContext // treat For loop as an assignment
-                // todo: verify that we're not missing anything here (likely)
-                ;
         }
 
         private bool IsDeclarativeContext(VBAParser.AmbiguousIdentifierContext context)

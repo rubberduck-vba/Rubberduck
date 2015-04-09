@@ -28,14 +28,22 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public IEnumerable<Declaration> this[DeclarationType declarationType, string identifierName]
+        /// <summary>
+        /// Finds all members declared under the scope defined by the specified declaration.
+        /// </summary>
+        public IEnumerable<Declaration> FindMembers(Declaration parent)
         {
-            get
-            {
-                return _declarations.Where(declaration =>
-                            declaration.DeclarationType == declarationType &&
-                            declaration.IdentifierName == identifierName);
-            }
+            return _declarations.Where(declaration => declaration.ParentScope == parent.Scope);
+        }
+
+        /// <summary>
+        /// Finds all event handler procedures for specified control declaration.
+        /// </summary>
+        public IEnumerable<Declaration> FindEventHandlers(Declaration control)
+        {
+            return _declarations.Where(declaration => declaration.ParentScope == control.ParentScope
+                && declaration.DeclarationType == DeclarationType.Procedure
+                && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
     }
 }

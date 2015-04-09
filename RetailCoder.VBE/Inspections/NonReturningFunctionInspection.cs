@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
@@ -17,22 +18,43 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ReturningMemberTypes =
+        {
+            DeclarationType.Function,
+            DeclarationType.PropertyGet
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var functions = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Function
-                || declaration.DeclarationType == DeclarationType.PropertyGet);
+                ReturningMemberTypes.Contains(declaration.DeclarationType));
 
-            var results = functions
-                .Where(declaration => declaration.References.Where(r => declaration.Selection.Contains(r.Selection)).All(r => !r.IsAssignment));
+            var issues = functions
+                .Where(declaration => 
+                    !IsInterfaceMember(parseResult.Declarations, declaration)
+                    && declaration.References.All(r => !r.IsAssignment))
+                .Select(issue => new NonReturningFunctionInspectionResult(string.Format(Name, issue.IdentifierName), Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context)));
 
-            foreach (var result in results)
+            return issues;
+        }
+
+        private bool IsInterfaceMember(Declarations declarations, Declaration procedure)
+        {
+            var parent = declarations.Items.SingleOrDefault(item =>
+                        item.Project == procedure.Project &&
+                        item.IdentifierName == procedure.ComponentName &&
+                       (item.DeclarationType == DeclarationType.Class));
+
+            if (parent == null)
             {
-                // todo: in Microsoft Access, this inspection should only return a result for private functions.
-                //       changing an unassigned function to a "Sub" could break Access macros that reference it.
-                //       doing this right may require accessing the Access object model to find usages in macros.
-                yield return new NonReturningFunctionInspectionResult(string.Format(Name, result.IdentifierName), Severity, new QualifiedContext<ParserRuleContext>(result.QualifiedName, result.Context));
+                return false;
             }
+
+            var classes = declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class);
+            var interfaces = classes.Where(item => item.References.Any(reference =>
+                    reference.Context.Parent is VBAParser.ImplementsStmtContext));
+
+            return interfaces.Select(i => i.ComponentName).Contains(procedure.ComponentName);
         }
     }
 }

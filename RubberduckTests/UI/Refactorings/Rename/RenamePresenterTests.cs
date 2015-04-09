@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
@@ -43,16 +41,19 @@ namespace RubberduckTests.UI.Refactorings.Rename
         {
             Declaration declarationItem = null;
             var qualName = qualifiedName ?? new Parsing.QualifiedMemberName(_module, "fakeModule");
-
-            declarationItem = new Declaration(qualName,
-                accessibility: Accessibility.Public,
-                declarationType: declarationType,
-                context: context.Object,
-                selection: selection,
-                parentScope: "parentScope",
+            
+            declarationItem = new Declaration(
+                qualifiedName:qualName,
+                parentScope:"module.proc",
                 identifierName: identifierName,
                 asTypeName: "asTypeName",
-                isSelfAssigned: false);
+                isSelfAssigned: false,
+                isWithEvents: false,
+                accessibility: Accessibility.Public, 
+                declarationType: declarationType,
+                context: context.Object,
+                selection: selection
+                );
 
             _declarations.Add(declarationItem);
             if (_listDeclarations == null) _listDeclarations = new List<Declaration>();
@@ -239,9 +240,9 @@ namespace RubberduckTests.UI.Refactorings.Rename
             // add references to the Foo declaration item to simulate prod usage
             AddDeclarationItem(context, new Parsing.Selection(3, 5, 3, 8), differentMember, DeclarationType.Procedure, "Foo");
             var declarationItem = _listDeclarations[_listDeclarations.Count - 1];
-            reference = new IdentifierReference(selectedComponent, "Foo", new Parsing.Selection(7, 5, 7, 11), false,context.Object, declarationItem);
+            reference = new IdentifierReference(selectedComponent, "Foo", new Parsing.Selection(7, 5, 7, 11), context.Object, declarationItem);
             AddReference(declarationItem, reference);
-            reference = new IdentifierReference(selectedComponent, "Foo", symbolSelection, false, context.Object,declarationItem);
+            reference = new IdentifierReference(selectedComponent, "Foo", symbolSelection, context.Object,declarationItem);
             AddReference(declarationItem, reference);
 
             AddDeclarationItem(context, new Parsing.Selection(1, 1, 1, 1), differentMember, DeclarationType.Module, "Module2");

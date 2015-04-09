@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -69,15 +70,13 @@ namespace Rubberduck.Inspections
             var parent = (VBAParser.ConstStmtContext) context.Parent;
             instruction = parent.GetText();
 
-            var visibilityContext = parent.visibility();
-            var visibility = visibilityContext == null ? string.Empty : visibilityContext.GetText() + ' ';
-
-            var result = visibility
-                         + Tokens.Const + ' '
-                         + context.ambiguousIdentifier().GetText() + ' '
+            var constant = context.GetText();
+            var replacement = context.ambiguousIdentifier().GetText() + ' '
                          + Tokens.As + ' ' + Tokens.Variant + ' '
                          + context.EQ().GetText() + ' '
                          + context.valueStmt().GetText();
+
+            var result = instruction.Replace(constant, replacement);
             return result;
         }
     }

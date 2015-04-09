@@ -1,27 +1,29 @@
+using Antlr4.Runtime;
+
 namespace Rubberduck.Parsing
 {
-    public class QualifiedContext<TContext>
+    public class QualifiedContext
     {
-        public QualifiedContext(QualifiedMemberName memberName, TContext context)
+        public QualifiedContext(QualifiedMemberName memberName, ParserRuleContext context)
             : this(memberName.QualifiedModuleName, context)
         {
-            _member = memberName;
+            _memberName = memberName;
         }
 
-        public QualifiedContext(QualifiedModuleName qualifiedName, TContext context)
+        public QualifiedContext(QualifiedModuleName moduleName, ParserRuleContext context)
         {
-            _qualifiedName = qualifiedName;
+            _moduleName = moduleName;
             _context = context;
         }
 
-        private readonly QualifiedMemberName _member;
-        public QualifiedMemberName MemberName { get { return _member; } }
+        private readonly QualifiedMemberName _memberName;
+        public QualifiedMemberName MemberName { get { return _memberName; } }
 
-        private readonly QualifiedModuleName _qualifiedName;
-        public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+        private readonly QualifiedModuleName _moduleName;
+        public QualifiedModuleName ModuleName { get { return _moduleName; } }
 
-        private readonly TContext _context;
-        public TContext Context { get { return _context; } }
+        private readonly ParserRuleContext _context;
+        public ParserRuleContext Context { get { return _context; } }
 
         public override int GetHashCode()
         {
@@ -30,16 +32,16 @@ namespace Rubberduck.Parsing
 
         public override bool Equals(object obj)
         {
-            var other = obj as QualifiedContext<TContext>;
+            var other = obj as QualifiedContext;
             if (other == null)
             {
                 return false;
             }
 
-            return other.GetHashCode() == GetHashCode();
+            return other.ModuleName == ModuleName && other.MemberName == MemberName;
         }
 
-        public static bool operator ==(QualifiedContext<TContext> context1, QualifiedContext<TContext> context2)
+        public static bool operator ==(QualifiedContext context1, QualifiedContext context2)
         {
             if (((object)context1) == null)
             {
@@ -49,7 +51,7 @@ namespace Rubberduck.Parsing
             return context1.Equals(context2);
         }
 
-        public static bool operator !=(QualifiedContext<TContext> context1, QualifiedContext<TContext> context2)
+        public static bool operator !=(QualifiedContext context1, QualifiedContext context2)
         {
             if (((object)context1) == null)
             {
@@ -58,5 +60,21 @@ namespace Rubberduck.Parsing
 
             return !context1.Equals(context2);
         }
+    }
+
+    public class QualifiedContext<TContext> : QualifiedContext
+        where TContext : ParserRuleContext
+    {
+        public QualifiedContext(QualifiedMemberName memberName, TContext context)
+            : this(memberName.QualifiedModuleName, context)
+        {
+        }
+
+        public QualifiedContext(QualifiedModuleName qualifiedName, TContext context)
+            :base(qualifiedName, context)
+        {
+        }
+
+        public new TContext Context { get { return base.Context as TContext; } }
     }
 }

@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
 using Rubberduck.VBA;
 
-using Rubberduck.Parsing;
 namespace Rubberduck.Inspections
 {
     public class Inspector : IInspector

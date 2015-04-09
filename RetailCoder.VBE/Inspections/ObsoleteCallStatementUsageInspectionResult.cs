@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteCallStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type,
             QualifiedContext<VBAParser.ExplicitCallStmtContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 

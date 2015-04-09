@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections
     {
         public ImplicitVariantReturnTypeInspectionResult(string name, CodeInspectionSeverity severity, 
             QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(name, severity, qualifiedContext.QualifiedName, qualifiedContext.Context)
+            : base(name, severity, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 

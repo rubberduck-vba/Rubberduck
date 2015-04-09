@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
     public class ObsoleteGlobalInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteGlobalInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, type, context.QualifiedName, context.Context)
+            : base(inspection, type, context.ModuleName, context.Context)
         {
         }
 

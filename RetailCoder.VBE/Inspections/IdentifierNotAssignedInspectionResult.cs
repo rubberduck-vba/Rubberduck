@@ -8,11 +8,11 @@ using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
-    public class VariableNotUsedInspectionResult : CodeInspectionResultBase
+    public class IdentifierNotAssignedInspectionResult : IdentifierNotUsedInspectionResult
     {
-        public VariableNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public IdentifierNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
-            : base(inspection, type, qualifiedName, context)
+            : base(inspection, type, context, qualifiedName)
         {
         }
 
@@ -21,17 +21,17 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action<VBE>>
                 {
-                    {"Remove unused declaration", RemoveUnusedDeclaration}
+                    {"Remove unassigned variable", RemoveUnusedDeclaration}
                 };
         }
 
-        protected virtual void RemoveUnusedDeclaration(VBE vbe)
+        protected override void RemoveUnusedDeclaration(VBE vbe)
         {
             var module = vbe.FindCodeModules(QualifiedName).First();
             var selection = QualifiedSelection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                .Replace("\r\n", " ")
+                .Replace(Environment.NewLine, " ")
                 .Replace("_", string.Empty);
 
             var originalInstruction = Context.GetText();

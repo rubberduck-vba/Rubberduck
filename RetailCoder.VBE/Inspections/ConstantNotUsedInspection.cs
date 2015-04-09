@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in declarations)
             {
-                yield return new VariableNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName);
+                yield return new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName);
             }
         }
     }

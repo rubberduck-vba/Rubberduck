@@ -16,19 +16,49 @@ namespace Rubberduck.Parsing.Symbols
 
         public DeclarationSymbolsListener(VBComponentParseResult result)
             : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type == vbext_ComponentType.vbext_ct_StdModule ? DeclarationType.Module : DeclarationType.Class)
-        { }
+        {
+            if (result.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+            {
+                DeclareControlsAsMembers(result.Component);
+            }
+        }
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, DeclarationType declarationType)
+        private DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, DeclarationType declarationType)
         {
             _qualifiedName = qualifiedName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(new QualifiedMemberName(_qualifiedName, _qualifiedName.ModuleName), _qualifiedName.ProjectName, _qualifiedName.ModuleName, _qualifiedName.ModuleName, false, componentAccessibility, declarationType, null, Selection.Home));
+            _declarations.Add(new Declaration(new QualifiedMemberName(_qualifiedName, _qualifiedName.ModuleName), _qualifiedName.ProjectName, _qualifiedName.ModuleName, _qualifiedName.ModuleName, false, false, componentAccessibility, declarationType, null, Selection.Home));
         }
 
-        private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false)
+        /// <summary>
+        /// Scans form designer to create a public, self-assigned field for each control on a form.
+        /// </summary>
+        /// <remarks>
+        /// These declarations are meant to be used to identify control event procedures.
+        /// </remarks>
+        private void DeclareControlsAsMembers(VBComponent form)
         {
-            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, identifierName, asTypeName, selfAssigned, accessibility, declarationType, context, selection);
+            if (form.Type != vbext_ComponentType.vbext_ct_MSForm)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var designer = form.Designer;
+            if (designer == null)
+            {
+                return;
+            }
+
+            foreach (var control in designer.Controls)
+            {
+                _declarations.Add(new Declaration(new QualifiedMemberName(_qualifiedName, _qualifiedName.ModuleName), _currentScope, control.Name, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
+            }
+        }
+
+        private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
+        {
+            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, identifierName, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection);
         }
 
         /// <summary>
@@ -74,6 +104,26 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope(string name)
         {
             _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
+        }
+
+        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
+        {
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
+        }
+
+        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
+        {
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
+        }
+
+        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
+        {
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
+        }
+
+        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
+        {
+            _declarations.Add(CreateDeclaration(context.GetText(), string.Empty, Accessibility.Implicit, DeclarationType.ModuleOption, context, context.GetSelection()));
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
@@ -222,8 +272,10 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
+            var withEvents = parent.WITHEVENTS() != null;
             var selfAssigned = asTypeClause != null && asTypeClause.NEW() != null;
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, accessibility, DeclarationType.Variable, context, context.ambiguousIdentifier().GetSelection(), selfAssigned));
+            
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, accessibility, DeclarationType.Variable, context, context.ambiguousIdentifier().GetSelection(), selfAssigned, withEvents));
         }
 
         public override void EnterConstSubStmt(VBAParser.ConstSubStmtContext context)
@@ -245,7 +297,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = context.ambiguousIdentifier().GetText();
 
             _declarations.Add(CreateDeclaration(name, null, accessibility, DeclarationType.UserDefinedType, context, context.ambiguousIdentifier().GetSelection()));
-            SetCurrentScope(name);
+            //SetCurrentScope(name);
         }
 
         public override void ExitTypeStmt(VBAParser.TypeStmtContext context)
@@ -269,7 +321,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = context.ambiguousIdentifier().GetText();
 
             _declarations.Add(CreateDeclaration(name, null, accessibility, DeclarationType.Enumeration, context, context.ambiguousIdentifier().GetSelection()));
-            SetCurrentScope(name);
+            //SetCurrentScope(name);
         }
 
         public override void ExitEnumerationStmt(VBAParser.EnumerationStmtContext context)

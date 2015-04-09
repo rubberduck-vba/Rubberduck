@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
     {
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
             QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 

@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ByValParameterIsAssigned_" xml:space="preserve">
+    <value>ByVal parameter '{0}' is assigned</value>
+  </data>
   <data name="ConstantNotUsed_" xml:space="preserve">
     <value>Constant '{0}' is never used</value>
+  </data>
+  <data name="FunctionNotUsed_" xml:space="preserve">
+    <value>Function '{0}' is never used</value>
   </data>
   <data name="ImplicitByRef_" xml:space="preserve">
     <value>Parameter '{0}' is passed ByRef implicitly</value>
@@ -150,9 +156,6 @@
   <data name="ObsoleteLet" xml:space="preserve">
     <value>Use of obsolete Let statement</value>
   </data>
-  <data name="ObsoleteTypeHint_" xml:space="preserve">
-    <value>Use of obsolete type hints in identifier '{0}'</value>
-  </data>
   <data name="OptionBase" xml:space="preserve">
     <value>Potentially confusing implicit array lower bound</value>
   </data>
@@ -164,6 +167,9 @@
   </data>
   <data name="ParameterNotUsed_" xml:space="preserve">
     <value>Parameter '{0}' is not used</value>
+  </data>
+  <data name="ProcedureNotUsed_" xml:space="preserve">
+    <value>Procedure '{0}' is never used</value>
   </data>
   <data name="UnassignedVariableUsage_" xml:space="preserve">
     <value>Use of unassigned variable '{0}'</value>
@@ -177,7 +183,10 @@
   <data name="VariableNotUsed_" xml:space="preserve">
     <value>Variable '{0}' is never used</value>
   </data>
-  <data name="VariableTypeNotDeclared_" xml:space="preserve">
-    <value>Variable '{0}' is implicitly Variant</value>
+  <data name="_ObsoleteTypeHint_" xml:space="preserve">
+    <value>Use of obsolete type hint in {0} '{1}'</value>
+  </data>
+  <data name="_TypeNotDeclared_" xml:space="preserve">
+    <value>{0} '{1}' is implicitly Variant</value>
   </data>
 </root>
