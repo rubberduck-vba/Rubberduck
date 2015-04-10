@@ -19,16 +19,16 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var declarations = from item in parseResult.Declarations.Items
+            var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
+            var issues = (from item in parseResult.Declarations.Items
                 where item.DeclarationType == DeclarationType.Parameter
+                    && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context.Parent as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
-                select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg);
+                select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
+                .Select(issue => new ImplicitByRefParameterInspectionResult(string.Format(Name, issue.Context.ambiguousIdentifier().GetText()), Severity, issue));
 
-            foreach (var parameter in declarations)
-            {
-                yield return new ImplicitByRefParameterInspectionResult(string.Format(Name, parameter.Context.ambiguousIdentifier().GetText()), Severity, parameter);
-            }
+            return issues;
         }
     }
 }

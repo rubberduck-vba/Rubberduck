@@ -11,19 +11,25 @@ namespace Rubberduck.Inspections
 {
     public class NonReturningFunctionInspectionResult : CodeInspectionResultBase
     {
-        public NonReturningFunctionInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> qualifiedContext)
+        private readonly bool _isInterfaceImplementation;
+
+        public NonReturningFunctionInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> qualifiedContext, bool isInterfaceImplementation)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _isInterfaceImplementation = isInterfaceImplementation;
         }
 
         private new VBAParser.FunctionStmtContext Context { get { return base.Context as VBAParser.FunctionStmtContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            var result = new Dictionary<string, Action<VBE>>();
+            if (!_isInterfaceImplementation) // changing procedure type would break interface implementation
             {
-                {"Convert function to procedure", ConvertFunctionToProcedure}
-            };
+                result.Add("Convert function to procedure", ConvertFunctionToProcedure);
+            }
+
+            return result;
         }
 
         private void ConvertFunctionToProcedure(VBE vbe)

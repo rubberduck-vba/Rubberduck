@@ -233,8 +233,6 @@
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
     <Compile Include="Inspections\Inspector.cs" />
-    <Compile Include="Inspections\ModuleOptionsNotSpecifiedFirstInspection.cs" />
-    <Compile Include="Inspections\ModuleOptionsNotSpecifiedFirstInspectionResult.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementInspection.cs" />

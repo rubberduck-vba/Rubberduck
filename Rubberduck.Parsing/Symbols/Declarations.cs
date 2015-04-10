@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -44,6 +45,44 @@ namespace Rubberduck.Parsing.Symbols
             return _declarations.Where(declaration => declaration.ParentScope == control.ParentScope
                 && declaration.DeclarationType == DeclarationType.Procedure
                 && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
+        }
+
+        private static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        /// <summary>
+        /// Finds all interface members.
+        /// </summary>
+        public IEnumerable<Declaration> FindInterfaceMembers()
+        {
+            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            var interfaces = classes.Where(item => item.References.Any(reference =>
+                    reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                    .Select(i => i.Scope)
+                    .ToList();
+
+            var members = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType) 
+                && interfaces.Any(i => item.ParentScope.StartsWith(i)));
+
+            return members;
+        }
+
+        /// <summary>
+        /// Finds all class members that are interface implementation members.
+        /// </summary>
+        public IEnumerable<Declaration> FindInterfaceImplementationMembers()
+        {
+            var members = FindInterfaceMembers();
+            var implementations = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
+                && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName));
+
+            return implementations;
         }
     }
 }
