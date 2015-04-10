@@ -97,9 +97,11 @@ namespace Rubberduck.UI
         private ISourceControlView _sourceControlView;
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            var branchView = new BranchesControl();
+
             if (_sourceControlView == null)
             {
-                _sourceControlView = new SourceControlPanel();
+                _sourceControlView = new SourceControlPanel(branchView);
             }
 
             if (_sourceControlPresenter == null)
@@ -113,7 +115,7 @@ namespace Rubberduck.UI
                            );
                 var gitProvider = new GitProvider(project, repo);
                 var changesPresenter = new ChangesPresenter(gitProvider,_sourceControlView);
-                var branchesPresenter = new BranchesPresenter(gitProvider, _sourceControlView, new CreateBranchForm(), new MergeForm());
+                var branchesPresenter = new BranchesPresenter(gitProvider, branchView, new CreateBranchForm(), new MergeForm());
                 branchesPresenter.RefreshView();
                 _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter, branchesPresenter);
             }

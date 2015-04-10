@@ -281,6 +281,12 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\SourceControl\BranchesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
@@ -617,6 +623,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>

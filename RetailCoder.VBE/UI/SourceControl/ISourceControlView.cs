@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface ISourceControlView : IDockableUserControl, IChangesView, IBranchesView
+    public interface ISourceControlView : IDockableUserControl, IChangesView
     {
     }
 }
