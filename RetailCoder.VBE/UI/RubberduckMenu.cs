@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -65,7 +66,7 @@ namespace Rubberduck.UI
 
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            _refactorMenu.Rename(new QualifiedSelection(e.QualifiedName, e.Selection));
+            _refactorMenu.Rename(e.Node.Tag as Declaration);
         }
 
         private void codePresenter_RunInspections(object sender, EventArgs e)

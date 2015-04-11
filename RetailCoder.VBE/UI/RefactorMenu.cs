@@ -117,6 +117,15 @@ namespace Rubberduck.UI
             }
         }
 
+        public void Rename(Declaration target)
+        {
+            using (var view = new RenameDialog())
+            {
+                var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+                presenter.Show(target);
+            }
+        }
+
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
         {
             return menu.Controls.Add(MsoControlType.msoControlButton) as CommandBarButton;

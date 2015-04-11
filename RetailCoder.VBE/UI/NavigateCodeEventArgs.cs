@@ -1,9 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBA;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI
 {
@@ -21,10 +19,25 @@ namespace Rubberduck.UI
             _selection = selection;
         }
 
+        public NavigateCodeEventArgs(Declaration declaration)
+        {
+            if (declaration == null)
+            {
+                return;
+            }
+
+            _declaration = declaration;
+            _qualifiedName = declaration.QualifiedName.QualifiedModuleName;
+            _selection = declaration.Selection;
+        }
+
         public    NavigateCodeEventArgs(QualifiedSelection qualifiedSelection)
             :this(qualifiedSelection.QualifiedName, qualifiedSelection.Selection)
         {
         }
+
+        private readonly Declaration _declaration;
+        public Declaration Declaration { get { return _declaration; } }
 
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }

@@ -60,6 +60,8 @@ namespace Rubberduck.UI.CodeExplorer
             if (handler != null)
             {
                 handler(this, e);
+                RefreshExplorerTreeView();
+                e.Node.EnsureVisible();
             }
         }
 
@@ -155,16 +157,17 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Selection.StartLine != 0)
+            var declaration = e.Declaration;
+            if (declaration != null)
             {
-                //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
-                //todo: determiner if this "temp fix" is still needed.
-                var selection = new Selection(e.Selection.StartLine,
-                                                1,
-                                                e.Selection.EndLine,
-                                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
-                                              );
-                VBE.SetSelection(new QualifiedSelection(e.QualifiedName, selection));
+                ////hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
+                ////todo: determiner if this "temp fix" is still needed.
+                //var selection = new Selection(e.Selection.StartLine,
+                //                                1,
+                //                                e.Selection.EndLine,
+                //                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
+                //                              );
+                VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
             }
         }
 
@@ -203,7 +206,6 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void AddProjectNodes(VBProject project, TreeNode root)
         {
-            var treeView = Control.SolutionTree;
             Control.Invoke((MethodInvoker)async delegate
             {
                 root.Text = project.Name;
@@ -302,7 +304,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = new QualifiedSelection(componentParseResult.QualifiedName, componentParseResult.Context.GetSelection());
+                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => item.IdentifierName == component.Name && item.Project == project);
 
                 foreach (var declaration in members)
                 {
@@ -310,7 +312,7 @@ namespace Rubberduck.UI.CodeExplorer
                     var child = new TreeNode(text);
                     child.ImageKey = GetImageKeyForDeclaration(declaration);
                     child.SelectedImageKey = child.ImageKey;
-                    child.Tag = new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection);
+                    child.Tag = declaration;
 
                     if (declaration.DeclarationType == DeclarationType.UserDefinedType
                         || declaration.DeclarationType == DeclarationType.Enumeration)
@@ -322,7 +324,7 @@ namespace Rubberduck.UI.CodeExplorer
                             var subChild = new TreeNode(subMember.IdentifierName);
                             subChild.ImageKey = GetImageKeyForDeclaration(subMember);
                             subChild.SelectedImageKey = subChild.ImageKey;
-                            subChild.Tag = new QualifiedSelection(subMember.QualifiedName.QualifiedModuleName, subMember.Selection);
+                            subChild.Tag = subMember;
                             child.Nodes.Add(subChild);
                         }
                     }

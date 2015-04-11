@@ -38,6 +38,13 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
         }
 
+        public void Show(Declaration target)
+        {
+            PromptIfTargetImplementsInterface(ref target);
+            _view.Target = target;
+            _view.ShowDialog();
+        }
+
         private static readonly DeclarationType[] ModuleDeclarationTypes =
             {
                 DeclarationType.Class,
@@ -165,24 +172,8 @@ namespace Rubberduck.UI.Refactorings.Rename
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
 
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
-            if (target != null && interfaceImplementation != null)
-            {
-                var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-                var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                if (confirm == DialogResult.No)
-                {
-                    _view.Target = null;
-                    return;
-                }
-
-                _view.Target = interfaceMember;
-            }
-            else
-            {
-                _view.Target = target;
-            }
+            PromptIfTargetImplementsInterface(ref target);
+            _view.Target = target;
 
             if (_view.Target == null)
             {
@@ -199,6 +190,28 @@ namespace Rubberduck.UI.Refactorings.Rename
                     ModuleDeclarationTypes.Contains(item.DeclarationType)
                     && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
             }
+        }
+
+        private void PromptIfTargetImplementsInterface(ref Declaration target)
+        {
+            var declaration = target;
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            if (target == null || interfaceImplementation == null)
+            {
+                return;
+            }
+
+            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
+            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+
+            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirm == DialogResult.No)
+            {
+                target = null;
+                return;
+            }
+
+            target = interfaceMember;
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
