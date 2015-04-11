@@ -275,5 +275,14 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Rename the interface member?.
+        /// </summary>
+        internal static string RenamePresenter_TargetIsInterfaceMemberImplementation {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsInterfaceMemberImplementation", resourceCulture);
+            }
+        }
     }
 }

@@ -191,4 +191,8 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Rename identifier</value>
   </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
 </root>

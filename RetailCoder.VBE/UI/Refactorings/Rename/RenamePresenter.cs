@@ -32,7 +32,10 @@ namespace Rubberduck.UI.Refactorings.Rename
         public void Show()
         {
             AcquireTarget(_selection);
-            _view.ShowDialog();
+            if (_view.Target != null)
+            {
+                _view.ShowDialog();
+            }
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
@@ -62,7 +65,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).Single();
                 module.Name = _view.NewName;
             }
-            catch (COMException exception)
+            catch (COMException)
             {
                 MessageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
             }
@@ -78,6 +81,34 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void RenameUsages()
         {
+            // todo: refactor
+
+            // rename interface member
+            if (_declarations.FindInterfaceMembers().Contains(_view.Target))
+            {
+                var implementations = _declarations.FindInterfaceImplementationMembers()
+                    .Where(m => m.IdentifierName == _view.Target.ComponentName + '_' + _view.Target.IdentifierName);
+
+                foreach (var member in implementations)
+                {
+                    try
+                    {
+                        var newMemberName = _view.Target.ComponentName + '_' + _view.NewName;
+                        var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
+
+                        var content = module.get_Lines(member.Selection.StartLine, 1);
+                        var newContent = GetReplacementLine(content, member.IdentifierName, newMemberName);
+                        module.ReplaceLine(member.Selection.StartLine, newContent);
+                    }
+                    catch (COMException)
+                    {
+                        // gulp
+                    }
+                }
+
+                return;
+            }
+
             var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
@@ -89,6 +120,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                     module.ReplaceLine(line.Key, newContent);
                 }
 
+                // renaming interface
                 if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                 {
                     var members = _declarations.FindMembers(_view.Target);
@@ -128,10 +160,29 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void AcquireTarget(QualifiedSelection selection)
         {
-            _view.Target = _declarations.Items
+            var target = _declarations.Items
                 .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
+
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
+            if (target != null && interfaceImplementation != null)
+            {
+                var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
+                var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+                var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (confirm == DialogResult.No)
+                {
+                    _view.Target = null;
+                    return;
+                }
+
+                _view.Target = interfaceMember;
+            }
+            else
+            {
+                _view.Target = target;
+            }
 
             if (_view.Target == null)
             {

@@ -97,5 +97,15 @@ namespace Rubberduck.Parsing.Symbols
 
             return _interfaceImplementationMembers;
         }
+
+        public Declaration FindInterfaceMember(Declaration implementation)
+        {
+            var members = FindInterfaceMembers();
+            var matches = members.Where(m => implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
+
+            return matches.Count > 1 
+                ? matches.SingleOrDefault(m => m.Project == implementation.Project) 
+                : matches.First();
+        }
     }
 }
