@@ -56,33 +56,46 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertySet
         };
 
+        private IEnumerable<Declaration> _interfaceMembers;
+
         /// <summary>
         /// Finds all interface members.
         /// </summary>
         public IEnumerable<Declaration> FindInterfaceMembers()
         {
+            if (_interfaceMembers != null)
+            {
+                return _interfaceMembers;
+            }
+
             var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
             var interfaces = classes.Where(item => item.References.Any(reference =>
-                    reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                    .Select(i => i.Scope)
-                    .ToList();
+                reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                .Select(i => i.Scope)
+                .ToList();
 
-            var members = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType) 
-                && interfaces.Any(i => item.ParentScope.StartsWith(i)));
-
-            return members;
+            _interfaceMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
+                                                            && interfaces.Any(i => item.ParentScope.StartsWith(i)));
+            return _interfaceMembers;
         }
+
+        private IEnumerable<Declaration> _interfaceImplementationMembers;
 
         /// <summary>
         /// Finds all class members that are interface implementation members.
         /// </summary>
         public IEnumerable<Declaration> FindInterfaceImplementationMembers()
         {
+            if (_interfaceImplementationMembers != null)
+            {
+                return _interfaceImplementationMembers;
+            }
+
             var members = FindInterfaceMembers();
-            var implementations = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
+            _interfaceImplementationMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
                 && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName));
 
-            return implementations;
+            return _interfaceImplementationMembers;
         }
     }
 }
