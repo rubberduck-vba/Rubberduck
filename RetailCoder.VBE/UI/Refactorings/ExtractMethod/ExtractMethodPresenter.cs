@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -115,7 +116,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.Selection.StartLine, _selection.Selection.LineCount - 1);
             _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
 
-            _vbe.ActiveCodePane.CodeModule.AddFromString(GetExtractedMethod());
+            var insertionLine = ((ParserRuleContext)_parentMethodTree).GetSelection().EndLine - _selection.Selection.LineCount + 2;
+            _vbe.ActiveCodePane.CodeModule.InsertLines(insertionLine, GetExtractedMethod());
         }
 
         private void _view_RefreshPreview(object sender, EventArgs e)
