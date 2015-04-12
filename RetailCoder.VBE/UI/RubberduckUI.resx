@@ -205,7 +205,7 @@
     <value>ToDo Settings</value>
   </data>
   <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
-    <value>Configure inspection severity. Use "do no show" to disable an inspection.</value>
+    <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>Changes will be applied after Rubberduck is reloaded.</value>

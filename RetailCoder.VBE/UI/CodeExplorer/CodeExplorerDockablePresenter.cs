@@ -304,7 +304,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => item.IdentifierName == component.Name && item.Project == project);
+                node.Tag = parseResult.Declarations.Items.FirstOrDefault(item => item.IdentifierName == component.Name && item.Project == project);
 
                 foreach (var declaration in members)
                 {

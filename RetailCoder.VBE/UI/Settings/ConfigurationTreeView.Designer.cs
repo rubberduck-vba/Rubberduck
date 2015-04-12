@@ -31,7 +31,10 @@ namespace Rubberduck.UI.Settings
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationTreeViewControl));
             this.settingsTreeView = new System.Windows.Forms.TreeView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // settingsTreeView
@@ -39,12 +42,26 @@ namespace Rubberduck.UI.Settings
             this.settingsTreeView.BackColor = System.Drawing.Color.White;
             this.settingsTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.settingsTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.settingsTreeView.ImageIndex = 0;
+            this.settingsTreeView.ImageList = this.imageList1;
+            this.settingsTreeView.LineColor = System.Drawing.Color.LightGray;
             this.settingsTreeView.Location = new System.Drawing.Point(0, 0);
             this.settingsTreeView.Margin = new System.Windows.Forms.Padding(10);
             this.settingsTreeView.Name = "settingsTreeView";
+            this.settingsTreeView.SelectedImageIndex = 0;
             this.settingsTreeView.Size = new System.Drawing.Size(302, 314);
             this.settingsTreeView.TabIndex = 0;
             this.settingsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.settingsTreeView_AfterSelect);
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Default");
+            this.imageList1.Images.SetKeyName(1, "Ducky");
+            this.imageList1.Images.SetKeyName(2, "CodeInspections");
+            this.imageList1.Images.SetKeyName(3, "Navigation");
+            this.imageList1.Images.SetKeyName(4, "UnitTesting");
             // 
             // ConfigurationTreeViewControl
             // 
@@ -60,6 +77,7 @@ namespace Rubberduck.UI.Settings
         #endregion
 
         private TreeView settingsTreeView;
+        private ImageList imageList1;
 
     }
 }

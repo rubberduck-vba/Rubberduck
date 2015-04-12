@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public TodoListSettingsUserControl(List<ToDoMarker> markers)
+        public TodoListSettingsUserControl(IList<ToDoMarker> markers)
             : this()
         {
             this.tokenListBox.DataSource = new BindingList<ToDoMarker>(markers);

@@ -313,7 +313,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;do no show&quot; to disable an inspection..
+        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
         /// </summary>
         internal static string SettingsInstructions_CodeInspections {
             get {
