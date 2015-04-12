@@ -22,6 +22,20 @@ namespace Rubberduck.UI.Settings
         public _SettingsDialog()
         {
             InitializeComponent();
+
+            OkButton.Click += OkButton_Click;
+            CancelButton.Click += CancelButton_Click;
+        }
+
+        private void CancelButton_Click(object sender, System.EventArgs e)
+        {
+            Close();
+        }
+
+        private void OkButton_Click(object sender, System.EventArgs e)
+        {
+            SaveConfig();
+            Close();
         }
 
         public _SettingsDialog(IConfigurationService configService)
@@ -31,7 +45,7 @@ namespace Rubberduck.UI.Settings
             _config = _configService.LoadConfiguration();
             _treeview = new ConfigurationTreeViewControl(_config);
 
-            this.splitContainer1.Panel1.Controls.Add(_treeview);
+            splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
@@ -54,16 +68,22 @@ namespace Rubberduck.UI.Settings
 
             if (e.Node.Text == "Rubberduck")
             {
+                TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
+                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
                 return; //do nothing
             }
 
             if (e.Node.Text == "Todo List")
             {
+                TitleLabel.Text = RubberduckUI.SettingsCaption_ToDoSettings;
+                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_ToDoSettings;
                 controlToActivate = _todoView;
             }
 
             if (e.Node.Text == "Code Inpsections")
             {
+                TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
+                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
                 controlToActivate = new CodeInspectionControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
             }
 
@@ -73,22 +93,16 @@ namespace Rubberduck.UI.Settings
         private void ActivateControl(Control control)
         {
             control.Dock = DockStyle.Fill;
-            this.splitContainer1.Panel2.Controls.Clear();
-            this.splitContainer1.Panel2.Controls.Add(control);
+            splitContainer1.Panel2.Controls.Clear();
+            splitContainer1.Panel2.Controls.Add(control);
             _activeControl = control;
-        }
-
-        private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            SaveConfig();
-            MessageBox.Show("Changes to settings will take affect next time the application is started.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void SaveConfig()
         {
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
-            _configService.SaveConfiguration<Configuration>(_config);
+            _configService.SaveConfiguration(_config);
         }
     }
 }

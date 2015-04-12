@@ -284,5 +284,59 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("RenamePresenter_TargetIsInterfaceMemberImplementation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Inspection Settings.
+        /// </summary>
+        internal static string SettingsCaption_CodeInspections {
+            get {
+                return ResourceManager.GetString("SettingsCaption_CodeInspections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General Settings.
+        /// </summary>
+        internal static string SettingsCaption_GeneralSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ToDo Settings.
+        /// </summary>
+        internal static string SettingsCaption_ToDoSettings {
+            get {
+                return ResourceManager.GetString("SettingsCaption_ToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;do no show&quot; to disable an inspection..
+        /// </summary>
+        internal static string SettingsInstructions_CodeInspections {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_CodeInspections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes will be applied after Rubberduck is reloaded..
+        /// </summary>
+        internal static string SettingsInstructions_GeneralSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_GeneralSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure markers to be recognized in comments..
+        /// </summary>
+        internal static string SettingsInstructions_ToDoSettings {
+            get {
+                return ResourceManager.GetString("SettingsInstructions_ToDoSettings", resourceCulture);
+            }
+        }
     }
 }

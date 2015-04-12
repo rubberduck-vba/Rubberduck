@@ -286,7 +286,7 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
-    <Compile Include="UI\Refactorings\IDialogView.cs" />
+    <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">

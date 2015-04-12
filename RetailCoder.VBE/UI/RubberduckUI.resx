@@ -195,4 +195,22 @@
     <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
+    <value>General Settings</value>
+  </data>
+  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
+    <value>Code Inspection Settings</value>
+  </data>
+  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
+    <value>ToDo Settings</value>
+  </data>
+  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+    <value>Configure inspection severity. Use "do no show" to disable an inspection.</value>
+  </data>
+  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
+    <value>Changes will be applied after Rubberduck is reloaded.</value>
+  </data>
+  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+    <value>Configure markers to be recognized in comments.</value>
+  </data>
 </root>
