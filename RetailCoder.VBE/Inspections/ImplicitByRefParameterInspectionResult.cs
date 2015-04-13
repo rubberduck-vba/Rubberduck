@@ -19,9 +19,9 @@ namespace Rubberduck.Inspections
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            if (Context.LPAREN() != null && Context.RPAREN() != null)
+            if ((Context.LPAREN() != null && Context.RPAREN() != null) || Context.PARAMARRAY() != null)
             {
-                // array parameters must be passed by reference
+                // array parameters & paramarrays must be passed by reference
                 return new Dictionary<string, Action<VBE>>
                 {
                     {"Pass parameter by reference explicitly", PassParameterByRef}
@@ -30,10 +30,8 @@ namespace Rubberduck.Inspections
 
             return new Dictionary<string, Action<VBE>>
                 {
-                    // this inspection doesn't know if parameter is assigned; suggest to pass ByRef explicitly
-                    // and then let ParameterCanBeByVal inspection do its job.
-                    //{"Pass parameter by value", PassParameterByVal},
-                    {"Pass parameter by reference explicitly", PassParameterByRef}
+                    {"Pass parameter by reference explicitly", PassParameterByRef},
+                    {"Pass parameter by value", PassParameterByVal}
                 };
         }
 

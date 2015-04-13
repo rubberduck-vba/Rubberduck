@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections
         {
             var issues = from item in parseResult.Declarations.Items
                          where (item.DeclarationType == DeclarationType.Variable
-                            || item.DeclarationType == DeclarationType.Constant)
+                            || item.DeclarationType == DeclarationType.Constant
+                            || item.DeclarationType == DeclarationType.Parameter)
                          && !item.IsTypeSpecified()
                          select new VariableTypeNotDeclaredInspectionResult(string.Format(Name, item.DeclarationType, item.IdentifierName), Severity, item.Context, item.QualifiedName.QualifiedModuleName);
 

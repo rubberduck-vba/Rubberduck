@@ -64,12 +64,10 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Gets the <c>Accessibility</c> for a procedure member.
         /// </summary>
-        /// <param name="visibilityContext"></param>
-        /// <returns>Returns <c>Public</c> by default.</returns>
         private Accessibility GetProcedureAccessibility(VBAParser.VisibilityContext visibilityContext)
         {
             var visibility = visibilityContext == null
-                ? "Public"
+                ? "Implicit" // "Public"
                 : visibilityContext.GetText();
 
             return (Accessibility)Enum.Parse(typeof(Accessibility), visibility);
@@ -78,12 +76,10 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Gets the <c>Accessibility</c> for a non-procedure member.
         /// </summary>
-        /// <param name="visibilityContext"></param>
-        /// <returns>Returns <c>Private</c> by default.</returns>
         private Accessibility GetMemberAccessibility(VBAParser.VisibilityContext visibilityContext)
         {
             var visibility = visibilityContext == null
-                ? "Private"
+                ? "Implicit" // "Private"
                 : visibilityContext.GetText();
 
             return (Accessibility)Enum.Parse(typeof(Accessibility), visibility);
@@ -258,7 +254,8 @@ namespace Rubberduck.Parsing.Symbols
                     ? Tokens.Variant
                     : asTypeClause.type().GetText();
 
-                _declarations.Add(CreateDeclaration(argContext.ambiguousIdentifier().GetText(), asTypeName, Accessibility.Implicit, DeclarationType.Parameter, argContext, argContext.ambiguousIdentifier().GetSelection()));
+                var identifier = argContext.ambiguousIdentifier();
+                _declarations.Add(CreateDeclaration(identifier.GetText(), asTypeName, Accessibility.Implicit, DeclarationType.Parameter, argContext, argContext.GetSelection()));
             }
         }
 

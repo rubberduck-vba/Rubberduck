@@ -252,7 +252,6 @@
     <Compile Include="Inspections\ProcedureNotUsedInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspection.cs" />
     <Compile Include="Inspections\UnassignedVariableUsageInspectionResult.cs" />
-    <Compile Include="Inspections\VariableNotDeclaredInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotUsedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />

@@ -42,12 +42,29 @@ namespace Rubberduck.Inspections
             {
                 fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, out originalInstruction);
             }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction);
+            }
             
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
             component.CodeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
         }
 
         private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, out string instruction)
+        {
+            if (context == null)
+            {
+                instruction = null;
+                return null;
+            }
+
+            instruction = context.GetText();
+            return instruction + ' ' + Tokens.As + ' ' + Tokens.Variant;
+        }
+
+        private string DeclareExplicitVariant(VBAParser.ArgContext context, out string instruction)
         {
             if (context == null)
             {

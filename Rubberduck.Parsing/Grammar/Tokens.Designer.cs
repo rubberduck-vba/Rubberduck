@@ -979,6 +979,15 @@ namespace Rubberduck.Parsing.Grammar {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to LongPtr.
+        /// </summary>
+        public static string LongPtr {
+            get {
+                return ResourceManager.GetString("LongPtr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loop.
         /// </summary>
         public static string Loop {

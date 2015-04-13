@@ -666,4 +666,7 @@
   <data name="LineContinuation" xml:space="preserve">
     <value> _</value>
   </data>
+  <data name="LongPtr" xml:space="preserve">
+    <value>LongPtr</value>
+  </data>
 </root>
