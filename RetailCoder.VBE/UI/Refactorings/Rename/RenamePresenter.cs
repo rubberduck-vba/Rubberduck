@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -80,10 +79,39 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void RenameDeclaration()
         {
+            if (_view.Target.DeclarationType == DeclarationType.Control)
+            {
+                RenameControl();
+                return;
+            }
+
             var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
             var content = module.get_Lines(_view.Target.Selection.StartLine, 1);
             var newContent = GetReplacementLine(content, _view.Target.IdentifierName, _view.NewName);
             module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+        }
+
+        private void RenameControl()
+        {
+            try
+            {
+                var form = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
+                var control = form.Parent.Designer.Controls(_view.Target.IdentifierName);
+                control.Name = _view.NewName;
+
+                foreach (var handler in _declarations.FindEventHandlers(_view.Target))
+                {
+                    var newMemberName = _view.Target.ComponentName + '_' + _view.NewName;
+                    var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
+
+                    var content = module.get_Lines(handler.Selection.StartLine, 1);
+                    var newContent = GetReplacementLine(content, handler.IdentifierName, newMemberName);
+                    module.ReplaceLine(handler.Selection.StartLine, newContent);
+                }
+            }
+            catch (COMException)
+            {
+            }
         }
 
         private void RenameUsages()

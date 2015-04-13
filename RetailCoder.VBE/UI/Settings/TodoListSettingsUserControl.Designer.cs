@@ -44,16 +44,18 @@ namespace Rubberduck.UI.Settings
             // 
             // tokenListBox
             // 
+            this.tokenListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tokenListBox.FormattingEnabled = true;
             this.tokenListBox.Location = new System.Drawing.Point(12, 26);
             this.tokenListBox.Name = "tokenListBox";
-            this.tokenListBox.Size = new System.Drawing.Size(331, 238);
+            this.tokenListBox.Size = new System.Drawing.Size(134, 238);
             this.tokenListBox.TabIndex = 0;
             this.tokenListBox.SelectedIndexChanged += new System.EventHandler(this.tokenListBox_SelectedIndexChanged);
             // 
             // tokenTextBox
             // 
-            this.tokenTextBox.Location = new System.Drawing.Point(355, 98);
+            this.tokenTextBox.Location = new System.Drawing.Point(152, 100);
             this.tokenTextBox.Name = "tokenTextBox";
             this.tokenTextBox.Size = new System.Drawing.Size(152, 20);
             this.tokenTextBox.TabIndex = 1;
@@ -62,7 +64,7 @@ namespace Rubberduck.UI.Settings
             // priorityComboBox
             // 
             this.priorityComboBox.FormattingEnabled = true;
-            this.priorityComboBox.Location = new System.Drawing.Point(355, 40);
+            this.priorityComboBox.Location = new System.Drawing.Point(152, 42);
             this.priorityComboBox.Name = "priorityComboBox";
             this.priorityComboBox.Size = new System.Drawing.Size(152, 21);
             this.priorityComboBox.TabIndex = 2;
@@ -71,7 +73,7 @@ namespace Rubberduck.UI.Settings
             // priorityLabel
             // 
             this.priorityLabel.AutoSize = true;
-            this.priorityLabel.Location = new System.Drawing.Point(352, 23);
+            this.priorityLabel.Location = new System.Drawing.Point(149, 25);
             this.priorityLabel.Name = "priorityLabel";
             this.priorityLabel.Size = new System.Drawing.Size(41, 13);
             this.priorityLabel.TabIndex = 3;
@@ -80,7 +82,7 @@ namespace Rubberduck.UI.Settings
             // tokenLabel
             // 
             this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(352, 81);
+            this.tokenLabel.Location = new System.Drawing.Point(149, 83);
             this.tokenLabel.Name = "tokenLabel";
             this.tokenLabel.Size = new System.Drawing.Size(68, 13);
             this.tokenLabel.TabIndex = 4;
@@ -88,7 +90,7 @@ namespace Rubberduck.UI.Settings
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(355, 143);
+            this.addButton.Location = new System.Drawing.Point(152, 145);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(152, 31);
             this.addButton.TabIndex = 5;
@@ -98,7 +100,7 @@ namespace Rubberduck.UI.Settings
             // 
             // saveChangesButton
             // 
-            this.saveChangesButton.Location = new System.Drawing.Point(355, 187);
+            this.saveChangesButton.Location = new System.Drawing.Point(152, 189);
             this.saveChangesButton.Name = "saveChangesButton";
             this.saveChangesButton.Size = new System.Drawing.Size(152, 31);
             this.saveChangesButton.TabIndex = 6;
@@ -108,7 +110,7 @@ namespace Rubberduck.UI.Settings
             // 
             // removeButton
             // 
-            this.removeButton.Location = new System.Drawing.Point(355, 233);
+            this.removeButton.Location = new System.Drawing.Point(152, 235);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(152, 31);
             this.removeButton.TabIndex = 7;
@@ -125,7 +127,7 @@ namespace Rubberduck.UI.Settings
             this.tokenListLabel.TabIndex = 8;
             this.tokenListLabel.Text = "Token List:";
             // 
-            // TodoListSettingsControl
+            // TodoListSettingsUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -138,8 +140,9 @@ namespace Rubberduck.UI.Settings
             this.Controls.Add(this.priorityComboBox);
             this.Controls.Add(this.tokenTextBox);
             this.Controls.Add(this.tokenListBox);
-            this.Name = "TodoListSettingsControl";
-            this.Size = new System.Drawing.Size(530, 294);
+            this.MinimumSize = new System.Drawing.Size(314, 294);
+            this.Name = "TodoListSettingsUserControl";
+            this.Size = new System.Drawing.Size(314, 294);
             this.ResumeLayout(false);
             this.PerformLayout();
 

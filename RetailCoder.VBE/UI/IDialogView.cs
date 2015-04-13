@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI.Refactorings
+namespace Rubberduck.UI
 {
     public interface IDialogView
     {
