@@ -75,7 +75,8 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
 
             _interfaceMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
-                                                            && interfaces.Any(i => item.ParentScope.StartsWith(i)));
+                                                            && interfaces.Any(i => item.ParentScope.StartsWith(i)))
+                                                            .ToList();
             return _interfaceMembers;
         }
 
@@ -93,7 +94,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var members = FindInterfaceMembers();
             _interfaceImplementationMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
-                && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName));
+                && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName))
+                .ToList();
 
             return _interfaceImplementationMembers;
         }

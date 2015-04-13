@@ -151,7 +151,7 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function &apos;{0}&apos; returns no value.
+        ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned.
         /// </summary>
         internal static string NonReturningFunction_ {
             get {

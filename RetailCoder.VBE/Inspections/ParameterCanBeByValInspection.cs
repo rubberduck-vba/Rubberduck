@@ -36,7 +36,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var interfaceMembers = parseResult.Declarations.FindInterfaceMembers()
-                .Concat(parseResult.Declarations.FindInterfaceImplementationMembers());
+                .Concat(parseResult.Declarations.FindInterfaceImplementationMembers())
+                .ToList();
 
             var issues = parseResult.Declarations.Items.Where(declaration =>
                 declaration.DeclarationType == DeclarationType.Parameter

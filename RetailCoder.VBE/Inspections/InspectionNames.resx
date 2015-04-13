@@ -142,7 +142,7 @@
     <value>Instruction contains multiple declarations</value>
   </data>
   <data name="NonReturningFunction_" xml:space="preserve">
-    <value>Function '{0}' returns no value</value>
+    <value>Return value for member '{0}' is never assigned</value>
   </data>
   <data name="ObsoleteCall" xml:space="preserve">
     <value>Use of obsolete Call statement</value>
