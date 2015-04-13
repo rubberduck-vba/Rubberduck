@@ -30,17 +30,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var declarations = from item in parseResult.Declarations.Items
+            var issues = from item in parseResult.Declarations.Items
                                where ProcedureTypes.Contains(item.DeclarationType)
                                && !item.IsTypeSpecified()
-                               let parent = item.Context.Parent as ParserRuleContext
-                               where parent != null
-                               select new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, parent)};
-
-            foreach (var declaration in declarations)
-            {
-                yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, declaration.Declaration.IdentifierName), Severity, declaration.QualifiedContext);
-            }
+                               let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
+                               select new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
+            return issues;
         }
 
         private static readonly IEnumerable<Func<ParserRuleContext, VBAParser.AsTypeClauseContext>> Converters =
