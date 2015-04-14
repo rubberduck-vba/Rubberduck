@@ -37,7 +37,7 @@
             this.ResultBox.FormattingEnabled = true;
             this.ResultBox.Location = new System.Drawing.Point(0, 0);
             this.ResultBox.Name = "ResultBox";
-            this.ResultBox.Size = new System.Drawing.Size(252, 185);
+            this.ResultBox.Size = new System.Drawing.Size(302, 149);
             this.ResultBox.TabIndex = 0;
             // 
             // IdentifierReferencesListControl
@@ -46,7 +46,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ResultBox);
             this.Name = "IdentifierReferencesListControl";
-            this.Size = new System.Drawing.Size(252, 185);
+            this.Size = new System.Drawing.Size(302, 149);
             this.ResumeLayout(false);
 
         }

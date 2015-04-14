@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Settings
 {
     public class TodoSettingPresenter
     {
-        private ITodoSettingsView _view;
+        private readonly ITodoSettingsView _view;
 
         public ToDoMarker ActiveMarker
         {

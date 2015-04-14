@@ -1,12 +1,12 @@
 ﻿using System.Drawing;
 using System.Linq;
-using Antlr4.Runtime;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBA;
@@ -38,20 +38,62 @@ namespace Rubberduck.UI
             InitializeRefactorContextMenu();
         }
 
+        private CommandBarPopup _refactorCodePaneContextMenu;
+        public CommandBarPopup RefactorCodePaneContextMenu { get { return _refactorCodePaneContextMenu; } }
+
         private CommandBarButton _extractMethodContextButton;
         private CommandBarButton _renameContextButton;
 
         private void InitializeRefactorContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            var menu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlPopup, Temporary: true, Before:beforeItem) as CommandBarPopup;
-            menu.BeginGroup = true;
-            menu.Caption = "&Refactor";
+            _refactorCodePaneContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlPopup, Temporary: true, Before:beforeItem) as CommandBarPopup;
+            _refactorCodePaneContextMenu.BeginGroup = true;
+            _refactorCodePaneContextMenu.Caption = "&Refactor";
 
             var extractMethodIcon = Resources.ExtractMethod_6786_32;
             extractMethodIcon.MakeTransparent(Color.White);
-            _extractMethodContextButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
-            _renameContextButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
+            _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
+            _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
+
+            InitializeFindReferencesContextMenu(); //todo: untangle that mess...
+        }
+
+        private CommandBarButton _findAllReferencesContextMenu;
+        private void InitializeFindReferencesContextMenu()
+        {
+            var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
+            _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _findAllReferencesContextMenu.Caption = "&Find all references...";
+            _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
+        }
+
+        private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var selection = IDE.ActiveCodePane.GetSelection();
+            var declarations = _parser.Parse(IDE.ActiveVBProject).Declarations;
+
+            var target = declarations.Items
+            .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+            .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                  || IsSelectedReference(selection, item));
+
+            var window = new IdentifierReferencesListControl(target);
+            var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
+            presenter.Show();
+        }
+
+        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.References.Any(r =>
+                r.QualifiedModuleName == selection.QualifiedName &&
+                r.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
+                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
