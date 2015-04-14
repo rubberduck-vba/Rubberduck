@@ -256,7 +256,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var selection = context.GetSelection();
 
-            if (context.Parent is VBAParser.ForNextStmtContext)
+            if (context.Parent is VBAParser.ForNextStmtContext 
+                || context.Parent is VBAParser.ForEachStmtContext)
             {
                 EnterIdentifier(context, selection, true);
             }

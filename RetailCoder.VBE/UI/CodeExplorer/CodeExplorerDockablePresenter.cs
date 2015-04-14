@@ -118,8 +118,8 @@ namespace Rubberduck.UI.CodeExplorer
             var node = Control.SolutionTree.SelectedNode;
             if (node != null && node.Tag != null)
             {
-                var selection = (QualifiedSelection)node.Tag;
-                var module = VBE.FindCodeModules(selection.QualifiedName).FirstOrDefault();
+                var selection = (Declaration)node.Tag;
+                var module = VBE.FindCodeModules(selection.QualifiedName.QualifiedModuleName).FirstOrDefault();
                 if (module == null)
                 {
                     return;

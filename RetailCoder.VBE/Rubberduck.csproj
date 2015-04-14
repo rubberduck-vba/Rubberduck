@@ -267,6 +267,7 @@
     <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
+    <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

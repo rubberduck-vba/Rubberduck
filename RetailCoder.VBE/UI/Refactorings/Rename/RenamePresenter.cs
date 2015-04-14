@@ -244,7 +244,9 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
         {
-            return declaration.References.Any(r => r.Selection.ContainsFirstCharacter(selection.Selection));
+            return declaration.References.Any(r =>
+                r.QualifiedModuleName == selection.QualifiedName &&
+                r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
