@@ -196,6 +196,10 @@ namespace Rubberduck.Parsing.Symbols
                             {
                                 EnterIdentifier(reference, reference.GetSelection());
                             }
+                            else
+                            {
+                                break;
+                            }
                         }
 
                         var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
@@ -208,6 +212,10 @@ namespace Rubberduck.Parsing.Symbols
                             {
                                 EnterIdentifier(reference, reference.GetSelection());
                             }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                     else
@@ -215,21 +223,37 @@ namespace Rubberduck.Parsing.Symbols
                         var procOrArrayCall = member.iCS_S_ProcedureOrArrayCall();
                         if (procOrArrayCall != null)
                         {
-                            return EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), procOrArrayCall.ambiguousIdentifier())
-                                ?? procOrArrayCall.ambiguousIdentifier();
+                            var identifier = procOrArrayCall.ambiguousIdentifier();
+                            if (_declarations.Items.Any(item => item.IdentifierName == identifier.GetText()))
+                            {
+                                return EnterDictionaryCall(procOrArrayCall.dictionaryCallStmt(), identifier)
+                                       ?? identifier;
+                            }
+                        }
+                        else
+                        {
+                            break;
                         }
 
                         var varOrProcCall = member.iCS_S_VariableOrProcedureCall();
                         if (varOrProcCall != null)
                         {
-                            return EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), varOrProcCall.ambiguousIdentifier())
-                                ?? varOrProcCall.ambiguousIdentifier();
+                            var identifier = varOrProcCall.ambiguousIdentifier();
+                            if (_declarations.Items.Any(item => item.IdentifierName == identifier.GetText()))
+                            {
+                                return EnterDictionaryCall(varOrProcCall.dictionaryCallStmt(), identifier)
+                                    ?? identifier;
+                            }
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }
             }
 
-            return null; // not possible unless grammar is modified.
+            return null;
         }
 
         private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
@@ -241,15 +265,37 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parentIdentifier != null)
             {
-                EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection()); // we're referencing "member" in "member!field"
+                if (!EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection()))
+                    // we're referencing "member" in "member!field"
+                {
+                    return null;
+                }
             }
-            
-            return dictionaryCall.ambiguousIdentifier();
+
+            var identifier = dictionaryCall.ambiguousIdentifier();
+            if (_declarations.Items.Any(item => item.IdentifierName == identifier.GetText()))
+            {
+                return identifier;
+            }
+
+            return null;
         }
 
+        public override void EnterComplexType(VBAParser.ComplexTypeContext context)
+        {
+            var identifiers = context.ambiguousIdentifier();
+            _skipIdentifiers = !identifiers.All(identifier => _declarations.Items.Any(declaration => declaration.IdentifierName == identifier.GetText()));
+        }
+
+        public override void ExitComplexType(VBAParser.ComplexTypeContext context)
+        {
+            _skipIdentifiers = false;
+        }
+
+        private bool _skipIdentifiers;
         public override void EnterAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
         {
-            if (IsDeclarativeContext(context))
+            if (_skipIdentifiers || IsDeclarativeContext(context))
             {
                 return;
             }
@@ -279,7 +325,7 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private void EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private bool EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
@@ -292,9 +338,12 @@ namespace Rubberduck.Parsing.Symbols
                 if (!declaration.References.Select(r => r.Context).Contains(reference.Context))
                 {
                     declaration.AddReference(reference);
+                    return true;
                 }
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
             }
+
+            return false;
         }
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
