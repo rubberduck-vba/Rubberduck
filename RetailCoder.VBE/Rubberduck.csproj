@@ -316,15 +316,9 @@
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="VBA\Nodes\OptionNode.cs" />
-    <Compile Include="VBA\Nodes\EnumNode.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\Nodes\ParameterNode.cs" />
-    <Compile Include="VBA\Nodes\TypeNode.cs" />
     <Compile Include="VBA\IRubberduckParser.cs" />
-    <Compile Include="VBA\Nodes\IdentifierNode.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
-    <Compile Include="VBA\Nodes\ModuleNode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="Config\IConfigurationService.cs" />

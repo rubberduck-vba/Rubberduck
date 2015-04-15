@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.VBA.Nodes
 {
+    // todo: remove usages of this obsolete class.
     public class ProcedureNode : Node
     {
         public enum VBProcedureKind

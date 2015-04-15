@@ -7,7 +7,7 @@ using Rubberduck.Parsing;
 namespace Rubberduck.VBA.Nodes
 {
     /// <summary>
-    /// The base class for all nodes in a Rubberduck code tree.
+    /// The base class for all nodes in a Rubberduck code tree. todo: delete this obsolete class.
     /// </summary>
     public abstract class Node : INode
     {
