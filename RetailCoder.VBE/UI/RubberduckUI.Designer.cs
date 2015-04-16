@@ -169,6 +169,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to project.
+        /// </summary>
+        internal static string DeclarationType_Project {
+            get {
+                return ResourceManager.GetString("DeclarationType_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to property get accessor.
         /// </summary>
         internal static string DeclarationType_PropertyGet {
@@ -264,6 +273,15 @@ namespace Rubberduck.UI {
         internal static string RenameDialog_ModuleRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_ModuleRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename project..
+        /// </summary>
+        internal static string RenameDialog_ProjectRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_ProjectRenameError", resourceCulture);
             }
         }
         

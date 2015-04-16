@@ -56,28 +56,56 @@ namespace Rubberduck.UI.Refactorings.Rename
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
+            // must rename usages first; if target is a module or a project,
+            // then renaming the declaration first would invalidate the parse results.
+            RenameUsages();
+
             if (ModuleDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
                 RenameModule();
             }
             else
             {
-                RenameDeclaration();
+                if (_view.Target.DeclarationType == DeclarationType.Project)
+                {
+                    RenameProject();
+                }
+                else
+                {
+                    RenameDeclaration();
+                }
             }
-
-            RenameUsages();
         }
 
         private void RenameModule()
         {
             try
             {
-                var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).Single();
-                module.Name = _view.NewName;
+                var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).SingleOrDefault();
+                if (module != null)
+                {
+                    module.Name = _view.NewName;
+                }
             }
             catch (COMException)
             {
                 MessageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
+            }
+        }
+
+        private void RenameProject()
+        {
+            try
+            {
+                var project = _vbe.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _view.Target.IdentifierName);
+                if (project != null)
+                {
+                    project.Name = _view.NewName;
+                }
+            }
+            catch (COMException)
+            {
+                MessageBox.Show(RubberduckUI.RenameDialog_ProjectRenameError, RubberduckUI.RenameDialog_Caption);
             }
         }
 

@@ -213,4 +213,10 @@
   <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>
   </data>
+  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
+    <value>Could not rename project.</value>
+  </data>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>project</value>
+  </data>
 </root>
