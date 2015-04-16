@@ -154,7 +154,8 @@ namespace Rubberduck.UI
         {
             using (var view = new RenameDialog())
             {
-                var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, selection);
+                var parseResult = _parser.Parse(IDE.ActiveVBProject);
+                var presenter = new RenamePresenter(IDE, view, parseResult, selection);
                 presenter.Show();
             }
         }
@@ -163,7 +164,8 @@ namespace Rubberduck.UI
         {
             using (var view = new RenameDialog())
             {
-                var presenter = new RenamePresenter(IDE, view, _parser.Parse(IDE.ActiveVBProject).Declarations, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+                var parseResult = _parser.Parse(IDE.ActiveVBProject);
+                var presenter = new RenamePresenter(IDE, view, parseResult, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
                 presenter.Show(target);
             }
         }

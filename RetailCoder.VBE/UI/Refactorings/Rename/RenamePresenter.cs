@@ -3,6 +3,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
@@ -17,14 +19,16 @@ namespace Rubberduck.UI.Refactorings.Rename
         private readonly IRenameView _view;
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
+        private readonly VBProjectParseResult _parseResult;
 
-        public RenamePresenter(VBE vbe, IRenameView view, Declarations declarations, QualifiedSelection selection)
+        public RenamePresenter(VBE vbe, IRenameView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _vbe = vbe;
             _view = view;
             _view.OkButtonClicked += OnOkButtonClicked;
 
-            _declarations = declarations;
+            _parseResult = parseResult;
+            _declarations = parseResult.Declarations;
             _selection = selection;
         }
 
@@ -86,8 +90,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
 
             var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
-            var content = module.get_Lines(_view.Target.Selection.StartLine, 1);
-            var newContent = GetReplacementLine(content, _view.Target.IdentifierName, _view.NewName);
+            var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
             module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
         }
 
@@ -182,6 +185,89 @@ namespace Rubberduck.UI.Refactorings.Rename
             // until we figure out how to replace actual tokens,
             // this is going to have to be done the ugly way...
             return Regex.Replace(content, "\\b" + target + "\\b", newName);
+        }
+
+        private string GetReplacementLine(CodeModule module, Declaration target, string newName)
+        {
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == _view.Target.QualifiedName.QualifiedModuleName);
+            if (targetModule == null)
+            {
+                return null;
+            }
+
+            var content = module.get_Lines(_view.Target.Selection.StartLine, 1);
+
+            if (target.DeclarationType == DeclarationType.Parameter)
+            {
+                var argContext = (VBAParser.ArgContext)_view.Target.Context;
+                targetModule.Rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _view.NewName);
+
+                // Target.Context is an ArgContext, its parent is an ArgsListContext;
+                // the ArgsListContext's parent is the procedure context and it includes the body.
+                var context = (ParserRuleContext) _view.Target.Context.Parent.Parent;
+                var firstTokenIndex = context.Start.TokenIndex;
+                var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
+
+                var subStmtContext = context as VBAParser.SubStmtContext;
+                if (subStmtContext != null)
+                {
+                    lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                var functionStmtContext = context as VBAParser.FunctionStmtContext;
+                if (functionStmtContext != null)
+                {
+                    lastTokenIndex = functionStmtContext.asTypeClause() != null 
+                        ? functionStmtContext.asTypeClause().Stop.TokenIndex 
+                        : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
+                if (propertyGetStmtContext != null)
+                {
+                    lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
+                        ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
+                        : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
+                if (propertyLetStmtContext != null)
+                {
+                    lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
+                if (propertySetStmtContext != null)
+                {
+                    lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                var declareStmtContext = context as VBAParser.DeclareStmtContext;
+                if (declareStmtContext != null)
+                {
+                    lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
+                    if (declareStmtContext.argList() != null)
+                    {
+                        lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                    }
+                    if (declareStmtContext.asTypeClause() != null)
+                    {
+                        lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
+                    }
+                }
+
+                var eventStmtContext = context as VBAParser.EventStmtContext;
+                if (eventStmtContext != null)
+                {
+                    lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+
+                return targetModule.Rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+            }
+            else
+            {
+                return GetReplacementLine(content, target.IdentifierName, newName);
+            }
         }
 
         private static readonly DeclarationType[] ProcedureDeclarationTypes =

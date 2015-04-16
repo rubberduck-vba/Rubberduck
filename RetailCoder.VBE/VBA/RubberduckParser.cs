@@ -33,12 +33,13 @@ namespace Rubberduck.VBA
             return new VBProjectParseResult(results);
         }
 
-        private IParseTree Parse(string code)
+        private IParseTree Parse(string code, out TokenStreamRewriter outRewriter)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
+            outRewriter = new TokenStreamRewriter(tokens);
 
             var result = parser.startRule();
             return result;
@@ -55,9 +56,10 @@ namespace Rubberduck.VBA
                     return cachedValue;
                 }
 
-                var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule));
+                TokenStreamRewriter rewriter;
+                var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule), out rewriter);
                 var comments = ParseComments(component);
-                var result = new VBComponentParseResult(component, parseTree, comments);
+                var result = new VBComponentParseResult(component, parseTree, comments, rewriter);
 
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
                 return result;

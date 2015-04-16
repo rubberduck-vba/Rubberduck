@@ -8,13 +8,13 @@ namespace Rubberduck.Parsing
 {
     public class VBComponentParseResult
     {
-        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ParserRuleContext context = null)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, TokenStreamRewriter rewriter)
         {
             _component = component;
             _qualifiedName = component.QualifiedName();
             _parseTree = parseTree;
             _comments = comments;
-            _context = context;
+            _rewriter = rewriter;
         }
 
         private readonly VBComponent _component;
@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing
         private IEnumerable<CommentNode> _comments;
         public IEnumerable<CommentNode> Comments { get { return _comments; } }
 
-        private ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        private readonly TokenStreamRewriter _rewriter;
+        public TokenStreamRewriter Rewriter { get { return _rewriter; } }
     }
 }
