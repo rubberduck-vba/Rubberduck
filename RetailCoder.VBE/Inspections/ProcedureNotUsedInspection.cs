@@ -20,11 +20,13 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var handlers = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Control)
-                .SelectMany(control => parseResult.Declarations.FindEventHandlers(control));
+                .SelectMany(control => parseResult.Declarations.FindEventHandlers(control))
+                .ToList();
 
             var issues = parseResult.Declarations.Items
-                .Where(item => !IsIgnoredProcedure(parseResult.Declarations, item, handlers))
-                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName));
+                .Where(item => !IsIgnoredDeclaration(parseResult.Declarations, item, handlers))
+                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName))
+                .ToList();
 
             return issues;
         }
@@ -35,7 +37,7 @@ namespace Rubberduck.Inspections
             DeclarationType.Function
         };
 
-        private bool IsIgnoredProcedure(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers)
+        private bool IsIgnoredDeclaration(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers)
         {
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
                 || declaration.References.Any()
@@ -106,7 +108,6 @@ namespace Rubberduck.Inspections
                 return true;
             }
 
-            // todo: find a way to avoid running this for every procedure in a class
             var result = GetImplementedInterfaceMembers(declarations, procedure.ComponentName)
                 .Contains(procedure.IdentifierName);
 

@@ -330,7 +330,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
 
-            var declaration = GetClosestScope(matches);
+            var declaration = GetClosestScope(matches, context);
             if (declaration != null)
             {
                 var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
@@ -357,24 +357,29 @@ namespace Rubberduck.Parsing.Symbols
             var callStatementD = context.Parent.Parent.Parent as VBAParser.ICS_B_ProcedureCallContext;
 
             var procedureName = string.Empty;
+            ParserRuleContext identifierContext = null;
             if (callStatementA != null)
             {
                 procedureName = callStatementA.ambiguousIdentifier().GetText();
+                identifierContext = callStatementA.ambiguousIdentifier();
             }
             else if(callStatementB != null)
             {
                 procedureName = callStatementB.ambiguousIdentifier().GetText();
+                identifierContext = callStatementB.ambiguousIdentifier();
             }
             else if (callStatementC != null)
             {
                 procedureName = callStatementC.ambiguousIdentifier().GetText();
+                identifierContext = callStatementC.ambiguousIdentifier();
             }
             else if (callStatementD != null)
             {
                 procedureName = callStatementD.certainIdentifier().GetText();
+                identifierContext = callStatementD.certainIdentifier();
             }
 
-            var procedure = FindProcedureDeclaration(procedureName);
+            var procedure = FindProcedureDeclaration(procedureName, identifierContext);
             if (procedure == null)
             {
                 return;
@@ -393,13 +398,13 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration FindProcedureDeclaration(string procedureName)
+        private Declaration FindProcedureDeclaration(string procedureName, ParserRuleContext context)
         {
             var matches = _declarations[procedureName]
                 .Where(declaration => ProcedureDeclarations.Contains(declaration.DeclarationType))
                 .Where(IsInScope);
 
-            var procedure = GetClosestScope(matches);
+            var procedure = GetClosestScope(matches, context);
             return procedure;
         }
 
@@ -428,7 +433,8 @@ namespace Rubberduck.Parsing.Symbols
 
             if (ProcedureDeclarations.Contains(declaration.DeclarationType))
             {
-                if (declaration.Accessibility == Accessibility.Public)
+                if (declaration.Accessibility == Accessibility.Public 
+                 || declaration.Accessibility == Accessibility.Implicit)
                 {
                     var result = declaration.Project.Equals(_qualifiedName.Project);
                     return result;
@@ -443,7 +449,7 @@ namespace Rubberduck.Parsing.Symbols
                    || IsGlobalProcedure(declaration);
         }
 
-        private Declaration GetClosestScope(IEnumerable<Declaration> declarations)
+        private Declaration GetClosestScope(IEnumerable<Declaration> declarations, ParserRuleContext context)
         {
             // this method (as does the rest of Rubberduck) assumes the VBA code is compilable.
 
@@ -460,7 +466,25 @@ namespace Rubberduck.Parsing.Symbols
                 return moduleScope;
             }
 
-            // multiple matches in global scope??
+            if (matches.Count == 1)
+            {
+                return matches[0];
+            }
+
+            var memberProcedureCallContext = context.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
+            if (memberProcedureCallContext != null)
+            {
+                var parentMemberName = memberProcedureCallContext.implicitCallStmt_InStmt().Stop.Text;
+                var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName);
+
+                var matchingParent = matchingParents.FirstOrDefault();
+                if (matchingParent != null)
+                {
+                    var parentType = matches.FirstOrDefault(p => p.ComponentName == matchingParent.AsTypeName);
+                    return matches.FirstOrDefault(m => m.ParentScope == parentType.ParentScope);
+                }
+            }            
+
             return matches.FirstOrDefault();
         }
 
