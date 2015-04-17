@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection //: IInspection /* note: deferred to v1.4 */
+    public class ProcedureNotUsedInspection : IInspection /* note: deferred to v1.4 */
     {
         public ProcedureNotUsedInspection()
         {
