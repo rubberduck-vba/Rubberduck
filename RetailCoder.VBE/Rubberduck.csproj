@@ -288,6 +288,12 @@
       <DependentUpon>BranchesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
+    <Compile Include="UI\SourceControl\ChangesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
     <Compile Include="UI\SourceControl\CreateBranchForm.cs">
       <SubType>Form</SubType>
@@ -626,6 +632,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
       <DependentUpon>BranchesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>

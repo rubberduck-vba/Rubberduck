@@ -9,23 +9,31 @@ namespace Rubberduck.UI.SourceControl
 {
     public class SourceControlPresenter : DockablePresenterBase
     {
-        private ChangesPresenter _changesPresenter;
-        private BranchesPresenter _branchesPresenter;
-        private ISourceControlView _view;
+        private readonly IChangesPresenter _changesPresenter;
+        private readonly IBranchesPresenter _branchesPresenter;
+        private readonly ISourceControlView _view;
 
         public SourceControlPresenter
             (
                 VBE vbe, 
                 AddIn addin, 
                 ISourceControlView view, 
-                ChangesPresenter changesPresenter,
-                BranchesPresenter branchesPresenter           
+                IChangesPresenter changesPresenter,
+                IBranchesPresenter branchesPresenter           
             ) 
             : base(vbe, addin, view)
         {
             _changesPresenter = changesPresenter;
             _branchesPresenter = branchesPresenter;
             _view = view;
+
+            _view.RefreshData += OnRefreshChildren;
+        }
+
+        private void OnRefreshChildren(object sender, EventArgs e)
+        {
+            _branchesPresenter.RefreshView();
+            _changesPresenter.Refresh();
         }
     }
 }

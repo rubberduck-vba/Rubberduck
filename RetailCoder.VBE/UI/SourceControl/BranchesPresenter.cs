@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class BranchesPresenter
+    public interface IBranchesPresenter
+    {
+        void RefreshView();
+    }
+
+    public class BranchesPresenter : IBranchesPresenter
     {
         private readonly ISourceControlProvider _provider;
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
         private readonly IMergeView _mergeView;
 
-        public BranchesPresenter(ISourceControlProvider provider, IBranchesView view, ICreateBranchView createView,
-            IMergeView mergeView)
+        public BranchesPresenter(
+            ISourceControlProvider provider,
+            IBranchesView view,
+            ICreateBranchView createView,
+            IMergeView mergeView
+            )
         {
             _provider = provider;
             _view = view;
@@ -64,10 +71,10 @@ namespace Rubberduck.UI.SourceControl
         private static IList<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)
         {
             return branches.Select(
-                                    b => b.Name.Split(new[] {'/'})
+                                    b => b.Name.Split(new[] { '/' })
                                                 .Last()
                                    ).ToList();
-        } 
+        }
 
         private IEnumerable<IBranch> RemoteBranches()
         {
@@ -108,7 +115,7 @@ namespace Rubberduck.UI.SourceControl
             _mergeView.SourceSelectorData = localBranchNames;
             _mergeView.DestinationSelectorData = localBranchNames;
             _mergeView.SelectedSourceBranch = _provider.CurrentBranch.Name;
-            
+
             _mergeView.Show();
         }
 
@@ -116,18 +123,18 @@ namespace Rubberduck.UI.SourceControl
         {
             try
             {
-                var source =_mergeView.SelectedSourceBranch;
-                var destination =_mergeView.SelectedDestinationBranch;
+                var source = _mergeView.SelectedSourceBranch;
+                var destination = _mergeView.SelectedDestinationBranch;
 
                 _provider.Merge(source, destination);
                 _view.Current = _provider.CurrentBranch.Name;
 
                 _mergeView.StatusText = string.Format("Successfully Merged {0} into {1}", source, destination);
-                _mergeView.Status = MergeStatus.Success; 
+                _mergeView.Status = MergeStatus.Success;
 
                 _mergeView.Hide();
             }
-            catch(SourceControlException ex)
+            catch (SourceControlException ex)
             {
                 _mergeView.Status = MergeStatus.Failure;
                 _mergeView.StatusText = ex.Message + ": " + ex.InnerException.Message;
@@ -141,13 +148,13 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnMergeStatusChanged(object sender, EventArgs e)
         {
-            
+
             if (_mergeView.Status == MergeStatus.Unknown)
             {
                 _mergeView.StatusText = string.Empty;
                 _mergeView.StatusTextVisible = false;
             }
-            else 
+            else
             {
                 _mergeView.StatusTextVisible = true;
             }

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Rubberduck.UI
 {
@@ -10,8 +11,10 @@ namespace Rubberduck.UI
     [ProgId(ProgId)]
     [ComVisible(true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    //Underscores make classes invisible to VB6 object explorer
+
     //Nothing breaks because we declare a ProgId
+    // ReSharper disable once InconsistentNaming
+    //Underscores make classes invisible to VB6 object explorer
     public partial class _DockableWindowHost : UserControl
     {
         private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
@@ -44,9 +47,11 @@ namespace Rubberduck.UI
             _subClassingWindow = new SubClassingWindow(_parentHandle);
             _subClassingWindow.CallBackEvent += OnCallBackEvent;
 
-            control.Dock = DockStyle.Fill;
-            Controls.Add(control);
-
+            if (control != null)
+            {
+                control.Dock = DockStyle.Fill;
+                Controls.Add(control);
+            }
             AdjustSize();
         }
 
@@ -74,7 +79,7 @@ namespace Rubberduck.UI
             if (m.Msg == wmKeydown)
             {
                 var pressedKey = (Keys)m.WParam;
-                switch(pressedKey)
+                switch (pressedKey)
                 {
                     case Keys.Tab:
                         switch (ModifierKeys)
@@ -114,9 +119,10 @@ namespace Rubberduck.UI
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
+                Debug.Assert(CallBackEvent != null, "CallBackEvent != null");
                 CallBackEvent(this, e);
             }
-            
+
             public SubClassingWindow(IntPtr handle)
             {
                 AssignHandle(handle);

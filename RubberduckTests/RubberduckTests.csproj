@@ -139,6 +139,7 @@
       <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -154,8 +155,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Mocks\MockTodoSettingsView.cs" />
+    <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />
+    <Compile Include="SourceControl\SCPresenterTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserTests.cs" />

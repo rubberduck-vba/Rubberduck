@@ -5,7 +5,13 @@ using  Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class ChangesPresenter
+    public interface IChangesPresenter
+    {
+        void Refresh();
+        void Commit();
+    }
+
+    public class ChangesPresenter : IChangesPresenter
     {
         private readonly ISourceControlProvider _provider;
         private readonly IChangesView _view;
@@ -16,7 +22,6 @@ namespace Rubberduck.UI.SourceControl
             _view = view;
 
             _view.Commit += OnCommit;
-            _view.RefreshData += OnRefresh;
             _view.CommitMessageChanged += OnCommitMessageChanged;
             _view.SelectedActionChanged += OnSelectedActionChanged;
 
@@ -69,11 +74,6 @@ namespace Rubberduck.UI.SourceControl
             {
                 _provider.Push();
             }
-        }
-
-        private void OnRefresh(object sender, EventArgs e)
-        {
-            Refresh();
         }
 
         private void OnCommit(object sender, EventArgs e)

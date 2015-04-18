@@ -25,6 +25,5 @@ namespace Rubberduck.UI.SourceControl
         event EventHandler<EventArgs> SelectedActionChanged;
         event EventHandler<EventArgs> CommitMessageChanged;
         event EventHandler<EventArgs> Commit;
-        event EventHandler<EventArgs> RefreshData;
     }
 }

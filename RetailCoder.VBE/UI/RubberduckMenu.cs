@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
@@ -95,13 +95,17 @@ namespace Rubberduck.UI
 
         private SourceControlPresenter _sourceControlPresenter;
         private ISourceControlView _sourceControlView;
+
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var branchView = new BranchesControl();
+            var changesView = new ChangesControl();
 
             if (_sourceControlView == null)
             {
-                _sourceControlView = new SourceControlPanel(branchView);
+                _sourceControlView = new SourceControlPanel(branchView, changesView);
             }
 
             if (_sourceControlPresenter == null)
@@ -114,7 +118,7 @@ namespace Rubberduck.UI
                             @"https://github.com/ckuhn203/SourceControlTest.git"
                            );
                 var gitProvider = new GitProvider(project, repo);
-                var changesPresenter = new ChangesPresenter(gitProvider,_sourceControlView);
+                var changesPresenter = new ChangesPresenter(gitProvider, changesView);
                 var branchesPresenter = new BranchesPresenter(gitProvider, branchView, new CreateBranchForm(), new MergeForm());
                 branchesPresenter.RefreshView();
                 _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter, branchesPresenter);
@@ -123,6 +127,8 @@ namespace Rubberduck.UI
             _sourceControlPresenter.Show();
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _SettingsDialog(_configService))
@@ -131,6 +137,8 @@ namespace Rubberduck.UI
             }
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _AboutWindow())
