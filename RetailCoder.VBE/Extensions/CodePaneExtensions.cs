@@ -66,7 +66,7 @@ namespace Rubberduck.Extensions
         /// <param name="selection"></param>
         public static void SetSelection(this CodePane codePane, Selection selection)
         {
-            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
             codePane.ForceFocus();
         }
 

@@ -319,6 +319,13 @@ namespace Rubberduck.UI.CodeExplorer
 
                 foreach (var declaration in members)
                 {
+                    if (declaration.DeclarationType == DeclarationType.UserDefinedTypeMember
+                        || declaration.DeclarationType == DeclarationType.EnumerationMember)
+                    {
+                        // these ones are handled by their respective parent
+                        continue;
+                    }
+
                     var text = GetNodeText(declaration);
                     var child = new TreeNode(text);
                     child.ImageKey = GetImageKeyForDeclaration(declaration);
@@ -329,7 +336,10 @@ namespace Rubberduck.UI.CodeExplorer
                         || declaration.DeclarationType == DeclarationType.Enumeration)
                     {
                         var subDeclaration = declaration;
-                        var subMembers = parseResult.Declarations.Items.Where(item => item.ParentScope == subDeclaration.Scope + "." + subDeclaration.IdentifierName);
+                        var subMembers = parseResult.Declarations.Items.Where(item => 
+                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember) 
+                            && item.Context.Parent.Equals(subDeclaration.Context));
+
                         foreach (var subMember in subMembers)
                         {
                             var subChild = new TreeNode(subMember.IdentifierName);
