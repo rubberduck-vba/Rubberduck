@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.IdentifierReferences
@@ -9,6 +10,26 @@ namespace Rubberduck.UI.IdentifierReferences
         {
             InitializeComponent();
             Target = target;
+            ResultBox.DoubleClick += ResultBox_DoubleClick;
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> NavigateIdentifierReference;
+        private void ResultBox_DoubleClick(object sender, System.EventArgs e)
+        {
+            var handler = NavigateIdentifierReference;
+            if (handler == null || ResultBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            var selectedItem = ResultBox.SelectedItem as IdentifierReferenceListItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var arg = new NavigateCodeEventArgs(selectedItem.GetReferenceItem());
+            handler(this, arg);
         }
 
         public Declaration Target { get; private set; }

@@ -481,6 +481,10 @@ namespace Rubberduck.Parsing.Symbols
                 if (matchingParent != null)
                 {
                     var parentType = matches.FirstOrDefault(p => p.ComponentName == matchingParent.AsTypeName);
+                    if (parentType == null)
+                    {
+                        return null;
+                    }
                     return matches.FirstOrDefault(m => m.ParentScope == parentType.ParentScope);
                 }
             }            

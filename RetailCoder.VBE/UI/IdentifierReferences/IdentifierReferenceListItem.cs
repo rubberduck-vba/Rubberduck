@@ -12,6 +12,11 @@ namespace Rubberduck.UI.IdentifierReferences
             _reference = reference;
         }
 
+        public IdentifierReference GetReferenceItem()
+        {
+            return _reference;
+        }
+
         public QualifiedSelection Selection { get { return new QualifiedSelection(_reference.QualifiedModuleName, _reference.Selection); } }
         public string IdentifierName { get { return _reference.IdentifierName; } }
 

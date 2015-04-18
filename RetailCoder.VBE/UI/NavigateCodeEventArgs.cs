@@ -31,10 +31,25 @@ namespace Rubberduck.UI
             _selection = declaration.Selection;
         }
 
-        public    NavigateCodeEventArgs(QualifiedSelection qualifiedSelection)
+        public NavigateCodeEventArgs(IdentifierReference reference)
+        {
+            if (reference == null)
+            {
+                return;
+            }
+
+            _reference = reference;
+            _qualifiedName = reference.QualifiedModuleName;
+            _selection = reference.Selection;
+        }
+
+        public NavigateCodeEventArgs(QualifiedSelection qualifiedSelection)
             :this(qualifiedSelection.QualifiedName, qualifiedSelection.Selection)
         {
         }
+
+        private readonly IdentifierReference _reference;
+        public IdentifierReference Reference { get { return _reference; } }
 
         private readonly Declaration _declaration;
         public Declaration Declaration { get { return _declaration; } }

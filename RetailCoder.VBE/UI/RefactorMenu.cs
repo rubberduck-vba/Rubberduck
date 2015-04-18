@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -78,6 +80,38 @@ namespace Rubberduck.UI
             .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                   || IsSelectedReference(selection, item));
 
+            if (target == null)
+            {
+                return;
+            }
+
+            var referenceCount = target.References.Count();
+
+            if (referenceCount == 1)
+            {
+                // if there's only 1 reference, just jump to it:
+                IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
+
+            }
+            else if (referenceCount > 1)
+            {
+                // if there's more than one reference, show the dockable reference navigation window:
+                try
+                {
+                    ShowReferencesToolwindow(target);
+                }
+                catch (COMException)
+                {
+                    // the exception is related to the docked control host instance,
+                    // trying again will work (I know, that's bad bad bad code)
+                    ShowReferencesToolwindow(target);
+                }
+            }
+        }
+
+        private void ShowReferencesToolwindow(Declaration target)
+        {
+            // throws a COMException if toolwindow was already closed
             var window = new IdentifierReferencesListControl(target);
             var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
             presenter.Show();
