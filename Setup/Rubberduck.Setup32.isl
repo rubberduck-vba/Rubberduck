@@ -356,7 +356,7 @@
 		<row><td>Rubberduck.Primary_output</td><td>{4CF2D538-D4DF-4846-9399-1A726CE56730}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output1</td><td>{B16217C6-31EC-4F9E-98DA-7C60E8DD48BB}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output2</td><td>{FFBC32DC-54AD-419E-980B-6A38B0D7C184}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Rubberduck.tlb</td><td>{BD0D56AE-9F46-4C44-9BAF-652D8837CB8D}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.tlb</td><td>{34CB770F-4515-4704-8317-55C922042EC0}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>20</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1159,7 +1159,7 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>RUBBERDUCK1</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>RUBBERDUCK</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1907,7 +1907,7 @@
 		<col def="S72">ISComponentSubFolder_</col>
 		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols2</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
 		<row><td>rubberduck.primary_output</td><td>Rubberduck.Primary_output2</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
-		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Christopher\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
+		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Mathieu\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2061,7 +2061,7 @@
 		<row><td>Rubberduck.Primary_output</td><td/><td/><td>_98663FF4_480C_4DF8_826D_08E13537E163_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_2CE720AE_CFDB_4F84_B04B_DCF26043675D_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output2</td><td/><td/><td>_98BBBBDE_9F9F_4942_BEC8_1CFEA7A90164_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>Rubberduck.tlb</td><td/><td/><td>_F429FE9A_4434_49E7_953D_8AEFF7912214_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.tlb</td><td/><td/><td>_DAC113F5_7238_4F08_A7A5_CA638E4AD24D_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
@@ -2436,7 +2436,7 @@
 		<row><td>DVD-18</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>Default</td><td>3</td><td>1033</td><td>0</td><td>2</td><td>Intel</td><td/><td>1033</td><td>0</td><td>15.83</td><td>1</td><td>2048</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>75805</td><td/><td/><td/><td>3</td></row>
 		<row><td>DVD-5</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>Default</td><td>3</td><td>1033</td><td>0</td><td>2</td><td>Intel</td><td/><td>1033</td><td>0</td><td>4.38</td><td>1</td><td>2048</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>75805</td><td/><td/><td/><td>3</td></row>
 		<row><td>DVD-9</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>Default</td><td>3</td><td>1033</td><td>0</td><td>2</td><td>Intel</td><td/><td>1033</td><td>0</td><td>7.95</td><td>1</td><td>2048</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>75805</td><td/><td/><td/><td>3</td></row>
-		<row><td>SingleImage</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>1</td><td>1033</td><td>0</td><td>1</td><td>Intel</td><td/><td>1033</td><td>0</td><td>0</td><td>0</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>108573</td><td/><td/><td/><td>3</td></row>
+		<row><td>SingleImage</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>1</td><td>1033</td><td>0</td><td>1</td><td>Intel</td><td/><td>1033</td><td>0</td><td>0</td><td>0</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>108573</td><td/><td/><td/><td>2</td></row>
 		<row><td>WebDeployment</td><td>Express</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>4</td><td>1033</td><td>2</td><td>1</td><td>Intel</td><td/><td>1033</td><td>0</td><td>0</td><td>0</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>124941</td><td/><td/><td/><td>3</td></row>
 	</table>
 
@@ -4007,8 +4007,8 @@
 		<col def="S0">Value</col>
 		<row><td>ActiveLanguage</td><td>1033</td></row>
 		<row><td>Comments</td><td/></row>
-		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="a4f66fafb30885f14d732b73e196bba0">
-RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
+		<row><td>CurrentMedia</td><td dt:dt="bin.base64" md5="de9f554a3bc05c12be9c31b998217995">
+UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 			</td></row>
 		<row><td>DefaultProductConfiguration</td><td>Express</td></row>
 		<row><td>EnableSwidtag</td><td>1</td></row>
@@ -4025,7 +4025,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{E9CF886E-6CEC-4B70-BA5F-FB425AE53E78}</td></row>
 		<row><td>ISUSSignature</td><td>{422EB353-A0EE-42A1-B541-290DDBDF7757}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewUpgradePaths,viewAppFiles,viewRelease,viewRegistry,viewISToday,viewUpdateService,viewCustomActions,viewSystemSearch,viewDependencies,viewRealSetupDesign,viewUI</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewProject,viewUpgradePaths,viewAppFiles,viewRelease,viewRegistry,viewISToday,viewUpdateService,viewCustomActions,viewSystemSearch,viewDependencies,viewRealSetupDesign,viewUI,viewSetupDesign,viewTextMessages</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4408,7 +4408,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{5F7101F7-6176-42ED-84E2-E77F4B15E307}</td><td/></row>
 		<row><td>ProductName</td><td>Rubberduck</td><td/></row>
-		<row><td>ProductVersion</td><td>1.22.0000</td><td/></row>
+		<row><td>ProductVersion</td><td>1.3.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
