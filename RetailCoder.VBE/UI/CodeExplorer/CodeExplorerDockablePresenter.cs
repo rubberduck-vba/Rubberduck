@@ -46,6 +46,17 @@ namespace Rubberduck.UI.CodeExplorer
             Control.RunInspections += ContextMenuRunInspections;
             Control.SelectionChanged += SelectionChanged;
             Control.Rename += RenameSelection;
+            Control.FindAllReferences += FindAllReferencesForSelection;
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
+        private void FindAllReferencesForSelection(object sender, NavigateCodeEventArgs e)
+        {
+            var handler = FindAllReferences;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
         }
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;

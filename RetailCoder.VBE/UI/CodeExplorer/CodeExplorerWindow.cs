@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 
@@ -52,6 +50,21 @@ namespace Rubberduck.UI.CodeExplorer
 
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
             InspectContextButton.Click += InspectContextButton_Click;
+            FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
+        private void FindAllReferencesContextButton_Click(object sender, EventArgs e)
+        {
+            var handler = FindAllReferences;
+            if (handler != null && SolutionTree.SelectedNode != null)
+            {
+                var target = SolutionTree.SelectedNode.Tag as Declaration;
+                if (target != null)
+                {
+                    handler(this, new NavigateCodeEventArgs(target));
+                }
+            }
         }
 
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;

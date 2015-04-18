@@ -85,13 +85,17 @@ namespace Rubberduck.UI
                 return;
             }
 
+            FindAllReferences(target);
+        }
+
+        public void FindAllReferences(Declaration target)
+        {
             var referenceCount = target.References.Count();
 
             if (referenceCount == 1)
             {
                 // if there's only 1 reference, just jump to it:
                 IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
-
             }
             else if (referenceCount > 1)
             {
