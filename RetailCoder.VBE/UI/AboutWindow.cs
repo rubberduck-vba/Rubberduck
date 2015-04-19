@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,8 +9,13 @@ using System.Windows.Forms;
 namespace Rubberduck.UI
 {
     [ComVisible(true)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public partial class _AboutWindow : Form
     {
+        public const string ClassId = "939CC8BB-A8CA-3BE6-89A3-5450949A6A43";
+        public const string ProgId = "Rubberduck.UI._AboutWindow";
+
         private static readonly IDictionary<string, string> Links =
             new Dictionary<string, string>
             {
