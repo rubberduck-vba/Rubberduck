@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(true)]
+    [ComVisible(false)]
     public partial class _AboutWindow : Form
     {
         private static readonly IDictionary<string, string> Links =
