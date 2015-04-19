@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,7 +8,7 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.Settings
 {
-    [ComVisible(true)]
+    [ComVisible(false)]
     public partial class _SettingsDialog : Form
     {
         private Configuration _config;
