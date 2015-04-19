@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,8 +9,13 @@ using Rubberduck.Inspections;
 namespace Rubberduck.UI.Settings
 {
     [ComVisible(true)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public partial class _SettingsDialog : Form
     {
+        public const string ClassId = "FB62BEA3-E11A-3C24-9101-AF2E1652AFFC";
+        public const string ProgId = "Rubberduck.UI.Settings._SettingsDialog";
+
         private Configuration _config;
         private IConfigurationService _configService;
         private ConfigurationTreeViewControl _treeview;
