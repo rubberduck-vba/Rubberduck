@@ -63,16 +63,19 @@
             this.SpecialThanksList.ForeColor = System.Drawing.Color.DimGray;
             this.SpecialThanksList.FormattingEnabled = true;
             this.SpecialThanksList.Items.AddRange(new object[] {
-            "Code Review Stack Exchange",
             "Carlos J. Quintero (MZ-Tools articles & help with VBE API)",
-            "JetBrains ReSharper Community Team",
+            "Code Review Stack Exchange",
+            "@daFreeMan",
             "@Duga SE chat bot",
             "Francis Veilleux-Gaboury",
-            "Simon Forsberg",
             "Frank Van Heeswijk",
+            "@Hosch250",
+            "JetBrains ReSharper Community Team",
+            "Knjname developer blog (clockahead.blogspot.jp)",
+            "Simon Forsberg",
             "Philip Wales",
             "Michal Krzych (vba4all.com)",
-            "Knjname developer blog (clockahead.blogspot.jp)",
+            "@mjolka",
             "All contributors to our GitHub repository",
             "All our stargazers, likers & followers, for the warm fuzzies",
             "...and anyone reading this!"});

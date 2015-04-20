@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>true</RegisterForComInterop>
+    <RegisterForComInterop>false</RegisterForComInterop>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -845,7 +845,7 @@
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug64 (
-c:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe $(TargetPath) /tlb
+    c:\windows\microsoft.net\framework64\v4.0.30319\regasm.exe "$(TargetPath)" /codebase
 )
 
 if $(ConfigurationName) == Release (
@@ -855,6 +855,12 @@ if $(ConfigurationName) == Release (
 if $(ConfigurationName) == Release64 (
     Copy $(TargetDir)\NativeBinaries\amd64\git2-e0902fb.dll $(TargetDir)
 )</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if $(ConfigurationName) == Debug64 (
+c:\windows\microsoft.net\framework64\v4.0.30319\regasm.exe $(TargetPath) /unregister
+)
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

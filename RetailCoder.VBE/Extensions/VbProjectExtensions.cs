@@ -36,7 +36,7 @@ namespace Rubberduck.Extensions
         /// <summary>
         /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
         /// </summary>
-        /// <param name="project">The <see cref="VbProject"/> to be exported to source files.</param>
+        /// <param name="project">The <see cref="VBProject"/> to be exported to source files.</param>
         /// <param name="directoryPath">The destination directory path.</param>
         public static void ExportSourceFiles(this VBProject project, string directoryPath)
         {

@@ -9,8 +9,14 @@ using System.Windows.Forms;
 namespace Rubberduck.UI
 {
     [ComVisible(true)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
+    // ReSharper disable once InconsistentNaming
     public partial class _AboutWindow : Form
     {
+        private const string ClassId = "939CC8BB-A8CA-3BE6-89A3-5450949A6A43";
+        private const string ProgId = "Rubberduck.UI.AboutWindow";
+
         private static readonly IDictionary<string, string> Links =
             new Dictionary<string, string>
             {

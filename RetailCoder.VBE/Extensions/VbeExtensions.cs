@@ -55,7 +55,8 @@ namespace Rubberduck.Extensions
         {
             //not a very robust method. Breaks if there are multiple projects with the same name.
             var project = vbe.VBProjects.Cast<VBProject>()
-                            .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked && p.Name == selection.QualifiedName.ProjectName);
+                            .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
+                                && p.Equals(selection.QualifiedName.Project));
 
             VBComponent component = null;
             if (project != null)

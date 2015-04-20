@@ -4,9 +4,13 @@ namespace Rubberduck.UnitTesting
 {
     [ComVisible(true)]
     [ComDefaultInterface(typeof(IAssert))]
-    [ProgId("Rubberduck.AssertClass")]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public class AssertClass : IAssert
     {
+        private const string ClassId = "69E194DA-43F0-3B33-B105-9B8188A6F040";
+        private const string ProgId = "Rubberduck.AssertClass";
+
         /// <summary>
         /// Verifies that the specified condition is <c>true</c>. The assertion fails if the condition is <c>false</c>.
         /// </summary>

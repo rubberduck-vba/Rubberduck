@@ -351,9 +351,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{07670957-F887-48F1-A047-1C3BCA3319A9}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{4C794B23-8F6B-4920-93DB-D372DB61A6ED}</td><td>ProgramFilesFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT5</td><td>{C6420AC8-CAD4-48C8-BED4-84F20EDC2798}</td><td>DATABASEDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Rubberduck.Debug_Symbols</td><td>{4BE5650A-EBEC-4E28-A4F3-A0653CB574B5}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.debug_symbols</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.Primary_output1</td><td>{4E69E430-DA34-46A1-88D2-F5F731E0DCBD}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.primary_output1</td><td>52</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Rubberduck.tlb</td><td>{A56153B9-9AFA-463E-B8EF-7935C68D2D00}</td><td>INSTALLDIR</td><td>2</td><td/><td>rubberduck.tlb</td><td>44</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>git2_e0902fb.dll</td><td>{413FFF50-3C59-4992-A326-34D686F66FF0}</td><td>INSTALLDIR</td><td>2</td><td/><td>git2_e0902fb.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Condition">
@@ -1894,9 +1894,9 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT5</td></row>
+		<row><td>AlwaysInstall</td><td>Rubberduck.Debug_Symbols</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.Primary_output1</td></row>
 		<row><td>AlwaysInstall</td><td>Rubberduck.tlb</td></row>
-		<row><td>AlwaysInstall</td><td>git2_e0902fb.dll</td></row>
 	</table>
 
 	<table name="File">
@@ -1911,7 +1911,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>git2_e0902fb.dll</td><td>git2_e0902fb.dll</td><td>GIT2-E~1.DLL|git2-e0902fb.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Mathieu\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release64\git2-e0902fb.dll</td><td>1</td><td/></row>
+		<row><td>rubberduck.debug_symbols</td><td>Rubberduck.Debug_Symbols</td><td>Rubberduck.Debug Symbols</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;Rubberduck&gt;|Symbols</td><td>3</td><td/></row>
 		<row><td>rubberduck.primary_output1</td><td>Rubberduck.Primary_output1</td><td>Rubberduck.Primary output</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;Rubberduck&gt;|Built</td><td>3</td><td/></row>
 		<row><td>rubberduck.tlb</td><td>Rubberduck.tlb</td><td>RUBBER~1.TLB|Rubberduck.tlb</td><td>0</td><td/><td/><td>0</td><td>1</td><td>C:\Users\Mathieu\Source\Repos\Rubberduck\RetailCoder.VBE\bin\Release64\Rubberduck.tlb</td><td>1</td><td/></row>
 	</table>
@@ -2062,9 +2062,9 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_0BCD28FB_7D80_4AE7_8A9A_283E94E02605_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_96142248_6F1D_42FC_9B08_D5AFDC53E138_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT5</td><td/><td/><td>_449B57D7_920B_4EC6_A040_7BF8D88F3AAD_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Rubberduck.Debug_Symbols</td><td/><td/><td>_E3A8D9FB_163C_47D9_8E58_F8CBCC780E0A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.Primary_output1</td><td/><td/><td>_D5F89B3D_4EC9_471F_9470_DFEE1F32F0B4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Rubberduck.tlb</td><td/><td/><td>_BF3126F9_F1BD_49C2_B633_5A69B054ED00_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>git2_e0902fb.dll</td><td/><td/><td>_A58C2404_CE89_4EE3_B918_71BB14C4CEA4_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISCustomActionReference">
