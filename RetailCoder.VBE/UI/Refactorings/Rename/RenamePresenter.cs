@@ -128,17 +128,18 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 var form = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
                 var control = form.Parent.Designer.Controls(_view.Target.IdentifierName);
-                control.Name = _view.NewName;
 
                 foreach (var handler in _declarations.FindEventHandlers(_view.Target))
                 {
-                    var newMemberName = _view.Target.ComponentName + '_' + _view.NewName;
+                    var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _view.NewName + '_');
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
 
                     var content = module.get_Lines(handler.Selection.StartLine, 1);
                     var newContent = GetReplacementLine(content, handler.IdentifierName, newMemberName);
                     module.ReplaceLine(handler.Selection.StartLine, newContent);
                 }
+
+                control.Name = _view.NewName;
             }
             catch (COMException)
             {
