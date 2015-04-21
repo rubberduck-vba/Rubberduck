@@ -1,4 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.PowerPoint;
 using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
@@ -20,6 +20,14 @@ namespace Rubberduck.VBEHost
             /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax
              * http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx
              */
+
+            return qualifiedMemberName.QualifiedModuleName.Component.Name + "." + qualifiedMemberName.MemberName;
+
+            // todo: verify that the 'FileName.ppt!Module.Method' syntax is real.
+            // if a saved presentation can run the above, then the below can just be removed.
+            if (!qualifiedMemberName.QualifiedModuleName.Project.Saved)
+            {
+            }
 
             var projectFile = qualifiedMemberName.QualifiedModuleName.Project.FileName;
             var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
