@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.VBEHost;
 
 namespace Rubberduck.UnitTesting
@@ -10,24 +11,14 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(string projectName, string moduleName, string methodName, IHostApplication hostApp)
+        public TestMethod(QualifiedMemberName qualifiedMemberName, IHostApplication hostApp)
         {
-            _projectName = projectName;
-            _moduleName = moduleName;
-            _methodName = methodName;
+            _qualifiedMemberName = qualifiedMemberName;
             _hostApp = hostApp;
         }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
-
-        private readonly string _moduleName;
-        public string ModuleName { get { return _moduleName; } }
-
-        private readonly string _methodName;
-        public string MethodName { get { return _methodName; } }
-
-        public string QualifiedName { get { return string.Concat(ProjectName, ".", ModuleName, ".", MethodName); } }
+        private readonly QualifiedMemberName _qualifiedMemberName;
+        public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
         public TestResult Run()
         {
@@ -38,7 +29,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                duration = _hostApp.TimedMethodCall(_projectName, _moduleName, _methodName);
+                duration = _hostApp.TimedMethodCall(_qualifiedMemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
@@ -70,18 +61,18 @@ namespace Rubberduck.UnitTesting
 
         public bool Equals(TestMethod other)
         {
-            return QualifiedName == other.QualifiedName;
+            return QualifiedMemberName.Equals(other.QualifiedMemberName);
         }
 
         public override bool Equals(object obj)
         {
             return obj is TestMethod
-                && ((TestMethod)obj).QualifiedName == QualifiedName;
+                && ((TestMethod)obj).QualifiedMemberName.Equals(QualifiedMemberName);
         }
 
         public override int GetHashCode()
         {
-            return QualifiedName.GetHashCode();
+            return QualifiedMemberName.GetHashCode();
         }
     }
 }

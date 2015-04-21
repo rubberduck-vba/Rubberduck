@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Reflection
 {
@@ -23,40 +24,27 @@ namespace Rubberduck.Reflection
 
     public class Member
     {
-        public Member(MemberVisibility visibility, 
-                      MemberType memberType, 
-                      string projectName,
-                      string moduleName,
-                      string name, 
+        public Member(MemberType memberType, 
+                      QualifiedMemberName qualifiedMemberName,
                       string signature, 
                       string[] body, 
                       IEnumerable<MemberAttribute> attributes)
         {
-            _projectName = projectName;
-            _moduleName = moduleName;
+            _qualifiedMemberName = qualifiedMemberName;
             _memberType = memberType;
-            _name = name;
             _signature = signature;
             _body = body;
-            _attributes = attributes.ToDictionary((attribute) => attribute.Name, (attribute) => attribute);
+            _attributes = attributes.ToDictionary(attribute => attribute.Name, attribute => attribute);
         }
 
-        private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
-
-        private readonly string _moduleName;
-        public string ModuleName { get { return _moduleName; } }
-
-        public string QualifiedName { get { return string.Concat(_projectName, ".", _moduleName, ".", _name); } }
+        private readonly QualifiedMemberName _qualifiedMemberName;
+        public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
         private readonly MemberType _memberType;
         public MemberType MemberType { get { return _memberType; } }
 
         private readonly MemberVisibility _memberVisibility;
         public MemberVisibility MemberVisibility { get { return _memberVisibility; } }
-
-        private readonly string _name;
-        public string Name { get { return _name; } }
 
         private readonly string _signature;
         public string Signature { get { return _signature; } }
@@ -90,9 +78,9 @@ namespace Rubberduck.Reflection
                     "Function ", "Sub ", "Property ", 
                     "Static ", "Const ", "Global ", "Enum ", "Type ", "Declare " };
 
-        public static bool TryParse(string[] body, string projectName, string moduleName, out Member result)
+        public static bool TryParse(string[] body, QualifiedModuleName qualifiedModuleName, out Member result)
         {
-            var signature = body.FirstOrDefault(line => _keywords.Any(keyword => line.StartsWith(keyword)));
+            var signature = body.FirstOrDefault(line => _keywords.Any(line.StartsWith));
             if (signature == null)
             {
                 result = null;
@@ -113,7 +101,7 @@ namespace Rubberduck.Reflection
             var attributes = MemberAttribute.GetAttributes(body.Take(signatureLineIndex)
                                                                .Where(line => line.StartsWith("'@")));
 
-            result = new Member(visibility, type, projectName, moduleName, name, signature, body, attributes);
+            result = new Member(type, qualifiedModuleName.QualifyMemberName(name), signature, body, attributes);
             return true;
         }
 

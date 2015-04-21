@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
 
         private void ReplaceWithSingleQuote(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            var module = vbe.FindCodeModule(QualifiedName);
             if (module == null)
             {
                 return;
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections
 
         private void RemoveComment(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            var module = vbe.FindCodeModule(QualifiedName);
             if (module == null)
             {
                 return;

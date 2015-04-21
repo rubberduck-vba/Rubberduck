@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 using Rubberduck.VBA;
 using Rubberduck.VBEHost;
@@ -26,7 +27,7 @@ namespace Rubberduck.UnitTesting
                                    .Where(member => member.HasAttribute<TAttribute>());
             foreach (var method in methods)
             {
-                hostApp.Run(method.ProjectName, method.ModuleName, method.Name);
+                hostApp.Run(method.QualifiedMemberName);
             }
         }
 
@@ -39,18 +40,19 @@ namespace Rubberduck.UnitTesting
                           .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => 
-                              new TestMethod(project.Name, component.Component.Name, method.Name, hostApp)));
+                              new TestMethod(method.QualifiedMemberName, hostApp)));
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
             IHostApplication hostApp = component.VBE.HostApplication();
 
-            if (component.Type == vbext_ComponentType.vbext_ct_StdModule && component.CodeModule.HasAttribute<TestModuleAttribute>())
+            if (component.Type == vbext_ComponentType.vbext_ct_StdModule 
+                && component.CodeModule.HasAttribute<TestModuleAttribute>())
             {
-                return component.GetMembers().Where(IsTestMethod)
-                                .Select(member => 
-                                    new TestMethod(component.Collection.Parent.Name, component.Name, member.Name, hostApp));
+                return component.GetMembers()
+                                .Where(IsTestMethod)
+                                .Select(member => new TestMethod(member.QualifiedMemberName, hostApp));
             }
 
             return new List<TestMethod>();
@@ -60,9 +62,9 @@ namespace Rubberduck.UnitTesting
 
         private static bool IsTestMethod(Member member)
         {
-            return (member.Name.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
-                 && member.Signature.Contains(member.Name + "()")
-                 && !ReservedTestAttributeNames.Contains(member.Name)
+            return (member.QualifiedMemberName.MemberName.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
+                 && member.Signature.Contains(member.QualifiedMemberName.MemberName + "()")
+                 && !ReservedTestAttributeNames.Contains(member.QualifiedMemberName.MemberName)
                  && member.MemberType == MemberType.Sub
                  && member.MemberVisibility == MemberVisibility.Public;
         }

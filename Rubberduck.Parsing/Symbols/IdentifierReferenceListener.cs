@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
-        private string ModuleScope { get { return _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName; } }
+        private string ModuleScope { get { return _qualifiedName.ToString(); } }
 
         /// <summary>
         /// Sets current scope to module-level.
@@ -42,7 +42,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name)
         {
-            _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
+            _currentScope = _qualifiedName + "." + name;
         }
 
         public override void EnterLiteral(VBAParser.LiteralContext context)

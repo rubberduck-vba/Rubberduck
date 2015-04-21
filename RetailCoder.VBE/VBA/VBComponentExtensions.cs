@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 
 namespace Rubberduck.VBA
@@ -50,7 +51,7 @@ namespace Rubberduck.VBA
                     var body = module.Lines[startLine, lineCount].Split('\n');
 
                     Member member;
-                    if (Member.TryParse(body, module.Parent.Collection.Parent.Name, module.Parent.Name, out member))
+                    if (Member.TryParse(body, new QualifiedModuleName(module.Parent), out member))
                     {
                         yield return member;
                         currentLine = startLine + lineCount;

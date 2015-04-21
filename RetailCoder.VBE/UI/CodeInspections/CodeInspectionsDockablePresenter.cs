@@ -46,8 +46,8 @@ namespace Rubberduck.UI.CodeInspections
                 "{0}: {1} - {2}.{3}, line {4}",
                 result.Severity,
                 result.Name,
-                module.ProjectName,
-                module.ModuleName,
+                module.Project.Name,
+                module.Component.Name,
                 result.QualifiedSelection.Selection.StartLine);
         }
 

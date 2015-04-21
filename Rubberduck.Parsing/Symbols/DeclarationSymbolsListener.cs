@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedName = qualifiedName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(new QualifiedMemberName(_qualifiedName, _qualifiedName.ModuleName), _qualifiedName.ProjectName, _qualifiedName.ModuleName, _qualifiedName.ModuleName, false, false, componentAccessibility, declarationType, null, Selection.Home));
+            _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home));
         }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
 
-            foreach (var control in designer.Controls)
+            foreach (var control in ((dynamic)designer).Controls)
             {
-                _declarations.Add(new Declaration(new QualifiedMemberName(_qualifiedName, _qualifiedName.ModuleName), _currentScope, control.Name, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
+                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _currentScope, control.Name, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
             }
         }
 
@@ -90,7 +90,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         private void SetCurrentScope()
         {
-            _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName;
+            _currentScope = _qualifiedName.ToString();
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name)
         {
-            _currentScope = _qualifiedName.ProjectName + "." + _qualifiedName.ModuleName + "." + name;
+            _currentScope = _qualifiedName + "." + name;
         }
 
         public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)

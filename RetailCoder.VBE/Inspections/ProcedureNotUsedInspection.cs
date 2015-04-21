@@ -119,7 +119,7 @@ namespace Rubberduck.Inspections
             var classes = declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class);
             var interfaces = classes.Where(item => item.References.Any(reference =>
                     reference.Context.Parent is VBAParser.ImplementsStmtContext
-                    && reference.QualifiedModuleName.ModuleName == componentName));
+                    && reference.QualifiedModuleName.Component.Name == componentName));
 
             var members = interfaces.SelectMany(declarations.FindMembers)
                 .Select(member => member.ComponentName + "_" + member.IdentifierName);

@@ -14,7 +14,7 @@ using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    internal class RubberduckParser : IRubberduckParser
     {
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
@@ -56,15 +56,18 @@ namespace Rubberduck.VBA
                     return cachedValue;
                 }
 
+                var codeModule = component.CodeModule;
+                var lines = codeModule.Lines();
+
                 TokenStreamRewriter rewriter;
-                var parseTree = Parse(CodeModuleExtensions.Lines(component.CodeModule), out rewriter);
+                var parseTree = Parse(lines, out rewriter);
                 var comments = ParseComments(component);
                 var result = new VBComponentParseResult(component, parseTree, comments, rewriter);
 
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
                 return result;
             }
-            catch (COMException exception)
+            catch (COMException)
             {
                 return null;
             }

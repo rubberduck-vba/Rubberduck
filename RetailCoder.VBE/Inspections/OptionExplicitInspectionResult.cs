@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            var module = vbe.FindCodeModule(QualifiedName);
             if (module == null)
             {
                 return;

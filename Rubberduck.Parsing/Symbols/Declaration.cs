@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
@@ -62,12 +61,12 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.ProjectName; } }
+        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.Project.Name; } }
 
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.ModuleName; } }
+        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.Component.Name; } }
 
         private readonly string _parentScope;
         /// <summary>
@@ -177,13 +176,13 @@ namespace Rubberduck.Parsing.Symbols
                         return "VBE";
                     case DeclarationType.Class:
                     case DeclarationType.Module:
-                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName;
+                        return _qualifiedName.QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName + "." + _identifierName;
+                        return _qualifiedName.QualifiedModuleName + "." + _identifierName;
                     default:
                         return _parentScope;
                 }

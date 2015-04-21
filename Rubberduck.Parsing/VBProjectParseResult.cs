@@ -35,8 +35,8 @@ namespace Rubberduck.Parsing
 
                     if (!_declarations.Items.Any())
                     { 
-                        var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
-                        var memberName = new QualifiedMemberName(new QualifiedModuleName(projectIdentifier, string.Empty, componentParseResult.QualifiedName.Project, 0), string.Empty);
+                        var projectIdentifier = componentParseResult.QualifiedName.Project.Name;
+                        var memberName = componentParseResult.QualifiedName.QualifyMemberName(projectIdentifier);
                         var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, null, Selection.Home);
                         _declarations.Add(projectDeclaration);
                     }

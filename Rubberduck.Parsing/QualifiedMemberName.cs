@@ -1,28 +1,43 @@
+using System;
+
 namespace Rubberduck.Parsing
 {
     public struct QualifiedMemberName
     {
-        public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string member)
+        public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string memberName)
         {
             _qualifiedModuleName = qualifiedModuleName;
-            _member = member;
+            _memberName = memberName;
         }
 
         private readonly QualifiedModuleName _qualifiedModuleName;
         public QualifiedModuleName QualifiedModuleName { get { return _qualifiedModuleName; } }
 
-        private readonly string _member;
-        public string Name { get { return _member; } }
+        private readonly string _memberName;
+        public string MemberName { get { return _memberName; } }
+
+        public override string ToString()
+        {
+            return _qualifiedModuleName + "." + _memberName;
+        }
 
         public override int GetHashCode()
         {
-            return (_qualifiedModuleName.GetHashCode().ToString() + _member).GetHashCode();
+            // note: fingers crossed here
+            return (_qualifiedModuleName.GetHashCode() + _qualifiedModuleName.ToString() + _memberName).GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            var other = (QualifiedMemberName)obj;
-            return _qualifiedModuleName.Equals(other.QualifiedModuleName) && _member == other.Name;
+            try
+            {
+                var other = (QualifiedMemberName)obj;
+                return _qualifiedModuleName.Equals(other.QualifiedModuleName) && _memberName == other.MemberName;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
         }
 
         public static bool operator ==(QualifiedMemberName a, QualifiedMemberName b)

@@ -78,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void SelectionChanged(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null)
+            if (e.Node == null || e.Node.Tag == null)
             {
                 return;
             }
@@ -130,7 +130,7 @@ namespace Rubberduck.UI.CodeExplorer
             if (node != null && node.Tag != null)
             {
                 var selection = (Declaration)node.Tag;
-                var module = VBE.FindCodeModules(selection.QualifiedName.QualifiedModuleName).FirstOrDefault();
+                var module = VBE.FindCodeModule(selection.QualifiedName.QualifiedModuleName);
                 if (module == null)
                 {
                     return;

@@ -90,7 +90,7 @@ namespace Rubberduck.Inspections
                 }
             }
 
-            var module = vbe.FindCodeModules(QualifiedName).First();
+            var module = vbe.FindCodeModule(QualifiedName);
             module.ReplaceLine(selection.StartLine, newContent.ToString());
         }
     }

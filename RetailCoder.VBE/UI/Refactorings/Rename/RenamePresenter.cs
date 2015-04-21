@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
@@ -81,7 +82,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             try
             {
-                var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).SingleOrDefault();
+                var module = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
                 if (module != null)
                 {
                     module.Name = _view.NewName;
@@ -117,7 +118,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return;
             }
 
-            var module = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
+            var module = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
             var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
             module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
         }
@@ -126,8 +127,8 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             try
             {
-                var form = _vbe.FindCodeModules(_view.Target.QualifiedName.QualifiedModuleName).First();
-                var control = form.Parent.Designer.Controls(_view.Target.IdentifierName);
+                var form = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
+                var control = ((dynamic) form.Parent.Designer).Controls(_view.Target.IdentifierName);
 
                 foreach (var handler in _declarations.FindEventHandlers(_view.Target))
                 {
@@ -140,6 +141,9 @@ namespace Rubberduck.UI.Refactorings.Rename
                 }
 
                 control.Name = _view.NewName;
+            }
+            catch (RuntimeBinderException)
+            {
             }
             catch (COMException)
             {
@@ -179,7 +183,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
-                var module = _vbe.FindCodeModules(grouping.Key).First();
+                var module = _vbe.FindCodeModule(grouping.Key);
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
                     var content = module.get_Lines(line.Key, 1);

@@ -1,15 +1,12 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
-using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
-using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
@@ -20,7 +17,7 @@ using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents
 
 namespace Rubberduck.UI
 {
-    public class RubberduckMenu : Menu
+    internal class RubberduckMenu : Menu
     {
         private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;

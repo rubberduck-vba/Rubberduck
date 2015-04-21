@@ -26,7 +26,7 @@ namespace Rubberduck.UI.IdentifierReferences
             { 
                 return string.Format("{0} - {1}, line {2}", 
                     _reference.Context.Parent.GetText(), 
-                    Selection.QualifiedName.ModuleName,
+                    Selection.QualifiedName.Component.Name,
                     Selection.Selection.StartLine); 
             } 
         }

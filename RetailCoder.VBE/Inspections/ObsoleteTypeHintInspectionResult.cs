@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections
             string hint;
             if (_declaration.HasTypeHint(out hint))
             {
-                var module = vbe.FindCodeModules(_declaration.QualifiedName.QualifiedModuleName).FirstOrDefault();
+                var module = vbe.FindCodeModule(_declaration.QualifiedName.QualifiedModuleName);
                 FixTypeHintUsage(hint, module, _declaration.Selection, true);
             }
 
@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections
                 string referenceHint;
                 if (reference.HasTypeHint(out referenceHint))
                 {
-                    var module = vbe.FindCodeModules(reference.QualifiedModuleName).FirstOrDefault();
+                    var module = vbe.FindCodeModule(reference.QualifiedModuleName);
                     FixTypeHintUsage(referenceHint, module, reference.Selection);
                 }
             }
