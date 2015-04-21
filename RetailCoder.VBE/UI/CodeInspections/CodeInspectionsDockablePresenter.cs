@@ -74,16 +74,10 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var location = VBE.FindInstruction(e.QualifiedName, e.Selection);
-                location.CodeModule.CodePane.SetSelection(e.Selection);
-
-                var codePane = location.CodeModule.CodePane;
-                var selection = location.Selection;
-                codePane.SetSelection(selection);
+                e.QualifiedName.Component.CodeModule.CodePane.SetSelection(e.Selection);
             }
-            catch (Exception exception)
+            catch (COMException)
             {
-                Debug.Assert(false, exception.ToString());
             }
         }
 

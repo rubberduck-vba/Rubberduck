@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing
         public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, TokenStreamRewriter rewriter)
         {
             _component = component;
-            _qualifiedName = component.QualifiedName();
+            _qualifiedName = new QualifiedModuleName(component);
             _parseTree = parseTree;
             _comments = comments;
             _rewriter = rewriter;

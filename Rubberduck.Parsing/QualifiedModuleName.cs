@@ -8,6 +8,11 @@ namespace Rubberduck.Parsing
         public QualifiedModuleName(VBComponent component)
         {
             _component = component;
+
+            var module = _component.CodeModule;
+            _contentHashCode = module.CountOfLines > 0 
+                ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
+                : 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -17,8 +22,9 @@ namespace Rubberduck.Parsing
 
         private readonly VBComponent _component;
         public VBComponent Component { get { return _component; } }
-
         public VBProject Project { get { return _component == null ? null : _component.Collection.Parent; } }
+
+        private readonly int _contentHashCode;
 
         public override string ToString()
         {
@@ -27,7 +33,7 @@ namespace Rubberduck.Parsing
 
         public override int GetHashCode()
         {
-            return _component.GetHashCode();
+            return _component == null ? 0 : _component.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -35,7 +41,7 @@ namespace Rubberduck.Parsing
             try
             {
                 var other = (QualifiedModuleName)obj;
-                return other.Component == Component;
+                return other.Component == Component && other._contentHashCode == _contentHashCode;
             }
             catch (InvalidCastException)
             {

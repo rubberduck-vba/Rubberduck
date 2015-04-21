@@ -50,7 +50,7 @@ namespace Rubberduck.VBA
             try
             {
                 VBComponentParseResult cachedValue;
-                var name = component.QualifiedName();
+                var name = new QualifiedModuleName(component); // already a performance hit
                 if (ParseResultCache.TryGetValue(name, out cachedValue))
                 {
                     return cachedValue;
@@ -61,7 +61,7 @@ namespace Rubberduck.VBA
 
                 TokenStreamRewriter rewriter;
                 var parseTree = Parse(lines, out rewriter);
-                var comments = ParseComments(component);
+                var comments = ParseComments(name);
                 var result = new VBComponentParseResult(component, parseTree, comments, rewriter);
 
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
@@ -73,11 +73,9 @@ namespace Rubberduck.VBA
             }
         }
 
-        private IEnumerable<CommentNode> ParseComments(VBComponent component)
+        private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
         {
-            var code = component.CodeModule.Code();
-            var qualifiedName = component.QualifiedName();
-
+            var code = qualifiedName.Component.CodeModule.Code();
             var commentBuilder = new StringBuilder();
             var continuing = false;
 
