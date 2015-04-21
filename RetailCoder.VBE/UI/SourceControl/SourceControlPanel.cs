@@ -16,11 +16,13 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
-        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView)
+        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnSyncedCommitsView commitsView, ISettingsView settingsView)
             :this()
         {
             this.BranchesTab.Controls.Add((Control)branchesView);
             this.ChangesTab.Controls.Add((Control)changesView);
+            this.UnsyncedCommitsTab.Controls.Add((Control)commitsView);
+            this.SettingsTab.Controls.Add((Control)settingsView);
         }
 
         public string ClassId

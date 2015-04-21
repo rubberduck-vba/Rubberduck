@@ -305,12 +305,20 @@
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
+    <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
+    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\MergeForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
       <DependentUpon>MergeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
@@ -319,6 +327,12 @@
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
@@ -645,8 +659,14 @@
     <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
       <DependentUpon>MergeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VBA\Tokens.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

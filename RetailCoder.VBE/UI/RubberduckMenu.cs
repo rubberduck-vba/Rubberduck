@@ -102,10 +102,12 @@ namespace Rubberduck.UI
         {
             var branchView = new BranchesControl();
             var changesView = new ChangesControl();
+            var unsyncedCommitsView = new UnSyncedCommitsControl();
+            var settingsView = new SettingsControl();
 
             if (_sourceControlView == null)
             {
-                _sourceControlView = new SourceControlPanel(branchView, changesView);
+                _sourceControlView = new SourceControlPanel(branchView, changesView, unsyncedCommitsView, settingsView);
             }
 
             if (_sourceControlPresenter == null)
