@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteLetStatementInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.ObsoleteLet; } }

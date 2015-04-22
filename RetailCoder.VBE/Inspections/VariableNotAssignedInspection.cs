@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public VariableNotAssignedInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.VariableNotAssigned_; } }

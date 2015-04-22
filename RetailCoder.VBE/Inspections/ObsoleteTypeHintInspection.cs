@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteTypeHintInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames._ObsoleteTypeHint_; } }
