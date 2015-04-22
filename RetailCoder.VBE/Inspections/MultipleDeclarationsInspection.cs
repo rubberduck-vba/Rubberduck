@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public MultipleDeclarationsInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.MultipleDeclarations; } }

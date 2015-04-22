@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ParameterCanBeByValInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ParameterCanBeByVal_; } }

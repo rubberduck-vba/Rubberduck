@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ImplicitByRefParameterInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitByRef_; } }

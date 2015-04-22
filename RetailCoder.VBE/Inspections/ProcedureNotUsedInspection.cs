@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ProcedureNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ProcedureNotUsed_; } }
