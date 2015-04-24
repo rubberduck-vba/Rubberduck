@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public UnassignedVariableUsageInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.UnassignedVariableUsage_; } }

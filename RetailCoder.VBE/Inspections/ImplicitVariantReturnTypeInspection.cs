@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections
     {
         public ImplicitVariantReturnTypeInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitVariantReturnType_; } }
