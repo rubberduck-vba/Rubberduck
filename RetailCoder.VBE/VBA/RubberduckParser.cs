@@ -7,7 +7,9 @@ using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Extensions;
+using Rubberduck.Logging;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
@@ -19,6 +21,14 @@ namespace Rubberduck.VBA
     {
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
+
+        private readonly Logger _logger;
+
+        public RubberduckParser()
+        {
+            LoggingConfigurator.ConfigureParserLogger();
+            _logger = LogManager.GetCurrentClassLogger();
+        }
 
         public VBProjectParseResult Parse(VBProject project)
         {
@@ -71,13 +81,26 @@ namespace Rubberduck.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
+                if (LogManager.IsLoggingEnabled())
+                {
+                    LogParseException(component, exception);
+                }
                 return null;
             }
             catch (COMException)
             {
                 return null;
             }
+        }
+
+        private void LogParseException(VBComponent component, SyntaxErrorException exception)
+        {
+            var offendingProject = component.Collection.Parent.Name;
+            var offendingComponent = component.Name;
+            var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
+
+            var message = string.Format("Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
+            _logger.ErrorException(message, exception);
         }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
