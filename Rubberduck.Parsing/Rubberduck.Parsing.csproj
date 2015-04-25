@@ -59,6 +59,7 @@
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="Listeners\DeclarationListener.cs" />
+    <Compile Include="Listeners\ExceptionErrorListener.cs" />
     <Compile Include="Listeners\IExtensionListener.cs" />
     <Compile Include="Listeners\VariableReferencesListener.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
