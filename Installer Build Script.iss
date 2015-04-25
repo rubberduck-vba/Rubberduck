@@ -1,0 +1,143 @@
+#define BuildDir SourcePath + "\Build\Debug"
+#define MyAppName "RubberDuck"
+#define AddinDLL "Rubberduck.dll"
+#define MyAppVersion GetFileVersion(SourcePath + "\Build\Debug\Rubberduck.dll")
+#define MyAppPublisher "RubberDuck"
+#define MyAppURL "http://rubberduck-vba.com"
+#define License SourcePath + "\License.rtf"
+#define OutputDirectory SourcePath + "\Installers"
+
+[Setup]
+; TODO this CLSID should match the one used by the current installer.
+AppId={{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}
+AppName={#MyAppName}
+AppVersion={#MyAppVersion}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
+AppSupportURL={#MyAppURL}
+AppUpdatesURL={#MyAppURL}
+; use the local appdata folder instead of the program files dir.
+DefaultDirName={localappdata}\{#MyAppPublisher}\{#MyAppName}
+DefaultGroupName=Rubberduck
+AllowNoIcons=yes
+LicenseFile={#License}
+OutputDir={#OutputDirectory}
+OutputBaseFilename=Rubberduck.Setup.{#MyAppVersion}
+Compression=lzma
+SolidCompression=yes
+
+ArchitecturesAllowed=x86 x64
+ArchitecturesInstallIn64BitMode=x64
+
+[Languages]
+; TODO add additional installation languages here.
+Name: "English"; MessagesFile: "compiler:Default.isl"
+
+[Files]
+; We are taking everything from the Build directory and adding it to the installer.  This
+; might not be what we want to do.
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled;
+Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled;
+
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled;
+Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled;
+
+[UninstallDelete]
+; TODO we may not want to delete everything?...
+Name: {app}; Type: filesandordirs
+
+[Run]
+; http://stackoverflow.com/questions/5618337/how-to-register-a-net-dll-using-inno-setup
+Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; WorkingDir: "{app}"; Flags: runascurrentuser runminimized; StatusMsg: "Registering Controls..."; Check: Is32BitOfficeInstalled
+Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; WorkingDir: "{app}"; Flags: runascurrentuser runminimized; StatusMsg: "Registering Controls..."; Check: Is64BitOfficeInstalled
+
+[UninstallRun]
+Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is32BitOfficeInstalled
+Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is64BitOfficeInstalled
+
+[CustomMessages]
+; TODO add additional languages here.
+English.NETFramework40NotInstalled=Microsoft .NET Framework 4.0 installation was not detected.
+
+[Icons]
+Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
+Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
+
+[Registry]
+Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: dword; ValueName: "CommandLineSafe"; ValueData: 0; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
+Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: string; ValueName: "FriendlyName"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
+Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: string; ValueName: "Description"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
+Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: dword; ValueName: "LoadBehavior"; ValueData: 3; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
+
+Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: dword; ValueName: "CommandLineSafe"; ValueData: 0; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
+Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: string; ValueName: "FriendlyName"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
+Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: string; ValueName: "Description"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
+Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: dword; ValueName: "LoadBehavior"; ValueData: 3; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
+
+[Code]
+// The following code is adapted from: http://stackoverflow.com/a/11651515/2301065
+const
+  SCS_32BIT_BINARY = 0;
+  SCS_64BIT_BINARY = 6;
+  // There are other values that GetBinaryType can return, but we're
+  // not interested in them.
+var
+  HasCheckedOfficeBitness: Boolean;
+  OfficeIs64Bit: Boolean;
+
+function GetBinaryType(lpApplicationName: AnsiString; var lpBinaryType: Integer): Boolean;
+external 'GetBinaryTypeA@kernel32.dll stdcall';
+
+// TODO this only checks for Excel's bitness, but what if they don't have it installed?
+function Is64BitExcelFromRegisteredExe(): Boolean;
+var
+  excelPath: String;
+  binaryType: Integer;
+begin
+  Result := False; // Default value - assume 32-bit unless proven otherwise.
+  // RegQueryStringValue second param is '' to get the (default) value for the key
+  // with no sub-key name, as described at
+  // http://stackoverflow.com/questions/913938/
+  if IsWin64() and RegQueryStringValue(HKEY_LOCAL_MACHINE,
+      'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe',
+      '', excelPath) then begin
+    // We've got the path to Excel.
+    try
+      if GetBinaryType(excelPath, binaryType) then begin
+        Result := (binaryType = SCS_64BIT_BINARY);
+      end;
+    except
+      // Ignore - better just to assume it's 32-bit than to let the installation
+      // fail.  This could fail because the GetBinaryType function is not
+      // available.  I understand it's only available in Windows 2000
+      // Professional onwards.
+    end;
+  end;
+end;
+
+function Is64BitOfficeInstalled(): Boolean;
+begin
+  if (not HasCheckedOfficeBitness) then 
+    OfficeIs64Bit := Is64BitExcelFromRegisteredExe();
+  Result := OfficeIs64Bit;
+end;
+
+function Is32BitOfficeInstalled(): Boolean;
+begin
+  Result := (not Is64BitOfficeInstalled());
+end;
+
+function InitializeSetup(): Boolean;
+var
+   iErrorCode: Integer;
+begin
+  // MS .NET Framework 4.0 must be installed for this application to work.
+  if Not RegKeyExists(HKLM, 'SOFTWARE\Microsoft\.NETFramework\v4.0.30319') then
+  begin
+    MsgBox(ExpandConstant('{cm:NETFramework40NotInstalled}'), mbCriticalError, mb_Ok);
+    ShellExec('open', 'http://msdn.microsoft.com/en-us/netframework/aa731542', '', '', SW_SHOW, ewNoWait, iErrorCode) 
+    Result := False;
+  end
+  else
+    Result := True;
+end;

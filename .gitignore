@@ -165,3 +165,7 @@ $RECYCLE.BIN/
 
 # Workbook for debugging
 *.xlsm
+
+# Ignore the Build and Installers directories.
+Build/*
+Installers/*
