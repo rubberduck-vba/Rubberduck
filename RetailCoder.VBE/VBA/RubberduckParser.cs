@@ -26,7 +26,9 @@ namespace Rubberduck.VBA
 
         public RubberduckParser()
         {
+#if DEBUG
             LoggingConfigurator.ConfigureParserLogger();
+#endif
             _logger = LogManager.GetCurrentClassLogger();
         }
 
