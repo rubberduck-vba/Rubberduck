@@ -558,8 +558,8 @@ eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifi
 
 
 implicitCallStmt_InBlock :
-	iCS_B_ProcedureCall
-	| iCS_B_MemberProcedureCall
+	iCS_B_MemberProcedureCall
+	| iCS_B_ProcedureCall
 ;
 
 // parantheses are forbidden in case of args

@@ -10,6 +10,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.VBA
@@ -39,6 +40,7 @@ namespace Rubberduck.VBA
             var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
+            parser.AddErrorListener(new ExceptionErrorListener());
             outRewriter = new TokenStreamRewriter(tokens);
 
             var result = parser.startRule();
@@ -66,6 +68,10 @@ namespace Rubberduck.VBA
 
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
                 return result;
+            }
+            catch (SyntaxErrorException exception)
+            {
+                return null;
             }
             catch (COMException)
             {
