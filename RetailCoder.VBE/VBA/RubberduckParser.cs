@@ -71,6 +71,7 @@ namespace Rubberduck.VBA
             }
             catch (SyntaxErrorException exception)
             {
+                var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
                 return null;
             }
             catch (COMException)

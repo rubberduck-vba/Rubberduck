@@ -558,8 +558,8 @@ eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifi
 
 
 implicitCallStmt_InBlock :
-	iCS_B_MemberProcedureCall
-	| iCS_B_ProcedureCall
+	iCS_B_ProcedureCall
+	| iCS_B_MemberProcedureCall
 ;
 
 // parantheses are forbidden in case of args
@@ -567,7 +567,7 @@ implicitCallStmt_InBlock :
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
 iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? ('.' | '!') ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls
