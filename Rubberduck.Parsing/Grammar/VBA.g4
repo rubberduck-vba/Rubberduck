@@ -138,7 +138,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : lineLabel? blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
+block : blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
 
 blockStmt : 
 	appactivateStmt
@@ -635,9 +635,7 @@ fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
 letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
-lineLabel : (ambiguousIdentifier ':' WS) | lineNumber;
-
-lineNumber : (INTEGERLITERAL WS);
+lineLabel : (ambiguousIdentifier ':' WS);
 
 literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 

@@ -2244,19 +2244,6 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitICS_S_MemberCall([NotNull] VBAParser.ICS_S_MemberCallContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.lineNumber"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLineNumber([NotNull] VBAParser.LineNumberContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.lineNumber"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLineNumber([NotNull] VBAParser.LineNumberContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.macroElseBlockStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
