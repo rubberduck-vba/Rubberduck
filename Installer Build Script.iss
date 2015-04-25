@@ -38,11 +38,13 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; We are taking everything from the Build directory and adding it to the installer.  This
 ; might not be what we want to do.
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled;
-Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled;
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled; AfterInstall: RegisterAddin
 
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled;
-Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled;
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
+Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
+Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled; AfterInstall: RegisterAddin
 
 [UninstallDelete]
 ; TODO we may not want to delete everything?...
@@ -148,10 +150,10 @@ end;
 
 procedure RegisterAddin();
 begin
-  if IsVBA32Selected() then
+  if Is32BitOfficeInstalled() then
     RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
 
-  if IsVBA64Selected() then 
+  if Is64BitOfficeInstalled() then 
     RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
 end;
 
