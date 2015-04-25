@@ -6,6 +6,8 @@
 #define MyAppURL "http://rubberduck-vba.com"
 #define License SourcePath + "\License.rtf"
 #define OutputDirectory SourcePath + "\Installers"
+#define AddinProgId "Rubberduck.Extension"
+#define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
 
 [Setup]
 ; TODO this CLSID should match the one used by the current installer.
@@ -62,17 +64,6 @@ English.NETFramework40NotInstalled=Microsoft .NET Framework 4.0 installation was
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-
-[Registry]
-Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: dword; ValueName: "CommandLineSafe"; ValueData: 0; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
-Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: string; ValueName: "FriendlyName"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
-Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: string; ValueName: "Description"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
-Root: "HKLM32"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins"; ValueType: dword; ValueName: "LoadBehavior"; ValueData: 3; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is32BitOfficeInstalled
-
-Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: dword; ValueName: "CommandLineSafe"; ValueData: 0; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
-Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: string; ValueName: "FriendlyName"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
-Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: string; ValueName: "Description"; ValueData: "{#MyAppName}"; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
-Root: "HKLM64"; Subkey: "Software\Microsoft\VBA\VBE\6.0\Addins64"; ValueType: dword; ValueName: "LoadBehavior"; ValueData: 3; Flags: createvalueifdoesntexist uninsdeletekey; Check: Is64BitOfficeInstalled
 
 [Code]
 // The following code is adapted from: http://stackoverflow.com/a/11651515/2301065
@@ -140,4 +131,38 @@ begin
   end
   else
     Result := True;
+end;
+
+procedure RegisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String);
+begin
+   RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'FriendlyName', '{#MyAppName}');
+   RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'Description' , '{#MyAppName}');
+   RegWriteDWordValue (iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'LoadBehavior', 3);
+end;
+
+procedure UnregisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String);
+begin
+   if RegKeyExists(iRootKey, sAddinSubKey + '\' + sProgIDConnect) then
+      RegDeleteKeyIncludingSubkeys(iRootKey, sAddinSubKey + '\' + sProgIDConnect);
+end;
+
+procedure RegisterAddin();
+begin
+  if IsVBA32Selected() then
+    RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+
+  if IsVBA64Selected() then 
+    RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
+end;
+
+procedure UnregisterAddin();
+begin
+  UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+  if IsWin64() then 
+    UnregisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then UnregisterAddin();
 end;
