@@ -4,6 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;

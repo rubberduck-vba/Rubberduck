@@ -7,6 +7,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Properties;
 using Rubberduck.VBA;
 

@@ -317,7 +317,6 @@
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\IRubberduckParser.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
