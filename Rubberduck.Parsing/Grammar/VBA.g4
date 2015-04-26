@@ -140,8 +140,8 @@ attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ','
 
 block : blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
 
-blockStmt : 
-	appactivateStmt
+blockStmt : lineLabel
+    | appactivateStmt
 	| attributeStmt
 	| beepStmt
 	| chdirStmt
@@ -635,7 +635,7 @@ fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
 letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
-lineLabel : (ambiguousIdentifier ':' WS);
+lineLabel : ambiguousIdentifier ':';
 
 literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 
