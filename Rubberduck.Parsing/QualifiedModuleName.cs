@@ -8,6 +8,8 @@ namespace Rubberduck.Parsing
         public QualifiedModuleName(VBComponent component)
         {
             _component = component;
+            _componentName = component == null ? string.Empty : component.Name;
+            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
 
             var module = _component.CodeModule;
             _contentHashCode = module.CountOfLines > 0 
@@ -26,9 +28,15 @@ namespace Rubberduck.Parsing
 
         private readonly int _contentHashCode;
 
+        private readonly string _projectName;
+        public string ProjectName { get { return _projectName;} }
+
+        private readonly string _componentName;
+        public string ComponentName { get { return _componentName; } }
+
         public override string ToString()
         {
-            return _component == null ? string.Empty : Project.Name + "." + _component.Name;
+            return _component == null ? string.Empty : _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()

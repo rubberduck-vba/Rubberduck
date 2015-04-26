@@ -61,12 +61,12 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Gets the name of the VBProject the declaration is made in.
         /// </summary>
-        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.Project.Name; } }
+        public string ProjectName { get { return _qualifiedName.QualifiedModuleName.ProjectName; } }
 
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.Component.Name; } }
+        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.ComponentName; } }
 
         private readonly string _parentScope;
         /// <summary>
