@@ -62,6 +62,7 @@
     <Compile Include="Listeners\DeclarationListener.cs" />
     <Compile Include="Listeners\ExceptionErrorListener.cs" />
     <Compile Include="Listeners\IExtensionListener.cs" />
+    <Compile Include="Listeners\SyntaxErrorException.cs" />
     <Compile Include="Listeners\VariableReferencesListener.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
