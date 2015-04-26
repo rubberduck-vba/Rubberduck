@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection : IInspection /* note: deferred to v1.4 */
+    public class ProcedureNotUsedInspection //: IInspection /* note: deferred to v1.4 */
     {
         public ProcedureNotUsedInspection()
         {
@@ -19,12 +19,14 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
+            var classes = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
+            var modules = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Module).ToList();
+
             var handlers = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Control)
-                .SelectMany(control => parseResult.Declarations.FindEventHandlers(control))
-                .ToList();
+                .SelectMany(control => parseResult.Declarations.FindEventHandlers(control)).ToList();
 
             var issues = parseResult.Declarations.Items
-                .Where(item => !IsIgnoredDeclaration(parseResult.Declarations, item, handlers))
+                .Where(item => !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName))
                 .ToList();
 
@@ -37,14 +39,14 @@ namespace Rubberduck.Inspections
             DeclarationType.Function
         };
 
-        private bool IsIgnoredDeclaration(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers)
+        private bool IsIgnoredDeclaration(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)
         {
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
                 || declaration.References.Any()
                 || handlers.Contains(declaration)
-                || IsPublicModuleMember(declarations, declaration)
-                || IsClassLifeCycleHandler(declarations, declaration)
-                || IsInterfaceMember(declarations, declaration);
+                || IsPublicModuleMember(modules, declaration)
+                || IsClassLifeCycleHandler(classes, declaration)
+                || IsInterfaceMember(declarations, classes, declaration);
 
             return result;
         }
@@ -53,15 +55,18 @@ namespace Rubberduck.Inspections
         /// We cannot determine whether exposed members of standard modules are called or not,
         /// so we assume they are instead of flagging them as "never called".
         /// </remarks>
-        private bool IsPublicModuleMember(Declarations declarations, Declaration procedure)
+        private bool IsPublicModuleMember(IEnumerable<Declaration> modules, Declaration procedure)
         {
-            var parent = declarations.Items.SingleOrDefault(item =>
-                        item.Project == procedure.Project &&
-                        item.IdentifierName == procedure.ComponentName && 
-                        (item.DeclarationType == DeclarationType.Module));
+            if ((procedure.Accessibility != Accessibility.Implicit
+                 && procedure.Accessibility != Accessibility.Public))
+            {
+                return false;
+            }
 
-            return parent != null && (procedure.Accessibility == Accessibility.Implicit
-                                      || procedure.Accessibility == Accessibility.Public);
+            var parent = modules.Where(item => item.Project == procedure.Project)
+                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
+
+            return parent != null;
         }
 
         private static readonly string[] ClassLifeCycleHandlers =
@@ -70,14 +75,17 @@ namespace Rubberduck.Inspections
             "Class_Terminate"
         };
 
-        private bool IsClassLifeCycleHandler(Declarations declarations, Declaration procedure)
+        private bool IsClassLifeCycleHandler(IEnumerable<Declaration> classes, Declaration procedure)
         {
-            var parent = declarations.Items.SingleOrDefault(item =>
-                        item.Project == procedure.Project && 
-                        item.IdentifierName == procedure.ComponentName &&
-                        (item.DeclarationType == DeclarationType.Class));
+            if (!ClassLifeCycleHandlers.Contains(procedure.IdentifierName))
+            {
+                return false;
+            }
 
-            return parent != null && ClassLifeCycleHandlers.Contains(procedure.IdentifierName);
+            var parent = classes.Where(item => item.Project == procedure.Project)
+                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
+
+            return parent != null;
         }
 
         /// <remarks>
@@ -86,20 +94,17 @@ namespace Rubberduck.Inspections
         /// they have to be implemented anyway, so removing them would break the code.
         /// Best just ignore them.
         /// </remarks>
-        private bool IsInterfaceMember(Declarations declarations, Declaration procedure)
+        private bool IsInterfaceMember(Declarations declarations, IEnumerable<Declaration> classes, Declaration procedure)
         {
             // get the procedure's parent module
-            var parent = declarations.Items.SingleOrDefault(item =>
-                        item.Project == procedure.Project && 
-                        item.IdentifierName == procedure.ComponentName &&
-                       (item.DeclarationType == DeclarationType.Class));
+            var parent = classes.Where(item => item.Project == procedure.Project)
+                        .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             if (parent == null)
             {
                 return false;
             }
 
-            var classes = declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class);
             var interfaces = classes.Where(item => item.References.Any(reference =>
                     reference.Context.Parent is VBAParser.ImplementsStmtContext));
 
@@ -108,15 +113,14 @@ namespace Rubberduck.Inspections
                 return true;
             }
 
-            var result = GetImplementedInterfaceMembers(declarations, procedure.ComponentName)
+            var result = GetImplementedInterfaceMembers(declarations, classes, procedure.ComponentName)
                 .Contains(procedure.IdentifierName);
 
             return result;
         }
 
-        private IEnumerable<string> GetImplementedInterfaceMembers(Declarations declarations, string componentName)
+        private IEnumerable<string> GetImplementedInterfaceMembers(Declarations declarations, IEnumerable<Declaration> classes, string componentName)
         {
-            var classes = declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class);
             var interfaces = classes.Where(item => item.References.Any(reference =>
                     reference.Context.Parent is VBAParser.ImplementsStmtContext
                     && reference.QualifiedModuleName.Component.Name == componentName));

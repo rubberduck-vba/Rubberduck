@@ -51,7 +51,7 @@ namespace Rubberduck.Parsing.Symbols
         public Selection Selection { get { return _selection; } }
 
         /// <summary>
-        /// Gets an <c>int</c> representing the VBProject the declaration is made in.
+        /// Gets a reference to the VBProject the declaration is made in.
         /// </summary>
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
@@ -201,7 +201,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(Project.ToString(), ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
+            return string.Concat(QualifiedName.QualifiedModuleName.ProjectHashCode, ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
         }
     }
 }

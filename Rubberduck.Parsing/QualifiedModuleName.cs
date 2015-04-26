@@ -10,6 +10,7 @@ namespace Rubberduck.Parsing
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
             _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
+            _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
             var module = _component.CodeModule;
             _contentHashCode = module.CountOfLines > 0 
@@ -25,6 +26,9 @@ namespace Rubberduck.Parsing
         private readonly VBComponent _component;
         public VBComponent Component { get { return _component; } }
         public VBProject Project { get { return _component == null ? null : _component.Collection.Parent; } }
+
+        private readonly int _projectHashCode;
+        public int ProjectHashCode { get { return _projectHashCode; } }
 
         private readonly int _contentHashCode;
 
