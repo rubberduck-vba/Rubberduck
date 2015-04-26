@@ -171,26 +171,22 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = e.Declaration;
             if (declaration != null)
             {
-                ////hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
-                ////todo: determiner if this "temp fix" is still needed.
-                //var selection = new Selection(e.Selection.StartLine,
-                //                                1,
-                //                                e.Selection.EndLine,
-                //                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
-                //                              );
                 VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
             }
         }
 
         private void RefreshExplorerTreeView(object sender, EventArgs e)
         {
-            RefreshExplorerTreeView();
+            Task.Run(() => RefreshExplorerTreeView());
         }
 
         private async void RefreshExplorerTreeView()
         {
-            Control.SolutionTree.Nodes.Clear();
-            Control.ShowDesignerButton.Enabled = false;
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.SolutionTree.Nodes.Clear();
+                Control.ShowDesignerButton.Enabled = false;
+            });
 
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
@@ -210,9 +206,6 @@ namespace Rubberduck.UI.CodeExplorer
                     });
                 });
             }
-
-            // note: is this really needed?
-            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
@@ -303,7 +296,7 @@ namespace Rubberduck.UI.CodeExplorer
         private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
         {
             var result = new List<TreeNode>();
-            var parseResult = _parser.Parse(project);
+            var parseResult = await _parser.ParseAsync(project);
             foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
                 var component = componentParseResult.Component;
