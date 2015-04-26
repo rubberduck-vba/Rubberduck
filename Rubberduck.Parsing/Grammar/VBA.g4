@@ -138,7 +138,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
+block : blockStmt (NEWLINE* WS? blockStmt)* NEWLINE*;
 
 blockStmt : lineLabel
     | appactivateStmt
