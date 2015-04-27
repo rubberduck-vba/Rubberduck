@@ -24,8 +24,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser = parser;
             RegisterControlEvents();
-            RefreshExplorerTreeView();
-            Control.SolutionTree.Refresh();
+            Task.Run(() => RefreshExplorerTreeView());
         }
 
         private void RegisterControlEvents()
@@ -188,6 +187,7 @@ namespace Rubberduck.UI.CodeExplorer
                 Control.ShowDesignerButton.Enabled = false;
             });
 
+            
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
             {

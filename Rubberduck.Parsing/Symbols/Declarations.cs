@@ -9,6 +9,14 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
 
+        public Declarations()
+        {
+            foreach (var declaration in VbaStandardLib.Declarations)
+            {
+                _declarations.Add(declaration);
+            }
+        }
+
         /// <summary>
         /// Adds specified declaration to available lookups.
         /// </summary>
@@ -74,9 +82,10 @@ namespace Rubberduck.Parsing.Symbols
                 .Select(i => i.Scope)
                 .ToList();
 
-            _interfaceMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
-                                                            && interfaces.Any(i => item.ParentScope.StartsWith(i)))
-                                                            .ToList();
+            _interfaceMembers = _declarations.Where(item => !item.IsBuiltIn 
+                                                && ProcedureTypes.Contains(item.DeclarationType)
+                                                && interfaces.Any(i => item.ParentScope.StartsWith(i)))
+                                                .ToList();
             return _interfaceMembers;
         }
 
@@ -93,7 +102,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var members = FindInterfaceMembers();
-            _interfaceImplementationMembers = _declarations.Where(item => ProcedureTypes.Contains(item.DeclarationType)
+            _interfaceImplementationMembers = _declarations.Where(item => !item.IsBuiltIn && ProcedureTypes.Contains(item.DeclarationType)
                 && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName))
                 .ToList();
 
@@ -103,7 +112,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindInterfaceMember(Declaration implementation)
         {
             var members = FindInterfaceMembers();
-            var matches = members.Where(m => implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
+            var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1 
                 ? matches.SingleOrDefault(m => m.Project == implementation.Project) 

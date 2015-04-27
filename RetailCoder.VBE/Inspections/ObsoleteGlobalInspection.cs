@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var issues = from item in parseResult.Declarations.Items
-                         where item.Accessibility == Accessibility.Global
+                         where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
                          && item.Context != null
                          select new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 

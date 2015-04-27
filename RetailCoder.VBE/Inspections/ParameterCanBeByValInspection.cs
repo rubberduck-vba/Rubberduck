@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections
                 .ToList();
 
             var issues = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Parameter
+                !declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && PrimitiveTypes.Contains(declaration.AsTypeName)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null

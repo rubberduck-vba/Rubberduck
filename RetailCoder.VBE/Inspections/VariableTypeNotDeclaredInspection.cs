@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = from item in parseResult.Declarations.Items
+            var issues = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn)
                          where (item.DeclarationType == DeclarationType.Variable
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)

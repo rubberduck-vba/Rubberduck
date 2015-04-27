@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Variable
+                !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Variable
                 && !parseResult.Declarations.Items.Any(item => 
                     item.IdentifierName == declaration.AsTypeName 
                     && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned

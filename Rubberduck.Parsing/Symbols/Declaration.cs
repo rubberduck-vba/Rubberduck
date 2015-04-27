@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string identifierName, string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
@@ -25,7 +25,11 @@ namespace Rubberduck.Parsing.Symbols
             _declarationType = declarationType;
             _selection = selection;
             _context = context;
+            _isBuiltIn = isBuiltIn;
         }
+
+        private readonly bool _isBuiltIn;
+        public bool IsBuiltIn { get { return _isBuiltIn; } }
 
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }

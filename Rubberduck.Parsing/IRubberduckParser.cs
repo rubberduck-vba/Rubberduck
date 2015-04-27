@@ -12,5 +12,7 @@ namespace Rubberduck.Parsing
         VBProjectParseResult Parse(VBProject vbProject);
 
         Task<VBProjectParseResult> ParseAsync(VBProject vbProject);
+
+        void RemoveProject(VBProject vbProject);
     }
 }

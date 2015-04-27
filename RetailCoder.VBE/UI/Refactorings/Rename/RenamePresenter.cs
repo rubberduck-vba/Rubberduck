@@ -315,7 +315,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+                .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
 
@@ -326,15 +326,17 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 // rename the containing procedure:
                 _view.Target = _declarations.Items.SingleOrDefault(
-                    item => ProcedureDeclarationTypes.Contains(item.DeclarationType)
+                    item => !item.IsBuiltIn 
+                            && ProcedureDeclarationTypes.Contains(item.DeclarationType)
                             && item.Context.GetSelection().Contains(selection.Selection));
             }
 
             if (_view.Target == null)
             {
                 // rename the containing module:
-                _view.Target = _declarations.Items.SingleOrDefault(item =>
-                    ModuleDeclarationTypes.Contains(item.DeclarationType)
+                _view.Target = _declarations.Items.SingleOrDefault(item => 
+                    !item.IsBuiltIn
+                    && ModuleDeclarationTypes.Contains(item.DeclarationType)
                     && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
             }
         }

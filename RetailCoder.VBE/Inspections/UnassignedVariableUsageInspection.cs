@@ -18,8 +18,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var usages = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Variable
+            var usages = parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References);
 

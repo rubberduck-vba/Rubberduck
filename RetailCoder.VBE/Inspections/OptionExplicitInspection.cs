@@ -26,7 +26,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var options = parseResult.Declarations.Items
-                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
+                .Where(declaration => !declaration.IsBuiltIn 
+                                      && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionExplicitStmtContext)
                 .ToList();
 

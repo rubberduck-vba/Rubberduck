@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
-                (declaration.DeclarationType == DeclarationType.Variable)
+                !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => !reference.IsAssignment));
 
             foreach (var issue in declarations)

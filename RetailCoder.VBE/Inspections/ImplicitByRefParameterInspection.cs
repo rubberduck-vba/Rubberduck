@@ -22,6 +22,7 @@ namespace Rubberduck.Inspections
             var interfaceMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
             var issues = (from item in parseResult.Declarations.Items
                 where item.DeclarationType == DeclarationType.Parameter
+                    && !item.IsBuiltIn
                     && !interfaceMembers.Select(m => m.Scope).Contains(item.ParentScope)
                 let arg = item.Context.Parent as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null

@@ -19,14 +19,14 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var classes = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Class).ToList();
-            var modules = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Module).ToList();
+            var classes = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class).ToList();
+            var modules = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Module).ToList();
 
-            var handlers = parseResult.Declarations.Items.Where(item => item.DeclarationType == DeclarationType.Control)
+            var handlers = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => parseResult.Declarations.FindEventHandlers(control)).ToList();
 
             var issues = parseResult.Declarations.Items
-                .Where(item => !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
+                .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName))
                 .ToList();
 

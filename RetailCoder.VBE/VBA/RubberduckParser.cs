@@ -32,6 +32,16 @@ namespace Rubberduck.VBA
             LoggingConfigurator.ConfigureParserLogger();
 #endif
             _logger = LogManager.GetCurrentClassLogger();
+            
+        }
+
+        public void RemoveProject(VBProject project)
+        {
+            foreach (var key in ParseResultCache.Keys.Where(k => k.Project.Equals(project)))
+            {
+                VBComponentParseResult result;
+                ParseResultCache.TryRemove(key, out result);
+            }
         }
 
         public async Task<VBProjectParseResult> ParseAsync(VBProject project)

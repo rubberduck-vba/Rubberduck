@@ -31,8 +31,9 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var issues = from item in parseResult.Declarations.Items
-                               where ProcedureTypes.Contains(item.DeclarationType)
-                               && !item.IsTypeSpecified()
+                               where !item.IsBuiltIn
+                                && ProcedureTypes.Contains(item.DeclarationType)
+                                && !item.IsTypeSpecified()
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                                select new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
             return issues;

@@ -18,10 +18,10 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var declarations = from item in parseResult.Declarations.Items
-                where item.HasTypeHint()
+                where !item.IsBuiltIn && item.HasTypeHint()
                 select new ObsoleteTypeHintInspectionResult(string.Format(Name, "declaration of " + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
 
-            var references = from item in parseResult.Declarations.Items.SelectMany(d => d.References)
+            var references = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
                 where item.HasTypeHint()
                 select new ObsoleteTypeHintInspectionResult(string.Format(Name, "usage of " + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 

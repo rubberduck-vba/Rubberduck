@@ -22,8 +22,8 @@ namespace Rubberduck.Inspections
             var interfaceMemberScopes = parseResult.Declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
             var interfaceImplementationMemberScopes = parseResult.Declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
 
-            var parameters = parseResult.Declarations.Items.Where(parameter =>
-                parameter.DeclarationType == DeclarationType.Parameter
+            var parameters = parseResult.Declarations.Items.Where(parameter => !parameter.IsBuiltIn
+                && parameter.DeclarationType == DeclarationType.Parameter
                 && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
 
