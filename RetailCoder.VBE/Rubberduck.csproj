@@ -264,6 +264,7 @@
     <Compile Include="Interop\GitProvider.cs" />
     <Compile Include="Interop\ISourceControlProvider.cs" />
     <Compile Include="Interop\SourceControlClassFactory.cs" />
+    <Compile Include="SourceControl\App.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
     <Compile Include="SourceControl\Branch.cs" />
