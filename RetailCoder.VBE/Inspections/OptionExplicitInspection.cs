@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections
                 .ToList();
 
             var modules = parseResult.Declarations.Items
-                .Where(declaration => ModuleTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
                 .Select(issue => new OptionExplicitInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName));
