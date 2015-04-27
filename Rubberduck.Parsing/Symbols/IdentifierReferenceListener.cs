@@ -419,6 +419,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsInScope(Declaration declaration)
         {
+            if (declaration.IsBuiltIn && declaration.Accessibility == Accessibility.Global)
+            {
+                return true; // global-scope built-in identifiers are always in scope
+            }
+
             if (declaration.DeclarationType == DeclarationType.Project)
             {
                 return true; // a project name is always in scope anywhere

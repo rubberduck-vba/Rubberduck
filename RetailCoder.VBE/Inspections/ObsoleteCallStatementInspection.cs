@@ -18,6 +18,7 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
+            // bug: will miss procedures not defined in project
             var issues = parseResult.Declarations.Items.SelectMany(declaration => 
                 declaration.References.Where(reference => reference.HasExplicitCallStatement()))
                 .Select(issue => new ObsoleteCallStatementUsageInspectionResult(Name, Severity,

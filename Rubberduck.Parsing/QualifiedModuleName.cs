@@ -18,6 +18,19 @@ namespace Rubberduck.Parsing
                 : 0;
         }
 
+        /// <summary>
+        /// Creates a QualifiedModuleName for a built-in declaration.
+        /// Do not use this overload for user declarations.
+        /// </summary>
+        public QualifiedModuleName(string projectName, string componentName)
+        {
+            _projectName = projectName;
+            _componentName = componentName;
+            _component = null;
+            _contentHashCode = componentName.GetHashCode();
+            _projectHashCode = projectName.GetHashCode();
+        }
+
         public QualifiedMemberName QualifyMemberName(string member)
         {
             return new QualifiedMemberName(this, member);
@@ -40,7 +53,7 @@ namespace Rubberduck.Parsing
 
         public override string ToString()
         {
-            return _component == null ? string.Empty : _projectName + "." + _componentName;
+            return _component == null && string.IsNullOrEmpty(_projectName) ? string.Empty : _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()
@@ -53,7 +66,7 @@ namespace Rubberduck.Parsing
             try
             {
                 var other = (QualifiedModuleName)obj;
-                return other.Component == Component && other._contentHashCode == _contentHashCode;
+                return other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
             }
             catch (InvalidCastException)
             {
