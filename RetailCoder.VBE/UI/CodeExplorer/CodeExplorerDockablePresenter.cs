@@ -10,7 +10,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {

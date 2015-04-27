@@ -46,7 +46,9 @@ namespace Rubberduck.VBA
 
         public async Task<VBProjectParseResult> ParseAsync(VBProject project)
         {
-            return await Task.Run(() => Parse(project));
+            //return await Task.Run(() => Parse(project));
+            // bug: running this on a background thread causes issues with VBProject.Equals and breaks navigation...
+            return Parse(project);
         }
 
         public VBProjectParseResult Parse(VBProject project)
