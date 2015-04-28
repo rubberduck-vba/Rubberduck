@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedName = qualifiedName;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home));
+            _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home));
         }
 
         /// <summary>
@@ -52,13 +52,13 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var control in ((dynamic)designer).Controls)
             {
-                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _currentScope, control.Name, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
+                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(control.Name), _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home));
             }
         }
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, identifierName, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection);
+            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection);
         }
 
         /// <summary>

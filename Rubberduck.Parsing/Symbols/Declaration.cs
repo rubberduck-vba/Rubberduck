@@ -12,12 +12,18 @@ namespace Rubberduck.Parsing.Symbols
     public class Declaration
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
-            string identifierName, string asTypeName, bool isSelfAssigned, bool isWithEvents,
+            string asTypeName, bool isSelfAssigned, bool isWithEvents,
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = false)
+            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home)
+        {}
+
+        public Declaration(QualifiedMemberName qualifiedName, string parentScope,
+            string asTypeName, bool isSelfAssigned, bool isWithEvents,
             Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
-            _identifierName = identifierName;
+            _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
             _isWithEvents = isWithEvents;

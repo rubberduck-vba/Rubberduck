@@ -9,14 +9,6 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
 
-        public Declarations()
-        {
-            foreach (var declaration in VbaStandardLib.Declarations)
-            {
-                _declarations.Add(declaration);
-            }
-        }
-
         /// <summary>
         /// Adds specified declaration to available lookups.
         /// </summary>
