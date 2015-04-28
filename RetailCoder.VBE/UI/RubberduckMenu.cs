@@ -24,7 +24,7 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
-        private readonly IConfigurationService _configService;
+        private readonly IGeneralConfigService _configService;
 
         //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
@@ -34,7 +34,7 @@ namespace Rubberduck.UI
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IInspector inspector)
             : base(vbe, addIn)
         {
             _configService = configService;

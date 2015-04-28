@@ -18,7 +18,7 @@ namespace Rubberduck.SourceControl
         internal App(
                     VBE vbe, 
                     AddIn addIn, 
-                    IConfigurationService configService, 
+                    IGeneralConfigService configService, 
                     IChangesView changesView, 
                     IUnSyncedCommitsView unsyncedCommitsView, 
                     ISettingsView settingsView,

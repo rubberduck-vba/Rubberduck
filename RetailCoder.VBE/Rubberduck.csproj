@@ -224,6 +224,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\XmlConfigurationServiceBase.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IdentifierUsageInspector.cs" />

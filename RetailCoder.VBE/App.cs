@@ -16,7 +16,7 @@ namespace Rubberduck
         private readonly RubberduckMenu _menu;
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
-        private readonly IConfigurationService _configService;
+        private readonly IGeneralConfigService _configService;
 
         public App(VBE vbe, AddIn addIn)
         {

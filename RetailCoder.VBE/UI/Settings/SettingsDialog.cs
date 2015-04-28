@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Settings
     public partial class _SettingsDialog : Form
     {
         private Configuration _config;
-        private IConfigurationService _configService;
+        private IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public _SettingsDialog(IConfigurationService configService)
+        public _SettingsDialog(IGeneralConfigService configService)
             : this()
         {
             _configService = configService;
@@ -94,7 +94,7 @@ namespace Rubberduck.UI.Settings
         {
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
-            _configService.SaveConfiguration<Configuration>(_config);
+            _configService.SaveConfiguration(_config);
         }
     }
 }

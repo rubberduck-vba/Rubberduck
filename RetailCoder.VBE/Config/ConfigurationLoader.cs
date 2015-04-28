@@ -9,84 +9,65 @@ using System.Windows.Forms;
 
 namespace Rubberduck.Config
 {
-    public class ConfigurationLoader : IConfigurationService
+    public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
-        private static readonly string ConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
 
-        /// <summary>
-        /// Saves a Configuration to Rubberduck.config XML file via Serialization.
-        /// </summary>
-        public void SaveConfiguration<T>(T toSerialize)
+        protected override string ConfigFile
         {
-            var folder = Path.GetDirectoryName(ConfigFile);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-            var serializer = new XmlSerializer(toSerialize.GetType());
-            using (var writer = new StreamWriter(ConfigFile))
-            {
-                serializer.Serialize(writer, toSerialize);
-            }
+            get { return Path.Combine(this.rootPath, "rubberduck.config"); }
         }
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
         /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
-        public Configuration LoadConfiguration()
+        public override Configuration LoadConfiguration()
         {
-            try
+            //deserialization can silently fail for just parts of the config, 
+            //  so we null check and return defaults if necessary.
+
+            var config = base.LoadConfiguration();
+
+            if (config.UserSettings.ToDoListSettings == null)
             {
-                using (var reader = new StreamReader(ConfigFile))
-                {
-                    var deserializer = new XmlSerializer(typeof(Configuration));
-                    var config = (Configuration)deserializer.Deserialize(reader);
-
-                    //deserialization can silently fail for just parts of the config, 
-                    //  so we null check and return defaults if necessary.
-                    if (config.UserSettings.ToDoListSettings == null)
-                    {
-                        config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
-                    }
-
-                    if (config.UserSettings.CodeInspectionSettings == null)
-                    {
-                        config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
-                    }
-
-                    var implementedInspections = GetImplementedCodeInspections();
-                    var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
-                    
-                    configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
-                    config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
-
-                    return config;
-                }
+                config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
             }
-            catch (IOException)
+
+            if (config.UserSettings.CodeInspectionSettings == null)
             {
-                return GetDefaultConfiguration();
+                config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
             }
-            catch (InvalidOperationException ex)
+
+            var implementedInspections = GetImplementedCodeInspections();
+            var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+
+            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+            config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
+
+            return config;
+        }
+
+        protected override Configuration HandleIOException(IOException ex)
+        {
+            return GetDefaultConfiguration();
+        }
+
+        protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
+        {
+            var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
+                    ConfigFile + System.Environment.NewLine + System.Environment.NewLine +
+                    "Would you like to restore default configuration?" + System.Environment.NewLine +
+                    "Warning: All customized settings will be lost.";
+
+            DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+            if (result == DialogResult.Yes)
             {
-                var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
-                        ConfigFile + System.Environment.NewLine + System.Environment.NewLine +
-                        "Would you like to restore default configuration?" + System.Environment.NewLine + 
-                        "Warning: All customized settings will be lost.";
-
-                DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-
-                if (result == DialogResult.Yes)
-                {
-                    var config = GetDefaultConfiguration();
-                    SaveConfiguration<Configuration>(config);
-                    return config;
-                }
-                else
-                {
-                    throw;
-                }
+                var config = GetDefaultConfiguration();
+                SaveConfiguration(config);
+                return config;
             }
+
+            throw ex;
+
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)

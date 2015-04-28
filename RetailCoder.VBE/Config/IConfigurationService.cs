@@ -4,13 +4,23 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Config
 {
-    public interface IConfigurationService
+    public interface IConfigurationService<T>
+    {
+        T LoadConfiguration();
+        void SaveConfiguration(T toSerialize);
+    }
+
+    public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
         CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
         IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
-        Configuration LoadConfiguration();
-        void SaveConfiguration<T>(T toSerialize);
+    }
+
+    //todo: define source control config and inherit from IConfigurationService<SourceControlConfig>
+    public interface ISourceControlConfigService
+    {
+
     }
 }
