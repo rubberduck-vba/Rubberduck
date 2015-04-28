@@ -18,16 +18,19 @@ namespace Rubberduck.UI.SourceControl
 
         public ISourceControlProvider Provider { get; set; }
 
-        public ChangesPresenter(ISourceControlProvider provider, IChangesView view)
+        public ChangesPresenter(IChangesView view)
         {
-            this.Provider = provider;
             _view = view;
 
             _view.Commit += OnCommit;
             _view.CommitMessageChanged += OnCommitMessageChanged;
             _view.SelectedActionChanged += OnSelectedActionChanged;
+        }
 
-            Refresh();
+        public ChangesPresenter(IChangesView view, ISourceControlProvider provider)
+            :this(view)
+        {
+            this.Provider = provider;
         }
 
         private void OnSelectedActionChanged(object sender, EventArgs e)

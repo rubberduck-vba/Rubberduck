@@ -26,7 +26,7 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _viewMock.SetupProperty(v => v.IncludedChanges);
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
 
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
 
@@ -42,7 +42,7 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _viewMock.SetupProperty(v => v.IncludedChanges);
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
 
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
 
@@ -61,7 +61,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.SetupProperty(v => v.IncludedChanges);
             _viewMock.SetupProperty(v => v.CommitAction, CommitAction.CommitAndPush);
 
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
 
             //act
@@ -79,7 +79,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.SetupProperty(v => v.IncludedChanges);
             _viewMock.SetupProperty(v => v.CommitAction, CommitAction.CommitAndSync);
 
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\file.txt", FileStatus.Modified) };
 
             //act
@@ -107,7 +107,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.SetupProperty(v => v.UntrackedFiles);
             _providerMock.Setup(git => git.Status()).Returns(fileStatusEntries);
 
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
             //act
             presenter.Refresh();
 
@@ -121,7 +121,7 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _viewMock.SetupAllProperties();
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
 
             //act
             _viewMock.Object.CommitMessage = "Test Message";
@@ -143,7 +143,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.Object.CommitAction = CommitAction.Commit;
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified) };
 
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
 
             //act
             _viewMock.Raise(v => v.Commit += null, new EventArgs());
@@ -161,7 +161,7 @@ namespace RubberduckTests.SourceControl
             _viewMock.Object.CommitAction = CommitAction.Commit;
             _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() {new FileStatusEntry(@"C:\path\to\module.bas",FileStatus.Modified) };
 
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
 
             //act
             _viewMock.Raise(v => v.Commit += null, new EventArgs());
@@ -176,7 +176,7 @@ namespace RubberduckTests.SourceControl
         {
             //arrange
             _viewMock.SetupProperty(v => v.ExcludedChanges);
-            var presenter = new ChangesPresenter(_providerMock.Object, _viewMock.Object);
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
             _viewMock.Object.ExcludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified) };
 
             Assert.IsTrue(_viewMock.Object.ExcludedChanges.Any(), "No changes found prior to refresh. Issue with Test code.");

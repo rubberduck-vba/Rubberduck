@@ -29,22 +29,23 @@ namespace Rubberduck.SourceControl
         {
              _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
              
-            var repo = new Repository
-            (
-                "SourceControlTest", 
-                @"C:\Users\Christopher\Documents\SourceControlTest",
-                @"https://github.com/ckuhn203/SourceControlTest.git"
-            );
-            var gitProvider = new GitProvider(vbe.ActiveVBProject, repo);
-            var changesPresenter = new ChangesPresenter(gitProvider, changesView);
-            var branchesPresenter = new BranchesPresenter(gitProvider, branchesView, createBranchView, mergeView);
-            branchesPresenter.RefreshView();
+            //var repo = new Repository
+            //(
+            //    "SourceControlTest", 
+            //    @"C:\Users\Christopher\Documents\SourceControlTest",
+            //    @"https://github.com/ckuhn203/SourceControlTest.git"
+            //);
+            //var gitProvider = new GitProvider(vbe.ActiveVBProject, repo);
+            var changesPresenter = new ChangesPresenter(changesView);
+            var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
 
             _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, _sourceControlView, changesPresenter, branchesPresenter);
         }
 
         public void ShowWindow()
         {
+            //todo: get repo from config for the active project
+
             _sourceControlPresenter.RefreshChildren();
             _sourceControlPresenter.Show();
         }

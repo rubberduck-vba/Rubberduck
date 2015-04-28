@@ -44,7 +44,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.Branches).Returns(_branches);
             _provider.SetupGet(git => git.CurrentBranch).Returns(_intialBranch);
 
-            _presenter = new BranchesPresenter(_provider.Object, _view.Object, _createView.Object, _mergeView.Object);
+            _presenter = new BranchesPresenter(_view.Object, _createView.Object, _mergeView.Object, _provider.Object);
         }
 
         [TestMethod]

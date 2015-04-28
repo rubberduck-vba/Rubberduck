@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -12,6 +13,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
         private readonly ISourceControlView _view;
+
+        public IRepository Repository { get; set; }
 
         public SourceControlPresenter
             (

@@ -18,14 +18,25 @@ namespace Rubberduck.UI.SourceControl
 
         public ISourceControlProvider Provider { get; set; }
 
-        public BranchesPresenter(
-            ISourceControlProvider provider,
-            IBranchesView view,
-            ICreateBranchView createView,
-            IMergeView mergeView
+        public BranchesPresenter
+            (            
+                IBranchesView view,
+                ICreateBranchView createView,
+                IMergeView mergeView,
+                ISourceControlProvider provider
             )
+            :this(view, createView, mergeView)
         {
             this.Provider = provider;
+        }
+
+        public BranchesPresenter
+            (
+                IBranchesView view,
+                ICreateBranchView createView,
+                IMergeView mergeView
+            )
+        {
             _view = view;
             _createView = createView;
             _mergeView = mergeView;

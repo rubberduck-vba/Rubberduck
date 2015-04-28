@@ -93,7 +93,6 @@ namespace Rubberduck.UI
             _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
 
-
         private Rubberduck.SourceControl.App _sourceControlApp;
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -101,7 +100,6 @@ namespace Rubberduck.UI
         {
             if (_sourceControlApp == null)
             {
-
                 _sourceControlApp = new Rubberduck.SourceControl.App(this.IDE, this.AddIn, _configService, 
                                                                 new ChangesControl(), new UnSyncedCommitsControl(),
                                                                 new SettingsControl(), new BranchesControl(),
