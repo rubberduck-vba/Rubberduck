@@ -32,6 +32,11 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnRefreshChildren(object sender, EventArgs e)
         {
+            RefreshChildren();
+        }
+
+        public void RefreshChildren()
+        {
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();
         }

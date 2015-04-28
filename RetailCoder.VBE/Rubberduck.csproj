@@ -306,6 +306,7 @@
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
+    <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
     <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using  Rubberduck.SourceControl;
+using Rubberduck.SourceControl;
+using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IChangesPresenter
+    public interface IChangesPresenter : IProviderPresenter
     {
         void Refresh();
         void Commit();
@@ -13,12 +14,13 @@ namespace Rubberduck.UI.SourceControl
 
     public class ChangesPresenter : IChangesPresenter
     {
-        private readonly ISourceControlProvider _provider;
         private readonly IChangesView _view;
+
+        public ISourceControlProvider Provider { get; set; }
 
         public ChangesPresenter(ISourceControlProvider provider, IChangesView view)
         {
-            _provider = provider;
+            this.Provider = provider;
             _view = view;
 
             _view.Commit += OnCommit;
@@ -45,7 +47,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void Refresh()
         {
-            var fileStats = _provider.Status().ToList();
+            var fileStats = this.Provider.Status().ToList();
 
             _view.IncludedChanges = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)).ToList();
             _view.UntrackedFiles = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Untracked)).ToList();
@@ -61,18 +63,18 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            _provider.Stage(changes);
-            _provider.Commit(_view.CommitMessage);
+            this.Provider.Stage(changes);
+            this.Provider.Commit(_view.CommitMessage);
 
             if (_view.CommitAction == CommitAction.CommitAndSync)
             {
-                _provider.Pull();
-                _provider.Push();
+                this.Provider.Pull();
+                this.Provider.Push();
             }
 
             if (_view.CommitAction == CommitAction.CommitAndPush)
             {
-                _provider.Push();
+                this.Provider.Push();
             }
         }
 

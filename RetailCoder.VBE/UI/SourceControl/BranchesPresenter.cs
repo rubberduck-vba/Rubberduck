@@ -5,17 +5,18 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IBranchesPresenter
+    public interface IBranchesPresenter : IProviderPresenter
     {
         void RefreshView();
     }
 
     public class BranchesPresenter : IBranchesPresenter
     {
-        private readonly ISourceControlProvider _provider;
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
         private readonly IMergeView _mergeView;
+
+        public ISourceControlProvider Provider { get; set; }
 
         public BranchesPresenter(
             ISourceControlProvider provider,
@@ -24,7 +25,7 @@ namespace Rubberduck.UI.SourceControl
             IMergeView mergeView
             )
         {
-            _provider = provider;
+            this.Provider = provider;
             _view = view;
             _createView = createView;
             _mergeView = mergeView;
@@ -44,7 +45,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnSelectedBranchChanged(object sender, EventArgs e)
         {
-            _provider.Checkout(_view.Current);
+            this.Provider.Checkout(_view.Current);
         }
 
         ~BranchesPresenter()
@@ -55,13 +56,13 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            _view.Local = _provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
-            _view.Current = _provider.CurrentBranch.Name;
+            _view.Local = this.Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
+            _view.Current = this.Provider.CurrentBranch.Name;
 
             var publishedBranchNames = GetFriendlyBranchNames(RemoteBranches());
 
             _view.Published = publishedBranchNames;
-            _view.Unpublished = _provider.Branches.Where(b => !b.IsRemote
+            _view.Unpublished = this.Provider.Branches.Where(b => !b.IsRemote
                                                             && publishedBranchNames.All(p => b.Name != p)
                                                             )
                                                     .Select(b => b.Name)
@@ -78,7 +79,7 @@ namespace Rubberduck.UI.SourceControl
 
         private IEnumerable<IBranch> RemoteBranches()
         {
-            return _provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
+            return this.Provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
         }
 
         private void HideCreateBranchView()
@@ -95,7 +96,7 @@ namespace Rubberduck.UI.SourceControl
         private void OnCreateBranch(object sender, BranchCreateArgs e)
         {
             HideCreateBranchView();
-            _provider.CreateBranch(e.BranchName);
+            this.Provider.CreateBranch(e.BranchName);
             RefreshView();
         }
 
@@ -114,7 +115,7 @@ namespace Rubberduck.UI.SourceControl
             var localBranchNames = _view.Local.ToList();
             _mergeView.SourceSelectorData = localBranchNames;
             _mergeView.DestinationSelectorData = localBranchNames;
-            _mergeView.SelectedSourceBranch = _provider.CurrentBranch.Name;
+            _mergeView.SelectedSourceBranch = this.Provider.CurrentBranch.Name;
 
             _mergeView.Show();
         }
@@ -126,8 +127,8 @@ namespace Rubberduck.UI.SourceControl
                 var source = _mergeView.SelectedSourceBranch;
                 var destination = _mergeView.SelectedDestinationBranch;
 
-                _provider.Merge(source, destination);
-                _view.Current = _provider.CurrentBranch.Name;
+                this.Provider.Merge(source, destination);
+                _view.Current = this.Provider.CurrentBranch.Name;
 
                 _mergeView.StatusText = string.Format("Successfully Merged {0} into {1}", source, destination);
                 _mergeView.Status = MergeStatus.Success;

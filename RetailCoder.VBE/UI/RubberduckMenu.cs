@@ -93,40 +93,22 @@ namespace Rubberduck.UI
             _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
 
-        private SourceControlPresenter _sourceControlPresenter;
-        private ISourceControlView _sourceControlView;
 
+        private Rubberduck.SourceControl.App _sourceControlApp;
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var branchView = new BranchesControl();
-            var changesView = new ChangesControl();
-            var unsyncedCommitsView = new UnSyncedCommitsControl();
-            var settingsView = new SettingsControl();
-
-            if (_sourceControlView == null)
+            if (_sourceControlApp == null)
             {
-                _sourceControlView = new SourceControlPanel(branchView, changesView, unsyncedCommitsView, settingsView);
+
+                _sourceControlApp = new Rubberduck.SourceControl.App(this.IDE, this.AddIn, _configService, 
+                                                                new ChangesControl(), new UnSyncedCommitsControl(),
+                                                                new SettingsControl(), new BranchesControl(),
+                                                                new CreateBranchForm(), new MergeForm());
             }
 
-            if (_sourceControlPresenter == null)
-            {
-                var project = IDE.ActiveVBProject;
-                var repo = new Repository
-                           (
-                            "SourceControlTest", 
-                            @"C:\Users\Christopher\Documents\SourceControlTest",
-                            @"https://github.com/ckuhn203/SourceControlTest.git"
-                           );
-                var gitProvider = new GitProvider(project, repo);
-                var changesPresenter = new ChangesPresenter(gitProvider, changesView);
-                var branchesPresenter = new BranchesPresenter(gitProvider, branchView, new CreateBranchForm(), new MergeForm());
-                branchesPresenter.RefreshView();
-                _sourceControlPresenter = new SourceControlPresenter(IDE, AddIn, _sourceControlView, changesPresenter, branchesPresenter);
-            }
-
-            _sourceControlPresenter.Show();
+            _sourceControlApp.ShowWindow();
         }
 
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
