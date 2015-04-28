@@ -260,7 +260,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterLineLabel(VBAParser.LineLabelContext context)
         {
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.ambiguousIdentifier().GetSelection()));
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.ambiguousIdentifier().GetSelection(), true));
         }
 
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
