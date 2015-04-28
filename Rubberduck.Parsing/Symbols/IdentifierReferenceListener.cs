@@ -23,6 +23,12 @@ namespace Rubberduck.Parsing.Symbols
             _qualifiedName = qualifiedName;
             _declarations = declarations;
 
+            // todo: verify that this isn't causing performance or memory issues
+            foreach (var declaration in VbaStandardLib.Declarations)
+            {
+                _declarations.Add(declaration);
+            }
+
             SetCurrentScope();
         }
 
@@ -441,7 +447,7 @@ namespace Rubberduck.Parsing.Symbols
                 if (declaration.Accessibility == Accessibility.Public 
                  || declaration.Accessibility == Accessibility.Implicit)
                 {
-                    var result = declaration.Project.Equals(_qualifiedName.Project);
+                    var result = _qualifiedName.Project.Equals(declaration.Project);
                     return result;
                 }
 

@@ -329,8 +329,8 @@ namespace Rubberduck.UI.CodeExplorer
                     {
                         var subDeclaration = declaration;
                         var subMembers = parseResult.Declarations.Items.Where(item => 
-                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember) 
-                            && item.Context.Parent.Equals(subDeclaration.Context));
+                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                            && item.Context != null && subDeclaration.Context.Equals(item.Context.Parent));
 
                         foreach (var subMember in subMembers)
                         {

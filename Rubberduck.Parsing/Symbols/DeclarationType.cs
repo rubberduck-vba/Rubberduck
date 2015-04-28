@@ -20,6 +20,7 @@ namespace Rubberduck.Parsing.Symbols
         Event,
         UserDefinedType,
         UserDefinedTypeMember,
-        LibraryFunction
+        LibraryFunction,
+        LineLabel
     }
 }

@@ -220,7 +220,8 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
         {
             var accessibility = GetMemberAccessibility(context.visibility());
-            var name = context.ambiguousIdentifier().GetText();
+            var nameContext = context.ambiguousIdentifier();
+            var name = nameContext.GetText();
 
             var hasReturnType = context.FUNCTION() != null;
 
@@ -231,9 +232,7 @@ namespace Rubberduck.Parsing.Symbols
                                     : asTypeClause.type().GetText() 
                                 : null;
 
-
-            var alias = context.ALIAS();
-            var selection = new Selection(alias.Symbol.Line, alias.Symbol.Column, alias.Symbol.Line, alias.Symbol.Column + alias.Symbol.Text.Length);
+            var selection = nameContext.GetSelection();
 
             _declarations.Add(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.LibraryFunction, context, selection));
             SetCurrentScope(name);
@@ -257,6 +256,11 @@ namespace Rubberduck.Parsing.Symbols
                 var identifier = argContext.ambiguousIdentifier();
                 _declarations.Add(CreateDeclaration(identifier.GetText(), asTypeName, Accessibility.Implicit, DeclarationType.Parameter, argContext, argContext.GetSelection()));
             }
+        }
+
+        public override void EnterLineLabel(VBAParser.LineLabelContext context)
+        {
+            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), null, Accessibility.Private, DeclarationType.LineLabel, context, context.ambiguousIdentifier().GetSelection()));
         }
 
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
