@@ -262,6 +262,20 @@ namespace Rubberduck.Parsing.Symbols
             return null;
         }
 
+
+        private Declaration _withQualifier; // should be a Stack<Declaration> to allow nesting With blocks
+        public override void EnterWithStmt(VBAParser.WithStmtContext context)
+        {
+            var parentIdentifier = FindAssignmentTarget(context.implicitCallStmt_InStmt());
+            var resolver = new Resolver.IdentifierResolver(_declarations);
+            _withQualifier = resolver.Resolve(parentIdentifier, _qualifiedName, _currentScope);
+        }
+
+        public override void ExitWithStmt(VBAParser.WithStmtContext context)
+        {
+            _withQualifier = null;
+        }
+
         private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
         {
             if (dictionaryCall == null)
