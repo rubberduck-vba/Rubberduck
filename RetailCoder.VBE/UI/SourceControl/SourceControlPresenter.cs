@@ -36,6 +36,18 @@ namespace Rubberduck.UI.SourceControl
             _view = view;
 
             _view.RefreshData += OnRefreshChildren;
+            _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
+            _view.InitializeNewRepository += OnInitNewRepository;
+        }
+
+        private void OnInitNewRepository(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnOpenWorkingDirectory(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnRefreshChildren(object sender, EventArgs e)
