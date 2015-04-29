@@ -124,13 +124,9 @@ namespace Rubberduck.Config
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            var configInspections = new List<CodeInspectionSetting>();
-            foreach (var inspection in GetImplementedCodeInspections())
-            {
-                configInspections.Add(new CodeInspectionSetting(inspection));
-            }
-
-            return configInspections.ToArray();
+            return GetImplementedCodeInspections()
+                    .Select(x => new CodeInspectionSetting(x))
+                    .ToArray();
         }
 
         /// <summary>   Gets all implemented code inspections via reflection </summary>
