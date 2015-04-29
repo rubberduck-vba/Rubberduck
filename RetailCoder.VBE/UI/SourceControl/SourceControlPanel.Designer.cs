@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SourceControlPanel));
             this.SourceControlToolbar = new System.Windows.Forms.ToolStrip();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.OpenWorkingFolderButton = new System.Windows.Forms.ToolStripButton();
@@ -38,6 +39,7 @@
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.SettingsTab = new System.Windows.Forms.TabPage();
+            this.InitRepoButton = new System.Windows.Forms.ToolStripButton();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             this.SuspendLayout();
@@ -47,6 +49,7 @@
             this.SourceControlToolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshButton,
             this.OpenWorkingFolderButton,
+            this.InitRepoButton,
             this.toolStripSeparator1,
             this.StatusMessage});
             this.SourceControlToolbar.Location = new System.Drawing.Point(0, 0);
@@ -75,6 +78,7 @@
             this.OpenWorkingFolderButton.Name = "OpenWorkingFolderButton";
             this.OpenWorkingFolderButton.Size = new System.Drawing.Size(23, 22);
             this.OpenWorkingFolderButton.ToolTipText = "Open working folder";
+            this.OpenWorkingFolderButton.Click += new System.EventHandler(this.OpenWorkingFolderButton_Click);
             // 
             // toolStripSeparator1
             // 
@@ -143,6 +147,18 @@
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;
             // 
+            // InitRepoButton
+            // 
+            this.InitRepoButton.AccessibleDescription = "Initialize repository from the active project.";
+            this.InitRepoButton.AccessibleName = "Initalize Report Button";
+            this.InitRepoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.InitRepoButton.Image = ((System.Drawing.Image)(resources.GetObject("InitRepoButton.Image")));
+            this.InitRepoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.InitRepoButton.Name = "InitRepoButton";
+            this.InitRepoButton.Size = new System.Drawing.Size(23, 22);
+            this.InitRepoButton.ToolTipText = "Init New Repo from this Project";
+            this.InitRepoButton.Click += new System.EventHandler(this.InitRepoButton_Click);
+            // 
             // SourceControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -172,5 +188,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel StatusMessage;
         private System.Windows.Forms.ToolStripButton OpenWorkingFolderButton;
+        private System.Windows.Forms.ToolStripButton InitRepoButton;
     }
 }

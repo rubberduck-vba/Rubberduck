@@ -45,6 +45,18 @@ namespace Rubberduck.UI.SourceControl
         private void RefreshButton_Click(object sender, EventArgs e)
         {
             RaiseGenericEvent(RefreshData, e);
+        } 
+
+        public event EventHandler<EventArgs> OpenWorkingDirectory;
+        private void OpenWorkingFolderButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(OpenWorkingDirectory, e);
+        }
+
+        public event EventHandler<EventArgs> InitializeNewRepository;
+        private void InitRepoButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(InitializeNewRepository, e);
         }
 
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)
