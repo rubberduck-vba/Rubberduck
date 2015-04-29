@@ -20,7 +20,14 @@ namespace Rubberduck.SourceControl
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
-            _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+            try
+            {
+                _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+            }
+            catch (LibGit2Sharp.RepositoryNotFoundException ex)
+            {
+                throw new SourceControlException("Repository not found.", ex);
+            }
         }
 
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
