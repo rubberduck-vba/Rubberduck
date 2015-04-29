@@ -6,6 +6,7 @@ using  Rubberduck.SourceControl;
 using  Rubberduck.UI.SourceControl;
 using  Moq;
 using RubberduckTests.Mocks;
+using Rubberduck.Config;
 
 namespace RubberduckTests.SourceControl
 {
@@ -20,6 +21,7 @@ namespace RubberduckTests.SourceControl
         private Mock<ISourceControlView> _view;
         private Mock<IChangesPresenter> _changesPresenter;
         private Mock<IBranchesPresenter> _branchesPresenter;
+        private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
 
         [TestInitialize]
         public void InitializeMocks()
@@ -40,13 +42,16 @@ namespace RubberduckTests.SourceControl
             _view = new Mock<ISourceControlView>();
             _changesPresenter = new Mock<IChangesPresenter>();
             _branchesPresenter = new Mock<IBranchesPresenter>();
+
+            _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
         }
 
         [TestMethod]
         public void BranchesRefreshOnRefreshEvent()
         {
             //arrange
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
+                                                        _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
             _view.Raise(v => v.RefreshData += null, new EventArgs());
@@ -59,8 +64,8 @@ namespace RubberduckTests.SourceControl
         public void ChangesRefreshOnRefreshEvent()
         {
             //arrange
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _view.Object,
-                _changesPresenter.Object, _branchesPresenter.Object);
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
+                                                        _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
                 _view.Raise(v => v.RefreshData += null, new EventArgs());

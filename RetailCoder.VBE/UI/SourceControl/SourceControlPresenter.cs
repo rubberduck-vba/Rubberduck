@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.SourceControl;
+using Rubberduck.Config;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -13,19 +14,23 @@ namespace Rubberduck.UI.SourceControl
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
         private readonly ISourceControlView _view;
-
-        public IRepository Repository { get; set; }
+        private readonly IConfigurationService<SourceControlConfiguration> _configService;
+        private SourceControlConfiguration _config;
 
         public SourceControlPresenter
             (
                 VBE vbe, 
                 AddIn addin, 
+                IConfigurationService<SourceControlConfiguration> configService,
                 ISourceControlView view, 
                 IChangesPresenter changesPresenter,
                 IBranchesPresenter branchesPresenter           
             ) 
             : base(vbe, addin, view)
         {
+            _configService = configService;
+            _config = _configService.LoadConfiguration();
+
             _changesPresenter = changesPresenter;
             _branchesPresenter = branchesPresenter;
             _view = view;
@@ -40,6 +45,9 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshChildren()
         {
+            //todo: get repo from config for the active project
+            //todo: send a provider down into the child presenters
+
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();
         }

@@ -32,13 +32,11 @@ namespace Rubberduck.SourceControl
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
 
-            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, _sourceControlView, changesPresenter, branchesPresenter);
+            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, _sourceControlView, changesPresenter, branchesPresenter);
         }
 
         public void ShowWindow()
         {
-            //todo: get repo from config for the active project
-
             _sourceControlPresenter.RefreshChildren();
             _sourceControlPresenter.Show();
         }
