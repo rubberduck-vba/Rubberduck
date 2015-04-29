@@ -100,7 +100,7 @@ namespace Rubberduck.UI
         {
             if (_sourceControlApp == null)
             {
-                _sourceControlApp = new Rubberduck.SourceControl.App(this.IDE, this.AddIn, _configService, 
+                _sourceControlApp = new Rubberduck.SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
                                                                 new ChangesControl(), new UnSyncedCommitsControl(),
                                                                 new SettingsControl(), new BranchesControl(),
                                                                 new CreateBranchForm(), new MergeForm());

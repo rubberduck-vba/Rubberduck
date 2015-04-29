@@ -7,6 +7,7 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.Config;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
 
 namespace Rubberduck.SourceControl
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.SourceControl
         internal App(
                     VBE vbe, 
                     AddIn addIn, 
-                    IGeneralConfigService configService, 
+                    IConfigurationService<SourceControlConfiguration> configService, 
                     IChangesView changesView, 
                     IUnSyncedCommitsView unsyncedCommitsView, 
                     ISettingsView settingsView,

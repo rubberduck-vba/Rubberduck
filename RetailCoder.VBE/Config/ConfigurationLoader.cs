@@ -9,6 +9,14 @@ using System.Windows.Forms;
 
 namespace Rubberduck.Config
 {
+    public interface IGeneralConfigService : IConfigurationService<Configuration>
+    {
+        CodeInspectionSetting[] GetDefaultCodeInspections();
+        Configuration GetDefaultConfiguration();
+        ToDoMarker[] GetDefaultTodoMarkers();
+        IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
+    }
+
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
 
