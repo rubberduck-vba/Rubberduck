@@ -45,11 +45,54 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshChildren()
         {
-            //todo: get repo from config for the active project
-            //todo: send a provider down into the child presenters
+            if (!ValidRepoExists())
+            {
+                _view.Status = "Offline";
+                return;
+            }
+
+            ISourceControlProvider provider;
+
+            try
+            {
+                provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First());
+            }
+            catch (SourceControlException ex)
+            {
+                //todo: report failure to user and prompt to create or browse
+                provider = new GitProvider(this.VBE.ActiveVBProject);
+            }
+
+            _branchesPresenter.Provider = provider;
+            _changesPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();
+
+            _view.Status = "Online";
+        }
+
+        private bool ValidRepoExists()
+        {
+            if (_config.Repositories == null)
+            {
+                return false;
+            }
+            else
+            {
+                var possibleRepos = _config.Repositories.Where(repo => repo.Name == this.VBE.ActiveVBProject.Name);
+                var possibleCount = possibleRepos.Count();
+
+                if (possibleCount == 0 || possibleCount > 1)
+                {
+                    //todo: if none are found, prompt user to create one
+                    //todo: more than one are found, prompt for correct one
+
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

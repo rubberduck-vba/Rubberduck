@@ -7,6 +7,7 @@ using  Rubberduck.UI.SourceControl;
 using  Moq;
 using RubberduckTests.Mocks;
 using Rubberduck.Config;
+using System.Collections.Generic;
 
 namespace RubberduckTests.SourceControl
 {
@@ -44,12 +45,20 @@ namespace RubberduckTests.SourceControl
             _branchesPresenter = new Mock<IBranchesPresenter>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
+
+            _view.SetupProperty(v => v.Status, string.Empty);
+            
         }
 
         [TestMethod]
         public void BranchesRefreshOnRefreshEvent()
         {
             //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
@@ -64,6 +73,11 @@ namespace RubberduckTests.SourceControl
         public void ChangesRefreshOnRefreshEvent()
         {
             //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
@@ -72,6 +86,160 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _changesPresenter.Verify(c => c.Refresh(), Times.Once);
+        }
+
+        [TestMethod]
+        public void StatusIsOfflineWhenNoRepoIsFoundInConfig()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration()).Returns(new SourceControlConfiguration());
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                                        _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            SetupValidVbProject();
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.AreEqual("Offline", _view.Object.Status);
+            _changesPresenter.Verify(c => c.Refresh(), Times.Never);
+            _branchesPresenter.Verify(b => b.RefreshView(), Times.Never);
+        }
+
+        [TestMethod]
+        public void StatusIsOfflineWhenRepoListIsEmpty()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(new SourceControlConfiguration() { Repositories = new List<Repository>() });
+
+            SetupValidVbProject();
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                                        _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.AreEqual("Offline", _view.Object.Status);
+            _changesPresenter.Verify(c => c.Refresh(), Times.Never);
+            _branchesPresenter.Verify(b => b.RefreshView(), Times.Never);
+        }
+
+        [TestMethod]
+        public void StatusIsOfflineIfNoMatchingRepoExists()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            var project = new Mock<VBProject>().SetupProperty(p => p.Name, "FooBar");
+            _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                                        _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.AreEqual("Offline", _view.Object.Status);
+            _changesPresenter.Verify(c => c.Refresh(), Times.Never);
+            _branchesPresenter.Verify(b => b.RefreshView(), Times.Never);
+        }
+
+        [TestMethod]
+        public void StatusIsOfflineWhenMultipleReposAreFound()
+        {
+            //arrange
+            var config = GetDummyConfig();
+            config.Repositories.Add(new Repository() { Name = dummyRepoName });
+
+            _configService.Setup(c => c.LoadConfiguration())
+                            .Returns(config);
+
+            SetupValidVbProject();
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                            _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.AreEqual("Offline", _view.Object.Status);
+            _changesPresenter.Verify(c => c.Refresh(), Times.Never);
+            _branchesPresenter.Verify(b => b.RefreshView(), Times.Never);
+
+        }
+
+        [TestMethod]
+        public void StatusIsOnlineWhenRepoIsFound()
+        {
+            //arrange 
+            _configService.Setup(c => c.LoadConfiguration())
+                            .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                            _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.AreEqual("Online", _view.Object.Status);
+        }
+
+        [TestMethod]
+        public void ChildPresentersHaveValidProviderIfRepoIsFoundInConfig()
+        {
+            //arrange 
+            _configService.Setup(c => c.LoadConfiguration())
+                            .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _changesPresenter.SetupProperty(c => c.Provider);
+            _branchesPresenter.SetupProperty(b => b.Provider);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                            _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
+
+            //act
+            presenter.RefreshChildren();
+
+            //assert
+            Assert.IsNotNull(_changesPresenter.Object.Provider);
+            Assert.IsNotNull(_branchesPresenter.Object.Provider);
+        }
+
+        private void SetupValidVbProject()
+        {
+            var project = new Mock<VBProject>().SetupProperty(p => p.Name, dummyRepoName);
+            _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
+        }
+
+        private const string dummyRepoName = "SourceControlTest";
+
+        private SourceControlConfiguration GetDummyConfig()
+        {
+            return new SourceControlConfiguration()
+                    {
+                        Repositories = new List<Repository>() 
+                        { 
+                            new Repository 
+                            (
+                                dummyRepoName,
+                                @"C:\Users\Christopher\Documents\SourceControlTest",
+                                @"https://github.com/ckuhn203/SourceControlTest.git"
+                            )
+                        }
+                    };
         }
     }
 }

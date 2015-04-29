@@ -35,6 +35,12 @@ namespace Rubberduck.UI.SourceControl
             get { return "Source Control"; }
         }
 
+        public string Status 
+        {
+            get { return this.StatusMessage.Text; }
+            set { this.StatusMessage.Text = value; }
+        }
+
         public event EventHandler<EventArgs> RefreshData;
         private void RefreshButton_Click(object sender, EventArgs e)
         {
