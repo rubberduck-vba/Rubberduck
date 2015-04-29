@@ -168,7 +168,7 @@
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="SourceControlConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">

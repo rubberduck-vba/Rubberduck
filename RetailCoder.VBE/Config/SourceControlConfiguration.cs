@@ -23,18 +23,19 @@ namespace Rubberduck.Config
 
         public override SourceControlConfiguration LoadConfiguration()
         {
-            throw new NotImplementedException();
-            //return base.LoadConfiguration();
+            return base.LoadConfiguration();
         }
 
         protected override SourceControlConfiguration HandleIOException(System.IO.IOException ex)
         {
-            throw new NotImplementedException();
+            //couldn't load file
+            return new SourceControlConfiguration();
         }
 
         protected override SourceControlConfiguration HandleInvalidOperationException(InvalidOperationException ex)
         {
-            throw new NotImplementedException();
+            //couldn't load file
+            return new SourceControlConfiguration();
         }
     }
 
