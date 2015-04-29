@@ -29,14 +29,6 @@ namespace Rubberduck.SourceControl
                 )
         {
              _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
-             
-            //var repo = new Repository
-            //(
-            //    "SourceControlTest", 
-            //    @"C:\Users\Christopher\Documents\SourceControlTest",
-            //    @"https://github.com/ckuhn203/SourceControlTest.git"
-            //);
-            //var gitProvider = new GitProvider(vbe.ActiveVBProject, repo);
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
 

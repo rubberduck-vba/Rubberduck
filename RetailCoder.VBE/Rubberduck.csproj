@@ -386,12 +386,6 @@
     <Compile Include="SourceControl\SourceControlException.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="UI\SourceControl\GitView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\GitView.Designer.cs">
-      <DependentUpon>GitView.cs</DependentUpon>
-    </Compile>
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
@@ -647,9 +641,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\GitView.resx">
-      <DependentUpon>GitView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
       <DependentUpon>MergeForm.cs</DependentUpon>
