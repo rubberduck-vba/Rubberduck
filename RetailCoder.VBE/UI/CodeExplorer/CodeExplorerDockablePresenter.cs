@@ -295,7 +295,7 @@ namespace Rubberduck.UI.CodeExplorer
         private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
         {
             var result = new List<TreeNode>();
-            var parseResult = await _parser.ParseAsync(project);
+            var parseResult = _parser.Parse(project);
             foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
                 var component = componentParseResult.Component;
@@ -307,7 +307,7 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = parseResult.Declarations.Items.FirstOrDefault(item => item.IdentifierName == component.Name && item.Project == project);
+                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => item.IdentifierName == component.Name && item.Project == component.Collection.Parent);
 
                 foreach (var declaration in members)
                 {
