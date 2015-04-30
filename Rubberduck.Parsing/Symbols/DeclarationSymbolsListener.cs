@@ -289,7 +289,12 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
 
-            _declarations.Add(CreateDeclaration(context.ambiguousIdentifier().GetText(), asTypeName, accessibility, DeclarationType.Constant, context, context.ambiguousIdentifier().GetSelection()));
+            var identifier = context.ambiguousIdentifier();
+            var name = identifier.GetText();
+            var value = context.valueStmt().GetText();
+            var declaration = new ValuedDeclaration(new QualifiedMemberName(_qualifiedName, name), _currentScope, asTypeName, accessibility, DeclarationType.Constant, value, context, identifier.GetSelection());
+
+            _declarations.Add(declaration);
         }
 
         public override void EnterTypeStmt(VBAParser.TypeStmtContext context)
