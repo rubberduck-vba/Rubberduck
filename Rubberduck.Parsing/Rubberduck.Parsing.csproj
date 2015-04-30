@@ -84,9 +84,6 @@
     </Compile>
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\Resolver\IdentifierResolver.cs" />
-    <Compile Include="Symbols\Resolver\IResolver.cs" />
-    <Compile Include="Symbols\Resolver\ResolverBase.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />
