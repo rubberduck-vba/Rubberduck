@@ -9,22 +9,22 @@ namespace Rubberduck.Parsing.Symbols
     /// </summary>
     internal static class VbaStandardLib
     {
-        private static IEnumerable<Declaration> StandardLibDeclarations;
-        private static QualifiedModuleName VbaModuleName = new QualifiedModuleName("VBA", "VBA");
+        private static IEnumerable<Declaration> _standardLibDeclarations;
+        private static readonly QualifiedModuleName VbaModuleName = new QualifiedModuleName("VBA", "VBA");
 
         public static IEnumerable<Declaration> Declarations
         {
             get
             {
-                if (StandardLibDeclarations == null)
+                if (_standardLibDeclarations == null)
                 {
                     var nestedTypes = typeof(VbaStandardLib).GetNestedTypes(BindingFlags.NonPublic);
                     var fields = nestedTypes.SelectMany(t => t.GetFields());
                     var values = fields.Select(f => f.GetValue(null));
-                    StandardLibDeclarations = values.Cast<Declaration>();
+                    _standardLibDeclarations = values.Cast<Declaration>();
                 }
 
-                return StandardLibDeclarations;
+                return _standardLibDeclarations;
             }
         }
 
@@ -33,160 +33,160 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration Vba = new Declaration(new QualifiedMemberName(VbaModuleName, "VBA"), "VBA", "VBA", true, false, Accessibility.Global, DeclarationType.Project);
 
             public static Declaration FormShowConstants = new Declaration(new QualifiedMemberName(VbaModuleName, "FormShowConstants"), "VBA", "FormShowConstants", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbModal = new Declaration(new QualifiedMemberName(VbaModuleName, "vbModal"), "VBA", "FormShowConstants", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbModeless = new Declaration(new QualifiedMemberName(VbaModuleName, "vbModeless"), "VBA", "FormShowConstants", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbModal = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbModal"), "VBA", "FormShowConstants", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbModeless = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbModeless"), "VBA", "FormShowConstants", Accessibility.Global, DeclarationType.EnumerationMember, "0");
 
             public static Declaration VbAppWinStyle = new Declaration(new QualifiedMemberName(VbaModuleName, "VbAppWinStyle"), "VBA", "VbAppWinStyle", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbHide = new Declaration(new QualifiedMemberName(VbaModuleName, "vbHide"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMaximizedFocus = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMaximizedFocus"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMinimizedFocus = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMinimizedFocus"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMinimizedNoFocus = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMinimizedNoFocus"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbNormalFocus = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNormalFocus"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbNormalNoFocus = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNormalNoFocus"), "VBA", "VbAppWinStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbHide = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbHide"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbMaximizedFocus = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMaximizedFocus"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbMinimizedFocus = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMinimizedFocus"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbMinimizedNoFocus = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMinimizedNoFocus"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "6");
+            public static Declaration VbNormalFocus = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNormalFocus"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbNormalNoFocus = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNormalNoFocus"), "VBA", "VbAppWinStyle", Accessibility.Global, DeclarationType.EnumerationMember, "4");
 
             public static Declaration VbCalendar = new Declaration(new QualifiedMemberName(VbaModuleName, "VbCalendar"), "VBA", "VbCalendar", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbCalGreg = new Declaration(new QualifiedMemberName(VbaModuleName, "vbCalGreg"), "VBA", "VbCalendar", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbCalHijri = new Declaration(new QualifiedMemberName(VbaModuleName, "vbCalHijri"), "VBA", "VbCalendar", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbCalGreg = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbCalGreg"), "VBA", "VbCalendar", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbCalHijri = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbCalHijri"), "VBA", "VbCalendar", Accessibility.Global, DeclarationType.EnumerationMember, "1");
 
             public static Declaration VbCallType = new Declaration(new QualifiedMemberName(VbaModuleName, "VbCallType"), "VBA", "VbCallType", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbGet = new Declaration(new QualifiedMemberName(VbaModuleName, "vbGet"), "VBA", "VbCallType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLet = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLet"), "VBA", "VbCallType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMethod = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMethod"), "VBA", "VbCallType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSet = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSet"), "VBA", "VbCallType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbGet = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbGet"), "VBA", "VbCallType", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbLet = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLet"), "VBA", "VbCallType", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbMethod = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMethod"), "VBA", "VbCallType", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbSet = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSet"), "VBA", "VbCallType", Accessibility.Global, DeclarationType.EnumerationMember, "8");
 
             public static Declaration VbCompareMethod = new Declaration(new QualifiedMemberName(VbaModuleName, "VbCompareMethod"), "VBA", "VbCompareMethod", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbBinaryCompare = new Declaration(new QualifiedMemberName(VbaModuleName, "vbBinaryCompare"), "VBA", "VbCompareMethod", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbTextCompare = new Declaration(new QualifiedMemberName(VbaModuleName, "vbTextCompare"), "VBA", "VbCompareMethod", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbBinaryCompare = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbBinaryCompare"), "VBA", "VbCompareMethod", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbTextCompare = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbTextCompare"), "VBA", "VbCompareMethod", Accessibility.Global, DeclarationType.EnumerationMember, "1");
 
             public static Declaration VbDateTimeFormat = new Declaration(new QualifiedMemberName(VbaModuleName, "VbDateTimeFormat"), "VBA", "VbDateTimeFormat", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbGeneralDate = new Declaration(new QualifiedMemberName(VbaModuleName, "vbGeneralDate"), "VBA", "VbDateTimeFormat", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLongDate = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLongDate"), "VBA", "VbDateTimeFormat", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLongTime = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLongTime"), "VBA", "VbDateTimeFormat", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbShortDate = new Declaration(new QualifiedMemberName(VbaModuleName, "vbShortDate"), "VBA", "VbDateTimeFormat", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbShortTime = new Declaration(new QualifiedMemberName(VbaModuleName, "vbShortTime"), "VBA", "VbDateTimeFormat", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbGeneralDate = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbGeneralDate"), "VBA", "VbDateTimeFormat", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbLongDate = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLongDate"), "VBA", "VbDateTimeFormat", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbLongTime = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLongTime"), "VBA", "VbDateTimeFormat", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbShortDate = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbShortDate"), "VBA", "VbDateTimeFormat", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbShortTime = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbShortTime"), "VBA", "VbDateTimeFormat", Accessibility.Global, DeclarationType.EnumerationMember, "4");
 
             public static Declaration VbDayOfWeek = new Declaration(new QualifiedMemberName(VbaModuleName, "VbDayOfWeek"), "VBA", "VbDayOfWeek", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbFriday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFriday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMonday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMonday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSaturday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSaturday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSunday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSunday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbThursday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbThursday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbTuesday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbTuesday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUseSystemDayOfWeek = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUseSystemDayOfWeek"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbWednesday = new Declaration(new QualifiedMemberName(VbaModuleName, "vbWednesday"), "VBA", "VbDayOfWeek", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbFriday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFriday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "6");
+            public static Declaration VbMonday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMonday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbSaturday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSaturday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "7");
+            public static Declaration VbSunday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSunday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbThursday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbThursday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbTuesday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbTuesday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbUseSystemDayOfWeek = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUseSystemDayOfWeek"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbWednesday = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbWednesday"), "VBA", "VbDayOfWeek", Accessibility.Global, DeclarationType.EnumerationMember, "4");
 
             public static Declaration VbFileAttribute = new Declaration(new QualifiedMemberName(VbaModuleName, "VbFileAttribute"), "VBA", "VbFileAttribute", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbNormal = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNormal"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbReadOnly = new Declaration(new QualifiedMemberName(VbaModuleName, "vbReadOnly"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbHidden = new Declaration(new QualifiedMemberName(VbaModuleName, "vbHidden"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSystem = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSystem"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbVolume = new Declaration(new QualifiedMemberName(VbaModuleName, "vbVolume"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDirectory = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDirectory"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbArchive = new Declaration(new QualifiedMemberName(VbaModuleName, "vbArchive"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbAlias = new Declaration(new QualifiedMemberName(VbaModuleName, "vbAlias"), "VBA", "VbFileAttribute", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbNormal = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNormal"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbReadOnly = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbReadOnly"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbHidden = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbHidden"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbSystem = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSystem"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbVolume = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbVolume"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "8");
+            public static Declaration VbDirectory = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDirectory"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "16");
+            public static Declaration VbArchive = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbArchive"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "32");
+            public static Declaration VbAlias = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbAlias"), "VBA", "VbFileAttribute", Accessibility.Global, DeclarationType.EnumerationMember, "64");
 
             public static Declaration VbFirstWeekOfYear = new Declaration(new QualifiedMemberName(VbaModuleName, "VbFirstWeekOfYear"), "VBA", "VbFirstWeekOfYear", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbFirstFourDays = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFirstFourDays"), "VBA", "VbFirstWeekOfYear", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbFirstFullWeek = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFirstFullWeek"), "VBA", "VbFirstWeekOfYear", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbFirstJan1 = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFirstJan1"), "VBA", "VbFirstWeekOfYear", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUseSystem = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUseSystem"), "VBA", "VbFirstWeekOfYear", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbFirstFourDays = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFirstFourDays"), "VBA", "VbFirstWeekOfYear", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbFirstFullWeek = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFirstFullWeek"), "VBA", "VbFirstWeekOfYear", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbFirstJan1 = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFirstJan1"), "VBA", "VbFirstWeekOfYear", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbUseSystem = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUseSystem"), "VBA", "VbFirstWeekOfYear", Accessibility.Global, DeclarationType.EnumerationMember, "0");
 
             public static Declaration VbIMEStatus = new Declaration(new QualifiedMemberName(VbaModuleName, "VbIMEStatus"), "VBA", "VbIMEStatus", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbIMEAlphaDbl = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEAlphaDbl"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEAlphaSng = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEAlphaSng"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEDisable = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEDisable"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEHiragana = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEHiragana"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEKatakanaDbl = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEKatakanaDbl"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEKatakanaSng = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEKatakanaSng"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeAlpha = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeAlpha"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeAlphaFull = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeAlphaFull"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeDisable = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeDisable"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeHangul = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHangul"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeHangulFull = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHangulFull"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeHiragana = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHiragana"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeKatakana = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeKatakana"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeKatakanaHalf = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeKatakanaHalf"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeNoControl = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeNoControl"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeOff = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeOff"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEModeOn = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeOn"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMENoOp = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMENoOp"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEOff = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEOff"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIMEOn = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIMEOn"), "VBA", "VbIMEStatus", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbIMEAlphaDbl = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEAlphaDbl"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "7");
+            public static Declaration VbIMEAlphaSng = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEAlphaSng"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "8");
+            public static Declaration VbIMEDisable = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEDisable"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbIMEHiragana = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEHiragana"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbIMEKatakanaDbl = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEKatakanaDbl"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbIMEKatakanaSng = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEKatakanaSng"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "6");
+            public static Declaration VbIMEModeAlpha = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeAlpha"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "8");
+            public static Declaration VbIMEModeAlphaFull = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeAlphaFull"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "7");
+            public static Declaration VbIMEModeDisable = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeDisable"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbIMEModeHangul = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHangul"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "10");
+            public static Declaration VbIMEModeHangulFull = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHangulFull"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "9");
+            public static Declaration VbIMEModeHiragana = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeHiragana"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbIMEModeKatakana = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeKatakana"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbIMEModeKatakanaHalf = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeKatakanaHalf"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "6");
+            public static Declaration VbIMEModeNoControl = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeNoControl"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember,"0");
+            public static Declaration VbIMEModeOff = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeOff"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbIMEModeOn = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEModeOn"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbIMENoOp = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMENoOp"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbIMEOff = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEOff"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbIMEOn = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIMEOn"), "VBA", "VbIMEStatus", Accessibility.Global, DeclarationType.EnumerationMember, "1");
 
             public static Declaration VbMsgBoxResult = new Declaration(new QualifiedMemberName(VbaModuleName, "VbMsgBoxResult"), "VBA", "VbMsgBoxResult", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbAbort = new Declaration(new QualifiedMemberName(VbaModuleName, "vbAbort"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbCancel = new Declaration(new QualifiedMemberName(VbaModuleName, "vbCancel"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbIgnore = new Declaration(new QualifiedMemberName(VbaModuleName, "vbIgnore"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbNo = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNo"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbOk = new Declaration(new QualifiedMemberName(VbaModuleName, "vbOk"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbRetry = new Declaration(new QualifiedMemberName(VbaModuleName, "vbRetry"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbYes = new Declaration(new QualifiedMemberName(VbaModuleName, "vbYes"), "VBA", "VbMsgBoxResult", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbAbort = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbAbort"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbCancel = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbCancel"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbIgnore = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbIgnore"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbNo = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNo"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "7");
+            public static Declaration VbOk = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbOk"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbRetry = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbRetry"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbYes = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbYes"), "VBA", "VbMsgBoxResult", Accessibility.Global, DeclarationType.EnumerationMember, "6");
 
             public static Declaration VbMsgBoxStyle = new Declaration(new QualifiedMemberName(VbaModuleName, "VbMsgBoxStyle"), "VBA", "VbMsgBoxStyle", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbAbortRetryIgnore = new Declaration(new QualifiedMemberName(VbaModuleName, "vbAbortRetryIgnore"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbApplicationModal = new Declaration(new QualifiedMemberName(VbaModuleName, "vbApplicationModal"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbCritical = new Declaration(new QualifiedMemberName(VbaModuleName, "vbCritical"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDefaultButton1 = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton1"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDefaultButton2 = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton2"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDefaultButton3 = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton3"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDefaultButton4 = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton4"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbExclamation = new Declaration(new QualifiedMemberName(VbaModuleName, "vbExclamation"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbInformation = new Declaration(new QualifiedMemberName(VbaModuleName, "vbInformation"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMsgBoxHelpButton = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxHelpButton"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMsgBoxRight = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxRight"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMsgBoxRtlReading = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxRtlReading"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbMsgBoxSetForeground = new Declaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxSetForeground"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbOkCancel = new Declaration(new QualifiedMemberName(VbaModuleName, "vbOkCancel"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbOkOnly = new Declaration(new QualifiedMemberName(VbaModuleName, "vbOkOnly"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbQuestion = new Declaration(new QualifiedMemberName(VbaModuleName, "vbQuestion"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbRetryCancel = new Declaration(new QualifiedMemberName(VbaModuleName, "vbRetryCancel"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSystemModal = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSystemModal"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbYesNo = new Declaration(new QualifiedMemberName(VbaModuleName, "vbYesNo"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbYesNoCancel = new Declaration(new QualifiedMemberName(VbaModuleName, "vbYesNoCancel"), "VBA", "VbMsgBoxStyle", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbAbortRetryIgnore = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbAbortRetryIgnore"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbApplicationModal = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbApplicationModal"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbCritical = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbCritical"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "16");
+            public static Declaration VbDefaultButton1 = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton1"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbDefaultButton2 = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton2"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "256");
+            public static Declaration VbDefaultButton3 = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton3"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "512");
+            public static Declaration VbDefaultButton4 = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDefaultButton4"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "768");
+            public static Declaration VbExclamation = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbExclamation"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "48");
+            public static Declaration VbInformation = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbInformation"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "64");
+            public static Declaration VbMsgBoxHelpButton = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxHelpButton"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "16384");
+            public static Declaration VbMsgBoxRight = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxRight"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "524288");
+            public static Declaration VbMsgBoxRtlReading = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxRtlReading"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "1048576");
+            public static Declaration VbMsgBoxSetForeground = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbMsgBoxSetForeground"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "65536");
+            public static Declaration VbOkCancel = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbOkCancel"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbOkOnly = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbOkOnly"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbQuestion = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbQuestion"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "32");
+            public static Declaration VbRetryCancel = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbRetryCancel"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbSystemModal = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSystemModal"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "4096");
+            public static Declaration VbYesNo = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbYesNo"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbYesNoCancel = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbYesNoCancel"), "VBA", "VbMsgBoxStyle", Accessibility.Global, DeclarationType.EnumerationMember, "3");
 
             public static Declaration VbQueryClose = new Declaration(new QualifiedMemberName(VbaModuleName, "VbQueryClose"), "VBA", "VbQueryClose", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbAppTaskManager = new Declaration(new QualifiedMemberName(VbaModuleName, "vbAppTaskManager"), "VBA", "VbQueryClose", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbAppWindows = new Declaration(new QualifiedMemberName(VbaModuleName, "vbAppWindows"), "VBA", "VbQueryClose", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbFormCode = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFormCode"), "VBA", "VbQueryClose", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbFormControlMenu = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFormControlMenu"), "VBA", "VbQueryClose", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbFormMDIForm = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFormMDIForm"), "VBA", "VbQueryClose", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbAppTaskManager = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbAppTaskManager"), "VBA", "VbQueryClose", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbAppWindows = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbAppWindows"), "VBA", "VbQueryClose", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbFormCode = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFormCode"), "VBA", "VbQueryClose", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbFormControlMenu = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFormControlMenu"), "VBA", "VbQueryClose", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbFormMDIForm = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFormMDIForm"), "VBA", "VbQueryClose", Accessibility.Global, DeclarationType.EnumerationMember, "4");
 
             public static Declaration VbStrConv = new Declaration(new QualifiedMemberName(VbaModuleName, "VbStrConv"), "VBA", "VbStrConv", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbFromUnicode = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFromUnicode"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbHiragana = new Declaration(new QualifiedMemberName(VbaModuleName, "vbHiragana"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbKatakana = new Declaration(new QualifiedMemberName(VbaModuleName, "vbKatakana"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLowerCase = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLowerCase"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbNarrow = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNarrow"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbProperCase = new Declaration(new QualifiedMemberName(VbaModuleName, "vbProperCase"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUnicode = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUnicode"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUpperCase = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUpperCase"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbWide = new Declaration(new QualifiedMemberName(VbaModuleName, "vbWide"), "VBA", "VbStrConv", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbFromUnicode = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFromUnicode"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "128");
+            public static Declaration VbHiragana = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbHiragana"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "32");
+            public static Declaration VbKatakana = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbKatakana"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "16");
+            public static Declaration VbLowerCase = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLowerCase"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbNarrow = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNarrow"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "8");
+            public static Declaration VbProperCase = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbProperCase"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbUnicode = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUnicode"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "64");
+            public static Declaration VbUpperCase = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUpperCase"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbWide = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbWide"), "VBA", "VbStrConv", Accessibility.Global, DeclarationType.EnumerationMember, "4");
 
             public static Declaration VbTriState = new Declaration(new QualifiedMemberName(VbaModuleName, "VbTriState"), "VBA", "VbTriState", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbFalse = new Declaration(new QualifiedMemberName(VbaModuleName, "vbFalse"), "VBA", "VbTriState", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbTrue = new Declaration(new QualifiedMemberName(VbaModuleName, "vbTrue"), "VBA", "VbTriState", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUseDefault = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUseDefault"), "VBA", "VbTriState", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbFalse = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbFalse"), "VBA", "VbTriState", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbTrue = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbTrue"), "VBA", "VbTriState", Accessibility.Global, DeclarationType.EnumerationMember, "-1");
+            public static Declaration VbUseDefault = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUseDefault"), "VBA", "VbTriState", Accessibility.Global, DeclarationType.EnumerationMember, "-2");
 
             public static Declaration VbVarType = new Declaration(new QualifiedMemberName(VbaModuleName, "VbVarType"), "VBA", "VbVarType", false, false, Accessibility.Global, DeclarationType.Enumeration);
-            public static Declaration VbArray = new Declaration(new QualifiedMemberName(VbaModuleName, "vbArray"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbBoolean = new Declaration(new QualifiedMemberName(VbaModuleName, "vbBoolean"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbByte = new Declaration(new QualifiedMemberName(VbaModuleName, "vbByte"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbCurrency = new Declaration(new QualifiedMemberName(VbaModuleName, "vbCurrency"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDataObject = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDataObject"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDate = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDate"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDecimal = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDecimal"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbDouble = new Declaration(new QualifiedMemberName(VbaModuleName, "vbDouble"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbEmpty = new Declaration(new QualifiedMemberName(VbaModuleName, "vbEmpty"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbError = new Declaration(new QualifiedMemberName(VbaModuleName, "vbError"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbInteger = new Declaration(new QualifiedMemberName(VbaModuleName, "vbInteger"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLong = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLong"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbLongLong = new Declaration(new QualifiedMemberName(VbaModuleName, "vbLongLong"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbNull = new Declaration(new QualifiedMemberName(VbaModuleName, "vbNull"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbObject = new Declaration(new QualifiedMemberName(VbaModuleName, "vbObject"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbSingle = new Declaration(new QualifiedMemberName(VbaModuleName, "vbSingle"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbString = new Declaration(new QualifiedMemberName(VbaModuleName, "vbString"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbUserDefinedType = new Declaration(new QualifiedMemberName(VbaModuleName, "vbUserDefinedType"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
-            public static Declaration VbVariant = new Declaration(new QualifiedMemberName(VbaModuleName, "vbVariant"), "VBA", "VbVarType", true, false, Accessibility.Global, DeclarationType.EnumerationMember);
+            public static Declaration VbArray = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbArray"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "8192");
+            public static Declaration VbBoolean = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbBoolean"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "11");
+            public static Declaration VbByte = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbByte"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "17");
+            public static Declaration VbCurrency = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbCurrency"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "6");
+            public static Declaration VbDataObject = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDataObject"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "13");
+            public static Declaration VbDate = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDate"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "7");
+            public static Declaration VbDecimal = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDecimal"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "14");
+            public static Declaration VbDouble = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbDouble"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "5");
+            public static Declaration VbEmpty = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbEmpty"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "0");
+            public static Declaration VbError = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbError"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "10");
+            public static Declaration VbInteger = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbInteger"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "2");
+            public static Declaration VbLong = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLong"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "3");
+            public static Declaration VbLongLong = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbLongLong"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "20");
+            public static Declaration VbNull = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbNull"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "1");
+            public static Declaration VbObject = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbObject"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "9");
+            public static Declaration VbSingle = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbSingle"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "4");
+            public static Declaration VbString = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbString"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "8");
+            public static Declaration VbUserDefinedType = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbUserDefinedType"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "36");
+            public static Declaration VbVariant = new ValuedDeclaration(new QualifiedMemberName(VbaModuleName, "vbVariant"), "VBA", "VbVarType", Accessibility.Global, DeclarationType.EnumerationMember, "12");
         }
 
         #region Predefined standard/procedural modules
@@ -195,14 +195,14 @@ namespace Rubberduck.Parsing.Symbols
         {
             private static QualifiedModuleName ColorConstantsModuleName = new QualifiedModuleName("VBA", "ColorConstants");
             public static Declaration ColorConstants = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "ColorConstants"), "VBA", "ColorConstants", false, false, Accessibility.Global, DeclarationType.Module);
-            public static Declaration VbBlack = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbBlack"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbBlue = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbBlue"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbCyan = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbCyan"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbGreen = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbGreen"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbMagenta = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbMagenta"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbRed = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbRed"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbWhite = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbWhite"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbYellow = new Declaration(new QualifiedMemberName(ColorConstantsModuleName, "vbYellow"), "VBA.ColorConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
+            public static Declaration VbBlack = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbBlack"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "0");
+            public static Declaration VbBlue = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbBlue"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "16711680");
+            public static Declaration VbCyan = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbCyan"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "16776960");
+            public static Declaration VbGreen = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbGreen"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "65280");
+            public static Declaration VbMagenta = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbMagenta"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "16711935");
+            public static Declaration VbRed = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbRed"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "255");
+            public static Declaration VbWhite = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbWhite"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "16777215");
+            public static Declaration VbYellow = new ValuedDeclaration(new QualifiedMemberName(ColorConstantsModuleName, "vbYellow"), "VBA.ColorConstants", "Long", Accessibility.Global, DeclarationType.Constant, "65535");
         }
 
         private class ConstantsModule
@@ -219,7 +219,7 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration VbTab = new Declaration(new QualifiedMemberName(ConstantsModuleName, "vbTab"), "VBA.Constants", "String", true, false, Accessibility.Global, DeclarationType.Constant);
             public static Declaration VbVerticalTab = new Declaration(new QualifiedMemberName(ConstantsModuleName, "vbVerticalTab"), "VBA.Constants", "String", true, false, Accessibility.Global, DeclarationType.Constant);
             public static Declaration VbNullString = new Declaration(new QualifiedMemberName(ConstantsModuleName, "vbNullString"), "VBA.Constants", "String", true, false, Accessibility.Global, DeclarationType.Constant);
-            public static Declaration VbObjectError = new Declaration(new QualifiedMemberName(ConstantsModuleName, "vbObjectError"), "VBA.Constants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);
+            public static Declaration VbObjectError = new ValuedDeclaration(new QualifiedMemberName(ConstantsModuleName, "vbObjectError"), "VBA.Constants", "Long", Accessibility.Global, DeclarationType.Constant, "-2147221504");
         }
 
         private class ConversionModule
@@ -381,6 +381,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private class KeyCodeConstantsModule
         {
+            //todo: define these constants as ValuedDeclaration items. values at https://msdn.microsoft.com/en-us/library/ee199372.aspx
             private static QualifiedModuleName KeyCodeConstantsModuleName = new QualifiedModuleName("VBA", "KeyCodeConstants");
             public static Declaration KeyCodeConstants = new Declaration(new QualifiedMemberName(KeyCodeConstantsModuleName, "KeyCodeConstants"), "VBA", "KeyCodeConstants", false, false, Accessibility.Global, DeclarationType.Module);
             public static Declaration VbKeyLButton = new Declaration(new QualifiedMemberName(KeyCodeConstantsModuleName, "vbKeyLButton"), "VBA.KeyCodeConstants", "Long", true, false, Accessibility.Global, DeclarationType.Constant);

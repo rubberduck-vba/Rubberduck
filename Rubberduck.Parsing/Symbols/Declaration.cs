@@ -6,6 +6,19 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    public class ValuedDeclaration : Declaration
+    {
+        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
+            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value, bool isBuiltIn = true)
+            : base(qualifiedName, parentScope, asTypeName, true, false, accessibility, declarationType, isBuiltIn)
+        {
+            _value = value;
+        }
+
+        private readonly string _value;
+        public string Value { get { return _value; } }
+    }
+
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
@@ -13,8 +26,8 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = false)
-            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home)
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true)
+            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn)
         {}
 
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
