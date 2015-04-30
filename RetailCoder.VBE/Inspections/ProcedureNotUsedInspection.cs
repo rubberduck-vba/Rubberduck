@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
-    public class ProcedureNotUsedInspection //: IInspection /* note: deferred to v1.4 */
+    public class ProcedureNotUsedInspection : IInspection 
     {
         public ProcedureNotUsedInspection()
         {
@@ -41,12 +41,13 @@ namespace Rubberduck.Inspections
 
         private bool IsIgnoredDeclaration(Declarations declarations, Declaration declaration, IEnumerable<Declaration> handlers, IEnumerable<Declaration> classes, IEnumerable<Declaration> modules)
         {
+            var enumerable = classes as IList<Declaration> ?? classes.ToList();
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
                 || declaration.References.Any()
                 || handlers.Contains(declaration)
                 || IsPublicModuleMember(modules, declaration)
-                || IsClassLifeCycleHandler(classes, declaration)
-                || IsInterfaceMember(declarations, classes, declaration);
+                || IsClassLifeCycleHandler(enumerable, declaration)
+                || IsInterfaceMember(declarations, enumerable, declaration);
 
             return result;
         }

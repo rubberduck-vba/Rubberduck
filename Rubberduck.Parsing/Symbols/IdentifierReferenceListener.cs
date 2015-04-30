@@ -22,13 +22,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             _qualifiedName = qualifiedName;
             _declarations = declarations;
-
-            // note: is this the best way to handle built-in declarations?
-            foreach (var declaration in VbaStandardLib.Declarations)
-            {
-                _declarations.Add(declaration);
-            }
-
             SetCurrentScope();
         }
 
@@ -140,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var leftSide = context.implicitCallStmt_InStmt();
             var letStatement = context.LET();
-            var target = FindAssignmentTarget(leftSide);
+            var target = FindAssignmentTarget(leftSide, DeclarationType.PropertyLet);
             if (target != null)
             {
                 EnterIdentifier(target, target.GetSelection(), true, letStatement != null);
@@ -150,14 +143,14 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterSetStmt(VBAParser.SetStmtContext context)
         {
             var leftSide = context.implicitCallStmt_InStmt();
-            var target = FindAssignmentTarget(leftSide);
+            var target = FindAssignmentTarget(leftSide, DeclarationType.PropertySet);
             if (target != null)
             {
                 EnterIdentifier(target, target.GetSelection(), true);
             }
         }
 
-        private VBAParser.AmbiguousIdentifierContext FindAssignmentTarget(VBAParser.ImplicitCallStmt_InStmtContext leftSide)
+        private VBAParser.AmbiguousIdentifierContext FindAssignmentTarget(VBAParser.ImplicitCallStmt_InStmtContext leftSide, DeclarationType accessorType)
         {
             // todo: refactor!!
 
@@ -200,7 +193,7 @@ namespace Rubberduck.Parsing.Symbols
 
                             if (reference != null)
                             {
-                                EnterIdentifier(reference, reference.GetSelection());
+                                EnterIdentifier(reference, reference.GetSelection(), false, false, accessorType);
                             }
                             else
                             {
@@ -216,7 +209,7 @@ namespace Rubberduck.Parsing.Symbols
 
                             if (reference != null)
                             {
-                                EnterIdentifier(reference, reference.GetSelection());
+                                EnterIdentifier(reference, reference.GetSelection(), false, false, accessorType);
                             }
                             else
                             {
@@ -337,12 +330,12 @@ namespace Rubberduck.Parsing.Symbols
             EnterIdentifier(context, selection);
         }
 
-        private bool EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        private bool EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
 
-            var declaration = GetClosestScopeDeclaration(matches, context);
+            var declaration = GetClosestScopeDeclaration(matches, context, accessorType);
             if (declaration != null)
             {
                 var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
@@ -466,12 +459,25 @@ namespace Rubberduck.Parsing.Symbols
                    || IsGlobalProcedure(declaration);
         }
 
-        private Declaration GetClosestScopeDeclaration(IEnumerable<Declaration> declarations, ParserRuleContext context)
+        private Declaration GetClosestScopeDeclaration(IEnumerable<Declaration> declarations, ParserRuleContext context, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
             // this method (as does the rest of Rubberduck) assumes the VBA code is compilable.
+            if (context.Parent.Parent.Parent is VBAParser.AsTypeClauseContext)
+            {
+                accessorType = DeclarationType.Class;
+            }
 
             var matches = declarations as IList<Declaration> ?? declarations.ToList();
-            var currentScope = matches.SingleOrDefault(declaration => declaration.Scope == _currentScope);
+            var currentScope = matches.SingleOrDefault(declaration => 
+                declaration.Scope == _currentScope
+                && (accessorType == DeclarationType.Class 
+                    ? declaration.DeclarationType == DeclarationType.Class
+                    : accessorType == DeclarationType.PropertySet 
+                        ? (declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertyLet)
+                        : accessorType == DeclarationType.PropertyLet
+                            ? (declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertySet)
+                            : (declaration.DeclarationType != DeclarationType.PropertyLet && declaration.DeclarationType != DeclarationType.PropertySet)));
+
             if (currentScope != null)
             {
                 return currentScope;
@@ -494,16 +500,12 @@ namespace Rubberduck.Parsing.Symbols
                 var parentMemberName = memberProcedureCallContext.implicitCallStmt_InStmt().Stop.Text;
                 var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName);
 
-                var matchingParent = matchingParents.SingleOrDefault(p => p.IdentifierName == _lastAmbiguousIdentifierContext.GetText());
-                if (matchingParent != null)
+                var parentType = matches.SingleOrDefault(m => matchingParents.Any(p => m.ComponentName == p.AsTypeName));
+                if (parentType == null)
                 {
-                    var parentType = matches.SingleOrDefault(p => p.ComponentName == matchingParent.AsTypeName);
-                    if (parentType == null)
-                    {
-                        return null;
-                    }
-                    return matches.SingleOrDefault(m => m.ParentScope == parentType.ParentScope);
+                    return null;
                 }
+                return matches.SingleOrDefault(m => m.ParentScope == parentType.ParentScope);
             }            
 
             return matches.FirstOrDefault();

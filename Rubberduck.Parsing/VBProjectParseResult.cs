@@ -13,6 +13,10 @@ namespace Rubberduck.Parsing
         {
             _parseResults = parseResults;
             _declarations = new Declarations();
+            foreach (var declaration in VbaStandardLib.Declarations)
+            {
+                _declarations.Add(declaration);
+            }
             IdentifySymbols();
             IdentifySymbolUsages();
         }
