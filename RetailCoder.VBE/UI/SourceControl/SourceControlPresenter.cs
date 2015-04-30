@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.SourceControl;
 using Rubberduck.Config;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -16,6 +17,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private SourceControlConfiguration _config;
+
+        private ISourceControlProvider _provider;
 
         public SourceControlPresenter
             (
@@ -42,12 +45,42 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnInitNewRepository(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            using (var folderPicker = new FolderBrowserDialog())
+            {
+                folderPicker.Description = "Create New Repository";
+                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
+                folderPicker.ShowNewFolderButton = true;
+
+                if (folderPicker.ShowDialog() == DialogResult.OK)
+                {
+                    var project = this.VBE.ActiveVBProject;
+
+                    _provider = new GitProvider(project);
+                    var repo = _provider.Init(folderPicker.SelectedPath);
+
+                    _provider = new GitProvider(project, repo);
+
+                    SetChildPresenterSourceControlProviders(_provider);
+                }
+            }
         }
 
         private void OnOpenWorkingDirectory(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            using (var folderPicker = new FolderBrowserDialog())
+            {
+                folderPicker.Description = "Open Working Directory";
+                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
+                folderPicker.ShowNewFolderButton = false;
+
+                if (folderPicker.ShowDialog() == DialogResult.OK)
+                {
+                    var project = this.VBE.ActiveVBProject;
+                    _provider = new GitProvider(project, new Repository(project.Name, folderPicker.SelectedPath, string.Empty));
+
+                    SetChildPresenterSourceControlProviders(_provider);
+                }
+            }
         }
 
         private void OnRefreshChildren(object sender, EventArgs e)
@@ -63,25 +96,28 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            ISourceControlProvider provider;
-
             try
             {
-                provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First());
+                _provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First());
             }
             catch (SourceControlException ex)
             {
                 //todo: report failure to user and prompt to create or browse
-                provider = new GitProvider(this.VBE.ActiveVBProject);
+                _provider = new GitProvider(this.VBE.ActiveVBProject);
             }
 
+            SetChildPresenterSourceControlProviders(_provider);
+
+            _view.Status = "Online";
+        }
+
+        private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
+        {
             _branchesPresenter.Provider = provider;
             _changesPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();
-
-            _view.Status = "Online";
         }
 
         private bool ValidRepoExists()
