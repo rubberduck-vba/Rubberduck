@@ -16,14 +16,12 @@ namespace Rubberduck.UI.SourceControl
         private readonly ISourceControlView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private SourceControlConfiguration _config;
-        private IFolderBrowserDialog _folderPicker;
 
         public SourceControlPresenter
             (
                 VBE vbe, 
                 AddIn addin, 
                 IConfigurationService<SourceControlConfiguration> configService,
-                IFolderBrowserDialog folderPicker,
                 ISourceControlView view, 
                 IChangesPresenter changesPresenter,
                 IBranchesPresenter branchesPresenter           
@@ -32,8 +30,6 @@ namespace Rubberduck.UI.SourceControl
         {
             _configService = configService;
             _config = _configService.LoadConfiguration();
-
-            _folderPicker = folderPicker;
 
             _changesPresenter = changesPresenter;
             _branchesPresenter = branchesPresenter;

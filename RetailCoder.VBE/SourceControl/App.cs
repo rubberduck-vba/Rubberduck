@@ -7,7 +7,7 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.Config;
 using Microsoft.Vbe.Interop;
-using Rubberduck.UI;
+using Rubberduck.Config;
 
 namespace Rubberduck.SourceControl
 {
@@ -29,11 +29,10 @@ namespace Rubberduck.SourceControl
                 )
         {
              _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
-
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
 
-            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, new FolderBrowserDialog(), _sourceControlView, changesPresenter, branchesPresenter);
+            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, _sourceControlView, changesPresenter, branchesPresenter);
         }
 
         public void ShowWindow()

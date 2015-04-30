@@ -8,7 +8,6 @@ using  Moq;
 using RubberduckTests.Mocks;
 using Rubberduck.Config;
 using System.Collections.Generic;
-using Rubberduck.UI;
 
 namespace RubberduckTests.SourceControl
 {
@@ -24,7 +23,6 @@ namespace RubberduckTests.SourceControl
         private Mock<IChangesPresenter> _changesPresenter;
         private Mock<IBranchesPresenter> _branchesPresenter;
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
-        private Mock<IFolderBrowserDialog> _folderPicker;
 
         [TestInitialize]
         public void InitializeMocks()
@@ -49,8 +47,7 @@ namespace RubberduckTests.SourceControl
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
 
             _view.SetupProperty(v => v.Status, string.Empty);
-
-            _folderPicker = new Mock<IFolderBrowserDialog>();
+            
         }
 
         [TestMethod]
@@ -62,7 +59,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -81,7 +78,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -97,7 +94,7 @@ namespace RubberduckTests.SourceControl
             //arrange
             _configService.Setup(c => c.LoadConfiguration()).Returns(new SourceControlConfiguration());
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             SetupValidVbProject();
@@ -120,7 +117,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -142,7 +139,7 @@ namespace RubberduckTests.SourceControl
             var project = new Mock<VBProject>().SetupProperty(p => p.Name, "FooBar");
             _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -166,7 +163,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -188,7 +185,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
@@ -210,7 +207,7 @@ namespace RubberduckTests.SourceControl
             _changesPresenter.SetupProperty(c => c.Provider);
             _branchesPresenter.SetupProperty(b => b.Provider);
 
-            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, _folderPicker.Object,
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object);
 
             //act
