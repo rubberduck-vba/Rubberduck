@@ -312,12 +312,6 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private VBAParser.AmbiguousIdentifierContext _lastAmbiguousIdentifierContext;
-        public override void ExitAmbiguousIdentifier(VBAParser.AmbiguousIdentifierContext context)
-        {
-            _lastAmbiguousIdentifierContext = context;
-        }
-
         public override void EnterCertainIdentifier(VBAParser.CertainIdentifierContext context)
         {
             // skip declarations
@@ -349,6 +343,108 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return false;
+        }
+
+        private readonly Stack<Declaration> _withQualifiers = new Stack<Declaration>();
+        public override void EnterWithStmt(VBAParser.WithStmtContext context)
+        {
+            var implicitCall = context.implicitCallStmt_InStmt();
+
+            Declaration returnType;
+            var call = Resolve(implicitCall.iCS_S_ProcedureOrArrayCall())
+                ?? Resolve(implicitCall.iCS_S_VariableOrProcedureCall())
+                ?? Resolve(implicitCall.iCS_S_DictionaryCall())
+                ?? Resolve(implicitCall.iCS_S_MembersCall());
+
+            _withQualifiers.Push(GetReturnType(call));            
+        }
+
+        private Declaration GetReturnType(Declaration call)
+        {
+            return call == null 
+                ? null 
+                : _declarations.Items.SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Class
+                && item.Accessibility != Accessibility.Private
+                && item.IdentifierName == call.AsTypeName);
+        }
+
+        public override void ExitWithStmt(VBAParser.WithStmtContext context)
+        {
+            _withQualifiers.Pop();
+        }
+
+        private Declaration Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var identifierContext = context.ambiguousIdentifier();
+            var name = identifierContext.GetText();
+
+            var procedure = FindProcedureDeclaration(name, identifierContext);
+            return procedure ?? FindVariableDeclaration(name, identifierContext);
+        }
+
+        private Declaration Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var identifierContext = context.ambiguousIdentifier();
+            var name = identifierContext.GetText();
+
+            var procedure = FindProcedureDeclaration(name, identifierContext);
+            return procedure ?? FindVariableDeclaration(name, identifierContext);
+        }
+
+        private Declaration Resolve(VBAParser.ICS_S_DictionaryCallContext context, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var identifierContext = EnterDictionaryCall(context.dictionaryCallStmt(), parentIdentifier);
+            var name = identifierContext.GetText();
+
+            return FindVariableDeclaration(name, identifierContext);
+        }
+
+        private Declaration Resolve(VBAParser.ICS_S_MembersCallContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var members = context.iCS_S_MemberCall();
+            for (var index = 0; index < members.Count; index++)
+            {
+                var member = members[index];
+                if (index < members.Count - 1)
+                {
+                    var parent = Resolve(member.iCS_S_ProcedureOrArrayCall())
+                                         ?? Resolve(member.iCS_S_VariableOrProcedureCall());
+
+                    if (parent == null)
+                    {
+                        // return early if we can't resolve the whole member chain
+                        return null;
+                    }
+                }
+                else
+                {
+                    return Resolve(member.iCS_S_ProcedureOrArrayCall())
+                           ?? Resolve(member.iCS_S_VariableOrProcedureCall());
+                }
+            }
+
+            return null;
         }
 
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
@@ -392,7 +488,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var procScope = procedure.ParentScope + "." + procedure.IdentifierName;
 
-            var arg = _declarations.Items.FirstOrDefault(declaration =>
+            var arg = _declarations.Items.SingleOrDefault(declaration =>
                         declaration.ParentScope == procScope 
                         && declaration.DeclarationType == DeclarationType.Parameter);
 
@@ -411,6 +507,16 @@ namespace Rubberduck.Parsing.Symbols
 
             var procedure = GetClosestScopeDeclaration(matches, context);
             return procedure;
+        }
+
+        private Declaration FindVariableDeclaration(string procedureName, ParserRuleContext context)
+        {
+            var matches = _declarations[procedureName]
+                .Where(declaration => declaration.DeclarationType == DeclarationType.Variable)
+                .Where(IsInScope);
+
+            var variable = GetClosestScopeDeclaration(matches, context);
+            return variable;
         }
 
         private static readonly DeclarationType[] ProcedureDeclarations = 
@@ -438,6 +544,7 @@ namespace Rubberduck.Parsing.Symbols
                 declaration.DeclarationType == DeclarationType.Class)
             {
                 // todo: access component instancing properties to do this right (class)
+                // i.e. a private class in another project wouldn't be accessible
                 return true;
             }
 
@@ -461,7 +568,6 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration GetClosestScopeDeclaration(IEnumerable<Declaration> declarations, ParserRuleContext context, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
-            // this method (as does the rest of Rubberduck) assumes the VBA code is compilable.
             if (context.Parent.Parent.Parent is VBAParser.AsTypeClauseContext)
             {
                 accessorType = DeclarationType.Class;
@@ -469,14 +575,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = declarations as IList<Declaration> ?? declarations.ToList();
             var currentScope = matches.SingleOrDefault(declaration => 
-                declaration.Scope == _currentScope
-                && (accessorType == DeclarationType.Class 
-                    ? declaration.DeclarationType == DeclarationType.Class
-                    : accessorType == DeclarationType.PropertySet 
-                        ? (declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertyLet)
-                        : accessorType == DeclarationType.PropertyLet
-                            ? (declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertySet)
-                            : (declaration.DeclarationType != DeclarationType.PropertyLet && declaration.DeclarationType != DeclarationType.PropertySet)));
+                IsCurrentScopeMember(accessorType, declaration));
 
             if (currentScope != null)
             {
@@ -497,18 +596,43 @@ namespace Rubberduck.Parsing.Symbols
             var memberProcedureCallContext = context.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
             if (memberProcedureCallContext != null)
             {
-                var parentMemberName = memberProcedureCallContext.implicitCallStmt_InStmt().Stop.Text;
-                var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName);
+                var parentMemberName = memberProcedureCallContext.Stop.Text;
+                var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName && d.DeclarationType == DeclarationType.Class);
 
-                var parentType = matches.SingleOrDefault(m => matchingParents.Any(p => m.ComponentName == p.AsTypeName));
-                if (parentType == null)
-                {
-                    return null;
-                }
-                return matches.SingleOrDefault(m => m.ParentScope == parentType.ParentScope);
-            }            
+                var parentType = _withQualifiers.Any() 
+                    ? _withQualifiers.Peek() 
+                    : matches.SingleOrDefault(m => matchingParents.Any(p => m.ComponentName == p.AsTypeName));
 
-            return matches.FirstOrDefault();
+                return parentType == null ? null : matches.SingleOrDefault(m => m.ParentScope == parentType.Scope);
+            }
+
+            return matches.SingleOrDefault(m => m.ParentScope == _currentScope);
+        }
+
+        private bool IsCurrentScopeMember(DeclarationType accessorType, Declaration declaration)
+        {
+            if (declaration.Scope != _currentScope || accessorType != DeclarationType.Class)
+            {
+                return false;
+            }
+
+            switch (accessorType)
+            {
+                case DeclarationType.Class:
+                    return declaration.DeclarationType == DeclarationType.Class;
+
+                case DeclarationType.PropertySet:
+                    return declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertyLet;
+
+                case DeclarationType.PropertyLet:
+                    return declaration.DeclarationType != DeclarationType.PropertyGet && declaration.DeclarationType != DeclarationType.PropertySet;
+
+                case DeclarationType.PropertyGet:
+                    return declaration.DeclarationType != DeclarationType.PropertyLet && declaration.DeclarationType != DeclarationType.PropertySet;
+
+                default:
+                    return true;
+            } 
         }
 
         private bool IsGlobalField(Declaration declaration)

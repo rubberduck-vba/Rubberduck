@@ -324,6 +324,8 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             if (_view.Target == null)
             {
+                return;
+
                 // rename the containing procedure:
                 _view.Target = _declarations.Items.SingleOrDefault(
                     item => !item.IsBuiltIn 
@@ -333,6 +335,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             if (_view.Target == null)
             {
+                return;
                 // rename the containing module:
                 _view.Target = _declarations.Items.SingleOrDefault(item => 
                     !item.IsBuiltIn
