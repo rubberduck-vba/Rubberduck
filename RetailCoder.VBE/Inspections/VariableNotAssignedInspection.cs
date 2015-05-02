@@ -21,6 +21,7 @@ namespace Rubberduck.Inspections
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 !declaration.IsBuiltIn 
                 && declaration.DeclarationType == DeclarationType.Variable
+                && !declaration.IsArray() // ignore arrays... not ideal though
                 && !parseResult.Declarations.Items.Any(item => 
                     item.IdentifierName == declaration.AsTypeName 
                     && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
