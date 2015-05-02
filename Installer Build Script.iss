@@ -47,8 +47,10 @@ Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversi
 Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled; AfterInstall: RegisterAddin
 
 [UninstallDelete]
-; TODO we may not want to delete everything?...
-Name: {app}; Type: filesandordirs
+; Removing all application files (except for configuration).
+Name: "{app}\*.dll"; Type: filesandordirs
+Name: "{app}\*.xml"; Type: filesandordirs  
+Name: "{app}\*.pdb"; Type: filesandordirs
 
 [Run]
 ; http://stackoverflow.com/questions/5618337/how-to-register-a-net-dll-using-inno-setup
