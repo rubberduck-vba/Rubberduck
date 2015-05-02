@@ -234,7 +234,11 @@ namespace Rubberduck.Parsing.Symbols
 
             var selection = nameContext.GetSelection();
 
-            _declarations.Add(CreateDeclaration(name, asTypeName, accessibility, DeclarationType.LibraryFunction, context, selection));
+            var declarationType = hasReturnType
+                ? DeclarationType.LibraryFunction
+                : DeclarationType.LibraryProcedure;
+
+            _declarations.Add(CreateDeclaration(name, asTypeName, accessibility, declarationType, context, selection));
             SetCurrentScope(name);
         }
 

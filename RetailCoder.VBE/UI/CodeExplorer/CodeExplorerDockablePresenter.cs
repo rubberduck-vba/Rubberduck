@@ -307,7 +307,10 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => item.IdentifierName == component.Name && item.Project == component.Collection.Parent);
+                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => 
+                    item.IdentifierName == component.Name 
+                    && item.Project == component.Collection.Parent
+                    && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
 
                 foreach (var declaration in members)
                 {
@@ -520,6 +523,7 @@ namespace Rubberduck.UI.CodeExplorer
                     result = "PublicField";
                     break;
                 
+                case DeclarationType.LibraryProcedure:
                 case DeclarationType.LibraryFunction:
                     result = "Identifier";
                     break;

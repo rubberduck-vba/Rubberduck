@@ -126,6 +126,24 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
 
+        public bool IsArray()
+        {
+            if (Context == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var declaration = ((dynamic)Context.Parent); // Context is AmbiguousIdentifier - parent is the declaration sub-statement where the array parens are
+                return declaration.LPAREN() != null && declaration.RPAREN() != null;
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
+        }
+
         public bool IsTypeSpecified()
         {
             if (Context == null)
