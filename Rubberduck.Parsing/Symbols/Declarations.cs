@@ -1,6 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using System.CodeDom;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -79,6 +82,68 @@ namespace Rubberduck.Parsing.Symbols
                                                 && interfaces.Any(i => item.ParentScope.StartsWith(i)))
                                                 .ToList();
             return _interfaceMembers;
+        }
+
+        public IEnumerable<Declaration> FindFormEventHandlers()
+        {
+            var forms = _declarations.Where(item => item.DeclarationType == DeclarationType.Class
+                && item.QualifiedName.QualifiedModuleName.Component != null
+                && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+                .ToList();
+
+            var result = new List<Declaration>();
+            foreach (var declaration in forms)
+            {
+                result.AddRange(FindFormEventHandlers(declaration));
+            }
+
+            return result;
+        }
+
+        public IEnumerable<Declaration> FindFormEventHandlers(Declaration userForm)
+        {
+            var events = _declarations.Where(item => item.IsBuiltIn
+                                                     && item.ParentScope == "MSForms.UserForm"
+                                                     && item.DeclarationType == DeclarationType.Event).ToList();
+            var handlerNames = events.Select(item => "UserForm_" + item.IdentifierName);
+            var handlers = _declarations.Where(item => item.ParentScope == userForm.Scope
+                                                       && item.DeclarationType == DeclarationType.Procedure
+                                                       && handlerNames.Contains(item.IdentifierName));
+
+            return handlers.ToList();
+        }
+
+        public IEnumerable<Declaration> FindEventProcedures(Declaration withEventsDeclaration)
+        {
+            if (!withEventsDeclaration.IsWithEvents)
+            {
+                return new Declaration[]{};
+            }
+
+            var type = _declarations.SingleOrDefault(item => item.DeclarationType == DeclarationType.Class
+                                                             && item.Project != null
+                                                             && item.IdentifierName == withEventsDeclaration.AsTypeName.Split('.').Last());
+
+            if (type == null)
+            {
+                return new Declaration[]{};
+            }
+
+            var members = GetTypeMembers(type).ToList();
+            var events = members.Where(member => member.DeclarationType == DeclarationType.Event);
+            var handlerNames = events.Select(e => withEventsDeclaration.IdentifierName + '_' + e.IdentifierName);
+
+            return _declarations.Where(item => item.Project != null 
+                                               && item.Project.Equals(withEventsDeclaration.Project)
+                                               && item.ParentScope == withEventsDeclaration.ParentScope
+                                               && item.DeclarationType == DeclarationType.Procedure
+                                               && handlerNames.Any(name => item.IdentifierName == name))
+                .ToList();
+        }
+
+        private IEnumerable<Declaration> GetTypeMembers(Declaration type)
+        {
+            return _declarations.Where(item => item.Project != null && item.Project.Equals(type.Project) && item.ParentScope == type.Scope);
         }
 
         private IEnumerable<Declaration> _interfaceImplementationMembers;

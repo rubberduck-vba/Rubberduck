@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -24,6 +25,19 @@ namespace Rubberduck.Inspections
 
             var handlers = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Control)
                 .SelectMany(control => parseResult.Declarations.FindEventHandlers(control)).ToList();
+
+            var withEventFields = parseResult.Declarations.Items.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Variable && item.IsWithEvents);
+            handlers.AddRange(withEventFields.SelectMany(field => parseResult.Declarations.FindEventProcedures(field)));
+
+            var forms = parseResult.Declarations.Items.Where(
+                item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Class
+                        && item.QualifiedName.QualifiedModuleName.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
+                .ToList();
+
+            if (forms.Any())
+            {
+                handlers.AddRange(forms.SelectMany(form => parseResult.Declarations.FindFormEventHandlers(form)));
+            }
 
             var issues = parseResult.Declarations.Items
                 .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
@@ -98,7 +112,8 @@ namespace Rubberduck.Inspections
         private bool IsInterfaceMember(Declarations declarations, IEnumerable<Declaration> classes, Declaration procedure)
         {
             // get the procedure's parent module
-            var parent = classes.Where(item => item.Project == procedure.Project)
+            var enumerable = classes as IList<Declaration> ?? classes.ToList();
+            var parent = enumerable.Where(item => item.Project == procedure.Project)
                         .SingleOrDefault(item => item.IdentifierName == procedure.ComponentName);
 
             if (parent == null)
@@ -106,7 +121,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var interfaces = classes.Where(item => item.References.Any(reference =>
+            var interfaces = enumerable.Where(item => item.References.Any(reference =>
                     reference.Context.Parent is VBAParser.ImplementsStmtContext));
 
             if (interfaces.Select(i => i.ComponentName).Contains(procedure.ComponentName))
@@ -114,7 +129,7 @@ namespace Rubberduck.Inspections
                 return true;
             }
 
-            var result = GetImplementedInterfaceMembers(declarations, classes, procedure.ComponentName)
+            var result = GetImplementedInterfaceMembers(declarations, enumerable, procedure.ComponentName)
                 .Contains(procedure.IdentifierName);
 
             return result;

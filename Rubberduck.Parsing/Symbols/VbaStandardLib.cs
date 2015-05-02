@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 
 namespace Rubberduck.Parsing.Symbols
@@ -247,6 +248,7 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration Hex = new Declaration(new QualifiedMemberName(ConversionModuleName, "Hex"), "VBA.Conversion", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration HexStr = new Declaration(new QualifiedMemberName(ConversionModuleName, "Hex$"), "VBA.Conversion", "String", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration Int = new Declaration(new QualifiedMemberName(ConversionModuleName, "Int"), "VBA.Conversion", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration MacID = new Declaration(new QualifiedMemberName(ConversionModuleName, "MacID"), "VBA.Conversion", "Long", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration Oct = new Declaration(new QualifiedMemberName(ConversionModuleName, "Oct"), "VBA.Conversion", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration OctStr = new Declaration(new QualifiedMemberName(ConversionModuleName, "Oct$"), "VBA.Conversion", "String", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration Str = new Declaration(new QualifiedMemberName(ConversionModuleName, "Str"), "VBA.Conversion", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
@@ -328,11 +330,28 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration SYD = new Declaration(new QualifiedMemberName(FinancialModuleName, "SYD"), "VBA.Financial", "Double", false, false, Accessibility.Global, DeclarationType.Function);
         }
 
+        private class HiddenModule
+        {
+            private static QualifiedModuleName HiddenModuleName = new QualifiedModuleName("VBA", "[_HiddenModule]");
+            public static Declaration Array = new Declaration(new QualifiedMemberName(HiddenModuleName, "Array"), "VBA.[_HiddenModule]", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Input = new Declaration(new QualifiedMemberName(HiddenModuleName, "Input"), "VBA.[_HiddenModule]", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration InputStr = new Declaration(new QualifiedMemberName(HiddenModuleName, "Input$"), "VBA.[_HiddenModule]", "String", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration InputB = new Declaration(new QualifiedMemberName(HiddenModuleName, "InputB"), "VBA.[_HiddenModule]", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration InputBStr = new Declaration(new QualifiedMemberName(HiddenModuleName, "InputB$"), "VBA.[_HiddenModule]", "String", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Width = new Declaration(new QualifiedMemberName(HiddenModuleName, "Width"), "VBA.[_HiddenModule]", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
+            
+            // hidden members... of hidden module (like, very very hidden!)
+            public static Declaration ObjPtr = new Declaration(new QualifiedMemberName(HiddenModuleName, "ObjPtr"), "VBA.[_HiddenModule]", "LongPtr", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration StrPtr = new Declaration(new QualifiedMemberName(HiddenModuleName, "StrPtr"), "VBA.[_HiddenModule]", "LongPtr", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration VarPtr = new Declaration(new QualifiedMemberName(HiddenModuleName, "VarPtr"), "VBA.[_HiddenModule]", "LongPtr", false, false, Accessibility.Global, DeclarationType.Function);
+        }
+
         private class InformationModule
         {
             private static QualifiedModuleName InformationModuleName = new QualifiedModuleName("VBA", "Information");
             public static Declaration Information = new Declaration(new QualifiedMemberName(InformationModuleName, "Information"), "VBA", "Information", false, false, Accessibility.Global, DeclarationType.Module);
             public static Declaration Err = new Declaration(new QualifiedMemberName(InformationModuleName, "Err"), "VBA.Information", "ErrObject", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration Erl = new Declaration(new QualifiedMemberName(InformationModuleName, "Erl"), "VBA.Information", "Long", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration IMEStatus = new Declaration(new QualifiedMemberName(InformationModuleName, "IMEStatus"), "VBA.Information", "vbIMEStatus", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration IsArray = new Declaration(new QualifiedMemberName(InformationModuleName, "IsArray"), "VBA.Information", "Boolean", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration IsDate = new Declaration(new QualifiedMemberName(InformationModuleName, "IsDate"), "VBA.Information", "Boolean", false, false, Accessibility.Global, DeclarationType.Function);
@@ -367,6 +386,7 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration GetSetting = new Declaration(new QualifiedMemberName(InteractionModuleName, "GetSetting"), "VBA.Interaction", "String", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration IIf = new Declaration(new QualifiedMemberName(InteractionModuleName, "IIf"), "VBA.Interaction", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration InputBox = new Declaration(new QualifiedMemberName(InteractionModuleName, "InputBox"), "VBA.Interaction", "String", false, false, Accessibility.Global, DeclarationType.Function);
+            public static Declaration MacScript = new Declaration(new QualifiedMemberName(InteractionModuleName, "MacScript"), "VBA.Interaction", "String", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration MsgBox = new Declaration(new QualifiedMemberName(InteractionModuleName, "MsgBox"), "VBA.Interaction", "vbMsgBoxResult", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration Partition = new Declaration(new QualifiedMemberName(InteractionModuleName, "Partition"), "VBA.Interaction", "Variant", false, false, Accessibility.Global, DeclarationType.Function);
             public static Declaration Shell = new Declaration(new QualifiedMemberName(InteractionModuleName, "Shell"), "VBA.Interaction", "Double", false, false, Accessibility.Global, DeclarationType.Function);
@@ -606,6 +626,7 @@ namespace Rubberduck.Parsing.Symbols
         private class CollectionClass
         {
             public static Declaration Collection = new Declaration(new QualifiedMemberName(VbaModuleName, "Collection"), "VBA", "Collection", false, false, Accessibility.Global, DeclarationType.Class);
+            public static Declaration NewEnum = new Declaration(new QualifiedMemberName(VbaModuleName, "[_NewEnum]"), "VBA.Collection", "Unknown", false, false, Accessibility.Public, DeclarationType.Function);
             public static Declaration Count = new Declaration(new QualifiedMemberName(VbaModuleName, "Count"), "VBA.Collection", "Long", false, false, Accessibility.Public, DeclarationType.Function);
             public static Declaration Item = new Declaration(new QualifiedMemberName(VbaModuleName, "Item"), "VBA.Collection", "Variant", false, false, Accessibility.Public, DeclarationType.Function);
             public static Declaration Add = new Declaration(new QualifiedMemberName(VbaModuleName, "Add"), "VBA.Collection", null, false, false, Accessibility.Public, DeclarationType.Procedure);
@@ -630,9 +651,50 @@ namespace Rubberduck.Parsing.Symbols
             public static Declaration Global = new Declaration(new QualifiedMemberName(VbaModuleName, "Global"), "VBA", "Global", false, false, Accessibility.Global, DeclarationType.Class);
             public static Declaration Load = new Declaration(new QualifiedMemberName(VbaModuleName, "Load"), "VBA.Global", null, false, false, Accessibility.Public, DeclarationType.Procedure);
             public static Declaration Unload = new Declaration(new QualifiedMemberName(VbaModuleName, "Unload"), "VBA.Global", null, false, false, Accessibility.Public, DeclarationType.Procedure);
+
+            public static Declaration UserForms = new Declaration(new QualifiedMemberName(VbaModuleName, "UserForms"), "VBA.Global", "Object", true, false, Accessibility.Public, DeclarationType.PropertyGet);
         }
         
         #endregion
 
+        #region MSForms library (just for form events)
+        /*
+         *  This part should be deleted and Rubberduck should use MsFormsLib instead.
+         *  However MsFormsLib is daunting and not implemented yet, and all we want for now
+         *  is a Declaration object for form events - so this is "good enough" until MsFormsLib is implemented.
+         */
+        private static readonly QualifiedModuleName MsFormsModuleName = new QualifiedModuleName("MSForms", "MSForms");
+
+        private class UserFormClass
+        {
+            public static Declaration UserForm = new Declaration(new QualifiedMemberName(MsFormsModuleName, "UserForm"), "MSForms", "UserForm", true, false, Accessibility.Global, DeclarationType.Class);
+
+            // events
+            public static Declaration AddControl = new Declaration(new QualifiedMemberName(MsFormsModuleName, "AddControl"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration BeforeDragOver = new Declaration(new QualifiedMemberName(MsFormsModuleName, "BeforeDragOver"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration BeforeDropOrPaste = new Declaration(new QualifiedMemberName(MsFormsModuleName, "BeforeDropOrPaste"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Click = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Click"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration DblClick = new Declaration(new QualifiedMemberName(MsFormsModuleName, "DblClick"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Error = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Error"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration KeyDown = new Declaration(new QualifiedMemberName(MsFormsModuleName, "KeyDown"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration KeyPress = new Declaration(new QualifiedMemberName(MsFormsModuleName, "KeyPress"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration KeyUp = new Declaration(new QualifiedMemberName(MsFormsModuleName, "KeyUp"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Layout = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Layout"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration MouseDown = new Declaration(new QualifiedMemberName(MsFormsModuleName, "MouseDown"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration MouseMove = new Declaration(new QualifiedMemberName(MsFormsModuleName, "MouseMove"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration MouseUp = new Declaration(new QualifiedMemberName(MsFormsModuleName, "MouseUp"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration RemoveControl = new Declaration(new QualifiedMemberName(MsFormsModuleName, "RemoveControl"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Scroll = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Scroll"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Zoom = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Zoom"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+
+            // ghost events (nowhere in the object browser)
+            public static Declaration Activate = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Activate"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Deactivate = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Deactivate"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Initialize = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Initialize"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration QueryClose = new Declaration(new QualifiedMemberName(MsFormsModuleName, "QueryClose"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Resize = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Resize"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+            public static Declaration Terminate = new Declaration(new QualifiedMemberName(MsFormsModuleName, "Terminate"), "MSForms.UserForm", null, true, false, Accessibility.Public, DeclarationType.Event);
+        }
+        #endregion
     }
 }

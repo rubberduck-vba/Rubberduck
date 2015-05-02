@@ -39,8 +39,23 @@ namespace Rubberduck.Inspections
                 .Concat(parseResult.Declarations.FindInterfaceImplementationMembers())
                 .ToList();
 
+            var formEventHandlerScopes = parseResult.Declarations.FindFormEventHandlers()
+                .Select(handler => handler.Scope);
+
+            var eventScopes = parseResult.Declarations.Items.Where(item => 
+                !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event)
+                .Select(e => e.Scope);
+
+            var declareScopes = parseResult.Declarations.Items.Where(item => 
+                    item.DeclarationType == DeclarationType.LibraryFunction 
+                    || item.DeclarationType == DeclarationType.LibraryProcedure)
+                .Select(e => e.Scope);
+
+            var ignoredScopes = formEventHandlerScopes.Concat(eventScopes).Concat(declareScopes);
+
             var issues = parseResult.Declarations.Items.Where(declaration =>
-                !declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Parameter
+                !ignoredScopes.Contains(declaration.ParentScope)
+                && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && PrimitiveTypes.Contains(declaration.AsTypeName)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
@@ -49,5 +64,7 @@ namespace Rubberduck.Inspections
 
             return issues;
         }
+
+
     }
 }
