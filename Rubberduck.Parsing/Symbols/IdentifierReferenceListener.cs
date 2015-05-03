@@ -265,6 +265,11 @@ namespace Rubberduck.Parsing.Symbols
                 ? matches.SingleOrDefault()
                 : GetClosestScopeDeclaration(matches, context, DeclarationType.Class);
 
+            if (result == null)
+            {
+                return;
+            }
+
             var reference = new IdentifierReference(_qualifiedName, result.IdentifierName, lastIdentifier.GetSelection(), context, result);
             result.AddReference(reference);
         }
