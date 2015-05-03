@@ -205,11 +205,6 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
 
-            if (context.GetText() == "Update")
-            {
-                
-            }
-
             var selection = context.GetSelection();
 
             if (context.Parent is VBAParser.ForNextStmtContext 
