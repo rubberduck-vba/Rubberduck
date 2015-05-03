@@ -18,10 +18,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
+            // ignore arrays. todo: ArrayIndicesNotAccessedInspection
+            var arrays = parseResult.Declarations.Items.Where(declaration =>
+                declaration.DeclarationType == DeclarationType.Variable
+                && declaration.IsArray()).ToList();
+
             var declarations = parseResult.Declarations.Items.Where(declaration =>
-                !declaration.IsBuiltIn 
-                && declaration.DeclarationType == DeclarationType.Variable
-                && !declaration.IsArray() // ignore arrays... not ideal though
+                declaration.DeclarationType == DeclarationType.Variable
+                && !declaration.IsBuiltIn 
+                && !arrays.Contains(declaration)
                 && !parseResult.Declarations.Items.Any(item => 
                     item.IdentifierName == declaration.AsTypeName 
                     && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned

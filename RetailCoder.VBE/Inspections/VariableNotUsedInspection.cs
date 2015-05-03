@@ -20,8 +20,9 @@ namespace Rubberduck.Inspections
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 !declaration.IsBuiltIn 
+                //&& !declaration.IsArray()
                 && declaration.DeclarationType == DeclarationType.Variable
-                && !declaration.References.Any(reference => !reference.IsAssignment));
+                && declaration.References.All(reference => reference.IsAssignment));
 
             foreach (var issue in declarations)
             {

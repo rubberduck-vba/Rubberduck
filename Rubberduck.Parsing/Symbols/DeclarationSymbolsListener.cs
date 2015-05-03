@@ -258,7 +258,7 @@ namespace Rubberduck.Parsing.Symbols
                     : asTypeClause.type().GetText();
 
                 var identifier = argContext.ambiguousIdentifier();
-                _declarations.Add(CreateDeclaration(identifier.GetText(), asTypeName, Accessibility.Implicit, DeclarationType.Parameter, argContext, argContext.ambiguousIdentifier().GetSelection()));
+                _declarations.Add(CreateDeclaration(identifier.GetText(), asTypeName, Accessibility.Implicit, DeclarationType.Parameter, argContext, identifier.GetSelection()));
             }
         }
 

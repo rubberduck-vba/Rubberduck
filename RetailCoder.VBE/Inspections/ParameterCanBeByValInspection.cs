@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing;
 using System.Linq;
+using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -59,12 +61,18 @@ namespace Rubberduck.Inspections
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
                 && PrimitiveTypes.Contains(declaration.AsTypeName)
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
+                && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .Select(issue => new ParameterCanBeByValInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName));
 
             return issues;
         }
 
-
+        private bool IsUsedAsByRefParam(Declarations declarations, Declaration parameter)
+        {
+            // todo: enable tracking parameter references 
+            // by linking Parameter declarations to their parent Procedure/Function/Property member.
+            return false;
+        }
     }
 }
