@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing;
 using System.Linq;
-using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
