@@ -74,8 +74,9 @@ Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 const
   SCS_32BIT_BINARY = 0;
   SCS_64BIT_BINARY = 6;
-  // There are other values that GetBinaryType can return, but we're
-  // not interested in them.
+  // There are other values that GetBinaryType can return, but we're not interested in them.
+  OfficeNotFound = -1;
+  
 var
   HasCheckedOfficeBitness: Boolean;
   OfficeIs64Bit: Boolean;
@@ -83,37 +84,50 @@ var
 function GetBinaryType(lpApplicationName: AnsiString; var lpBinaryType: Integer): Boolean;
 external 'GetBinaryTypeA@kernel32.dll stdcall';
 
-// TODO this only checks for Excel's bitness, but what if they don't have it installed?
-function Is64BitExcelFromRegisteredExe(): Boolean;
+function GetOfficeAppBitness(exeName: string): Integer;
 var
-  excelPath: String;
+  appPath: String;
   binaryType: Integer;
 begin
-  Result := False; // Default value - assume 32-bit unless proven otherwise.
-  // RegQueryStringValue second param is '' to get the (default) value for the key
-  // with no sub-key name, as described at
-  // http://stackoverflow.com/questions/913938/
-  if IsWin64() and RegQueryStringValue(HKEY_LOCAL_MACHINE,
-      'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe',
-      '', excelPath) then begin
-    // We've got the path to Excel.
+  Result := OfficeNotFound;  // Default value.
+
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE,
+    'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\' + exeName,
+    '', appPath) then begin
     try
-      if GetBinaryType(excelPath, binaryType) then begin
-        Result := (binaryType = SCS_64BIT_BINARY);
-      end;
+      if GetBinaryType(appPath, binaryType) then Result := binaryType;
     except
-      // Ignore - better just to assume it's 32-bit than to let the installation
-      // fail.  This could fail because the GetBinaryType function is not
-      // available.  I understand it's only available in Windows 2000
-      // Professional onwards.
     end;
   end;
+end;
+
+function GetOfficeBitness(): Integer;
+var
+  appBitness: Integer;
+  officeExeNames: array[0..4] of String;
+  i: Integer;
+begin
+  officeExeNames[0] := 'excel.exe';
+  officeExeNames[1] := 'msaccess.exe';
+  officeExeNames[2] := 'winword.exe';
+  officeExeNames[3] := 'outlook.exe';
+  officeExeNames[4] := 'powerpnt.exe';
+
+  for i := 0 to 4 do begin
+    appBitness := GetOfficeAppBitness(officeExeNames[i]);
+    if appBitness <> OfficeNotFound then begin
+      Result := appBitness;
+      exit;
+    end;
+  end;
+  // Note if we get to here then we haven't found any Office versions.  Should
+  // we fail the installation?
 end;
 
 function Is64BitOfficeInstalled(): Boolean;
 begin
   if (not HasCheckedOfficeBitness) then 
-    OfficeIs64Bit := Is64BitExcelFromRegisteredExe();
+    OfficeIs64Bit := (GetOfficeBitness() = SCS_64BIT_BINARY);
   Result := OfficeIs64Bit;
 end;
 
