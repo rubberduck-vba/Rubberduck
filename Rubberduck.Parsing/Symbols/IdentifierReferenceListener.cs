@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
@@ -251,6 +252,28 @@ namespace Rubberduck.Parsing.Symbols
             return false;
         }
 
+        public override void EnterVsNew(VBAParser.VsNewContext context)
+        {
+            _skipIdentifiers = true;
+            var identifiers = context.valueStmt().GetRuleContexts<VBAParser.ImplicitCallStmt_InStmtContext>();
+
+            var lastIdentifier = identifiers.Last();
+            var name = lastIdentifier.GetText();
+
+            var matches = _declarations[name].Where(d => d.DeclarationType == DeclarationType.Class).ToList();
+            var result = matches.Count <= 1 
+                ? matches.SingleOrDefault()
+                : GetClosestScopeDeclaration(matches, context, DeclarationType.Class);
+
+            var reference = new IdentifierReference(_qualifiedName, result.IdentifierName, lastIdentifier.GetSelection(), context, result);
+            result.AddReference(reference);
+        }
+
+        public override void ExitVsNew(VBAParser.VsNewContext context)
+        {
+            _skipIdentifiers = false;
+        }
+
         private readonly Stack<Declaration> _withQualifiers = new Stack<Declaration>();
         public override void EnterWithStmt(VBAParser.WithStmtContext context)
         {
@@ -410,12 +433,6 @@ namespace Rubberduck.Parsing.Symbols
             return Resolve(context, out discarded);
         }
 
-        private Declaration Resolve(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            var name = context.certainIdentifier().GetText();
-            return FindProcedureDeclaration(name, context.certainIdentifier()); // note: is this a StackOverflowException waiting to bite me?
-        }
-
         private Declaration Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
             var parent = context.implicitCallStmt_InStmt();
@@ -431,7 +448,6 @@ namespace Rubberduck.Parsing.Symbols
 
             var type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.Class
-                //|| item.DeclarationType == DeclarationType.Module
                 || item.DeclarationType == DeclarationType.UserDefinedType);
 
             var members = _declarations.FindMembers(type);
@@ -492,11 +508,34 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration FindProcedureDeclaration(string procedureName, ParserRuleContext context)
+        private static readonly DeclarationType[] PropertyAccessors =
+        {
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        private Declaration FindProcedureDeclaration(string procedureName, ParserRuleContext context, DeclarationType accessor = DeclarationType.PropertyGet)
         {
             var matches = _declarations[procedureName]
                 .Where(declaration => ProcedureDeclarations.Contains(declaration.DeclarationType))
-                .Where(IsInScope);
+                .Where(IsInScope)
+                .ToList();
+
+            if (!matches.Any())
+            {
+                return null;
+            }
+
+            if (matches.Count == 1)
+            {
+                return matches.First();
+            }
+
+            if (matches.All(m => PropertyAccessors.Contains(m.DeclarationType)))
+            {
+                return matches.Find(m => m.DeclarationType == accessor);
+            }
 
             var procedure = GetClosestScopeDeclaration(matches, context);
             return procedure;
@@ -567,14 +606,32 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var matches = declarations as IList<Declaration> ?? declarations.ToList();
-            var currentScope = matches.FirstOrDefault(declaration => 
-                IsCurrentScopeMember(accessorType, declaration)
-                && (declaration.DeclarationType == accessorType
-                || accessorType == DeclarationType.PropertyGet));
+            if (!matches.Any())
+            {
+                return null;
+            }
 
+            var currentScope = matches.SingleOrDefault(declaration => declaration.Scope == _currentScope 
+                && !PropertyAccessors.Contains(declaration.DeclarationType));
             if (currentScope != null)
             {
-                //return currentScope;
+                return currentScope;
+            }
+
+            // note: commented-out because it breaks the UDT member references, but property getters behave strangely still
+            //var currentScope = matches.SingleOrDefault(declaration =>
+            //    IsCurrentScopeMember(accessorType, declaration)
+            //    && (declaration.DeclarationType == accessorType
+            //        || accessorType == DeclarationType.PropertyGet));
+
+            //if (matches.First().IdentifierName == "procedure")
+            //{
+            //    // for debugging - "procedure" is both a UDT member and a parameter to a procedure.
+            //}
+
+            if (matches.Count == 1)
+            {
+                return matches[0];
             }
 
             var moduleScope = matches.SingleOrDefault(declaration => declaration.Scope == ModuleScope);
@@ -583,28 +640,19 @@ namespace Rubberduck.Parsing.Symbols
                 return moduleScope;
             }
 
-            if (matches.Count == 1)
-            {
-                return matches[0];
-            }
-
             var memberProcedureCallContext = context.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
             if (memberProcedureCallContext != null)
             {
                 return Resolve(memberProcedureCallContext);
-                var parent = memberProcedureCallContext;
-                var parentMemberName = memberProcedureCallContext.ambiguousIdentifier().GetText(); 
-                var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName 
-                    && (d.DeclarationType == DeclarationType.Class || d.DeclarationType == DeclarationType.UserDefinedType));
+            }
 
-                var parentType = _withQualifiers.Any() 
-                    ? _withQualifiers.Peek() 
-                    : matches.SingleOrDefault(m => 
-                        matchingParents.Any(p => 
-                            (p.DeclarationType == DeclarationType.Class && m.ComponentName == p.AsTypeName)
-                            || (p.DeclarationType == DeclarationType.UserDefinedType)));
-
-                return parentType == null ? null : matches.SingleOrDefault(m => m.ParentScope == parentType.Scope);
+            var implicitCall = context.Parent.Parent as VBAParser.ImplicitCallStmt_InStmtContext;
+            if (implicitCall != null)
+            {
+                return Resolve(implicitCall.iCS_S_VariableOrProcedureCall())
+                       ?? Resolve(implicitCall.iCS_S_ProcedureOrArrayCall())
+                       ?? Resolve(implicitCall.iCS_S_DictionaryCall())
+                       ?? Resolve(implicitCall.iCS_S_MembersCall());
             }
 
             return matches.SingleOrDefault(m => m.ParentScope == _currentScope);
@@ -612,7 +660,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsCurrentScopeMember(DeclarationType accessorType, Declaration declaration)
         {
-            if (declaration.Scope != _currentScope && accessorType != DeclarationType.Class)
+            if (declaration.Scope != ModuleScope && accessorType != DeclarationType.Class)
             {
                 return false;
             }
