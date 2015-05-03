@@ -256,7 +256,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implicitCall = context.implicitCallStmt_InStmt();
 
-            Declaration returnType;
             var call = Resolve(implicitCall.iCS_S_ProcedureOrArrayCall())
                 ?? Resolve(implicitCall.iCS_S_VariableOrProcedureCall())
                 ?? Resolve(implicitCall.iCS_S_DictionaryCall())
@@ -479,8 +478,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-
-            var procScope = procedure.ParentScope + "." + procedure.IdentifierName;
 
             var call = context.implicitCallStmt_InStmt();
             var arg = Resolve(call.iCS_S_VariableOrProcedureCall())
