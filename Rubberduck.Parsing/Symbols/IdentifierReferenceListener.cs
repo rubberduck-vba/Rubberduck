@@ -416,6 +416,36 @@ namespace Rubberduck.Parsing.Symbols
             return Resolve(context, out discarded);
         }
 
+        private Declaration Resolve(VBAParser.ICS_B_ProcedureCallContext context)
+        {
+            var name = context.certainIdentifier().GetText();
+            return FindProcedureDeclaration(name, context.certainIdentifier()); // note: is this a StackOverflowException waiting to bite me?
+        }
+
+        private Declaration Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
+        {
+            var parent = context.implicitCallStmt_InStmt();
+            var parentCall = Resolve(parent.iCS_S_VariableOrProcedureCall())
+                             ?? Resolve(parent.iCS_S_ProcedureOrArrayCall())
+                             ?? Resolve(parent.iCS_S_DictionaryCall())
+                             ?? Resolve(parent.iCS_S_MembersCall());
+
+            if (parentCall == null)
+            {
+                return null;
+            }
+
+            var type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Class
+                //|| item.DeclarationType == DeclarationType.Module
+                || item.DeclarationType == DeclarationType.UserDefinedType);
+
+            var members = _declarations.FindMembers(type);
+            var name = context.ambiguousIdentifier().GetText();
+
+            return members.SingleOrDefault(m => m.IdentifierName == name);
+        }
+
         public override void EnterVsAssign(VBAParser.VsAssignContext context)
         {
             /* named parameter syntax */
@@ -566,10 +596,12 @@ namespace Rubberduck.Parsing.Symbols
                 return matches[0];
             }
 
-            var memberProcedureCallContext = context.Parent.Parent as VBAParser.ImplicitCallStmt_InBlockContext;
+            var memberProcedureCallContext = context.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
             if (memberProcedureCallContext != null)
             {
-                var parentMemberName = memberProcedureCallContext.Stop.Text; // bug right here
+                return Resolve(memberProcedureCallContext);
+                var parent = memberProcedureCallContext;
+                var parentMemberName = memberProcedureCallContext.ambiguousIdentifier().GetText(); 
                 var matchingParents = _declarations.Items.Where(d => d.IdentifierName == parentMemberName 
                     && (d.DeclarationType == DeclarationType.Class || d.DeclarationType == DeclarationType.UserDefinedType));
 
