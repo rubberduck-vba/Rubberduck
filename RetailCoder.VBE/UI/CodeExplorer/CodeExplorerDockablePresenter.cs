@@ -23,7 +23,12 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser = parser;
             RegisterControlEvents();
-            Task.Run(() => RefreshExplorerTreeView());
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            Task.Run(() => RefreshExplorerTreeView()); 
         }
 
         private void RegisterControlEvents()
@@ -210,18 +215,19 @@ namespace Rubberduck.UI.CodeExplorer
         {
             Control.Invoke((MethodInvoker)async delegate
             {
-                root.Text = project.Name;
                 if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
                 {
                     root.ImageKey = "Locked";
                 }
                 else
                 {
-                    root.ImageKey = "ClosedFolder";
                     var nodes = (await CreateModuleNodesAsync(project)).ToArray();
                     AddProjectFolders(project, root, nodes);
+                    root.ImageKey = "ClosedFolder";
                     root.Expand();
                 }
+
+                root.Text = project.Name;
             });
         }
 
