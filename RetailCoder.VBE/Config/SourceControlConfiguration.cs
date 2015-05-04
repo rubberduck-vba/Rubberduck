@@ -11,9 +11,14 @@ namespace Rubberduck.Config
     public class SourceControlConfiguration
     {
         public List<Repository> Repositories;
+
+        public SourceControlConfiguration()
+        {
+            this.Repositories = new List<Repository>();
+        }
     }
 
-    public class SourceControlConfigurationService : XmlConfigurationServiceBase<SourceControlConfiguration>, IConfigurationService<SourceControlConfiguration>
+    public class SourceControlConfigurationService : XmlConfigurationServiceBase<SourceControlConfiguration>
     {
 
         protected override string ConfigFile

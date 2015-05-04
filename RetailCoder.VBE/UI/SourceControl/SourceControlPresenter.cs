@@ -56,9 +56,11 @@ namespace Rubberduck.UI.SourceControl
                     var project = this.VBE.ActiveVBProject;
 
                     _provider = new GitProvider(project);
-                    var repo = _provider.Init(folderPicker.SelectedPath);
+                    var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
 
                     _provider = new GitProvider(project, repo);
+
+                    AddRepoToConfig((Repository)repo);
 
                     SetChildPresenterSourceControlProviders(_provider);
                 }
@@ -76,11 +78,20 @@ namespace Rubberduck.UI.SourceControl
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
                     var project = this.VBE.ActiveVBProject;
-                    _provider = new GitProvider(project, new Repository(project.Name, folderPicker.SelectedPath, string.Empty));
+                    var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
+                    _provider = new GitProvider(project, repo);
+
+                    AddRepoToConfig(repo);
 
                     SetChildPresenterSourceControlProviders(_provider);
                 }
             }
+        }
+
+        private void AddRepoToConfig(Repository repo)
+        {
+            _config.Repositories.Add(repo);
+            _configService.SaveConfiguration(_config);
         }
 
         private void OnRefreshChildren(object sender, EventArgs e)

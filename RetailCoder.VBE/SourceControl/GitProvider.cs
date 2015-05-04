@@ -101,6 +101,19 @@ namespace Rubberduck.SourceControl
         {
             var repository = base.InitVBAProject(directory);
             Init(repository.LocalLocation);
+
+            //add a master branch to newly created repo
+            using (var repo = new LibGit2Sharp.Repository(repository.LocalLocation))
+            {
+                var status = repo.RetrieveStatus(new StatusOptions());
+                foreach (var stat in status.Untracked)
+                {
+                    repo.Stage(stat.FilePath);
+                }
+
+                repo.Commit("Intial Commit");
+            }
+
             return repository;
         }
 
