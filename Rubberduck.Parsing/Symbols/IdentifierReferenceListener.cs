@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -13,6 +14,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedModuleName _qualifiedName;
 
         private string _currentScope;
+        private DeclarationType _currentScopeType;
 
         public IdentifierReferenceListener(VBComponentParseResult result, Declarations declarations)
             : this(result.QualifiedName, declarations)
@@ -33,15 +35,19 @@ namespace Rubberduck.Parsing.Symbols
         private void SetCurrentScope()
         {
             _currentScope = ModuleScope;
+            _currentScopeType = _qualifiedName.Component.Type == vbext_ComponentType.vbext_ct_StdModule
+                ? DeclarationType.Module
+                : DeclarationType.Class;
         }
 
         /// <summary>
         /// Sets current scope to specified module member.
         /// </summary>
         /// <param name="name">The name of the member owning the current scope.</param>
-        private void SetCurrentScope(string name)
+        private void SetCurrentScope(string name, DeclarationType scopeType)
         {
             _currentScope = _qualifiedName + "." + name;
+            _currentScopeType = scopeType;
         }
 
         public override void EnterLiteral(VBAParser.LiteralContext context)
@@ -81,7 +87,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Procedure);
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
@@ -91,7 +97,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.Function);
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -101,7 +107,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyGet);
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -111,7 +117,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertyLet);
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -121,7 +127,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            SetCurrentScope(context.ambiguousIdentifier().GetText());
+            SetCurrentScope(context.ambiguousIdentifier().GetText(), DeclarationType.PropertySet);
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
@@ -153,15 +159,15 @@ namespace Rubberduck.Parsing.Symbols
         private VBAParser.AmbiguousIdentifierContext FindAssignmentTarget(VBAParser.ImplicitCallStmt_InStmtContext leftSide, DeclarationType accessorType)
         {
             VBAParser.AmbiguousIdentifierContext context;
-            var call = Resolve(leftSide.iCS_S_ProcedureOrArrayCall(), out context)
-                       ?? Resolve(leftSide.iCS_S_VariableOrProcedureCall(), out context)
-                       ?? Resolve(leftSide.iCS_S_DictionaryCall(), out context)
-                       ?? Resolve(leftSide.iCS_S_MembersCall(), out context);
+            var call = Resolve(leftSide.iCS_S_ProcedureOrArrayCall(), out context, accessorType)
+                       ?? Resolve(leftSide.iCS_S_VariableOrProcedureCall(), out context, accessorType)
+                       ?? Resolve(leftSide.iCS_S_DictionaryCall(), out context, accessorType)
+                       ?? Resolve(leftSide.iCS_S_MembersCall(), out context, accessorType);
 
             return context;
         }
 
-        private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
+        private VBAParser.AmbiguousIdentifierContext EnterDictionaryCall(VBAParser.DictionaryCallStmtContext dictionaryCall, VBAParser.AmbiguousIdentifierContext parentIdentifier = null, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
             if (dictionaryCall == null)
             {
@@ -170,7 +176,8 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parentIdentifier != null)
             {
-                if (!EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection()))
+                var isTarget = accessorType == DeclarationType.PropertyLet || accessorType == DeclarationType.PropertySet;
+                if (!EnterIdentifier(parentIdentifier, parentIdentifier.GetSelection(), isTarget, accessorType:accessorType))
                     // we're referencing "member" in "member!field"
                 {
                     return null;
@@ -306,7 +313,7 @@ namespace Rubberduck.Parsing.Symbols
             _withQualifiers.Pop();
         }
 
-        private Declaration Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext)
+        private Declaration Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext, DeclarationType accessorType)
         {
             if (context == null)
             {
@@ -318,7 +325,7 @@ namespace Rubberduck.Parsing.Symbols
             var name = identifier.GetText();
 
             var procedure = FindProcedureDeclaration(name, identifier);
-            var result = procedure ?? FindVariableDeclaration(name, identifier);
+            var result = procedure ?? FindVariableDeclaration(name, identifier, accessorType);
 
             identifierContext = result == null 
                 ? null 
@@ -331,10 +338,10 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
         {
             VBAParser.AmbiguousIdentifierContext discarded;
-            return Resolve(context, out discarded);
+            return Resolve(context, out discarded, DeclarationType.PropertyGet);
         }
 
-        private Declaration Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext)
+        private Declaration Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext, DeclarationType accessorType)
         {
             if (context == null)
             {
@@ -345,8 +352,8 @@ namespace Rubberduck.Parsing.Symbols
             var identifier = context.ambiguousIdentifier();
             var name = identifier.GetText();
 
-            var procedure = FindProcedureDeclaration(name, identifier);
-            var result = procedure ?? FindVariableDeclaration(name, identifier);
+            var procedure = FindProcedureDeclaration(name, identifier, accessorType);
+            var result = procedure ?? FindVariableDeclaration(name, identifier, accessorType);
 
             identifierContext = result == null 
                 ? null 
@@ -359,10 +366,10 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
             VBAParser.AmbiguousIdentifierContext discarded;
-            return Resolve(context, out discarded);
+            return Resolve(context, out discarded, DeclarationType.PropertyGet);
         }
 
-        private Declaration Resolve(VBAParser.ICS_S_DictionaryCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
+        private Declaration Resolve(VBAParser.ICS_S_DictionaryCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext, DeclarationType accessorType, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
         {
             if (context == null)
             {
@@ -370,10 +377,10 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var identifier = EnterDictionaryCall(context.dictionaryCallStmt(), parentIdentifier);
+            var identifier = EnterDictionaryCall(context.dictionaryCallStmt(), parentIdentifier, accessorType);
             var name = identifier.GetText();
 
-            var result = FindVariableDeclaration(name, identifier);
+            var result = FindVariableDeclaration(name, identifier, accessorType);
 
             identifierContext = result == null 
                 ? null 
@@ -386,10 +393,10 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration Resolve(VBAParser.ICS_S_DictionaryCallContext context, VBAParser.AmbiguousIdentifierContext parentIdentifier = null)
         {
             VBAParser.AmbiguousIdentifierContext discarded;
-            return Resolve(context, out discarded, parentIdentifier);
+            return Resolve(context, out discarded, DeclarationType.PropertyGet, parentIdentifier);
         }
 
-        private Declaration Resolve(VBAParser.ICS_S_MembersCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext)
+        private Declaration Resolve(VBAParser.ICS_S_MembersCallContext context, out VBAParser.AmbiguousIdentifierContext identifierContext, DeclarationType accessorType)
         {
             if (context == null)
             {
@@ -434,7 +441,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration Resolve(VBAParser.ICS_S_MembersCallContext context)
         {
             VBAParser.AmbiguousIdentifierContext discarded;
-            return Resolve(context, out discarded);
+            return Resolve(context, out discarded, DeclarationType.PropertyGet);
         }
 
         private Declaration Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
@@ -469,7 +476,7 @@ namespace Rubberduck.Parsing.Symbols
             var callStatementB = context.Parent.Parent.Parent as VBAParser.ICS_S_VariableOrProcedureCallContext;
             var callStatementC = context.Parent.Parent.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
             var callStatementD = context.Parent.Parent.Parent as VBAParser.ICS_B_ProcedureCallContext;
-
+            
             var procedureName = string.Empty;
             ParserRuleContext identifierContext = null;
             if (callStatementA != null)
@@ -545,13 +552,13 @@ namespace Rubberduck.Parsing.Symbols
             return procedure;
         }
 
-        private Declaration FindVariableDeclaration(string procedureName, ParserRuleContext context)
+        private Declaration FindVariableDeclaration(string procedureName, ParserRuleContext context, DeclarationType accessorType)
         {
             var matches = _declarations[procedureName]
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Variable || declaration.DeclarationType == DeclarationType.Parameter)
                 .Where(IsInScope);
 
-            var variable = GetClosestScopeDeclaration(matches, context);
+            var variable = GetClosestScopeDeclaration(matches, context, accessorType);
             return variable;
         }
 
@@ -602,6 +609,13 @@ namespace Rubberduck.Parsing.Symbols
                    || IsGlobalProcedure(declaration);
         }
 
+        private static readonly Type[] PropertyContexts =
+        {
+            typeof (VBAParser.PropertyGetStmtContext),
+            typeof (VBAParser.PropertyLetStmtContext),
+            typeof (VBAParser.PropertySetStmtContext)
+        };
+
         private Declaration GetClosestScopeDeclaration(IEnumerable<Declaration> declarations, ParserRuleContext context, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
             if (context.Parent.Parent.Parent is VBAParser.AsTypeClauseContext)
@@ -615,11 +629,19 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var currentScope = matches.SingleOrDefault(declaration => declaration.Scope == _currentScope 
-                && !PropertyAccessors.Contains(declaration.DeclarationType));
-            if (currentScope != null)
+            // handle indexed property getters
+            var currentScopeMatches = matches.Where(declaration =>
+                (declaration.Scope == _currentScope && !PropertyContexts.Contains(declaration.Context.Parent.Parent.GetType()))
+                || ((declaration.Context != null && declaration.Context.Parent.Parent is VBAParser.PropertyGetStmtContext
+                    && _currentScopeType == DeclarationType.PropertyGet)
+                || (declaration.Context != null && declaration.Context.Parent.Parent is VBAParser.PropertySetStmtContext
+                    && _currentScopeType == DeclarationType.PropertySet)
+                || (declaration.Context != null && declaration.Context.Parent.Parent is VBAParser.PropertyLetStmtContext
+                    && _currentScopeType == DeclarationType.PropertyLet)))
+                .ToList();
+            if (currentScopeMatches.Count == 1)
             {
-                return currentScope;
+                return currentScopeMatches[0];
             }
 
             // note: commented-out because it breaks the UDT member references, but property getters behave strangely still
@@ -644,6 +666,32 @@ namespace Rubberduck.Parsing.Symbols
                 return moduleScope;
             }
 
+            var splitScope = _currentScope.Split('.');
+            if (splitScope.Length > 2) // Project.Module.Procedure - i.e. if scope is deeper than module-level
+            {
+                var scope = splitScope[0] + '.' + splitScope[1];
+                var scopeMatches = matches.Where(m => m.ParentScope == scope
+                                                      && (!PropertyAccessors.Contains(m.DeclarationType)
+                                                          || m.DeclarationType == accessorType)).ToList();
+                if (scopeMatches.Count == 1)
+                {
+                    return scopeMatches.Single();
+                }
+
+                // handle standard library member shadowing:
+                if (!matches.All(m => m.IsBuiltIn))
+                {
+                    var ambiguousMatches = matches.Where(m => !m.IsBuiltIn
+                                                              && (!PropertyAccessors.Contains(m.DeclarationType)
+                                                                  || m.DeclarationType == accessorType)).ToList();
+
+                    if (ambiguousMatches.Count == 1)
+                    {
+                        return ambiguousMatches.Single();
+                    }
+                }
+            }
+
             var memberProcedureCallContext = context.Parent as VBAParser.ICS_B_MemberProcedureCallContext;
             if (memberProcedureCallContext != null)
             {
@@ -659,7 +707,7 @@ namespace Rubberduck.Parsing.Symbols
                        ?? Resolve(implicitCall.iCS_S_MembersCall());
             }
 
-            return matches.SingleOrDefault(m => m.ParentScope == _currentScope);
+            return null;
         }
 
         private bool IsCurrentScopeMember(DeclarationType accessorType, Declaration declaration)

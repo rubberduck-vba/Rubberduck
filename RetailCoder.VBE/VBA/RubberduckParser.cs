@@ -46,9 +46,9 @@ namespace Rubberduck.VBA
 
         public async Task<VBProjectParseResult> ParseAsync(VBProject project)
         {
-            //return await Task.Run(() => Parse(project));
-            // note: the above seems to cause an AccessViolationException
-            return Parse(project);
+            return await Task.Run(() => Parse(project));
+            // note: the above has been seen to cause issues with VBProject.Equals and break navigation...
+            //return Parse(project);
         }
 
         public VBProjectParseResult Parse(VBProject project)
