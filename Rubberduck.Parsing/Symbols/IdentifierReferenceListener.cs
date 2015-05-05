@@ -214,8 +214,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var selection = context.GetSelection();
 
-            if (context.Parent is VBAParser.ForNextStmtContext 
-                || context.Parent is VBAParser.ForEachStmtContext)
+            if (IsAssignmentContext(context))
             {
                 EnterIdentifier(context, selection, true);
             }
@@ -223,6 +222,14 @@ namespace Rubberduck.Parsing.Symbols
             {
                 EnterIdentifier(context, selection);
             }
+        }
+
+        private bool IsAssignmentContext(ParserRuleContext context)
+        {
+            return context.Parent is VBAParser.ForNextStmtContext
+                   || context.Parent is VBAParser.ForEachStmtContext
+                   || context.Parent.Parent.Parent.Parent is VBAParser.LineInputStmtContext
+                   || context.Parent.Parent.Parent.Parent is VBAParser.InputStmtContext;
         }
 
         public override void EnterCertainIdentifier(VBAParser.CertainIdentifierContext context)
