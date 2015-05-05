@@ -9,15 +9,7 @@ namespace Rubberduck.Extensions
     {
         public static CodeModule FindCodeModule(this VBE vbe, QualifiedModuleName qualifiedName)
         {
-            var vbComponent = vbe.VBProjects.Cast<VBProject>()
-                .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                  && project.Equals(qualifiedName.Project))
-                .SelectMany(project => project.VBComponents.Cast<VBComponent>())
-                .SingleOrDefault(component => component.Equals(qualifiedName.Component));
-
-            return vbComponent == null
-                ? null
-                : vbComponent.CodeModule;
+            return qualifiedName.Component.CodeModule;
         }
 
         public static void SetSelection(this VBE vbe, QualifiedSelection selection)
