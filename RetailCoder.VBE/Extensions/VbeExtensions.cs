@@ -9,16 +9,15 @@ namespace Rubberduck.Extensions
     {
         public static void SetSelection(this VBE vbe, QualifiedSelection selection)
         {
-            //not a very robust method. Breaks if there are multiple projects with the same name.
             var project = vbe.VBProjects.Cast<VBProject>()
-                            .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
-                                && p.Equals(selection.QualifiedName.Project));
+                             .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
+                                               && p.Equals(selection.QualifiedName.Project));
 
             VBComponent component = null;
             if (project != null)
             {
                 component = project.VBComponents.Cast<VBComponent>()
-                                .FirstOrDefault(c => c.Equals(selection.QualifiedName.Component));
+                                   .FirstOrDefault(c => c.Equals(selection.QualifiedName.Component));
             }
 
             if (component == null)
