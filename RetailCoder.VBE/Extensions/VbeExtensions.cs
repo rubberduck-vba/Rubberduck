@@ -7,11 +7,6 @@ namespace Rubberduck.Extensions
 {
     public static class VbeExtensions
     {
-        public static CodeModule FindCodeModule(this VBE vbe, QualifiedModuleName qualifiedName)
-        {
-            return qualifiedName.Component.CodeModule;
-        }
-
         public static void SetSelection(this VBE vbe, QualifiedSelection selection)
         {
             //not a very robust method. Breaks if there are multiple projects with the same name.
@@ -36,7 +31,7 @@ namespace Rubberduck.Extensions
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)
         {
-            var module = FindCodeModule(vbe, qualifiedModuleName);
+            var module = qualifiedModuleName.Component.CodeModule;
             if (module == null)
             {
                 return null;

@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = QualifiedSelection.Selection;
 
-            var module = vbe.FindCodeModule(QualifiedName);
+            var module = QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

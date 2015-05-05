@@ -30,25 +30,25 @@ namespace Rubberduck.UI.UnitTesting
 
         private void TestEngineMethodCleanup(object sender, TestModuleEventArgs e)
         {
-            var module = VBE.FindCodeModule(e.QualifiedModuleName);
+            var module = e.QualifiedModuleName.Component.CodeModule;
             module.Parent.RunMethodsWithAttribute<TestCleanupAttribute>();
         }
 
         private void TestEngineMethodInitialize(object sender, TestModuleEventArgs e)
         {
-            var module = VBE.FindCodeModule(e.QualifiedModuleName);
+            var module = e.QualifiedModuleName.Component.CodeModule;
             module.Parent.RunMethodsWithAttribute<TestInitializeAttribute>();
         }
 
         private void _testEngine_ModuleCleanup(object sender, TestModuleEventArgs e)
         {
-            var module = VBE.FindCodeModule(e.QualifiedModuleName);
+            var module = e.QualifiedModuleName.Component.CodeModule;
             module.Parent.RunMethodsWithAttribute<ModuleCleanupAttribute>();
         }
 
         private void _testEngine_ModuleInitialize(object sender, TestModuleEventArgs e)
         {
-            var module = VBE.FindCodeModule(e.QualifiedModuleName);
+            var module = e.QualifiedModuleName.Component.CodeModule;
             module.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
         }
 

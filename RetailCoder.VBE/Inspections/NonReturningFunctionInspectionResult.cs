@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections
                 .Replace(Tokens.End + ' ' + Tokens.Function, Tokens.End + ' ' + Tokens.Sub)
                 .Replace(Tokens.Exit + ' ' + Tokens.Function, Tokens.Exit + ' ' + Tokens.Sub);
 
-            var module = vbe.FindCodeModule(QualifiedName);
+            var module = QualifiedName.Component.CodeModule;
             var selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

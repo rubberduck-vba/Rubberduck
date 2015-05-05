@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
 
         private void RemoveOptionStatement(VBE vbe)
         {
-            var module = vbe.FindCodeModule(QualifiedName);
+            var module = QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;

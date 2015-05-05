@@ -82,7 +82,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             try
             {
-                var module = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
+                var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module != null)
                 {
                     module.Name = _view.NewName;
@@ -118,7 +118,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return;
             }
 
-            var module = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
+            var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
             module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
         }
@@ -127,7 +127,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             try
             {
-                var form = _vbe.FindCodeModule(_view.Target.QualifiedName.QualifiedModuleName);
+                var form = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 var control = ((dynamic) form.Parent.Designer).Controls(_view.Target.IdentifierName);
 
                 foreach (var handler in _declarations.FindEventHandlers(_view.Target))
@@ -183,7 +183,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
-                var module = _vbe.FindCodeModule(grouping.Key);
+                var module = grouping.Key.Component.CodeModule;
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
                     var content = module.get_Lines(line.Key, 1);

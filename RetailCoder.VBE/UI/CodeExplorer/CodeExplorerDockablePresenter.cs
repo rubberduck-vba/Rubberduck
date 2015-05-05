@@ -133,7 +133,7 @@ namespace Rubberduck.UI.CodeExplorer
             if (node != null && node.Tag != null)
             {
                 var selection = (Declaration)node.Tag;
-                var module = VBE.FindCodeModule(selection.QualifiedName.QualifiedModuleName);
+                var module = selection.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module == null)
                 {
                     return;

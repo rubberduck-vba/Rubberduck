@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections
             var procedure = Context.GetText();
             var result = procedure.Replace(signature, signature + ' ' + Tokens.As + ' ' + Tokens.Variant);
             
-            var module = vbe.FindCodeModule(QualifiedName);
+            var module = QualifiedName.Component.CodeModule;
             var selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

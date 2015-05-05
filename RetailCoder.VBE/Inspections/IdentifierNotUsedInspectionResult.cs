@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
 
         protected virtual void RemoveUnusedDeclaration(VBE vbe)
         {
-            var module = vbe.FindCodeModule(QualifiedName);
+            var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
