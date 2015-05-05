@@ -72,10 +72,11 @@
             "@Hosch250",
             "JetBrains ReSharper Community Team",
             "Knjname developer blog (clockahead.blogspot.jp)",
-            "Simon Forsberg",
-            "Philip Wales",
             "Michal Krzych (vba4all.com)",
             "@mjolka",
+            "Philip Wales",
+            "Ross Knudsen",
+            "Simon Forsberg",
             "All contributors to our GitHub repository",
             "All our stargazers, likers & followers, for the warm fuzzies",
             "...and anyone reading this!"});

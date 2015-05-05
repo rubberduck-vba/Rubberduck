@@ -19,7 +19,7 @@ AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
 ; use the local appdata folder instead of the program files dir.
-DefaultDirName={localappdata}\{#AppName}
+DefaultDirName={commonappdata}\{#AppName}
 DefaultGroupName=Rubberduck
 AllowNoIcons=yes
 LicenseFile={#License}
