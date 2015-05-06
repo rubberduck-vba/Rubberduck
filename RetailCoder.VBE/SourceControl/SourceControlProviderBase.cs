@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 
@@ -41,7 +40,7 @@ namespace Rubberduck.SourceControl
             var projectName = GetProjectNameFromDirectory(directory);
             if (projectName != string.Empty && projectName != this.project.Name)
             {
-                directory = System.IO.Path.Combine(directory, project.Name);
+                directory = Path.Combine(directory, project.Name);
             }
 
             if (!System.IO.Directory.Exists(directory))
@@ -83,7 +82,7 @@ namespace Rubberduck.SourceControl
         {
             //this might need to cherry pick from the tip instead.
 
-           var componentName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+           var componentName = Path.GetFileNameWithoutExtension(filePath);
 
            //GetFileNameWithoutExtension returns empty string if it's not a file
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
@@ -118,13 +117,12 @@ namespace Rubberduck.SourceControl
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
-            var selection = this.project.VBE.ActiveCodePane.GetSelection();
-            var moduleName = this.project.VBE.ActiveCodePane.CodeModule.Parent.QualifiedName();
+            var selection = project.VBE.ActiveCodePane.GetSelection();
 
-            this.project.RemoveAllComponents();
-            this.project.ImportSourceFiles(this.CurrentRepository.LocalLocation);
+            project.RemoveAllComponents();
+            project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            this.project.VBE.SetSelection(selection);
+            project.VBE.SetSelection(selection);
         }
     }
 }

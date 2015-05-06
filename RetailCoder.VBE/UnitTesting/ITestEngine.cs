@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.UnitTesting
 {
@@ -23,41 +23,25 @@ namespace Rubberduck.UnitTesting
 
     public class TestModuleEventArgs : EventArgs
     {
-        private readonly string _projectName;
-        private readonly string _moduleName;
-
-        public TestModuleEventArgs(QualifiedModuleName qualifiedName)
-            : this(qualifiedName.ProjectName, qualifiedName.ModuleName)
-        {            
-        }
-
-        public TestModuleEventArgs(string projectName, string moduleName)
+        public TestModuleEventArgs(QualifiedModuleName qualifiedModuleName)
         {
-            _projectName = projectName;
-            _moduleName = moduleName;
+            _qualifiedModuleName = qualifiedModuleName;
         }
 
-        public string ProjectName { get { return _projectName; } }
-        public string ModuleName { get { return _moduleName; } }
+        private readonly QualifiedModuleName _qualifiedModuleName;
+        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedModuleName; } }
     }
 
     public class TestMethodEventArgs : TestModuleEventArgs
     {
-        private readonly string _memberName;
-
-        public TestMethodEventArgs(QualifiedMemberName qualifiedName)
-            : this(qualifiedName.ModuleScope.ProjectName, qualifiedName.ModuleScope.ModuleName, qualifiedName.Name)
+        public TestMethodEventArgs(QualifiedMemberName qualifiedMemberName)
+            :base(qualifiedMemberName.QualifiedModuleName)
         {
+            _qualifiedMemberName = qualifiedMemberName;
         }
 
-        public TestMethodEventArgs(string projectName, string moduleName, string memberName)
-            : base(projectName, moduleName)
-        {
-            _memberName = memberName;
-        }
-
-        public string MemberName { get { return _memberName; } 
-        }
+        private readonly QualifiedMemberName _qualifiedMemberName;
+        public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
     }
 
     public class TestCompleteEventArgs : EventArgs
@@ -67,8 +51,8 @@ namespace Rubberduck.UnitTesting
 
         public TestCompleteEventArgs(TestMethod test, TestResult result)
         {
-            this.Test = test;
-            this.Result = result;
+            Test = test;
+            Result = result;
         }
     }
 }

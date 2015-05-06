@@ -4,42 +4,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    public interface IDialogView
-    {
-        event EventHandler CancelButtonClicked;
-        void OnCancelButtonClicked();
-
-        event EventHandler OkButtonClicked;
-        void OnOkButtonClicked();
-
-        DialogResult ShowDialog();
-    }
-
-    public interface IExtractMethodDialog : IDialogView
-    {
-        ExtractedParameter ReturnValue { get; set; }
-        IEnumerable<ExtractedParameter> ReturnValues { get; set; }
-
-        VBAccessibility Accessibility { get; set; }
-        string MethodName { get; set; }
-        bool SetReturnValue { get; set; }
-        bool CanSetReturnValue { get; set; }
-
-        event EventHandler RefreshPreview;
-        void OnRefreshPreview();
-        string Preview { get; set; }
-
-        IEnumerable<ExtractedParameter> Parameters { get; set; }
-
-        IEnumerable<ExtractedParameter> Inputs { get; set; }
-        IEnumerable<ExtractedParameter> Outputs { get; set; }
-        IEnumerable<ExtractedParameter> Locals { get; set; }
-    }
-
     public partial class ExtractMethodDialog : Form, IExtractMethodDialog
     {
         public ExtractMethodDialog()
@@ -51,9 +19,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             MethodAccessibilityCombo.DataSource = new[]
             {
-                VBAccessibility.Private,
-                VBAccessibility.Public,
-                VBAccessibility.Friend
+                Accessibility.Private,
+                Accessibility.Public,
+                Accessibility.Friend
             }.ToList();
         }
 
@@ -136,8 +104,8 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             ReturnValue = (ExtractedParameter) MethodReturnValueCombo.SelectedItem;
         }
 
-        private VBAccessibility _accessibility;
-        public VBAccessibility Accessibility
+        private Accessibility _accessibility;
+        public Accessibility Accessibility
         {
             get { return _accessibility; }
             set
@@ -149,7 +117,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
         private void MethodAccessibilityCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Accessibility = ((VBAccessibility) MethodAccessibilityCombo.SelectedItem);
+            Accessibility = ((Accessibility) MethodAccessibilityCombo.SelectedItem);
         }
 
         private void MethodNameBox_TextChanged(object sender, EventArgs e)

@@ -1,9 +1,7 @@
 using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 using Rubberduck.VBA;
-using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
@@ -73,7 +71,7 @@ namespace Rubberduck.UnitTesting
 
         private static string GetNextTestMethodName(VBComponent component)
         {
-            var names = component.TestMethods().Select(test => test.MethodName);
+            var names = component.TestMethods().Select(test => test.QualifiedMemberName.MemberName);
             var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
 
             return string.Concat(TestMethodBaseName, index);

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
+﻿using System.Runtime.InteropServices;
+using LibGit2Sharp;
 
 namespace Rubberduck.SourceControl
 {
@@ -36,16 +32,16 @@ namespace Rubberduck.SourceControl
         public FileStatusEntry(string filePath, LibGit2Sharp.FileStatus fileStatus)
             :this(filePath)
         {
-            this.FileStatus = (SourceControl.FileStatus)fileStatus;
+            this.FileStatus = (FileStatus)fileStatus;
         }
 
-        public FileStatusEntry(string filePath, SourceControl.FileStatus fileStatus)
+        public FileStatusEntry(string filePath, FileStatus fileStatus)
             :this(filePath)
         {
             this.FileStatus = fileStatus;
         }
 
-        public FileStatusEntry(LibGit2Sharp.StatusEntry status)
+        public FileStatusEntry(StatusEntry status)
             : this(status.FilePath, status.State) { }
     }
 }

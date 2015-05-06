@@ -1,4 +1,3 @@
-using System.Linq;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Extensions

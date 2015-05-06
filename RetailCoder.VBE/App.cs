@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
-using System;
+using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
-using Rubberduck.Config;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck
 {

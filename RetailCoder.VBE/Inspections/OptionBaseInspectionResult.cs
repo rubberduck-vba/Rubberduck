@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections
 
         private void RemoveOptionStatement(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).SingleOrDefault();
+            var module = QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;

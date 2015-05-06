@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Linq;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Reflection;
 using Rubberduck.Extensions;
 
 namespace Rubberduck.UnitTesting
@@ -33,22 +32,28 @@ namespace Rubberduck.UnitTesting
 
         public static void NewUnitTestModule(VBE vbe)
         {
-            var project = vbe.ActiveVBProject;
-            project.EnsureReferenceToAddInLibrary();
-
-            var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
-            module.Name = GetNextTestModuleName(project);
-
-            var hasOptionExplicit = false;
-            if (module.CodeModule.CountOfLines > 0 && module.CodeModule.CountOfDeclarationLines > 0)
+            try
             {
-                hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
+                var project = vbe.ActiveVBProject;
+                project.EnsureReferenceToAddInLibrary();
+
+                var module = project.VBComponents.Add(vbext_ComponentType.vbext_ct_StdModule);
+                module.Name = GetNextTestModuleName(project);
+
+                var hasOptionExplicit = false;
+                if (module.CodeModule.CountOfLines > 0 && module.CodeModule.CountOfDeclarationLines > 0)
+                {
+                    hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
+                }
+
+                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
+
+                module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
+                module.Activate();
             }
-
-            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
-
-            module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
-            module.Activate();
+            catch (Exception exception)
+            {
+            }
         }
 
         private static string GetNextTestModuleName(VBProject project)

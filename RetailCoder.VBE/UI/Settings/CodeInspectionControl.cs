@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Config;
+using Rubberduck.Inspections;
+using Rubberduck.UI.CodeInspections;
 
 namespace Rubberduck.UI.Settings
 {
-    public partial class CodeInspectionControl : UserControl
+    public partial class CodeInspectionSettingsControl : UserControl
     {
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        public CodeInspectionControl()
+        public CodeInspectionSettingsControl()
         {
             InitializeComponent();
         }
 
-        public CodeInspectionControl(IEnumerable<CodeInspectionSetting> inspections)
+        public CodeInspectionSettingsControl(IEnumerable<CodeInspectionSetting> inspections)
             : this()
         {
             var allInspections = new BindingList<CodeInspectionSetting>(inspections
@@ -27,14 +26,21 @@ namespace Rubberduck.UI.Settings
                 .ThenBy(c => c.Name)
                 .ToList()
                 );
-            
-            codeInspectionsGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
-            codeInspectionsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
             codeInspectionsGrid.AutoGenerateColumns = false;
-            codeInspectionsGrid.DataSource = allInspections;
+            
+            codeInspectionsGrid.BorderStyle = BorderStyle.None;
+            codeInspectionsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            codeInspectionsGrid.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            codeInspectionsGrid.GridColor = Color.LightGray;
 
-            codeInspectionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            codeInspectionsGrid.RowsDefaultCellStyle.BackColor = Color.White;
+            codeInspectionsGrid.RowsDefaultCellStyle.SelectionBackColor = Color.LightBlue;
+            codeInspectionsGrid.RowsDefaultCellStyle.SelectionForeColor = Color.MediumBlue;
+
+            codeInspectionsGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Honeydew;
+            codeInspectionsGrid.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.LightBlue;
+            codeInspectionsGrid.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.MediumBlue;
 
             var nameColumn = new DataGridViewTextBoxColumn();
             nameColumn.Name = "InspectionName";
@@ -54,10 +60,14 @@ namespace Rubberduck.UI.Settings
             var severityColumn = new DataGridViewComboBoxColumn();
             severityColumn.Name = "InspectionSeverity";
             severityColumn.DataPropertyName = "Severity";
+            severityColumn.DataSource = Enum.GetValues(typeof(CodeInspectionSeverity));
             severityColumn.HeaderText = "Severity";
-            severityColumn.DataSource = Enum.GetValues(typeof(Inspections.CodeInspectionSeverity));
+            severityColumn.DefaultCellStyle.Font = codeInspectionsGrid.Font;
             codeInspectionsGrid.Columns.Add(severityColumn);
 
+            // temporal coupling here: this code should run after columns are formatted.
+            codeInspectionsGrid.DataSource = allInspections;
+            codeInspectionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
     }
 }

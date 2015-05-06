@@ -1,5 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Extensions
 {

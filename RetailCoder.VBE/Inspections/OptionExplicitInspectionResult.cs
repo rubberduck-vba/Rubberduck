@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections
 
         private void SpecifyOptionExplicit(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).FirstOrDefault();
+            var module = QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;

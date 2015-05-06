@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.Config
 {
@@ -8,10 +7,10 @@ namespace Rubberduck.Config
         ToDoMarker[] ToDoMarkers { get; set; }
     }
 
-    [XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public class ToDoListSettings : IToDoListSettings
     {
-        [XmlArrayItemAttribute("ToDoMarker", IsNullable = false)]
+        [XmlArrayItem("ToDoMarker", IsNullable = false)]
         public ToDoMarker[] ToDoMarkers { get; set; }
 
         public ToDoListSettings()

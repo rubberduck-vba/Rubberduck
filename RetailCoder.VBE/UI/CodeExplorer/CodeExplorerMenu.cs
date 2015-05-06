@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Office.Core;
+﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBA;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeExplorer

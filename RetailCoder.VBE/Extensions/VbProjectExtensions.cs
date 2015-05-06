@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBA;
 
@@ -18,7 +19,7 @@ namespace Rubberduck.Extensions
 
         public static void EnsureReferenceToAddInLibrary(this VBProject project)
         {
-            var referencePath = System.IO.Path.ChangeExtension(System.Reflection.Assembly.GetExecutingAssembly().Location, ".tlb");
+            var referencePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".tlb");
 
             List<Reference> existing = project.References.Cast<Reference>().Where(r => r.Name == "Rubberduck").ToList();
             foreach (Reference reference in existing)
@@ -35,7 +36,7 @@ namespace Rubberduck.Extensions
         /// <summary>
         /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
         /// </summary>
-        /// <param name="project">The <see cref="VbProject"/> to be exported to source files.</param>
+        /// <param name="project">The <see cref="VBProject"/> to be exported to source files.</param>
         /// <param name="directoryPath">The destination directory path.</param>
         public static void ExportSourceFiles(this VBProject project, string directoryPath)
         {
@@ -72,7 +73,7 @@ namespace Rubberduck.Extensions
         /// <param name="filePath">Directory path containing the source files.</param>
         public static void ImportSourceFiles(this VBProject project, string filePath)
         {
-            var dirInfo = new System.IO.DirectoryInfo(filePath);
+            var dirInfo = new DirectoryInfo(filePath);
 
             var files = dirInfo.EnumerateFiles()
                                 .Where(f => f.Extension == VBComponentExtensions.StandardExtension ||

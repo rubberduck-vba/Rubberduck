@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBA.Nodes
 {
+    // todo: delete this obsolete interface
     public interface INode
     {
         /// <summary>

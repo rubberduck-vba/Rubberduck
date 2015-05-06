@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {

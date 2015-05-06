@@ -4,14 +4,15 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
     public class ObsoleteGlobalInspectionResult : CodeInspectionResultBase
     {
         public ObsoleteGlobalInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, type, context.QualifiedName, context.Context)
+            : base(inspection, type, context.ModuleName, context.Context)
         {
         }
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
 
         private void ChangeAccessModifier(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).SingleOrDefault();
+            var module = QualifiedName.Component.CodeModule;
             if (module == null)
             {
                 return;

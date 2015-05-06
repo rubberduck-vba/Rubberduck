@@ -1,4 +1,4 @@
-using Rubberduck.VBA;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {

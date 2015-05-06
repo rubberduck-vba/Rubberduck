@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -21,19 +19,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var result in parseResult.ComponentParseResults)
-            {
-                var statements = (result.ParseTree.GetContexts<DeclarationSectionListener, ParserRuleContext>(new DeclarationSectionListener(result.QualifiedName)))
-                    .Select(context => context.Context).ToList();
-                var module = result;
-                foreach (var inspectionResult in
-                    statements.OfType<VBParser.VisibilityContext>()
-                        .Where(context => context.GetText() == Tokens.Global)
-                        .Select(context => new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, context.Parent as ParserRuleContext))))
-                {
-                    yield return inspectionResult;
-                }
-            }
+            var issues = from item in parseResult.Declarations.Items
+                         where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
+                         && item.Context != null
+                         select new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+
+            return issues;
         }
     }
 }

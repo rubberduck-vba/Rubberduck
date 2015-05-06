@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.UnitTesting
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.UnitTesting
 {
     partial class TestExplorerWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -327,33 +330,33 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton refreshTestsButton;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView testOutputGridView;
-        private System.Windows.Forms.ToolStripDropDownButton RunButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem runSelectedTestMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runAllTestsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runFailedTestsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runNotRunTestsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runPassedTestsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runLastRunMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton addButton;
-        private System.Windows.Forms.ToolStripMenuItem addTestModuleButton;
-        private System.Windows.Forms.ToolStripMenuItem addTestMethodButton;
-        private System.Windows.Forms.ToolStripMenuItem addExpectedErrorTestMethodButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton gotoSelectionButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripProgressBar testProgressBar;
-        private System.Windows.Forms.ToolStripLabel passedTestsLabel;
-        private System.Windows.Forms.ToolStripLabel failedTestsLabel;
-        private System.Windows.Forms.ToolStripLabel inconclusiveTestsLabel;
-        private System.Windows.Forms.ToolStripLabel TotalElapsedMilisecondsLabel;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private ToolStrip toolStrip1;
+        private ToolStripButton refreshTestsButton;
+        private Panel panel1;
+        private DataGridView testOutputGridView;
+        private ToolStripDropDownButton RunButton;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem runSelectedTestMenuItem;
+        private ToolStripMenuItem runAllTestsMenuItem;
+        private ToolStripMenuItem runFailedTestsMenuItem;
+        private ToolStripMenuItem runNotRunTestsMenuItem;
+        private ToolStripMenuItem runPassedTestsMenuItem;
+        private ToolStripMenuItem runLastRunMenuItem;
+        private ToolStripDropDownButton addButton;
+        private ToolStripMenuItem addTestModuleButton;
+        private ToolStripMenuItem addTestMethodButton;
+        private ToolStripMenuItem addExpectedErrorTestMethodButton;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripButton gotoSelectionButton;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripProgressBar testProgressBar;
+        private ToolStripLabel passedTestsLabel;
+        private ToolStripLabel failedTestsLabel;
+        private ToolStripLabel inconclusiveTestsLabel;
+        private ToolStripLabel TotalElapsedMilisecondsLabel;
+        private ToolStripSeparator toolStripSeparator6;
 
     }
 }

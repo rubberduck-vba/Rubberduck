@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -12,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public MultipleDeclarationsInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.MultipleDeclarations; } }
@@ -21,34 +19,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var declarations = module.ParseTree.GetContexts<DeclarationListener, ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                foreach (var declaration in declarations.Where(declaration => declaration.Context is VBParser.ConstStmtContext || declaration.Context is VBParser.VariableStmtContext))
-                {
-                    var variables = declaration.Context as VBParser.VariableStmtContext;                    
-                    if (variables != null && HasMultipleDeclarations(variables))
-                    {
-                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, variables.VariableListStmt()));
-                    }
+            var issues = parseResult.Declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .Where(item => item.DeclarationType == DeclarationType.Variable
+                            || item.DeclarationType == DeclarationType.Constant)
+                .GroupBy(variable => variable.Context.Parent as ParserRuleContext)
+                .Where(grouping => grouping.Count() > 1)
+                .Select(grouping => new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
 
-                    var consts = declaration.Context as VBParser.ConstStmtContext;
-                    if (consts != null && HasMultipleDeclarations(consts))
-                    {
-                        yield return new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(module.QualifiedName, consts));
-                    }
-                }
-            }
-        }
-
-        private bool HasMultipleDeclarations(VBParser.VariableStmtContext context)
-        {
-            return context.VariableListStmt().VariableSubStmt().Count > 1;
-        }
-
-        private bool HasMultipleDeclarations(VBParser.ConstStmtContext context)
-        {
-            return context.ConstSubStmt().Count > 1;
+            return issues;
         }
     }
 }

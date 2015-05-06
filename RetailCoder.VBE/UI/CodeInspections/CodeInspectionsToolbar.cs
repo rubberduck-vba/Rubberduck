@@ -1,18 +1,15 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Properties;
 using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -138,7 +135,7 @@ namespace Rubberduck.UI.CodeInspections
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Debug.Assert(false);
+                Debug.Assert(false);
             }
         }
 
@@ -156,7 +153,7 @@ namespace Rubberduck.UI.CodeInspections
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Debug.Assert(false);
+                Debug.Assert(false);
             }
         }
 

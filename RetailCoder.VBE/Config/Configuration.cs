@@ -1,12 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-using System.Runtime.InteropServices;
+﻿using System.Xml.Serialization;
 
 namespace Rubberduck.Config
 {
-    [XmlTypeAttribute(AnonymousType = true)]
-    [XmlRootAttribute(Namespace = "", IsNullable = false)]
+    [XmlType(AnonymousType = true)]
+    [XmlRoot(Namespace = "", IsNullable = false)]
     public class Configuration
     {
         public UserSettings UserSettings { get; set; }

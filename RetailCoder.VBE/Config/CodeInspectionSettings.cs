@@ -1,13 +1,12 @@
-﻿using System.Runtime.InteropServices;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
-    [XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public class CodeInspectionSettings
     {
-        [XmlArrayItemAttribute("CodeInspection", IsNullable = false)]
+        [XmlArrayItem("CodeInspection", IsNullable = false)]
         public CodeInspectionSetting[] CodeInspections { get; set; }
 
         public CodeInspectionSettings()
@@ -21,7 +20,7 @@ namespace Rubberduck.Config
         }
     }
 
-    [XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public class CodeInspectionSetting : IInspectionModel
     {
         [XmlAttribute]

@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {

@@ -1,6 +1,4 @@
 ﻿using System.Xml.Serialization;
-using System.Runtime.InteropServices;
-using Rubberduck.VBA.Grammar;
 
 namespace Rubberduck.Config
 {
@@ -17,7 +15,7 @@ namespace Rubberduck.Config
         string Text { get; set; }
     }
 
-    [XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public class ToDoMarker : IToDoMarker
     {
         //either the code can be properly case, or the XML can be, but the xml attributes must here *exactly* match the xml

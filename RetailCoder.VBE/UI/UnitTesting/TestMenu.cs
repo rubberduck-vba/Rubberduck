@@ -1,11 +1,6 @@
-﻿using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Microsoft.Office.Core;
+﻿using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Properties;
-using Rubberduck.UnitTesting;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.UnitTesting

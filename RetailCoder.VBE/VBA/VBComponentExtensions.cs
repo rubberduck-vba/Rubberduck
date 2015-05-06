@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 
 namespace Rubberduck.VBA
@@ -50,7 +51,7 @@ namespace Rubberduck.VBA
                     var body = module.Lines[startLine, lineCount].Split('\n');
 
                     Member member;
-                    if (Member.TryParse(body, module.Parent.Collection.Parent.Name, module.Parent.Name, out member))
+                    if (Member.TryParse(body, new QualifiedModuleName(module.Parent), out member))
                     {
                         yield return member;
                         currentLine = startLine + lineCount;
@@ -70,11 +71,11 @@ namespace Rubberduck.VBA
         /// <param name="directoryPath">Destination Path for the resulting source file.</param>
         public static void ExportAsSourceFile(this VBComponent component, string directoryPath)
         {
-            string filePath = System.IO.Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
+            string filePath = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
             if (component.Type == vbext_ComponentType.vbext_ct_Document)
             {
                 var text = component.CodeModule.get_Lines(1, component.CodeModule.CountOfLines);
-                System.IO.File.WriteAllText(filePath, text);
+                File.WriteAllText(filePath, text);
             }
             else
             {

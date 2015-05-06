@@ -138,6 +138,12 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="Rubberduck">
+      <HintPath>..\RetailCoder.VBE\bin\Debug\Rubberduck.dll</HintPath>
+    </Reference>
+    <Reference Include="Rubberduck.Parsing">
+      <HintPath>..\Rubberduck.Parsing\bin\Debug\Rubberduck.Parsing.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -161,12 +167,12 @@
     <Compile Include="SourceControl\SCPresenterTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParserTests.cs" />
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="AssertTests.cs" />
     <Compile Include="CodeInspectionTests.cs" />
     <Compile Include="TodoControllerTests.cs" />
     <Compile Include="ComponentTypeExtensionTests.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenamePresenterTests.cs" />
     <Compile Include="SourceControl\SourceControlTests.cs" />
     <Compile Include="SourceControlConfig.cs" />
   </ItemGroup>

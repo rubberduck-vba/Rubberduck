@@ -1,5 +1,7 @@
 using System.Collections.Generic;
-using Rubberduck.VBA.Nodes;
+using System.Linq;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -7,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public UnassignedVariableUsageInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.UnassignedVariableUsage_; } }
@@ -16,11 +18,18 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.IdentifierUsageInspector.AllUnassignedVariableUsages();
-            foreach (var issue in issues)
+            var usages = parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Variable
+                && !declaration.References.Any(reference => reference.IsAssignment))
+                .SelectMany(declaration => declaration.References);
+
+            foreach (var issue in usages)
             {
-                yield return new UnassignedVariableUsageInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                //todo: add context to IdentifierReference
+                //yield return new UnassignedVariableUsageInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
             }
+
+            return null;
         }
     }
 }

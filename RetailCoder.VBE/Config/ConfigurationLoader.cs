@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
 using System.IO;
-using Rubberduck.Inspections;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
@@ -18,61 +18,61 @@ namespace Rubberduck.Config
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
-    {
+        {
 
         protected override string ConfigFile
-        {
+            {
             get { return Path.Combine(this.rootPath, "rubberduck.config"); }
-        }
+            }
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
         /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
         public override Configuration LoadConfiguration()
         {
-            //deserialization can silently fail for just parts of the config, 
-            //  so we null check and return defaults if necessary.
+                    //deserialization can silently fail for just parts of the config, 
+                    //  so we null check and return defaults if necessary.
 
             var config = base.LoadConfiguration();
 
-            if (config.UserSettings.ToDoListSettings == null)
-            {
-                config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
-            }
+                    if (config.UserSettings.ToDoListSettings == null)
+                    {
+                        config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
+                    }
 
-            if (config.UserSettings.CodeInspectionSettings == null)
-            {
-                config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
-            }
+                    if (config.UserSettings.CodeInspectionSettings == null)
+                    {
+                        config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+                    }
 
-            var implementedInspections = GetImplementedCodeInspections();
-            var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+                    var implementedInspections = GetImplementedCodeInspections();
+                    var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+                    
+                    configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+                    config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
-            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
-            config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
-
-            return config;
-        }
+                    return config;
+                }
 
         protected override Configuration HandleIOException(IOException ex)
-        {
-            return GetDefaultConfiguration();
-        }
+            {
+                return GetDefaultConfiguration();
+            }
 
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
-        {
-            var message = ex.Message + System.Environment.NewLine + ex.InnerException.Message + System.Environment.NewLine + System.Environment.NewLine +
-                    ConfigFile + System.Environment.NewLine + System.Environment.NewLine +
-                    "Would you like to restore default configuration?" + System.Environment.NewLine +
-                    "Warning: All customized settings will be lost.";
+            {
+                var message = ex.Message + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + Environment.NewLine +
+                        ConfigFile + Environment.NewLine + Environment.NewLine +
+                        "Would you like to restore default configuration?" + Environment.NewLine + 
+                        "Warning: All customized settings will be lost.";
 
             DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
-            if (result == DialogResult.Yes)
-            {
-                var config = GetDefaultConfiguration();
+                if (result == DialogResult.Yes)
+                {
+                    var config = GetDefaultConfiguration();
                 SaveConfiguration(config);
-                return config;
-            }
+                    return config;
+                }
 
             throw ex;
 

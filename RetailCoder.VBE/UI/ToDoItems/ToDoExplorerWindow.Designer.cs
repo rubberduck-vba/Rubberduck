@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.ToDoItems
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.ToDoItems
 {
     partial class ToDoExplorerWindow
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -122,12 +125,12 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView todoItemsGridView;
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton refreshButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ToolStripButton configureButton;
+        private DataGridView todoItemsGridView;
+        private ToolStrip toolStrip1;
+        private ToolStripButton refreshButton;
+        private ToolStripSeparator toolStripSeparator1;
+        private Panel panel1;
+        private ToolStripButton configureButton;
 
 
     }

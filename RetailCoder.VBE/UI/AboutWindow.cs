@@ -2,13 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    [System.Runtime.InteropServices.ComVisible(true)]
+    [ComVisible(true)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
+    // ReSharper disable once InconsistentNaming
     public partial class _AboutWindow : Form
     {
+        private const string ClassId = "939CC8BB-A8CA-3BE6-89A3-5450949A6A43";
+        private const string ProgId = "Rubberduck.UI.AboutWindow";
+
         private static readonly IDictionary<string, string> Links =
             new Dictionary<string, string>
             {
@@ -22,7 +30,7 @@ namespace Rubberduck.UI
         public _AboutWindow()
         {
             InitializeComponent();
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             var name = assembly.GetName();
 
             AppVersionLabel.Text = string.Format("Build {0} ({1})", name.Version, name.ProcessorArchitecture);

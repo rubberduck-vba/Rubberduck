@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.UnitTesting
 {
@@ -46,79 +46,74 @@ namespace Rubberduck.UnitTesting
         }
 
         public event EventHandler<TestModuleEventArgs> ModuleInitialize;
-        private void RunModuleInitialize(string projectName, string moduleName)
+        private void RunModuleInitialize(QualifiedModuleName qualifiedModuleName)
         {
             var handler = ModuleInitialize;
             if (handler != null)
             {
-                handler(this, new TestModuleEventArgs(projectName, moduleName));
+                handler(this, new TestModuleEventArgs(qualifiedModuleName));
             }
         }
 
         public event EventHandler<TestModuleEventArgs> ModuleCleanup;
-        private void RunModuleCleanup(string projectName, string moduleName)
+        private void RunModuleCleanup(QualifiedModuleName qualifiedModuleName)
         {
             var handler = ModuleCleanup;
             if (handler != null)
             {
-                handler(this, new TestModuleEventArgs(projectName, moduleName));
+                handler(this, new TestModuleEventArgs(qualifiedModuleName));
             }
         }
 
         public event EventHandler<TestModuleEventArgs> MethodInitialize;
-        private void RunMethodInitialize(string projectName, string moduleName)
+        private void RunMethodInitialize(QualifiedModuleName qualifiedModuleName)
         {
             var handler = MethodInitialize;
             if (handler != null)
             {
-                handler(this, new TestModuleEventArgs(projectName, moduleName));
+                handler(this, new TestModuleEventArgs(qualifiedModuleName));
             }
         }
 
         public event EventHandler<TestModuleEventArgs> MethodCleanup;
-        private void RunMethodCleanup(string projectName, string moduleName)
+        private void RunMethodCleanup(QualifiedModuleName qualifiedModuleName)
         {
             var handler = MethodCleanup;
             if (handler != null)
             {
-                handler(this, new TestModuleEventArgs(projectName, moduleName));
+                handler(this, new TestModuleEventArgs(qualifiedModuleName));
             }
-        }
-
-        public void Run()
-        {
-            Run(AllTests.Keys);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
         {
-            if (tests.Any())
-            {
-                var methods = tests.ToDictionary(test => test, test => null as TestResult);
-                AssignResults(methods.Keys);
-            }
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
+            if (!testMethods.Any()) return;
+
+            var methods = testMethods.ToDictionary(test => test, test => null as TestResult);
+            AssignResults(methods.Keys);
         }
 
         private void AssignResults(IEnumerable<TestMethod> testMethods)
         {
             var tests = testMethods.ToList();
 
-            var modules = tests.GroupBy(t => new {Project = t.ProjectName, Module = t.ModuleName});
+            var modules = tests.GroupBy(t => t.QualifiedMemberName);
 
             foreach (var module in modules)
             {
-                RunModuleInitialize(module.Key.Project, module.Key.Module);
+                RunModuleInitialize(module.Key.QualifiedModuleName);
 
                 foreach (var test in module)
                 {
                     if (tests.Contains(test))
                     {
-                        RunMethodInitialize(test.ProjectName, test.ModuleName);
+                        RunMethodInitialize(test.QualifiedMemberName.QualifiedModuleName);
                     
                         var result = test.Run();
                         AllTests[test] = result;
 
-                        RunMethodCleanup(test.ProjectName, test.ModuleName);
+                        RunMethodCleanup(test.QualifiedMemberName.QualifiedModuleName);
 
 
                         OnTestComplete(new TestCompleteEventArgs(test, result));
@@ -129,7 +124,7 @@ namespace Rubberduck.UnitTesting
                     }
                 }
 
-                RunModuleCleanup(module.Key.Project, module.Key.Module);
+                RunModuleCleanup(module.Key.QualifiedModuleName);
             }
         }
 

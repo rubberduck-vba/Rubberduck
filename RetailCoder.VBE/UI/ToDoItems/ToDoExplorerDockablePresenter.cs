@@ -1,15 +1,16 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
-using Rubberduck.Extensions;
-using Rubberduck.ToDoItems;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
+using Rubberduck.Extensions;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Nodes;
+using Rubberduck.ToDoItems;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -85,7 +86,7 @@ namespace Rubberduck.UI.ToDoItems
             Parallel.ForEach(projects,
                 project =>
                 {
-                    var modules = _parser.Parse(project);
+                    var modules = _parser.Parse(project).ComponentParseResults;
                     foreach (var module in modules)
                     {
                         var markers = module.Comments.AsParallel().SelectMany(GetToDoMarkers);

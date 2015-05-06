@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -8,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public VariableNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.VariableNotUsed_; } }
@@ -17,10 +18,15 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.IdentifierUsageInspector.AllUnusedVariables();
-            foreach (var issue in issues)
+            var declarations = parseResult.Declarations.Items.Where(declaration =>
+                !declaration.IsBuiltIn 
+                //&& !declaration.IsArray()
+                && declaration.DeclarationType == DeclarationType.Variable
+                && declaration.References.All(reference => reference.IsAssignment));
+
+            foreach (var issue in declarations)
             {
-                yield return new VariableNotUsedInspectionResult(string.Format(Name, issue.Context.GetText()), Severity, issue.Context, issue.QualifiedName);
+                yield return new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName);
             }
         }
     }

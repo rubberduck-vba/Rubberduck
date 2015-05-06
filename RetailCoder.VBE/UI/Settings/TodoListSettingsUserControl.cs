@@ -1,9 +1,8 @@
-﻿using Rubberduck.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
@@ -15,12 +14,12 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public TodoListSettingsUserControl(List<ToDoMarker> markers)
+        public TodoListSettingsUserControl(IList<ToDoMarker> markers)
             : this()
         {
             this.tokenListBox.DataSource = new BindingList<ToDoMarker>(markers);
             this.tokenListBox.SelectedIndex = 0;
-            this.priorityComboBox.DataSource = Enum.GetValues(typeof(Config.TodoPriority));
+            this.priorityComboBox.DataSource = Enum.GetValues(typeof(TodoPriority));
         }
 
         public int SelectedIndex

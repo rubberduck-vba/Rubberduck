@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Rubberduck.ToDoItems
+﻿namespace Rubberduck.ToDoItems
 {
     public enum TaskPriority
     {

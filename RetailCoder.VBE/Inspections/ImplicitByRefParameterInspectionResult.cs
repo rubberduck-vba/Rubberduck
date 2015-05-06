@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
     public class ImplicitByRefParameterInspectionResult : CodeInspectionResultBase
     {
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBParser.ArgContext> qualifiedContext)
-            : base(inspection,type, qualifiedContext.QualifiedName, qualifiedContext.Context)
+        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
+            : base(inspection,type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
         }
 
-        private new VBParser.ArgContext Context { get { return base.Context as VBParser.ArgContext; } }
+        private new VBAParser.ArgContext Context { get { return base.Context as VBAParser.ArgContext; } }
 
         public override IDictionary<string, Action<VBE>> GetQuickFixes()
         {
-            if (Context.LPAREN() != null && Context.RPAREN() != null)
+            if ((Context.LPAREN() != null && Context.RPAREN() != null) || Context.PARAMARRAY() != null)
             {
-                // array parameters must be passed by reference
+                // array parameters & paramarrays must be passed by reference
                 return new Dictionary<string, Action<VBE>>
                 {
                     {"Pass parameter by reference explicitly", PassParameterByRef}
@@ -30,10 +29,8 @@ namespace Rubberduck.Inspections
 
             return new Dictionary<string, Action<VBE>>
                 {
-                    // this inspection doesn't know if parameter is assigned; suggest to pass ByRef explicitly
-                    // and then let ParameterCanBeByVal inspection do its job.
-                    //{"Pass parameter by value", PassParameterByVal},
-                    {"Pass parameter by reference explicitly", PassParameterByRef}
+                    {"Pass parameter by reference explicitly", PassParameterByRef},
+                    {"Pass parameter by value", PassParameterByVal}
                 };
         }
 
@@ -53,7 +50,7 @@ namespace Rubberduck.Inspections
             var newContent = string.Concat(newValue, " ", parameter);
             var selection = QualifiedSelection.Selection;
 
-            var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
+            var module = QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

@@ -1,4 +1,5 @@
 using Microsoft.Office.Interop.Word;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -6,15 +7,16 @@ namespace Rubberduck.VBEHost
     {
         public WordApp() : base("Word") { }
 
-        public override void Run(string projectName, string moduleName, string methodName)
+        public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            var call = GenerateMethodCall(projectName, moduleName, methodName);
+            var call = GenerateMethodCall(qualifiedMemberName);
             Application.Run(call);
         }
 
-        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
+        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            return string.Concat(moduleName, ".", methodName);
+            var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
+            return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
         }
     }
 }

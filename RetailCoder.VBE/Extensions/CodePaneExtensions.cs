@@ -1,7 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
 using Microsoft.Vbe.Interop;
-using System;
-using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.UI;
 
 namespace Rubberduck.Extensions
@@ -29,35 +28,7 @@ namespace Rubberduck.Extensions
             }
 
             var selection = new Selection(startLine, startColumn, endLine, endColumn);
-            return new QualifiedSelection(code.CodeModule.Parent.QualifiedName(), selection);
-        }
-
-        /// <summary>
-        /// Returns a <see cref="Selection"/> representing the position 
-        /// </summary>
-        ///
-        /// <param name="selection">    The selection. </param>
-        /// <returns>   A QualifiedSelection object representing the procedure the cursor is currently in. </returns>
-        public static Selection SelectedProcedure(this CodePane code, Selection selection)
-        {
-            vbext_ProcKind kind;
-            var procedure = code.CodeModule.get_ProcOfLine(selection.StartLine, out kind);
-            var startLine = code.CodeModule.get_ProcStartLine(procedure, kind);
-            var endLine = startLine + code.CodeModule.get_ProcCountLines(procedure, kind) + 1;
-
-            return new Selection(startLine, 1, endLine, 1);
-        }
-
-        /// <summary>
-        /// Sets the cursor to the first position of the given line.
-        /// </summary>
-        /// <param name="codePane"></param>
-        /// <param name="lineNumber"></param>
-        public static void SetSelection(this CodePane codePane, int lineNumber)
-        {
-            var line = codePane.CodeModule.Lines[lineNumber, 1];
-            var selection = new Selection(lineNumber, 1, lineNumber, line.Length);
-            codePane.SetSelection(selection);
+            return new QualifiedSelection(new QualifiedModuleName(code.CodeModule.Parent), selection);
         }
 
         /// <summary>
@@ -67,7 +38,7 @@ namespace Rubberduck.Extensions
         /// <param name="selection"></param>
         public static void SetSelection(this CodePane codePane, Selection selection)
         {
-            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn + 1);
+            codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
             codePane.ForceFocus();
         }
 

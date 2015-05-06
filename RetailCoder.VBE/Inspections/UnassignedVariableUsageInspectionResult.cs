@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections
 
         private void RemoveUsage(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).First();
+            var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)

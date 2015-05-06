@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -6,14 +7,14 @@ namespace Rubberduck.VBEHost
     {
         public ExcelApp() : base("Excel") { }
 
-        public override void Run(string projectName, string moduleName, string methodName)
+        public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            Application.Run(GenerateMethodCall(projectName, moduleName, methodName));
+            Application.Run(GenerateMethodCall(qualifiedMemberName));
         }
 
-        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
+        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            return string.Concat(projectName, ".", moduleName, ".", methodName);
+            return qualifiedMemberName.ToString();
         }
     }
 }

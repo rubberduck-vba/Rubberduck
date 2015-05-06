@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Settings
 {
     partial class TodoListSettingsUserControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -41,16 +44,18 @@
             // 
             // tokenListBox
             // 
+            this.tokenListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tokenListBox.FormattingEnabled = true;
             this.tokenListBox.Location = new System.Drawing.Point(12, 26);
             this.tokenListBox.Name = "tokenListBox";
-            this.tokenListBox.Size = new System.Drawing.Size(331, 238);
+            this.tokenListBox.Size = new System.Drawing.Size(134, 238);
             this.tokenListBox.TabIndex = 0;
             this.tokenListBox.SelectedIndexChanged += new System.EventHandler(this.tokenListBox_SelectedIndexChanged);
             // 
             // tokenTextBox
             // 
-            this.tokenTextBox.Location = new System.Drawing.Point(355, 98);
+            this.tokenTextBox.Location = new System.Drawing.Point(152, 100);
             this.tokenTextBox.Name = "tokenTextBox";
             this.tokenTextBox.Size = new System.Drawing.Size(152, 20);
             this.tokenTextBox.TabIndex = 1;
@@ -59,7 +64,7 @@
             // priorityComboBox
             // 
             this.priorityComboBox.FormattingEnabled = true;
-            this.priorityComboBox.Location = new System.Drawing.Point(355, 40);
+            this.priorityComboBox.Location = new System.Drawing.Point(152, 42);
             this.priorityComboBox.Name = "priorityComboBox";
             this.priorityComboBox.Size = new System.Drawing.Size(152, 21);
             this.priorityComboBox.TabIndex = 2;
@@ -68,7 +73,7 @@
             // priorityLabel
             // 
             this.priorityLabel.AutoSize = true;
-            this.priorityLabel.Location = new System.Drawing.Point(352, 23);
+            this.priorityLabel.Location = new System.Drawing.Point(149, 25);
             this.priorityLabel.Name = "priorityLabel";
             this.priorityLabel.Size = new System.Drawing.Size(41, 13);
             this.priorityLabel.TabIndex = 3;
@@ -77,7 +82,7 @@
             // tokenLabel
             // 
             this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(352, 81);
+            this.tokenLabel.Location = new System.Drawing.Point(149, 83);
             this.tokenLabel.Name = "tokenLabel";
             this.tokenLabel.Size = new System.Drawing.Size(68, 13);
             this.tokenLabel.TabIndex = 4;
@@ -85,7 +90,7 @@
             // 
             // addButton
             // 
-            this.addButton.Location = new System.Drawing.Point(355, 143);
+            this.addButton.Location = new System.Drawing.Point(152, 145);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(152, 31);
             this.addButton.TabIndex = 5;
@@ -95,7 +100,7 @@
             // 
             // saveChangesButton
             // 
-            this.saveChangesButton.Location = new System.Drawing.Point(355, 187);
+            this.saveChangesButton.Location = new System.Drawing.Point(152, 189);
             this.saveChangesButton.Name = "saveChangesButton";
             this.saveChangesButton.Size = new System.Drawing.Size(152, 31);
             this.saveChangesButton.TabIndex = 6;
@@ -105,7 +110,7 @@
             // 
             // removeButton
             // 
-            this.removeButton.Location = new System.Drawing.Point(355, 233);
+            this.removeButton.Location = new System.Drawing.Point(152, 235);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(152, 31);
             this.removeButton.TabIndex = 7;
@@ -122,7 +127,7 @@
             this.tokenListLabel.TabIndex = 8;
             this.tokenListLabel.Text = "Token List:";
             // 
-            // TodoListSettingsControl
+            // TodoListSettingsUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -135,8 +140,9 @@
             this.Controls.Add(this.priorityComboBox);
             this.Controls.Add(this.tokenTextBox);
             this.Controls.Add(this.tokenListBox);
-            this.Name = "TodoListSettingsControl";
-            this.Size = new System.Drawing.Size(530, 294);
+            this.MinimumSize = new System.Drawing.Size(314, 294);
+            this.Name = "TodoListSettingsUserControl";
+            this.Size = new System.Drawing.Size(314, 294);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,14 +150,14 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox tokenListBox;
-        private System.Windows.Forms.TextBox tokenTextBox;
-        private System.Windows.Forms.ComboBox priorityComboBox;
-        private System.Windows.Forms.Label priorityLabel;
-        private System.Windows.Forms.Label tokenLabel;
-        private System.Windows.Forms.Button addButton;
-        private System.Windows.Forms.Button saveChangesButton;
-        private System.Windows.Forms.Button removeButton;
-        private System.Windows.Forms.Label tokenListLabel;
+        private ListBox tokenListBox;
+        private TextBox tokenTextBox;
+        private ComboBox priorityComboBox;
+        private Label priorityLabel;
+        private Label tokenLabel;
+        private Button addButton;
+        private Button saveChangesButton;
+        private Button removeButton;
+        private Label tokenListLabel;
     }
 }

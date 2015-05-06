@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -11,27 +10,31 @@ namespace Rubberduck.Inspections
     {
         public ImplicitPublicMemberInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitPublicMember_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ProcedureTypes = 
+        {
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName));
-                foreach (var procedure in procedures)
-                {
-                    var context = (dynamic) procedure.Context;
-                    if (((context.Visibility() as VBParser.VisibilityContext).GetAccessibility() == VBAccessibility.Implicit))
-                    {
-                        yield return new ImplicitPublicMemberInspectionResult(string.Format(Name,context.AmbiguousIdentifier().GetText()), Severity, procedure);
-                    }
-                }
-            }
+            var issues = from item in parseResult.Declarations.Items
+                         where !item.IsBuiltIn
+                               && ProcedureTypes.Contains(item.DeclarationType)
+                               && item.Accessibility == Accessibility.Implicit
+                         let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
+                               select new ImplicitPublicMemberInspectionResult(string.Format(Name, ((dynamic)context.Context).ambiguousIdentifier().GetText()), Severity, context);
+            return issues;
         }
     }
 }

@@ -2,69 +2,131 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Logging;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Listeners;
+using Rubberduck.Parsing.Nodes;
+using Selection = Rubberduck.Parsing.Selection;
 
 namespace Rubberduck.VBA
 {
-    public class RubberduckParser : IRubberduckParser
+    internal class RubberduckParser : IRubberduckParser
     {
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
-        public IParseTree Parse(string code)
+        private readonly Logger _logger;
+
+        public RubberduckParser()
         {
-            var input = new AntlrInputStream(code);
-            var lexer = new VBLexer(input);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new VBParser(tokens);
+#if DEBUG
+            LoggingConfigurator.ConfigureParserLogger();
+#endif
+            _logger = LogManager.GetCurrentClassLogger();
             
-            var result = parser.StartRule();
-            return result;
         }
 
-        public IEnumerable<VBComponentParseResult> Parse(VBProject project)
+        public void RemoveProject(VBProject project)
         {
+            foreach (var key in ParseResultCache.Keys.Where(k => k.Project.Equals(project)))
+            {
+                VBComponentParseResult result;
+                ParseResultCache.TryRemove(key, out result);
+            }
+        }
+
+        public async Task<VBProjectParseResult> ParseAsync(VBProject project)
+        {
+            return await Task.Run(() => Parse(project));
+            // note: the above has been seen to cause issues with VBProject.Equals and break navigation...
+            //return Parse(project);
+        }
+
+        public VBProjectParseResult Parse(VBProject project)
+        {
+            var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                yield break;
+                return new VBProjectParseResult(results);
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
-            foreach(var module in modules)
-            {
-                yield return Parse(module);
-            };
+            results.AddRange(modules.Select(Parse).Where(result => result != null));
+
+            return new VBProjectParseResult(results);
         }
 
-        public VBComponentParseResult Parse(VBComponent component)
+        private IParseTree Parse(string code, out TokenStreamRewriter outRewriter)
         {
-            VBComponentParseResult cachedValue;
-            var name = component.QualifiedName();
-            if (ParseResultCache.TryGetValue(name, out cachedValue))
-            {
-                return cachedValue;
-            }
+            var input = new AntlrInputStream(code);
+            var lexer = new VBALexer(input);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new VBAParser(tokens);
+            parser.AddErrorListener(new ExceptionErrorListener());
+            outRewriter = new TokenStreamRewriter(tokens);
 
-            var parseTree = Parse(component.CodeModule.Lines());
-            var comments = ParseComments(component);
-            var result = new VBComponentParseResult(component, parseTree, comments);
-
-            ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
+            var result = parser.startRule();
             return result;
         }
 
-        public IEnumerable<CommentNode> ParseComments(VBComponent component)
+        private VBComponentParseResult Parse(VBComponent component)
         {
-            var code = component.CodeModule.Code();
-            var qualifiedName = component.QualifiedName();
+            try
+            {
+                VBComponentParseResult cachedValue;
+                var name = new QualifiedModuleName(component); // already a performance hit
+                if (ParseResultCache.TryGetValue(name, out cachedValue))
+                {
+                    return cachedValue;
+                }
 
+                var codeModule = component.CodeModule;
+                var lines = codeModule.Lines();
+
+                TokenStreamRewriter rewriter;
+                var parseTree = Parse(lines, out rewriter);
+                var comments = ParseComments(name);
+                var result = new VBComponentParseResult(component, parseTree, comments, rewriter);
+
+                ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
+                return result;
+            }
+            catch (SyntaxErrorException exception)
+            {
+                if (LogManager.IsLoggingEnabled())
+                {
+                    LogParseException(component, exception);
+                }
+                return null;
+            }
+            catch (COMException)
+            {
+                return null;
+            }
+        }
+
+        private void LogParseException(VBComponent component, SyntaxErrorException exception)
+        {
+            var offendingProject = component.Collection.Parent.Name;
+            var offendingComponent = component.Name;
+            var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
+
+            var message = string.Format("Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
+            _logger.ErrorException(message, exception);
+        }
+
+        private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
+        {
+            var code = qualifiedName.Component.CodeModule.Code();
             var commentBuilder = new StringBuilder();
             var continuing = false;
 

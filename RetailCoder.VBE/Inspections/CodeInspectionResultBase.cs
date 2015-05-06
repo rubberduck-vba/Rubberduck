@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.Inspections
 {
@@ -78,12 +76,17 @@ namespace Rubberduck.Inspections
 
         public VBComponent FindComponent(VBE vbe)
         {
-            return vbe.VBProjects.Cast<VBProject>()
-                      .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked && project.Name == QualifiedName.ProjectName)
-                      .SelectMany(project =>
-                                    project.VBComponents.Cast<VBComponent>()
-                                           .Where(component => component.Name == QualifiedName.ModuleName))
-                      .SingleOrDefault();
+            var vbProject = vbe.VBProjects.Cast<VBProject>()
+                .SingleOrDefault(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
+                                         && project.Equals(QualifiedName.Project));
+
+            if (vbProject == null)
+            {
+                return null;
+            }
+
+            return vbProject.VBComponents.Cast<VBComponent>()
+                .SingleOrDefault(component => component.Equals(QualifiedName.Component));
         }
     }
 }

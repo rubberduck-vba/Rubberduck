@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -14,59 +12,60 @@ namespace Rubberduck.Inspections
     {
         public ImplicitVariantReturnTypeInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitVariantReturnType_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ProcedureTypes = 
+        {
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.LibraryFunction
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var procedures = module.ParseTree.GetContexts<ProcedureListener, ParserRuleContext>(new ProcedureListener(module.QualifiedName))
-                    .Where(HasExpectedReturnType);
-                foreach (var procedure in procedures)
-                {
-                    var asTypeClause = GetAsTypeClause(procedure.Context);
-                    if (asTypeClause == null)
-                    {
-                        yield return new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, ((dynamic)procedure.Context).AmbiguousIdentifier().GetText()), Severity, procedure);
-                    }
-                }
-            }
+            var issues = from item in parseResult.Declarations.Items
+                               where !item.IsBuiltIn
+                                && ProcedureTypes.Contains(item.DeclarationType)
+                                && !item.IsTypeSpecified()
+                               let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
+                               select new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
+            return issues;
         }
 
-        private static readonly IEnumerable<Func<ParserRuleContext, VBParser.AsTypeClauseContext>> Converters =
-        new List<Func<ParserRuleContext, VBParser.AsTypeClauseContext>>
+        private static readonly IEnumerable<Func<ParserRuleContext, VBAParser.AsTypeClauseContext>> Converters =
+        new List<Func<ParserRuleContext, VBAParser.AsTypeClauseContext>>
             {
                 GetFunctionReturnType,
                 GetPropertyGetReturnType
             };
 
-        private VBParser.AsTypeClauseContext GetAsTypeClause(ParserRuleContext procedureContext)
+        private VBAParser.AsTypeClauseContext GetAsTypeClause(ParserRuleContext procedureContext)
         {
             return Converters.Select(converter => converter(procedureContext)).FirstOrDefault(args => args != null);
         }
 
         private static bool HasExpectedReturnType(QualifiedContext<ParserRuleContext> procedureContext)
         {
-            var function = procedureContext.Context as VBParser.FunctionStmtContext;
-            var getter = procedureContext.Context as VBParser.PropertyGetStmtContext;
+            var function = procedureContext.Context as VBAParser.FunctionStmtContext;
+            var getter = procedureContext.Context as VBAParser.PropertyGetStmtContext;
             return function != null || getter != null;
         }
 
-        private static VBParser.AsTypeClauseContext GetFunctionReturnType(ParserRuleContext procedureContext)
+        private static VBAParser.AsTypeClauseContext GetFunctionReturnType(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.FunctionStmtContext;
-            return context == null ? null : context.AsTypeClause();
+            var context = procedureContext as VBAParser.FunctionStmtContext;
+            return context == null ? null : context.asTypeClause();
         }
 
-        private static VBParser.AsTypeClauseContext GetPropertyGetReturnType(ParserRuleContext procedureContext)
+        private static VBAParser.AsTypeClauseContext GetPropertyGetReturnType(ParserRuleContext procedureContext)
         {
-            var context = procedureContext as VBParser.PropertyGetStmtContext;
-            return context == null ? null : context.AsTypeClause();
+            var context = procedureContext as VBAParser.PropertyGetStmtContext;
+            return context == null ? null : context.asTypeClause();
         }
     }
 }

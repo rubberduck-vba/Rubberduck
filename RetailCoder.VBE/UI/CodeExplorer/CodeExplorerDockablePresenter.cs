@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Inspections;
-using Rubberduck.VBA;
-using Rubberduck.VBA.ParseTreeListeners;
-using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Extensions;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
-using AddIn = Microsoft.Vbe.Interop.AddIn;
-using Font = System.Drawing.Font;
-using Selection = Rubberduck.Extensions.Selection;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -26,8 +23,12 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser = parser;
             RegisterControlEvents();
-            RefreshExplorerTreeView();
-            Control.SolutionTree.Refresh();
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            Task.Run(() => RefreshExplorerTreeView()); 
         }
 
         private void RegisterControlEvents()
@@ -46,6 +47,53 @@ namespace Rubberduck.UI.CodeExplorer
             Control.DisplayStyleChanged += DisplayStyleChanged;
             Control.RunAllTests += ContextMenuRunAllTests;
             Control.RunInspections += ContextMenuRunInspections;
+            Control.SelectionChanged += SelectionChanged;
+            Control.Rename += RenameSelection;
+            Control.FindAllReferences += FindAllReferencesForSelection;
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
+        private void FindAllReferencesForSelection(object sender, NavigateCodeEventArgs e)
+        {
+            var handler = FindAllReferences;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
+        private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            {
+                return;
+            }
+
+            var handler = Rename;
+            if (handler != null)
+            {
+                handler(this, e);
+                RefreshExplorerTreeView();
+                e.Node.EnsureVisible();
+            }
+        }
+
+        private void SelectionChanged(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            if (e.Node == null || e.Node.Tag == null)
+            {
+                return;
+            }
+
+            try
+            {
+                VBE.ActiveVBProject = e.QualifiedName.Project;
+            }
+            catch (COMException)
+            {
+                // swallow "catastrophic failure"
+            }
         }
 
         public event EventHandler RunInspections;
@@ -79,13 +127,13 @@ namespace Rubberduck.UI.CodeExplorer
             RefreshExplorerTreeView();
         }
 
-        private void ShowDesigner(object sender, System.EventArgs e)
+        private void ShowDesigner(object sender, EventArgs e)
         {
             var node = Control.SolutionTree.SelectedNode;
             if (node != null && node.Tag != null)
             {
-                var selection = (QualifiedSelection)node.Tag;
-                var module = VBE.FindCodeModules(selection.QualifiedName).FirstOrDefault();
+                var selection = (Declaration)node.Tag;
+                var module = selection.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module == null)
                 {
                     return;
@@ -103,7 +151,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private bool _showFolders = true;
-        private void ToggleFolders(object sender, System.EventArgs e)
+        private void ToggleFolders(object sender, EventArgs e)
         {
             _showFolders = !_showFolders;
             RefreshExplorerTreeView();
@@ -123,29 +171,26 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void NavigateExplorerTreeNode(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Selection.StartLine != 0)
+            var declaration = e.Declaration;
+            if (declaration != null)
             {
-                //hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
-                //todo: determiner if this "temp fix" is still needed.
-                var selection = new Selection(e.Selection.StartLine,
-                                                1,
-                                                e.Selection.EndLine,
-                                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
-                                              );
-                VBE.SetSelection(new QualifiedSelection(e.QualifiedName, selection));
+                VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
             }
         }
 
-        private void RefreshExplorerTreeView(object sender, System.EventArgs e)
+        private void RefreshExplorerTreeView(object sender, EventArgs e)
         {
-            RefreshExplorerTreeView();
+            Task.Run(() => RefreshExplorerTreeView());
         }
 
         private async void RefreshExplorerTreeView()
         {
-            Control.SolutionTree.Nodes.Clear();
-            Control.ShowDesignerButton.Enabled = false;
-
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.SolutionTree.Nodes.Clear();
+                Control.ShowDesignerButton.Enabled = false;
+            });
+            
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
             {
@@ -159,31 +204,30 @@ namespace Rubberduck.UI.CodeExplorer
                     Control.Invoke((MethodInvoker)delegate
                     {
                         Control.SolutionTree.Nodes.Add(node);
+                        Control.SolutionTree.Refresh();
                         AddProjectNodes(project, node);
                     });
                 });
             }
-
-            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
         {
-            var treeView = Control.SolutionTree;
             Control.Invoke((MethodInvoker)async delegate
             {
-                root.Text = project.Name;
                 if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
                 {
                     root.ImageKey = "Locked";
                 }
                 else
                 {
-                    root.ImageKey = "ClosedFolder";
-                    var nodes = (await CreateModuleNodesAsync(project, treeView.Font)).ToArray();
+                    var nodes = (await CreateModuleNodesAsync(project)).ToArray();
                     AddProjectFolders(project, root, nodes);
+                    root.ImageKey = "ClosedFolder";
                     root.Expand();
                 }
+
+                root.Text = project.Name;
             });
         }
 
@@ -253,21 +297,61 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project, Font font)
+        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
         {
             var result = new List<TreeNode>();
-            foreach (VBComponent vbComponent in project.VBComponents)
+            var parseResult = _parser.Parse(project);
+            foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
-                var component = vbComponent;
-                var qualifiedName = component.QualifiedName();
+                var component = componentParseResult.Component;
+                var members = parseResult.Declarations.Items
+                    .Where(declaration => declaration.ParentScope == component.Collection.Parent.Name + "." + component.Name
+                        && declaration.DeclarationType != DeclarationType.Control
+                        && declaration.DeclarationType != DeclarationType.ModuleOption);
 
-                var members = await Task.Run(() => ParseModule(component, ref qualifiedName));
-
-                var node = members.Context;
+                var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                //node.NodeFont = new Font(font, FontStyle.Regular);
-                //node.Text = component.Name;
+                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => 
+                    item.IdentifierName == component.Name 
+                    && item.Project == component.Collection.Parent
+                    && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
+
+                foreach (var declaration in members)
+                {
+                    if (declaration.DeclarationType == DeclarationType.UserDefinedTypeMember
+                        || declaration.DeclarationType == DeclarationType.EnumerationMember)
+                    {
+                        // these ones are handled by their respective parent
+                        continue;
+                    }
+
+                    var text = GetNodeText(declaration);
+                    var child = new TreeNode(text);
+                    child.ImageKey = GetImageKeyForDeclaration(declaration);
+                    child.SelectedImageKey = child.ImageKey;
+                    child.Tag = declaration;
+
+                    if (declaration.DeclarationType == DeclarationType.UserDefinedType
+                        || declaration.DeclarationType == DeclarationType.Enumeration)
+                    {
+                        var subDeclaration = declaration;
+                        var subMembers = parseResult.Declarations.Items.Where(item => 
+                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                            && item.Context != null && subDeclaration.Context.Equals(item.Context.Parent));
+
+                        foreach (var subMember in subMembers)
+                        {
+                            var subChild = new TreeNode(subMember.IdentifierName);
+                            subChild.ImageKey = GetImageKeyForDeclaration(subMember);
+                            subChild.SelectedImageKey = subChild.ImageKey;
+                            subChild.Tag = subMember;
+                            child.Nodes.Add(subChild);
+                        }
+                    }
+
+                    node.Nodes.Add(child);
+                }
 
                 result.Add(node);
             }
@@ -275,9 +359,185 @@ namespace Rubberduck.UI.CodeExplorer
             return result;
         }
 
-        private QualifiedContext<TreeNode> ParseModule(VBComponent component, ref QualifiedModuleName qualifiedName)
+        private string GetNodeText(Declaration declaration)
         {
-            return _parser.Parse(component).ParseTree.GetContexts<TreeViewListener, TreeNode>(new TreeViewListener(qualifiedName, Control.DisplayStyle)).Single();
+            if (Control.DisplayStyle == TreeViewDisplayStyle.MemberNames)
+            {
+                var result = declaration.IdentifierName;
+                if (declaration.DeclarationType == DeclarationType.PropertyGet)
+                {
+                    result += " (" + Tokens.Get + ")";
+                }
+                else if (declaration.DeclarationType == DeclarationType.PropertyLet)
+                {
+                    result += " (" + Tokens.Let + ")";
+                }
+                else if (declaration.DeclarationType == DeclarationType.PropertySet)
+                {
+                    result += " (" + Tokens.Set + ")";
+                }
+
+                return result;
+            }
+
+            if (declaration.DeclarationType == DeclarationType.Procedure)
+            {
+                return ((VBAParser.SubStmtContext) declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.Function)
+            {
+                return ((VBAParser.FunctionStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertyGet)
+            {
+                return ((VBAParser.PropertyGetStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertyLet)
+            {
+                return ((VBAParser.PropertyLetStmtContext)declaration.Context).Signature();
+            }
+
+            if (declaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                return ((VBAParser.PropertySetStmtContext)declaration.Context).Signature();
+            }
+
+            return declaration.IdentifierName;
+        }
+
+        private string GetImageKeyForDeclaration(Declaration declaration)
+        {
+            var result = string.Empty;
+            switch (declaration.DeclarationType)
+            {
+                case DeclarationType.Module:
+                    break;
+                case DeclarationType.Class:
+                    break;
+                case DeclarationType.Procedure:
+                case DeclarationType.Function:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateMethod";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendMethod";
+                        break;
+                    }
+                    result = "PublicMethod";
+                    break;
+
+                case DeclarationType.PropertyGet:
+                case DeclarationType.PropertyLet:
+                case DeclarationType.PropertySet:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateProperty";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendProperty";
+                        break;
+                    }
+                    result = "PublicProperty";
+                    break;
+
+                case DeclarationType.Parameter:
+                    break;
+                case DeclarationType.Variable:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateField";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendField";
+                        break;
+                    }
+                    result = "PublicField";
+                    break;
+
+                case DeclarationType.Constant:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateConst";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendConst";
+                        break;
+                    }
+                    result = "PublicConst";
+                    break;
+
+                case DeclarationType.Enumeration:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateEnum";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendEnum";
+                        break;
+                    }
+                    result = "PublicEnum";
+                    break;
+
+                case DeclarationType.EnumerationMember:
+                    result = "EnumItem";
+                    break;
+
+                case DeclarationType.Event:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateEvent";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendEvent";
+                        break;
+                    }
+                    result = "PublicEvent";
+                    break;
+
+                case DeclarationType.UserDefinedType:
+                    if (declaration.Accessibility == Accessibility.Private)
+                    {
+                        result = "PrivateType";
+                        break;
+                    }
+                    if (declaration.Accessibility == Accessibility.Friend)
+                    {
+                        result = "FriendType";
+                        break;
+                    }
+                    result = "PublicType";
+                    break;
+
+                case DeclarationType.UserDefinedTypeMember:
+                    result = "PublicField";
+                    break;
+                
+                case DeclarationType.LibraryProcedure:
+                case DeclarationType.LibraryFunction:
+                    result = "Identifier";
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return result;
         }
     }
 }

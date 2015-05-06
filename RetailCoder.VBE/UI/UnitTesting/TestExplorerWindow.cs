@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.UnitTesting;
 
@@ -185,9 +184,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
         {
-            return items.FirstOrDefault(item => item.ProjectName == test.ProjectName
-                                                 && item.ModuleName == test.ModuleName
-                                                 && item.MethodName == test.MethodName);
+            return items.FirstOrDefault(item => item.QualifiedMemberName.Equals(test.QualifiedMemberName));
         }
 
         public void Refresh(IDictionary<TestMethod, TestResult> tests)
@@ -209,7 +206,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public event EventHandler OnRefreshListButtonClick;
-        private void RefreshTestsButtonClick(object sender, System.EventArgs e)
+        private void RefreshTestsButtonClick(object sender, EventArgs e)
         {
             OnButtonClick(OnRefreshListButtonClick);
         }

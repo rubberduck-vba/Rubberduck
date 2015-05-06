@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
@@ -21,7 +20,7 @@ namespace Rubberduck.UI.CodeInspections
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
 
             _project = _selection.QualifiedName.ProjectName;
-            _component = _selection.QualifiedName.ModuleName;
+            _component = _selection.QualifiedName.ComponentName;
         }
 
         private readonly ICodeInspectionResult _item;

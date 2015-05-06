@@ -1,6 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.Extensions;
-using Rubberduck.VBA.Nodes;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Nodes;
 
 namespace Rubberduck.ToDoItems
 {
@@ -38,8 +37,8 @@ namespace Rubberduck.ToDoItems
             _priority = priority;
             _description = description;
             _selection = qualifiedSelection;
-            _projectName = qualifiedSelection.QualifiedName.ProjectName;
-            _moduleName = qualifiedSelection.QualifiedName.ModuleName;
+            _projectName = qualifiedSelection.QualifiedName.Project.Name;
+            _moduleName = qualifiedSelection.QualifiedName.Component.Name;
             _lineNumber = qualifiedSelection.Selection.StartLine;
         }
     }

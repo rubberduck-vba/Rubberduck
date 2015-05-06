@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.Config;
-using System.ComponentModel;
 
 namespace Rubberduck.UI.Settings
 {
     public class TodoSettingPresenter
     {
-        private ITodoSettingsView _view;
+        private readonly ITodoSettingsView _view;
 
         public ToDoMarker ActiveMarker
         {

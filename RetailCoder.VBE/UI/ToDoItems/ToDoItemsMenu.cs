@@ -1,9 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
-using Rubberduck.VBA;
-using System;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 
@@ -43,7 +40,7 @@ namespace Rubberduck.UI.ToDoItems
 
             if (disposing && _userControl != null)
             {
-                var uc = (System.Windows.Forms.UserControl)_userControl;
+                var uc = (UserControl)_userControl;
                 uc.Dispose();
             }
 

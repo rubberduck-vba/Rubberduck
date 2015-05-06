@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Config;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.Settings
 {
@@ -30,20 +24,37 @@ namespace Rubberduck.UI.Settings
 
         private void InitializeTreeView()
         {
-            var rootNode = new TreeNode("Rubberduck");
-            var todoNode = rootNode.Nodes.Add("Todo List");
-            var codeinspectionNode = rootNode.Nodes.Add("Code Inpsections");   
 
-            this.settingsTreeView.Nodes.Add(rootNode);
-            this.settingsTreeView.Nodes[0].ExpandAll();
+            try
+            {
+                var rootNode = new TreeNode("Rubberduck") {ImageKey = "Ducky", SelectedImageKey = "Ducky"};
             
+                var navNode = new TreeNode("Navigation") {ImageKey = "Navigation", SelectedImageKey = "Navigation"};
+                var todoNode = navNode.Nodes.Add("To-Do Explorer");
+                rootNode.Nodes.Add(navNode);
+
+                var codeinspectionNode = new TreeNode("Code Inspections") { ImageKey = "CodeInspections", SelectedImageKey = "CodeInspections"};
+                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.CodeQualityIssues.ToString()));
+                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.LanguageOpportunities.ToString()));
+                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.MaintainabilityAndReadabilityIssues.ToString()));
+                rootNode.Nodes.Add(codeinspectionNode);
+
+                settingsTreeView.Nodes.Add(rootNode);
+                settingsTreeView.Nodes[0].ExpandAll();
+            }
+            catch (Exception exception)
+            {
+            }
         }
 
         public event EventHandler<TreeViewEventArgs> NodeSelected;
         private void settingsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            //re-raise event
-            NodeSelected(sender, e);
+            var handler = NodeSelected;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
         }
     }
 }

@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
-using Rubberduck.VBA;
+using VBComponentExtensions = Rubberduck.VBA.VBComponentExtensions; // todo: untangle this mess
 
 namespace Rubberduck.Extensions
 {
     public static class VBComponentsExtensions
     {
-        public static QualifiedModuleName QualifiedName(this VBComponent component)
-        {
-            var moduleName = component.Name;
-            var project = component.Collection.Parent;
-            var hash = project.GetHashCode();
-            var code = component.CodeModule.Lines().GetHashCode();
-
-            return new QualifiedModuleName(project.Name, moduleName, hash, code);
-        }
-
         /// <summary>
         /// Safely removes the specified VbComponent from the collection.
         /// </summary>
@@ -48,8 +33,8 @@ namespace Rubberduck.Extensions
 
         public static void ImportSourceFile(this VBComponents components, string filePath)
         {
-            var ext = System.IO.Path.GetExtension(filePath);
-            var fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            var ext = Path.GetExtension(filePath);
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
 
             if (ext == VBComponentExtensions.DocClassExtension)
             {
@@ -58,7 +43,7 @@ namespace Rubberduck.Extensions
                 {
                     component.CodeModule.Clear();
 
-                    var text = System.IO.File.ReadAllText(filePath);
+                    var text = File.ReadAllText(filePath);
                     component.CodeModule.AddFromString(text);
                 }
 

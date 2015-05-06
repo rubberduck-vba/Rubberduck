@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
-using Rubberduck.VBA.ParseTreeListeners;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -47,9 +46,35 @@ namespace Rubberduck.UI.CodeExplorer
             AddFormContextButton.Click += AddFormButton_Click;
             AddTestModuleContextButton.Click += AddTestModuleButtonClick;
             NavigateContextButton.Click += SolutionTreeClick;
+            RenameContextButton.Click += RenameContextButtonClick;
 
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
             InspectContextButton.Click += InspectContextButton_Click;
+            FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
+        private void FindAllReferencesContextButton_Click(object sender, EventArgs e)
+        {
+            var handler = FindAllReferences;
+            if (handler != null && SolutionTree.SelectedNode != null)
+            {
+                var target = SolutionTree.SelectedNode.Tag as Declaration;
+                if (target != null)
+                {
+                    handler(this, new NavigateCodeEventArgs(target));
+                }
+            }
+        }
+
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
+        private void RenameContextButtonClick(object sender, EventArgs e)
+        {
+            var handler = Rename;
+            if (handler != null && SolutionTree.SelectedNode != null)
+            {
+                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode));
+            }
         }
 
         public event EventHandler RunInspections;
@@ -121,6 +146,7 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
+        public event EventHandler<TreeNodeNavigateCodeEventArgs> SelectionChanged;
         private void SolutionTreeClick(object sender, EventArgs e)
         {
             var node = SolutionTree.SelectedNode;
@@ -131,6 +157,14 @@ namespace Rubberduck.UI.CodeExplorer
                 node == null
                     ? string.Empty
                     : node.Text;
+
+            var handler = SelectionChanged;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, new TreeNodeNavigateCodeEventArgs(node));
         }
 
         private bool CanDeleteNode(TreeNode node)
@@ -252,8 +286,7 @@ namespace Rubberduck.UI.CodeExplorer
 
             if (e.Node.Tag != null)
             {
-                var qualifiedSelection = (QualifiedSelection)e.Node.Tag;
-                handler(this, new TreeNodeNavigateCodeEventArgs(e.Node, qualifiedSelection));
+                handler(this, new TreeNodeNavigateCodeEventArgs(e.Node));
             }
         }
 

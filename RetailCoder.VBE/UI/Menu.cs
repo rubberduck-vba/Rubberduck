@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using System.Windows.Forms;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI

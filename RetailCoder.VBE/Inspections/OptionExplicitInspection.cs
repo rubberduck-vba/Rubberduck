@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Nodes;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -16,24 +17,27 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        private static readonly DeclarationType[] ModuleTypes =
+        {
+            DeclarationType.Module,
+            DeclarationType.Class
+        };
+
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var declarationLines = module.Component.CodeModule.CountOfDeclarationLines;
-                if (declarationLines == 0)
-                {
-                    declarationLines = 1;
-                }
+            var options = parseResult.Declarations.Items
+                .Where(declaration => !declaration.IsBuiltIn 
+                                      && declaration.DeclarationType == DeclarationType.ModuleOption
+                                      && declaration.Context is VBAParser.OptionExplicitStmtContext)
+                .ToList();
 
-                var lines = module.Component.CodeModule.get_Lines(1, declarationLines).Split('\n')
-                                                       .Select(line => line.Replace("\r",string.Empty));
-                var option = Tokens.Option + " " + Tokens.Explicit;
-                if (!lines.Contains(option))
-                {
-                    yield return new OptionExplicitInspectionResult(Name, Severity, module.QualifiedName);
-                }
-            }
+            var modules = parseResult.Declarations.Items
+                .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
+
+            var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
+                .Select(issue => new OptionExplicitInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName));
+
+            return issues;
         }
     }
 }

@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
@@ -13,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteLetStatementInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.ObsoleteLet; } }
@@ -22,19 +18,13 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            foreach (var result in parseResult.ComponentParseResults)
-            {
-                var module = result;
-                var results = module.ParseTree.GetContexts<ObsoleteInstrutionsListener, ParserRuleContext>(new ObsoleteInstrutionsListener(module.QualifiedName))
-                    .Select(context => context.Context)
-                    .OfType<VBParser.LetStmtContext>()
-                    .Where(context => context.LET() != null && !string.IsNullOrEmpty(context.LET().GetText()))
-                    .Select(context => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<VBParser.LetStmtContext>(module.QualifiedName, context)));
-                foreach (var inspectionResult in results)
-                {
-                    yield return inspectionResult;
-                }
-            }
+            var issues = parseResult.Declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .SelectMany(item =>
+                item.References.Where(reference => reference.HasExplicitLetStatement))
+                .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
+
+            return issues;
         }
     }
 }

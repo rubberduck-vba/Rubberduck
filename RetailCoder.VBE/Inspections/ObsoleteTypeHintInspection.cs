@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.VBA;
-using Rubberduck.VBA.Grammar;
-using Rubberduck.VBA.Nodes;
-using Rubberduck.VBA.ParseTreeListeners;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
@@ -12,30 +8,24 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteTypeHintInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ObsoleteTypeHint_; } }
+        public string Name { get { return InspectionNames._ObsoleteTypeHint_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var inspectionResults = new List<CodeInspectionResultBase>();
-            foreach (var module in parseResult.ComponentParseResults)
-            {
-                var local = module;
-                var declarations = module.ParseTree.GetContexts<DeclarationListener,ParserRuleContext>(new DeclarationListener(module.QualifiedName));
-                var results = declarations.Select(declaration => declaration.Context).OfType<VBParser.VariableSubStmtContext>()
-                    .Where(variable => variable.TypeHint() != null
-                                       && !string.IsNullOrEmpty(variable.TypeHint().GetText()))
-                    .Select(variable => new { Context = variable, Hint = variable.TypeHint().GetText() })
-                    .Select(result => new ObsoleteTypeHintInspectionResult(string.Format(Name, result.Context.AmbiguousIdentifier().GetText()), Severity, new QualifiedContext<VBParser.VariableSubStmtContext>(local.QualifiedName, result.Context)));
+            var declarations = from item in parseResult.Declarations.Items
+                where !item.IsBuiltIn && item.HasTypeHint()
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, "declaration of " + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
 
-                inspectionResults.AddRange(results);
-            }
+            var references = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
+                where item.HasTypeHint()
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, "usage of " + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 
-            return inspectionResults;
+            return declarations.Union(references);
         }
     }
 }

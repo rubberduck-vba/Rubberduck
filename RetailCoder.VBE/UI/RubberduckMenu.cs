@@ -1,9 +1,12 @@
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
@@ -17,7 +20,7 @@ using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents
 
 namespace Rubberduck.UI
 {
-    public class RubberduckMenu : Menu
+    internal class RubberduckMenu : Menu
     {
         private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
@@ -48,6 +51,8 @@ namespace Rubberduck.UI
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
             codePresenter.RunAllTests += codePresenter_RunAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
+            codePresenter.Rename += codePresenter_Rename;
+            codePresenter.FindAllReferences += codePresenter_FindAllReferences;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
@@ -62,12 +67,22 @@ namespace Rubberduck.UI
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
         }
 
-        private void codePresenter_RunInspections(object sender, System.EventArgs e)
+        private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
+        {
+            _refactorMenu.FindAllReferences(e.Declaration);
+        }
+
+        private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
+        {
+            _refactorMenu.Rename(e.Node.Tag as Declaration);
+        }
+
+        private void codePresenter_RunInspections(object sender, EventArgs e)
         {
             _codeInspectionsMenu.Inspect();
         }
 
-        private void codePresenter_RunAllTests(object sender, System.EventArgs e)
+        private void codePresenter_RunAllTests(object sender, EventArgs e)
         {
             _testMenu.RunAllTests();
         }
@@ -156,6 +171,10 @@ namespace Rubberduck.UI
                 if (_testMenu != null)
                 {
                     _testMenu.Dispose();
+                }
+                if (_codeInspectionsMenu != null)
+                {
+                    _codeInspectionsMenu.Dispose();
                 }
             }
 
