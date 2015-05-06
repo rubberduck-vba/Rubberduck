@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>false</RegisterForComInterop>
+    <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -227,6 +227,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\SourceControlConfiguration.cs" />
+    <Compile Include="Config\XmlConfigurationServiceBase.cs" />
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
@@ -265,8 +267,10 @@
     <Compile Include="Interop\ISourceControlProvider.cs" />
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
+    <Compile Include="SourceControl\App.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
+    <Compile Include="SourceControl\Branch.cs" />
     <Compile Include="SourceControl\IRepository.cs" />
     <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
@@ -292,6 +296,46 @@
     <Compile Include="UI\Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\SourceControl\BranchesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
+    <Compile Include="UI\SourceControl\ChangesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\IBranchesView.cs" />
+    <Compile Include="UI\SourceControl\IChangesView.cs" />
+    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
+    <Compile Include="UI\SourceControl\IMergeView.cs" />
+    <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\ISettingsView.cs" />
+    <Compile Include="UI\SourceControl\ISourceControlView.cs" />
+    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\MergeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
+      <DependentUpon>MergeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
@@ -317,6 +361,13 @@
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
@@ -332,12 +383,6 @@
     <Compile Include="SourceControl\SourceControlException.cs" />
     <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="UI\SourceControl\GitView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\GitView.Designer.cs">
-      <DependentUpon>GitView.cs</DependentUpon>
-    </Compile>
     <Compile Include="VBA\WalkerCancelledException.cs" />
     <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
@@ -507,15 +552,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Outlook">
-      <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>9</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.PowerPoint">
       <Guid>{91493440-5A91-11CF-8700-00AA0060263B}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -600,11 +636,26 @@
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\GitView.resx">
-      <DependentUpon>GitView.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
+      <DependentUpon>MergeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>

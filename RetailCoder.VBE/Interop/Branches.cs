@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Interop
 {
@@ -12,16 +13,16 @@ namespace Rubberduck.Interop
     [Description("Collection of string representation of branches in a repository.")]
     public class Branches : IEnumerable
     {
-        private IEnumerable<string> branches;
-        internal Branches(IEnumerable<string> branches)
+        private readonly IEnumerable<IBranch> _branches;
+        internal Branches(IEnumerable<IBranch> branches)
         {
-            this.branches = branches;
+            this._branches = branches;
         }
 
         [DispId(-4)]
         public IEnumerator GetEnumerator()
         {
-            return branches.GetEnumerator();
+            return _branches.GetEnumerator();
         }
     }
 }
