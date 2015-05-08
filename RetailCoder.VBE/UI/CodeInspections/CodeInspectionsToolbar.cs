@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Extensions;
@@ -86,6 +87,15 @@ namespace Rubberduck.UI.CodeInspections
 
             _inspector.IssuesFound += OnIssuesFound;
             _inspector.Reset += OnReset;
+            _inspector.ParseCompleted += _inspector_ParseCompleted;
+        }
+
+        private IEnumerable<VBProjectParseResult> _parseResults;
+
+        private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        {
+            _parseResults = e.ParseResults;
+            Task.Run(() => RefreshAsync());
         }
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -170,7 +180,13 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void RefreshAsync()
         {
-            var result = await _inspector.FindIssuesAsync(_vbe.ActiveVBProject);
+            var parseResults = _parseResults.SingleOrDefault(p => p.Project == _vbe.ActiveVBProject);
+            if (parseResults == null)
+            {
+                return;
+            }
+
+            var result = await _inspector.FindIssuesAsync(parseResults);
             _issues = result.ToList();
 
             var hasIssues = _issues.Any();

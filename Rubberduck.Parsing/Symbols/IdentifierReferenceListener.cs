@@ -254,7 +254,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
 
-                if (!declaration.References.Select(r => r.Context).Contains(reference.Context))
+                // thread-local copy
+                var references = declaration.References.ToList();
+                if (!references.Select(r => r.Context).Contains(reference.Context))
                 {
                     declaration.AddReference(reference);
                     return true;

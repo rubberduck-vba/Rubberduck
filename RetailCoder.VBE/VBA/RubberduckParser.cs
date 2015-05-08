@@ -24,6 +24,8 @@ namespace Rubberduck.VBA
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
+        private static bool _isParsing;
+
         private readonly Logger _logger;
 
         public RubberduckParser()
@@ -46,9 +48,9 @@ namespace Rubberduck.VBA
 
         public async Task<VBProjectParseResult> ParseAsync(VBProject project)
         {
-            return await Task.Run(() => Parse(project));
+            //return await Task.Run(() => Parse(project));
             // note: the above has been seen to cause issues with VBProject.Equals and break navigation...
-            //return Parse(project);
+            return Parse(project);
         }
 
         public VBProjectParseResult Parse(VBProject project)
@@ -185,15 +187,22 @@ namespace Rubberduck.VBA
             {
                 handler(this, new ParseCompletedEventArgs(results));
             }
+
+            _isParsing = false;
         }
 
         public void Parse(VBE vbe)
         {
-            var projects = vbe.VBProjects.Cast<VBProject>().ToList(); 
-            OnParseStarted(projects.Select(project => project.Name));
+            if (!_isParsing)
+            {
+                _isParsing = true;
 
-            var results = projects.AsParallel().Select(Parse).ToList();
-            OnParseCompleted(results);
+                var projects = vbe.VBProjects.Cast<VBProject>().ToList();
+                OnParseStarted(projects.Select(project => project.Name));
+
+                var results = projects.AsParallel().Select(Parse).ToList();
+                OnParseCompleted(results);
+            }
         }
     }
 }

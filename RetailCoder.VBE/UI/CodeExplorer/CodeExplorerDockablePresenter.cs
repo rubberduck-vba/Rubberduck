@@ -220,7 +220,7 @@ namespace Rubberduck.UI.CodeExplorer
             Task.Run(() => RefreshExplorerTreeView());
         }
 
-        private async void RefreshExplorerTreeView()
+        private void RefreshExplorerTreeView()
         {
             Control.Invoke((MethodInvoker) delegate
             {

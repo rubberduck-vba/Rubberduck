@@ -47,6 +47,12 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
         }
 
+        public void EnableRefresh(bool enabled = true)
+        {
+            RefreshButton.Enabled = enabled;
+            QuickFixButton.Enabled = enabled && IssueCount > 0;
+        }
+
         public event EventHandler CopyResults;
         private void CopyButton_Click(object sender, EventArgs e)
         {
