@@ -22,7 +22,44 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, view)
         {
             _parser = parser;
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParseCompleted += _parser_ParseCompleted;
             RegisterControlEvents();
+        }
+
+        private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        {
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.SolutionTree.Nodes.Clear();
+                foreach (var result in e.ParseResults)
+                {
+                    var node = new TreeNode(result.Project.Name);
+                    node.ImageKey = "Hourglass";
+                    node.SelectedImageKey = node.ImageKey;
+
+                    AddProjectNodes(result, node);
+                    Control.SolutionTree.Nodes.Add(node);
+                }
+                Control.EnableRefresh();
+            });
+        }
+
+        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
+        {
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.EnableRefresh(false);
+                Control.SolutionTree.Nodes.Clear();
+                foreach (var name in e.ProjectNames)
+                {
+                    var node = new TreeNode(name + " (parsing...)");
+                    node.ImageKey = "Hourglass";
+                    node.SelectedImageKey = node.ImageKey;
+
+                    Control.SolutionTree.Nodes.Add(node);
+                }
+            });
         }
 
         public override void Show()
@@ -190,45 +227,26 @@ namespace Rubberduck.UI.CodeExplorer
                 Control.SolutionTree.Nodes.Clear();
                 Control.ShowDesignerButton.Enabled = false;
             });
-            
-            var projects = VBE.VBProjects.Cast<VBProject>();
-            foreach (var vbProject in projects)
-            {
-                var project = vbProject;
-                await Task.Run(() =>
-                {
-                    var node = new TreeNode(project.Name + " (parsing...)");
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
 
-                    Control.Invoke((MethodInvoker)delegate
-                    {
-                        Control.SolutionTree.Nodes.Add(node);
-                        Control.SolutionTree.Refresh();
-                        AddProjectNodes(project, node);
-                    });
-                });
-            }
+            _parser.Parse(VBE);
         }
 
-        private void AddProjectNodes(VBProject project, TreeNode root)
+        private void AddProjectNodes(VBProjectParseResult parseResult, TreeNode root)
         {
-            Control.Invoke((MethodInvoker)async delegate
+            var project = parseResult.Project;
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-                {
                     root.ImageKey = "Locked";
-                }
-                else
-                {
-                    var nodes = (await CreateModuleNodesAsync(project)).ToArray();
-                    AddProjectFolders(project, root, nodes);
-                    root.ImageKey = "ClosedFolder";
-                    root.Expand();
-                }
+            }
+            else
+            {
+                var nodes = CreateModuleNodes(parseResult);
+                AddProjectFolders(project, root, nodes.ToArray());
+                root.ImageKey = "ClosedFolder";
+                root.Expand();
+            }
 
-                root.Text = project.Name;
-            });
+            root.Text = project.Name;
         }
 
         private static readonly IDictionary<vbext_ComponentType, string> ComponentTypeIcons =
@@ -297,10 +315,9 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
+        private IEnumerable<TreeNode> CreateModuleNodes(VBProjectParseResult parseResult)
         {
             var result = new List<TreeNode>();
-            var parseResult = _parser.Parse(project);
             foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
                 var component = componentParseResult.Component;
@@ -538,6 +555,12 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             return result;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _parser.ParseStarted -= _parser_ParseStarted;
+            _parser.ParseCompleted -= _parser_ParseCompleted;
         }
     }
 }

@@ -58,6 +58,7 @@
     <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Listeners\DeclarationListener.cs" />
     <Compile Include="Listeners\ExceptionErrorListener.cs" />

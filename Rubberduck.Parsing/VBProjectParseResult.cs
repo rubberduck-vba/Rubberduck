@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing
 {
     public class VBProjectParseResult
     {
-        public VBProjectParseResult(IEnumerable<VBComponentParseResult> parseResults)
+        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults)
         {
+            _project = project;
             _parseResults = parseResults;
             _declarations = new Declarations();
             foreach (var declaration in VbaStandardLib.Declarations)
@@ -73,5 +75,8 @@ namespace Rubberduck.Parsing
         public Declarations Declarations { get { return _declarations; } }
 
         public IEnumerable<VBComponentParseResult> ComponentParseResults { get { return _parseResults; } }
+
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project; } }
     }
 }

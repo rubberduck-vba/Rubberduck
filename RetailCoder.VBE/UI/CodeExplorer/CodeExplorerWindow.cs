@@ -53,6 +53,11 @@ namespace Rubberduck.UI.CodeExplorer
             FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
         }
 
+        public void EnableRefresh(bool enabled = true)
+        {
+            RefreshButton.Enabled = enabled;
+        }
+
         public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
         private void FindAllReferencesContextButton_Click(object sender, EventArgs e)
         {

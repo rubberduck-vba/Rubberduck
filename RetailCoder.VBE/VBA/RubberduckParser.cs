@@ -56,13 +56,13 @@ namespace Rubberduck.VBA
             var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                return new VBProjectParseResult(results);
+                return new VBProjectParseResult(project, results);
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
             results.AddRange(modules.Select(Parse).Where(result => result != null));
 
-            return new VBProjectParseResult(results);
+            return new VBProjectParseResult(project, results);
         }
 
         private IParseTree Parse(string code, out TokenStreamRewriter outRewriter)
@@ -163,6 +163,37 @@ namespace Rubberduck.VBA
                     }
                 }
             }
+        }
+
+        public event EventHandler<ParseStartedEventArgs> ParseStarted;
+
+        private void OnParseStarted(IEnumerable<string> projectNames)
+        {
+            var handler = ParseStarted;
+            if (handler != null)
+            {
+                handler(this, new ParseStartedEventArgs(projectNames));
+            }
+        }
+
+        public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
+
+        private void OnParseCompleted(IEnumerable<VBProjectParseResult> results)
+        {
+            var handler = ParseCompleted;
+            if (handler != null)
+            {
+                handler(this, new ParseCompletedEventArgs(results));
+            }
+        }
+
+        public void Parse(VBE vbe)
+        {
+            var projects = vbe.VBProjects.Cast<VBProject>().ToList(); 
+            OnParseStarted(projects.Select(project => project.Name));
+
+            var results = projects.AsParallel().Select(Parse).ToList();
+            OnParseCompleted(results);
         }
     }
 }

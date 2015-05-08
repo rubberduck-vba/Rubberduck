@@ -3,7 +3,7 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Parsing
 {
-    public interface IRubberduckParser
+    public interface IRubberduckParser : IParseResultProvider
     {
         /// <summary>
         /// Parses all code modules in specified project.
@@ -14,5 +14,7 @@ namespace Rubberduck.Parsing
         Task<VBProjectParseResult> ParseAsync(VBProject vbProject);
 
         void RemoveProject(VBProject vbProject);
+
+        void Parse(VBE vbe);
     }
 }
