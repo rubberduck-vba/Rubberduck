@@ -224,7 +224,6 @@
   <ItemGroup>
     <Compile Include="Config\SourceControlConfiguration.cs" />
     <Compile Include="Config\XmlConfigurationServiceBase.cs" />
-    <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
@@ -355,12 +354,6 @@
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="UI\SourceControl\GitView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\GitView.Designer.cs">
-      <DependentUpon>GitView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
