@@ -189,6 +189,16 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
+      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Name>Rubberduck.SourceControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{83ed9bbf-5ad4-4eb2-b5f0-6eb97dfed9d0}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

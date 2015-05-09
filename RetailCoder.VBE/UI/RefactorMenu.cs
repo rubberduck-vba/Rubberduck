@@ -4,14 +4,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.VBA;
+using Rubberduck.VBEditor;
+using  Rubberduck.VBEditor.Extensions;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI

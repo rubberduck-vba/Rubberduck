@@ -5,8 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Inspections;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {

@@ -5,6 +5,7 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {
