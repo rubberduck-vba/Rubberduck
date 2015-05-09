@@ -34,19 +34,21 @@ namespace Rubberduck.UI.CodeInspections
             Control.CopyResults += OnCopyResultsToClipboard;
         }
 
-        private bool _hasStaleParseResults; // todo: use this value to give a UI cue about stale parse results
+        // indicates that the _parseResults are no longer in sync with the UI
+        private bool _needsResync;
 
         private void OnParseCompleted(object sender, Parsing.ParseCompletedEventArgs e)
         {
             if (sender == this)
             {
-                _hasStaleParseResults = false;
+                _needsResync = false;
                 _parseResults = e.ParseResults;
                 Task.Run(() => RefreshAsync());
             }
             else
             {
-                _hasStaleParseResults = true;
+                _parseResults = e.ParseResults;
+                _needsResync = true;
             }
         }
 
@@ -130,14 +132,14 @@ namespace Rubberduck.UI.CodeInspections
             {
                 if (VBE != null)
                 {
-                    if (_parseResults == null)
+                    if (_parseResults == null || !_needsResync)
                     {
                         _inspector.Parse(VBE, this);
                         return;
                     }
 
                     var parseResults = _parseResults.SingleOrDefault(p => p.Project == VBE.ActiveVBProject);
-                    if (parseResults == null)
+                    if (parseResults == null || !_needsResync)
                     {
                         _inspector.Parse(VBE, this);
                         return;

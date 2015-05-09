@@ -27,17 +27,19 @@ namespace Rubberduck.UI.CodeExplorer
             RegisterControlEvents();
         }
 
-        private bool _hasStaleParseResults;
+        // indicates that the _parseResults are no longer in sync with UI
+        private bool _needsResync;
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender == this)
             {
-                _hasStaleParseResults = false;
+                _parseResults = e.ParseResults;
+                _needsResync = false;
                 Control.Invoke((MethodInvoker)delegate
                 {
                     Control.SolutionTree.Nodes.Clear();
-                    foreach (var result in e.ParseResults)
+                    foreach (var result in _parseResults)
                     {
                         var node = new TreeNode(result.Project.Name);
                         node.ImageKey = "Hourglass";
@@ -50,7 +52,8 @@ namespace Rubberduck.UI.CodeExplorer
             }
             else
             {
-                _hasStaleParseResults = true;
+                _parseResults = e.ParseResults;
+                _needsResync = true;
             }
 
             Control.Invoke((MethodInvoker)delegate
@@ -279,6 +282,8 @@ namespace Rubberduck.UI.CodeExplorer
                 { vbext_ComponentType.vbext_ct_ActiveXDesigner, "ClassModule"},
                 { vbext_ComponentType.vbext_ct_MSForm, "Form"}
             };
+
+        private IEnumerable<VBProjectParseResult> _parseResults;
 
         private void AddProjectFolders(VBProject project, TreeNode root, TreeNode[] components)
         {

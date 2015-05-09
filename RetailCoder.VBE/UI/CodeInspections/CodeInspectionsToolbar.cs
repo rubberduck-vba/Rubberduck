@@ -91,19 +91,22 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IEnumerable<VBProjectParseResult> _parseResults;
-        private bool _hasStaleParseResults; // todo: use this value to give a UI cue about stale parse results
+        
+        // indicates that the _parseResults are no longer in sync with UI
+        private bool _needsResync;
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender == this)
             {
-                _hasStaleParseResults = false;
+                _needsResync = false;
                 _parseResults = e.ParseResults;
                 Task.Run(() => RefreshAsync());
             }
             else
             {
-                _hasStaleParseResults = true;
+                _parseResults = e.ParseResults;
+                _needsResync = true;
             }
         }
 
@@ -189,6 +192,12 @@ namespace Rubberduck.UI.CodeInspections
 
         private async void RefreshAsync()
         {
+            if (_parseResults == null || !_needsResync)
+            {
+                _inspector.Parse(_vbe, this);
+                return;
+            }
+
             var parseResults = _parseResults.SingleOrDefault(p => p.Project == _vbe.ActiveVBProject);
             if (parseResults == null)
             {
