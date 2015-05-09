@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -35,10 +34,20 @@ namespace Rubberduck.UI.CodeInspections
             Control.CopyResults += OnCopyResultsToClipboard;
         }
 
+        private bool _hasStaleParseResults; // todo: use this value to give a UI cue about stale parse results
+
         private void OnParseCompleted(object sender, Parsing.ParseCompletedEventArgs e)
         {
-            _parseResults = e.ParseResults;
-            Task.Run(() => RefreshAsync());
+            if (sender == this)
+            {
+                _hasStaleParseResults = false;
+                _parseResults = e.ParseResults;
+                Task.Run(() => RefreshAsync());
+            }
+            else
+            {
+                _hasStaleParseResults = true;
+            }
         }
 
         private void OnParsing(object sender, EventArgs e)
@@ -123,14 +132,14 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     if (_parseResults == null)
                     {
-                        _inspector.Parse(VBE);
+                        _inspector.Parse(VBE, this);
                         return;
                     }
 
                     var parseResults = _parseResults.SingleOrDefault(p => p.Project == VBE.ActiveVBProject);
                     if (parseResults == null)
                     {
-                        _inspector.Parse(VBE);
+                        _inspector.Parse(VBE, this);
                         return;
                     }
 

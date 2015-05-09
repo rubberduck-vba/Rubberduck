@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     public interface IInspector
     {
         Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project);
-        void Parse(VBE vbe);
+        void Parse(VBE vbe, object owner);
         event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
         event EventHandler Reset;
         event EventHandler Parsing;

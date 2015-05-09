@@ -91,11 +91,20 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IEnumerable<VBProjectParseResult> _parseResults;
+        private bool _hasStaleParseResults; // todo: use this value to give a UI cue about stale parse results
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            _parseResults = e.ParseResults;
-            Task.Run(() => RefreshAsync());
+            if (sender == this)
+            {
+                _hasStaleParseResults = false;
+                _parseResults = e.ParseResults;
+                Task.Run(() => RefreshAsync());
+            }
+            else
+            {
+                _hasStaleParseResults = true;
+            }
         }
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)

@@ -15,6 +15,6 @@ namespace Rubberduck.Parsing
 
         void RemoveProject(VBProject vbProject);
 
-        void Parse(VBE vbe);
+        void Parse(VBE vbe, object owner);
     }
 }

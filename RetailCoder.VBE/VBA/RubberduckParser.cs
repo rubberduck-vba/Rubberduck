@@ -169,39 +169,39 @@ namespace Rubberduck.VBA
 
         public event EventHandler<ParseStartedEventArgs> ParseStarted;
 
-        private void OnParseStarted(IEnumerable<string> projectNames)
+        private void OnParseStarted(IEnumerable<string> projectNames, object owner)
         {
             var handler = ParseStarted;
             if (handler != null)
             {
-                handler(this, new ParseStartedEventArgs(projectNames));
+                handler(owner, new ParseStartedEventArgs(projectNames));
             }
         }
 
         public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
 
-        private void OnParseCompleted(IEnumerable<VBProjectParseResult> results)
+        private void OnParseCompleted(IEnumerable<VBProjectParseResult> results, object owner)
         {
             var handler = ParseCompleted;
             if (handler != null)
             {
-                handler(this, new ParseCompletedEventArgs(results));
+                handler(owner, new ParseCompletedEventArgs(results));
             }
 
             _isParsing = false;
         }
 
-        public void Parse(VBE vbe)
+        public void Parse(VBE vbe, object owner)
         {
             if (!_isParsing)
             {
                 _isParsing = true;
 
                 var projects = vbe.VBProjects.Cast<VBProject>().ToList();
-                OnParseStarted(projects.Select(project => project.Name));
+                OnParseStarted(projects.Select(project => project.Name), owner);
 
                 var results = projects.AsParallel().Select(Parse).ToList();
-                OnParseCompleted(results);
+                OnParseCompleted(results, owner);
             }
         }
     }

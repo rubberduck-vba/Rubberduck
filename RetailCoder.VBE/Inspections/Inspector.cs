@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
         {
             if (!_isInspecting)
             {
-                OnParseCompleted(e);
+                OnParseCompleted(sender, e);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections
         {
             if (!_isInspecting)
             {
-                OnParsing();
+                OnParsing(sender);
             }
         }
 
@@ -78,9 +78,9 @@ namespace Rubberduck.Inspections
             return allIssues.ToList();
         }
 
-        public void Parse(VBE vbe)
+        public void Parse(VBE vbe, object owner)
         {
-            Task.Run(() => _parser.Parse(vbe));
+            Task.Run(() => _parser.Parse(vbe, owner));
         }
 
         public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
@@ -109,7 +109,7 @@ namespace Rubberduck.Inspections
         }
 
         public event EventHandler Parsing;
-        private void OnParsing()
+        private void OnParsing(object owner)
         {
             var handler = Parsing;
             if (handler == null)
@@ -117,11 +117,11 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            handler(this, EventArgs.Empty);
+            handler(owner, EventArgs.Empty);
         }
 
         public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
-        private void OnParseCompleted(ParseCompletedEventArgs args)
+        private void OnParseCompleted(object owner, ParseCompletedEventArgs args)
         {
             var handler = ParseCompleted;
             if (handler == null)
@@ -129,7 +129,7 @@ namespace Rubberduck.Inspections
                 return;
             }
 
-            handler(this, args);
+            handler(owner, args);
         }
     }
 }

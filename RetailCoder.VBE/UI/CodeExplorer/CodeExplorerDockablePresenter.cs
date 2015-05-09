@@ -27,39 +27,60 @@ namespace Rubberduck.UI.CodeExplorer
             RegisterControlEvents();
         }
 
+        private bool _hasStaleParseResults;
+
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            Control.Invoke((MethodInvoker) delegate
+            if (sender == this)
             {
-                Control.SolutionTree.Nodes.Clear();
-                foreach (var result in e.ParseResults)
+                _hasStaleParseResults = false;
+                Control.Invoke((MethodInvoker)delegate
                 {
-                    var node = new TreeNode(result.Project.Name);
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
+                    Control.SolutionTree.Nodes.Clear();
+                    foreach (var result in e.ParseResults)
+                    {
+                        var node = new TreeNode(result.Project.Name);
+                        node.ImageKey = "Hourglass";
+                        node.SelectedImageKey = node.ImageKey;
 
-                    AddProjectNodes(result, node);
-                    Control.SolutionTree.Nodes.Add(node);
-                }
+                        AddProjectNodes(result, node);
+                        Control.SolutionTree.Nodes.Add(node);
+                    }
+                });
+            }
+            else
+            {
+                _hasStaleParseResults = true;
+            }
+
+            Control.Invoke((MethodInvoker)delegate
+            {
                 Control.EnableRefresh();
             });
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
         {
-            Control.Invoke((MethodInvoker) delegate
+            Control.Invoke((MethodInvoker)delegate
             {
                 Control.EnableRefresh(false);
-                Control.SolutionTree.Nodes.Clear();
-                foreach (var name in e.ProjectNames)
-                {
-                    var node = new TreeNode(name + " (parsing...)");
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
-
-                    Control.SolutionTree.Nodes.Add(node);
-                }
             });
+
+            if (sender == this)
+            {
+                Control.Invoke((MethodInvoker) delegate
+                {
+                    Control.SolutionTree.Nodes.Clear();
+                    foreach (var name in e.ProjectNames)
+                    {
+                        var node = new TreeNode(name + " (parsing...)");
+                        node.ImageKey = "Hourglass";
+                        node.SelectedImageKey = node.ImageKey;
+
+                        Control.SolutionTree.Nodes.Add(node);
+                    }
+                });
+            }
         }
 
         public override void Show()
@@ -228,7 +249,7 @@ namespace Rubberduck.UI.CodeExplorer
                 Control.ShowDesignerButton.Enabled = false;
             });
 
-            _parser.Parse(VBE);
+            _parser.Parse(VBE, this);
         }
 
         private void AddProjectNodes(VBProjectParseResult parseResult, TreeNode root)
