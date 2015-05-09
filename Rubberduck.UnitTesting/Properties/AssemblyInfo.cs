@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rubberduck.UnitTesting")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Rubberduck Unit Testing 1.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rubberduck.UnitTesting")]

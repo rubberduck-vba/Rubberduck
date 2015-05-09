@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 
@@ -21,14 +22,40 @@ namespace Rubberduck.SourceControl.Interop
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : base(project, repository, userName, passWord){}
 
-        public new IEnumerable Branches
+        public new string CurrentBranch
         {
-            get { return new Branches(base.Branches); }
+            get { return base.CurrentBranch.Name; }
         }
 
+        /// <summary>
+        /// Returns only local branches to COM clients.
+        /// </summary>
+        public new IEnumerable Branches
+        {
+            get { return new Branches(base.Branches.Where(b => !b.IsRemote)); }
+        }
+
+        /// <summary>
+        /// Returns Iterable Collection of FileStatusEntry objects.
+        /// </summary>
+        /// <returns></returns>
         public new IEnumerable Status()
         {
             return new FileStatusEntries(base.Status());
+        }
+
+        /// <summary>
+        /// Stages and commits all modified files.
+        /// </summary>
+        /// <param name="message"></param>
+        public override void Commit(string message)
+        {
+            var filePaths = base.Status()
+                .Where(s => s.FileStatus.HasFlag(FileStatus.Modified))
+                .Select(s => s.FilePath).ToList();
+
+            Stage(filePaths);
+            base.Commit(message);
         }
     }
 }

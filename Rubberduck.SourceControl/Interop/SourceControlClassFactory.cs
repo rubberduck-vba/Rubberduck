@@ -7,6 +7,7 @@ namespace Rubberduck.SourceControl.Interop
 {
     [ComVisible(true)]
     [Guid("335DA0D8-625C-4CB9-90CD-C9A306B9B787")]
+    // ReSharper disable once InconsistentNaming; the underscore hides the interface from VBE's object browswer
     public interface _ISourceControlClassFactory
     {
         [DispId(1)]

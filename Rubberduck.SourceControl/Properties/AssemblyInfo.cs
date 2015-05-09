@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rubberduck.SourceControl")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Rubberduck Source Control 1.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rubberduck.SourceControl")]

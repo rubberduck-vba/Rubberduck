@@ -20,7 +20,14 @@ namespace Rubberduck.SourceControl
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
-            _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+            try
+            {
+                _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
+            }
+            catch (LibGit2Sharp.RepositoryNotFoundException ex)
+            {
+                throw new SourceControlException("Repository not found.", ex);
+            }
         }
 
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
@@ -43,20 +50,20 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public override string CurrentBranch
+        public override IBranch CurrentBranch
         {
             get
             {
-                return _repo.Branches.First(b => !b.IsRemote && b.IsCurrentRepositoryHead).Name;
+                return this.Branches.First(b => !b.IsRemote && b.IsCurrentHead);
             }
         }
 
-        public override IEnumerable<string> Branches
+        public override IEnumerable<IBranch> Branches
         {
             get
             {
-                return _repo.Branches.Where(b => !b.IsRemote)
-                                    .Select(b => b.Name);
+                //note: consider doing this once and refreshing if necessary
+                return _repo.Branches.Select(b => new Branch(b));
             }
         }
 
@@ -94,6 +101,19 @@ namespace Rubberduck.SourceControl
         {
             var repository = base.InitVBAProject(directory);
             Init(repository.LocalLocation);
+
+            //add a master branch to newly created repo
+            using (var repo = new LibGit2Sharp.Repository(repository.LocalLocation))
+            {
+                var status = repo.RetrieveStatus(new StatusOptions());
+                foreach (var stat in status.Untracked)
+                {
+                    repo.Stage(stat.FilePath);
+                }
+
+                repo.Commit("Intial Commit");
+            }
+
             return repository;
         }
 
@@ -111,7 +131,7 @@ namespace Rubberduck.SourceControl
                     };
                 }
 
-                var branch = _repo.Branches[this.CurrentBranch];
+                var branch = _repo.Branches[this.CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
             }
             catch (LibGit2SharpException ex)
@@ -170,16 +190,35 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                base.Commit(message);
-
-                RepositoryStatus status = _repo.RetrieveStatus();
-                List<string> filePaths = status.Modified.Select(mods => mods.FilePath).ToList();
-                _repo.Stage(filePaths);
                 _repo.Commit(message);
             }
             catch (LibGit2SharpException ex)
             {
                 throw new SourceControlException("Commit Failed.", ex);
+            }
+        }
+
+        public override void Stage(string filePath)
+        {
+            try
+            {
+                _repo.Stage(filePath);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw  new SourceControlException("Failed to stage file.", ex);
+            }
+        }
+
+        public override void Stage(IEnumerable<string> filePaths)
+        {
+            try
+            {
+                _repo.Stage(filePaths);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                throw new SourceControlException("Failed to stage file.", ex);
             }
         }
 
@@ -298,7 +337,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.CheckoutPaths(this.CurrentBranch, new List<string> {filePath});
+                _repo.CheckoutPaths(this.CurrentBranch.Name, new List<string> {filePath});
                 base.Undo(filePath);
             }
             catch (LibGit2SharpException ex)

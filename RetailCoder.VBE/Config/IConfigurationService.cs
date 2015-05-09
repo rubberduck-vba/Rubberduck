@@ -3,13 +3,9 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
-    public interface IConfigurationService
+    public interface IConfigurationService<T>
     {
-        CodeInspectionSetting[] GetDefaultCodeInspections();
-        Configuration GetDefaultConfiguration();
-        ToDoMarker[] GetDefaultTodoMarkers();
-        IList<IInspection> GetImplementedCodeInspections();
-        Configuration LoadConfiguration();
-        void SaveConfiguration<T>(T toSerialize);
+        T LoadConfiguration();
+        void SaveConfiguration(T toSerialize);
     }
 }

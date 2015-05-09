@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Branch.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
     <Compile Include="Interop\GitProvider.cs" />

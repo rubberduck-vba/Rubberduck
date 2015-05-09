@@ -11,20 +11,20 @@ namespace Rubberduck.SourceControl
     {
         protected VBProject project;
 
-        public SourceControlProviderBase(VBProject project)
+        protected SourceControlProviderBase(VBProject project)
         {
             this.project = project;
         }
 
-        public SourceControlProviderBase(VBProject project, IRepository repository)
+        protected SourceControlProviderBase(VBProject project, IRepository repository)
             :this(project)
         {
             this.CurrentRepository = repository;
         }
 
         public IRepository CurrentRepository { get; private set; }
-        public abstract string CurrentBranch { get; }
-        public abstract IEnumerable<string> Branches { get; }
+        public abstract IBranch CurrentBranch { get; }
+        public abstract IEnumerable<IBranch> Branches { get; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
@@ -33,6 +33,7 @@ namespace Rubberduck.SourceControl
         public abstract void CreateBranch(string branch);
         public abstract void DeleteBranch(string branch);
         public abstract IRepository Init(string directory, bool bare = false);
+        public abstract void Commit(string message);
 
         public virtual IRepository InitVBAProject(string directory)
         {
@@ -40,6 +41,11 @@ namespace Rubberduck.SourceControl
             if (projectName != string.Empty && projectName != this.project.Name)
             {
                 directory = Path.Combine(directory, project.Name);
+            }
+
+            if (!System.IO.Directory.Exists(directory))
+            {
+                System.IO.Directory.CreateDirectory(directory);
             }
 
             this.project.ExportSourceFiles(directory);
@@ -52,7 +58,12 @@ namespace Rubberduck.SourceControl
             Refresh();
         }
 
-        public virtual void Commit(string message)
+        public virtual void Stage(string filePath)
+        {
+            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+        }
+
+        public virtual void Stage(IEnumerable<string> filePaths)
         {
             this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
         }
