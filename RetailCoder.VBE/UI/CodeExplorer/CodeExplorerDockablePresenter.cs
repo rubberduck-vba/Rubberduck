@@ -5,11 +5,12 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {

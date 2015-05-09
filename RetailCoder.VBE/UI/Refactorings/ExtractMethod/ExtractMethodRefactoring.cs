@@ -5,6 +5,7 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
 {

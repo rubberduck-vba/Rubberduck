@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Parsing;
+using Rubberduck.UnitTesting;
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.UnitTesting
 {

@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.CodeInspections
 {

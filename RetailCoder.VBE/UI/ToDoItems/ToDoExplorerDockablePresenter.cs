@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.ToDoItems;
-using Rubberduck.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -23,7 +22,7 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IEnumerable<ToDoMarker> _markers;
         private IToDoExplorerWindow Control { get { return UserControl as IToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window) 
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window)
             : base(vbe, addin, window)
         {
             _parser = parser;

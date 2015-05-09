@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
         private const string ProgId = "Rubberduck.UI.Settings.SettingsDialog";
 
         private Configuration _config;
-        private IConfigurationService _configService;
+        private IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Settings
             Close();
         }
 
-        public _SettingsDialog(IConfigurationService configService)
+        public _SettingsDialog(IGeneralConfigService configService)
             : this()
         {
             _configService = configService;

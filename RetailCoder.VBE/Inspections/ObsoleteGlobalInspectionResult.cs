@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 

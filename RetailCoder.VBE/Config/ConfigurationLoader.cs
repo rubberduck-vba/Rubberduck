@@ -9,41 +9,31 @@ using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
 {
-    public class ConfigurationLoader : IConfigurationService
+    public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
-        private static readonly string ConfigFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "rubberduck.config");
+        CodeInspectionSetting[] GetDefaultCodeInspections();
+        Configuration GetDefaultConfiguration();
+        ToDoMarker[] GetDefaultTodoMarkers();
+        IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
+    }
 
-        /// <summary>
-        /// Saves a Configuration to Rubberduck.config XML file via Serialization.
-        /// </summary>
-        public void SaveConfiguration<T>(T toSerialize)
+    public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
         {
-            var folder = Path.GetDirectoryName(ConfigFile);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
 
-            var serializer = new XmlSerializer(toSerialize.GetType());
-            using (var writer = new StreamWriter(ConfigFile))
+        protected override string ConfigFile
             {
-                serializer.Serialize(writer, toSerialize);
+            get { return Path.Combine(this.rootPath, "rubberduck.config"); }
             }
-        }
 
         /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
         /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
-        public Configuration LoadConfiguration()
+        public override Configuration LoadConfiguration()
         {
-            try
-            {
-                using (var reader = new StreamReader(ConfigFile))
-                {
-                    var deserializer = new XmlSerializer(typeof(Configuration));
-                    var config = (Configuration)deserializer.Deserialize(reader);
-
                     //deserialization can silently fail for just parts of the config, 
                     //  so we null check and return defaults if necessary.
+
+            var config = base.LoadConfiguration();
+
                     if (config.UserSettings.ToDoListSettings == null)
                     {
                         config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
@@ -62,31 +52,30 @@ namespace Rubberduck.Config
 
                     return config;
                 }
-            }
-            catch (IOException)
+
+        protected override Configuration HandleIOException(IOException ex)
             {
                 return GetDefaultConfiguration();
             }
-            catch (InvalidOperationException ex)
+
+        protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
             {
                 var message = ex.Message + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + Environment.NewLine +
                         ConfigFile + Environment.NewLine + Environment.NewLine +
                         "Would you like to restore default configuration?" + Environment.NewLine + 
                         "Warning: All customized settings will be lost.";
 
-                DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+            DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
                 if (result == DialogResult.Yes)
                 {
                     var config = GetDefaultConfiguration();
-                    SaveConfiguration<Configuration>(config);
+                SaveConfiguration(config);
                     return config;
                 }
-                else
-                {
-                    throw;
-                }
-            }
+
+            throw ex;
+
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
@@ -135,13 +124,9 @@ namespace Rubberduck.Config
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            var configInspections = new List<CodeInspectionSetting>();
-            foreach (var inspection in GetImplementedCodeInspections())
-            {
-                configInspections.Add(new CodeInspectionSetting(inspection));
-            }
-
-            return configInspections.ToArray();
+            return GetImplementedCodeInspections()
+                    .Select(x => new CodeInspectionSetting(x))
+                    .ToArray();
         }
 
         /// <summary>   Gets all implemented code inspections via reflection </summary>

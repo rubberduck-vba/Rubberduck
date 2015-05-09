@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.ToDoItems
 {
