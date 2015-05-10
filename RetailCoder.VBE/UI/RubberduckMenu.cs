@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SourceControl;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -25,7 +27,7 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
-        private readonly IConfigurationService _configService;
+        private readonly IGeneralConfigService _configService;
 
         //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
@@ -35,7 +37,7 @@ namespace Rubberduck.UI
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IInspector inspector)
             : base(vbe, addIn)
         {
             _configService = configService;
@@ -101,20 +103,29 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            // note: disabled for 1.21 release (RepositoryNotFoundException on click)
-            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
+            _sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
             _settings = AddButton(menu, "&Options", true, OnOptionsClick);
             _about = AddButton(menu, "&About...", true, OnAboutClick);
         }
 
+        private Rubberduck.SourceControl.App _sourceControlApp;
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new DummyGitView(IDE.ActiveVBProject))
+            if (_sourceControlApp == null)
             {
-                window.ShowDialog();
+                _sourceControlApp = new Rubberduck.SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
+                                                                new ChangesControl(), new UnSyncedCommitsControl(),
+                                                                new SettingsControl(), new BranchesControl(),
+                                                                new CreateBranchForm(), new MergeForm());
             }
+
+            _sourceControlApp.ShowWindow();
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _SettingsDialog(_configService))
@@ -123,6 +134,8 @@ namespace Rubberduck.UI
             }
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _AboutWindow())
@@ -131,7 +144,7 @@ namespace Rubberduck.UI
             }
         }
 
-        bool _disposed;
+        private bool _disposed;
         protected override void Dispose(bool disposing)
         {
             if (_disposed)

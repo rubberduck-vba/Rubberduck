@@ -43,7 +43,7 @@ namespace Rubberduck.Interop
         void Pull();
 
         [DispId(9)]
-        [Description("Stages all modified files and commits to CurrentBranch.")]
+        [Description("Stages and Commits all modified files to the CurrentBranch.")]
         void Commit(string message);
 
         [DispId(10)]
