@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 

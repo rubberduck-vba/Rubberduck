@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
-using Moq;
 
 namespace RubberduckTests.SourceControl
 {

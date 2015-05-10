@@ -1,13 +1,12 @@
 ﻿using System;
-using System.ComponentModel.Design;
+using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using  Rubberduck.SourceControl;
-using  Rubberduck.UI.SourceControl;
-using  Moq;
-using RubberduckTests.Mocks;
+using Moq;
 using Rubberduck.Config;
-using System.Collections.Generic;
+using Rubberduck.SourceControl;
+using Rubberduck.UI.SourceControl;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.SourceControl
 {

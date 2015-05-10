@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class SettingsControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -212,19 +215,19 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel SettingsPanel;
-        private System.Windows.Forms.GroupBox RepositorySettingsBox;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox GlobalSettingsBox;
-        private System.Windows.Forms.Button CancelGlobalSettingsButton;
-        private System.Windows.Forms.Button UpdateGlobalSettingsButton;
-        private System.Windows.Forms.Button BrowseDefaultRepositoryLocationButton;
-        private System.Windows.Forms.TextBox DefaultRepositoryLocation;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox EmailAddress;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox UserName;
-        private System.Windows.Forms.Label label5;
+        private Panel SettingsPanel;
+        private GroupBox RepositorySettingsBox;
+        private Button button2;
+        private Button button1;
+        private GroupBox GlobalSettingsBox;
+        private Button CancelGlobalSettingsButton;
+        private Button UpdateGlobalSettingsButton;
+        private Button BrowseDefaultRepositoryLocationButton;
+        private TextBox DefaultRepositoryLocation;
+        private Label label7;
+        private TextBox EmailAddress;
+        private Label label6;
+        private TextBox UserName;
+        private Label label5;
     }
 }

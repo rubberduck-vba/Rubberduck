@@ -16,7 +16,6 @@ using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.VBA
 {

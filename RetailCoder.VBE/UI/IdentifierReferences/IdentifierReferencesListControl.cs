@@ -14,7 +14,7 @@ namespace Rubberduck.UI.IdentifierReferences
         }
 
         public event EventHandler<NavigateCodeEventArgs> NavigateIdentifierReference;
-        private void ResultBox_DoubleClick(object sender, System.EventArgs e)
+        private void ResultBox_DoubleClick(object sender, EventArgs e)
         {
             var handler = NavigateIdentifierReference;
             if (handler == null || ResultBox.SelectedItem == null)

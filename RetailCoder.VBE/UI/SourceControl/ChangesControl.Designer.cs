@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class ChangesControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -272,18 +275,18 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel ChangesPanel;
-        private System.Windows.Forms.Label ChangesBranchNameLabel;
-        private System.Windows.Forms.GroupBox IncludedChangesBox;
-        private System.Windows.Forms.DataGridView IncludedChangesGrid;
-        private System.Windows.Forms.Button CommitButton;
-        private System.Windows.Forms.ComboBox CommitActionDropdown;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox CommitMessageBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox ExcludedChangesBox;
-        private System.Windows.Forms.DataGridView ExcludedChangesGrid;
-        private System.Windows.Forms.GroupBox UntrackedFilesBox;
-        private System.Windows.Forms.DataGridView UntrackedFilesGrid;
+        private Panel ChangesPanel;
+        private Label ChangesBranchNameLabel;
+        private GroupBox IncludedChangesBox;
+        private DataGridView IncludedChangesGrid;
+        private Button CommitButton;
+        private ComboBox CommitActionDropdown;
+        private Label label2;
+        private TextBox CommitMessageBox;
+        private Label label1;
+        private GroupBox ExcludedChangesBox;
+        private DataGridView ExcludedChangesGrid;
+        private GroupBox UntrackedFilesBox;
+        private DataGridView UntrackedFilesGrid;
     }
 }

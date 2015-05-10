@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
-using Rubberduck.SourceControl;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.SourceControl.Interop
 {

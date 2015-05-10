@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using Rubberduck.Config;
+using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Mocks
 {
-    class MockTodoSettingsView : Rubberduck.UI.Settings.ITodoSettingsView
+    class MockTodoSettingsView : ITodoSettingsView
     {
         public bool SaveEnabled { get; set; }
 

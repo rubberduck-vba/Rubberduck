@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class UnSyncedCommitsControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -216,16 +219,16 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel UnsyncedCommitsPanel;
-        private System.Windows.Forms.Label UnsyncedCommitsBranchNameLabel;
-        private System.Windows.Forms.Button SyncButton;
-        private System.Windows.Forms.Button FetchIncomingCommitsButton;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button PushButton;
-        private System.Windows.Forms.Button PullButton;
-        private System.Windows.Forms.GroupBox OutgoingCommitsBox;
-        private System.Windows.Forms.DataGridView OutgoingCommitsGrid;
-        private System.Windows.Forms.GroupBox IncomingCommitsBox;
-        private System.Windows.Forms.DataGridView IncomingCommitsGrid;
+        private Panel UnsyncedCommitsPanel;
+        private Label UnsyncedCommitsBranchNameLabel;
+        private Button SyncButton;
+        private Button FetchIncomingCommitsButton;
+        private Label label3;
+        private Button PushButton;
+        private Button PullButton;
+        private GroupBox OutgoingCommitsBox;
+        private DataGridView OutgoingCommitsGrid;
+        private GroupBox IncomingCommitsBox;
+        private DataGridView IncomingCommitsGrid;
     }
 }

@@ -43,9 +43,9 @@ namespace Rubberduck.SourceControl
                 directory = Path.Combine(directory, project.Name);
             }
 
-            if (!System.IO.Directory.Exists(directory))
+            if (!Directory.Exists(directory))
             {
-                System.IO.Directory.CreateDirectory(directory);
+                Directory.CreateDirectory(directory);
             }
 
             this.project.ExportSourceFiles(directory);

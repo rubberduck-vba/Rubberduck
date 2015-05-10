@@ -6,11 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
-using Rubberduck.VBA;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {

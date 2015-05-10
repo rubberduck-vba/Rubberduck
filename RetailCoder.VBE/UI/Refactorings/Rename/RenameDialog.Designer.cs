@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Refactorings.Rename
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Refactorings.Rename
 {
     partial class RenameDialog
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -180,15 +183,15 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.PictureBox InvalidNameValidationIcon;
-        private System.Windows.Forms.TextBox NewNameBox;
-        private System.Windows.Forms.Label NameLabel;
-        private System.Windows.Forms.Label TitleLabel;
-        private System.Windows.Forms.Label InstructionsLabel;
+        private Panel panel1;
+        private Panel panel2;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Button CancelButton;
+        private Button OkButton;
+        private PictureBox InvalidNameValidationIcon;
+        private TextBox NewNameBox;
+        private Label NameLabel;
+        private Label TitleLabel;
+        private Label InstructionsLabel;
     }
 }

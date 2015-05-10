@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class BranchesControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -166,14 +169,14 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel BranchesPanel;
-        private System.Windows.Forms.GroupBox PublishedBranchesBox;
-        private System.Windows.Forms.ListBox PublishedBranchesList;
-        private System.Windows.Forms.Button MergeBranchButton;
-        private System.Windows.Forms.GroupBox UnpublishedBranchesBox;
-        private System.Windows.Forms.ListBox UnpublishedBranchesList;
-        private System.Windows.Forms.ComboBox CurrentBranchSelector;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button NewBranchButton;
+        private Panel BranchesPanel;
+        private GroupBox PublishedBranchesBox;
+        private ListBox PublishedBranchesList;
+        private Button MergeBranchButton;
+        private GroupBox UnpublishedBranchesBox;
+        private ListBox UnpublishedBranchesList;
+        private ComboBox CurrentBranchSelector;
+        private Label label8;
+        private Button NewBranchButton;
     }
 }

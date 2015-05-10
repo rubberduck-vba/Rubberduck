@@ -11,6 +11,12 @@
 // Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -18,17 +24,13 @@
 #pragma warning disable 1591
 
 namespace Rubberduck.Parsing.Grammar {
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
-
-/// <summary>
+    /// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
 /// by <see cref="VBAParser"/>.
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
-[System.CLSCompliant(false)]
+[GeneratedCode("ANTLR", "4.3")]
+[CLSCompliant(false)]
 public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.stopStmt"/>.

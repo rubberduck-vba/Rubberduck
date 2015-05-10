@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using  Rubberduck.SourceControl;
-using  Rubberduck.UI.SourceControl;
+using Rubberduck.SourceControl;
+using Rubberduck.UI.SourceControl;
 
 namespace RubberduckTests.SourceControl
 {

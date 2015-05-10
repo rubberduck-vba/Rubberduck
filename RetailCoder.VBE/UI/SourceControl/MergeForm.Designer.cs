@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class MergeForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -152,13 +155,13 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox SourceSelector;
-        private System.Windows.Forms.ComboBox DestinationSelector;
-        private System.Windows.Forms.Button OkayButton;
-        private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.Label SourceLabel;
-        private System.Windows.Forms.Label DestinationLabel;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TextBox StatusTextBox;
+        private ComboBox SourceSelector;
+        private ComboBox DestinationSelector;
+        private Button OkayButton;
+        private Button CancelButton;
+        private Label SourceLabel;
+        private Label DestinationLabel;
+        private PictureBox pictureBox1;
+        private TextBox StatusTextBox;
     }
 }

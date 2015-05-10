@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Settings
 {
     partial class GeneralSettingsControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -85,8 +88,8 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label TitleLabel;
-        private System.Windows.Forms.Label InstructionsLabel;
+        private PictureBox pictureBox1;
+        private Label TitleLabel;
+        private Label InstructionsLabel;
     }
 }

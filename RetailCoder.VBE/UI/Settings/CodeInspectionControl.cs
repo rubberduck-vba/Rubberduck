@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
-using Rubberduck.UI.CodeInspections;
 
 namespace Rubberduck.UI.Settings
 {

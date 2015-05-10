@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI
 {
     partial class _AboutWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -260,18 +263,18 @@
 
         #endregion
 
-        private System.Windows.Forms.Label AppVersionLabel;
-        private System.Windows.Forms.ListBox SpecialThanksList;
-        private System.Windows.Forms.LinkLabel OfficialWebsiteLinkLabel;
-        private System.Windows.Forms.PictureBox TwitterIcon;
-        private System.Windows.Forms.PictureBox FacebookIcon;
-        private System.Windows.Forms.PictureBox GitHubIcon;
-        private System.Windows.Forms.PictureBox GooglePlusIcon;
-        private System.Windows.Forms.Button CloseButton;
-        private System.Windows.Forms.Label CopyrightLabel;
-        private System.Windows.Forms.Label AttributionsLabel;
-        private System.Windows.Forms.Label SpecialThanksLabel;
-        private System.Windows.Forms.ListBox AttributionsList;
+        private Label AppVersionLabel;
+        private ListBox SpecialThanksList;
+        private LinkLabel OfficialWebsiteLinkLabel;
+        private PictureBox TwitterIcon;
+        private PictureBox FacebookIcon;
+        private PictureBox GitHubIcon;
+        private PictureBox GooglePlusIcon;
+        private Button CloseButton;
+        private Label CopyrightLabel;
+        private Label AttributionsLabel;
+        private Label SpecialThanksLabel;
+        private ListBox AttributionsList;
 
     }
 }

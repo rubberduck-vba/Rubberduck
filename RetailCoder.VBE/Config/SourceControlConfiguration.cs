@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.SourceControl;
 using System.IO;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.Config
 {
@@ -31,7 +28,7 @@ namespace Rubberduck.Config
             return base.LoadConfiguration();
         }
 
-        protected override SourceControlConfiguration HandleIOException(System.IO.IOException ex)
+        protected override SourceControlConfiguration HandleIOException(IOException ex)
         {
             //couldn't load file
             return new SourceControlConfiguration();

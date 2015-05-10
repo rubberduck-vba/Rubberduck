@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using Rubberduck.Inspections;
 
 namespace Rubberduck.Config
@@ -14,7 +13,7 @@ namespace Rubberduck.Config
         CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
-        IList<Rubberduck.Inspections.IInspection> GetImplementedCodeInspections();
+        IList<IInspection> GetImplementedCodeInspections();
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService

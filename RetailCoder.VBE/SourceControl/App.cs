@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.SourceControl;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
 using Rubberduck.UI.SourceControl;
-using Rubberduck.Config;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
 
 namespace Rubberduck.SourceControl
 {

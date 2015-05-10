@@ -1,15 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings.Rename;
-using Parsing = Rubberduck.Parsing;
-
-namespace RubberduckTests.UI.Refactorings.Rename
+﻿namespace RubberduckTests.UI.Refactorings.Rename
 {
     //[TestClass]
     //public class RenamePresenterTests

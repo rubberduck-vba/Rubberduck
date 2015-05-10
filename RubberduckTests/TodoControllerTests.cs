@@ -1,11 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck;
-using Rubberduck.Config;
-using Rubberduck.ToDoItems;
 using Moq;
+using Rubberduck.Config;
 using Rubberduck.UI.Settings;
-using System.Collections.Generic;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests

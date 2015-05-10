@@ -11,6 +11,14 @@
 // Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -18,15 +26,8 @@
 #pragma warning disable 1591
 
 namespace Rubberduck.Parsing.Grammar {
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Collections.Generic;
-using DFA = Antlr4.Runtime.Dfa.DFA;
-
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
-[System.CLSCompliant(false)]
+    [GeneratedCode("ANTLR", "4.3")]
+[CLSCompliant(false)]
 public partial class VBAParser : Parser {
 	public const int
 		T__8=1, T__7=2, T__6=3, T__5=4, T__4=5, T__3=6, T__2=7, T__1=8, T__0=9, 
@@ -293,7 +294,7 @@ public partial class VBAParser : Parser {
 			State = 291;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,1,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -328,7 +329,7 @@ public partial class VBAParser : Parser {
 					State = 298;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,2,_ctx);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 				}
 				break;
 			}
@@ -343,7 +344,7 @@ public partial class VBAParser : Parser {
 			State = 308;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,5,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -366,7 +367,7 @@ public partial class VBAParser : Parser {
 			State = 317;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,7,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -389,7 +390,7 @@ public partial class VBAParser : Parser {
 			State = 326;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,9,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -570,7 +571,7 @@ public partial class VBAParser : Parser {
 				State = 356;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,14,_ctx);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+			} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 			State = 358; Match(END);
 			State = 360;
 			_errHandler.Sync(this);
@@ -590,7 +591,7 @@ public partial class VBAParser : Parser {
 				State = 362;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,15,_ctx);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+			} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 			}
 		}
 		catch (RecognitionException re) {
@@ -744,7 +745,7 @@ public partial class VBAParser : Parser {
 						State = 379;
 						_errHandler.Sync(this);
 						_alt = Interpreter.AdaptivePredict(_input,18,_ctx);
-					} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+					} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 					}
 					}
 					break;
@@ -754,7 +755,7 @@ public partial class VBAParser : Parser {
 				State = 383;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,19,_ctx);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+			} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 			}
 		}
 		catch (RecognitionException re) {
@@ -812,7 +813,7 @@ public partial class VBAParser : Parser {
 			State = 394;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,21,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1151,7 +1152,7 @@ public partial class VBAParser : Parser {
 			State = 425;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,25,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1413,7 +1414,7 @@ public partial class VBAParser : Parser {
 			State = 460;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,31,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1503,7 +1504,7 @@ public partial class VBAParser : Parser {
 			State = 475;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,34,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -1539,7 +1540,7 @@ public partial class VBAParser : Parser {
 			State = 481;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,35,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -2547,7 +2548,7 @@ public partial class VBAParser : Parser {
 				State = 589;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,42,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -2651,7 +2652,7 @@ public partial class VBAParser : Parser {
 			State = 612;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,47,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -3057,7 +3058,7 @@ public partial class VBAParser : Parser {
 			State = 689;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,62,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -5193,7 +5194,7 @@ public partial class VBAParser : Parser {
 				State = 1081;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,130,_ctx);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+			} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 			}
 		}
 		catch (RecognitionException re) {
@@ -6321,7 +6322,7 @@ public partial class VBAParser : Parser {
 			State = 1267;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,161,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -6415,7 +6416,7 @@ public partial class VBAParser : Parser {
 			State = 1287;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,164,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -6650,7 +6651,7 @@ public partial class VBAParser : Parser {
 				State = 1336;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,173,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -6752,7 +6753,7 @@ public partial class VBAParser : Parser {
 					State = 1354;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,178,_ctx);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 				}
 				break;
 			}
@@ -7694,7 +7695,7 @@ public partial class VBAParser : Parser {
 			State = 1556;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,224,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -8767,7 +8768,7 @@ public partial class VBAParser : Parser {
 				State = 1729;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,257,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -8811,7 +8812,7 @@ public partial class VBAParser : Parser {
 				State = 1747;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,260,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -10766,7 +10767,7 @@ public partial class VBAParser : Parser {
 			State = 2127;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,331,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -11380,7 +11381,7 @@ public partial class VBAParser : Parser {
 			State = 2153;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,336,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -11614,7 +11615,7 @@ public partial class VBAParser : Parser {
 			State = 2196;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,346,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -12789,7 +12790,7 @@ public partial class VBAParser : Parser {
 				State = 2367;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,385,_ctx);
-			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+			} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 			State = 2370;
 			switch ( Interpreter.AdaptivePredict(_input,386,_ctx) ) {
 			case 1:
@@ -12961,7 +12962,7 @@ public partial class VBAParser : Parser {
 			State = 2391;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,391,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -13006,7 +13007,7 @@ public partial class VBAParser : Parser {
 			State = 2407;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,395,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -13240,7 +13241,7 @@ public partial class VBAParser : Parser {
 				State = 2436;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,401,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
@@ -13555,7 +13556,7 @@ public partial class VBAParser : Parser {
 			State = 2498;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,417,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
@@ -14023,7 +14024,7 @@ public partial class VBAParser : Parser {
 					State = 2514;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,420,_ctx);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 				}
 				break;
 			case L_SQUARE_BRACKET:
@@ -14394,7 +14395,7 @@ public partial class VBAParser : Parser {
 				State = 2544;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,427,_ctx);
-				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						State = 2542;
@@ -14883,7 +14884,7 @@ public partial class VBAParser : Parser {
 					State = 2552;
 					_errHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(_input,429,_ctx);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 				}
 				break;
 			default:
@@ -14997,7 +14998,7 @@ public partial class VBAParser : Parser {
 			State = 2563;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,431,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{

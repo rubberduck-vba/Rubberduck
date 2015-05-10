@@ -24,7 +24,7 @@ namespace Rubberduck.SourceControl
             {
                 _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
             }
-            catch (LibGit2Sharp.RepositoryNotFoundException ex)
+            catch (RepositoryNotFoundException ex)
             {
                 throw new SourceControlException("Repository not found.", ex);
             }

@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.SourceControl
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.SourceControl
 {
     partial class SourceControlPanel
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -178,16 +181,16 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip SourceControlToolbar;
-        private System.Windows.Forms.ToolStripButton RefreshButton;
-        private System.Windows.Forms.TabControl SourceControlTabs;
-        private System.Windows.Forms.TabPage ChangesTab;
-        private System.Windows.Forms.TabPage BranchesTab;
-        private System.Windows.Forms.TabPage UnsyncedCommitsTab;
-        private System.Windows.Forms.TabPage SettingsTab;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripLabel StatusMessage;
-        private System.Windows.Forms.ToolStripButton OpenWorkingFolderButton;
-        private System.Windows.Forms.ToolStripButton InitRepoButton;
+        private ToolStrip SourceControlToolbar;
+        private ToolStripButton RefreshButton;
+        private TabControl SourceControlTabs;
+        private TabPage ChangesTab;
+        private TabPage BranchesTab;
+        private TabPage UnsyncedCommitsTab;
+        private TabPage SettingsTab;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripLabel StatusMessage;
+        private ToolStripButton OpenWorkingFolderButton;
+        private ToolStripButton InitRepoButton;
     }
 }

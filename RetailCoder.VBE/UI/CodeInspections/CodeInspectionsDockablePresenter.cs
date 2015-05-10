@@ -37,7 +37,7 @@ namespace Rubberduck.UI.CodeInspections
         // indicates that the _parseResults are no longer in sync with the UI
         private bool _needsResync;
 
-        private void OnParseCompleted(object sender, Parsing.ParseCompletedEventArgs e)
+        private void OnParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender == this)
             {

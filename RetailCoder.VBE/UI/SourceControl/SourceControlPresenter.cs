@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Vbe.Interop;
-using Rubberduck.SourceControl;
-using Rubberduck.Config;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Config;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {

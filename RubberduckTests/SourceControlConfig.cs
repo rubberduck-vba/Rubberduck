@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Rubberduck.SourceControl;
 using Rubberduck.Config;
+using Rubberduck.SourceControl;
 
 namespace RubberduckTests
 {
@@ -15,7 +14,7 @@ namespace RubberduckTests
         [TestMethod]
         public void Save()
         {
-            var repo = new Rubberduck.SourceControl.Repository
+            var repo = new Repository
             (
                 "SourceControlTest",
                 @"C:\Users\Christopher\Documents\SourceControlTest",

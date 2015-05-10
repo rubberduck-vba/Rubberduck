@@ -38,12 +38,12 @@ namespace Rubberduck.UI.Settings
             CancelButton.Click += CancelButton_Click;
         }
 
-        private void CancelButton_Click(object sender, System.EventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void OkButton_Click(object sender, System.EventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
             SaveConfig();
             Close();
