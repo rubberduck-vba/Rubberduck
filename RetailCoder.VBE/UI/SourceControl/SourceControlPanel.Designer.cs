@@ -124,20 +124,20 @@ namespace Rubberduck.UI.SourceControl
             // 
             // ChangesTab
             // 
+            this.ChangesTab.BackColor = System.Drawing.Color.Transparent;
             this.ChangesTab.Location = new System.Drawing.Point(4, 22);
             this.ChangesTab.Name = "ChangesTab";
             this.ChangesTab.Padding = new System.Windows.Forms.Padding(3);
             this.ChangesTab.Size = new System.Drawing.Size(375, 423);
             this.ChangesTab.TabIndex = 0;
             this.ChangesTab.Text = "Changes";
-            this.ChangesTab.UseVisualStyleBackColor = true;
             // 
             // BranchesTab
             // 
             this.BranchesTab.Location = new System.Drawing.Point(4, 22);
             this.BranchesTab.Name = "BranchesTab";
             this.BranchesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.BranchesTab.Size = new System.Drawing.Size(247, 423);
+            this.BranchesTab.Size = new System.Drawing.Size(375, 423);
             this.BranchesTab.TabIndex = 1;
             this.BranchesTab.Text = "Branches";
             this.BranchesTab.UseVisualStyleBackColor = true;
@@ -147,7 +147,7 @@ namespace Rubberduck.UI.SourceControl
             this.UnsyncedCommitsTab.Location = new System.Drawing.Point(4, 22);
             this.UnsyncedCommitsTab.Name = "UnsyncedCommitsTab";
             this.UnsyncedCommitsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.UnsyncedCommitsTab.Size = new System.Drawing.Size(247, 423);
+            this.UnsyncedCommitsTab.Size = new System.Drawing.Size(375, 423);
             this.UnsyncedCommitsTab.TabIndex = 2;
             this.UnsyncedCommitsTab.Text = "Unsynced commits";
             this.UnsyncedCommitsTab.UseVisualStyleBackColor = true;
@@ -157,7 +157,7 @@ namespace Rubberduck.UI.SourceControl
             this.SettingsTab.Location = new System.Drawing.Point(4, 22);
             this.SettingsTab.Name = "SettingsTab";
             this.SettingsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTab.Size = new System.Drawing.Size(247, 423);
+            this.SettingsTab.Size = new System.Drawing.Size(375, 423);
             this.SettingsTab.TabIndex = 3;
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;

@@ -57,6 +57,7 @@ namespace Rubberduck.UI.SourceControl
             // 
             this.ChangesPanel.AutoScroll = true;
             this.ChangesPanel.AutoSize = true;
+            this.ChangesPanel.BackColor = System.Drawing.SystemColors.Control;
             this.ChangesPanel.Controls.Add(this.ChangesBranchNameLabel);
             this.ChangesPanel.Controls.Add(this.IncludedChangesBox);
             this.ChangesPanel.Controls.Add(this.CommitButton);
@@ -121,8 +122,7 @@ namespace Rubberduck.UI.SourceControl
             // 
             // CommitButton
             // 
-            this.CommitButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.CommitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CommitButton.AutoSize = true;
             this.CommitButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CommitButton.Enabled = false;
@@ -139,8 +139,6 @@ namespace Rubberduck.UI.SourceControl
             // 
             // CommitActionDropdown
             // 
-            this.CommitActionDropdown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.CommitActionDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CommitActionDropdown.FormattingEnabled = true;
             this.CommitActionDropdown.Items.AddRange(new object[] {
@@ -261,6 +259,7 @@ namespace Rubberduck.UI.SourceControl
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.Controls.Add(this.ChangesPanel);
             this.Name = "ChangesControl";
             this.Size = new System.Drawing.Size(238, 560);
