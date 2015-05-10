@@ -86,7 +86,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.SelectedNodeLabel});
             this.CodeExplorerToolbar.Location = new System.Drawing.Point(0, 0);
             this.CodeExplorerToolbar.Name = "CodeExplorerToolbar";
-            this.CodeExplorerToolbar.Size = new System.Drawing.Size(297, 25);
+            this.CodeExplorerToolbar.Size = new System.Drawing.Size(280, 25);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
             // 
@@ -217,7 +217,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(297, 343);
+            this.panel1.Size = new System.Drawing.Size(280, 343);
             this.panel1.TabIndex = 1;
             // 
             // SolutionTree
@@ -226,7 +226,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.SolutionTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SolutionTree.Location = new System.Drawing.Point(0, 0);
             this.SolutionTree.Name = "SolutionTree";
-            this.SolutionTree.Size = new System.Drawing.Size(297, 343);
+            this.SolutionTree.Size = new System.Drawing.Size(280, 343);
             this.SolutionTree.TabIndex = 0;
             // 
             // CodeExplorerContextMenu
@@ -243,7 +243,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.InspectContextButton,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(179, 214);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(179, 192);
             // 
             // RefreshContextButton
             // 
@@ -405,7 +405,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.CodeExplorerToolbar);
             this.Name = "CodeExplorerWindow";
-            this.Size = new System.Drawing.Size(297, 368);
+            this.Size = new System.Drawing.Size(280, 368);
             this.CodeExplorerToolbar.ResumeLayout(false);
             this.CodeExplorerToolbar.PerformLayout();
             this.panel1.ResumeLayout(false);

@@ -35,6 +35,7 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlToolbar = new System.Windows.Forms.ToolStrip();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.OpenWorkingFolderButton = new System.Windows.Forms.ToolStripButton();
+            this.InitRepoButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.StatusMessage = new System.Windows.Forms.ToolStripLabel();
             this.SourceControlTabs = new System.Windows.Forms.TabControl();
@@ -42,7 +43,6 @@ namespace Rubberduck.UI.SourceControl
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.SettingsTab = new System.Windows.Forms.TabPage();
-            this.InitRepoButton = new System.Windows.Forms.ToolStripButton();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             this.SuspendLayout();
@@ -83,6 +83,18 @@ namespace Rubberduck.UI.SourceControl
             this.OpenWorkingFolderButton.ToolTipText = "Open working folder";
             this.OpenWorkingFolderButton.Click += new System.EventHandler(this.OpenWorkingFolderButton_Click);
             // 
+            // InitRepoButton
+            // 
+            this.InitRepoButton.AccessibleDescription = "Initialize repository from the active project.";
+            this.InitRepoButton.AccessibleName = "Initalize Report Button";
+            this.InitRepoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.InitRepoButton.Image = ((System.Drawing.Image)(resources.GetObject("InitRepoButton.Image")));
+            this.InitRepoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.InitRepoButton.Name = "InitRepoButton";
+            this.InitRepoButton.Size = new System.Drawing.Size(23, 22);
+            this.InitRepoButton.ToolTipText = "Init New Repo from this Project";
+            this.InitRepoButton.Click += new System.EventHandler(this.InitRepoButton_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -107,7 +119,7 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlTabs.Location = new System.Drawing.Point(0, 25);
             this.SourceControlTabs.Name = "SourceControlTabs";
             this.SourceControlTabs.SelectedIndex = 0;
-            this.SourceControlTabs.Size = new System.Drawing.Size(255, 449);
+            this.SourceControlTabs.Size = new System.Drawing.Size(383, 449);
             this.SourceControlTabs.TabIndex = 1;
             // 
             // ChangesTab
@@ -115,7 +127,7 @@ namespace Rubberduck.UI.SourceControl
             this.ChangesTab.Location = new System.Drawing.Point(4, 22);
             this.ChangesTab.Name = "ChangesTab";
             this.ChangesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ChangesTab.Size = new System.Drawing.Size(247, 423);
+            this.ChangesTab.Size = new System.Drawing.Size(375, 423);
             this.ChangesTab.TabIndex = 0;
             this.ChangesTab.Text = "Changes";
             this.ChangesTab.UseVisualStyleBackColor = true;
@@ -150,18 +162,6 @@ namespace Rubberduck.UI.SourceControl
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;
             // 
-            // InitRepoButton
-            // 
-            this.InitRepoButton.AccessibleDescription = "Initialize repository from the active project.";
-            this.InitRepoButton.AccessibleName = "Initalize Report Button";
-            this.InitRepoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.InitRepoButton.Image = ((System.Drawing.Image)(resources.GetObject("InitRepoButton.Image")));
-            this.InitRepoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.InitRepoButton.Name = "InitRepoButton";
-            this.InitRepoButton.Size = new System.Drawing.Size(23, 22);
-            this.InitRepoButton.ToolTipText = "Init New Repo from this Project";
-            this.InitRepoButton.Click += new System.EventHandler(this.InitRepoButton_Click);
-            // 
             // SourceControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -170,7 +170,7 @@ namespace Rubberduck.UI.SourceControl
             this.Controls.Add(this.SourceControlToolbar);
             this.MinimumSize = new System.Drawing.Size(255, 255);
             this.Name = "SourceControlPanel";
-            this.Size = new System.Drawing.Size(255, 474);
+            this.Size = new System.Drawing.Size(383, 474);
             this.SourceControlToolbar.ResumeLayout(false);
             this.SourceControlToolbar.PerformLayout();
             this.SourceControlTabs.ResumeLayout(false);

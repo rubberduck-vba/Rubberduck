@@ -91,7 +91,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncludedChangesBox.Location = new System.Drawing.Point(9, 119);
             this.IncludedChangesBox.Name = "IncludedChangesBox";
             this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncludedChangesBox.Size = new System.Drawing.Size(183, 141);
+            this.IncludedChangesBox.Size = new System.Drawing.Size(223, 141);
             this.IncludedChangesBox.TabIndex = 15;
             this.IncludedChangesBox.TabStop = false;
             this.IncludedChangesBox.Text = "Included changes";
@@ -112,7 +112,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncludedChangesGrid.Location = new System.Drawing.Point(6, 19);
             this.IncludedChangesGrid.Name = "IncludedChangesGrid";
             this.IncludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncludedChangesGrid.Size = new System.Drawing.Size(171, 116);
+            this.IncludedChangesGrid.Size = new System.Drawing.Size(211, 116);
             this.IncludedChangesGrid.TabIndex = 0;
             this.IncludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragDrop);
             this.IncludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragOver);
@@ -128,7 +128,7 @@ namespace Rubberduck.UI.SourceControl
             this.CommitButton.Enabled = false;
             this.CommitButton.Image = global::Rubberduck.Properties.Resources.tick;
             this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CommitButton.Location = new System.Drawing.Point(136, 86);
+            this.CommitButton.Location = new System.Drawing.Point(170, 87);
             this.CommitButton.MinimumSize = new System.Drawing.Size(62, 23);
             this.CommitButton.Name = "CommitButton";
             this.CommitButton.Size = new System.Drawing.Size(62, 23);
@@ -139,6 +139,8 @@ namespace Rubberduck.UI.SourceControl
             // 
             // CommitActionDropdown
             // 
+            this.CommitActionDropdown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.CommitActionDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CommitActionDropdown.FormattingEnabled = true;
             this.CommitActionDropdown.Items.AddRange(new object[] {
@@ -148,7 +150,7 @@ namespace Rubberduck.UI.SourceControl
             this.CommitActionDropdown.Location = new System.Drawing.Point(9, 87);
             this.CommitActionDropdown.MinimumSize = new System.Drawing.Size(121, 0);
             this.CommitActionDropdown.Name = "CommitActionDropdown";
-            this.CommitActionDropdown.Size = new System.Drawing.Size(121, 21);
+            this.CommitActionDropdown.Size = new System.Drawing.Size(155, 21);
             this.CommitActionDropdown.TabIndex = 13;
             this.CommitActionDropdown.SelectedIndexChanged += new System.EventHandler(this.CommitActionDropdown_SelectedIndexChanged);
             // 
@@ -163,12 +165,14 @@ namespace Rubberduck.UI.SourceControl
             // 
             // CommitMessageBox
             // 
+            this.CommitMessageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.CommitMessageBox.BackColor = System.Drawing.Color.LightYellow;
             this.CommitMessageBox.Location = new System.Drawing.Point(9, 55);
             this.CommitMessageBox.Multiline = true;
             this.CommitMessageBox.Name = "CommitMessageBox";
             this.CommitMessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.CommitMessageBox.Size = new System.Drawing.Size(189, 29);
+            this.CommitMessageBox.Size = new System.Drawing.Size(226, 29);
             this.CommitMessageBox.TabIndex = 11;
             this.CommitMessageBox.TextChanged += new System.EventHandler(this.CommitMessageBox_TextChanged);
             // 
@@ -189,7 +193,7 @@ namespace Rubberduck.UI.SourceControl
             this.ExcludedChangesBox.Location = new System.Drawing.Point(9, 266);
             this.ExcludedChangesBox.Name = "ExcludedChangesBox";
             this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.ExcludedChangesBox.Size = new System.Drawing.Size(177, 141);
+            this.ExcludedChangesBox.Size = new System.Drawing.Size(223, 141);
             this.ExcludedChangesBox.TabIndex = 16;
             this.ExcludedChangesBox.TabStop = false;
             this.ExcludedChangesBox.Text = "Excluded changes";
@@ -210,7 +214,7 @@ namespace Rubberduck.UI.SourceControl
             this.ExcludedChangesGrid.Location = new System.Drawing.Point(6, 19);
             this.ExcludedChangesGrid.Name = "ExcludedChangesGrid";
             this.ExcludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ExcludedChangesGrid.Size = new System.Drawing.Size(165, 116);
+            this.ExcludedChangesGrid.Size = new System.Drawing.Size(211, 116);
             this.ExcludedChangesGrid.TabIndex = 1;
             this.ExcludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragDrop);
             this.ExcludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragOver);
@@ -225,7 +229,7 @@ namespace Rubberduck.UI.SourceControl
             this.UntrackedFilesBox.Location = new System.Drawing.Point(9, 413);
             this.UntrackedFilesBox.Name = "UntrackedFilesBox";
             this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.UntrackedFilesBox.Size = new System.Drawing.Size(177, 141);
+            this.UntrackedFilesBox.Size = new System.Drawing.Size(223, 141);
             this.UntrackedFilesBox.TabIndex = 17;
             this.UntrackedFilesBox.TabStop = false;
             this.UntrackedFilesBox.Text = "Untracked files";
@@ -247,7 +251,7 @@ namespace Rubberduck.UI.SourceControl
             this.UntrackedFilesGrid.Location = new System.Drawing.Point(10, 22);
             this.UntrackedFilesGrid.Name = "UntrackedFilesGrid";
             this.UntrackedFilesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UntrackedFilesGrid.Size = new System.Drawing.Size(158, 110);
+            this.UntrackedFilesGrid.Size = new System.Drawing.Size(204, 110);
             this.UntrackedFilesGrid.TabIndex = 1;
             this.UntrackedFilesGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseDown);
             this.UntrackedFilesGrid.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseMove);

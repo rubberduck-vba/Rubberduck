@@ -79,10 +79,12 @@ namespace Rubberduck.UI.SourceControl
             // 
             // SyncButton
             // 
+            this.SyncButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.SyncButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.SyncButton.Location = new System.Drawing.Point(9, 68);
             this.SyncButton.Name = "SyncButton";
-            this.SyncButton.Size = new System.Drawing.Size(201, 23);
+            this.SyncButton.Size = new System.Drawing.Size(225, 23);
             this.SyncButton.TabIndex = 11;
             this.SyncButton.Text = "Sync";
             this.SyncButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -141,7 +143,7 @@ namespace Rubberduck.UI.SourceControl
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(9, 269);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
             this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.OutgoingCommitsBox.Size = new System.Drawing.Size(201, 162);
+            this.OutgoingCommitsBox.Size = new System.Drawing.Size(225, 162);
             this.OutgoingCommitsBox.TabIndex = 16;
             this.OutgoingCommitsBox.TabStop = false;
             this.OutgoingCommitsBox.Text = "Outgoing commits";
@@ -163,7 +165,7 @@ namespace Rubberduck.UI.SourceControl
             this.OutgoingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.OutgoingCommitsGrid.Name = "OutgoingCommitsGrid";
             this.OutgoingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(182, 131);
+            this.OutgoingCommitsGrid.Size = new System.Drawing.Size(206, 131);
             this.OutgoingCommitsGrid.TabIndex = 0;
             // 
             // IncomingCommitsBox
@@ -174,7 +176,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncomingCommitsBox.Location = new System.Drawing.Point(9, 101);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
             this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncomingCommitsBox.Size = new System.Drawing.Size(201, 162);
+            this.IncomingCommitsBox.Size = new System.Drawing.Size(225, 162);
             this.IncomingCommitsBox.TabIndex = 15;
             this.IncomingCommitsBox.TabStop = false;
             this.IncomingCommitsBox.Text = "Incoming commits";
@@ -196,7 +198,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncomingCommitsGrid.Location = new System.Drawing.Point(10, 22);
             this.IncomingCommitsGrid.Name = "IncomingCommitsGrid";
             this.IncomingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncomingCommitsGrid.Size = new System.Drawing.Size(182, 131);
+            this.IncomingCommitsGrid.Size = new System.Drawing.Size(206, 131);
             this.IncomingCommitsGrid.TabIndex = 0;
             // 
             // UnSyncedCommitsControl
