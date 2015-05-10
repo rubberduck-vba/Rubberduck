@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Rubberduck.Parsing;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.UnitTesting
 {

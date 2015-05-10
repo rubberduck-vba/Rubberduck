@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI
 {

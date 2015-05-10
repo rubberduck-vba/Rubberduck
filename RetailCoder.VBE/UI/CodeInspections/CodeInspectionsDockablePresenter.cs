@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -155,7 +155,7 @@ namespace Rubberduck.UI.CodeInspections
                     });
                 }
             }
-            catch (Exception exception)
+            catch (COMException exception)
             {
                 // swallow
             }

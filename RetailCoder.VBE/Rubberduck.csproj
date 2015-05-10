@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -13,7 +12,7 @@
     <AssemblyName>Rubberduck</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>580a495d</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>480c0557</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -203,10 +202,6 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.Office.Interop.Access, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -229,7 +224,6 @@
   <ItemGroup>
     <Compile Include="Config\SourceControlConfiguration.cs" />
     <Compile Include="Config\XmlConfigurationServiceBase.cs" />
-    <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
@@ -261,18 +255,7 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
-    <Compile Include="Interop\Branches.cs" />
-    <Compile Include="Interop\FileStatusEntries.cs" />
-    <Compile Include="Interop\GitProvider.cs" />
-    <Compile Include="Interop\ISourceControlProvider.cs" />
-    <Compile Include="Interop\SourceControlClassFactory.cs" />
-    <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="SourceControl\App.cs" />
-    <Compile Include="SourceControl\FileStatus.cs" />
-    <Compile Include="SourceControl\FileStatusEntry.cs" />
-    <Compile Include="SourceControl\Branch.cs" />
-    <Compile Include="SourceControl\IRepository.cs" />
-    <Compile Include="SourceControl\Repository.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
@@ -369,31 +352,11 @@
       <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
-    <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\Nodes\INode.cs" />
-    <Compile Include="VBA\Nodes\Node.cs" />
-    <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="Config\IConfigurationService.cs" />
-    <Compile Include="Extensions\CodeModuleExtensions.cs" />
-    <Compile Include="Extensions\VBComponentsExtensions.cs" />
-    <Compile Include="SourceControl\GitProvider.cs" />
-    <Compile Include="SourceControl\ISourceControlProvider.cs" />
-    <Compile Include="SourceControl\SourceControlException.cs" />
-    <Compile Include="SourceControl\SourceControlProviderBase.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="VBA\WalkerCancelledException.cs" />
-    <Compile Include="VBEHost\AccessApp.cs" />
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
-    <Compile Include="VBEHost\ExcelApp.cs" />
-    <Compile Include="Extensions\CodeModuleSelection.cs" />
-    <Compile Include="VBEHost\OutlookApp.cs" />
-    <Compile Include="Extensions\VbeExtensions.cs" />
-    <Compile Include="VBEHost\HostApplicationBase.cs" />
-    <Compile Include="VBEHost\IHostApplication.cs" />
     <Compile Include="Inspections\InspectionNames.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -415,9 +378,6 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="VBEHost\PowerPointApp.cs" />
-    <Compile Include="VBEHost\PublisherApp.cs" />
-    <Compile Include="VBA\VBComponentExtensions.cs" />
     <Compile Include="ToDoItems\TaskPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
@@ -450,7 +410,6 @@
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\ToDoListSettings.cs" />
     <Compile Include="Config\ToDoMarkers.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -458,10 +417,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Reflection\Attributes.cs" />
-    <Compile Include="Extensions\CodePaneExtensions.cs" />
-    <Compile Include="Reflection\Member.cs" />
-    <Compile Include="UI\NativeWindowMethods.cs" />
     <Compile Include="UI\Settings\CodeInspectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -489,16 +444,10 @@
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\WindowExtensions.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
-    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
-    <Compile Include="UnitTesting\TestOutcome.cs" />
-    <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
@@ -514,13 +463,6 @@
     <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
-    <Compile Include="UnitTesting\AssertClass.cs" />
-    <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\IAssert.cs" />
-    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
-    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
@@ -531,7 +473,6 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UnitTesting\TestMenu.cs" />
-    <Compile Include="VBEHost\WordApp.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -885,6 +826,19 @@
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
+      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Name>Rubberduck.SourceControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{83ed9bbf-5ad4-4eb2-b5f0-6eb97dfed9d0}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -893,7 +847,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>

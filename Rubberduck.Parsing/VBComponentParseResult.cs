@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {

@@ -7,10 +7,10 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {

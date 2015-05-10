@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {

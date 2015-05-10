@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Extensions;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBA;
 
 namespace RubberduckTests

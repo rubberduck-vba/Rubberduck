@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
