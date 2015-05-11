@@ -21,8 +21,12 @@ namespace Rubberduck.VBEditor.Extensions
             string filePath = Path.Combine(directoryPath, component.Name + component.Type.FileExtension());
             if (component.Type == vbext_ComponentType.vbext_ct_Document)
             {
-                var text = component.CodeModule.get_Lines(1, component.CodeModule.CountOfLines);
-                File.WriteAllText(filePath, text);
+                int lineCount = component.CodeModule.CountOfLines;
+                if (lineCount > 0)
+                {
+                    var text = component.CodeModule.get_Lines(1, lineCount);
+                    File.WriteAllText(filePath, text);
+                }
             }
             else
             {
