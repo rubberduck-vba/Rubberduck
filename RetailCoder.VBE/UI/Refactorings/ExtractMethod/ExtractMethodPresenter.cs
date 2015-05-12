@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
@@ -49,17 +48,22 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             // identifiers used inside selection and before selection are candidates for parameters:
             var input = inScopeDeclarations.Where(item => 
                 item.References.Any(reference => inSelection.Contains(reference) 
-                && reference.Selection.StartLine < selection.Selection.StartLine));
+                && reference.Selection.StartLine < selection.Selection.StartLine))
+                .ToList();
 
             // identifiers used inside selection and after selection are candidates for return values:
             var output = inScopeDeclarations.Where(item => 
                 item.References.Any(reference => inSelection.Contains(reference)
-                && reference.Selection.StartLine > selection.Selection.StartLine + selection.Selection.LineCount));
+                && reference.Selection.StartLine > selection.Selection.StartLine + selection.Selection.LineCount))
+                .ToList();
 
             // identifiers used only inside and/or after selection are candidates for locals:
             var locals = inScopeDeclarations.Where(item =>
                 item.References.All(reference => inSelection.Contains(reference)
                 || reference.Selection.StartLine > selection.Selection.StartLine));
+
+            _input = ExtractParameters(input);
+            _output = ExtractParameters(output);
         }
 
         //todo: remove this constructor
@@ -84,6 +88,19 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             _input = ExtractParameters(input);
             _output = ExtractParameters(output);
+        }
+
+        private static readonly DeclarationType[] ParameterDeclarationTypes =
+        {
+            DeclarationType.Constant,
+            DeclarationType.Variable,
+            DeclarationType.Parameter
+        };
+
+        private IEnumerable<ExtractedParameter> ExtractParameters(IList<Declaration> declarations)
+        {
+            return declarations.Where(declaration => ParameterDeclarationTypes.Contains(declaration.DeclarationType))
+                .Select(declaration => new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal));
         }
 
         private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
