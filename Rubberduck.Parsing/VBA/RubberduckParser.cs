@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
@@ -44,13 +43,6 @@ namespace Rubberduck.VBA
                 VBComponentParseResult result;
                 ParseResultCache.TryRemove(key, out result);
             }
-        }
-
-        public async Task<VBProjectParseResult> ParseAsync(VBProject project)
-        {
-            //return await Task.Run(() => Parse(project));
-            // note: the above has been seen to cause issues with VBProject.Equals and break navigation...
-            return Parse(project);
         }
 
         public VBProjectParseResult Parse(VBProject project)

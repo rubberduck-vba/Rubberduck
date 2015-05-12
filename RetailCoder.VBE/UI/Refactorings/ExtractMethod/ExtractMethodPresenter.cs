@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
@@ -7,6 +8,7 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
@@ -16,7 +18,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IExtractMethodDialog _view;
 
         private readonly IParseTree _parentMethodTree;
-        private IDictionary<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
 
         private readonly IEnumerable<ExtractedParameter> _input;
         private readonly IEnumerable<ExtractedParameter> _output;
@@ -26,6 +27,42 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly VBE _vbe;
         private readonly QualifiedSelection _selection;
 
+        private readonly IActiveCodePaneEditor _editor;
+        private readonly Declaration _member;
+
+        //todo: use this constructor
+        public ExtractMethodPresenter(IActiveCodePaneEditor editor, IExtractMethodDialog view, Declaration member, QualifiedSelection selection, Declarations declarations)
+        {
+            _editor = editor;
+            _view = view;
+            _member = member;
+            _selection = selection;
+
+            _selectedCode = _editor.GetLines(selection.Selection);
+
+            var inScopeDeclarations = declarations.Items.Where(item => item.ParentScope == member.Scope).ToList();
+
+            var inSelection = inScopeDeclarations.Where(item => selection.Selection.Contains(item.Selection))
+                                                 .SelectMany(item => item.References)
+                                                 .ToList();
+
+            // identifiers used inside selection and before selection are candidates for parameters:
+            var input = inScopeDeclarations.Where(item => 
+                item.References.Any(reference => inSelection.Contains(reference) 
+                && reference.Selection.StartLine < selection.Selection.StartLine));
+
+            // identifiers used inside selection and after selection are candidates for return values:
+            var output = inScopeDeclarations.Where(item => 
+                item.References.Any(reference => inSelection.Contains(reference)
+                && reference.Selection.StartLine > selection.Selection.StartLine + selection.Selection.LineCount));
+
+            // identifiers used only inside and/or after selection are candidates for locals:
+            var locals = inScopeDeclarations.Where(item =>
+                item.References.All(reference => inSelection.Contains(reference)
+                || reference.Selection.StartLine > selection.Selection.StartLine));
+        }
+
+        //todo: remove this constructor
         public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, QualifiedSelection selection)
         {
             _vbe = vbe;
@@ -35,12 +72,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _parentMethodTree = parentMethod;
             _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.Selection.StartLine, selection.Selection.LineCount);
 
-            _parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
+            var parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
 
-            var input = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedBeforeSelection).ToList();
-            var output = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection).ToList();
+            var input = parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedBeforeSelection).ToList();
+            var output = parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection).ToList();
 
-            _locals = _parentMethodDeclarations.Where(
+            _locals = parentMethodDeclarations.Where(
                 kvp => kvp.Value == ExtractedDeclarationUsage.UsedOnlyInSelection
                     || kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection
                 ).Select(kvp => kvp.Key);

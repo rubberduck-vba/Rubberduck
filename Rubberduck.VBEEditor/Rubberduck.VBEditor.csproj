@@ -46,9 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveCodePaneEditor.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />
     <Compile Include="Extensions\CodePaneExtensions.cs" />
+    <Compile Include="IActiveCodePaneEditor.cs" />
     <Compile Include="NativeWindowMethods.cs" />
     <Compile Include="QualifiedMemberName.cs" />
     <Compile Include="QualifiedModuleName.cs" />

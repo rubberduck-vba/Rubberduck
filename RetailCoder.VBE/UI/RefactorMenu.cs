@@ -30,7 +30,7 @@ namespace Rubberduck.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(Type: MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
@@ -156,7 +156,7 @@ namespace Rubberduck.UI
             }
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var method = (_parser.Parse(IDE.ActiveVBProject).Declarations.Items
+            var target = (_parser.Parse(IDE.ActiveVBProject).Declarations.Items
                                 .SingleOrDefault(declaration => 
                                     (declaration.DeclarationType == DeclarationType.Procedure
                                     || declaration.DeclarationType == DeclarationType.Function
@@ -165,13 +165,13 @@ namespace Rubberduck.UI
                                     || declaration.DeclarationType == DeclarationType.PropertySet) 
                                 && declaration.Context.GetSelection().Contains(selection.Selection)));
 
-            if (method == null)
+            if (target == null)
             {
                 return;
             }
 
             var view = new ExtractMethodDialog();
-            var presenter = new ExtractMethodPresenter(IDE, view, method.Context, selection);
+            var presenter = new ExtractMethodPresenter(IDE, view, target.Context, selection);
             presenter.Show();
 
             view.Dispose();
