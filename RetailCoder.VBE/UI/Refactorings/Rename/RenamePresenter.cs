@@ -120,7 +120,19 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
-            module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+
+            if (_view.Target.DeclarationType == DeclarationType.Parameter)
+            {
+                var argList = (VBAParser.ArgListContext)_view.Target.Context.Parent;
+                var lineNum = argList.GetSelection().LineCount;
+
+                module.ReplaceLine(argList.Start.Line, newContent);
+                module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
+            }
+            else
+            {
+                module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+            }
         }
 
         private void RenameControl()
