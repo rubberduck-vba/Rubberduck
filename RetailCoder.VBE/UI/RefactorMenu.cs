@@ -18,11 +18,13 @@ namespace Rubberduck.UI
     public class RefactorMenu : Menu
     {
         private readonly IRubberduckParser _parser;
+        private readonly IActiveCodePaneEditor _editor;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor)
             : base(vbe, addin)
         {
             _parser = parser;
+            _editor = editor;
         }
 
         private CommandBarButton _extractMethodButton;
@@ -145,25 +147,22 @@ namespace Rubberduck.UI
                 return;
             }
 
-            vbext_ProcKind startKind;
-            var startScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.Selection.StartLine, out startKind);
-            vbext_ProcKind endKind;
-            var endScope = IDE.ActiveCodePane.CodeModule.get_ProcOfLine(selection.Selection.EndLine, out endKind);
-
-            if (startScope != endScope)
+            var selectedScope = _editor.GetSelectedProcedureScope(selection.Selection);           
+            if (string.IsNullOrEmpty(selectedScope))
             {
                 return;
             }
 
+            var declarations = _parser.Parse(IDE.ActiveVBProject).Declarations;
+
             // if method is a property, GetProcedure(name) can return up to 3 members:
-            var target = (_parser.Parse(IDE.ActiveVBProject).Declarations.Items
-                                .SingleOrDefault(declaration => 
+            var target = (declarations.Items
+                                .SingleOrDefault(declaration => declaration.Scope == selectedScope &&
                                     (declaration.DeclarationType == DeclarationType.Procedure
                                     || declaration.DeclarationType == DeclarationType.Function
                                     || declaration.DeclarationType == DeclarationType.PropertyGet
                                     || declaration.DeclarationType == DeclarationType.PropertyLet
-                                    || declaration.DeclarationType == DeclarationType.PropertySet) 
-                                && declaration.Context.GetSelection().Contains(selection.Selection)));
+                                    || declaration.DeclarationType == DeclarationType.PropertySet)));
 
             if (target == null)
             {
@@ -171,7 +170,7 @@ namespace Rubberduck.UI
             }
 
             var view = new ExtractMethodDialog();
-            var presenter = new ExtractMethodPresenter(IDE, view, target.Context, selection);
+            var presenter = new ExtractMethodPresenter(_editor, view, target, selection, declarations);
             presenter.Show();
 
             view.Dispose();

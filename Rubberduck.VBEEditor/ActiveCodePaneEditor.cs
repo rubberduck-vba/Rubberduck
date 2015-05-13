@@ -18,6 +18,21 @@ namespace Rubberduck.VBEditor
             return Editor.get_Lines(selection.StartLine, selection.LineCount);
         }
 
+        public string GetSelectedProcedureScope(Selection selection)
+        {
+            var moduleName = Editor.Name;
+            var projectName = Editor.Parent.Collection.Parent.Name;
+            var parentScope = projectName + '.' + moduleName;
+
+            vbext_ProcKind kind;
+            var procStart = Editor.get_ProcOfLine(selection.StartLine, out kind);
+            var procEnd = Editor.get_ProcOfLine(selection.EndLine, out kind);
+
+            return procStart == procEnd
+                ? parentScope + '.' + procStart
+                : null;
+        }
+
         public void DeleteLines(Selection selection)
         {
             Editor.DeleteLines(selection.StartLine, selection.LineCount);

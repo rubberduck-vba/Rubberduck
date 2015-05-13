@@ -14,6 +14,7 @@ using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
@@ -26,6 +27,7 @@ namespace Rubberduck.UI
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
+        private readonly IActiveCodePaneEditor _editor;
 
         //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
@@ -35,10 +37,11 @@ namespace Rubberduck.UI
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IInspector inspector)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector)
             : base(vbe, addIn)
         {
             _configService = configService;
+            _editor = editor;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
@@ -62,7 +65,7 @@ namespace Rubberduck.UI
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor);
         }
 
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
