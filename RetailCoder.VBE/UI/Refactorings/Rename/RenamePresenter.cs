@@ -118,9 +118,21 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return;
             }
 
+            var argList = (VBAParser.ArgListContext)_view.Target.Context.Parent;
+            var lineNum = argList.GetSelection().LineCount;
+
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
-            module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+
+            if (_view.Target.DeclarationType != DeclarationType.Parameter)
+            {
+                module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+            }
+            else
+            {
+                module.ReplaceLine(argList.Start.Line, newContent);
+                module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
+            }
         }
 
         private void RenameControl()
@@ -228,7 +240,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return null;
             }
 
-            var content = module.get_Lines(_view.Target.Selection.StartLine, 1);
+            var content = module.get_Lines(_view.Target.Selection.StartLine, _view.Target.Selection.LineCount);
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {
