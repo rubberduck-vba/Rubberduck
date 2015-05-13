@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Rubberduck.Reflection;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Reflection
+namespace Rubberduck.Parsing.Reflection
 {
     public enum MemberType
     {
@@ -22,6 +24,7 @@ namespace Rubberduck.Reflection
         Friend
     }
 
+    [ComVisible(false)]
     public class Member
     {
         public Member(MemberType memberType, 

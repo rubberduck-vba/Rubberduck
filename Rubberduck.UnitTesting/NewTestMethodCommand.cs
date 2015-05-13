@@ -1,5 +1,6 @@
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 using Rubberduck.VBA;
 

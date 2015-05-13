@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing
 {
+    [ComVisible(false)]
     public static class VBComponentExtensions
     {
         public static bool HasAttribute<TAttribute>(this CodeModule code) where TAttribute : MemberAttributeBase, new()
