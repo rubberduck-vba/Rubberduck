@@ -121,7 +121,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                     declaration.Selection.EndColumn);
 
                 _editor.DeleteLines(target);
-                offset = declaration.Selection.LineCount;
+                offset += declaration.Selection.LineCount;
             }
         }
 
