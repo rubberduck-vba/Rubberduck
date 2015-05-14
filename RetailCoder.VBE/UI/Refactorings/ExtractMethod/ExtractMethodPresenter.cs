@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -19,12 +16,17 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private readonly IEnumerable<ExtractedParameter> _input;
         private readonly IEnumerable<ExtractedParameter> _output;
         private readonly List<Declaration> _locals;
+        private readonly List<Declaration> _toRemoveFromSource;
 
         private readonly string _selectedCode;
         private readonly QualifiedSelection _selection;
 
         private readonly IActiveCodePaneEditor _editor;
         private readonly Declaration _member;
+
+        private readonly HashSet<Declaration> _usedInSelection;
+        private readonly HashSet<Declaration> _usedBeforeSelection;
+        private readonly HashSet<Declaration> _usedAfterSelection;
 
         public ExtractMethodPresenter(IActiveCodePaneEditor editor, IExtractMethodDialog view, Declaration member, QualifiedSelection selection, Declarations declarations)
         {
@@ -41,31 +43,32 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                                                  .Where(item => selection.Selection.Contains(item.Selection))
                                                  .ToList();
 
-            var usedBeforeSelection = inScopeDeclarations.Where(item => 
-                item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine))
-                .ToList();
+            _usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.References.Any(reference => inSelection.Contains(reference))));
 
-            var usedAfterSelection = inScopeDeclarations.Where(item =>
-                item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine))
-                .ToList();
+            _usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item => 
+                item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
 
-            // identifiers used inside selection and before selection are candidates for parameters:
+            _usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
+
+            // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:
             var input = inScopeDeclarations.Where(item => 
-                item.References.Any(reference => inSelection.Contains(reference))
-                && usedBeforeSelection.Contains(item))
-                .ToList();
+                _usedInSelection.Contains(item) && (_usedBeforeSelection.Contains(item) || item.DeclarationType == DeclarationType.Parameter)).ToList();
 
             // identifiers used inside selection and after selection are candidates for return values:
             var output = inScopeDeclarations.Where(item => 
-                item.References.Any(reference => inSelection.Contains(reference))
-                && usedAfterSelection.Contains(item))
+                _usedInSelection.Contains(item) && _usedAfterSelection.Contains(item))
                 .ToList();
 
             // identifiers used only inside and/or after selection are candidates for locals:
-            _locals = inScopeDeclarations.Where(item =>
+            _locals = inScopeDeclarations.Where(item => item.DeclarationType != DeclarationType.Parameter && (
                 item.References.All(reference => inSelection.Contains(reference))
-                || (usedAfterSelection.Contains(item) /*&& !usedBeforeSelection.Contains(item)*/)) // somehow declaration counts as a usage??
+                || (_usedAfterSelection.Contains(item) && (!_usedBeforeSelection.Contains(item)))))
                 .ToList();
+
+            // locals that are only used in selection are candidates for being moved into the new method:
+            _toRemoveFromSource = _locals.Where(item => !_usedAfterSelection.Contains(item)).ToList();
 
             _output = output.Select(declaration =>
                 new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef));
@@ -88,14 +91,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .ToList();
 
             _view.ReturnValues = returnValues;
-            if (_output.Count() == 1)
-            {
-                _view.ReturnValue = _output.Single();
-            }
-            else
-            {
-                _view.ReturnValue = returnValues.First();
-            }
+            _view.ReturnValue = _output.Count() == 1 
+                ? _output.Single() 
+                : returnValues.First();
 
             _view.RefreshPreview += _view_RefreshPreview;
             _view.OnRefreshPreview();
@@ -111,6 +109,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var insertionLine = _member.Context.GetSelection().EndLine - _selection.Selection.LineCount + 2;
             _editor.InsertLines(insertionLine, GetExtractedMethod());
+
+            // assumes these are declared *before* the selection...
+            var offset = 0;
+            foreach (var declaration in _toRemoveFromSource.OrderBy(e => e.Selection.StartLine))
+            {
+                var target = new Selection(
+                    declaration.Selection.StartLine - offset, 
+                    declaration.Selection.StartColumn,
+                    declaration.Selection.EndLine - offset, 
+                    declaration.Selection.EndColumn);
+
+                _editor.DeleteLines(target);
+                offset = declaration.Selection.LineCount;
+            }
         }
 
         private void _view_RefreshPreview(object sender, EventArgs e)
