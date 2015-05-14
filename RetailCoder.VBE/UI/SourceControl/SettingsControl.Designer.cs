@@ -76,19 +76,19 @@ namespace Rubberduck.UI.SourceControl
             this.RepositorySettingsBox.TabStop = false;
             this.RepositorySettingsBox.Text = "Repository Settings";
             // 
-            // button2
+            // MoveDownButton
             // 
             this.button2.Location = new System.Drawing.Point(105, 31);
-            this.button2.Name = "button2";
+            this.button2.Name = "MoveDownButton";
             this.button2.Size = new System.Drawing.Size(92, 23);
             this.button2.TabIndex = 1;
             this.button2.Text = "Attributes File";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // MoveUpButton
             // 
             this.button1.Location = new System.Drawing.Point(7, 31);
-            this.button1.Name = "button1";
+            this.button1.Name = "MoveUpButton";
             this.button1.Size = new System.Drawing.Size(92, 23);
             this.button1.TabIndex = 0;
             this.button1.Text = "Ignore File";

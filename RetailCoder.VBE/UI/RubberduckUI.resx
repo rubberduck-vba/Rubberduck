@@ -222,4 +222,7 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
+  <data name="ReorderParametersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Reorder Parameters</value>
+  </data>
 </root>

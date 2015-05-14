@@ -8,18 +8,50 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     public partial class ReorderParametersDialog : Form, IReorderParametersView
     {
+        public List<Parameter> Parameters { get; set; }
+        public Parameter SelectedItem { get; set; }
+
         public ReorderParametersDialog()
         {
+            Parameters = new List<Parameter>();
+            SelectedItem = new Parameter("");
             InitializeComponent();
 
-            OkButton.Click += OkButtonClicked;
-            button1.Click += button1_Click;
-            button2.Click += button2_Click;
+            InitializeParameterGrid();
+        }
+
+        private void MethodParametersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            SelectedItem = Parameters.ElementAt(e.RowIndex);
+        }
+
+        private void InitializeParameterGrid()
+        {
+            MethodParametersGrid.AutoGenerateColumns = false;
+            MethodParametersGrid.Columns.Clear();
+            MethodParametersGrid.DataSource = Parameters;
+            MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
+            MethodParametersGrid.MultiSelect = false;
+
+            var paramNameColumn = new DataGridViewTextBoxColumn();
+            paramNameColumn.Name = "Name";
+            paramNameColumn.DataPropertyName = "Name";
+            paramNameColumn.HeaderText = "Name";
+            paramNameColumn.ReadOnly = true;
+            paramNameColumn.Width = 262;    // fits nice
+
+            MethodParametersGrid.Columns.Add(paramNameColumn);
+        }
+
+        private void OkButtonClick(object sender, EventArgs e)
+        {
+            OnOkButtonClicked();
         }
 
         public event EventHandler CancelButtonClicked;
@@ -52,15 +84,24 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void MoveUpButtonClicked(object sender, EventArgs e)
         {
             // TODO - implement move up functionality
             // simple swap should do it
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void MoveDownButtonClicked(object sender, EventArgs e)
         {
             // TODO - implement move down functionality
+        }
+
+        private void RegisterViewEvents()
+        {
+            OkButton.Click += OkButtonClicked;
+            CancelButton.Click += CancelButtonClicked;
+            MoveUpButton.Click += MoveUpButtonClicked;
+            MoveDownButton.Click += MoveDownButtonClicked;
+            MethodParametersGrid.CellMouseClick += MethodParametersGrid_CellMouseClick;
         }
     }
 }

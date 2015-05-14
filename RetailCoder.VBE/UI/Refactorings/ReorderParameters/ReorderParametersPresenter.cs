@@ -36,39 +36,36 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public void Show()
         {
             AcquireTarget(_selection);
-            if (_view.Target != null &&
-                (
-                 _view.Target.DeclarationType == DeclarationType.Event ||
-                 _view.Target.DeclarationType == DeclarationType.Function ||
-                 _view.Target.DeclarationType == DeclarationType.Procedure ||
-                 _view.Target.DeclarationType == DeclarationType.PropertyGet ||
-                 _view.Target.DeclarationType == DeclarationType.PropertyLet ||
-                 _view.Target.DeclarationType == DeclarationType.PropertySet ||
-                 _view.Target.DeclarationType == DeclarationType.LibraryFunction ||
-                 _view.Target.DeclarationType == DeclarationType.LibraryProcedure))
+
+            if (_view.Target != null && ValidDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
+                var proc = (dynamic)_view.Target.Context;
+                var argList = (VBAParser.ArgListContext)proc.argList();
+                var args = argList.arg();
+
+                foreach (var arg in args)
+                {
+                    _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText()));
+                }
+
                 _view.ShowDialog();
             }
         }
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            
         }
 
-        private static readonly DeclarationType[] ModuleDeclarationTypes =
+        private static readonly DeclarationType[] ValidDeclarationTypes =
             {
-                DeclarationType.Class,
-                DeclarationType.Module
-            };
-
-        private static readonly DeclarationType[] ProcedureDeclarationTypes =
-            {
-                DeclarationType.Procedure,
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-                DeclarationType.PropertyLet,
-                DeclarationType.PropertySet
+                 DeclarationType.Event,
+                 DeclarationType.Function,
+                 DeclarationType.Procedure,
+                 DeclarationType.PropertyGet,
+                 DeclarationType.PropertyLet,
+                 DeclarationType.PropertySet,
+                 DeclarationType.LibraryFunction,
+                 DeclarationType.LibraryProcedure
             };
 
         private void AcquireTarget(QualifiedSelection selection)
@@ -80,27 +77,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
-
-            if (_view.Target == null)
-            {
-                return;
-
-                // rename the containing procedure:
-                _view.Target = _declarations.Items.SingleOrDefault(
-                    item => !item.IsBuiltIn
-                            && ProcedureDeclarationTypes.Contains(item.DeclarationType)
-                            && item.Context.GetSelection().Contains(selection.Selection));
-            }
-
-            if (_view.Target == null)
-            {
-                return;
-                // rename the containing module:
-                _view.Target = _declarations.Items.SingleOrDefault(item =>
-                    !item.IsBuiltIn
-                    && ModuleDeclarationTypes.Contains(item.DeclarationType)
-                    && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
-            }
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target)
