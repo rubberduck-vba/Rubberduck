@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -56,7 +57,15 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnSelectedBranchChanged(object sender, EventArgs e)
         {
-            this.Provider.Checkout(_view.Current);
+            try
+            {
+                this.Provider.Checkout(_view.Current);
+            }
+            catch (SourceControlException ex)
+            {
+                //todo: find a better way of displaying these errors
+                MessageBox.Show(ex.InnerException.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         ~BranchesPresenter()
