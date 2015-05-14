@@ -8,5 +8,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     {
         Declaration Target { get; set; }
         List<Parameter> Parameters { get; set; }
+        void InitializeParameterGrid();
     }
 }

@@ -47,7 +47,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText()));
                 }
-
+                _view.InitializeParameterGrid();
                 _view.ShowDialog();
             }
         }

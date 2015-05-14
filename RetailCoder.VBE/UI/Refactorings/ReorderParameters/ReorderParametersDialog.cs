@@ -22,8 +22,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             Parameters = new List<Parameter>();
             SelectedItem = new Parameter("");
             InitializeComponent();
-
-            InitializeParameterGrid();
         }
 
         private void MethodParametersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -31,7 +29,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             SelectedItem = Parameters.ElementAt(e.RowIndex);
         }
 
-        private void InitializeParameterGrid()
+        public void InitializeParameterGrid()
         {
             MethodParametersGrid.AutoGenerateColumns = false;
             MethodParametersGrid.Columns.Clear();
