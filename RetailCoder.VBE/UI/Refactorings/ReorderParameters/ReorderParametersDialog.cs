@@ -55,6 +55,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void button1_Click(object sender, EventArgs e)
         {
             // TODO - implement move up functionality
+            // simple swap should do it
         }
 
         private void button2_Click(object sender, EventArgs e)
