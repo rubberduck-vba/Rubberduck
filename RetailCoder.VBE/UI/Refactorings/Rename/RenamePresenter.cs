@@ -65,16 +65,13 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 RenameModule();
             }
+            else if (_view.Target.DeclarationType == DeclarationType.Project)
+            {
+                RenameProject();
+            }
             else
             {
-                if (_view.Target.DeclarationType == DeclarationType.Project)
-                {
-                    RenameProject();
-                }
-                else
-                {
-                    RenameDeclaration();
-                }
+                RenameDeclaration();
             }
         }
 
@@ -85,7 +82,14 @@ namespace Rubberduck.UI.Refactorings.Rename
                 var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module != null)
                 {
-                    module.Name = _view.NewName;
+                    if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
+                    {
+                        module.Parent.Properties.Item("_CodeName").Value = (object)_view.NewName;
+                    }
+                    else
+                    {
+                        module.Name = _view.NewName;
+                    }
                 }
             }
             catch (COMException)
@@ -120,7 +124,19 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
-            module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+
+            if (_view.Target.DeclarationType == DeclarationType.Parameter)
+            {
+                var argList = (VBAParser.ArgListContext)_view.Target.Context.Parent;
+                var lineNum = argList.GetSelection().LineCount;
+
+                module.ReplaceLine(argList.Start.Line, newContent);
+                module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
+            }
+            else
+            {
+                module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+            }
         }
 
         private void RenameControl()
