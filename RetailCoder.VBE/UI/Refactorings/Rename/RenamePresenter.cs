@@ -65,16 +65,13 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 RenameModule();
             }
+            else if (_view.Target.DeclarationType == DeclarationType.Project)
+            {
+                RenameProject();
+            }
             else
             {
-                if (_view.Target.DeclarationType == DeclarationType.Project)
-                {
-                    RenameProject();
-                }
-                else
-                {
-                    RenameDeclaration();
-                }
+                RenameDeclaration();
             }
         }
 
