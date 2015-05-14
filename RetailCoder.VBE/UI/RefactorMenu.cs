@@ -9,6 +9,7 @@ using Rubberduck.Properties;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
@@ -29,6 +30,7 @@ namespace Rubberduck.UI
 
         private CommandBarButton _extractMethodButton;
         private CommandBarButton _renameButton;
+        private CommandBarButton _reorderParametersButton;
 
         public void Initialize(CommandBarControls menuControls)
         {
@@ -37,6 +39,7 @@ namespace Rubberduck.UI
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
             _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
+            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
 
             InitializeRefactorContextMenu();
         }
@@ -46,6 +49,7 @@ namespace Rubberduck.UI
 
         private CommandBarButton _extractMethodContextButton;
         private CommandBarButton _renameContextButton;
+        private CommandBarButton _reorderParametersContextButton;
 
         private void InitializeRefactorContextMenu()
         {
@@ -58,6 +62,7 @@ namespace Rubberduck.UI
             extractMethodIcon.MakeTransparent(Color.White);
             _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
+            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
         }
@@ -186,6 +191,16 @@ namespace Rubberduck.UI
             Rename(selection);
         }
 
+        private void OnReorderParametersButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            if (IDE.ActiveCodePane == null)
+            {
+                return;
+            }
+            var selection = IDE.ActiveCodePane.GetSelection();
+            ReorderParameters(selection);
+        }
+
         public void Rename(QualifiedSelection selection)
         {
             using (var view = new RenameDialog())
@@ -203,6 +218,16 @@ namespace Rubberduck.UI
                 var parseResult = _parser.Parse(IDE.ActiveVBProject);
                 var presenter = new RenamePresenter(IDE, view, parseResult, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
                 presenter.Show(target);
+            }
+        }
+
+        public void ReorderParameters(QualifiedSelection selection)
+        {
+            using (var view = new ReorderParametersDialog())
+            {
+                var parseResult = _parser.Parse(IDE.ActiveVBProject);
+                var presenter = new ReorderParametersPresenter(IDE, view, parseResult, selection);
+                presenter.Show();
             }
         }
 
