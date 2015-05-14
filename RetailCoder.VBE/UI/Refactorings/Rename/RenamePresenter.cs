@@ -85,7 +85,14 @@ namespace Rubberduck.UI.Refactorings.Rename
                 var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module != null)
                 {
-                    module.Parent.Properties.Item("_CodeName").Value = (object)_view.NewName;
+                    if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
+                    {
+                        module.Parent.Properties.Item("_CodeName").Value = (object)_view.NewName;
+                    }
+                    else
+                    {
+                        module.Name = _view.NewName;
+                    }
                 }
             }
             catch (COMException)
