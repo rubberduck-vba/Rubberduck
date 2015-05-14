@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            if (!_isInspecting)
+            if (_isInspecting)
             {
                 OnParseCompleted(sender, e);
             }

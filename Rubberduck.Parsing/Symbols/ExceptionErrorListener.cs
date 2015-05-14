@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.Listeners
+namespace Rubberduck.Parsing.Symbols
 {
     public class ExceptionErrorListener : BaseErrorListener
     {

@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
+    [ComVisible(false)]
     public static class ProjectTestExtensions
     {
         /// <summary>

@@ -32,14 +32,14 @@
             }
 
             // starts on same line:
-            if (selection.StartLine == StartLine && selection.StartColumn > StartColumn)
+            if (selection.StartLine == StartLine && selection.StartColumn >= StartColumn)
             {
                 return selection.EndLine < EndLine || 
                     (selection.EndLine == EndLine && selection.EndColumn <= EndColumn);
             }
 
             // ends on same line:
-            if (selection.EndLine == EndLine && selection.EndColumn < EndColumn)
+            if (selection.EndLine == EndLine && selection.EndColumn <= EndColumn + 1) // +1 for \r\n
             {
                 return selection.StartLine > StartLine ||
                        (selection.StartLine == StartLine && selection.StartColumn >= StartColumn);

@@ -6,6 +6,7 @@ using Rubberduck.Inspections;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck
 {
@@ -24,9 +25,10 @@ namespace Rubberduck
             var config = _configService.LoadConfiguration();
             EnableCodeInspections(config);
             var parser = new RubberduckParser();
+            var editor = new ActiveCodePaneEditor(vbe);
 
             var inspector = new Inspector(parser, _inspections);
-            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, inspector);
+            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, editor, inspector);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, inspector);
         }
 

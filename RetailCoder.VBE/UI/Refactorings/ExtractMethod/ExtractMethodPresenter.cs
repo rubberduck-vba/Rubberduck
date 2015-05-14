@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Refactorings.ExtractMethod
@@ -15,80 +13,77 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
     {
         private readonly IExtractMethodDialog _view;
 
-        private readonly IParseTree _parentMethodTree;
-        private IDictionary<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage> _parentMethodDeclarations;
-
         private readonly IEnumerable<ExtractedParameter> _input;
         private readonly IEnumerable<ExtractedParameter> _output;
-        private readonly IEnumerable<VBAParser.AmbiguousIdentifierContext> _locals;
+        private readonly List<Declaration> _locals;
+        private readonly List<Declaration> _toRemoveFromSource;
 
         private readonly string _selectedCode;
-        private readonly VBE _vbe;
         private readonly QualifiedSelection _selection;
 
-        public ExtractMethodPresenter(VBE vbe, IExtractMethodDialog dialog, IParseTree parentMethod, QualifiedSelection selection)
+        private readonly IActiveCodePaneEditor _editor;
+        private readonly Declaration _member;
+
+        private readonly HashSet<Declaration> _usedInSelection;
+        private readonly HashSet<Declaration> _usedBeforeSelection;
+        private readonly HashSet<Declaration> _usedAfterSelection;
+
+        public ExtractMethodPresenter(IActiveCodePaneEditor editor, IExtractMethodDialog view, Declaration member, QualifiedSelection selection, Declarations declarations)
         {
-            _vbe = vbe;
+            _editor = editor;
+            _view = view;
+            _member = member;
             _selection = selection;
 
-            _view = dialog;
-            _parentMethodTree = parentMethod;
-            _selectedCode = vbe.ActiveCodePane.CodeModule.get_Lines(selection.Selection.StartLine, selection.Selection.LineCount);
+            _selectedCode = _editor.GetLines(selection.Selection);
 
-            _parentMethodDeclarations = ExtractMethodRefactoring.GetParentMethodDeclarations(parentMethod, selection);
+            var inScopeDeclarations = declarations.Items.Where(item => item.ParentScope == member.Scope).ToList();
 
-            var input = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedBeforeSelection).ToList();
-            var output = _parentMethodDeclarations.Where(kvp => kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection).ToList();
+            var inSelection = inScopeDeclarations.SelectMany(item => item.References)
+                                                 .Where(item => selection.Selection.Contains(item.Selection))
+                                                 .ToList();
 
-            _locals = _parentMethodDeclarations.Where(
-                kvp => kvp.Value == ExtractedDeclarationUsage.UsedOnlyInSelection
-                    || kvp.Value == ExtractedDeclarationUsage.UsedAfterSelection
-                ).Select(kvp => kvp.Key);
+            _usedInSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.References.Any(reference => inSelection.Contains(reference))));
 
-            _input = ExtractParameters(input);
-            _output = ExtractParameters(output);
-        }
+            _usedBeforeSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item => 
+                item.References.Any(reference => reference.Selection.StartLine < selection.Selection.StartLine)));
 
-        private IEnumerable<ExtractedParameter> ExtractParameters(IList<KeyValuePair<VBAParser.AmbiguousIdentifierContext, ExtractedDeclarationUsage>> declarations)
-        {
-            var consts = declarations
-                .Where(kvp => kvp.Key.Parent is VBAParser.ConstSubStmtContext)
-                .Select(kvp => kvp.Key.Parent)
-                .Cast<VBAParser.ConstSubStmtContext>()
-                .Select(constant => new ExtractedParameter(
-                    constant.ambiguousIdentifier().GetText(),
-                    constant.asTypeClause() == null
-                        ? Tokens.Variant
-                        : constant.asTypeClause().type().GetText(),
-                    ExtractedParameter.PassedBy.ByVal));
+            _usedAfterSelection = new HashSet<Declaration>(inScopeDeclarations.Where(item =>
+                item.References.Any(reference => reference.Selection.StartLine > selection.Selection.EndLine)));
 
-            var variables = declarations
-                .Where(kvp => kvp.Key.Parent is VBAParser.VariableSubStmtContext)
-                .Select(kvp => new ExtractedParameter(
-                    kvp.Key.GetText(),
-                    ((VBAParser.VariableSubStmtContext)kvp.Key.Parent).asTypeClause() == null
-                        ? Tokens.Variant
-                        : ((VBAParser.VariableSubStmtContext)kvp.Key.Parent).asTypeClause().type().GetText(),
-                    ExtractedParameter.PassedBy.ByVal));
+            // identifiers used inside selection and before selection (or if it's a parameter) are candidates for parameters:
+            var input = inScopeDeclarations.Where(item => 
+                _usedInSelection.Contains(item) && (_usedBeforeSelection.Contains(item) || item.DeclarationType == DeclarationType.Parameter)).ToList();
 
-            var arguments = declarations
-                .Where(kvp => kvp.Key.Parent is VBAParser.ArgContext)
-                .Select(kvp => new ExtractedParameter(
-                    kvp.Key.GetText(),
-                    ((VBAParser.ArgContext)kvp.Key.Parent).asTypeClause() == null
-                        ? Tokens.Variant
-                        : ((VBAParser.ArgContext)kvp.Key.Parent).asTypeClause().type().GetText(),
-                    ExtractedParameter.PassedBy.ByVal));
+            // identifiers used inside selection and after selection are candidates for return values:
+            var output = inScopeDeclarations.Where(item => 
+                _usedInSelection.Contains(item) && _usedAfterSelection.Contains(item))
+                .ToList();
 
-            return consts.Union(variables.Union(arguments));
+            // identifiers used only inside and/or after selection are candidates for locals:
+            _locals = inScopeDeclarations.Where(item => item.DeclarationType != DeclarationType.Parameter && (
+                item.References.All(reference => inSelection.Contains(reference))
+                || (_usedAfterSelection.Contains(item) && (!_usedBeforeSelection.Contains(item)))))
+                .ToList();
+
+            // locals that are only used in selection are candidates for being moved into the new method:
+            _toRemoveFromSource = _locals.Where(item => !_usedAfterSelection.Contains(item)).ToList();
+
+            _output = output.Select(declaration =>
+                new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef));
+
+            _input = input.Where(declaration => !output.Contains(declaration))
+                .Select(declaration =>
+                    new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal));
         }
 
         public void Show()
         {
             _view.MethodName = "Method1";
             _view.Inputs = _input.ToList();
-            _view.Outputs = _output.Select(output => new ExtractedParameter(output.Name, output.TypeName, ExtractedParameter.PassedBy.ByRef)).ToList();
-            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.GetText(), string.Empty, ExtractedParameter.PassedBy.ByVal)).ToList();
+            _view.Outputs = _output.ToList();
+            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.IdentifierName, variable.AsTypeName, ExtractedParameter.PassedBy.ByVal)).ToList();
 
             var returnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
                 .Union(_view.Outputs)
@@ -96,14 +91,9 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 .ToList();
 
             _view.ReturnValues = returnValues;
-            if (_output.Count() == 1)
-            {
-                _view.ReturnValue = _output.Single();
-            }
-            else
-            {
-                _view.ReturnValue = returnValues.First();
-            }
+            _view.ReturnValue = _output.Count() == 1 
+                ? _output.Single() 
+                : returnValues.First();
 
             _view.RefreshPreview += _view_RefreshPreview;
             _view.OnRefreshPreview();
@@ -114,11 +104,25 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 return;
             }
 
-            _vbe.ActiveCodePane.CodeModule.DeleteLines(_selection.Selection.StartLine, _selection.Selection.LineCount - 1);
-            _vbe.ActiveCodePane.CodeModule.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
+            _editor.DeleteLines(_selection.Selection);
+            _editor.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
 
-            var insertionLine = ((ParserRuleContext)_parentMethodTree).GetSelection().EndLine - _selection.Selection.LineCount + 2;
-            _vbe.ActiveCodePane.CodeModule.InsertLines(insertionLine, GetExtractedMethod());
+            var insertionLine = _member.Context.GetSelection().EndLine - _selection.Selection.LineCount + 2;
+            _editor.InsertLines(insertionLine, GetExtractedMethod());
+
+            // assumes these are declared *before* the selection...
+            var offset = 0;
+            foreach (var declaration in _toRemoveFromSource.OrderBy(e => e.Selection.StartLine))
+            {
+                var target = new Selection(
+                    declaration.Selection.StartLine - offset, 
+                    declaration.Selection.StartColumn,
+                    declaration.Selection.EndLine - offset, 
+                    declaration.Selection.EndColumn);
+
+                _editor.DeleteLines(target);
+                offset += declaration.Selection.LineCount;
+            }
         }
 
         private void _view_RefreshPreview(object sender, EventArgs e)
@@ -192,13 +196,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
 
             var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
 
-            var localConsts = _locals.Select(e => e.Parent)
-                .OfType<VBAParser.ConstSubStmtContext>()
-                .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
+            var localConsts = _locals.Where(e => e.DeclarationType == DeclarationType.Constant)
+                .Cast<ValuedDeclaration>()
+                .Select(e => "    " + Tokens.Const + ' ' + e.IdentifierName + ' ' + Tokens.As + ' ' + e.AsTypeName + " = " + e.Value);
 
-            var localVariables = _locals.Select(e => e.Parent)
-                .OfType<VBAParser.VariableSubStmtContext>()
-                .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
+            var localVariables = _locals.Where(e => e.DeclarationType == DeclarationType.Variable)
+                .Where(e => _view.Parameters.All(param => param.Name != e.IdentifierName))
+                .Select(e => e.Context)
+                .Cast<VBAParser.VariableSubStmtContext>()
                 .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + 
                     (e.LPAREN() == null 
                         ? string.Empty 
