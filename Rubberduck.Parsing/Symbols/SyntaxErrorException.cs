@@ -1,7 +1,7 @@
 using System;
 using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.Listeners
+namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// An exception that is thrown when the parser encounters a syntax error.

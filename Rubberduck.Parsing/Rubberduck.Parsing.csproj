@@ -63,11 +63,8 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
-    <Compile Include="Listeners\DeclarationListener.cs" />
-    <Compile Include="Listeners\ExceptionErrorListener.cs" />
-    <Compile Include="Listeners\IExtensionListener.cs" />
-    <Compile Include="Listeners\SyntaxErrorException.cs" />
-    <Compile Include="Listeners\VariableReferencesListener.cs" />
+    <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />

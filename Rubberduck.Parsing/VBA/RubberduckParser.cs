@@ -11,8 +11,8 @@ using NLog;
 using Rubberduck.Logging;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
