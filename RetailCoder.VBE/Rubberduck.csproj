@@ -279,6 +279,14 @@
     <Compile Include="UI\Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
+      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="UI\SourceControl\BranchesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -558,6 +566,9 @@
     <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
+      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
@@ -635,7 +646,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="UI\Refactorings\ReorderParameters\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />
