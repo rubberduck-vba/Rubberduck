@@ -20,7 +20,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public ReorderParametersDialog()
         {
             Parameters = new List<Parameter>();
-            SelectedItem = new Parameter("");
             InitializeComponent();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
@@ -99,8 +98,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             Parameters[selectedIndex] = Parameters[selectedIndex - 1];
             Parameters[selectedIndex - 1] = tmp;
             MethodParametersGrid.Refresh();
-            // TODO - implement move up functionality
-            // simple swap should do it
         }
 
         private void MoveDownButtonClicked(object sender, EventArgs e)
@@ -116,7 +113,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             Parameters[selectedIndex] = Parameters[selectedIndex + 1];
             Parameters[selectedIndex + 1] = tmp;
             MethodParametersGrid.Refresh();
-            // TODO - implement move down functionality
         }
 
         private void RegisterViewEvents()

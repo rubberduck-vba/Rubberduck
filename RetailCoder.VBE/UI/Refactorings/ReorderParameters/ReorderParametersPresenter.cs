@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
@@ -39,21 +35,44 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             if (_view.Target != null && ValidDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
-                var proc = (dynamic)_view.Target.Context;
-                var argList = (VBAParser.ArgListContext)proc.argList();
-                var args = argList.arg();
+                LoadParams();
 
-                foreach (var arg in args)
-                {
-                    _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText()));
-                }
                 _view.InitializeParameterGrid();
                 _view.ShowDialog();
             }
         }
 
+        private void LoadParams()
+        {
+            var proc = (dynamic)_view.Target.Context;
+            var argList = (VBAParser.ArgListContext)proc.argList();
+            var args = argList.arg();
+
+            int index = 0;
+            foreach (var arg in args)
+            {
+                _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText(), index++));
+            }
+        }
+
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
+            if (!Changes()) { return; }
+
+            
+        }
+
+        private bool Changes()
+        {
+            for (int i = 0; i < _view.Parameters.Count; i++)
+            {
+                if (_view.Parameters[i].Index != i)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
