@@ -62,10 +62,34 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             AdjustSignature();
 
+            AdjustReferences();
+        }
+
+        private void AdjustReferences()
+        {
+            //List<string> l = new List<string>();
+
             foreach (var reference in _view.Target.References)
             {
-                // change value here
-                // will create methods as needed
+                var proc = (dynamic)reference.Context.Parent;
+                var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+                var args = argList.argCall();
+
+                foreach (var arg in args)
+                {
+                    var name = arg.GetText();
+                }
+
+                var module = reference.QualifiedModuleName.Component.CodeModule;
+                var lineCount = argList.Stop.Line - argList.Start.Line;
+                var startLine = argList.Start.Line;
+
+                for (var line = startLine; line <= startLine + lineCount; line++)
+                {
+                    var content = module.get_Lines(line, 1);
+                    var newContent = "Hi!";
+                    module.ReplaceLine(line, newContent);
+                }
             }
         }
 
@@ -131,7 +155,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
+                .Where(item => !item.IsBuiltIn)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                       || IsSelectedReference(selection, item));
 
