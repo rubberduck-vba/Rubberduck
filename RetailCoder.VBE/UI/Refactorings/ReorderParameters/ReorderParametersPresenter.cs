@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
@@ -59,7 +60,64 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             if (!Changes()) { return; }
 
-            
+            AdjustSignature();
+
+            foreach (var reference in _view.Target.References)
+            {
+                // change value here
+                // will create methods as needed
+            }
+        }
+
+        private void AdjustSignature()
+        {
+            var proc = (dynamic)_view.Target.Context;
+            var argList = (VBAParser.ArgListContext)proc.argList();
+            var args = argList.arg();
+
+            var lineNum = argList.GetSelection().LineCount;
+
+            var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var newContent = string.Empty;
+
+            var index = 0;
+            for (var i = 0; i < lineNum; i++)
+            {
+                var s = string.Empty;
+                var line = module.get_Lines(argList.Start.Line + i, 1);
+                
+                foreach (var c in line)
+                {
+                    if (char.IsLetterOrDigit(c))
+                    {
+                        s += c;
+                    }
+                    else if (c == ' ')
+                    {
+                        try
+                        {
+                            var param = _view.Parameters.Where(p => p.Name == s).First().Name;
+
+                            newContent += _view.Parameters[index++].Name + " ";
+                        }
+                        catch
+                        {
+                            newContent += s + " ";
+                        }
+                        s = string.Empty;
+                    }
+                    else
+                    {
+                        newContent += s + c;
+                        s = string.Empty;
+                    }
+                }
+                
+                module.ReplaceLine(argList.Start.Line + i, newContent);
+                newContent = string.Empty;
+            }
+            //module.ReplaceLine(argList.Start.Line, newContent);
+            //module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
         }
 
         private bool Changes()
@@ -82,15 +140,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                  DeclarationType.Procedure,
                  DeclarationType.PropertyGet,
                  DeclarationType.PropertyLet,
-                 DeclarationType.PropertySet,
-                 DeclarationType.LibraryFunction,
-                 DeclarationType.LibraryProcedure
+                 DeclarationType.PropertySet
             };
 
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
+                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                       || IsSelectedReference(selection, item));
 
