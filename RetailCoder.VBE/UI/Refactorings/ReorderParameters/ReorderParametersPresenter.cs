@@ -67,27 +67,52 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void AdjustReferences()
         {
-            //List<string> l = new List<string>();
-
             foreach (var reference in _view.Target.References)
             {
+                List<string> paramNames = new List<string>();
+
                 var proc = (dynamic)reference.Context.Parent;
                 var argList = (VBAParser.ArgsCallContext)proc.argsCall();
                 var args = argList.argCall();
 
                 foreach (var arg in args)
                 {
-                    var name = arg.GetText();
+                    paramNames.Add(arg.GetText());
                 }
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
-                var lineCount = argList.Stop.Line - argList.Start.Line;
+                var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
                 var startLine = argList.Start.Line;
 
-                for (var line = startLine; line <= startLine + lineCount; line++)
+                var variableIndex = 0;
+                for (var line = startLine; line < startLine + lineCount; line++)
                 {
-                    var content = module.get_Lines(line, 1);
-                    var newContent = "Hi!";
+                    var newContent = module.get_Lines(line, 1);
+                    var currentStringIndex = 0;
+
+                    if (variableIndex == 0)
+                    {
+                        currentStringIndex += reference.Declaration.IdentifierName.Length;
+                    }
+
+                    for (int i = variableIndex; i < paramNames.Count; i++)
+                    {
+                        var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(variableIndex), currentStringIndex);
+
+                        if (variableStringIndex > -1)
+                        {
+                            var oldVariableString = paramNames.ElementAt(variableIndex);
+                            var newVariableString = paramNames.ElementAt(_view.Parameters.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex)));
+                            var beginningSub = newContent.Substring(0, variableStringIndex);
+                            var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
+
+                            newContent = beginningSub + replaceSub;
+
+                            variableIndex++;
+                            currentStringIndex = beginningSub.Length + newVariableString.Length;
+                        }
+                    }
+
                     module.ReplaceLine(line, newContent);
                 }
             }
