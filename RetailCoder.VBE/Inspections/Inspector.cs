@@ -13,8 +13,6 @@ namespace Rubberduck.Inspections
         private readonly IRubberduckParser _parser;
         private readonly IList<IInspection> _inspections;
 
-        private static bool _isInspecting;
-
         public Inspector(IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
             _parser = parser;
@@ -36,7 +34,6 @@ namespace Rubberduck.Inspections
 
         public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project)
         {
-            _isInspecting = true;
             await Task.Yield();
 
             OnReset();
@@ -68,7 +65,6 @@ namespace Rubberduck.Inspections
 
             Task.WaitAll(inspections);
 
-            _isInspecting = false;
             return allIssues.ToList();
         }
 
