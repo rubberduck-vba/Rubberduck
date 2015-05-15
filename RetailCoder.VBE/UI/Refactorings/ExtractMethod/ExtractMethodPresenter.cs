@@ -71,39 +71,51 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _toRemoveFromSource = _locals.Where(item => !_usedAfterSelection.Contains(item)).ToList();
 
             _output = output.Select(declaration =>
-                new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef));
+                new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByRef, declaration.IdentifierName));
 
             _input = input.Where(declaration => !output.Contains(declaration))
                 .Select(declaration =>
-                    new ExtractedParameter(declaration.IdentifierName, declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal));
+                    new ExtractedParameter(declaration.AsTypeName, ExtractedParameter.PassedBy.ByVal, declaration.IdentifierName));
         }
 
         public void Show()
         {
+            PrepareView();
+            if (_view.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            ExtractMethod();
+        }
+
+        private void PrepareView()
+        {
             _view.MethodName = "Method1";
             _view.Inputs = _input.ToList();
             _view.Outputs = _output.ToList();
-            _view.Locals = _locals.Select(variable => new ExtractedParameter(variable.IdentifierName, variable.AsTypeName, ExtractedParameter.PassedBy.ByVal)).ToList();
+            _view.Locals =
+                _locals.Select(
+                    variable =>
+                        new ExtractedParameter(variable.AsTypeName, ExtractedParameter.PassedBy.ByVal, variable.IdentifierName))
+                    .ToList();
 
-            var returnValues = new[] { new ExtractedParameter("(none)", string.Empty, ExtractedParameter.PassedBy.ByVal) }
+            var returnValues = new[] {new ExtractedParameter(string.Empty, ExtractedParameter.PassedBy.ByVal)}
                 .Union(_view.Outputs)
                 .Union(_view.Inputs)
                 .ToList();
 
             _view.ReturnValues = returnValues;
-            _view.ReturnValue = _output.Count() == 1 
-                ? _output.Single() 
+            _view.ReturnValue = (_output.Any() && !_output.Skip(1).Any())
+                ? _output.Single()
                 : returnValues.First();
 
             _view.RefreshPreview += _view_RefreshPreview;
             _view.OnRefreshPreview();
+        }
 
-            var result = _view.ShowDialog();
-            if (result != DialogResult.OK)
-            {
-                return;
-            }
-
+        private void ExtractMethod()
+        {
             _editor.DeleteLines(_selection.Selection);
             _editor.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
 
@@ -115,46 +127,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             foreach (var declaration in _toRemoveFromSource.OrderBy(e => e.Selection.StartLine))
             {
                 var target = new Selection(
-                    declaration.Selection.StartLine - offset, 
+                    declaration.Selection.StartLine - offset,
                     declaration.Selection.StartColumn,
-                    declaration.Selection.EndLine - offset, 
+                    declaration.Selection.EndLine - offset,
                     declaration.Selection.EndColumn);
 
                 _editor.DeleteLines(target);
                 offset += declaration.Selection.LineCount;
             }
-        }
-
-        private void _view_RefreshPreview(object sender, EventArgs e)
-        {
-            var hasReturnValue = _view.ReturnValue != null && _view.ReturnValue.Name != "(none)";
-            _view.CanSetReturnValue =
-                hasReturnValue && !IsValueType(_view.ReturnValue.TypeName);
-
-            GeneratePreview();
-        }
-
-        private void GeneratePreview()
-        {
-            _view.Preview = GetExtractedMethod();
-        }
-
-        private string GetMethodCall()
-        {
-            string result;
-            var returnValueName = _view.ReturnValue.Name;
-            var argsList = string.Join(", ", _view.Parameters.Select(p => p.Name));
-            if (returnValueName != "(none)")
-            {
-                var setter = _view.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
-                result = setter + returnValueName + " = " + _view.MethodName + '(' + argsList + ')';
-            }
-            else
-            {
-                result = _view.MethodName + ' ' + argsList;
-            }
-
-            return "    " + result; // todo: smarter indentation
         }
 
         private static readonly IEnumerable<string> ValueTypes = new[]
@@ -172,29 +152,56 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             Tokens.String
         };
 
-        public static bool IsValueType(string typeName)
+        private void _view_RefreshPreview(object sender, EventArgs e)
         {
-            return ValueTypes.Contains(typeName);
+            var hasReturnValue = _view.ReturnValue != null && _view.ReturnValue.Name != ExtractedParameter.None;
+            _view.CanSetReturnValue =
+                hasReturnValue && !ValueTypes.Contains(_view.ReturnValue.TypeName);
+
+            GeneratePreview();
+        }
+
+        private void GeneratePreview()
+        {
+            _view.Preview = GetExtractedMethod();
+        }
+
+        private string GetMethodCall()
+        {
+            string result;
+            var returnValueName = _view.ReturnValue.Name;
+            var argsList = string.Join(", ", _view.Parameters.Select(p => p.Name));
+            if (returnValueName != ExtractedParameter.None)
+            {
+                var setter = _view.SetReturnValue ? Tokens.Set + ' ' : string.Empty;
+                result = setter + returnValueName + " = " + _view.MethodName + '(' + argsList + ')';
+            }
+            else
+            {
+                result = _view.MethodName + ' ' + argsList;
+            }
+
+            return "    " + result; // todo: smarter indentation
         }
 
         private string GetExtractedMethod()
         {
-            const string newLine = "\r\n";
+            var newLine = Environment.NewLine;
 
             var access = _view.Accessibility.ToString();
             var keyword = Tokens.Sub;
-            var returnType = string.Empty;
+            var asTypeClause = string.Empty;
 
-            var isFunction = _view.ReturnValue != null && _view.ReturnValue.Name != "(none)";
+            var isFunction = _view.ReturnValue != null && _view.ReturnValue.Name != ExtractedParameter.None;
             if (isFunction)
             {
                 keyword = Tokens.Function;
-                returnType = Tokens.As + ' ' + _view.ReturnValue.TypeName;
+                asTypeClause = Tokens.As + ' ' + _view.ReturnValue.TypeName;
             }
 
             var parameters = "(" + string.Join(", ", _view.Parameters) + ")";
 
-            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + returnType + newLine;
+            var result = access + ' ' + keyword + ' ' + _view.MethodName + parameters + ' ' + asTypeClause + newLine;
 
             var localConsts = _locals.Where(e => e.DeclarationType == DeclarationType.Constant)
                 .Cast<ValuedDeclaration>()

@@ -222,4 +222,7 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
+  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+    <value>(none)</value>
+  </data>
 </root>
