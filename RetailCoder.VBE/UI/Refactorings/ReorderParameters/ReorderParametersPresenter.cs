@@ -83,33 +83,33 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var index = 0;
             for (var i = 0; i < lineNum; i++)
             {
-                var s = string.Empty;
+                var word = string.Empty;
                 var line = module.get_Lines(argList.Start.Line + i, 1);
                 
                 foreach (var c in line)
                 {
                     if (char.IsLetterOrDigit(c))
                     {
-                        s += c;
+                        word += c;
                     }
                     else if (c == ' ')
                     {
                         try
                         {
-                            var param = _view.Parameters.Where(p => p.Name == s).First().Name;
+                            var param = _view.Parameters.Where(p => p.Name == word).First().Name;
 
                             newContent += _view.Parameters[index++].Name + " ";
                         }
                         catch
                         {
-                            newContent += s + " ";
+                            newContent += word + " ";
                         }
-                        s = string.Empty;
+                        word = string.Empty;
                     }
                     else
                     {
-                        newContent += s + c;
-                        s = string.Empty;
+                        newContent += word + c;
+                        word = string.Empty;
                     }
                 }
                 
