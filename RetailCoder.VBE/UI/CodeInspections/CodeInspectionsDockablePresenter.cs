@@ -132,14 +132,14 @@ namespace Rubberduck.UI.CodeInspections
             {
                 if (VBE != null)
                 {
-                    if (_parseResults == null || !_needsResync)
+                    if (_parseResults == null || _needsResync)
                     {
                         _inspector.Parse(VBE, this);
                         return;
                     }
 
                     var parseResults = _parseResults.SingleOrDefault(p => p.Project == VBE.ActiveVBProject);
-                    if (parseResults == null || !_needsResync)
+                    if (parseResults == null || _needsResync)
                     {
                         _inspector.Parse(VBE, this);
                         return;

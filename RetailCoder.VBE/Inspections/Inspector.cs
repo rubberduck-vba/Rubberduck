@@ -26,18 +26,12 @@ namespace Rubberduck.Inspections
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            if (_isInspecting)
-            {
-                OnParseCompleted(sender, e);
-            }
+            OnParseCompleted(sender, e);
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
         {
-            if (!_isInspecting)
-            {
-                OnParsing(sender);
-            }
+            OnParsing(sender);
         }
 
         public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project)
