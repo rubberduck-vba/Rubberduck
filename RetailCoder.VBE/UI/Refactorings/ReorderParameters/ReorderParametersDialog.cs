@@ -22,11 +22,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             Parameters = new List<Parameter>();
             SelectedItem = new Parameter("");
             InitializeComponent();
+
+            MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
         }
 
-        private void MethodParametersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)
         {
-            SelectedItem = Parameters.ElementAt(e.RowIndex);
+            DataGridView sentVal = sender as DataGridView;
+            SelectedItem = Parameters.Where(item => item.Name == sentVal.CurrentCell.Value).First();
         }
 
         public void InitializeParameterGrid()
@@ -45,6 +48,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             paramNameColumn.Width = 262;    // fits nice
 
             MethodParametersGrid.Columns.Add(paramNameColumn);
+            SelectedItem = Parameters[0];
         }
 
         private void OkButtonClick(object sender, EventArgs e)
@@ -84,12 +88,34 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MoveUpButtonClicked(object sender, EventArgs e)
         {
+            int selectedIndex = Parameters.IndexOf(SelectedItem);
+
+            if (selectedIndex == 0)
+            {
+                return;
+            }
+
+            Parameter tmp = Parameters[selectedIndex];
+            Parameters[selectedIndex] = Parameters[selectedIndex - 1];
+            Parameters[selectedIndex - 1] = tmp;
+            MethodParametersGrid.Refresh();
             // TODO - implement move up functionality
             // simple swap should do it
         }
 
         private void MoveDownButtonClicked(object sender, EventArgs e)
         {
+            int selectedIndex = Parameters.IndexOf(SelectedItem);
+
+            if (selectedIndex == Parameters.Count() - 1)
+            {
+                return;
+            }
+
+            Parameter tmp = Parameters[selectedIndex];
+            Parameters[selectedIndex] = Parameters[selectedIndex + 1];
+            Parameters[selectedIndex + 1] = tmp;
+            MethodParametersGrid.Refresh();
             // TODO - implement move down functionality
         }
 
@@ -99,7 +125,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             CancelButton.Click += CancelButtonClicked;
             MoveUpButton.Click += MoveUpButtonClicked;
             MoveDownButton.Click += MoveDownButtonClicked;
-            MethodParametersGrid.CellMouseClick += MethodParametersGrid_CellMouseClick;
         }
     }
 }
