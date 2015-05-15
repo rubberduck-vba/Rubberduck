@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             int index = 0;
             foreach (var arg in args)
             {
-                _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText(), index++));
+                _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText(), arg.GetText(), index++));
             }
         }
 
@@ -74,50 +74,35 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
             var args = argList.arg();
-
             var lineNum = argList.GetSelection().LineCount;
 
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var newContent = string.Empty;
 
-            var index = 0;
-            for (var i = 0; i < lineNum; i++)
+            var variableIndex = 0;
+            for (int i = 0; i < lineNum; i++)
             {
-                var word = string.Empty;
-                var line = module.get_Lines(argList.Start.Line + i, 1);
-                
-                foreach (var c in line)
-                {
-                    if (char.IsLetterOrDigit(c))
-                    {
-                        word += c;
-                    }
-                    else if (c == ' ')
-                    {
-                        try
-                        {
-                            var param = _view.Parameters.Where(p => p.Name == word).First().Name;
+                var newContent = module.get_Lines(argList.Start.Line + i, 1);
+                var currentStringIndex = 0;
 
-                            newContent += _view.Parameters[index++].Name + " ";
-                        }
-                        catch
-                        {
-                            newContent += word + " ";
-                        }
-                        word = string.Empty;
-                    }
-                    else
+                for (int j = variableIndex; j < _view.Parameters.Count; j++)
+                {
+                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
+
+                    if (variableStringIndex > -1)
                     {
-                        newContent += word + c;
-                        word = string.Empty;
+                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).Variable;
+                        var beginningSub = newContent.Substring(0, variableStringIndex);
+                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, _view.Parameters.ElementAt(j).Variable);
+
+                        newContent = beginningSub + replaceSub;
+
+                        variableIndex++;
+                        currentStringIndex = beginningSub.Length + oldVariableString.Length;
                     }
                 }
-                
+
                 module.ReplaceLine(argList.Start.Line + i, newContent);
-                newContent = string.Empty;
             }
-            //module.ReplaceLine(argList.Start.Line, newContent);
-            //module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
         }
 
         private bool Changes()
