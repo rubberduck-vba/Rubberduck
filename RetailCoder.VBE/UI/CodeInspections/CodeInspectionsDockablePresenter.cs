@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -39,6 +40,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnParseCompleted(object sender, ParseCompletedEventArgs e)
         {
+            ToggleParsingStatus(false);
             if (sender == this)
             {
                 _needsResync = false;
@@ -54,9 +56,18 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnParsing(object sender, EventArgs e)
         {
+            ToggleParsingStatus();
             Control.Invoke((MethodInvoker) delegate
             {
                 Control.EnableRefresh(false);
+            });
+        }
+
+        private void ToggleParsingStatus(bool isParsing = true)
+        {
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.ToggleParsingStatus(isParsing);
             });
         }
 
@@ -81,19 +92,21 @@ namespace Rubberduck.UI.CodeInspections
                 result.QualifiedSelection.Selection.StartLine);
         }
 
+        private int _issues;
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
+            Interlocked.Add(ref _issues, e.Issues.Count);
             Control.Invoke((MethodInvoker) delegate
             {
-                var newCount = Control.IssueCount + e.Issues.Count;
-                Control.IssueCount = newCount;
-                Control.IssueCountText = string.Format("{0} issue" + (newCount != 1 ? "s" : string.Empty), newCount);
+                var newCount = _issues;
+                Control.SetIssuesStatus(newCount);
             });
         }
 
         private void OnQuickFix(object sender, QuickFixEventArgs e)
         {
             e.QuickFix(VBE);
+            _needsResync = true;
             OnRefreshCodeInspections(null, EventArgs.Empty);
         }
 
@@ -117,7 +130,10 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnRefreshCodeInspections(object sender, EventArgs e)
         {
-            Task.Run(() => RefreshAsync());
+            Task.Run(() => RefreshAsync()).ContinueWith(t =>
+            {
+                Control.SetIssuesStatus(_results.Count, true);
+            });
         }
 
         private async Task RefreshAsync()
@@ -164,6 +180,7 @@ namespace Rubberduck.UI.CodeInspections
                 Control.Invoke((MethodInvoker) delegate
                 {
                     Control.Cursor = Cursors.Default;
+                    Control.SetIssuesStatus(_issues, true);
                     Control.EnableRefresh();
                 });
             }
@@ -171,10 +188,10 @@ namespace Rubberduck.UI.CodeInspections
 
         private void OnReset(object sender, EventArgs e)
         {
+            _issues = 0;
             Control.Invoke((MethodInvoker) delegate
             {
-                Control.IssueCount = 0;
-                Control.IssueCountText = "0 issues";
+                Control.SetIssuesStatus(_issues);
                 Control.InspectionResults.Clear();
             });
         }
