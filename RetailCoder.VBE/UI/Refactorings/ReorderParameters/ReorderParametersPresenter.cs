@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            if (!Changes()) { return; }
+            if (!_view.Parameters.Where((t, i) => t.Index != i).Any()) { return; }
 
             AdjustSignature();
             AdjustReferences();
@@ -81,24 +81,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
 
                 var argList = (VBAParser.ArgsCallContext)proc.argsCall();
-                var args = argList.argCall();
-
-                var paramNames = args.Select(arg => arg.GetText()).ToList();
+                var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
-                var startLine = argList.Start.Line;
 
                 var variableIndex = 0;
-                for (var line = startLine; line < startLine + lineCount; line++)
+                for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
                 {
                     var newContent = module.Lines[line, 1];
-                    var currentStringIndex = 0;
-
-                    if (line == startLine)
-                    {
-                        currentStringIndex += reference.Declaration.IdentifierName.Length;
-                    }
+                    var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
 
                     for (var i = variableIndex; i < paramNames.Count; i++)
                     {
@@ -128,40 +120,35 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
             var args = argList.arg();
-            var lineNum = argList.GetSelection().LineCount;
 
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             var variableIndex = 0;
-            for (var i = 0; i < lineNum; i++)
+            for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
             {
-                var newContent = module.Lines[argList.Start.Line + i, 1];
+                var newContent = module.Lines[lineNum, 1];
                 var currentStringIndex = 0;
 
-                for (var j = variableIndex; j < _view.Parameters.Count; j++)
+                for (var i = variableIndex; i < _view.Parameters.Count; i++)
                 {
                     var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
 
                     if (variableStringIndex > -1)
                     {
                         var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).Variable;
+                        var newVariableString = _view.Parameters.ElementAt(i).Variable;
                         var beginningSub = newContent.Substring(0, variableStringIndex);
-                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, _view.Parameters.ElementAt(j).Variable);
+                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
 
                         newContent = beginningSub + replaceSub;
 
                         variableIndex++;
-                        currentStringIndex = beginningSub.Length + oldVariableString.Length;
+                        currentStringIndex = beginningSub.Length + newVariableString.Length;
                     }
                 }
 
-                module.ReplaceLine(argList.Start.Line + i, newContent);
+                module.ReplaceLine(lineNum, newContent);
             }
-        }
-
-        private bool Changes()
-        {
-            return _view.Parameters.Where((t, i) => t.Index != i).Any();
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
