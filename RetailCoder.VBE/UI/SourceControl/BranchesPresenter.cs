@@ -76,7 +76,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-
+            _view.SelectedBranchChanged -= OnSelectedBranchChanged;
 
             _view.Local = this.Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
             _view.Current = this.Provider.CurrentBranch.Name;
@@ -89,6 +89,8 @@ namespace Rubberduck.UI.SourceControl
                                                             )
                                                     .Select(b => b.Name)
                                                     .ToList();
+
+            _view.SelectedBranchChanged += OnSelectedBranchChanged;
         }
 
         private static IList<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)

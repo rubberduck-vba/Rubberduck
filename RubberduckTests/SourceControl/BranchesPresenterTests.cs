@@ -369,7 +369,7 @@ namespace RubberduckTests.SourceControl
 
             //act
             _presenter.RefreshView();
-            _view.Raise(v => v.SelectedBranchChanged += null, EventArgs.Empty);
+            //_view.Raise(v => v.SelectedBranchChanged += null, EventArgs.Empty);
 
             //assert
             _provider.Verify(git => git.Checkout(It.IsAny<string>()),Times.Never);
