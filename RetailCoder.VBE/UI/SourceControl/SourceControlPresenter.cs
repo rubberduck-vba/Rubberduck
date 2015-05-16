@@ -106,7 +106,7 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First());
+                _provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
             }
             catch (SourceControlException ex)
             {
