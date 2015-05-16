@@ -10,6 +10,7 @@ namespace Rubberduck.Inspections
     {
         Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project);
         void Parse(VBE vbe, object owner);
+        Task<VBProjectParseResult> Parse(VBProject project, object owner);
         event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
         event EventHandler Reset;
         event EventHandler Parsing;

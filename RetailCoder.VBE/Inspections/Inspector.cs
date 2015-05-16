@@ -73,6 +73,11 @@ namespace Rubberduck.Inspections
             Task.Run(() => _parser.Parse(vbe, owner));
         }
 
+        public async Task<VBProjectParseResult> Parse(VBProject project, object owner)
+        {
+            return await Task.Run(() => _parser.Parse(project, owner));
+        }
+
         public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
         private void OnIssuesFound(IList<CodeInspectionResultBase> issues)
         {

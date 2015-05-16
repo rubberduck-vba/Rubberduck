@@ -20,42 +20,46 @@ namespace Rubberduck.UI.CodeInspections
         private IList<ICodeInspectionResult> _results;
         private readonly IInspector _inspector;
 
+        /// <summary>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
+        /// <param name="inspector"></param>
+        /// <param name="vbe"></param>
+        /// <param name="addin"></param>
+        /// <param name="window"></param>
         public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
-            _inspector.IssuesFound += OnIssuesFound;
-            _inspector.Reset += OnReset;
-            _inspector.Parsing += OnParsing;
-            _inspector.ParseCompleted += OnParseCompleted;
+            _inspector.IssuesFound += _inspector_IssuesFound;
+            _inspector.Reset += _inspector_Reset;
+            _inspector.Parsing += _inspector_Parsing;
+            _inspector.ParseCompleted += _inspector_ParseCompleted;
 
-            Control.RefreshCodeInspections += OnRefreshCodeInspections;
-            Control.NavigateCodeIssue += OnNavigateCodeIssue;
-            Control.QuickFix += OnQuickFix;
-            Control.CopyResults += OnCopyResultsToClipboard;
+            Control.RefreshCodeInspections += Control_RefreshCodeInspections;
+            Control.NavigateCodeIssue += Control_NavigateCodeIssue;
+            Control.QuickFix += Control_QuickFix;
+            Control.CopyResults += Control_CopyResultsToClipboard;
         }
 
-        // indicates that the _parseResults are no longer in sync with the UI
-        private bool _needsResync;
-
-        private void OnParseCompleted(object sender, ParseCompletedEventArgs e)
+        private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
+            if (sender != this)
+            {
+                return;
+            }
+
             ToggleParsingStatus(false);
-            if (sender == this)
-            {
-                _needsResync = false;
-                _parseResults = e.ParseResults;
-                Task.Run(() => RefreshAsync());
-            }
-            else
-            {
-                _parseResults = e.ParseResults;
-                _needsResync = true;
-            }
+            _parseResults = e.ParseResults;
         }
 
-        private void OnParsing(object sender, EventArgs e)
+        private void _inspector_Parsing(object sender, EventArgs e)
         {
+            if (sender != this)
+            {
+                return;
+            }
+
             ToggleParsingStatus();
             Control.Invoke((MethodInvoker) delegate
             {
@@ -71,7 +75,7 @@ namespace Rubberduck.UI.CodeInspections
             });
         }
 
-        private void OnCopyResultsToClipboard(object sender, EventArgs e)
+        private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
             var results = string.Join("\n", _results.Select(FormatResultForClipboard));
             var text = string.Format("Rubberduck Code Inspections - {0}\n{1} issue" + (_results.Count != 1 ? "s" : string.Empty) + " found.\n",
@@ -93,7 +97,7 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private int _issues;
-        private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
+        private void _inspector_IssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
             Interlocked.Add(ref _issues, e.Issues.Count);
             Control.Invoke((MethodInvoker) delegate
@@ -103,20 +107,19 @@ namespace Rubberduck.UI.CodeInspections
             });
         }
 
-        private void OnQuickFix(object sender, QuickFixEventArgs e)
+        private void Control_QuickFix(object sender, QuickFixEventArgs e)
         {
             e.QuickFix(VBE);
-            _needsResync = true;
-            OnRefreshCodeInspections(null, EventArgs.Empty);
+            Control_RefreshCodeInspections(null, EventArgs.Empty);
         }
 
         public override void Show()
         {
             base.Show();
-            Task.Run(() => RefreshAsync());
+            Refresh();
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
+        private void Control_NavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {
@@ -128,65 +131,44 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
-        private void OnRefreshCodeInspections(object sender, EventArgs e)
+        private void Control_RefreshCodeInspections(object sender, EventArgs e)
         {
-            Task.Run(() => RefreshAsync()).ContinueWith(t =>
+            Refresh();
+        }
+
+        private async void Refresh()
+        {
+            Control.EnableRefresh(false);
+            Control.Cursor = Cursors.WaitCursor;
+
+            await Task.Run(() => RefreshAsync());
+
+            if (_results != null)
             {
-                Control.SetIssuesStatus(_results.Count, true);
-            });
+                Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
+                    .OrderBy(item => item.Component)
+                    .ThenBy(item => item.Line));
+            }
+
+            Control.Cursor = Cursors.Default;
+            Control.SetIssuesStatus(_issues, true);
+            Control.EnableRefresh();
         }
 
         private async Task RefreshAsync()
         {
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.EnableRefresh(false);
-                Control.Cursor = Cursors.WaitCursor;
-            });
-
             try
             {
-                if (VBE != null)
-                {
-                    if (_parseResults == null || _needsResync)
-                    {
-                        _inspector.Parse(VBE, this);
-                        return;
-                    }
-
-                    var parseResults = _parseResults.SingleOrDefault(p => p.Project == VBE.ActiveVBProject);
-                    if (parseResults == null || _needsResync)
-                    {
-                        _inspector.Parse(VBE, this);
-                        return;
-                    }
-
-                    _results = await _inspector.FindIssuesAsync(parseResults);
-
-                    Control.Invoke((MethodInvoker) delegate
-                    {
-                        Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
-                            .OrderBy(item => item.Component)
-                            .ThenBy(item => item.Line));
-                    });
-                }
+                var projectParseResult = await _inspector.Parse(VBE.ActiveVBProject, this);
+                _results = await _inspector.FindIssuesAsync(projectParseResult);
             }
-            catch (COMException exception)
+            catch (COMException)
             {
-                // swallow
-            }
-            finally
-            {
-                Control.Invoke((MethodInvoker) delegate
-                {
-                    Control.Cursor = Cursors.Default;
-                    Control.SetIssuesStatus(_issues, true);
-                    Control.EnableRefresh();
-                });
+                // burp
             }
         }
 
-        private void OnReset(object sender, EventArgs e)
+        private void _inspector_Reset(object sender, EventArgs e)
         {
             _issues = 0;
             Control.Invoke((MethodInvoker) delegate

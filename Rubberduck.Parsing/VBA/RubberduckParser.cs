@@ -9,14 +9,14 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Logging;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing.VBA
 {
     public class RubberduckParser : IRubberduckParser
     {
@@ -45,8 +45,13 @@ namespace Rubberduck.VBA
             }
         }
 
-        public VBProjectParseResult Parse(VBProject project)
+        public VBProjectParseResult Parse(VBProject project, object owner = null)
         {
+            if (owner != null)
+            {
+                OnParseStarted(new[]{project.Name}, owner);
+            }
+
             var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
@@ -56,7 +61,13 @@ namespace Rubberduck.VBA
             var modules = project.VBComponents.Cast<VBComponent>();
             results.AddRange(modules.Select(Parse).Where(result => result != null));
 
-            return new VBProjectParseResult(project, results);
+            var parseResult = new VBProjectParseResult(project, results);
+            if (owner != null)
+            {
+                OnParseCompleted(new[] {parseResult}, owner);
+            }
+
+            return parseResult;
         }
 
         private IParseTree Parse(string code, out TokenStreamRewriter outRewriter)
@@ -192,7 +203,7 @@ namespace Rubberduck.VBA
                 var projects = vbe.VBProjects.Cast<VBProject>().ToList();
                 OnParseStarted(projects.Select(project => project.Name), owner);
 
-                var results = projects.AsParallel().Select(Parse).ToList();
+                var results = projects.AsParallel().Select(project => Parse(project)).ToList();
                 OnParseCompleted(results, owner);
             }
         }
