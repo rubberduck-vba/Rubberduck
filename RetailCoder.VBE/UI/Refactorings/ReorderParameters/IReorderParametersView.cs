@@ -1,6 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
-using System.Collections.Generic;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
