@@ -14,6 +14,7 @@ namespace Rubberduck.UI.SourceControl
     /// </summary>
     public interface IChangesView
     {
+        string CurrentBranch { get; set; }
         string CommitMessage { get; set; }
         CommitAction CommitAction { get; set; }
         //todo: support directories
