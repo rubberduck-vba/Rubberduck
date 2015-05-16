@@ -76,6 +76,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+
+
             _view.Local = this.Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
             _view.Current = this.Provider.CurrentBranch.Name;
 
