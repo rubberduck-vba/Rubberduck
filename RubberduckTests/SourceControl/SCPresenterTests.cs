@@ -69,11 +69,14 @@ namespace RubberduckTests.SourceControl
 
             var provider = new Mock<ISourceControlProvider>();
             provider.Setup(git => git.Checkout(It.IsAny<string>()));
+            provider.SetupGet(git => git.CurrentBranch)
+                .Returns(new Branch("dev", "/ref/head/dev", false, true));
 
             branchesPresenter.Provider = provider.Object;
+            changesPresenter.Provider = provider.Object;
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
-                                                        _view.Object, changesPresenter, _branchesPresenter.Object);
+                                                        _view.Object, changesPresenter, branchesPresenter);
 
             //act
             branchesView.Object.Current = "dev";

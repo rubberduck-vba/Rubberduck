@@ -32,12 +32,20 @@ namespace Rubberduck.UI.SourceControl
             _config = _configService.LoadConfiguration();
 
             _changesPresenter = changesPresenter;
+            
             _branchesPresenter = branchesPresenter;
+            _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
+
             _view = view;
 
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+        }
+
+        private void _branchesPresenter_BranchChanged(object sender, EventArgs e)
+        {
+            _changesPresenter.Refresh();
         }
 
         private void OnInitNewRepository(object sender, EventArgs e)
