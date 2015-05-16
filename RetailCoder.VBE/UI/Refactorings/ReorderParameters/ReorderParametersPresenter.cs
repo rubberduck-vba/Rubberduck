@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             AcquireTarget(_selection);
 
-            if (_view.Target != null && ValidDeclarationTypes.Contains(_view.Target.DeclarationType))
+            if (_view.Target != null)
             {
                 LoadParams();
 
@@ -61,17 +61,28 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             if (!Changes()) { return; }
 
             AdjustSignature();
-
             AdjustReferences();
         }
 
         private void AdjustReferences()
         {
-            foreach (var reference in _view.Target.References)
+            foreach (var reference in _view.Target.References.Where(item => item.Context != _view.Target.Context))
             {
                 List<string> paramNames = new List<string>();
-
+                
                 var proc = (dynamic)reference.Context.Parent;
+
+                // This is to prevent throws when this statement fails:
+                // (VBAParser.ArgsCallContext)proc.argsCall();
+                try
+                {
+                    var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                }
+                catch
+                {
+                    continue;
+                }
+
                 var argList = (VBAParser.ArgsCallContext)proc.argsCall();
                 var args = argList.argCall();
 
@@ -90,7 +101,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     var newContent = module.get_Lines(line, 1);
                     var currentStringIndex = 0;
 
-                    if (variableIndex == 0)
+                    if (line == startLine)
                     {
                         currentStringIndex += reference.Declaration.IdentifierName.Length;
                     }
@@ -180,7 +191,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn)
+                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                       || IsSelectedReference(selection, item));
 
