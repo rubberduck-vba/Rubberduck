@@ -40,6 +40,15 @@ namespace Rubberduck.UI.CodeInspections
             Control.NavigateCodeIssue += Control_NavigateCodeIssue;
             Control.QuickFix += Control_QuickFix;
             Control.CopyResults += Control_CopyResultsToClipboard;
+            Control.Cancel += Control_Cancel;
+        }
+
+        private void Control_Cancel(object sender, EventArgs e)
+        {
+            if (_cancelTokenSource != null)
+            { 
+                _cancelTokenSource.Cancel();
+            }
         }
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
@@ -136,31 +145,42 @@ namespace Rubberduck.UI.CodeInspections
             Refresh();
         }
 
+        private CancellationTokenSource _cancelTokenSource;
         private async void Refresh()
         {
+            _cancelTokenSource = new CancellationTokenSource();
+            var token = _cancelTokenSource.Token;
+
             Control.EnableRefresh(false);
             Control.Cursor = Cursors.WaitCursor;
 
-            await Task.Run(() => RefreshAsync());
-
-            if (_results != null)
+            try
             {
-                Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
-                    .OrderBy(item => item.Component)
-                    .ThenBy(item => item.Line));
+                await Task.Run(() => RefreshAsync(token), token);
+                if (_results != null)
+                {
+                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
+                        .OrderBy(item => item.Component)
+                        .ThenBy(item => item.Line));
+                }
             }
-
-            Control.Cursor = Cursors.Default;
-            Control.SetIssuesStatus(_issues, true);
-            Control.EnableRefresh();
+            catch (TaskCanceledException)
+            {
+            }
+            finally
+            {
+                Control.SetIssuesStatus(_issues, true);
+                Control.EnableRefresh();
+                Control.Cursor = Cursors.Default;
+            }
         }
 
-        private async Task RefreshAsync()
+        private async Task RefreshAsync(CancellationToken token)
         {
             try
             {
                 var projectParseResult = await _inspector.Parse(VBE.ActiveVBProject, this);
-                _results = await _inspector.FindIssuesAsync(projectParseResult);
+                _results = await _inspector.FindIssuesAsync(projectParseResult, token);
             }
             catch (COMException)
             {
@@ -175,6 +195,8 @@ namespace Rubberduck.UI.CodeInspections
             {
                 Control.SetIssuesStatus(_issues);
                 Control.InspectionResults.Clear();
+                Control.EnableRefresh();
+                Control.Cursor = Cursors.Default;
             });
         }
     }

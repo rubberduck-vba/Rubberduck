@@ -54,6 +54,23 @@ namespace Rubberduck.UI.CodeInspections
         public void SetIssuesStatus(int issueCount, bool completed = false)
         {
             _issueCount = issueCount;
+
+            RefreshButton.Image = completed
+                ? Resources.arrow_circle_double
+                : Resources.cross_circle;
+
+            if (!completed)
+            {
+                RefreshButton.Click -= RefreshButtonClicked;
+                RefreshButton.Click += CancelButton_Click;
+            }
+            else
+            {
+                RefreshButton.Click -= CancelButton_Click;
+                RefreshButton.Click += RefreshButtonClicked;
+            }
+
+
             if (issueCount == 0)
             {
                 if (completed)
@@ -79,6 +96,16 @@ namespace Rubberduck.UI.CodeInspections
                     StatusLabel.Image = Resources.hourglass;
                     StatusLabel.Text = string.Format("{0} ({1} issue" + (issueCount != 1 ? "s" : string.Empty) + ")", RubberduckUI.CodeInspections_Inspecting, issueCount);
                 }
+            }
+        }
+
+        public event EventHandler Cancel;
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            var handler = Cancel;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 

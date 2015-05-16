@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -32,7 +33,7 @@ namespace Rubberduck.Inspections
             OnParsing(sender);
         }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project)
+        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project, CancellationToken token)
         {
             await Task.Yield();
 
@@ -44,6 +45,7 @@ namespace Rubberduck.Inspections
                 .Select(inspection =>
                     new Task(() =>
                     {
+                        token.ThrowIfCancellationRequested();
                         var inspectionResults = inspection.GetInspectionResults(project);
                         var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
 
