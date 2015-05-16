@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public OptionBaseInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.OptionBase; } }
@@ -20,7 +20,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var options = parseResult.Declarations.Items
-                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
+                .Where(declaration => !declaration.IsBuiltIn
+                                      && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionBaseStmtContext)
                 .ToList();
 

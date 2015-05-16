@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public UnassignedVariableUsageInspection()
         {
-            Severity = CodeInspectionSeverity.Error;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.UnassignedVariableUsage_; } }
@@ -18,8 +18,8 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var usages = parseResult.Declarations.Items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Variable
+            var usages = parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Variable
                 && !declaration.References.Any(reference => reference.IsAssignment))
                 .SelectMany(declaration => declaration.References);
 

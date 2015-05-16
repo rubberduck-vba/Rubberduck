@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Extensions;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBA;

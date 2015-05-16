@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var assignedByValParameters =
-                parseResult.Declarations.Items.Where(declaration =>
+                parseResult.Declarations.Items.Where(declaration => !declaration.IsBuiltIn &&
                     declaration.DeclarationType == DeclarationType.Parameter
                     && ((VBAParser.ArgContext)declaration.Context).BYVAL() != null
                     && declaration.References.Any(reference => reference.IsAssignment));

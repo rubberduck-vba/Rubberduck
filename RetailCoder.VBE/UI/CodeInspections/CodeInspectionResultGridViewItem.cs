@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeInspections
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
 
             _project = _selection.QualifiedName.ProjectName;
-            _component = _selection.QualifiedName.ModuleName;
+            _component = _selection.QualifiedName.ComponentName;
         }
 
         private readonly ICodeInspectionResult _item;

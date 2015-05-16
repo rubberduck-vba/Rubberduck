@@ -212,6 +212,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Access\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Access.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -261,6 +264,7 @@
     <Compile Include="Interop\GitProvider.cs" />
     <Compile Include="Interop\ISourceControlProvider.cs" />
     <Compile Include="Interop\SourceControlClassFactory.cs" />
+    <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="SourceControl\FileStatus.cs" />
     <Compile Include="SourceControl\FileStatusEntry.cs" />
     <Compile Include="SourceControl\IRepository.cs" />
@@ -317,7 +321,6 @@
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\IRubberduckParser.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
@@ -446,7 +449,6 @@
     <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="Reflection\ProjectComponent.cs" />
     <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
@@ -548,7 +550,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>
@@ -844,23 +846,12 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Debug64 (
-    c:\windows\microsoft.net\framework64\v4.0.30319\regasm.exe "$(TargetPath)" /codebase
-)
-
-if $(ConfigurationName) == Release (
-    Copy $(TargetDir)\NativeBinaries\x86\git2-e0902fb.dll $(TargetDir)
-)
-
-if $(ConfigurationName) == Release64 (
-    Copy $(TargetDir)\NativeBinaries\amd64\git2-e0902fb.dll $(TargetDir)
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if $(ConfigurationName) == Debug64 (
-c:\windows\microsoft.net\framework64\v4.0.30319\regasm.exe $(TargetPath) /unregister
-)
-</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

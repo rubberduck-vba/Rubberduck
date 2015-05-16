@@ -26,13 +26,8 @@ namespace Rubberduck.Inspections
 
         private void DeclareAsExplicitVariant(VBE vbe)
         {
-            var component = FindComponent(vbe);
-            if (component == null)
-            {
-                throw new InvalidOperationException("'" + QualifiedName + "' not found.");
-            }
-
-            var codeLine = component.CodeModule.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
+            var codeModule = QualifiedSelection.QualifiedName.Component.CodeModule;
+            var codeLine = codeModule.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
@@ -49,7 +44,7 @@ namespace Rubberduck.Inspections
             }
             
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
-            component.CodeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
+            codeModule.ReplaceLine(QualifiedSelection.Selection.StartLine, fixedCodeLine);
         }
 
         private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, out string instruction)

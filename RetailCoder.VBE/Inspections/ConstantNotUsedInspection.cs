@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public ConstantNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ConstantNotUsed_; } }
@@ -19,6 +19,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
+                !declaration.IsBuiltIn &&
                 (declaration.DeclarationType == DeclarationType.Constant)
                 && !declaration.References.Any());
 

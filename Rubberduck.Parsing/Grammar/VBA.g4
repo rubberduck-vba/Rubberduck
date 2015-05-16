@@ -138,10 +138,10 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : lineLabel? blockStmt (NEWLINE+ WS? blockStmt)* NEWLINE*;
+block : blockStmt (NEWLINE* WS? blockStmt)* NEWLINE*;
 
-blockStmt : 
-	appactivateStmt
+blockStmt : lineLabel
+    | appactivateStmt
 	| attributeStmt
 	| beepStmt
 	| chdirStmt
@@ -567,7 +567,7 @@ implicitCallStmt_InBlock :
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
 iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? ('.' | '!') ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls
@@ -635,9 +635,7 @@ fieldLength : MULT WS? (INTEGERLITERAL | ambiguousIdentifier);
 
 letterrange : certainIdentifier (WS? MINUS WS? certainIdentifier)?;
 
-lineLabel : (ambiguousIdentifier ':' WS) | lineNumber;
-
-lineNumber : (INTEGERLITERAL WS);
+lineLabel : ambiguousIdentifier ':';
 
 literal : COLORLITERAL | DATELITERAL | DOUBLELITERAL | INTEGERLITERAL | STRINGLITERAL | TRUE | FALSE | NOTHING | NULL;
 

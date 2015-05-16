@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections
 
             var selection = QualifiedSelection.Selection;
 
-            var module = vbe.FindCodeModules(QualifiedName.ProjectName, QualifiedName.ModuleName).First();
+            var module = QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(oldContent, newContent);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
@@ -7,18 +6,50 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
+    public class ValuedDeclaration : Declaration
+    {
+        /// <summary>
+        /// Creates a new valued built-in declaration.
+        /// </summary>
+        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
+            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value)
+            : this(qualifiedName, parentScope, asTypeName, accessibility, declarationType, value, null, Selection.Home, true)
+        {
+        }
+
+        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
+            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value, 
+            ParserRuleContext context, Selection selection, bool isBuiltIn = false)
+            :base(qualifiedName, parentScope, asTypeName, true, false, accessibility, declarationType, context, selection, isBuiltIn)
+        {
+            _value = value;
+        }
+
+        private readonly string _value;
+        /// <summary>
+        /// Gets a string representing the declared value.
+        /// </summary>
+        public string Value { get { return _value; } }
+    }
+
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
     public class Declaration
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
-            string identifierName, string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection)
+            string asTypeName, bool isSelfAssigned, bool isWithEvents,
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true)
+            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn)
+        {}
+
+        public Declaration(QualifiedMemberName qualifiedName, string parentScope,
+            string asTypeName, bool isSelfAssigned, bool isWithEvents,
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
-            _identifierName = identifierName;
+            _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
             _isSelfAssigned = isSelfAssigned;
             _isWithEvents = isWithEvents;
@@ -26,7 +57,11 @@ namespace Rubberduck.Parsing.Symbols
             _declarationType = declarationType;
             _selection = selection;
             _context = context;
+            _isBuiltIn = isBuiltIn;
         }
+
+        private readonly bool _isBuiltIn;
+        public bool IsBuiltIn { get { return _isBuiltIn; } }
 
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
@@ -52,7 +87,7 @@ namespace Rubberduck.Parsing.Symbols
         public Selection Selection { get { return _selection; } }
 
         /// <summary>
-        /// Gets an <c>int</c> representing the VBProject the declaration is made in.
+        /// Gets a reference to the VBProject the declaration is made in.
         /// </summary>
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
@@ -67,7 +102,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.ModuleName; } }
+        public string ComponentName { get { return _qualifiedName.QualifiedModuleName.ComponentName; } }
 
         private readonly string _parentScope;
         /// <summary>
@@ -90,6 +125,24 @@ namespace Rubberduck.Parsing.Symbols
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
         public string AsTypeName { get { return _asTypeName; } }
+
+        public bool IsArray()
+        {
+            if (Context == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var declaration = ((dynamic)Context); // Context is AmbiguousIdentifier - parent is the declaration sub-statement where the array parens are
+                return declaration.LPAREN() != null && declaration.RPAREN() != null;
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
+        }
 
         public bool IsTypeSpecified()
         {
@@ -177,13 +230,13 @@ namespace Rubberduck.Parsing.Symbols
                         return "VBE";
                     case DeclarationType.Class:
                     case DeclarationType.Module:
-                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName;
+                        return _qualifiedName.QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return _qualifiedName.QualifiedModuleName.ProjectName + "." + _qualifiedName.QualifiedModuleName.ModuleName + "." + _identifierName;
+                        return _qualifiedName.QualifiedModuleName + "." + _identifierName;
                     default:
                         return _parentScope;
                 }
@@ -202,7 +255,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return string.Concat(Project.ToString(), ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
+            return string.Concat(QualifiedName.QualifiedModuleName.ProjectHashCode, ProjectName, ComponentName, _parentScope, _identifierName).GetHashCode();
         }
     }
 }

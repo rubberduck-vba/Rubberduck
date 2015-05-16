@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ParameterNotUsedInspection()
         {
-            Severity = CodeInspectionSeverity.Hint;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ParameterNotUsed_; } }
@@ -19,17 +19,31 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var interfaceMembers = parseResult.Declarations.FindInterfaceMembers();
-            var interfaceImplementationMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
-            var issues = parseResult.Declarations.Items.Where(parameter =>
-                parameter.DeclarationType == DeclarationType.Parameter
-                && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
-                && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext)
-                && !interfaceMembers.Select(m => m.Scope).Contains(parameter.ParentScope)
-                && !parameter.References.Any())
-            .Select(issue => new ParameterNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName, interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.ParentScope)));
+            var interfaceMemberScopes = parseResult.Declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
+            var interfaceImplementationMemberScopes = parseResult.Declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
 
-            return issues;
+            var parameters = parseResult.Declarations.Items.Where(parameter => !parameter.IsBuiltIn
+                && parameter.DeclarationType == DeclarationType.Parameter
+                && !(parameter.Context.Parent.Parent is VBAParser.EventStmtContext)
+                && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
+
+            var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
+
+            var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
+                         let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
+                         select new ParameterNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember);
+
+            return issues.ToList();
+        }
+
+        private bool IsInterfaceMemberParameter(Declaration parameter, IEnumerable<string> interfaceMemberScopes)
+        {
+            return interfaceMemberScopes.Contains(parameter.ParentScope);
+        }
+
+        private bool IsInterfaceMemberImplementationParameter(Declaration parameter, IEnumerable<string> interfaceMemberImplementationScopes)
+        {
+            return interfaceMemberImplementationScopes.Contains(parameter.ParentScope);
         }
     }
 }

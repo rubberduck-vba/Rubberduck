@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteLetStatementInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.ObsoleteLet; } }
@@ -18,7 +18,9 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.Declarations.Items.SelectMany(item =>
+            var issues = parseResult.Declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .SelectMany(item =>
                 item.References.Where(reference => reference.HasExplicitLetStatement))
                 .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
 

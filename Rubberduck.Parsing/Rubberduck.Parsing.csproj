@@ -58,8 +58,11 @@
     <Compile Include="Grammar\VBAListener.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAVisitor.cs" />
+    <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Listeners\DeclarationListener.cs" />
+    <Compile Include="Listeners\ExceptionErrorListener.cs" />
     <Compile Include="Listeners\IExtensionListener.cs" />
+    <Compile Include="Listeners\SyntaxErrorException.cs" />
     <Compile Include="Listeners\VariableReferencesListener.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
@@ -81,7 +84,8 @@
     </Compile>
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="VBComponentExtensions.cs" />
+    <Compile Include="Symbols\MsFormsLib.cs" />
+    <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBComponentParseResult.cs" />
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
@@ -116,7 +120,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Rubberduck.Parsing;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -25,12 +26,13 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public Image Result { get { return _result.Icon(); } }
-        public string ProjectName { get { return _test.ProjectName; } }
-        public string ModuleName { get { return _test.ModuleName; } }
-        public string MethodName { get { return _test.MethodName; } }
+        public QualifiedMemberName QualifiedMemberName { get { return _test.QualifiedMemberName; } }
+        public string ProjectName { get { return _test.QualifiedMemberName.QualifiedModuleName.Project.Name; } }
+        public string ModuleName { get { return _test.QualifiedMemberName.QualifiedModuleName.Component.Name; } }
+        public string MethodName { get { return _test.QualifiedMemberName.MemberName; } }
         public string Outcome { get { return _result == null ? string.Empty : _result.Outcome.ToString(); } }
         public string Message { get { return _result == null ? string.Empty : _result.Output; } }
-        public string Duration { get { return _result == null ? string.Empty : _result.Duration.ToString() + " ms"; } }
+        public string Duration { get { return _result == null ? string.Empty : _result.Duration + " ms"; } }
 
         public TimeSpan GetDuration()
         {

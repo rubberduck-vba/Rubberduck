@@ -26,12 +26,13 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var options = parseResult.Declarations.Items
-                .Where(declaration => declaration.DeclarationType == DeclarationType.ModuleOption
+                .Where(declaration => !declaration.IsBuiltIn 
+                                      && declaration.DeclarationType == DeclarationType.ModuleOption
                                       && declaration.Context is VBAParser.OptionExplicitStmtContext)
                 .ToList();
 
             var modules = parseResult.Declarations.Items
-                .Where(declaration => ModuleTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
                 .Select(issue => new OptionExplicitInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName));

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -14,7 +12,7 @@ namespace Rubberduck.Inspections
     {
         public ImplicitVariantReturnTypeInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitVariantReturnType_; } }
@@ -31,8 +29,9 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var issues = from item in parseResult.Declarations.Items
-                               where ProcedureTypes.Contains(item.DeclarationType)
-                               && !item.IsTypeSpecified()
+                               where !item.IsBuiltIn
+                                && ProcedureTypes.Contains(item.DeclarationType)
+                                && !item.IsTypeSpecified()
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                                select new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
             return issues;

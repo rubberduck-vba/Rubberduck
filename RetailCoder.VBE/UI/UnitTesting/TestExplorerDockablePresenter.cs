@@ -30,38 +30,26 @@ namespace Rubberduck.UI.UnitTesting
 
         private void TestEngineMethodCleanup(object sender, TestModuleEventArgs e)
         {
-            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
-            foreach (var codeModule in modules)
-            {
-                codeModule.Parent.RunMethodsWithAttribute<TestCleanupAttribute>();
-            }
+            var module = e.QualifiedModuleName.Component.CodeModule;
+            module.Parent.RunMethodsWithAttribute<TestCleanupAttribute>();
         }
 
         private void TestEngineMethodInitialize(object sender, TestModuleEventArgs e)
         {
-            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
-            foreach (var codeModule in modules)
-            {
-                codeModule.Parent.RunMethodsWithAttribute<TestInitializeAttribute>();
-            }
+            var module = e.QualifiedModuleName.Component.CodeModule;
+            module.Parent.RunMethodsWithAttribute<TestInitializeAttribute>();
         }
 
         private void _testEngine_ModuleCleanup(object sender, TestModuleEventArgs e)
         {
-            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
-            foreach (var codeModule in modules)
-            {
-                codeModule.Parent.RunMethodsWithAttribute<ModuleCleanupAttribute>();
-            }
+            var module = e.QualifiedModuleName.Component.CodeModule;
+            module.Parent.RunMethodsWithAttribute<ModuleCleanupAttribute>();
         }
 
         private void _testEngine_ModuleInitialize(object sender, TestModuleEventArgs e)
         {
-            var modules = VBE.FindCodeModules(e.ProjectName, e.ModuleName);
-            foreach (var codeModule in modules)
-            {
-                codeModule.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
-            }
+            var module = e.QualifiedModuleName.Component.CodeModule;
+            module.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
         }
 
         public void Synchronize()
@@ -161,20 +149,29 @@ namespace Rubberduck.UI.UnitTesting
             var endLine = -1;
             var endColumn = -1;
 
-            var signature = string.Concat("Public Sub ", controlSelection.MethodName, "()");
+            var signature = string.Concat("Public Sub ", controlSelection.QualifiedMemberName.MemberName, "()");
 
-            var projects = this.VBE.VBProjects.Cast<VBProject>()
-                    .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                && project.Name == controlSelection.ProjectName
-                                && project.VBComponents
-                                    .Cast<VBComponent>()
-                                    .Any(c => c.Name == controlSelection.ModuleName)
-                           );
+            var vbProject = VBE.VBProjects.Cast<VBProject>()
+                    .FirstOrDefault(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
+                                               && project.Equals(controlSelection.QualifiedMemberName.QualifiedModuleName.Project)
+                                               && project.VBComponents
+                                                   .Cast<VBComponent>()
+                                                   .Any(c => c.Equals(controlSelection.QualifiedMemberName.QualifiedModuleName.Component)));
 
-            var codeModule = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
-                                     .First(component => component.Name == controlSelection.ModuleName)
-                                     .CodeModule;
+            if (vbProject == null)
+            {
+                return;
+            }
 
+            var vbComponent = vbProject.VBComponents.Cast<VBComponent>()
+                                     .SingleOrDefault(component => component.Equals(controlSelection.QualifiedMemberName.QualifiedModuleName.Component));
+
+            if (vbComponent == null)
+            {
+                return;
+            }
+
+            var codeModule = vbComponent.CodeModule;
             if (codeModule == null)
             {
                 return;

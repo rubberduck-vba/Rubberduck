@@ -142,6 +142,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to line label.
+        /// </summary>
+        internal static string DeclarationType_LineLabel {
+            get {
+                return ResourceManager.GetString("DeclarationType_LineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to module.
         /// </summary>
         internal static string DeclarationType_Module {

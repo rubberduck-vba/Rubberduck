@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -7,18 +8,14 @@ namespace Rubberduck.VBEHost
         /// <summary>
         /// Runs VBA procedure specified by name.
         /// </summary>
-        /// <param name="projectName">Name of the project containing the method to be run.</param>
-        /// <param name="moduleName">Name of the Module containing the method to be run.</param>
-        /// <param name="methodName">Name of the method run.</param>
-        void Run(string projectName, string moduleName, string methodName); // note: only implementations of this method are used. does it need to be on this interface?
+        /// <param name="qualifiedMemberName">The method to be executed.</param>
+        void Run(QualifiedMemberName qualifiedMemberName);
 
         /// <summary>
         /// Timed call to Application.Run
         /// </summary>
-        /// <param name="projectName">Name of the project containing the method to be run.</param>
-        /// <param name="moduleName">Name of the Module containing the method to be run.</param>
-        /// <param name="methodName">Name of the method run.</param>
+        /// <param name="qualifiedMemberName">The method to be executed.</param>
         /// <returns>A TimeSpan object representing the time elapsed during the method call.</returns>
-        TimeSpan TimedMethodCall(string projectName, string moduleName, string methodName);
+        TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName);
     }
 }

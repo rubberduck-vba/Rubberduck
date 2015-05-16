@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using Antlr4.Runtime.Tree;
+using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Nodes;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing
 {
     public interface IRubberduckParser
     {
@@ -13,5 +10,9 @@ namespace Rubberduck.VBA
         /// </summary>
         /// <returns>Returns an <c>IParseTree</c> for each code module in the project; the qualified module name being the key.</returns>
         VBProjectParseResult Parse(VBProject vbProject);
+
+        Task<VBProjectParseResult> ParseAsync(VBProject vbProject);
+
+        void RemoveProject(VBProject vbProject);
     }
 }

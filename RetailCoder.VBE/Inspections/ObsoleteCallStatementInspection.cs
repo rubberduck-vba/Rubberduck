@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections
 {
@@ -9,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ObsoleteCallStatementInspection()
         {
-            Severity = CodeInspectionSeverity.Warning;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
         public string Name { get { return InspectionNames.ObsoleteCall; } }
@@ -18,10 +19,22 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.Declarations.Items.SelectMany(declaration => 
-                declaration.References.Where(reference => reference.HasExplicitCallStatement()))
-                .Select(issue => new ObsoleteCallStatementUsageInspectionResult(Name, Severity,
-                    new QualifiedContext<VBAParser.ExplicitCallStmtContext>(issue.QualifiedModuleName, issue.Context.Parent as VBAParser.ExplicitCallStmtContext)));
+            //note: this misses calls to procedures/functions without a Declaration object.
+            // alternative is to walk the tree and listen for "CallStmt".
+
+            var calls = (from declaration in parseResult.Declarations.Items
+                from reference in declaration.References
+                where (reference.Declaration.DeclarationType == DeclarationType.Function
+                       || reference.Declaration.DeclarationType == DeclarationType.Procedure)
+                      && reference.HasExplicitCallStatement()
+                select reference).ToList();
+
+            var issues = from reference in calls
+                let context = reference.Context.Parent.Parent as VBAParser.ExplicitCallStmtContext
+                where context != null
+                let qualifiedContext = new QualifiedContext<VBAParser.ExplicitCallStmtContext>
+                    (reference.QualifiedModuleName, (VBAParser.ExplicitCallStmtContext)reference.Context.Parent.Parent)
+                select new ObsoleteCallStatementUsageInspectionResult(Name, Severity, qualifiedContext);
 
             return issues;
         }

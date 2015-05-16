@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.PowerPoint;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -6,22 +7,32 @@ namespace Rubberduck.VBEHost
     {
         public PowerPointApp() : base("PowerPoint") { }
 
-        public override void Run(string projectName, string moduleName, string methodName)
+        public override void Run(QualifiedMemberName qualifiedMemberName)
         {
             object[] paramArray = { }; //PowerPoint requires a paramarray, so we pass it an empty array.
 
-            var call = GenerateMethodCall(projectName, moduleName, methodName);
+            var call = GenerateMethodCall(qualifiedMemberName);
             Application.Run(call, paramArray);
         }
 
-        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
+        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax, 
-             * but that would require significant changes to the Unit Testing Framework.
+            /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax
              * http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx
              */
 
-            return string.Concat(moduleName, ".", methodName);
+            return qualifiedMemberName.QualifiedModuleName.Component.Name + "." + qualifiedMemberName.MemberName;
+
+            // todo: verify that the 'FileName.ppt!Module.Method' syntax is real.
+            // if a saved presentation can run the above, then the below can just be removed.
+            if (!qualifiedMemberName.QualifiedModuleName.Project.Saved)
+            {
+            }
+
+            var projectFile = qualifiedMemberName.QualifiedModuleName.Project.FileName;
+            var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
+
+            return string.Concat(projectFile, "!", moduleName, ".", qualifiedMemberName.MemberName);
         }
     }
 }

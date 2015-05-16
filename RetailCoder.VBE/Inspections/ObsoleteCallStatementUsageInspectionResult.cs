@@ -28,11 +28,7 @@ namespace Rubberduck.Inspections
 
         private void RemoveObsoleteStatement(VBE vbe)
         {
-            var module = vbe.FindCodeModules(QualifiedName).SingleOrDefault();
-            if (module == null)
-            {
-                return;
-            }
+            var module = QualifiedName.Component.CodeModule;
 
             var selection = Context.GetSelection();
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount);

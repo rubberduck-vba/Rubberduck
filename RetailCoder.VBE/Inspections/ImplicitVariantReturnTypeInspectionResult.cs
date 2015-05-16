@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBA.Nodes;
@@ -39,7 +37,7 @@ namespace Rubberduck.Inspections
             var procedure = Context.GetText();
             var result = procedure.Replace(signature, signature + ' ' + Tokens.As + ' ' + Tokens.Variant);
             
-            var module = vbe.FindCodeModules(QualifiedName).First();
+            var module = QualifiedName.Component.CodeModule;
             var selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

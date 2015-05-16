@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
 
             RaiseResetEvent();
 
-            var code = _parser.Parse(project);
+            var code = await _parser.ParseAsync(project);
             var allIssues = new ConcurrentBag<ICodeInspectionResult>();
 
             var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)

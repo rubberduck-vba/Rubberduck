@@ -219,4 +219,7 @@
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>project</value>
   </data>
+  <data name="DeclarationType_LineLabel" xml:space="preserve">
+    <value>line label</value>
+  </data>
 </root>

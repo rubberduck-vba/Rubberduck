@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -7,13 +8,13 @@ namespace Rubberduck.VBEHost
     {
         public OutlookApp() : base("Outlook") { }
 
-        public override void Run(string projectName, string moduleName, string methodName)
+        public override void Run(QualifiedMemberName qualifiedMemberName)
         {
             //Outlook does not support the run method.
             throw new NotImplementedException("Unit Testing not supported for Outlook");
         }
 
-        protected override string GenerateMethodCall(string projectName, string moduleName, string methodName)
+        protected virtual string GenerateMethodCall(string projectName, string moduleName, string methodName)
         {
             return string.Concat(moduleName, ".", methodName);
         }

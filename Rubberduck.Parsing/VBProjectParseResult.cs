@@ -13,6 +13,10 @@ namespace Rubberduck.Parsing
         {
             _parseResults = parseResults;
             _declarations = new Declarations();
+            foreach (var declaration in VbaStandardLib.Declarations)
+            {
+                _declarations.Add(declaration);
+            }
             IdentifySymbols();
             IdentifySymbolUsages();
         }
@@ -35,9 +39,9 @@ namespace Rubberduck.Parsing
 
                     if (!_declarations.Items.Any())
                     { 
-                        var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
-                        var memberName = new QualifiedMemberName(new QualifiedModuleName(projectIdentifier, string.Empty, componentParseResult.QualifiedName.Project, 0), string.Empty);
-                        var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, null, Selection.Home);
+                        var projectIdentifier = componentParseResult.QualifiedName.Project.Name;
+                        var memberName = componentParseResult.QualifiedName.QualifyMemberName(projectIdentifier);
+                        var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
                         _declarations.Add(projectDeclaration);
                     }
 

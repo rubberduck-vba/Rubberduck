@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.VBEHost
 {
@@ -18,14 +19,13 @@ namespace Rubberduck.VBEHost
             Marshal.ReleaseComObject(Application);
         }
 
-        public abstract void Run(string projectName, string moduleName, string methodName);
-        protected abstract string GenerateMethodCall(string projectName, string moduleName, string methodName);
+        public abstract void Run(QualifiedMemberName qualifiedMemberName);
 
-        public TimeSpan TimedMethodCall(string projectName, string moduleName, string methodName)
+        public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            Run(projectName, moduleName, methodName);
+            Run(qualifiedMemberName);
 
             stopwatch.Stop();
             return stopwatch.Elapsed;

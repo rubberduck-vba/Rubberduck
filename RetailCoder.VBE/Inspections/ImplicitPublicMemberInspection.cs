@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections
     {
         public ImplicitPublicMemberInspection()
         {
-            Severity = CodeInspectionSeverity.Suggestion;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
         public string Name { get { return InspectionNames.ImplicitPublicMember_; } }
@@ -29,7 +29,8 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var issues = from item in parseResult.Declarations.Items
-                         where ProcedureTypes.Contains(item.DeclarationType)
+                         where !item.IsBuiltIn
+                               && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
                                select new ImplicitPublicMemberInspectionResult(string.Format(Name, ((dynamic)context.Context).ambiguousIdentifier().GetText()), Severity, context);

@@ -1,49 +1,77 @@
-
+using System;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.Parsing
 {
     public struct QualifiedModuleName
     {
-        public QualifiedModuleName(string projectName, string module, VBProject project, int contentHashCode)
+        public QualifiedModuleName(VBComponent component)
         {
-            _project = project;
-            _contentHashCode = contentHashCode;
-            _projectName = projectName;
-            _module = module;
+            _component = component;
+            _componentName = component == null ? string.Empty : component.Name;
+            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
+            _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
+
+            var module = _component.CodeModule;
+            _contentHashCode = module.CountOfLines > 0 
+                ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
+                : 0;
         }
 
-        public static QualifiedModuleName Empty { get { return new QualifiedModuleName(string.Empty, string.Empty, null, default(int)); } }
+        /// <summary>
+        /// Creates a QualifiedModuleName for a built-in declaration.
+        /// Do not use this overload for user declarations.
+        /// </summary>
+        public QualifiedModuleName(string projectName, string componentName)
+        {
+            _projectName = projectName;
+            _componentName = componentName;
+            _component = null;
+            _contentHashCode = componentName.GetHashCode();
+            _projectHashCode = projectName.GetHashCode();
+        }
 
-        private readonly VBProject _project;
-        public VBProject Project { get { return _project; } }
+        public QualifiedMemberName QualifyMemberName(string member)
+        {
+            return new QualifiedMemberName(this, member);
+        }
+
+        private readonly VBComponent _component;
+        public VBComponent Component { get { return _component; } }
+        public VBProject Project { get { return _component == null ? null : _component.Collection.Parent; } }
+
+        private readonly int _projectHashCode;
+        public int ProjectHashCode { get { return _projectHashCode; } }
 
         private readonly int _contentHashCode;
-        public int ContentHashCode { get { return _contentHashCode; } }
 
         private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
+        public string ProjectName { get { return _projectName;} }
 
-        private readonly string _module;
-        public string ModuleName { get { return _module; } }
+        private readonly string _componentName;
+        public string ComponentName { get { return _componentName; } }
 
         public override string ToString()
         {
-            return _projectName + "." + _module;
+            return _component == null && string.IsNullOrEmpty(_projectName) ? string.Empty : _projectName + "." + _componentName;
         }
 
         public override int GetHashCode()
         {
-            return (_project.ToString() + _contentHashCode.ToString() + ToString()).GetHashCode();
+            return _component == null ? 0 : _component.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            var other = (QualifiedModuleName)obj;
-
-            return other.ProjectName == ProjectName
-                   && other.ModuleName == ModuleName
-                   && other.ContentHashCode == ContentHashCode;
+            try
+            {
+                var other = (QualifiedModuleName)obj;
+                return other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)

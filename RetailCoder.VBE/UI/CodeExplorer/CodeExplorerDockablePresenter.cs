@@ -10,7 +10,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBA;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -24,8 +23,12 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser = parser;
             RegisterControlEvents();
-            RefreshExplorerTreeView();
-            Control.SolutionTree.Refresh();
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            Task.Run(() => RefreshExplorerTreeView()); 
         }
 
         private void RegisterControlEvents()
@@ -78,7 +81,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void SelectionChanged(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null)
+            if (e.Node == null || e.Node.Tag == null)
             {
                 return;
             }
@@ -130,7 +133,7 @@ namespace Rubberduck.UI.CodeExplorer
             if (node != null && node.Tag != null)
             {
                 var selection = (Declaration)node.Tag;
-                var module = VBE.FindCodeModules(selection.QualifiedName.QualifiedModuleName).FirstOrDefault();
+                var module = selection.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module == null)
                 {
                     return;
@@ -171,27 +174,23 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = e.Declaration;
             if (declaration != null)
             {
-                ////hack: get around issue where a node's selection seems to ignore a procedure's (or enum's) signature
-                ////todo: determiner if this "temp fix" is still needed.
-                //var selection = new Selection(e.Selection.StartLine,
-                //                                1,
-                //                                e.Selection.EndLine,
-                //                                e.Selection.EndColumn == 1 ? 0 : e.Selection.EndColumn //fixes off by one error when navigating the module
-                //                              );
                 VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
             }
         }
 
         private void RefreshExplorerTreeView(object sender, EventArgs e)
         {
-            RefreshExplorerTreeView();
+            Task.Run(() => RefreshExplorerTreeView());
         }
 
         private async void RefreshExplorerTreeView()
         {
-            Control.SolutionTree.Nodes.Clear();
-            Control.ShowDesignerButton.Enabled = false;
-
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.SolutionTree.Nodes.Clear();
+                Control.ShowDesignerButton.Enabled = false;
+            });
+            
             var projects = VBE.VBProjects.Cast<VBProject>();
             foreach (var vbProject in projects)
             {
@@ -210,27 +209,25 @@ namespace Rubberduck.UI.CodeExplorer
                     });
                 });
             }
-
-            // note: is this really needed?
-            Control.SolutionTree.BackColor = Control.SolutionTree.BackColor;
         }
 
         private void AddProjectNodes(VBProject project, TreeNode root)
         {
             Control.Invoke((MethodInvoker)async delegate
             {
-                root.Text = project.Name;
                 if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
                 {
                     root.ImageKey = "Locked";
                 }
                 else
                 {
-                    root.ImageKey = "ClosedFolder";
                     var nodes = (await CreateModuleNodesAsync(project)).ToArray();
                     AddProjectFolders(project, root, nodes);
+                    root.ImageKey = "ClosedFolder";
                     root.Expand();
                 }
+
+                root.Text = project.Name;
             });
         }
 
@@ -315,7 +312,10 @@ namespace Rubberduck.UI.CodeExplorer
                 var node = new TreeNode(component.Name);
                 node.ImageKey = ComponentTypeIcons[component.Type];
                 node.SelectedImageKey = node.ImageKey;
-                node.Tag = parseResult.Declarations.Items.FirstOrDefault(item => item.IdentifierName == component.Name && item.Project == project);
+                node.Tag = parseResult.Declarations.Items.SingleOrDefault(item => 
+                    item.IdentifierName == component.Name 
+                    && item.Project == component.Collection.Parent
+                    && (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module));
 
                 foreach (var declaration in members)
                 {
@@ -337,8 +337,8 @@ namespace Rubberduck.UI.CodeExplorer
                     {
                         var subDeclaration = declaration;
                         var subMembers = parseResult.Declarations.Items.Where(item => 
-                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember) 
-                            && item.Context.Parent.Equals(subDeclaration.Context));
+                            (item.DeclarationType == DeclarationType.EnumerationMember || item.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                            && item.Context != null && subDeclaration.Context.Equals(item.Context.Parent));
 
                         foreach (var subMember in subMembers)
                         {
@@ -528,6 +528,7 @@ namespace Rubberduck.UI.CodeExplorer
                     result = "PublicField";
                     break;
                 
+                case DeclarationType.LibraryProcedure:
                 case DeclarationType.LibraryFunction:
                     result = "Identifier";
                     break;

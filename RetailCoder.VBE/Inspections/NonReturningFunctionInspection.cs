@@ -27,10 +27,10 @@ namespace Rubberduck.Inspections
         {
             var interfaceMembers = parseResult.Declarations.FindInterfaceMembers();
             var interfaceImplementationMembers = parseResult.Declarations.FindInterfaceImplementationMembers();
+
             var functions = parseResult.Declarations.Items
-                .Where(declaration => 
-                    !interfaceMembers.Contains(declaration)
-                    && ReturningMemberTypes.Contains(declaration.DeclarationType));
+                .Where(declaration => !declaration.IsBuiltIn && ReturningMemberTypes.Contains(declaration.DeclarationType)
+                    && !interfaceMembers.Contains(declaration)).ToList();
 
             var issues = functions
                 .Where(declaration => declaration.References.All(r => !r.IsAssignment))

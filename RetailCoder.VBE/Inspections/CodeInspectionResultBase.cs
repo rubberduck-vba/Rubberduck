@@ -76,12 +76,17 @@ namespace Rubberduck.Inspections
 
         public VBComponent FindComponent(VBE vbe)
         {
-            return vbe.VBProjects.Cast<VBProject>()
-                      .Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked && project.Name == QualifiedName.ProjectName)
-                      .SelectMany(project =>
-                                    project.VBComponents.Cast<VBComponent>()
-                                           .Where(component => component.Name == QualifiedName.ModuleName))
-                      .FirstOrDefault();
+            var vbProject = vbe.VBProjects.Cast<VBProject>()
+                .SingleOrDefault(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
+                                         && project.Equals(QualifiedName.Project));
+
+            if (vbProject == null)
+            {
+                return null;
+            }
+
+            return vbProject.VBComponents.Cast<VBComponent>()
+                .SingleOrDefault(component => component.Equals(QualifiedName.Component));
         }
     }
 }

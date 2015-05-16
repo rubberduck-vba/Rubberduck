@@ -184,9 +184,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
         {
-            return items.FirstOrDefault(item => item.ProjectName == test.ProjectName
-                                                 && item.ModuleName == test.ModuleName
-                                                 && item.MethodName == test.MethodName);
+            return items.FirstOrDefault(item => item.QualifiedMemberName.Equals(test.QualifiedMemberName));
         }
 
         public void Refresh(IDictionary<TestMethod, TestResult> tests)

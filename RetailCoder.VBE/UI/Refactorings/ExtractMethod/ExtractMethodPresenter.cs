@@ -194,10 +194,15 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var localConsts = _locals.Select(e => e.Parent)
                 .OfType<VBAParser.ConstSubStmtContext>()
                 .Select(e => "    " + Tokens.Const + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText() + " = " + e.valueStmt().GetText());
+
             var localVariables = _locals.Select(e => e.Parent)
                 .OfType<VBAParser.VariableSubStmtContext>()
                 .Where(e => _view.Parameters.All(param => param.Name != e.ambiguousIdentifier().GetText()))
-                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + ' ' + e.asTypeClause().GetText());
+                .Select(e => "    " + Tokens.Dim + ' ' + e.ambiguousIdentifier().GetText() + 
+                    (e.LPAREN() == null 
+                        ? string.Empty 
+                        : e.LPAREN().GetText() + (e.subscripts() == null ? string.Empty : e.subscripts().GetText()) + e.RPAREN().GetText()) + ' ' + 
+                        (e.asTypeClause() == null ? string.Empty : e.asTypeClause().GetText()));
             var locals = string.Join(newLine, localConsts.Union(localVariables)
                             .Where(local => !_selectedCode.Contains(local)).ToArray()) + newLine;
 
