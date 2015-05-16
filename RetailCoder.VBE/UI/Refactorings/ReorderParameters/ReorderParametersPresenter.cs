@@ -1,13 +1,12 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Reflection;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
@@ -49,7 +48,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var argList = (VBAParser.ArgListContext)proc.argList();
             var args = argList.arg();
 
-            int index = 0;
+            var index = 0;
             foreach (var arg in args)
             {
                 _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText(), arg.GetText(), index++));
@@ -68,8 +67,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             foreach (var reference in _view.Target.References.Where(item => item.Context != _view.Target.Context))
             {
-                List<string> paramNames = new List<string>();
-                
                 var proc = (dynamic)reference.Context.Parent;
 
                 // This is to prevent throws when this statement fails:
@@ -86,10 +83,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 var argList = (VBAParser.ArgsCallContext)proc.argsCall();
                 var args = argList.argCall();
 
-                foreach (var arg in args)
-                {
-                    paramNames.Add(arg.GetText());
-                }
+                var paramNames = args.Select(arg => arg.GetText()).ToList();
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
@@ -98,7 +92,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 var variableIndex = 0;
                 for (var line = startLine; line < startLine + lineCount; line++)
                 {
-                    var newContent = module.get_Lines(line, 1);
+                    var newContent = module.Lines[line, 1];
                     var currentStringIndex = 0;
 
                     if (line == startLine)
@@ -106,7 +100,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                         currentStringIndex += reference.Declaration.IdentifierName.Length;
                     }
 
-                    for (int i = variableIndex; i < paramNames.Count; i++)
+                    for (var i = variableIndex; i < paramNames.Count; i++)
                     {
                         var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(variableIndex), currentStringIndex);
 
@@ -139,12 +133,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             var variableIndex = 0;
-            for (int i = 0; i < lineNum; i++)
+            for (var i = 0; i < lineNum; i++)
             {
-                var newContent = module.get_Lines(argList.Start.Line + i, 1);
+                var newContent = module.Lines[argList.Start.Line + i, 1];
                 var currentStringIndex = 0;
 
-                for (int j = variableIndex; j < _view.Parameters.Count; j++)
+                for (var j = variableIndex; j < _view.Parameters.Count; j++)
                 {
                     var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
 
@@ -167,15 +161,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private bool Changes()
         {
-            for (int i = 0; i < _view.Parameters.Count; i++)
-            {
-                if (_view.Parameters[i].Index != i)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return _view.Parameters.Where((t, i) => t.Index != i).Any();
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =

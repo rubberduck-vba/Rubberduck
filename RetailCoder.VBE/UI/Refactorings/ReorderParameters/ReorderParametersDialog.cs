@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
@@ -28,7 +23,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)
         {
             DataGridView sentVal = sender as DataGridView;
-            SelectedItem = Parameters.Where(item => item.Name == sentVal.CurrentCell.Value).First();
+            SelectedItem = Parameters.First(item => item.Name == (string)sentVal.CurrentCell.Value);
         }
 
         public void InitializeParameterGrid()

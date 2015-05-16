@@ -166,13 +166,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         #endregion
 
-        private System.Windows.Forms.Button MoveUpButton;
-        private System.Windows.Forms.Button MoveDownButton;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label TitleLabel;
+        private Button MoveUpButton;
+        private Button MoveDownButton;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Button CancelButton;
+        private Button OkButton;
+        private Panel panel1;
+        private Label TitleLabel;
         private DataGridView MethodParametersGrid;
     }
 }
