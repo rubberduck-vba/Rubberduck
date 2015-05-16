@@ -61,6 +61,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             AdjustSignature();
             AdjustReferences();
+
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            {
+                foreach (var reference in _declarations.FindEventProcedures(withEvents))
+                {
+                    AdjustSignature(reference);
+                }
+            }
         }
 
         private void AdjustReferences()
@@ -115,13 +123,20 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        private void AdjustSignature()
+        private void AdjustSignature(Declaration reference = null)
         {
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
-            var args = argList.arg();
 
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+
+            if (reference != null)
+            {
+                proc = (dynamic)reference.Context.Parent;
+                module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+            }
+            var args = argList.arg();
 
             var variableIndex = 0;
             for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
