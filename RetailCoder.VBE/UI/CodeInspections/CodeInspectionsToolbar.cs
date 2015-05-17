@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -20,7 +22,7 @@ namespace Rubberduck.UI.CodeInspections
         private readonly IRubberduckParser _parser;
         private readonly IInspector _inspector;
 
-        private List<ICodeInspectionResult> _issues;
+        private IList<ICodeInspectionResult> _issues;
         private int _currentIssue;
         private int _issueCount;
 
@@ -90,23 +92,15 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private IEnumerable<VBProjectParseResult> _parseResults;
-        
-        // indicates that the _parseResults are no longer in sync with UI
-        private bool _needsResync;
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            if (sender == this)
+            if (sender != this)
             {
-                _needsResync = false;
-                _parseResults = e.ParseResults;
-                Task.Run(() => RefreshAsync());
+                return;
             }
-            else
-            {
-                _parseResults = e.ParseResults;
-                _needsResync = true;
-            }
+
+            _parseResults = e.ParseResults;
         }
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -178,9 +172,12 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
+        private CancellationTokenSource _tokenSource;
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            RefreshAsync();
+            _tokenSource = new CancellationTokenSource();
+            var token = _tokenSource.Token;
+            RefreshAsync(token);
         }
 
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
@@ -189,22 +186,17 @@ namespace Rubberduck.UI.CodeInspections
             _statusButton.Caption = string.Format("{0} issue" + (_issueCount == 1 ? string.Empty : "s"), _issueCount);
         }
 
-        private async void RefreshAsync()
+        private async void RefreshAsync(CancellationToken token)
         {
-            if (_parseResults == null || !_needsResync)
+            try
             {
-                _inspector.Parse(_vbe, this);
-                return;
+                var projectParseResult = await _inspector.Parse(_vbe.ActiveVBProject, this);
+                _issues = await _inspector.FindIssuesAsync(projectParseResult, token);
             }
-
-            var parseResults = _parseResults.SingleOrDefault(p => p.Project == _vbe.ActiveVBProject);
-            if (parseResults == null)
+            catch (COMException)
             {
-                return;
+                // burp
             }
-
-            var result = await _inspector.FindIssuesAsync(parseResults);
-            _issues = result.ToList();
 
             var hasIssues = _issues.Any();
             _quickFixButton.Enabled = hasIssues;

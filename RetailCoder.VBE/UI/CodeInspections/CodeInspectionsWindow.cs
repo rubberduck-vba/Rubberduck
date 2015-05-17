@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -17,13 +18,6 @@ namespace Rubberduck.UI.CodeInspections
         {
             get { return CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>; }
             set { CodeIssuesGridView.DataSource = value; }
-        }
-
-        public int IssueCount {get; set;}
-        public string IssueCountText 
-        {
-            get { return StatusLabel.Text; }
-            set { StatusLabel.Text = value; }
         }
 
         public CodeInspectionsWindow()
@@ -47,10 +41,79 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
         }
 
+        public void ToggleParsingStatus(bool enabled = true)
+        {
+            StatusLabel.Image = enabled
+                ? Resources.hourglass
+                : Resources.exclamation_diamond;
+            StatusLabel.Text = enabled
+                ? RubberduckUI.Parsing
+                : RubberduckUI.CodeInspections_Inspecting;
+        }
+
+        public void SetIssuesStatus(int issueCount, bool completed = false)
+        {
+            _issueCount = issueCount;
+
+            RefreshButton.Image = completed
+                ? Resources.arrow_circle_double
+                : Resources.cross_circle;
+
+            if (!completed)
+            {
+                RefreshButton.Click -= RefreshButtonClicked;
+                RefreshButton.Click += CancelButton_Click;
+            }
+            else
+            {
+                RefreshButton.Click -= CancelButton_Click;
+                RefreshButton.Click += RefreshButtonClicked;
+            }
+
+
+            if (issueCount == 0)
+            {
+                if (completed)
+                {
+                    StatusLabel.Image = Resources.tick_circle;
+                    StatusLabel.Text = RubberduckUI.CodeInspections_NoIssues;
+                }
+                else
+                {
+                    StatusLabel.Image = Resources.hourglass;
+                    StatusLabel.Text = RubberduckUI.CodeInspections_Inspecting;
+                }
+            }
+            else
+            {
+                if (completed)
+                {
+                    StatusLabel.Image = Resources.exclamation_diamond;
+                    StatusLabel.Text = string.Format("{0} issue" + (issueCount != 1 ? "s" : string.Empty), issueCount);
+                }
+                else
+                {
+                    StatusLabel.Image = Resources.hourglass;
+                    StatusLabel.Text = string.Format("{0} ({1} issue" + (issueCount != 1 ? "s" : string.Empty) + ")", RubberduckUI.CodeInspections_Inspecting, issueCount);
+                }
+            }
+        }
+
+        public event EventHandler Cancel;
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            var handler = Cancel;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        private int _issueCount;
         public void EnableRefresh(bool enabled = true)
         {
             RefreshButton.Enabled = enabled;
-            QuickFixButton.Enabled = enabled && IssueCount > 0;
+            QuickFixButton.Enabled = enabled && _issueCount > 0;
         }
 
         public event EventHandler CopyResults;

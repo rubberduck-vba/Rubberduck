@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -12,8 +13,6 @@ namespace Rubberduck.Inspections
     {
         private readonly IRubberduckParser _parser;
         private readonly IList<IInspection> _inspections;
-
-        private static bool _isInspecting;
 
         public Inspector(IRubberduckParser parser, IEnumerable<IInspection> inspections)
         {
@@ -26,23 +25,16 @@ namespace Rubberduck.Inspections
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
-            if (_isInspecting)
-            {
-                OnParseCompleted(sender, e);
-            }
+            OnParseCompleted(sender, e);
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
         {
-            if (!_isInspecting)
-            {
-                OnParsing(sender);
-            }
+            OnParsing(sender);
         }
 
-        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project)
+        public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project, CancellationToken token)
         {
-            _isInspecting = true;
             await Task.Yield();
 
             OnReset();
@@ -53,6 +45,7 @@ namespace Rubberduck.Inspections
                 .Select(inspection =>
                     new Task(() =>
                     {
+                        token.ThrowIfCancellationRequested();
                         var inspectionResults = inspection.GetInspectionResults(project);
                         var results = inspectionResults as IList<CodeInspectionResultBase> ?? inspectionResults.ToList();
 
@@ -74,13 +67,17 @@ namespace Rubberduck.Inspections
 
             Task.WaitAll(inspections);
 
-            _isInspecting = false;
             return allIssues.ToList();
         }
 
         public void Parse(VBE vbe, object owner)
         {
             Task.Run(() => _parser.Parse(vbe, owner));
+        }
+
+        public async Task<VBProjectParseResult> Parse(VBProject project, object owner)
+        {
+            return await Task.Run(() => _parser.Parse(project, owner));
         }
 
         public event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;

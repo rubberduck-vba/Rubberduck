@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in declarations)
             {
-                yield return new IdentifierNotAssignedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName);
+                yield return new IdentifierNotAssignedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
             }
         }
     }

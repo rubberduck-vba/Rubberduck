@@ -79,6 +79,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inspecting....
+        /// </summary>
+        internal static string CodeInspections_Inspecting {
+            get {
+                return ResourceManager.GetString("CodeInspections_Inspecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string CodeInspections_NoIssues {
+            get {
+                return ResourceManager.GetString("CodeInspections_NoIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to class.
         /// </summary>
         internal static string DeclarationType_Class {
@@ -241,6 +259,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (none).
+        /// </summary>
+        internal static string ExtractMethod_OutputNone {
+            get {
+                return ResourceManager.GetString("ExtractMethod_OutputNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
         internal static string NameLabelText {
@@ -255,6 +282,15 @@ namespace Rubberduck.UI {
         internal static string OkButtonText {
             get {
                 return ResourceManager.GetString("OkButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (parsing...).
+        /// </summary>
+        internal static string Parsing {
+            get {
+                return ResourceManager.GetString("Parsing", resourceCulture);
             }
         }
         

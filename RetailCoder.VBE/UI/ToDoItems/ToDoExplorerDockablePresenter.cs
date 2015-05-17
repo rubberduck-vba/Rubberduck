@@ -85,7 +85,7 @@ namespace Rubberduck.UI.ToDoItems
             Parallel.ForEach(projects,
                 project =>
                 {
-                    var modules = _parser.Parse(project).ComponentParseResults;
+                    var modules = _parser.Parse(project, this).ComponentParseResults;
                     foreach (var module in modules)
                     {
                         var markers = module.Comments.AsParallel().SelectMany(GetToDoMarkers);

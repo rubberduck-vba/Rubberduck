@@ -79,7 +79,7 @@ namespace Rubberduck.UI
         private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var selection = IDE.ActiveCodePane.GetSelection();
-            var declarations = _parser.Parse(IDE.ActiveVBProject).Declarations;
+            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
 
             var target = declarations.Items
             .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
@@ -158,7 +158,7 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var declarations = _parser.Parse(IDE.ActiveVBProject).Declarations;
+            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
 
             // if method is a property, GetProcedure(name) can return up to 3 members:
             var target = (declarations.Items
@@ -205,7 +205,7 @@ namespace Rubberduck.UI
         {
             using (var view = new RenameDialog())
             {
-                var parseResult = _parser.Parse(IDE.ActiveVBProject);
+                var parseResult = _parser.Parse(IDE.ActiveVBProject, this);
                 var presenter = new RenamePresenter(IDE, view, parseResult, selection);
                 presenter.Show();
             }
@@ -215,7 +215,7 @@ namespace Rubberduck.UI
         {
             using (var view = new RenameDialog())
             {
-                var parseResult = _parser.Parse(IDE.ActiveVBProject);
+                var parseResult = _parser.Parse(IDE.ActiveVBProject, this);
                 var presenter = new RenamePresenter(IDE, view, parseResult, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
                 presenter.Show(target);
             }

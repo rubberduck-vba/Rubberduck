@@ -10,20 +10,32 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             ByVal
         }
 
-        public ExtractedParameter(string name, string typeName, PassedBy passed)
+        public static readonly string None = RubberduckUI.ExtractMethod_OutputNone;
+
+        private readonly string _name;
+        private readonly string _typeName;
+        private readonly PassedBy _passedBy;
+
+        public ExtractedParameter(string typeName, PassedBy passedBy, string name = null)
         {
-            Name = name;
-            TypeName = typeName;
-            Passed = passed;
+            _name = name ?? None;
+            _typeName = typeName;
+            _passedBy = passedBy;
         }
 
-        public string Name { get; set; }
-        public string TypeName { get; set; }
-        public PassedBy Passed { get; set; }
+        public string Name
+        {
+            get { return _name; }
+        }
+
+        public string TypeName
+        {
+            get { return _typeName; }
+        }
 
         public override string ToString()
         {
-            return Passed.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
+            return _passedBy.ToString() + ' ' + Name + ' ' + Tokens.As + ' ' + TypeName;
         }
     }
 }

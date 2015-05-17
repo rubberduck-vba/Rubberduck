@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)
                          && !item.IsTypeSpecified()
-                         select new VariableTypeNotDeclaredInspectionResult(string.Format(Name, item.DeclarationType, item.IdentifierName), Severity, item.Context, item.QualifiedName.QualifiedModuleName);
+                         select new VariableTypeNotDeclaredInspectionResult(string.Format(Name, item.DeclarationType, item.IdentifierName), Severity, ((dynamic)item.Context).ambiguousIdentifier(), item.QualifiedName.QualifiedModuleName);
 
             return issues;
         }
