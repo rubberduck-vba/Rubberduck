@@ -222,10 +222,10 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
-<<<<<<< HEAD
+HEAD
   <data name="ReorderParametersDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Reorder Parameters</value>
-=======
+  </data>
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspecting...</value>
   </data>
@@ -237,6 +237,6 @@
   </data>
   <data name="Parsing" xml:space="preserve">
     <value>(parsing...)</value>
->>>>>>> next
   </data>
+next
 </root>

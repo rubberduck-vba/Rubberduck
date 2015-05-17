@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -12,19 +11,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     class ReorderParametersPresenter
     {
-        private readonly VBE _vbe;
         private readonly IReorderParametersView _view;
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
-        private readonly VBProjectParseResult _parseResult;
 
-        public ReorderParametersPresenter(VBE vbe, IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
+        public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
-            _vbe = vbe;
             _view = view;
             _view.OkButtonClicked += OnOkButtonClicked;
 
-            _parseResult = parseResult;
             _declarations = parseResult.Declarations;
             _selection = selection;
         }
@@ -69,8 +64,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     AdjustSignature(reference);
                 }
             }
-
-            var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
         }
 
         private void AdjustReferences()
@@ -87,9 +80,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
                 catch
                 {
-                    // update letter/setter methods - needs proper fixing
-                    if (reference.Context.Parent.GetText().Contains("Property Let") ||
-                        reference.Context.Parent.GetText().Contains("Property Set"))
+                    // update letter methods - needs proper fixing
+                    if (reference.Context.Parent.GetText().Contains("Property Let"))
                     {
                         AdjustSignature(reference);
                     }
@@ -201,9 +193,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             if (reference == null && _view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.Where(item => item.ParentScope == _view.Target.ParentScope &&
+                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
                                               item.IdentifierName == _view.Target.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertySet).FirstOrDefault();
+                                              item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
                 {
@@ -256,11 +248,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                      || IsSelectedReference(selection, item));
 
-            if (target.DeclarationType == DeclarationType.PropertySet)
+            if (target != null && target.DeclarationType == DeclarationType.PropertySet)
             {
-                var getter = _declarations.Items.Where(item => item.ParentScope == target.ParentScope &&
+                var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == target.ParentScope &&
                                               item.IdentifierName == target.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertyGet).FirstOrDefault();
+                                              item.DeclarationType == DeclarationType.PropertyGet);
 
                 if (getter != null)
                 {

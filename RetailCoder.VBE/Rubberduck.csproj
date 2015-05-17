@@ -287,6 +287,11 @@
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\BranchesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -335,11 +340,6 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\Settings\GeneralSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -564,6 +564,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
@@ -858,7 +859,8 @@
     <PostBuildEvent>c:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe "$(TargetPath)" /codebase /tlb</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>c:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe "$(TargetPath)" /u</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
