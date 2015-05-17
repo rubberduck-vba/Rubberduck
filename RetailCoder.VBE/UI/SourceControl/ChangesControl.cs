@@ -14,6 +14,12 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
+        public string CurrentBranch
+        {
+            get { return this.ChangesBranchNameLabel.Text; }
+            set { this.ChangesBranchNameLabel.Text = value; }
+        }
+
         public string CommitMessage
         {
             get { return this.CommitMessageBox.Text; }

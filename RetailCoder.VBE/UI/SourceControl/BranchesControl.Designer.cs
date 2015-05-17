@@ -96,6 +96,7 @@ namespace Rubberduck.UI.SourceControl
             this.MergeBranchButton.Text = "Merge";
             this.MergeBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.MergeBranchButton.UseVisualStyleBackColor = true;
+            this.MergeBranchButton.Click += new System.EventHandler(this.OnMerge);
             // 
             // UnpublishedBranchesBox
             // 
@@ -129,6 +130,7 @@ namespace Rubberduck.UI.SourceControl
             this.CurrentBranchSelector.Name = "CurrentBranchSelector";
             this.CurrentBranchSelector.Size = new System.Drawing.Size(179, 21);
             this.CurrentBranchSelector.TabIndex = 12;
+            this.CurrentBranchSelector.SelectedIndexChanged += new System.EventHandler(this.OnSelectedBranchChanged);
             // 
             // label8
             // 
@@ -151,6 +153,7 @@ namespace Rubberduck.UI.SourceControl
             this.NewBranchButton.Text = "New Branch";
             this.NewBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.NewBranchButton.UseVisualStyleBackColor = true;
+            this.NewBranchButton.Click += new System.EventHandler(this.OnCreateBranch);
             // 
             // BranchesControl
             // 
