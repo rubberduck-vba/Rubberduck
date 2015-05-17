@@ -69,6 +69,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     AdjustSignature(reference);
                 }
             }
+
+            var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
         }
 
         private void AdjustReferences()
@@ -85,6 +87,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
                 catch
                 {
+                    // update letter/setter methods - needs proper fixing
+                    if (reference.Context.Parent.GetText().Contains("Property Let") ||
+                        reference.Context.Parent.GetText().Contains("Property Set"))
+                    {
+                        AdjustSignature(reference);
+                    }
+
                     continue;
                 }
 
@@ -123,6 +132,50 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        // TODO - refactor this
+        // Only used for Property Letters/Setters
+        // Otherwise, they are caught by the try/catch block used to prevent 
+        // value returns from crashing the program
+        // Extremely similar to the other AdjustReference
+        // One possibility is to create multiple "handler" methods
+        // that call another method to do the real work, passing 
+        // "module", "argList", and "args" (I believe these are the only
+        // ones used
+        private void AdjustSignature(IdentifierReference reference)
+        {
+            var proc = (dynamic)reference.Context.Parent;
+            var module = reference.QualifiedModuleName.Component.CodeModule;
+            var argList = (VBAParser.ArgListContext)proc.argList();
+            var args = argList.arg();
+
+            var variableIndex = 0;
+            for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
+            {
+                var newContent = module.Lines[lineNum, 1];
+                var currentStringIndex = 0;
+
+                for (var i = variableIndex; i < _view.Parameters.Count; i++)
+                {
+                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
+
+                    if (variableStringIndex > -1)
+                    {
+                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).Variable;
+                        var newVariableString = _view.Parameters.ElementAt(i).Variable;
+                        var beginningSub = newContent.Substring(0, variableStringIndex);
+                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
+
+                        newContent = beginningSub + replaceSub;
+
+                        variableIndex++;
+                        currentStringIndex = beginningSub.Length + newVariableString.Length;
+                    }
+                }
+
+                module.ReplaceLine(lineNum, newContent);
+            }
+        }
+
         private void AdjustSignature(Declaration reference = null)
         {
             var proc = (dynamic)_view.Target.Context;
@@ -136,6 +189,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 argList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
+
             var args = argList.arg();
 
             var variableIndex = 0;
@@ -181,7 +235,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var target = _declarations.Items
                 .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                      || IsSelectedReference(selection, item));
+                                     || IsSelectedReference(selection, item));
+
+            var something = _declarations.Items
+                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType));
 
             PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
