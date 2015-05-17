@@ -180,17 +180,36 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
-
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             if (reference != null)
             {
                 proc = (dynamic)reference.Context.Parent;
                 module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+
+                if (reference.DeclarationType == DeclarationType.PropertySet)
+                {
+                    argList = (VBAParser.ArgListContext)proc.children[0].argList();
+                }
+                else
+                {
+                    argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+                }
             }
 
             var args = argList.arg();
+
+            if (reference == null && _view.Target.DeclarationType == DeclarationType.PropertyGet)
+            {
+                var setter = _declarations.Items.Where(item => item.ParentScope == _view.Target.ParentScope &&
+                                              item.IdentifierName == _view.Target.IdentifierName &&
+                                              item.DeclarationType == DeclarationType.PropertySet).FirstOrDefault();
+
+                if (setter != null)
+                {
+                    AdjustSignature(setter);
+                }
+            }
 
             var variableIndex = 0;
             for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
@@ -237,8 +256,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                      || IsSelectedReference(selection, item));
 
-            var something = _declarations.Items
-                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType));
+            if (target.DeclarationType == DeclarationType.PropertySet)
+            {
+                var getter = _declarations.Items.Where(item => item.ParentScope == target.ParentScope &&
+                                              item.IdentifierName == target.IdentifierName &&
+                                              item.DeclarationType == DeclarationType.PropertyGet).FirstOrDefault();
+
+                if (getter != null)
+                {
+                    target = getter;
+                }
+            }
 
             PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
