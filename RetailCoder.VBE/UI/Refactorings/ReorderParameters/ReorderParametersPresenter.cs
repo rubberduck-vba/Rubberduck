@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -31,19 +29,19 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             if (_view.Target != null)
             {
-                LoadParams();
+                LoadParameters();
 
                 if (_view.Parameters.Count < 2) { return ;}
 
                 _view.InitializeParameterGrid();
-                _view.ShowDialog();
+               _view.ShowDialog();
             }
         }
 
-        private void LoadParams()
+        private void LoadParameters()
         {
-            var proc = (dynamic)_view.Target.Context;
-            var argList = (VBAParser.ArgListContext)proc.argList();
+            var procedure = (dynamic)_view.Target.Context;
+            var argList = (VBAParser.ArgListContext)procedure.argList();
             var args = argList.arg();
 
             var index = 0;
@@ -55,15 +53,21 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            if (!_view.Parameters.Where((t, i) => t.Index != i).Any()) { return; }
+            if (!_view.Parameters.Where((t, i) => t.Index != i).Any())
+            {
+                return;
+            }
 
             var indexOfFirstOptionalParam = _view.Parameters.FindIndex(param => param.IsOptional);
-            for (var index = indexOfFirstOptionalParam + 1; index < _view.Parameters.Count; index++)
+            if (indexOfFirstOptionalParam >= 0)
             {
-                if (!_view.Parameters.ElementAt(index).IsOptional)
+                for (var index = indexOfFirstOptionalParam + 1; index < _view.Parameters.Count; index++)
                 {
-                    var error = MessageBox.Show("Cannot reorder optional parameters above non-optional parameters");
-                    return;
+                    if (!_view.Parameters.ElementAt(index).IsOptional)
+                    {
+                        MessageBox.Show("Optional parameters must be specified at the end of the parameter list.", "Reorder Parameters", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
                 }
             }
 
@@ -169,12 +173,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 for (var i = variableIndex; i < _view.Parameters.Count; i++)
                 {
-                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
+                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration, currentStringIndex);
 
                     if (variableStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).Variable;
-                        var newVariableString = _view.Parameters.ElementAt(i).Variable;
+                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration;
+                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
                         var beginningSub = newContent.Substring(0, variableStringIndex);
                         var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
 
@@ -234,12 +238,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 for (var i = variableIndex; i < _view.Parameters.Count; i++)
                 {
-                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).Variable, currentStringIndex);
+                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration, currentStringIndex);
 
                     if (variableStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).Variable;
-                        var newVariableString = _view.Parameters.ElementAt(i).Variable;
+                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration;
+                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
                         var beginningSub = newContent.Substring(0, variableStringIndex);
                         var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
 

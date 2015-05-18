@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     public partial class ReorderParametersDialog : Form, IReorderParametersView
     {
         public List<Parameter> Parameters { get; set; }
-        public Parameter SelectedItem { get; set; }
+        private Parameter _selectedItem;
 
         public ReorderParametersDialog()
         {
@@ -22,8 +22,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)
         {
-            DataGridView sentVal = sender as DataGridView;
-            SelectedItem = Parameters.First(item => item.Name == (string)sentVal.CurrentCell.Value);
+            SelectionChanged();
         }
 
         public void InitializeParameterGrid()
@@ -34,15 +33,20 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
 
-            var paramNameColumn = new DataGridViewTextBoxColumn();
-            paramNameColumn.Name = "Name";
-            paramNameColumn.DataPropertyName = "Name";
-            paramNameColumn.HeaderText = "Name";
-            paramNameColumn.ReadOnly = true;
-            paramNameColumn.Width = 262;    // fits nice
+            var column = new DataGridViewTextBoxColumn
+            {
+                Name = "Parameter",
+                DataPropertyName = "FullDeclaration",
+                HeaderText = "Parameter",
+                ReadOnly = true,
+                // Width = 262,    // fits nice
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill // fits even nicer ;)
+            };
 
-            MethodParametersGrid.Columns.Add(paramNameColumn);
-            SelectedItem = Parameters[0];
+            
+
+            MethodParametersGrid.Columns.Add(column);
+            _selectedItem = Parameters[0];
         }
 
         private void OkButtonClick(object sender, EventArgs e)
@@ -70,46 +74,67 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public Declaration Target
         {
             get { return _target; }
-            set
-            {
-                _target = value;
-                if (_target == null)
-                {
-                    return;
-                }
-            }
+            set { _target = value; }
         }
 
         private void MoveUpButtonClicked(object sender, EventArgs e)
         {
-            int selectedIndex = Parameters.IndexOf(SelectedItem);
-
-            if (selectedIndex == 0)
+            if (MethodParametersGrid.SelectedRows.Count == 0)
             {
                 return;
             }
 
-            Parameter tmp = Parameters[selectedIndex];
+            var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
+
+            // todo: move to some "SwapParameters" private method
+            var tmp = Parameters[selectedIndex];
             Parameters[selectedIndex] = Parameters[selectedIndex - 1];
             Parameters[selectedIndex - 1] = tmp;
-            MethodParametersGrid.Refresh();
+
+            ReselectParameter();
         }
 
         private void MoveDownButtonClicked(object sender, EventArgs e)
         {
-            int selectedIndex = Parameters.IndexOf(SelectedItem);
-
-            if (selectedIndex == Parameters.Count() - 1)
+            if (MethodParametersGrid.CurrentRow == null)
             {
                 return;
             }
 
-            Parameter tmp = Parameters[selectedIndex];
+            var selectedIndex = MethodParametersGrid.CurrentRow.Index;
+
+            // todo: move to some "SwapParameters" private method
+            var tmp = Parameters[selectedIndex];
             Parameters[selectedIndex] = Parameters[selectedIndex + 1];
             Parameters[selectedIndex + 1] = tmp;
-            MethodParametersGrid.Refresh();
+            
+            ReselectParameter();
         }
 
+        private void ReselectParameter()
+        {
+            MethodParametersGrid.Refresh();
+            MethodParametersGrid.Rows
+                                .Cast<DataGridViewRow>()
+                                .Single(row => row.DataBoundItem == _selectedItem).Selected = true;
+
+            SelectionChanged();
+        }
+
+        private void SelectionChanged()
+        {
+            _selectedItem = MethodParametersGrid.SelectedRows.Count == 0
+                ? null
+                : (Parameter)MethodParametersGrid.SelectedRows[0].DataBoundItem;
+
+            MoveUpButton.Enabled = _selectedItem != null
+                && MethodParametersGrid.SelectedRows[0].Index != 0;
+
+            MoveDownButton.Enabled = _selectedItem != null
+                && MethodParametersGrid.SelectedRows[0].Index != Parameters.Count - 1;
+        }
+
+        // note: dead code..
         private void RegisterViewEvents()
         {
             OkButton.Click += OkButtonClicked;
