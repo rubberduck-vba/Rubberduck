@@ -19,6 +19,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             InitializeCaptions();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
+            MethodParametersGrid.MouseMove += MethodParametersGrid_MouseMove;
+            MethodParametersGrid.MouseDown += MethodParametersGrid_MouseDown;
+            MethodParametersGrid.DragOver += MethodParametersGrid_DragOver;
+            MethodParametersGrid.DragDrop += MethodParametersGrid_DragDrop;
         }
 
         private void InitializeCaptions()
@@ -37,6 +41,53 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             SelectionChanged();
         }
 
+        private Rectangle dragBoxFromMouseDown;
+        private int rowIndexFromMouseDown;
+        private void MethodParametersGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                if (dragBoxFromMouseDown != Rectangle.Empty && !dragBoxFromMouseDown.Contains(e.X, e.Y))
+                {
+                    DragDropEffects dropEffect = MethodParametersGrid.DoDragDrop(
+                          MethodParametersGrid.Rows[rowIndexFromMouseDown],
+                          DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void MethodParametersGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            rowIndexFromMouseDown = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
+
+            if (rowIndexFromMouseDown == -1)
+            {
+                dragBoxFromMouseDown = Rectangle.Empty;
+                return;
+            }
+
+            Size dragSize = SystemInformation.DragSize;
+            dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
+        }
+
+        private void MethodParametersGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void MethodParametersGrid_DragDrop(object sender, DragEventArgs e)
+        {
+            Point clientPoint = MethodParametersGrid.PointToClient(new Point(e.X, e.Y));
+
+            if (e.Effect == DragDropEffects.Move)
+            {
+                var rowIndexOfItemUnderMouseToDrop = MethodParametersGrid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+
+                SwapParameters(rowIndexFromMouseDown, rowIndexOfItemUnderMouseToDrop);
+                ReselectParameter();
+            }
+        }
+
         public void InitializeParameterGrid()
         {
             MethodParametersGrid.AutoGenerateColumns = false;
@@ -45,6 +96,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
             MethodParametersGrid.AllowUserToResizeRows = false;
+            MethodParametersGrid.AllowDrop = true;
 
             var column = new DataGridViewTextBoxColumn
             {
