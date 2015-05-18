@@ -65,7 +65,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (!_view.Parameters.ElementAt(index).IsOptional)
                     {
-                        MessageBox.Show("Optional parameters must be specified at the end of the parameter list.", "Reorder Parameters", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        var message = "Optional parameters must be specified at the end of the parameter list.";
+                        MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -79,6 +80,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
                     AdjustSignature(reference);
+                }
+            }
+
+            if (_view.Target.DeclarationType == DeclarationType.Procedure)
+            {
+                foreach (var interfaceImplentation in
+                    _declarations.FindInterfaceImplementationMembers()
+                                 .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName)))
+                {
+                    AdjustSignature(interfaceImplentation);
                 }
             }
         }
@@ -307,9 +318,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirm == DialogResult.No)
             {
                 target = null;
