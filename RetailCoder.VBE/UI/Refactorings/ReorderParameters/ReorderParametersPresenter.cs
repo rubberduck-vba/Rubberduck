@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 LoadParams();
 
-                if (_view.Parameters.Count < 2) { return; }
+                if (_view.Parameters.Count < 2) { return ;}
 
                 _view.InitializeParameterGrid();
                 _view.ShowDialog();
@@ -116,7 +116,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                         if (variableStringIndex > -1)
                         {
                             var oldVariableString = paramNames.ElementAt(variableIndex);
-                            var newVariableString = paramNames.ElementAt(_view.Parameters.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex)));
+                            var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
                             var beginningSub = newContent.Substring(0, variableStringIndex);
                             var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
 
