@@ -37,9 +37,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.MethodParametersGrid = new System.Windows.Forms.DataGridView();
-            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.MoveUpButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -48,11 +48,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             // 
             // MoveDownButton
             // 
-            this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MoveDownButton.Image = global::Rubberduck.Properties.Resources.arrow_270;
             this.MoveDownButton.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.MoveDownButton.Location = new System.Drawing.Point(281, 148);
+            this.MoveDownButton.Location = new System.Drawing.Point(316, 154);
             this.MoveDownButton.Name = "MoveDownButton";
             this.MoveDownButton.Size = new System.Drawing.Size(75, 72);
             this.MoveDownButton.TabIndex = 2;
@@ -69,17 +68,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.flowLayoutPanel2.Controls.Add(this.OkButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 226);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 232);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(8, 8, 0, 8);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(367, 43);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(402, 43);
             this.flowLayoutPanel2.TabIndex = 3;
             // 
             // CancelButton
             // 
             this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(281, 11);
+            this.CancelButton.Location = new System.Drawing.Point(316, 11);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 0;
@@ -90,7 +89,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(200, 11);
+            this.OkButton.Location = new System.Drawing.Point(235, 11);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(75, 23);
             this.OkButton.TabIndex = 1;
@@ -106,8 +105,19 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(367, 64);
+            this.panel1.Size = new System.Drawing.Size(402, 71);
             this.panel1.TabIndex = 4;
+            // 
+            // InstructionsLabel
+            // 
+            this.InstructionsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
+            this.InstructionsLabel.Name = "InstructionsLabel";
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(383, 34);
+            this.InstructionsLabel.TabIndex = 6;
+            this.InstructionsLabel.Text = "Select a parameter and drag it or use buttons to move it up or down.";
             // 
             // TitleLabel
             // 
@@ -115,7 +125,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(12, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
             this.TitleLabel.Size = new System.Drawing.Size(140, 19);
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "Reorder parameters";
@@ -124,10 +134,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             // 
             this.MethodParametersGrid.AllowUserToAddRows = false;
             this.MethodParametersGrid.AllowUserToDeleteRows = false;
-            this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MethodParametersGrid.BackgroundColor = System.Drawing.Color.White;
             this.MethodParametersGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.MethodParametersGrid.Location = new System.Drawing.Point(9, 71);
+            this.MethodParametersGrid.Location = new System.Drawing.Point(9, 77);
             this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
             this.MethodParametersGrid.MultiSelect = false;
             this.MethodParametersGrid.Name = "MethodParametersGrid";
@@ -138,26 +149,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.MethodParametersGrid.ShowCellToolTips = false;
             this.MethodParametersGrid.ShowEditingIcon = false;
             this.MethodParametersGrid.ShowRowErrors = false;
-            this.MethodParametersGrid.Size = new System.Drawing.Size(266, 149);
+            this.MethodParametersGrid.Size = new System.Drawing.Size(301, 149);
             this.MethodParametersGrid.TabIndex = 8;
-            // 
-            // InstructionsLabel
-            // 
-            this.InstructionsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
-            this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(347, 34);
-            this.InstructionsLabel.TabIndex = 6;
-            this.InstructionsLabel.Text = "Select a parameter and drag it or use buttons to move it up or down.";
             // 
             // MoveUpButton
             // 
-            this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MoveUpButton.Image = global::Rubberduck.Properties.Resources.arrow_090;
-            this.MoveUpButton.Location = new System.Drawing.Point(281, 71);
+            this.MoveUpButton.Location = new System.Drawing.Point(316, 77);
             this.MoveUpButton.Name = "MoveUpButton";
             this.MoveUpButton.Size = new System.Drawing.Size(75, 72);
             this.MoveUpButton.TabIndex = 1;
@@ -172,8 +171,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
-            this.ClientSize = new System.Drawing.Size(367, 269);
+            this.ClientSize = new System.Drawing.Size(402, 275);
             this.Controls.Add(this.MethodParametersGrid);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel2);
@@ -181,7 +179,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.Controls.Add(this.MoveUpButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ReorderParametersDialog";
