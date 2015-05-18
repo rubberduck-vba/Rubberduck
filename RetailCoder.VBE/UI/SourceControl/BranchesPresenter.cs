@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -8,6 +9,7 @@ namespace Rubberduck.UI.SourceControl
     public interface IBranchesPresenter : IProviderPresenter
     {
         void RefreshView();
+        event EventHandler<EventArgs> BranchChanged;
     }
 
     public class BranchesPresenter : IBranchesPresenter
@@ -17,6 +19,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IMergeView _mergeView;
 
         public ISourceControlProvider Provider { get; set; }
+
+        public event EventHandler<EventArgs> BranchChanged;
 
         public BranchesPresenter
             (            
@@ -56,7 +60,22 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnSelectedBranchChanged(object sender, EventArgs e)
         {
-            this.Provider.Checkout(_view.Current);
+            var currentBranch = _view.Current;
+
+            try
+            {
+                this.Provider.Checkout(currentBranch);
+            }
+            catch (SourceControlException ex)
+            {
+                //todo: find a better way of displaying these errors
+                MessageBox.Show(ex.InnerException.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (BranchChanged != null)
+            {
+                BranchChanged(this, EventArgs.Empty);
+            }
         }
 
         ~BranchesPresenter()
@@ -67,6 +86,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+            _view.SelectedBranchChanged -= OnSelectedBranchChanged;
+
             _view.Local = this.Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
             _view.Current = this.Provider.CurrentBranch.Name;
 
@@ -78,6 +99,8 @@ namespace Rubberduck.UI.SourceControl
                                                             )
                                                     .Select(b => b.Name)
                                                     .ToList();
+
+            _view.SelectedBranchChanged += OnSelectedBranchChanged;
         }
 
         private static IList<string> GetFriendlyBranchNames(IEnumerable<IBranch> branches)

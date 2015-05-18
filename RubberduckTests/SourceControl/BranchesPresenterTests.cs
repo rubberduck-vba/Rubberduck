@@ -359,5 +359,19 @@ namespace RubberduckTests.SourceControl
             //assert
             _provider.Verify(git => git.Checkout("dev"));
         }
+
+        [TestMethod]
+        public void RefreshingViewShouldNotCheckoutBranch()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Current, "master");
+            _provider.Setup(git => git.Checkout(It.IsAny<string>()));
+
+            //act
+            _presenter.RefreshView();
+
+            //assert
+            _provider.Verify(git => git.Checkout(It.IsAny<string>()),Times.Never);
+        }
     }
 }

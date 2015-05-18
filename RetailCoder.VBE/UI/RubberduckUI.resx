@@ -222,7 +222,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
-HEAD
   <data name="ReorderParametersDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Reorder Parameters</value>
   </data>
@@ -238,5 +237,22 @@ HEAD
   <data name="Parsing" xml:space="preserve">
     <value>(parsing...)</value>
   </data>
-next
+  <data name="RenameDialog_NameLabelText" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Reorder Parameters</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Select a parameter and drag it or use buttons to move it up or down.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Reorder parameters</value>
+  </data>
 </root>

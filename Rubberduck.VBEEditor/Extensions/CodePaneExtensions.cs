@@ -17,6 +17,11 @@ namespace Rubberduck.VBEditor.Extensions
             int startColumn;
             int endColumn;
 
+            if (code == null)
+            {
+                return new QualifiedSelection();
+            }
+
             code.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 
             if (endLine > startLine && endColumn == 1)
