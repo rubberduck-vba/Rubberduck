@@ -97,11 +97,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
-
-            // todo: move to some "SwapParameters" private method
-            var tmp = Parameters[selectedIndex];
-            Parameters[selectedIndex] = Parameters[selectedIndex - 1];
-            Parameters[selectedIndex - 1] = tmp;
+            SwapParameters(selectedIndex, selectedIndex - 1);
 
             ReselectParameter();
         }
@@ -114,13 +110,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
-
-            // todo: move to some "SwapParameters" private method
-            var tmp = Parameters[selectedIndex];
-            Parameters[selectedIndex] = Parameters[selectedIndex + 1];
-            Parameters[selectedIndex + 1] = tmp;
+            SwapParameters(selectedIndex, selectedIndex + 1);
             
             ReselectParameter();
+        }
+
+        private void SwapParameters(int index1, int index2)
+        {
+            var tmp = Parameters[index1];
+            Parameters[index1] = Parameters[index2];
+            Parameters[index2] = tmp;
         }
 
         private void ReselectParameter()
@@ -144,15 +143,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             MoveDownButton.Enabled = _selectedItem != null
                 && MethodParametersGrid.SelectedRows[0].Index != Parameters.Count - 1;
-        }
-
-        // note: dead code..
-        private void RegisterViewEvents()
-        {
-            OkButton.Click += OkButtonClicked;
-            CancelButton.Click += CancelButtonClicked;
-            MoveUpButton.Click += MoveUpButtonClicked;
-            MoveDownButton.Click += MoveDownButtonClicked;
         }
     }
 }
