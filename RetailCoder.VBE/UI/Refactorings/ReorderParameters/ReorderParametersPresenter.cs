@@ -96,6 +96,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             foreach (var reference in _view.Target.References.Where(item => item.Context != _view.Target.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
+                var module = reference.QualifiedModuleName.Component.CodeModule;
 
                 // This is to prevent throws when this statement fails:
                 // (VBAParser.ArgsCallContext)proc.argsCall();
@@ -114,46 +115,51 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     continue;
                 }
-                var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
 
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
+                RewriteCall(reference, argList, module);
+            }
+        }
 
-                var variableIndex = 0;
-                for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
+        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext argList, Microsoft.Vbe.Interop.CodeModule module)
+        {
+            var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
+
+            var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
+
+            var variableIndex = 0;
+            for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
+            {
+                var newContent = module.Lines[line, 1].Replace(" , ", "");
+
+                var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
+
+                for (var i = 0; i < paramNames.Count && variableIndex < _view.Parameters.Count; i++)
                 {
-                    var newContent = module.Lines[line, 1].Replace(" , ", "");
+                    var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
 
-                    var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
-
-                    for (var i = 0; i < paramNames.Count && variableIndex < _view.Parameters.Count; i++)
+                    if (variableStringIndex > -1)
                     {
-                        var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
-
-                        if (variableStringIndex > -1)
+                        if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count)
                         {
-                            if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count)
-                            {
-                                newContent = newContent.Insert(variableStringIndex, " , ");
-                                i--;
-                                variableIndex++;
-                                continue;
-                            }
-
-                            var oldVariableString = paramNames.ElementAt(i);
-                            var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
-                            var beginningSub = newContent.Substring(0, variableStringIndex);
-                            var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
-
-                            newContent = beginningSub + replaceSub;
-
+                            newContent = newContent.Insert(variableStringIndex, " , ");
+                            i--;
                             variableIndex++;
-                            currentStringIndex = beginningSub.Length + newVariableString.Length;
+                            continue;
                         }
-                    }
 
-                    module.ReplaceLine(line, newContent);
+                        var oldVariableString = paramNames.ElementAt(i);
+                        var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
+                        var beginningSub = newContent.Substring(0, variableStringIndex);
+                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
+
+                        newContent = beginningSub + replaceSub;
+
+                        variableIndex++;
+                        currentStringIndex = beginningSub.Length + newVariableString.Length;
+                    }
                 }
+
+                module.ReplaceLine(line, newContent);
             }
         }
 

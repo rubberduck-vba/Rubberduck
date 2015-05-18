@@ -98,7 +98,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     }
                 }
 
-                SwapParameters(newRowIndex, rowIndexOfItemUnderMouse);
+                var tmp = Parameters.ElementAt(newRowIndex);
+                Parameters.RemoveAt(newRowIndex);
+                Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
                 ReselectParameter();
             }
         }
@@ -183,22 +185,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void SwapParameters(int index1, int index2)
         {
-            /*if (index1 < 0)
-            {
-                index1 = 0;
-            }
-            if (index2 < 0)
-            {
-                index2 = 0;
-            }
-            if (index1 >= Parameters.Count)
-            {
-                index1 = Parameters.Count - 1;
-            }
-            if (index2 >= Parameters.Count)
-            {
-                index2 = Parameters.Count - 1;
-            }*/
             var tmp = Parameters[index1];
             Parameters[index1] = Parameters[index2];
             Parameters[index2] = tmp;
