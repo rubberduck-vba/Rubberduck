@@ -639,7 +639,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // handle indexed property getters
-            var currentScopeMatches = matches.Where(declaration =>
+            var currentScopeMatches = matches.Where(declaration => declaration.Context != null &&
                 (declaration.Scope == _currentScope && !PropertyContexts.Contains(declaration.Context.Parent.Parent.GetType()))
                 || ((declaration.Context != null && declaration.Context.Parent.Parent is VBAParser.PropertyGetStmtContext
                     && _currentScopeType == DeclarationType.PropertyGet)
