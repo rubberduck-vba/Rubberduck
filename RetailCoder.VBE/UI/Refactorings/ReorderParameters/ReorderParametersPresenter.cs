@@ -57,6 +57,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             if (!_view.Parameters.Where((t, i) => t.Index != i).Any()) { return; }
 
+            var indexOfFirstOptionalParam = _view.Parameters.FindIndex(param => param.IsOptional);
+            for (var index = indexOfFirstOptionalParam + 1; index < _view.Parameters.Count; index++)
+            {
+                if (!_view.Parameters.ElementAt(index).IsOptional)
+                {
+                    var error = MessageBox.Show("Cannot reorder optional parameters above non-optional parameters");
+                    return;
+                }
+            }
+
             AdjustSignature();
             AdjustReferences();
 
@@ -202,6 +212,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             var args = argList.arg();
 
+            // if we are reordering a property getter, check if we need to reorder a setter too
+            // only check if the passed reference is null, otherwise we recursively check and have an SO
             if (reference == null && _view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
