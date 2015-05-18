@@ -116,6 +116,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                         if (variableStringIndex > -1)
                         {
                             var oldVariableString = paramNames.ElementAt(variableIndex);
+
+                            if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count) { continue; }
+
                             var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
                             var beginningSub = newContent.Substring(0, variableStringIndex);
                             var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
