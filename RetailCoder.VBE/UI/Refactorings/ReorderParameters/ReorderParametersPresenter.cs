@@ -84,7 +84,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName)))
+                                                        .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName));
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignature(interfaceImplentation);
@@ -163,76 +163,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        // TODO - refactor this
-        // Only used for Property Letters/Setters
-        // Otherwise, they are caught by the try/catch block used to prevent 
-        // value returns from crashing the program
-        // Extremely similar to the other AdjustReference
-        // One possibility is to create multiple "handler" methods
-        // that call another method to do the real work, passing 
-        // "module", "argList", and "args" (I believe these are the only
-        // ones used
-        private void AdjustSignature(IdentifierReference reference)
-        {
-            var proc = (dynamic)reference.Context.Parent;
-            var module = reference.QualifiedModuleName.Component.CodeModule;
-            var argList = (VBAParser.ArgListContext)proc.argList();
-            var args = argList.arg();
-
-            var variableIndex = 0;
-            for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
-            {
-                var newContent = module.Lines[lineNum, 1];
-                var currentStringIndex = 0;
-
-                for (var i = variableIndex; i < _view.Parameters.Count; i++)
-                {
-                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration, currentStringIndex);
-
-                    if (variableStringIndex > -1)
-                    {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration;
-                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
-                        var beginningSub = newContent.Substring(0, variableStringIndex);
-                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
-
-                        newContent = beginningSub + replaceSub;
-
-                        variableIndex++;
-                        currentStringIndex = beginningSub.Length + newVariableString.Length;
-                    }
-                }
-
-                module.ReplaceLine(lineNum, newContent);
-            }
-        }
-
-        private void AdjustSignature(Declaration reference = null)
+        private void AdjustSignature()
         {
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            if (reference != null)
-            {
-                proc = (dynamic)reference.Context.Parent;
-                module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
-
-                if (reference.DeclarationType == DeclarationType.PropertySet)
-                {
-                    argList = (VBAParser.ArgListContext)proc.children[0].argList();
-                }
-                else
-                {
-                    argList = (VBAParser.ArgListContext)proc.subStmt().argList();
-                }
-            }
-
-            var args = argList.arg();
-
             // if we are reordering a property getter, check if we need to reorder a setter too
-            // only check if the passed reference is null, otherwise we recursively check and have an SO
-            if (reference == null && _view.Target.DeclarationType == DeclarationType.PropertyGet)
+            if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
                                               item.IdentifierName == _view.Target.IdentifierName &&
@@ -243,6 +181,40 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     AdjustSignature(setter);
                 }
             }
+
+            RewriteSignature(argList, module);
+        }
+
+        private void AdjustSignature(IdentifierReference reference)
+        {
+            var proc = (dynamic)reference.Context.Parent;
+            var module = reference.QualifiedModuleName.Component.CodeModule;
+            var argList = (VBAParser.ArgListContext)proc.argList();
+
+            RewriteSignature(argList, module);
+        }
+
+        private void AdjustSignature(Declaration reference)
+        {
+            var proc = (dynamic)reference.Context.Parent;
+            var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            VBAParser.ArgListContext argList;
+
+            if (reference.DeclarationType == DeclarationType.PropertySet)
+            {
+                argList = (VBAParser.ArgListContext)proc.children[0].argList();
+            }
+            else
+            {
+                argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+            }
+
+            RewriteSignature(argList, module);
+        }
+
+        private void RewriteSignature(VBAParser.ArgListContext argList, Microsoft.Vbe.Interop.CodeModule module)
+        {
+            var args = argList.arg();
 
             var variableIndex = 0;
             for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
