@@ -44,7 +44,6 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Sets current scope to specified module member.
         /// </summary>
-        /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name, DeclarationType scopeType)
         {
             _currentScope = _qualifiedName + "." + name;
