@@ -267,9 +267,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
+                .Where(item => !item.IsBuiltIn)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                      || IsSelectedReference(selection, item));
+
+            while (target != null && !ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                target = _declarations.Items
+                    .Where(item => item.QualifiedName.MemberName == target.ParentScope.Substring(target.ParentScope.LastIndexOf('.') + 1)
+                                && item.Scope == target.ParentScope).First();
+            }
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
             {
