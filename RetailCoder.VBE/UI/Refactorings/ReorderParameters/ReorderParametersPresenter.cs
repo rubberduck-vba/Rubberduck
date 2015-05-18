@@ -120,19 +120,25 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 var variableIndex = 0;
                 for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
                 {
-                    var newContent = module.Lines[line, 1];
+                    var newContent = module.Lines[line, 1].Replace(" , ", "");
+
                     var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
 
-                    for (var i = variableIndex; i < paramNames.Count; i++)
+                    for (var i = 0; i < paramNames.Count && variableIndex < _view.Parameters.Count; i++)
                     {
-                        var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(variableIndex), currentStringIndex);
+                        var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
 
                         if (variableStringIndex > -1)
                         {
-                            var oldVariableString = paramNames.ElementAt(variableIndex);
+                            if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count)
+                            {
+                                newContent = newContent.Insert(variableStringIndex, " , ");
+                                i--;
+                                variableIndex++;
+                                continue;
+                            }
 
-                            if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count) { continue; }
-
+                            var oldVariableString = paramNames.ElementAt(i);
                             var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
                             var beginningSub = newContent.Substring(0, variableStringIndex);
                             var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
