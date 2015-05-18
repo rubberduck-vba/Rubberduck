@@ -226,7 +226,7 @@ namespace Rubberduck.UI
             using (var view = new ReorderParametersDialog())
             {
                 var parseResult = _parser.Parse(IDE.ActiveVBProject);
-                var presenter = new ReorderParametersPresenter(IDE, view, parseResult, selection);
+                var presenter = new ReorderParametersPresenter(view, parseResult, selection);
                 presenter.Show();
             }
         }
