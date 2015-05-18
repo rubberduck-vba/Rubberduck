@@ -16,8 +16,20 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             Parameters = new List<Parameter>();
             InitializeComponent();
+            InitializeCaptions();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
+        }
+
+        private void InitializeCaptions()
+        {
+            OkButton.Text = RubberduckUI.OkButtonText;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+            Text = RubberduckUI.ReorderParamsDialog_Caption;
+            TitleLabel.Text = RubberduckUI.ReorderParamsDialog_TitleText;
+            InstructionsLabel.Text = RubberduckUI.ReorderParamsDialog_InstructionsLabelText;
+            MoveUpButton.Text = RubberduckUI.ReorderParamsDialog_MoveUpButtonText;
+            MoveDownButton.Text = RubberduckUI.ReorderParamsDialog_MoveDownButtonText;
         }
 
         private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)
