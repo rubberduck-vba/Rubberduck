@@ -187,7 +187,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName));
+                                                        .Where(item => item.Project.Equals(_view.Target.Project) &&
+                                                               item.IdentifierName == _view.Target.ComponentName + "_" + _view.Target.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
