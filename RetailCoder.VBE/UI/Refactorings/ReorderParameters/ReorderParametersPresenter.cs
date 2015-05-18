@@ -72,6 +72,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
+            var indexOfParamArray = _view.Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray >= 0)
+            {
+                if (indexOfParamArray != _view.Parameters.Count - 1)
+                {
+                    var message = "ParamArrays must be specified at the end of the parameter list.";
+                    MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             AdjustSignatures();
             AdjustReferences();
         }
