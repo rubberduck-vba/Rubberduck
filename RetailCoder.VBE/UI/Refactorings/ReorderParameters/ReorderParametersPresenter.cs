@@ -83,14 +83,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            if (_view.Target.DeclarationType == DeclarationType.Procedure)
+            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                                                        .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName)))
+            foreach (var interfaceImplentation in interfaceImplementations)
             {
-                foreach (var interfaceImplentation in
-                    _declarations.FindInterfaceImplementationMembers()
-                                 .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName)))
-                {
-                    AdjustSignature(interfaceImplentation);
-                }
+                AdjustSignature(interfaceImplentation);
             }
         }
 
