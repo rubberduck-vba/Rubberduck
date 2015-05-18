@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -31,6 +32,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             if (_view.Target != null)
             {
                 LoadParams();
+
+                if (_view.Parameters.Count < 2) { return; }
 
                 _view.InitializeParameterGrid();
                 _view.ShowDialog();
@@ -90,6 +93,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
 
                 var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                if (argList == null)
+                {
+                    continue;
+                }
                 var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
