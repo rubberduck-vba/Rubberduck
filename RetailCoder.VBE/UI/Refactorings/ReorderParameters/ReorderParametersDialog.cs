@@ -44,6 +44,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MethodParametersGrid.DataSource = Parameters;
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
+            MethodParametersGrid.AllowUserToResizeRows = false;
 
             var column = new DataGridViewTextBoxColumn
             {
@@ -51,8 +52,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 DataPropertyName = "FullDeclaration",
                 HeaderText = "Parameter",
                 ReadOnly = true,
-                // Width = 262,    // fits nice
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill // fits even nicer ;)
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
 
             
