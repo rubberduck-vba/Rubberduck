@@ -255,4 +255,8 @@
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Reorder parameters</value>
   </data>
+  <data name="ReorderPresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Reorder interface member parameters?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
 </root>
