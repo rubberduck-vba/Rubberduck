@@ -651,6 +651,8 @@
   <ItemGroup>
     <None Include="Resources\Rubberduck.png" />
     <None Include="Resources\hourglass.png" />
+    <None Include="Resources\arrow-090.png" />
+    <None Include="Resources\arrow-270.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />

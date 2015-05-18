@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.SourceControl;
-using stdole;
 
 namespace Rubberduck.UI.SourceControl
 {
