@@ -72,23 +72,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            AdjustSignature();
+            AdjustSignatures();
             AdjustReferences();
-
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
-            {
-                foreach (var reference in _declarations.FindEventProcedures(withEvents))
-                {
-                    AdjustSignature(reference);
-                }
-            }
-
-            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_view.Target.Project) && item.IdentifierName.Contains(_view.Target.ComponentName));
-            foreach (var interfaceImplentation in interfaceImplementations)
-            {
-                AdjustSignature(interfaceImplentation);
-            }
         }
 
         private void AdjustReferences()
@@ -163,7 +148,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        private void AdjustSignature()
+        private void AdjustSignatures()
         {
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
@@ -178,7 +163,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 if (setter != null)
                 {
-                    AdjustSignature(setter);
+                    AdjustSignatures(setter);
                 }
 
                 var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
@@ -187,14 +172,30 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 if (letter != null)
                 {
-                    AdjustSignature(letter);
+                    AdjustSignatures(letter);
                 }
             }
 
             RewriteSignature(argList, module);
+
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            {
+                foreach (var reference in _declarations.FindEventProcedures(withEvents))
+                {
+                    AdjustSignatures(reference);
+                }
+            }
+
+            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                                                        .Where(item => item.Project.Equals(_view.Target.Project) &&
+                                                               item.IdentifierName == _view.Target.ComponentName + "_" + _view.Target.IdentifierName);
+            foreach (var interfaceImplentation in interfaceImplementations)
+            {
+                AdjustSignatures(interfaceImplentation);
+            }
         }
 
-        private void AdjustSignature(IdentifierReference reference)
+        private void AdjustSignatures(IdentifierReference reference)
         {
             var proc = (dynamic)reference.Context.Parent;
             var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -203,7 +204,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             RewriteSignature(argList, module);
         }
 
-        private void AdjustSignature(Declaration reference)
+        private void AdjustSignatures(Declaration reference)
         {
             var proc = (dynamic)reference.Context.Parent;
             var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
