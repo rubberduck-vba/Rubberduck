@@ -7,9 +7,9 @@
         public int Index { get; private set; }
         public bool IsOptional { get; private set; }
 
-        public Parameter(string identifierName, string fullDeclaration, int index)
+        public Parameter(/*string identifierName, */string fullDeclaration, int index)
         {
-            IdentifierName = identifierName;
+            //IdentifierName = identifierName;
             FullDeclaration = fullDeclaration;
             Index = index;
             IsOptional = FullDeclaration.Contains("Optional");
