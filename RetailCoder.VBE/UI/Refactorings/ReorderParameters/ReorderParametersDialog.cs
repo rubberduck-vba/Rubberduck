@@ -11,6 +11,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     {
         public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;
+        private Rectangle _dragBoxFromMouseDown;
+        Point _startPoint;
+        private int _newRowIndex;
 
         public ReorderParametersDialog()
         {
@@ -41,17 +44,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             SelectionChanged();
         }
 
-        private Rectangle dragBoxFromMouseDown;
-        Point startPoint;
-        private int newRowIndex;
         private void MethodParametersGrid_MouseMove(object sender, MouseEventArgs e)
         {
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
             {
-                if (dragBoxFromMouseDown != Rectangle.Empty && !dragBoxFromMouseDown.Contains(e.X, e.Y))
+                if (_dragBoxFromMouseDown != Rectangle.Empty && !_dragBoxFromMouseDown.Contains(e.X, e.Y))
                 {
-                    DragDropEffects dropEffect = MethodParametersGrid.DoDragDrop(
-                          MethodParametersGrid.Rows[newRowIndex],
+                    var dropEffect = MethodParametersGrid.DoDragDrop(
+                          MethodParametersGrid.Rows[_newRowIndex],
                           DragDropEffects.Move);
                 }
             }
@@ -59,18 +59,18 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MethodParametersGrid_MouseDown(object sender, MouseEventArgs e)
         {
-            newRowIndex = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
+            _newRowIndex = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
 
-            if (newRowIndex == -1)
+            if (_newRowIndex == -1)
             {
-                dragBoxFromMouseDown = Rectangle.Empty;
+                _dragBoxFromMouseDown = Rectangle.Empty;
                 return;
             }
 
-            startPoint = new Point(e.X, e.Y);
+            _startPoint = new Point(e.X, e.Y);
 
-            Size dragSize = SystemInformation.DragSize;
-            dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
+            var dragSize = SystemInformation.DragSize;
+            _dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
         }
 
         private void MethodParametersGrid_DragOver(object sender, DragEventArgs e)
@@ -80,15 +80,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MethodParametersGrid_DragDrop(object sender, DragEventArgs e)
         {
-            Point clientPoint = MethodParametersGrid.PointToClient(new Point(e.X, e.Y));
+            var clientPoint = MethodParametersGrid.PointToClient(new Point(e.X, e.Y));
 
-            if (e.Effect == DragDropEffects.Move && newRowIndex != -1)
+            if (e.Effect == DragDropEffects.Move && _newRowIndex != -1)
             {
                 var rowIndexOfItemUnderMouse = MethodParametersGrid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
 
                 if (rowIndexOfItemUnderMouse < 0)
                 {
-                    if (clientPoint.Y < startPoint.Y)
+                    if (clientPoint.Y < _startPoint.Y)
                     {
                         rowIndexOfItemUnderMouse = 0;
                     }
@@ -98,8 +98,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     }
                 }
 
-                var tmp = Parameters.ElementAt(newRowIndex);
-                Parameters.RemoveAt(newRowIndex);
+                var tmp = Parameters.ElementAt(_newRowIndex);
+                Parameters.RemoveAt(_newRowIndex);
                 Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
                 ReselectParameter();
             }
