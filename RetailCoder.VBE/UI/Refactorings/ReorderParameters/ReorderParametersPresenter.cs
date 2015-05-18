@@ -105,12 +105,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
                 catch
                 {
-                    // update letter methods - needs proper fixing
-                    if (reference.Context.Parent.GetText().Contains("Property Let"))
-                    {
-                        AdjustSignature(reference);
-                    }
-
                     continue;
                 }
 
@@ -169,7 +163,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var argList = (VBAParser.ArgListContext)proc.argList();
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            // if we are reordering a property getter, check if we need to reorder a setter too
+            // if we are reordering a property getter, check if we need to reorder a letter/setter too
             if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
@@ -179,6 +173,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 if (setter != null)
                 {
                     AdjustSignature(setter);
+                }
+
+                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
+                              item.IdentifierName == _view.Target.IdentifierName &&
+                              item.DeclarationType == DeclarationType.PropertyLet);
+
+                if (letter != null)
+                {
+                    AdjustSignature(letter);
                 }
             }
 
@@ -200,7 +203,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
             VBAParser.ArgListContext argList;
 
-            if (reference.DeclarationType == DeclarationType.PropertySet)
+            if (reference.DeclarationType == DeclarationType.PropertySet || reference.DeclarationType == DeclarationType.PropertyLet)
             {
                 argList = (VBAParser.ArgListContext)proc.children[0].argList();
             }
