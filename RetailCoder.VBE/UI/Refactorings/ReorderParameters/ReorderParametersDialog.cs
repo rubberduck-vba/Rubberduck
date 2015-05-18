@@ -42,7 +42,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         }
 
         private Rectangle dragBoxFromMouseDown;
-        private int rowIndexFromMouseDown;
+        Point startPoint;
+        private int newRowIndex;
         private void MethodParametersGrid_MouseMove(object sender, MouseEventArgs e)
         {
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
@@ -50,7 +51,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 if (dragBoxFromMouseDown != Rectangle.Empty && !dragBoxFromMouseDown.Contains(e.X, e.Y))
                 {
                     DragDropEffects dropEffect = MethodParametersGrid.DoDragDrop(
-                          MethodParametersGrid.Rows[rowIndexFromMouseDown],
+                          MethodParametersGrid.Rows[newRowIndex],
                           DragDropEffects.Move);
                 }
             }
@@ -58,13 +59,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MethodParametersGrid_MouseDown(object sender, MouseEventArgs e)
         {
-            rowIndexFromMouseDown = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
+            newRowIndex = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
 
-            if (rowIndexFromMouseDown == -1)
+            if (newRowIndex == -1)
             {
                 dragBoxFromMouseDown = Rectangle.Empty;
                 return;
             }
+
+            startPoint = new Point(e.X, e.Y);
 
             Size dragSize = SystemInformation.DragSize;
             dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
@@ -79,11 +82,23 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             Point clientPoint = MethodParametersGrid.PointToClient(new Point(e.X, e.Y));
 
-            if (e.Effect == DragDropEffects.Move)
+            if (e.Effect == DragDropEffects.Move && newRowIndex != -1)
             {
-                var rowIndexOfItemUnderMouseToDrop = MethodParametersGrid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+                var rowIndexOfItemUnderMouse = MethodParametersGrid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
 
-                SwapParameters(rowIndexFromMouseDown, rowIndexOfItemUnderMouseToDrop);
+                if (rowIndexOfItemUnderMouse < 0)
+                {
+                    if (clientPoint.Y < startPoint.Y)
+                    {
+                        rowIndexOfItemUnderMouse = 0;
+                    }
+                    else
+                    {
+                        rowIndexOfItemUnderMouse = Parameters.Count - 1;
+                    }
+                }
+
+                SwapParameters(newRowIndex, rowIndexOfItemUnderMouse);
                 ReselectParameter();
             }
         }
@@ -97,6 +112,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MethodParametersGrid.MultiSelect = false;
             MethodParametersGrid.AllowUserToResizeRows = false;
             MethodParametersGrid.AllowDrop = true;
+            MethodParametersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
             var column = new DataGridViewTextBoxColumn
             {
@@ -106,8 +122,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 ReadOnly = true,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
-
-            
 
             MethodParametersGrid.Columns.Add(column);
             _selectedItem = Parameters[0];
@@ -169,6 +183,22 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void SwapParameters(int index1, int index2)
         {
+            /*if (index1 < 0)
+            {
+                index1 = 0;
+            }
+            if (index2 < 0)
+            {
+                index2 = 0;
+            }
+            if (index1 >= Parameters.Count)
+            {
+                index1 = Parameters.Count - 1;
+            }
+            if (index2 >= Parameters.Count)
+            {
+                index2 = Parameters.Count - 1;
+            }*/
             var tmp = Parameters[index1];
             Parameters[index1] = Parameters[index2];
             Parameters[index2] = tmp;
