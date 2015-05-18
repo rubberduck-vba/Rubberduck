@@ -96,12 +96,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MoveDownButtonClicked(object sender, EventArgs e)
         {
-            if (MethodParametersGrid.CurrentRow == null)
+            if (MethodParametersGrid.SelectedRows.Count == 0)
             {
                 return;
             }
 
-            var selectedIndex = MethodParametersGrid.CurrentRow.Index;
+            var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
 
             // todo: move to some "SwapParameters" private method
             var tmp = Parameters[selectedIndex];
