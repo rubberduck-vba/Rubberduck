@@ -210,16 +210,21 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\SourceControlConfiguration.cs" />
@@ -255,9 +260,21 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
+    <Compile Include="UI\GoToAnything\DeclarationImageConverter.cs" />
+    <Compile Include="UI\GoToAnything\GoToAnythingControl.xaml.cs">
+      <DependentUpon>GoToAnythingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GoToAnything\GoToAnythingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\GoToAnything\GoToAnythingDialog.Designer.cs">
+      <DependentUpon>GoToAnythingDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GoToAnything\SearchResult.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
       <SubType>UserControl</SubType>
@@ -550,6 +567,9 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\GoToAnything\GoToAnythingDialog.resx">
+      <DependentUpon>GoToAnythingDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -714,120 +734,119 @@
     <None Include="Resources\github_circle_black-128.png" />
     <None Include="Resources\facebook-circle-256.png" />
     <None Include="Resources\google-circle-512.png" />
-    <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
-    <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
-    <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />
-    <Content Include="Resources\Microsoft\AddMethod_5562_32.bmp" />
-    <Content Include="Resources\Microsoft\AddModule_368_32.bmp" />
-    <Content Include="Resources\Microsoft\AddProperty_5538_32.bmp" />
-    <Content Include="Resources\Microsoft\AddVariable_5541_32.bmp" />
-    <Content Include="Resources\Microsoft\AllLoadedTests_8644_24.bmp" />
-    <Content Include="Resources\Microsoft\DisplayFullSignature_13393_32.bmp" />
-    <Content Include="Resources\Microsoft\DisplayName_13394_32.bmp" />
-    <Content Include="Resources\Microsoft\document.bmp" />
-    <Content Include="Resources\Microsoft\ExportTestRunResults_8602_32.bmp" />
-    <Content Include="Resources\Microsoft\ExtractInterface_6778_32.bmp" />
-    <Content Include="Resources\Microsoft\ExtractMethod_6786_32.bmp" />
-    <Content Include="Resources\Microsoft\FindSymbol_6263_32.bmp" />
-    <Content Include="Resources\Microsoft\GenerateMethod_476_32.bmp" />
-    <Content Include="Resources\Microsoft\GroupBy_284_32.bmp" />
-    <Content Include="Resources\Microsoft\ImplementInterface_5540_32.bmp" />
-    <Content Include="Resources\Microsoft\NewConstant_6861_32.bmp" />
-    <Content Include="Resources\Microsoft\NewEvent_6856_32.bmp" />
-    <Content Include="Resources\Microsoft\Options.bmp" />
-    <Content Include="Resources\Microsoft\Play.bmp" />
-    <Content Include="Resources\Microsoft\PromoteLocal_6784_32.bmp" />
-    <Content Include="Resources\Microsoft\recursion_6229_24.bmp" />
-    <Content Include="Resources\Microsoft\Refresh.bmp" />
-    <Content Include="Resources\Microsoft\RemoveParameters_6781_32.bmp" />
-    <Content Include="Resources\Microsoft\ReorderParameters_6780_32.bmp" />
-    <Content Include="Resources\Microsoft\RunCheckedTest_10484_32.bmp" />
-    <Content Include="Resources\Microsoft\Services.bmp" />
-    <Content Include="Resources\Microsoft\Task.bmp" />
-    <Content Include="Resources\Microsoft\TestManager_8590_32.bmp" />
-    <Content Include="Resources\Microsoft\TestMethod.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed_hidden.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed_virtual.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open_hidden.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open_virtual.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Assembly.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumPrivate.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Library.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueTypePrivate.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSProject_form.bmp" />
-    <Content Include="Resources\Microsoft\VSProject_reference.bmp" />
+    <Resource Include="Resources\Microsoft\AddClass_5561_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddForm_369_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddMethod_5562_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddModule_368_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddProperty_5538_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddVariable_5541_32.bmp" />
+    <Resource Include="Resources\Microsoft\AllLoadedTests_8644_24.bmp" />
+    <Resource Include="Resources\Microsoft\DisplayFullSignature_13393_32.bmp" />
+    <Resource Include="Resources\Microsoft\DisplayName_13394_32.bmp" />
+    <Resource Include="Resources\Microsoft\document.bmp" />
+    <Resource Include="Resources\Microsoft\ExportTestRunResults_8602_32.bmp" />
+    <Resource Include="Resources\Microsoft\ExtractInterface_6778_32.bmp" />
+    <Resource Include="Resources\Microsoft\ExtractMethod_6786_32.bmp" />
+    <Resource Include="Resources\Microsoft\FindSymbol_6263_32.bmp" />
+    <Resource Include="Resources\Microsoft\GenerateMethod_476_32.bmp" />
+    <Resource Include="Resources\Microsoft\GroupBy_284_32.bmp" />
+    <Resource Include="Resources\Microsoft\ImplementInterface_5540_32.bmp" />
+    <Resource Include="Resources\Microsoft\NewConstant_6861_32.bmp" />
+    <Resource Include="Resources\Microsoft\NewEvent_6856_32.bmp" />
+    <Resource Include="Resources\Microsoft\Options.bmp" />
+    <Resource Include="Resources\Microsoft\Play.bmp" />
+    <Resource Include="Resources\Microsoft\PromoteLocal_6784_32.bmp" />
+    <Resource Include="Resources\Microsoft\recursion_6229_24.bmp" />
+    <Resource Include="Resources\Microsoft\Refresh.bmp" />
+    <Resource Include="Resources\Microsoft\RemoveParameters_6781_32.bmp" />
+    <Resource Include="Resources\Microsoft\ReorderParameters_6780_32.bmp" />
+    <Resource Include="Resources\Microsoft\Services.bmp" />
+    <Resource Include="Resources\Microsoft\Task.bmp" />
+    <Resource Include="Resources\Microsoft\TestManager_8590_32.bmp" />
+    <Resource Include="Resources\Microsoft\TestMethod.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed_hidden.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed_virtual.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open_hidden.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open_virtual.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Assembly.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumPrivate.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Library.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueTypePrivate.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSProject_form.bmp" />
+    <Resource Include="Resources\Microsoft\VSProject_reference.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
@@ -847,6 +866,12 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\GoToAnything\GoToAnythingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

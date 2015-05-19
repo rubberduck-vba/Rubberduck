@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.UI.GoToAnything;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.UI.Refactorings.Rename;
@@ -65,6 +66,7 @@ namespace Rubberduck.UI
             _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
+            InitializeGoToAnythingContextMenu();
         }
 
         private CommandBarButton _findAllReferencesContextMenu;
@@ -74,6 +76,27 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _findAllReferencesContextMenu.Caption = "&Find all references...";
             _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
+        }
+
+        private CommandBarButton _gotoAnythingContextMenu;
+        private void InitializeGoToAnythingContextMenu()
+        {
+            var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
+            _gotoAnythingContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _gotoAnythingContextMenu.Caption = "&Navigate...";
+            _gotoAnythingContextMenu.Click += _gotoAnythingContextMenu_Click;
+        }
+
+        private void _gotoAnythingContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
+            var vm = new GoToAnythingViewModel(declarations.Items.Where(item => !item.IsBuiltIn));
+            using (var view = new GoToAnythingDialog(vm))
+            {
+                view.ShowDialog();
+
+                // todo: actually implement "goto" feature
+            }
         }
 
         private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)

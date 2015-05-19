@@ -313,4 +313,229 @@
   <data name="arrow-270" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-270.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="VSObject_Class" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Class_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Class_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Constant_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Constant_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Enum.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumItem_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_EnumPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_EnumPrivate.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Enum_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Enum_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Enum_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Enum_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Enum_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Event_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Event_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Field_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Field_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Library" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Library.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Method_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Method_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Module_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Module_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Properties_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Properties_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Structure_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Structure_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_Type_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_Type_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueType.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueTypePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueTypePrivate.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueType_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueType_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueType_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSObject_ValueType_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSObject_ValueType_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSProject_form1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSProject_form.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VSProject_reference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\VSProject_reference.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
