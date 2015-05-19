@@ -70,6 +70,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No references for &apos;{0}&apos; found..
+        /// </summary>
+        internal static string AllReferences_NoneFound {
+            get {
+                return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string CancelButtonText {
@@ -399,6 +408,24 @@ namespace Rubberduck.UI {
         internal static string ReorderParamsDialog_MoveUpButtonText {
             get {
                 return ResourceManager.GetString("ReorderParamsDialog_MoveUpButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional parameters must be specified at the end of the parameter list..
+        /// </summary>
+        internal static string ReorderParamsDialog_OptionalVariableError {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_OptionalVariableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ParamArrays must be specified at the end of the parameter list..
+        /// </summary>
+        internal static string ReorderParamsDialog_ParamArrayError {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_ParamArrayError", resourceCulture);
             }
         }
         

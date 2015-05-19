@@ -17,10 +17,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _view = view;
-            _view.OkButtonClicked += OnOkButtonClicked;
-
             _declarations = parseResult.Declarations;
             _selection = selection;
+
+            _view.OkButtonClicked += OnOkButtonClicked;
         }
 
         public void Show()
@@ -65,8 +65,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (!_view.Parameters.ElementAt(index).IsOptional)
                     {
-                        var message = "Optional parameters must be specified at the end of the parameter list.";
-                        MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(RubberduckUI.ReorderParamsDialog_OptionalVariableError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -77,8 +76,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 if (indexOfParamArray != _view.Parameters.Count - 1)
                 {
-                    var message = "ParamArrays must be specified at the end of the parameter list.";
-                    MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(RubberduckUI.ReorderParamsDialog_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -286,7 +284,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 target = _declarations.Items
                     .Where(item => item.QualifiedName.MemberName == target.ParentScope.Substring(target.ParentScope.LastIndexOf('.') + 1)
-                                && item.Scope == target.ParentScope).First();
+                                && item.Scope == target.ParentScope).FirstOrDefault();
             }
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)

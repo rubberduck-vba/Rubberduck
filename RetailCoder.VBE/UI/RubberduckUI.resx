@@ -259,4 +259,14 @@
     <value>Method '{0}' implements '{1}.{2}'. Reorder interface member parameters?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>No references for '{0}' found.</value>
+    <comment>0: IdentifierName</comment>
+  </data>
+  <data name="ReorderParamsDialog_OptionalVariableError" xml:space="preserve">
+    <value>Optional parameters must be specified at the end of the parameter list.</value>
+  </data>
+  <data name="ReorderParamsDialog_ParamArrayError" xml:space="preserve">
+    <value>ParamArrays must be specified at the end of the parameter list.</value>
+  </data>
 </root>

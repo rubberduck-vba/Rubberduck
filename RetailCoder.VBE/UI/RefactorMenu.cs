@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -116,6 +117,12 @@ namespace Rubberduck.UI
                     // trying again will work (I know, that's bad bad bad code)
                     ShowReferencesToolwindow(target);
                 }
+            }
+            else
+            {
+                var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
+                var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
