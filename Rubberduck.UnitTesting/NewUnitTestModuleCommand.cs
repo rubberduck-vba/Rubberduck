@@ -9,7 +9,7 @@ namespace Rubberduck.UnitTesting
     {
         private static readonly string TestModuleEmptyTemplate = string.Concat(
                  "'@TestModule\n"
-                ,"Private Assert As New Rubberduck.AssertClass\n\n"
+                , "Private Assert As New Rubberduck_UnitTesting.AssertClass\n\n"
                 ,"'@ModuleInitialize\n"
                 ,"Public Sub ModuleInitialize()\n"
                 ,"    'this method runs once per module.\n"
