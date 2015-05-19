@@ -283,11 +283,23 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                      || IsSelectedReference(selection, item));
 
+            if (target == null || !ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                target = FindTarget(target, selection);
+            }
+
             while (target != null && !ValidDeclarationTypes.Contains(target.DeclarationType))
             {
-                target = _declarations.Items
-                    .Where(item => item.QualifiedName.MemberName == target.ParentScope.Substring(target.ParentScope.LastIndexOf('.') + 1)
-                                && item.Scope == target.ParentScope).FirstOrDefault();
+                var newTarget = FindTarget(target, selection);
+
+                if (newTarget == target)
+                {
+                    target = null;
+                }
+                else
+                {
+                    target = newTarget;
+                }
             }
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
@@ -304,6 +316,114 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
+        }
+
+        private Declaration FindTarget(Declaration target, QualifiedSelection selection)
+        {
+            var possibleDeclarations = _declarations.Items
+                                    .Where(item => !item.IsBuiltIn
+                                                && item.ComponentName == selection.QualifiedName.ComponentName)
+                                    .GroupBy(item => item.References);
+
+            var startLine = 0;
+            var startColumn = 0;
+            var endLine = uint.MaxValue;
+            var endColumn = uint.MaxValue;
+
+            foreach (var declaration in possibleDeclarations)
+            {
+                foreach (var value in declaration)
+                {
+                    if (value.Context == null) { continue; }
+                    var proc = (dynamic)value.Context.Parent;
+                    var module = value.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                    List<VBAParser.ArgListContext> argLists = new List<VBAParser.ArgListContext>();
+
+                    /*if (value.DeclarationType == DeclarationType.PropertySet || 
+                        value.DeclarationType == DeclarationType.PropertyLet ||
+                        value.DeclarationType == DeclarationType.Parameter)*/
+                    {
+                        foreach (var child in proc.children)
+                        {
+                            try
+                            {
+                                argLists.Add((VBAParser.ArgListContext)child.argList());
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    /*else
+                    {
+                        argLists.Add((VBAParser.ArgListContext)proc.subStmt().argList());
+                    }*/
+
+                    foreach (var argList in argLists)
+                    {
+                        if (argList.Start.Line <= selection.Selection.StartLine &&
+                            argList.Start.Line >= startLine &&
+                            argList.Stop.Line >= selection.Selection.EndLine &&
+                            argList.Stop.Line <= endLine)
+                        {
+                            if (argList.Start.Line == selection.Selection.StartLine)
+                            {
+                                if (argList.Start.Column > selection.Selection.StartColumn)
+                                {
+                                    continue;
+                                }
+                            }
+                            if (argList.Stop.Line == selection.Selection.EndLine)
+                            {
+                                if (argList.Stop.Column + argList.Stop.Text.Length + 1 < selection.Selection.EndColumn)
+                                {
+                                    continue;
+                                }
+                            }
+                            target = value;
+                        }
+                    }
+                }
+
+                foreach (var reference in declaration.Key)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+                    var module = reference.QualifiedModuleName.Component.CodeModule;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (argList == null)
+                    {
+                        continue;
+                    }
+
+                    if (argList.Start.Line <= selection.Selection.StartLine &&
+                        argList.Start.Line >= startLine &&
+                        argList.Start.Column <= selection.Selection.StartColumn &&
+                        argList.Start.Column >= startColumn &&
+                        argList.Stop.Line >= selection.Selection.EndLine &&
+                        argList.Stop.Line <= endLine &&
+                        argList.Stop.Column + argList.Stop.Text.Length + 1 >= selection.Selection.EndColumn &&
+                        argList.Stop.Column + argList.Stop.Text.Length + 1 <= endColumn)
+                    {
+                        target = reference.Declaration;
+                    }
+                }
+            }
+
+            return target;
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target)
