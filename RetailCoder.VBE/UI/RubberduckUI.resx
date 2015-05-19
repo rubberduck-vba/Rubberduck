@@ -255,4 +255,7 @@
   <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
     <value>Reorder parameters</value>
   </data>
+  <data name="DeclarationType_Control" xml:space="preserve">
+    <value>control</value>
+  </data>
 </root>

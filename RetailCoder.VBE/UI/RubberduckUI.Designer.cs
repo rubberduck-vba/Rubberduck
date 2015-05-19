@@ -115,6 +115,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to control.
+        /// </summary>
+        internal static string DeclarationType_Control {
+            get {
+                return ResourceManager.GetString("DeclarationType_Control", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to enum.
         /// </summary>
         internal static string DeclarationType_Enumeration {
