@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing;
@@ -31,7 +32,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 LoadParameters();
 
-                if (_view.Parameters.Count < 2) { return ;}
+                if (_view.Parameters.Count < 2) { return; }
 
                 _view.InitializeParameterGrid();
                _view.ShowDialog();
@@ -82,12 +83,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             AdjustSignatures();
-            AdjustReferences();
+            AdjustReferences(_view.Target.References);
         }
 
-        private void AdjustReferences()
+        private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
-            foreach (var reference in _view.Target.References.Where(item => item.Context != _view.Target.Context))
+            foreach (var reference in references.Where(item => item.Context != _view.Target.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -201,6 +202,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
+
+                AdjustReferences(interfaceImplentation.References);
             }
         }
 
