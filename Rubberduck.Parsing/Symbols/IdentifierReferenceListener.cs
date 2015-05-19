@@ -253,14 +253,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declaration != null)
             {
                 var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
+                declaration.AddReference(reference); // doesn't re-add an existing one
+                return true;
 
-                // thread-local copy
-                var references = declaration.References.ToList();
-                if (!references.Select(r => r.Context).Contains(reference.Context))
-                {
-                    declaration.AddReference(reference);
-                    return true;
-                }
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
             }
 
