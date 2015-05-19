@@ -369,15 +369,6 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Reorder Parameters.
         /// </summary>
-        internal static string ReorderParametersDialog_Caption {
-            get {
-                return ResourceManager.GetString("ReorderParametersDialog_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck - Reorder Parameters.
-        /// </summary>
         internal static string ReorderParamsDialog_Caption {
             get {
                 return ResourceManager.GetString("ReorderParamsDialog_Caption", resourceCulture);
@@ -412,29 +403,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reorder parameters.
+        /// </summary>
+        internal static string ReorderParamsDialog_TitleText {
+            get {
+                return ResourceManager.GetString("ReorderParamsDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less than two variables in method &apos;{0}&apos;..
+        /// </summary>
+        internal static string ReorderPresenter_LessThanTwoVariablesError {
+            get {
+                return ResourceManager.GetString("ReorderPresenter_LessThanTwoVariablesError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Optional parameters must be specified at the end of the parameter list..
         /// </summary>
-        internal static string ReorderParamsDialog_OptionalVariableError {
+        internal static string ReorderPresenter_OptionalVariableError {
             get {
-                return ResourceManager.GetString("ReorderParamsDialog_OptionalVariableError", resourceCulture);
+                return ResourceManager.GetString("ReorderPresenter_OptionalVariableError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ParamArrays must be specified at the end of the parameter list..
         /// </summary>
-        internal static string ReorderParamsDialog_ParamArrayError {
+        internal static string ReorderPresenter_ParamArrayError {
             get {
-                return ResourceManager.GetString("ReorderParamsDialog_ParamArrayError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reorder parameters.
-        /// </summary>
-        internal static string ReorderParamsDialog_TitleText {
-            get {
-                return ResourceManager.GetString("ReorderParamsDialog_TitleText", resourceCulture);
+                return ResourceManager.GetString("ReorderPresenter_ParamArrayError", resourceCulture);
             }
         }
         

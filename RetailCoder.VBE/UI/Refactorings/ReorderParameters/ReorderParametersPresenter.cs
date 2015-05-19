@@ -32,7 +32,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 LoadParameters();
 
-                if (_view.Parameters.Count < 2) { return; }
+                if (_view.Parameters.Count < 2) 
+                {
+                    var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoVariablesError, _view.Target.IdentifierName);
+                    MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return; 
+                }
 
                 _view.InitializeParameterGrid();
                _view.ShowDialog();
@@ -66,7 +71,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (!_view.Parameters.ElementAt(index).IsOptional)
                     {
-                        MessageBox.Show(RubberduckUI.ReorderParamsDialog_OptionalVariableError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalVariableError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -77,7 +82,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 if (indexOfParamArray != _view.Parameters.Count - 1)
                 {
-                    MessageBox.Show(RubberduckUI.ReorderParamsDialog_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -332,33 +337,24 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             foreach (var declaration in possibleDeclarations)
             {
-                foreach (var value in declaration)
+                foreach (var reference in declaration)
                 {
-                    if (value.Context == null) { continue; }
-                    var proc = (dynamic)value.Context.Parent;
-                    var module = value.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                    if (reference.Context == null) { continue; }
+                    var proc = (dynamic)reference.Context.Parent;
+                    var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
                     List<VBAParser.ArgListContext> argLists = new List<VBAParser.ArgListContext>();
 
-                    /*if (value.DeclarationType == DeclarationType.PropertySet || 
-                        value.DeclarationType == DeclarationType.PropertyLet ||
-                        value.DeclarationType == DeclarationType.Parameter)*/
+                    foreach (var child in proc.children)
                     {
-                        foreach (var child in proc.children)
+                        try
                         {
-                            try
-                            {
-                                argLists.Add((VBAParser.ArgListContext)child.argList());
-                            }
-                            catch
-                            {
-                                continue;
-                            }
+                            argLists.Add((VBAParser.ArgListContext)child.argList());
+                        }
+                        catch
+                        {
+                            continue;
                         }
                     }
-                    /*else
-                    {
-                        argLists.Add((VBAParser.ArgListContext)proc.subStmt().argList());
-                    }*/
 
                     foreach (var argList in argLists)
                     {
@@ -381,7 +377,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                                     continue;
                                 }
                             }
-                            target = value;
+                            target = reference;
                         }
                     }
                 }

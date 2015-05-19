@@ -40,7 +40,7 @@ namespace Rubberduck.UI
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
             _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
-            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
 
             InitializeRefactorContextMenu();
         }
@@ -61,9 +61,13 @@ namespace Rubberduck.UI
 
             var extractMethodIcon = Resources.ExtractMethod_6786_32;
             extractMethodIcon.MakeTransparent(Color.White);
+
+            var reorderParamsIcon = Resources.ReorderParameters_6780_32;
+            reorderParamsIcon.MakeTransparent(Color.White);
+
             _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
-            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick, reorderParamsIcon);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
         }

@@ -222,9 +222,6 @@
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
-  <data name="ReorderParametersDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Reorder Parameters</value>
-  </data>
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspecting...</value>
   </data>
@@ -263,10 +260,14 @@
     <value>No references for '{0}' found.</value>
     <comment>0: IdentifierName</comment>
   </data>
-  <data name="ReorderParamsDialog_OptionalVariableError" xml:space="preserve">
+  <data name="ReorderPresenter_OptionalVariableError" xml:space="preserve">
     <value>Optional parameters must be specified at the end of the parameter list.</value>
   </data>
-  <data name="ReorderParamsDialog_ParamArrayError" xml:space="preserve">
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>ParamArrays must be specified at the end of the parameter list.</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoVariablesError" xml:space="preserve">
+    <value>Less than two variables in method '{0}'.</value>
+    <comment>0: Selected target</comment>
   </data>
 </root>
