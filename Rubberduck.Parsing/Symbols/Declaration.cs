@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
@@ -75,7 +76,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddReference(IdentifierReference reference)
         {
-            _references.Add(reference);
+            if (!_references.Select(r => r.Context).Contains(reference.Context) && reference.Context.Parent != Context)
+            {
+                _references.Add(reference);
+            }
         }
 
         private readonly Selection _selection;

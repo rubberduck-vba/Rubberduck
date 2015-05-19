@@ -224,6 +224,42 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private Stack<Declaration> _parentMember;
+        public override void EnterECS_MemberProcedureCall(VBAParser.ECS_MemberProcedureCallContext context)
+        {
+            var implicitCall = context.implicitCallStmt_InStmt();
+            var member = Resolve(implicitCall.iCS_S_VariableOrProcedureCall())
+                         ?? Resolve(implicitCall.iCS_S_ProcedureOrArrayCall())
+                         ?? Resolve(implicitCall.iCS_S_DictionaryCall())
+                         ?? Resolve(implicitCall.iCS_S_MembersCall());
+
+            if (member == null && implicitCall.Start.Text == Tokens.Me)
+            {
+                member = _declarations[_qualifiedName.ComponentName].SingleOrDefault(item => item.DeclarationType == DeclarationType.Class);
+            }
+            if (member == null)
+            {
+                return;
+            }
+
+            EnterIdentifier(member.Context, member.Selection);
+
+            var identifier = context.ambiguousIdentifier();
+            EnterIdentifier(identifier, identifier.GetSelection());
+        }
+
+        public override void EnterECS_ProcedureCall(VBAParser.ECS_ProcedureCallContext context)
+        {
+            var identifier = context.ambiguousIdentifier();
+            EnterIdentifier(identifier, identifier.GetSelection());
+        }
+
+        public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
+        {
+            var member = Resolve(context);
+            EnterIdentifier(member.Context, member.Selection);
+        }
+
         private bool IsAssignmentContext(ParserRuleContext context)
         {
             return context.Parent is VBAParser.ForNextStmtContext
@@ -246,6 +282,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
+            if (context == null)
+            {
+                return false;
+            }
+
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
 
@@ -458,7 +499,9 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parentCall == null)
             {
-                return null;
+                return parent.Start.Text == Tokens.Me 
+                    ? _declarations[_qualifiedName.ComponentName].SingleOrDefault(item => item.DeclarationType == DeclarationType.Class)
+                    : null;
             }
 
             var type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
