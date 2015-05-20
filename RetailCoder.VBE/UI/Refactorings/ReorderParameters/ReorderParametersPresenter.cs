@@ -24,6 +24,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _view.OkButtonClicked += OnOkButtonClicked;
         }
 
+        /// <summary>
+        /// Displays the Refactor Parameters dialog window.
+        /// </summary>
         public void Show()
         {
             AcquireTarget(_selection);
@@ -44,6 +47,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Loads the parameters into the dialog window.
+        /// </summary>
         private void LoadParameters()
         {
             var procedure = (dynamic)_view.Target.Context;
@@ -57,6 +63,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Handler for OK button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
             if (!_view.Parameters.Where((t, i) => t.Index != i).Any())
@@ -91,6 +102,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             AdjustReferences(_view.Target.References);
         }
 
+        /// <summary>
+        /// Adjusts references to method call.
+        /// </summary>
+        /// <param name="references">An IEnumberable of IdentifierReference's</param>
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
             foreach (var reference in references.Where(item => item.Context != _view.Target.Context))
@@ -120,6 +135,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Rewrites method calls.
+        /// </summary>
+        /// <param name="reference">The reference to the method call to be re-written.</param>
+        /// <param name="argList">The ArgsCallContext of the reference.</param>
+        /// <param name="module">The CodeModule to rewrite to.</param>
         private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext argList, Microsoft.Vbe.Interop.CodeModule module)
         {
             var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
@@ -163,6 +184,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Adjust the signature of a selected method.
+        /// Handles setters and letters when a getter is adjusted.
+        /// </summary>
         private void AdjustSignatures()
         {
             var proc = (dynamic)_view.Target.Context;
@@ -212,6 +237,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Adjust the signature of a reference to a given method.
+        /// Used for letters.
+        /// </summary>
+        /// <param name="reference">A reference to the method signature to adjust.</param>
         private void AdjustSignatures(IdentifierReference reference)
         {
             var proc = (dynamic)reference.Context.Parent;
@@ -221,6 +251,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             RewriteSignature(argList, module);
         }
 
+        /// <summary>
+        /// Adjust the signature of a declaration of a given method.
+        /// </summary>
+        /// <param name="reference">A Declaration of the method signature to adjust.</param>
         private void AdjustSignatures(Declaration reference)
         {
             var proc = (dynamic)reference.Context.Parent;
@@ -239,6 +273,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             RewriteSignature(argList, module);
         }
 
+        /// <summary>
+        /// Rewrites the signature of a given method.
+        /// </summary>
+        /// <param name="argList">The ArgListContext of the method signature being adjusted.</param>
+        /// <param name="module">The CodeModule of the method signature being adjusted.</param>
         private void RewriteSignature(VBAParser.ArgListContext argList, Microsoft.Vbe.Interop.CodeModule module)
         {
             var args = argList.arg();
@@ -271,6 +310,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Declaration types that contain parameters that that can be adjusted.
+        /// </summary>
         private static readonly DeclarationType[] ValidDeclarationTypes =
             {
                  DeclarationType.Event,
@@ -281,17 +323,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                  DeclarationType.PropertySet
             };
 
+        /// <summary>
+        /// Get the target Declaration to adjust.
+        /// </summary>
+        /// <param name="selection">The user selection specifying which method signature to adjust.</param>
         private void AcquireTarget(QualifiedSelection selection)
         {
-            var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                     || IsSelectedReference(selection, item));
+            Declaration target;
 
-            if (target == null || !ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                FindTarget(ref target, selection);
-            }
+            FindTarget(target, selection);
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
             {
@@ -309,8 +349,23 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _view.Target = target;
         }
 
+        /// <summary>
+        /// Gets the target to adjust given a selection.
+        /// </summary>
+        /// <param name="target">The value to place the target in.</param>
+        /// <param name="selection">The user selection specifying what method signature to adjust.</param>
         private void FindTarget(ref Declaration target, QualifiedSelection selection)
         {
+            target = _declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                     || IsSelectedReference(selection, item));
+
+            if (target != null && ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                return;
+            }
+
             var targets = _declarations.Items
                 .Where(item => !item.IsBuiltIn
                             && item.ComponentName == selection.QualifiedName.ComponentName
@@ -377,6 +432,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Displays a prompt asking the user whether the method signature should be adjusted
+        /// if the target declaration implements an interface method.
+        /// </summary>
+        /// <param name="target">The target declaration.</param>
         private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
             var declaration = target;
