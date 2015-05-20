@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck
 {
-    public partial class App : IDisposable
+    public class App : IDisposable
     {
         private readonly RubberduckMenu _menu;
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
@@ -31,8 +31,6 @@ namespace Rubberduck
             var inspector = new Inspector(parser, _inspections);
             _menu = new RubberduckMenu(vbe, addIn, _configService, parser, editor, inspector);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, inspector);
-
-            InternalStartup();
         }
 
         private void EnableCodeInspections(Configuration config)
@@ -51,7 +49,6 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            UnhookWindowsHookEx(hookId);
             Dispose(true);
             GC.SuppressFinalize(this);
         }
