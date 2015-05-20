@@ -11,7 +11,7 @@ namespace Rubberduck.SourceControl
     public class GitProvider : SourceControlProviderBase
     {
         private readonly LibGit2Sharp.Repository _repo;
-        private readonly Credentials _credentials;
+        private readonly LibGit2Sharp.Credentials _credentials;
         private readonly CredentialsHandler _credentialsHandler;
 
         public GitProvider(VBProject project) 
