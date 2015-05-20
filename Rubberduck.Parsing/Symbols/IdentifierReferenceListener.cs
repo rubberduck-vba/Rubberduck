@@ -257,6 +257,11 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
         {
             var member = Resolve(context);
+            if (member == null)
+            {
+                return;
+            }
+
             EnterIdentifier(member.Context, member.Selection);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -96,11 +97,24 @@ namespace Rubberduck.UI
         {
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
             var vm = new GoToAnythingViewModel(declarations.Items.Where(item => !item.IsBuiltIn));
+            vm.Navigate += vm_Navigate;
             using (var view = new GoToAnythingDialog(vm))
             {
                 view.ShowDialog();
+            }
 
-                // todo: actually implement "goto" feature
+            vm.Navigate -= vm_Navigate;
+        }
+
+        private void vm_Navigate(object sender, NavigateCodeEventArgs e)
+        {
+            try
+            {
+                // todo: make an overload that just takes a Declaration object.
+                IDE.SetSelection(new QualifiedSelection(e.QualifiedName, e.Selection));
+            }
+            catch (COMException)
+            {
             }
         }
 

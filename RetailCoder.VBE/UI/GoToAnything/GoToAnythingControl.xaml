@@ -3,21 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:goToAnything="clr-namespace:Rubberduck.UI.GoToAnything"
+             xmlns:local="clr-namespace:Rubberduck.UI.GoToAnything"
              mc:Ignorable="d" 
              d:DesignHeight="27" d:DesignWidth="270">
     <UserControl.Resources>
-        <goToAnything:DeclarationImageConverter x:Key="DeclarationImageConverter" />
+        <local:DeclarationImageConverter x:Key="DeclarationImageConverter" />
     </UserControl.Resources>
     <Grid>
         <ComboBox IsEditable="True"
-                  ItemsSource="{Binding MatchResults}">
-            <!-- todo: set display value of selected item, and implement search command -->
+                  ItemsSource="{Binding MatchResults}"
+                  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
+                  IsTextSearchCaseSensitive="False"
+                  IsTextSearchEnabled="True"
+                  TextSearch.TextPath="IdentifierName">
             <ComboBox.ItemTemplate>
-                <DataTemplate DataType="goToAnything:SearchResult">
+                <DataTemplate DataType="local:SearchResult">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Margin="2" Source="{Binding Declaration, Converter={StaticResource DeclarationImageConverter}}" />
-                        <TextBlock Margin="2" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="160" />
+                        <TextBlock Margin="2" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="140" />
                         <TextBlock Margin="2" Text="{Binding Location}" />
                     </StackPanel>
                 </DataTemplate>

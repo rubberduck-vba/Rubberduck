@@ -274,6 +274,7 @@
     <Compile Include="UI\GoToAnything\GoToAnythingDialog.Designer.cs">
       <DependentUpon>GoToAnythingDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\GoToAnything\GoToAnythingViewModel.cs" />
     <Compile Include="UI\GoToAnything\SearchResult.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
