@@ -290,21 +290,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             if (target == null || !ValidDeclarationTypes.Contains(target.DeclarationType))
             {
-                target = FindTarget(target, selection);
-            }
-
-            while (target != null && !ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                var newTarget = FindTarget(target, selection);
-
-                if (newTarget == target)
-                {
-                    target = null;
-                }
-                else
-                {
-                    target = newTarget;
-                }
+                FindTarget(ref target, selection);
             }
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
@@ -323,7 +309,80 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _view.Target = target;
         }
 
-        private Declaration FindTarget(Declaration target, QualifiedSelection selection)
+        private void FindTarget(ref Declaration target, QualifiedSelection selection)
+        {
+            var targets = _declarations.Items
+                .Where(item => !item.IsBuiltIn
+                            && item.ComponentName == selection.QualifiedName.ComponentName
+                            && ValidDeclarationTypes.Contains(item.DeclarationType));
+
+            foreach (var declaration in targets)
+            {
+                var startLine = declaration.Context.GetSelection().StartLine;
+                var startColumn = declaration.Context.GetSelection().StartColumn;
+                var endLine = declaration.Context.GetSelection().EndLine;
+                var endColumn = declaration.Context.GetSelection().EndColumn;
+
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                {
+                    if (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn)
+                    {
+                        continue;
+                    }
+                    if (endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn)
+                    {
+                        continue;
+                    }
+
+                    target = declaration;
+                }
+
+                foreach (var reference in declaration.References)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (argList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = argList.Start.Line;
+                    startColumn = argList.Start.Column;
+                    endLine = argList.Stop.Line;
+                    endColumn = argList.Stop.Column + argList.Stop.Text.Length + 1;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                    {
+                        if (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn)
+                        {
+                            continue;
+                        }
+                        if (endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn)
+                        {
+                            continue;
+                        }
+
+                        target = reference.Declaration;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private Declaration FindTarget1(Declaration target, QualifiedSelection selection)
         {
             var possibleDeclarations = _declarations.Items
                                     .Where(item => !item.IsBuiltIn
@@ -332,8 +391,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             var startLine = 0;
             var startColumn = 0;
-            var endLine = uint.MaxValue;
-            var endColumn = uint.MaxValue;
+            var endLine = int.MaxValue;
+            var endColumn = int.MaxValue;
 
             foreach (var declaration in possibleDeclarations)
             {
@@ -341,7 +400,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (reference.Context == null) { continue; }
                     var proc = (dynamic)reference.Context.Parent;
-                    var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
                     List<VBAParser.ArgListContext> argLists = new List<VBAParser.ArgListContext>();
 
                     foreach (var child in proc.children)
@@ -378,6 +436,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                                 }
                             }
                             target = reference;
+                            startLine = target.Selection.StartLine;
+                            startColumn = target.Selection.StartColumn;
+                            endLine = target.Selection.EndLine;
+                            endColumn = target.Selection.EndColumn;
                         }
                     }
                 }
@@ -407,14 +469,28 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                     if (argList.Start.Line <= selection.Selection.StartLine &&
                         argList.Start.Line >= startLine &&
-                        argList.Start.Column <= selection.Selection.StartColumn &&
-                        argList.Start.Column >= startColumn &&
                         argList.Stop.Line >= selection.Selection.EndLine &&
-                        argList.Stop.Line <= endLine &&
-                        argList.Stop.Column + argList.Stop.Text.Length + 1 >= selection.Selection.EndColumn &&
-                        argList.Stop.Column + argList.Stop.Text.Length + 1 <= endColumn)
+                        argList.Stop.Line <= endLine)
                     {
+                        if (argList.Start.Line == selection.Selection.StartLine)
+                        {
+                            if (argList.Start.Column > selection.Selection.StartColumn)
+                            {
+                                continue;
+                            }
+                        }
+                        if (argList.Stop.Line == selection.Selection.EndLine)
+                        {
+                            if (argList.Stop.Column + argList.Stop.Text.Length + 1 < selection.Selection.EndColumn)
+                            {
+                                continue;
+                            }
+                        }
                         target = reference.Declaration;
+                        startLine = target.Selection.StartLine;
+                        startColumn = target.Selection.StartColumn;
+                        endLine = target.Selection.EndLine;
+                        endColumn = target.Selection.EndColumn;
                     }
                 }
             }
