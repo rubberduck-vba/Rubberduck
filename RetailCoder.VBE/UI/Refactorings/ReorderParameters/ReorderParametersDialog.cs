@@ -11,6 +11,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     {
         public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;
+        private Rectangle _dragBoxFromMouseDown;
+        Point _startPoint;
+        private int _newRowIndex;
 
         public ReorderParametersDialog()
         {
@@ -19,6 +22,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             InitializeCaptions();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
+            MethodParametersGrid.MouseMove += MethodParametersGrid_MouseMove;
+            MethodParametersGrid.MouseDown += MethodParametersGrid_MouseDown;
+            MethodParametersGrid.DragOver += MethodParametersGrid_DragOver;
+            MethodParametersGrid.DragDrop += MethodParametersGrid_DragDrop;
         }
 
         private void InitializeCaptions()
@@ -37,6 +44,67 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             SelectionChanged();
         }
 
+        private void MethodParametersGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                if (_dragBoxFromMouseDown != Rectangle.Empty && !_dragBoxFromMouseDown.Contains(e.X, e.Y))
+                {
+                    var dropEffect = MethodParametersGrid.DoDragDrop(
+                          MethodParametersGrid.Rows[_newRowIndex],
+                          DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void MethodParametersGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            _newRowIndex = MethodParametersGrid.HitTest(e.X, e.Y).RowIndex;
+
+            if (_newRowIndex == -1)
+            {
+                _dragBoxFromMouseDown = Rectangle.Empty;
+                return;
+            }
+
+            _startPoint = new Point(e.X, e.Y);
+
+            var dragSize = SystemInformation.DragSize;
+            _dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
+        }
+
+        private void MethodParametersGrid_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void MethodParametersGrid_DragDrop(object sender, DragEventArgs e)
+        {
+            var clientPoint = MethodParametersGrid.PointToClient(new Point(e.X, e.Y));
+
+            if (e.Effect == DragDropEffects.Move && _newRowIndex != -1)
+            {
+                var rowIndexOfItemUnderMouse = MethodParametersGrid.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+
+                if (rowIndexOfItemUnderMouse < 0)
+                {
+                    if (clientPoint.Y < _startPoint.Y)
+                    {
+                        rowIndexOfItemUnderMouse = 0;
+                    }
+                    else
+                    {
+                        rowIndexOfItemUnderMouse = Parameters.Count - 1;
+                    }
+                }
+
+                var tmp = Parameters.ElementAt(_newRowIndex);
+                Parameters.RemoveAt(_newRowIndex);
+                Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
+                ReselectParameter();
+            }
+        }
+
         public void InitializeParameterGrid()
         {
             MethodParametersGrid.AutoGenerateColumns = false;
@@ -44,6 +112,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MethodParametersGrid.DataSource = Parameters;
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
+            MethodParametersGrid.AllowUserToResizeRows = false;
+            MethodParametersGrid.AllowDrop = true;
+            MethodParametersGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
             var column = new DataGridViewTextBoxColumn
             {
@@ -51,11 +122,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 DataPropertyName = "FullDeclaration",
                 HeaderText = "Parameter",
                 ReadOnly = true,
-                // Width = 262,    // fits nice
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill // fits even nicer ;)
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
-
-            
 
             MethodParametersGrid.Columns.Add(column);
             _selectedItem = Parameters[0];
@@ -97,11 +165,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
-
-            // todo: move to some "SwapParameters" private method
-            var tmp = Parameters[selectedIndex];
-            Parameters[selectedIndex] = Parameters[selectedIndex - 1];
-            Parameters[selectedIndex - 1] = tmp;
+            SwapParameters(selectedIndex, selectedIndex - 1);
 
             ReselectParameter();
         }
@@ -114,13 +178,16 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
-
-            // todo: move to some "SwapParameters" private method
-            var tmp = Parameters[selectedIndex];
-            Parameters[selectedIndex] = Parameters[selectedIndex + 1];
-            Parameters[selectedIndex + 1] = tmp;
+            SwapParameters(selectedIndex, selectedIndex + 1);
             
             ReselectParameter();
+        }
+
+        private void SwapParameters(int index1, int index2)
+        {
+            var tmp = Parameters[index1];
+            Parameters[index1] = Parameters[index2];
+            Parameters[index2] = tmp;
         }
 
         private void ReselectParameter()
@@ -144,15 +211,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             MoveDownButton.Enabled = _selectedItem != null
                 && MethodParametersGrid.SelectedRows[0].Index != Parameters.Count - 1;
-        }
-
-        // note: dead code..
-        private void RegisterViewEvents()
-        {
-            OkButton.Click += OkButtonClicked;
-            CancelButton.Click += CancelButtonClicked;
-            MoveUpButton.Click += MoveUpButtonClicked;
-            MoveDownButton.Click += MoveDownButtonClicked;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing;
@@ -17,10 +18,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _view = view;
-            _view.OkButtonClicked += OnOkButtonClicked;
-
             _declarations = parseResult.Declarations;
             _selection = selection;
+
+            _view.OkButtonClicked += OnOkButtonClicked;
         }
 
         public void Show()
@@ -31,7 +32,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 LoadParameters();
 
-                if (_view.Parameters.Count < 2) { return ;}
+                if (_view.Parameters.Count < 2) 
+                {
+                    var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoVariablesError, _view.Target.IdentifierName);
+                    MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return; 
+                }
 
                 _view.InitializeParameterGrid();
                _view.ShowDialog();
@@ -47,7 +53,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var index = 0;
             foreach (var arg in args)
             {
-                _view.Parameters.Add(new Parameter(arg.ambiguousIdentifier().GetText(), arg.GetText(), index++));
+                _view.Parameters.Add(new Parameter(arg.GetText(), index++));
             }
         }
 
@@ -65,29 +71,32 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (!_view.Parameters.ElementAt(index).IsOptional)
                     {
-                        MessageBox.Show("Optional parameters must be specified at the end of the parameter list.", "Reorder Parameters", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalVariableError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
             }
 
-            AdjustSignature();
-            AdjustReferences();
-
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            var indexOfParamArray = _view.Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray >= 0)
             {
-                foreach (var reference in _declarations.FindEventProcedures(withEvents))
+                if (indexOfParamArray != _view.Parameters.Count - 1)
                 {
-                    AdjustSignature(reference);
+                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
+
+            AdjustSignatures();
+            AdjustReferences(_view.Target.References);
         }
 
-        private void AdjustReferences()
+        private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
-            foreach (var reference in _view.Target.References.Where(item => item.Context != _view.Target.Context))
+            foreach (var reference in references.Where(item => item.Context != _view.Target.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
+                var module = reference.QualifiedModuleName.Component.CodeModule;
 
                 // This is to prevent throws when this statement fails:
                 // (VBAParser.ArgsCallContext)proc.argsCall();
@@ -97,12 +106,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
                 catch
                 {
-                    // update letter methods - needs proper fixing
-                    if (reference.Context.Parent.GetText().Contains("Property Let"))
-                    {
-                        AdjustSignature(reference);
-                    }
-
                     continue;
                 }
 
@@ -112,73 +115,40 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     continue;
                 }
-                var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
 
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
-
-                var variableIndex = 0;
-                for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
-                {
-                    var newContent = module.Lines[line, 1];
-                    var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
-
-                    for (var i = variableIndex; i < paramNames.Count; i++)
-                    {
-                        var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(variableIndex), currentStringIndex);
-
-                        if (variableStringIndex > -1)
-                        {
-                            var oldVariableString = paramNames.ElementAt(variableIndex);
-
-                            if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count) { continue; }
-
-                            var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
-                            var beginningSub = newContent.Substring(0, variableStringIndex);
-                            var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
-
-                            newContent = beginningSub + replaceSub;
-
-                            variableIndex++;
-                            currentStringIndex = beginningSub.Length + newVariableString.Length;
-                        }
-                    }
-
-                    module.ReplaceLine(line, newContent);
-                }
+                RewriteCall(reference, argList, module);
             }
         }
 
-        // TODO - refactor this
-        // Only used for Property Letters/Setters
-        // Otherwise, they are caught by the try/catch block used to prevent 
-        // value returns from crashing the program
-        // Extremely similar to the other AdjustReference
-        // One possibility is to create multiple "handler" methods
-        // that call another method to do the real work, passing 
-        // "module", "argList", and "args" (I believe these are the only
-        // ones used
-        private void AdjustSignature(IdentifierReference reference)
+        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext argList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            var proc = (dynamic)reference.Context.Parent;
-            var module = reference.QualifiedModuleName.Component.CodeModule;
-            var argList = (VBAParser.ArgListContext)proc.argList();
-            var args = argList.arg();
+            var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
+
+            var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
 
             var variableIndex = 0;
-            for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
+            for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
             {
-                var newContent = module.Lines[lineNum, 1];
-                var currentStringIndex = 0;
+                var newContent = module.Lines[line, 1].Replace(" , ", "");
 
-                for (var i = variableIndex; i < _view.Parameters.Count; i++)
+                var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
+
+                for (var i = 0; i < paramNames.Count && variableIndex < _view.Parameters.Count; i++)
                 {
-                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration, currentStringIndex);
+                    var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
 
                     if (variableStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration;
-                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
+                        if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count)
+                        {
+                            newContent = newContent.Insert(variableStringIndex, " , ");
+                            i--;
+                            variableIndex++;
+                            continue;
+                        }
+
+                        var oldVariableString = paramNames.ElementAt(i);
+                        var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
                         var beginningSub = newContent.Substring(0, variableStringIndex);
                         var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
 
@@ -189,36 +159,18 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     }
                 }
 
-                module.ReplaceLine(lineNum, newContent);
+                module.ReplaceLine(line, newContent);
             }
         }
 
-        private void AdjustSignature(Declaration reference = null)
+        private void AdjustSignatures()
         {
             var proc = (dynamic)_view.Target.Context;
             var argList = (VBAParser.ArgListContext)proc.argList();
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            if (reference != null)
-            {
-                proc = (dynamic)reference.Context.Parent;
-                module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
-
-                if (reference.DeclarationType == DeclarationType.PropertySet)
-                {
-                    argList = (VBAParser.ArgListContext)proc.children[0].argList();
-                }
-                else
-                {
-                    argList = (VBAParser.ArgListContext)proc.subStmt().argList();
-                }
-            }
-
-            var args = argList.arg();
-
-            // if we are reordering a property getter, check if we need to reorder a setter too
-            // only check if the passed reference is null, otherwise we recursively check and have an SO
-            if (reference == null && _view.Target.DeclarationType == DeclarationType.PropertyGet)
+            // if we are reordering a property getter, check if we need to reorder a letter/setter too
+            if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
                                               item.IdentifierName == _view.Target.IdentifierName &&
@@ -226,9 +178,70 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 if (setter != null)
                 {
-                    AdjustSignature(setter);
+                    AdjustSignatures(setter);
+                }
+
+                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
+                              item.IdentifierName == _view.Target.IdentifierName &&
+                              item.DeclarationType == DeclarationType.PropertyLet);
+
+                if (letter != null)
+                {
+                    AdjustSignatures(letter);
                 }
             }
+
+            RewriteSignature(argList, module);
+
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            {
+                foreach (var reference in _declarations.FindEventProcedures(withEvents))
+                {
+                    AdjustSignatures(reference);
+                }
+            }
+
+            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                                                        .Where(item => item.Project.Equals(_view.Target.Project) &&
+                                                               item.IdentifierName == _view.Target.ComponentName + "_" + _view.Target.IdentifierName);
+            foreach (var interfaceImplentation in interfaceImplementations)
+            {
+                AdjustSignatures(interfaceImplentation);
+
+                AdjustReferences(interfaceImplentation.References);
+            }
+        }
+
+        private void AdjustSignatures(IdentifierReference reference)
+        {
+            var proc = (dynamic)reference.Context.Parent;
+            var module = reference.QualifiedModuleName.Component.CodeModule;
+            var argList = (VBAParser.ArgListContext)proc.argList();
+
+            RewriteSignature(argList, module);
+        }
+
+        private void AdjustSignatures(Declaration reference)
+        {
+            var proc = (dynamic)reference.Context.Parent;
+            var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            VBAParser.ArgListContext argList;
+
+            if (reference.DeclarationType == DeclarationType.PropertySet || reference.DeclarationType == DeclarationType.PropertyLet)
+            {
+                argList = (VBAParser.ArgListContext)proc.children[0].argList();
+            }
+            else
+            {
+                argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+            }
+
+            RewriteSignature(argList, module);
+        }
+
+        private void RewriteSignature(VBAParser.ArgListContext argList, Microsoft.Vbe.Interop.CodeModule module)
+        {
+            var args = argList.arg();
 
             var variableIndex = 0;
             for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
@@ -271,9 +284,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private void AcquireTarget(QualifiedSelection selection)
         {
             var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn && ValidDeclarationTypes.Contains(item.DeclarationType))
+                .Where(item => !item.IsBuiltIn)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
                                      || IsSelectedReference(selection, item));
+
+            if (target == null || !ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                FindTarget(ref target, selection);
+            }
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
             {
@@ -291,6 +309,74 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _view.Target = target;
         }
 
+        private void FindTarget(ref Declaration target, QualifiedSelection selection)
+        {
+            var targets = _declarations.Items
+                .Where(item => !item.IsBuiltIn
+                            && item.ComponentName == selection.QualifiedName.ComponentName
+                            && ValidDeclarationTypes.Contains(item.DeclarationType));
+
+            foreach (var declaration in targets)
+            {
+                var startLine = declaration.Context.GetSelection().StartLine;
+                var startColumn = declaration.Context.GetSelection().StartColumn;
+                var endLine = declaration.Context.GetSelection().EndLine;
+                var endColumn = declaration.Context.GetSelection().EndColumn;
+
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                {
+                    if (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn)
+                    {
+                        continue;
+                    }
+                    if (endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn)
+                    {
+                        continue;
+                    }
+
+                    target = declaration;
+                }
+
+                foreach (var reference in declaration.References)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (argList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = argList.Start.Line;
+                    startColumn = argList.Start.Column;
+                    endLine = argList.Stop.Line;
+                    endColumn = argList.Stop.Column + argList.Stop.Text.Length + 1;
+
+                    if ((startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine) && 
+                        (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
+                    {
+                        continue;
+                    }
+
+                    target = reference.Declaration;
+                    return;
+                }
+            }
+        }
+
         private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
             var declaration = target;
@@ -301,9 +387,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirm == DialogResult.No)
             {
                 target = null;

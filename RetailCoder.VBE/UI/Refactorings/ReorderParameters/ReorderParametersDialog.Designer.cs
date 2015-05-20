@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReorderParametersDialog));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ReorderParametersDialog));
             this.MoveDownButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelButton = new System.Windows.Forms.Button();

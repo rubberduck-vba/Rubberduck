@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -40,7 +41,7 @@ namespace Rubberduck.UI
 
             _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
             _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
-            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
 
             InitializeRefactorContextMenu();
         }
@@ -61,9 +62,13 @@ namespace Rubberduck.UI
 
             var extractMethodIcon = Resources.ExtractMethod_6786_32;
             extractMethodIcon.MakeTransparent(Color.White);
+
+            var reorderParamsIcon = Resources.ReorderParameters_6780_32;
+            reorderParamsIcon.MakeTransparent(Color.White);
+
             _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
-            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick, reorderParamsIcon);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
             InitializeGoToAnythingContextMenu();
@@ -139,6 +144,12 @@ namespace Rubberduck.UI
                     // trying again will work (I know, that's bad bad bad code)
                     ShowReferencesToolwindow(target);
                 }
+            }
+            else
+            {
+                var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
+                var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
