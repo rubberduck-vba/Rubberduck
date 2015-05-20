@@ -2,13 +2,14 @@
 
 namespace Rubberduck.VBEditor
 {
-    public class ActiveCodePaneEditor : IActiveCodePaneEditor
+    public partial class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
 
         public ActiveCodePaneEditor(VBE vbe)
         {
             _vbe = vbe;
+            InternalStartup();
         }
 
         private CodeModule Editor { get { return _vbe.ActiveCodePane.CodeModule; } }

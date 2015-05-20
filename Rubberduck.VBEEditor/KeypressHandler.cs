@@ -5,10 +5,10 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 
-namespace Rubberduck
+namespace Rubberduck.VBEditor
 {
     // Thank you, http://stackoverflow.com/questions/8120199/how-to-get-the-keypress-event-from-a-word-2010-addin-developed-in-c/8800908#8800908
-    public partial class App : IDisposable
+    public partial class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
@@ -37,7 +37,7 @@ namespace Rubberduck
         }
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-       {
+        {
             if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
                 int pointerCode = Marshal.ReadInt32(lParam);
@@ -52,8 +52,6 @@ namespace Rubberduck
 
         private void InternalStartup()
         {
-            VBE test;
-            test.ActiveCodePane.VBE.Events.ReferencesEvents.ItemAdded;
             hookId = SetHook(procedure);
         }
     }
