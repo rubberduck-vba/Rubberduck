@@ -61,10 +61,10 @@ namespace Rubberduck.UI
             _refactorCodePaneContextMenu.Caption = "&Refactor";
 
             var extractMethodIcon = Resources.ExtractMethod_6786_32;
-            extractMethodIcon.MakeTransparent(Color.White);
+            //extractMethodIcon.MakeTransparent(Color.White);
 
             var reorderParamsIcon = Resources.ReorderParameters_6780_32;
-            reorderParamsIcon.MakeTransparent(Color.White);
+            //reorderParamsIcon.MakeTransparent(Color.White);
 
             _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
