@@ -364,138 +364,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     endLine = argList.Stop.Line;
                     endColumn = argList.Stop.Column + argList.Stop.Text.Length + 1;
 
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
-                    {
-                        if (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn)
-                        {
-                            continue;
-                        }
-                        if (endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn)
-                        {
-                            continue;
-                        }
-
-                        target = reference.Declaration;
-                        return;
-                    }
-                }
-            }
-        }
-
-        private Declaration FindTarget1(Declaration target, QualifiedSelection selection)
-        {
-            var possibleDeclarations = _declarations.Items
-                                    .Where(item => !item.IsBuiltIn
-                                                && item.ComponentName == selection.QualifiedName.ComponentName)
-                                    .GroupBy(item => item.References);
-
-            var startLine = 0;
-            var startColumn = 0;
-            var endLine = int.MaxValue;
-            var endColumn = int.MaxValue;
-
-            foreach (var declaration in possibleDeclarations)
-            {
-                foreach (var reference in declaration)
-                {
-                    if (reference.Context == null) { continue; }
-                    var proc = (dynamic)reference.Context.Parent;
-                    List<VBAParser.ArgListContext> argLists = new List<VBAParser.ArgListContext>();
-
-                    foreach (var child in proc.children)
-                    {
-                        try
-                        {
-                            argLists.Add((VBAParser.ArgListContext)child.argList());
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
-
-                    foreach (var argList in argLists)
-                    {
-                        if (argList.Start.Line <= selection.Selection.StartLine &&
-                            argList.Start.Line >= startLine &&
-                            argList.Stop.Line >= selection.Selection.EndLine &&
-                            argList.Stop.Line <= endLine)
-                        {
-                            if (argList.Start.Line == selection.Selection.StartLine)
-                            {
-                                if (argList.Start.Column > selection.Selection.StartColumn)
-                                {
-                                    continue;
-                                }
-                            }
-                            if (argList.Stop.Line == selection.Selection.EndLine)
-                            {
-                                if (argList.Stop.Column + argList.Stop.Text.Length + 1 < selection.Selection.EndColumn)
-                                {
-                                    continue;
-                                }
-                            }
-                            target = reference;
-                            startLine = target.Selection.StartLine;
-                            startColumn = target.Selection.StartColumn;
-                            endLine = target.Selection.EndLine;
-                            endColumn = target.Selection.EndColumn;
-                        }
-                    }
-                }
-
-                foreach (var reference in declaration.Key)
-                {
-                    var proc = (dynamic)reference.Context.Parent;
-                    var module = reference.QualifiedModuleName.Component.CodeModule;
-
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try
-                    {
-                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                    }
-                    catch
+                    if ((startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine) && 
+                        (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
                     {
                         continue;
                     }
 
-                    var argList = (VBAParser.ArgsCallContext)proc.argsCall();
-
-                    if (argList == null)
-                    {
-                        continue;
-                    }
-
-                    if (argList.Start.Line <= selection.Selection.StartLine &&
-                        argList.Start.Line >= startLine &&
-                        argList.Stop.Line >= selection.Selection.EndLine &&
-                        argList.Stop.Line <= endLine)
-                    {
-                        if (argList.Start.Line == selection.Selection.StartLine)
-                        {
-                            if (argList.Start.Column > selection.Selection.StartColumn)
-                            {
-                                continue;
-                            }
-                        }
-                        if (argList.Stop.Line == selection.Selection.EndLine)
-                        {
-                            if (argList.Stop.Column + argList.Stop.Text.Length + 1 < selection.Selection.EndColumn)
-                            {
-                                continue;
-                            }
-                        }
-                        target = reference.Declaration;
-                        startLine = target.Selection.StartLine;
-                        startColumn = target.Selection.StartColumn;
-                        endLine = target.Selection.EndLine;
-                        endColumn = target.Selection.EndColumn;
-                    }
+                    target = reference.Declaration;
+                    return;
                 }
             }
-
-            return target;
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target)
