@@ -19,6 +19,8 @@ namespace RubberduckTests.SourceControl
         {
             _viewMock = new Mock<IChangesView>();
             _providerMock = new Mock<ISourceControlProvider>();
+            var branch = new Branch("master", "refs/Heads/master", false, true);
+            _providerMock.SetupGet(git => git.CurrentBranch).Returns(branch);
         }
 
         [TestMethod]
