@@ -412,20 +412,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Less than two variables in method &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Less than two parameters in method &apos;{0}&apos;..
         /// </summary>
-        internal static string ReorderPresenter_LessThanTwoVariablesError {
+        internal static string ReorderPresenter_LessThanTwoParametersError {
             get {
-                return ResourceManager.GetString("ReorderPresenter_LessThanTwoVariablesError", resourceCulture);
+                return ResourceManager.GetString("ReorderPresenter_LessThanTwoParametersError", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Optional parameters must be specified at the end of the parameter list..
         /// </summary>
-        internal static string ReorderPresenter_OptionalVariableError {
+        internal static string ReorderPresenter_OptionalParametersMustBeLastError {
             get {
-                return ResourceManager.GetString("ReorderPresenter_OptionalVariableError", resourceCulture);
+                return ResourceManager.GetString("ReorderPresenter_OptionalParametersMustBeLastError", resourceCulture);
             }
         }
         

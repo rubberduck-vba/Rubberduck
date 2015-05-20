@@ -260,14 +260,14 @@
     <value>No references for '{0}' found.</value>
     <comment>0: IdentifierName</comment>
   </data>
-  <data name="ReorderPresenter_OptionalVariableError" xml:space="preserve">
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Optional parameters must be specified at the end of the parameter list.</value>
   </data>
   <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>ParamArrays must be specified at the end of the parameter list.</value>
   </data>
-  <data name="ReorderPresenter_LessThanTwoVariablesError" xml:space="preserve">
-    <value>Less than two variables in method '{0}'.</value>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Less than two parameters in method '{0}'.</value>
     <comment>0: Selected target</comment>
   </data>
 </root>
