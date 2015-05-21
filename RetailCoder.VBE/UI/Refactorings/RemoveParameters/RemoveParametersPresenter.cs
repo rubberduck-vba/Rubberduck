@@ -7,24 +7,29 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.UI.Refactorings.RemoveParameters
+namespace Rubberduck.UI.Refactorings.RemoveParameter
 {
-    class RemoveParametersPresenter
+    class RemoveParameterPresenter
     {
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
         private readonly Declaration _target;
 
-        public RemoveParametersPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _declarations = parseResult.Declarations;
             _selection = selection;
-            _target = _declarations.Items
+
+            FindTarget(out _target, selection);
+            /*_target = _declarations.Items
                         .Where(item => item.DeclarationType == DeclarationType.Parameter
                                     && item.ComponentName == selection.QualifiedName.ComponentName)
-                        .FirstOrDefault();
+                        .FirstOrDefault();*/
 
-            MessageBox.Show(_target.IdentifierName, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OKCancel);
+            if (_target != null)
+                MessageBox.Show(_target.IdentifierName, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OKCancel);
+            else
+                MessageBox.Show("null", RubberduckUI.RemoveParamsDialog_TitleText);
         }
 
         /// <summary>
@@ -280,13 +285,97 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         /// <param name="selection">The user selection specifying which method signature to adjust.</param>
         private void AcquireTarget(QualifiedSelection selection)
         {
-            Declaration target = _declarations.Items
-                        .Where(item => item.DeclarationType == DeclarationType.Parameter
-                                    && item.ComponentName == selection.QualifiedName.ComponentName)
-                        .FirstOrDefault();
-
             //PromptIfTargetImplementsInterface(ref target);
-            MessageBox.Show(target.IdentifierName);
+        }
+
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
+        {
+            target = null;
+
+            var targets = _declarations.Items
+                        .Where(item => item.DeclarationType == DeclarationType.Parameter
+                                    && item.ComponentName == selection.QualifiedName.ComponentName
+                                    && item.Project.Equals(selection.QualifiedName.Project));
+
+            if (targets == null)
+            {
+                return;
+            }
+
+            var currentStartLine = 0;
+            var currentEndLine = int.MaxValue;
+            var currentStartColumn = 0;
+            var currentEndColumn = int.MaxValue;
+
+            foreach (var declaration in targets)
+            {
+                var startLine = declaration.Context.Start.Line;
+                var startColumn = declaration.Context.Start.Column;
+                var endLine = declaration.Context.Stop.Line;
+                var endColumn = declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length + 1;
+
+                var d = declaration.Context.GetSelection();
+
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                    currentStartLine <= startLine && currentEndLine >= endLine)
+                {
+                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                    {
+                        target = declaration;
+
+                        currentStartLine = startLine;
+                        currentEndLine = endLine;
+                        currentStartColumn = startColumn;
+                        currentEndColumn = endColumn;
+                    }
+                }
+
+                foreach (var reference in declaration.References)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (paramList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = paramList.Start.Line;
+                    startColumn = paramList.Start.Column;
+                    endLine = paramList.Stop.Line;
+                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                        currentStartLine <= startLine && currentEndLine >= endLine)
+                    {
+                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                        {
+                            target = reference.Declaration;
+
+                            currentStartLine = startLine;
+                            currentEndLine = endLine;
+                            currentStartColumn = startColumn;
+                            currentEndColumn = endColumn;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
