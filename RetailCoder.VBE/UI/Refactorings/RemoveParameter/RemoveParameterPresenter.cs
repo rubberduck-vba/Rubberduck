@@ -13,8 +13,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
     {
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
-        private Declaration _target;
-        private List<Parameter> parameters = new List<Parameter>();
+        private readonly Declaration _target;
+        private readonly List<Parameter> _parameters = new List<Parameter>();
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
@@ -43,9 +43,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             RemoveParameter();
         }
 
-        /// <summary>
-        /// Loads the parameters into the dialog window.
-        /// </summary>
         private void LoadParameters()
         {
             var procedure = (dynamic)_target.Context.Parent;
@@ -55,7 +52,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var index = 0;
             foreach (var arg in args)
             {
-                parameters.Add(new Parameter(arg.GetText(), index++));
+                _parameters.Add(new Parameter(arg.GetText(), index++));
             }
         }
 
@@ -66,49 +63,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             AdjustSignatures(_target);
         }
 
-        /// <summary>
-        /// Handler for OK button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RemoveClicked(object sender, EventArgs e)
-        {
-            /*if (!_view.Parameters.Where((t, i) => t.Index != i).Any())
-            {
-                return;
-            }
-
-            var indexOfFirstOptionalParam = _view.Parameters.FindIndex(param => param.IsOptional);
-            if (indexOfFirstOptionalParam >= 0)
-            {
-                for (var index = indexOfFirstOptionalParam + 1; index < _view.Parameters.Count; index++)
-                {
-                    if (!_view.Parameters.ElementAt(index).IsOptional)
-                    {
-                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-            }
-
-            var indexOfParamArray = _view.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray >= 0)
-            {
-                if (indexOfParamArray != _view.Parameters.Count - 1)
-                {
-                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-
-            AdjustSignatures();
-            AdjustReferences(_view.Target.References);*/
-        }
-
-        /// <summary>
-        /// Adjusts references to method call.
-        /// </summary>
-        /// <param name="references">An IEnumberable of IdentifierReference's</param>
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
             /*foreach (var reference in references.Where(item => item.Context != _view.Target.Context))
@@ -187,10 +141,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }*/
         }
 
-        /// <summary>
-        /// Adjust the signature of a selected method.
-        /// Handles setters and letters when a getter is adjusted.
-        /// </summary>
         private void AdjustSignatures()
         {
             var proc = (dynamic)_target.Context.Parent;
@@ -240,11 +190,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }*/
         }
 
-        /// <summary>
-        /// Adjust the signature of a reference to a given method.
-        /// Used for letters.
-        /// </summary>
-        /// <param name="reference">A reference to the method signature to adjust.</param>
         private void AdjustSignatures(IdentifierReference reference)
         {
             /*var proc = (dynamic)reference.Context.Parent;
@@ -254,10 +199,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             RemoveSignatureParameter(paramList, module);*/
         }
 
-        /// <summary>
-        /// Adjust the signature of a declaration of a given method.
-        /// </summary>
-        /// <param name="declaration">A Declaration of the method signature to adjust.</param>
         private void AdjustSignatures(Declaration declaration)
         {
             var proc = (dynamic)_target.Context.Parent;
@@ -267,48 +208,37 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             RemoveSignatureParameter(paramList, module);
         }
 
-        /// <summary>
-        /// Rewrites the signature of a given method.
-        /// </summary>
-        /// <param name="paramList">The ArgListContext of the method signature being adjusted.</param>
-        /// <param name="module">The CodeModule of the method signature being adjusted.</param>
         private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
                 var content = module.Lines[lineNum, 1];
-                var valueToRemove = _target.Context.GetText() != parameters.Last().FullDeclaration ?
+                var valueToRemove = _target.Context.GetText() != _parameters.Last().FullDeclaration ?
                                     _target.Context.GetText() + "," :
                                     _target.Context.GetText();
 
                 var newContent = content.Replace(valueToRemove, "");
 
-                if (content != newContent)
-                {
-                    module.ReplaceLine(lineNum, newContent);
+                if (content == newContent) { continue; }
 
-                    if (_target.Context.GetText() == parameters.Last().FullDeclaration)
+                module.ReplaceLine(lineNum, newContent);
+                if (_target.Context.GetText() == _parameters.Last().FullDeclaration)
+                {
+                    for (var line = lineNum; line >= paramList.Start.Line; line--)
                     {
-                        for (int line = lineNum; line >= paramList.Start.Line; line--)
+                        var lineContent = module.Lines[line, 1];
+                        if (lineContent.Contains(','))
                         {
-                            var lineContent = module.Lines[line, 1];
-                            if (lineContent.Contains(','))
-                            {
-                                module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
-                                return;
-                            }
+                            module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
+                            return;
                         }
                     }
-
-                    return;
                 }
+
+                return;
             }
         }
 
-        /// <summary>
-        /// Get the target Declaration to adjust.
-        /// </summary>
-        /// <param name="selection">The user selection specifying which method signature to adjust.</param>
         private void AcquireTarget(QualifiedSelection selection)
         {
             //PromptIfTargetImplementsInterface(ref target);
@@ -404,11 +334,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
-        /// <summary>
-        /// Displays a prompt asking the user whether the method signature should be adjusted
-        /// if the target declaration implements an interface method.
-        /// </summary>
-        /// <param name="target">The target declaration.</param>
         private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
             // TODO - rewrite

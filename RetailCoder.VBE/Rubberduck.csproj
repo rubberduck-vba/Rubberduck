@@ -292,7 +292,7 @@
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameter\RemoveParameterPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
