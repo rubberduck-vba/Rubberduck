@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.FindSymbol
@@ -27,6 +28,17 @@ namespace Rubberduck.UI.FindSymbol
                 case DeclarationType.Module:
                     return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Module.png");
                 case DeclarationType.Class:
+
+                    var component = declaration.QualifiedName.QualifiedModuleName.Component;
+                    if (component != null && component.Type == vbext_ComponentType.vbext_ct_Document)
+                    {
+                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/document.png");
+                    }
+                    if (component != null && component.Type == vbext_ComponentType.vbext_ct_MSForm)
+                    {
+                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSProject_Form.png");
+                    }
+
                     return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Class.png");
                 case DeclarationType.Procedure:
                 case DeclarationType.Function:
@@ -54,7 +66,7 @@ namespace Rubberduck.UI.FindSymbol
                     return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Properties.png");
 
                 case DeclarationType.Parameter:
-                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Field_Private.png");
+                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Field_Shortcut.png");
                 case DeclarationType.Variable:
                     if (declaration.Accessibility == Accessibility.Private)
                     {
@@ -105,20 +117,23 @@ namespace Rubberduck.UI.FindSymbol
                 case DeclarationType.UserDefinedType:
                     if (declaration.Accessibility == Accessibility.Private)
                     {
-                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Type_Private.png");
+                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_ValueTypePrivate.png");
                     }
                     if (declaration.Accessibility == Accessibility.Friend)
                     {
-                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Type_Friend.png");
+                        return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_ValueType_Friend.png");
                     }
-                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Type.png");
+                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_ValueType.png");
 
                 case DeclarationType.UserDefinedTypeMember:
                     return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Field.png");
 
                 case DeclarationType.LibraryProcedure:
                 case DeclarationType.LibraryFunction:
-                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Method.png");
+                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Method_Shortcut.png");
+
+                case DeclarationType.LineLabel:
+                    return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Constant_Shortcut.png");
 
                 default:
                     return new Uri(@"pack://application:,,,/Rubberduck;component/Resources/Microsoft/PNG/VSObject_Structure.png");

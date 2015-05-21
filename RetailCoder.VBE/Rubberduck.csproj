@@ -790,6 +790,7 @@
     <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Shortcut.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
+    <None Include="Resources\arrow1.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -824,7 +825,7 @@
     <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\cross-circle.png" />
     <None Include="Resources\exclamation-diamond.png" />
-    <None Include="Resources\arrow.png" />
+    <Resource Include="Resources\arrow.png" />
     <None Include="Resources\document-copy.png" />
     <None Include="Resources\information-white.png" />
     <None Include="Resources\exclamation-white.png" />

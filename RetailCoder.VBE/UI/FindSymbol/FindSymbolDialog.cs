@@ -15,7 +15,7 @@ namespace Rubberduck.UI.FindSymbol
         public FindSymbolDialog(FindSymbolViewModel viewModel)
             : this()
         {
-            _findSymbolControl1.DataContext = viewModel;
+            findSymbolControl1.DataContext = viewModel;
         }
 
         public FindSymbolDialog()

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Rubberduck.Annotations;
 using Rubberduck.Parsing.Symbols;
 
@@ -22,10 +23,20 @@ namespace Rubberduck.UI.FindSymbol
 
         public event EventHandler<NavigateCodeEventArgs> Navigate;
 
+        public bool CanExecute()
+        {
+            return _selectedItem != null;
+        }
+
+        public void Execute()
+        {
+            OnNavigate();
+        }
+
         public void OnNavigate()
         {
             var handler = Navigate;
-            if (handler != null)
+            if (handler != null && _selectedItem != null)
             {
                 var arg = new NavigateCodeEventArgs(_selectedItem.Declaration);
                 handler(this, arg);
@@ -66,10 +77,6 @@ namespace Rubberduck.UI.FindSymbol
             { 
                 _selectedItem = value; 
                 OnPropertyChanged();
-                if (value != null)
-                { 
-                    OnNavigate(); 
-                }
             }
         }
 

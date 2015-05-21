@@ -6,26 +6,46 @@
              xmlns:local="clr-namespace:Rubberduck.UI.FindSymbol"
              mc:Ignorable="d" 
              d:DesignHeight="27" d:DesignWidth="270">
+
     <UserControl.Resources>
         <local:DeclarationImageConverter x:Key="DeclarationImageConverter" />
     </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="local:FindSymbolControl.GoCommand" 
+                        Executed="CommandBinding_OnExecuted"
+                        CanExecute="CommandBinding_OnCanExecute"/>
+    </UserControl.CommandBindings>
+    
     <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="32" />
+        </Grid.ColumnDefinitions>
+        
         <ComboBox IsEditable="True"
-                  ItemsSource="{Binding MatchResults}"
-                  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
-                  IsTextSearchCaseSensitive="False"
-                  IsTextSearchEnabled="True"
-                  TextSearch.TextPath="IdentifierName">
+                    ItemsSource="{Binding MatchResults}"
+                    SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
+                    IsTextSearchCaseSensitive="False"
+                    IsTextSearchEnabled="True"
+                    TextSearch.TextPath="IdentifierName">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Height="16" Width="16" Margin="2,0,2,0" Source="{Binding Declaration, Converter={StaticResource DeclarationImageConverter}}" />
-                        <TextBlock Margin="2,0,2,0" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="140" />
-                        <TextBlock Margin="2,0,2,0" Text="{Binding Location}" />
+                        <TextBlock Margin="2,0,2,0" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="160" VerticalAlignment="Center" />
+                        <TextBlock Margin="2,0,2,0" Text="{Binding Location}" VerticalAlignment="Center" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+        
+        <Button Grid.Column="1"
+                Command="local:FindSymbolControl.GoCommand">
+            <Image Height="16" Source="pack://application:,,,/Rubberduck;component/Resources/arrow.png" />
+        </Button>
+        
     </Grid>
 </UserControl>
