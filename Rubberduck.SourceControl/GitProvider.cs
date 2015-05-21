@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Vbe.Interop;
+using System.Security;
 
 namespace Rubberduck.SourceControl
 {
@@ -29,7 +30,7 @@ namespace Rubberduck.SourceControl
                 throw new SourceControlException("Repository not found.", ex);
             }
         }
-
+        
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
@@ -40,6 +41,20 @@ namespace Rubberduck.SourceControl
             };
 
             _credentialsHandler = (url, user, cred) => _credentials;
+        }
+
+        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials)
+            :this(project, repository, credentials.Username, credentials.Password)
+        { }
+
+        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
+            : this(project, repository)
+        {
+            _credentials = new SecureUsernamePasswordCredentials()
+            {
+                Username = credentials.Username,
+                Password = credentials.Password
+            };
         }
 
         ~GitProvider()
@@ -97,6 +112,11 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        /// <summary>
+        /// Exports files from VBProject to the file system, initalizes the repository, and creates an inital commit of those files to the repo.
+        /// </summary>
+        /// <param name="directory">Local file path of the directory where the new repository will be created.</param>
+        /// <returns>Newly initialized repository.</returns>
         public override IRepository InitVBAProject(string directory)
         {
             var repository = base.InitVBAProject(directory);
