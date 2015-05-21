@@ -40,9 +40,13 @@ namespace Rubberduck.UI
             var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "&Refactor";
 
-            _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick, Resources.ExtractMethod_6786_32);
+            _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick);
+            SetButtonImage(_extractMethodButton, Resources.ExtractMethod_6786_32, Resources.ExtractMethod_6786_32_Mask);
+
             _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
-            _renameButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
+            
+            _reorderParametersButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
+            SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
             InitializeRefactorContextMenu();
         }
@@ -61,18 +65,16 @@ namespace Rubberduck.UI
             _refactorCodePaneContextMenu.BeginGroup = true;
             _refactorCodePaneContextMenu.Caption = "&Refactor";
 
-            var extractMethodIcon = Resources.ExtractMethod_6786_32;
-            //extractMethodIcon.MakeTransparent(Color.White);
+            _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick);
+            SetButtonImage(_extractMethodContextButton, Resources.ExtractMethod_6786_32, Resources.ExtractMethod_6786_32_Mask);
 
-            var reorderParamsIcon = Resources.ReorderParameters_6780_32;
-            //reorderParamsIcon.MakeTransparent(Color.White);
-
-            _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick, extractMethodIcon);
             _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
-            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick, reorderParamsIcon);
+
+            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
-            InitializeGoToAnythingContextMenu();
+            InitializeFindSymbolContextMenu();
         }
 
         private CommandBarButton _findAllReferencesContextMenu;
@@ -84,21 +86,22 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
         }
 
-        private CommandBarButton _gotoAnythingContextMenu;
-        private void InitializeGoToAnythingContextMenu()
+        private CommandBarButton _findSymbolContextMenu;
+        private void InitializeFindSymbolContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _gotoAnythingContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
-            _gotoAnythingContextMenu.Caption = "&Navigate...";
-            _gotoAnythingContextMenu.Click += _gotoAnythingContextMenu_Click;
+            _findSymbolContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            SetButtonImage(_findSymbolContextMenu, Resources.FindSymbol_6263_32, Resources.FindSymbol_6263_32_Mask);
+            _findSymbolContextMenu.Caption = "Find &Symbol...";
+            _findSymbolContextMenu.Click += FindSymbolContextMenuClick;
         }
 
-        private void _gotoAnythingContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
-            var vm = new GoToAnythingViewModel(declarations.Items.Where(item => !item.IsBuiltIn));
+            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn));
             vm.Navigate += vm_Navigate;
-            using (var view = new GoToAnythingDialog(vm))
+            using (var view = new FindSymbolDialog(vm))
             {
                 view.ShowDialog();
             }
@@ -108,10 +111,14 @@ namespace Rubberduck.UI
 
         private void vm_Navigate(object sender, NavigateCodeEventArgs e)
         {
+            if (e.QualifiedName.Component == null)
+            {
+                return;
+            }
+
             try
             {
-                // todo: make an overload that just takes a Declaration object.
-                IDE.SetSelection(new QualifiedSelection(e.QualifiedName, e.Selection));
+                e.QualifiedName.Component.CodeModule.CodePane.SetSelection(e.Selection);
             }
             catch (COMException)
             {

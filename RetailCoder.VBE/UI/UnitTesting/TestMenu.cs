@@ -28,8 +28,11 @@ namespace Rubberduck.UI.UnitTesting
             var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             menu.Caption = "Te&st";
 
-            _windowsTestExplorerButton = AddButton(menu, "&Test Explorer", false, new CommandBarButtonClickEvent(OnTestExplorerButtonClick), Resources.TestManager_8590_32);
-            _runAllTestsButton = AddButton(menu, "&Run All Tests", true, new CommandBarButtonClickEvent(OnRunAllTestsButtonClick), Resources.AllLoadedTests_8644_24);
+            _windowsTestExplorerButton = AddButton(menu, "&Test Explorer", false, OnTestExplorerButtonClick);
+            SetButtonImage(_windowsTestExplorerButton, Resources.TestManager_8590_32, Resources.TestManager_8590_32_Mask);
+
+            _runAllTestsButton = AddButton(menu, "&Run All Tests", true, OnRunAllTestsButtonClick);
+            SetButtonImage(_runAllTestsButton, Resources.AllLoadedTests_8644_24, Resources.AllLoadedTests_8644_24_Mask);
         }
 
         public void RunAllTests()

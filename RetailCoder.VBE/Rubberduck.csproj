@@ -212,6 +212,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -268,13 +271,13 @@
     <Compile Include="UI\GoToAnything\GoToAnythingControl.xaml.cs">
       <DependentUpon>GoToAnythingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\GoToAnything\GoToAnythingDialog.cs">
+    <Compile Include="UI\GoToAnything\FindSymbolDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\GoToAnything\GoToAnythingDialog.Designer.cs">
-      <DependentUpon>GoToAnythingDialog.cs</DependentUpon>
+    <Compile Include="UI\GoToAnything\FindSymbolDialog.Designer.cs">
+      <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\GoToAnything\GoToAnythingViewModel.cs" />
+    <Compile Include="UI\GoToAnything\FindSymbolViewModel.cs" />
     <Compile Include="UI\GoToAnything\SearchResult.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
@@ -568,8 +571,8 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\GoToAnything\GoToAnythingDialog.resx">
-      <DependentUpon>GoToAnythingDialog.cs</DependentUpon>
+    <EmbeddedResource Include="UI\GoToAnything\FindSymbolDialog.resx">
+      <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
@@ -674,6 +677,124 @@
     <None Include="Resources\hourglass.png" />
     <None Include="Resources\arrow-090.png" />
     <None Include="Resources\arrow-270.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddClass_5561_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddEvent_5539_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddForm_369_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddMethod_5562_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddModule_368_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddProperty_5538_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddVariable_5541_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AllLoadedTests_8644_24.png" />
+    <Resource Include="Resources\Microsoft\PNG\DisplayFullSignature_13393_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\DisplayName_13394_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\document.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExportTestRunResults_8602_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExtractInterface_6778_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExtractMethod_6786_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\FindSymbol_6263_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\GenerateMethod_476_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\GroupBy_284_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ImplementInterface_5540_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\NewConstant_6861_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\NewEvent_6856_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\Options.png" />
+    <Resource Include="Resources\Microsoft\PNG\Play.png" />
+    <Resource Include="Resources\Microsoft\PNG\PromoteLocal_6784_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\recursion_6229_24.png" />
+    <Resource Include="Resources\Microsoft\PNG\Refresh.png" />
+    <Resource Include="Resources\Microsoft\PNG\RemoveParameters_6781_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ReorderParameters_6780_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\Services.png" />
+    <Resource Include="Resources\Microsoft\PNG\Task.png" />
+    <Resource Include="Resources\Microsoft\PNG\TestManager_8590_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\TestMethod.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed_hidden.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed_virtual.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open_hidden.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open_virtual.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Assembly.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumPrivate.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Library.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueTypePrivate.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
+    <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
+    <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
