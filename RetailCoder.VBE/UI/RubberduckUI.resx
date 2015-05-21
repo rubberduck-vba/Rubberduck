@@ -283,4 +283,8 @@
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="RemovePresenter_ConfirmParameter" xml:space="preserve">
+    <value>Remove parameter '{0}'?</value>
+    <comment>0: Selected parameter</comment>
+  </data>
 </root>

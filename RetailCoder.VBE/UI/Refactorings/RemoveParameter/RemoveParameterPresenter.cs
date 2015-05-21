@@ -23,12 +23,10 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             _selection = selection;
 
             FindTarget(out _target, selection);
-            FindMethod(out _method, selection);
 
-            if (_target != null)
-                MessageBox.Show(_target.IdentifierName, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OKCancel);
-            else
-                MessageBox.Show("null", RubberduckUI.RemoveParamsDialog_TitleText);
+            if (_target == null) { return; }
+
+            FindMethod(out _method, selection);
 
             RemoveParameter();
         }
@@ -236,11 +234,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
-        private void AcquireTarget(QualifiedSelection selection)
-        {
-            //PromptIfTargetImplementsInterface(ref target);
-        }
-
         private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
             target = null;
@@ -328,6 +321,15 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         }
                     }
                 }
+            }
+
+            if (target == null) { return; }
+
+            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, target.Context.GetText());
+            var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirm == DialogResult.No)
+            {
+                target = null;
             }
         }
 

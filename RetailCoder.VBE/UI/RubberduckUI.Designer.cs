@@ -322,6 +322,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove parameter &apos;{0}&apos;?.
+        /// </summary>
+        internal static string RemovePresenter_ConfirmParameter {
+            get {
+                return ResourceManager.GetString("RemovePresenter_ConfirmParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No parameters in method &apos;{0}&apos;..
         /// </summary>
         internal static string RemovePresenter_NoParametersError {
