@@ -25,7 +25,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             FindTarget(out _target, selection);
 
             if (_target == null) { return; }
-
             FindMethod(out _method, selection);
 
             RemoveParameter();
@@ -33,12 +32,19 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         public RemoveParameterPresenter(Declaration target)
         {
-            if (target == null || target.DeclarationType != DeclarationType.Parameter)
+            if (target == null)
             {
                 return;
             }
 
+            if (target.DeclarationType != DeclarationType.Parameter)
+            {
+                throw new ArgumentException("Expected DeclarationType.Parameter, received DeclarationType." + target.DeclarationType.ToString() + ".");
+            }
+
             _target = target;
+            if (_target == null) { return; }
+
             //FindMethod(out _method, selection);
 
             RemoveParameter();
@@ -61,7 +67,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         {
             LoadParameters();
 
-            AdjustSignatures(_target);
+            AdjustSignatures();
             AdjustReferences(_method.References);
         }
 
@@ -142,10 +148,10 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            /*if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
+            if (_target.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
-                                              item.IdentifierName == _view.Target.IdentifierName &&
+                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _target.ParentScope &&
+                                              item.IdentifierName == _target.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
@@ -153,19 +159,19 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     AdjustSignatures(setter);
                 }
 
-                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
-                              item.IdentifierName == _view.Target.IdentifierName &&
+                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _target.ParentScope &&
+                              item.IdentifierName == _target.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
                 }
-            }*/
+            }
 
             RemoveSignatureParameter(paramList, module);
 
-            /*foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _target.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
@@ -174,23 +180,23 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_view.Target.Project) &&
-                                                               item.IdentifierName == _view.Target.ComponentName + "_" + _view.Target.IdentifierName);
+                                                        .Where(item => item.Project.Equals(_target.Project) &&
+                                                               item.IdentifierName == _target.ComponentName + "_" + _target.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
 
                 AdjustReferences(interfaceImplentation.References);
-            }*/
+            }
         }
 
         private void AdjustSignatures(IdentifierReference reference)
         {
-            /*var proc = (dynamic)reference.Context.Parent;
+            var proc = (dynamic)reference.Context.Parent;
             var module = reference.QualifiedModuleName.Component.CodeModule;
             var paramList = (VBAParser.ArgListContext)proc.argList();
 
-            RemoveSignatureParameter(paramList, module);*/
+            RemoveSignatureParameter(paramList, module);
         }
 
         private void AdjustSignatures(Declaration declaration)
@@ -390,12 +396,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     }
                 }
             }
+
+            PromptIfTargetImplementsInterface(ref method);
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
-            // TODO - rewrite
-            /*var declaration = target;
+            var declaration = target;
             var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
             if (target == null || interfaceImplementation == null)
             {
@@ -412,7 +419,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 return;
             }
 
-            target = interfaceMember;*/
+            target = interfaceMember;
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
