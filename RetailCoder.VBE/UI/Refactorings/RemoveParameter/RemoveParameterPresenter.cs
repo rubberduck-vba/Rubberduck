@@ -144,9 +144,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void AdjustSignatures()
         {
-            var proc = (dynamic)_target.Context.Parent;
-            var paramList = (VBAParser.ArgListContext)proc;
-            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var proc = (dynamic)_method.Context;
+            var paramList = (VBAParser.ArgListContext)proc.argList();
+            var module = _method.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_method.DeclarationType == DeclarationType.PropertyGet)
