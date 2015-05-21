@@ -149,7 +149,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (_target.DeclarationType == DeclarationType.PropertyGet)
+            if (_method.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _method.ParentScope &&
                                               item.IdentifierName == _method.IdentifierName &&
@@ -177,6 +177,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
                     AdjustSignatures(reference);
+                    AdjustReferences(reference.References);
                 }
             }
 
@@ -274,8 +275,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 var startColumn = declaration.Context.Start.Column;
                 var endLine = declaration.Context.Stop.Line;
                 var endColumn = declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length + 1;
-
-                var d = declaration.Context.GetSelection();
 
                 if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
                     currentStartLine <= startLine && currentEndLine >= endLine)
@@ -406,7 +405,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 }
             }
 
-            if (method != null && method.DeclarationType == DeclarationType.PropertySet)
+            if (method != null && (method.DeclarationType == DeclarationType.PropertySet || method.DeclarationType == DeclarationType.PropertyLet))
             {
                 var nonRefMethod = method;
 

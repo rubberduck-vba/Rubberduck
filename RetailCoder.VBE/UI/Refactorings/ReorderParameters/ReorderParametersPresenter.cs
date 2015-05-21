@@ -222,6 +222,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
                     AdjustSignatures(reference);
+                    AdjustReferences(reference.References);
                 }
             }
 
