@@ -10,8 +10,14 @@ namespace Rubberduck.SourceControl
 
     public abstract class CredentialsBase<TPassword> : ICredentials<TPassword>
     {
-        public virtual string Username { get; set; }
-        public virtual TPassword Password { get; set; } 
+        public string Username { get; set; }
+        public TPassword Password { get; set; }
+
+        protected CredentialsBase(string username, TPassword password)
+        {
+            this.Username = username;
+            this.Password = password;
+        } 
     }
 
     /// <summary>
@@ -20,24 +26,20 @@ namespace Rubberduck.SourceControl
     /// <remarks>
     /// Do no use internally. For COM Interop only. Use <see cref="SecureCredentials"/> instead./>
     /// </remarks>
-    public sealed class Credentials : CredentialsBase<string>
+    public class Credentials : CredentialsBase<string>
     {
         public Credentials(string username, string password)
-        {
-            this.Username = username;
-            this.Password = password;
-        }
+            :base(username, password)
+        { }
     }
 
     /// <summary>
     /// Stores user name and password credentials.
     /// </summary>
-    public sealed class SecureCredentials : CredentialsBase<SecureString>
+    public class SecureCredentials : CredentialsBase<SecureString>
     {
         public SecureCredentials(string username, SecureString password)
-        {
-            this.Username = username;
-            this.Password = password;
-        }
+            : base(username, password)
+        { }
     }
 }
