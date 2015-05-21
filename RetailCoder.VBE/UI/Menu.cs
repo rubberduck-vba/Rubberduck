@@ -9,6 +9,21 @@ namespace Rubberduck.UI
 {
     public class Menu : IDisposable
     {
+        internal class AxHostConverter : AxHost
+        {
+            private AxHostConverter() : base("") { }
+
+            static public stdole.IPictureDisp ImageToPictureDisp(Image image)
+            {
+                return (stdole.IPictureDisp)GetIPictureDispFromPicture(image);
+            }
+
+            static public Image PictureDispToImage(stdole.IPictureDisp pictureDisp)
+            {
+                return GetPictureFromIPicture(pictureDisp);
+            }
+        }
+
         private readonly VBE _vbe;
         protected readonly AddIn AddIn;
 
@@ -59,9 +74,17 @@ namespace Rubberduck.UI
 
             if (image != null)
             {
+                image.MakeTransparent(Color.Transparent);
                 Clipboard.SetDataObject(image, true);
                 button.PasteFace();
             }
+        }
+
+        public static void SetButtonImage(CommandBarButton button, Bitmap image, Bitmap mask)
+        {
+            button.FaceId = 0;
+            button.Picture = AxHostConverter.ImageToPictureDisp(image);
+            button.Mask = AxHostConverter.ImageToPictureDisp(mask);
         }
 
         /// <summary>
