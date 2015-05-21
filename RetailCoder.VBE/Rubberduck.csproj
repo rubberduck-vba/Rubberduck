@@ -287,6 +287,7 @@
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
@@ -300,7 +301,7 @@
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\Parameter.cs" />
+    <Compile Include="UI\Refactorings\Parameter.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
