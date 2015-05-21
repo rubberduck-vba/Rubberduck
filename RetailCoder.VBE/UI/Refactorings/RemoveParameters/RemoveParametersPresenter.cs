@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
     {
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
-        private readonly Declaration _target;
+        private Declaration _target;
         private List<Parameter> parameters = new List<Parameter>();
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
@@ -28,7 +28,19 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             else
                 MessageBox.Show("null", RubberduckUI.RemoveParamsDialog_TitleText);
 
-            AdjustSignatures();
+            RemoveParameter();
+        }
+
+        public RemoveParameterPresenter(Declaration target)
+        {
+            if (target == null || target.DeclarationType != DeclarationType.Parameter)
+            {
+                return;
+            }
+
+            _target = target;
+
+            RemoveParameter();
         }
 
         /// <summary>
@@ -36,8 +48,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         /// </summary>
         private void LoadParameters()
         {
-            var procedure = (dynamic)_target.Context;
-            var argList = (VBAParser.ArgListContext)procedure.argList();
+            var procedure = (dynamic)_target.Context.Parent;
+            var argList = (VBAParser.ArgListContext)procedure;
             var args = argList.arg();
 
             var index = 0;
@@ -45,6 +57,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             {
                 parameters.Add(new Parameter(arg.GetText(), index++));
             }
+        }
+
+        private void RemoveParameter()
+        {
+            LoadParameters();
+
+            AdjustSignatures(_target);
         }
 
         /// <summary>
@@ -241,20 +260,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         /// <param name="declaration">A Declaration of the method signature to adjust.</param>
         private void AdjustSignatures(Declaration declaration)
         {
-            /*var proc = (dynamic)declaration.Context.Parent;
-            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            VBAParser.ArgListContext paramList;
+            var proc = (dynamic)_target.Context.Parent;
+            var paramList = (VBAParser.ArgListContext)proc;
+            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
-            if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
-            {
-                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
-            }
-            else
-            {
-                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
-            }
-
-            RemoveSignatureParameter(paramList, module);*/
+            RemoveSignatureParameter(paramList, module);
         }
 
         /// <summary>
@@ -264,15 +274,32 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
         private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            var parameterIndex = 0;
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
                 var content = module.Lines[lineNum, 1];
-                var newContent = content.Replace(_target.Context.GetText(), "");
+                var valueToRemove = _target.Context.GetText() != parameters.Last().FullDeclaration ?
+                                    _target.Context.GetText() + "," :
+                                    _target.Context.GetText();
+
+                var newContent = content.Replace(valueToRemove, "");
 
                 if (content != newContent)
                 {
                     module.ReplaceLine(lineNum, newContent);
+
+                    if (_target.Context.GetText() == parameters.Last().FullDeclaration)
+                    {
+                        for (int line = lineNum; line >= paramList.Start.Line; line--)
+                        {
+                            var lineContent = module.Lines[line, 1];
+                            if (lineContent.Contains(','))
+                            {
+                                module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
+                                return;
+                            }
+                        }
+                    }
+
                     return;
                 }
             }
