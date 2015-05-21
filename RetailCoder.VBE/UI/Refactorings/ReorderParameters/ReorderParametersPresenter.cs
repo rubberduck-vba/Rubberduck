@@ -21,29 +21,34 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _declarations = parseResult.Declarations;
             _selection = selection;
 
-            _view.OkButtonClicked += OnOkButtonClicked;
+            _view.OkButtonClicked += OkButtonClicked;
         }
 
+        /// <summary>
+        /// Displays the Refactor Parameters dialog window.
+        /// </summary>
         public void Show()
         {
             AcquireTarget(_selection);
 
-            if (_view.Target != null)
+            if (_view.Target == null) { return; }
+            
+            LoadParameters();
+
+            if (_view.Parameters.Count < 2) 
             {
-                LoadParameters();
-
-                if (_view.Parameters.Count < 2) 
-                {
-                    var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoVariablesError, _view.Target.IdentifierName);
-                    MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return; 
-                }
-
-                _view.InitializeParameterGrid();
-               _view.ShowDialog();
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _view.Target.IdentifierName);
+                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; 
             }
+
+            _view.InitializeParameterGrid();
+            _view.ShowDialog();
         }
 
+        /// <summary>
+        /// Loads the parameters into the dialog window.
+        /// </summary>
         private void LoadParameters()
         {
             var procedure = (dynamic)_view.Target.Context;
@@ -57,7 +62,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        private void OnOkButtonClicked(object sender, EventArgs e)
+        /// <summary>
+        /// Handler for OK button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OkButtonClicked(object sender, EventArgs e)
         {
             if (!_view.Parameters.Where((t, i) => t.Index != i).Any())
             {
@@ -71,7 +81,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 {
                     if (!_view.Parameters.ElementAt(index).IsOptional)
                     {
-                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalVariableError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -91,6 +101,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             AdjustReferences(_view.Target.References);
         }
 
+        /// <summary>
+        /// Adjusts references to method call.
+        /// </summary>
+        /// <param name="references">An IEnumberable of IdentifierReference's</param>
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
             foreach (var reference in references.Where(item => item.Context != _view.Target.Context))
@@ -109,53 +123,59 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     continue;
                 }
 
-                var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+                var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
 
-                if (argList == null)
+                if (paramList == null)
                 {
                     continue;
                 }
 
-                RewriteCall(reference, argList, module);
+                RewriteCall(reference, paramList, module);
             }
         }
 
-        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext argList, Microsoft.Vbe.Interop.CodeModule module)
+        /// <summary>
+        /// Rewrites method calls.
+        /// </summary>
+        /// <param name="reference">The reference to the method call to be re-written.</param>
+        /// <param name="paramList">The ArgsCallContext of the reference.</param>
+        /// <param name="module">The CodeModule to rewrite to.</param>
+        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            var paramNames = argList.argCall().Select(arg => arg.GetText()).ToList();
+            var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
 
-            var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
+            var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            var variableIndex = 0;
-            for (var line = argList.Start.Line; line < argList.Start.Line + lineCount; line++)
+            var parameterIndex = 0;
+            for (var line = paramList.Start.Line; line < paramList.Start.Line + lineCount; line++)
             {
                 var newContent = module.Lines[line, 1].Replace(" , ", "");
 
-                var currentStringIndex = line == argList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
+                var currentStringIndex = line == paramList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
 
-                for (var i = 0; i < paramNames.Count && variableIndex < _view.Parameters.Count; i++)
+                for (var i = 0; i < paramNames.Count && parameterIndex < _view.Parameters.Count; i++)
                 {
-                    var variableStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
+                    var parameterStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex);
 
-                    if (variableStringIndex > -1)
+                    if (parameterStringIndex > -1)
                     {
-                        if (_view.Parameters.ElementAt(variableIndex).Index >= paramNames.Count)
+                        if (_view.Parameters.ElementAt(parameterIndex).Index >= paramNames.Count)
                         {
-                            newContent = newContent.Insert(variableStringIndex, " , ");
+                            newContent = newContent.Insert(parameterStringIndex, " , ");
                             i--;
-                            variableIndex++;
+                            parameterIndex++;
                             continue;
                         }
 
-                        var oldVariableString = paramNames.ElementAt(i);
-                        var newVariableString = paramNames.ElementAt(_view.Parameters.ElementAt(variableIndex).Index);
-                        var beginningSub = newContent.Substring(0, variableStringIndex);
-                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
+                        var oldParameterString = paramNames.ElementAt(i);
+                        var newParameterString = paramNames.ElementAt(_view.Parameters.ElementAt(parameterIndex).Index);
+                        var beginningSub = newContent.Substring(0, parameterStringIndex);
+                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParameterString, newParameterString);
 
                         newContent = beginningSub + replaceSub;
 
-                        variableIndex++;
-                        currentStringIndex = beginningSub.Length + newVariableString.Length;
+                        parameterIndex++;
+                        currentStringIndex = beginningSub.Length + newParameterString.Length;
                     }
                 }
 
@@ -163,10 +183,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Adjust the signature of a selected method.
+        /// Handles setters and letters when a getter is adjusted.
+        /// </summary>
         private void AdjustSignatures()
         {
             var proc = (dynamic)_view.Target.Context;
-            var argList = (VBAParser.ArgListContext)proc.argList();
+            var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
@@ -191,7 +215,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            RewriteSignature(argList, module);
+            RewriteSignature(paramList, module);
 
             foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
             {
@@ -212,57 +236,71 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Adjust the signature of a reference to a given method.
+        /// Used for letters.
+        /// </summary>
+        /// <param name="reference">A reference to the method signature to adjust.</param>
         private void AdjustSignatures(IdentifierReference reference)
         {
             var proc = (dynamic)reference.Context.Parent;
             var module = reference.QualifiedModuleName.Component.CodeModule;
-            var argList = (VBAParser.ArgListContext)proc.argList();
+            var paramList = (VBAParser.ArgListContext)proc.argList();
 
-            RewriteSignature(argList, module);
+            RewriteSignature(paramList, module);
         }
 
-        private void AdjustSignatures(Declaration reference)
+        /// <summary>
+        /// Adjust the signature of a declaration of a given method.
+        /// </summary>
+        /// <param name="declaration">A Declaration of the method signature to adjust.</param>
+        private void AdjustSignatures(Declaration declaration)
         {
-            var proc = (dynamic)reference.Context.Parent;
-            var module = reference.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            VBAParser.ArgListContext argList;
+            var proc = (dynamic)declaration.Context.Parent;
+            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            VBAParser.ArgListContext paramList;
 
-            if (reference.DeclarationType == DeclarationType.PropertySet || reference.DeclarationType == DeclarationType.PropertyLet)
+            if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
             {
-                argList = (VBAParser.ArgListContext)proc.children[0].argList();
+                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
             }
             else
             {
-                argList = (VBAParser.ArgListContext)proc.subStmt().argList();
+                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
 
-            RewriteSignature(argList, module);
+            RewriteSignature(paramList, module);
         }
 
-        private void RewriteSignature(VBAParser.ArgListContext argList, Microsoft.Vbe.Interop.CodeModule module)
+        /// <summary>
+        /// Rewrites the signature of a given method.
+        /// </summary>
+        /// <param name="paramList">The ArgListContext of the method signature being adjusted.</param>
+        /// <param name="module">The CodeModule of the method signature being adjusted.</param>
+        private void RewriteSignature(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            var args = argList.arg();
+            var args = paramList.arg();
 
-            var variableIndex = 0;
-            for (var lineNum = argList.Start.Line; lineNum < argList.Start.Line + argList.GetSelection().LineCount; lineNum++)
+            var parameterIndex = 0;
+            for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
                 var newContent = module.Lines[lineNum, 1];
                 var currentStringIndex = 0;
 
-                for (var i = variableIndex; i < _view.Parameters.Count; i++)
+                for (var i = parameterIndex; i < _view.Parameters.Count; i++)
                 {
-                    var variableStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration, currentStringIndex);
+                    var parameterStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration, currentStringIndex);
 
-                    if (variableStringIndex > -1)
+                    if (parameterStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == variableIndex).FullDeclaration;
+                        var oldVariableString = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
                         var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
-                        var beginningSub = newContent.Substring(0, variableStringIndex);
-                        var replaceSub = newContent.Substring(variableStringIndex).Replace(oldVariableString, newVariableString);
+                        var beginningSub = newContent.Substring(0, parameterStringIndex);
+                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldVariableString, newVariableString);
 
                         newContent = beginningSub + replaceSub;
 
-                        variableIndex++;
+                        parameterIndex++;
                         currentStringIndex = beginningSub.Length + newVariableString.Length;
                     }
                 }
@@ -271,6 +309,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
+        /// <summary>
+        /// Declaration types that contain parameters that that can be adjusted.
+        /// </summary>
         private static readonly DeclarationType[] ValidDeclarationTypes =
             {
                  DeclarationType.Event,
@@ -281,17 +322,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                  DeclarationType.PropertySet
             };
 
+        /// <summary>
+        /// Get the target Declaration to adjust.
+        /// </summary>
+        /// <param name="selection">The user selection specifying which method signature to adjust.</param>
         private void AcquireTarget(QualifiedSelection selection)
         {
-            var target = _declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                     || IsSelectedReference(selection, item));
+            Declaration target;
 
-            if (target == null || !ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                FindTarget(ref target, selection);
-            }
+            FindTarget(out target, selection);
 
             if (target != null && target.DeclarationType == DeclarationType.PropertySet)
             {
@@ -309,12 +348,32 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             _view.Target = target;
         }
 
-        private void FindTarget(ref Declaration target, QualifiedSelection selection)
+        /// <summary>
+        /// Gets the target to adjust given a selection.
+        /// </summary>
+        /// <param name="target">The value to place the target in.</param>
+        /// <param name="selection">The user selection specifying what method signature to adjust.</param>
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
+            target = _declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                     || IsSelectedReference(selection, item));
+
+            if (target != null && ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                return;
+            }
+
             var targets = _declarations.Items
                 .Where(item => !item.IsBuiltIn
                             && item.ComponentName == selection.QualifiedName.ComponentName
                             && ValidDeclarationTypes.Contains(item.DeclarationType));
+
+            var currentStartLine = 0;
+            var currentEndLine = int.MaxValue;
+            var currentStartColumn = 0;
+            var currentEndColumn = int.MaxValue;
 
             foreach (var declaration in targets)
             {
@@ -323,18 +382,20 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 var endLine = declaration.Context.GetSelection().EndLine;
                 var endColumn = declaration.Context.GetSelection().EndColumn;
 
-                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                    currentStartLine <= startLine && currentEndLine >= endLine)
                 {
-                    if (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn)
+                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                     {
-                        continue;
-                    }
-                    if (endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn)
-                    {
-                        continue;
-                    }
+                        target = declaration;
 
-                    target = declaration;
+                        currentStartLine = startLine;
+                        currentEndLine = endLine;
+                        currentStartColumn = startColumn;
+                        currentEndColumn = endColumn;
+                    }
                 }
 
                 foreach (var reference in declaration.References)
@@ -352,31 +413,42 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                         continue;
                     }
 
-                    var argList = (VBAParser.ArgsCallContext)proc.argsCall();
+                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
 
-                    if (argList == null)
+                    if (paramList == null)
                     {
                         continue;
                     }
 
-                    startLine = argList.Start.Line;
-                    startColumn = argList.Start.Column;
-                    endLine = argList.Stop.Line;
-                    endColumn = argList.Stop.Column + argList.Stop.Text.Length + 1;
+                    startLine = paramList.Start.Line;
+                    startColumn = paramList.Start.Column;
+                    endLine = paramList.Stop.Line;
+                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
 
-                    if ((startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine) && 
-                        (startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                        currentStartLine <= startLine && currentEndLine >= endLine)
                     {
-                        continue;
-                    }
+                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                        {
+                            target = reference.Declaration;
 
-                    target = reference.Declaration;
-                    return;
+                            currentStartLine = startLine;
+                            currentEndLine = endLine;
+                            currentStartColumn = startColumn;
+                            currentEndColumn = endColumn;
+                        }
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Displays a prompt asking the user whether the method signature should be adjusted
+        /// if the target declaration implements an interface method.
+        /// </summary>
+        /// <param name="target">The target declaration.</param>
         private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
             var declaration = target;

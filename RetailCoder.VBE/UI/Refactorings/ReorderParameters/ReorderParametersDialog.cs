@@ -46,14 +46,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void MethodParametersGrid_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left &&
+                _dragBoxFromMouseDown != Rectangle.Empty && !_dragBoxFromMouseDown.Contains(e.X, e.Y))
             {
-                if (_dragBoxFromMouseDown != Rectangle.Empty && !_dragBoxFromMouseDown.Contains(e.X, e.Y))
-                {
-                    var dropEffect = MethodParametersGrid.DoDragDrop(
-                          MethodParametersGrid.Rows[_newRowIndex],
-                          DragDropEffects.Move);
-                }
+                var dropEffect = MethodParametersGrid.DoDragDrop(
+                        MethodParametersGrid.Rows[_newRowIndex],
+                        DragDropEffects.Move);
             }
         }
 
@@ -69,8 +67,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             _startPoint = new Point(e.X, e.Y);
 
-            var dragSize = SystemInformation.DragSize;
-            _dragBoxFromMouseDown = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
+            AdjustDragRectangle(e, SystemInformation.DragSize);
         }
 
         private void MethodParametersGrid_DragOver(object sender, DragEventArgs e)
@@ -103,6 +100,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
                 ReselectParameter();
             }
+        }
+
+        private void AdjustDragRectangle(MouseEventArgs eventArgs, Size dragSize)
+        {
+            _dragBoxFromMouseDown = new Rectangle(new Point(eventArgs.X - (dragSize.Width / 2), eventArgs.Y - (dragSize.Height / 2)), dragSize);
         }
 
         public void InitializeParameterGrid()
@@ -164,7 +166,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 return;
             }
 
-            var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
+            var selectedIndex = GetFirstSelectedRowIndex(0);
             SwapParameters(selectedIndex, selectedIndex - 1);
 
             ReselectParameter();
@@ -177,10 +179,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 return;
             }
 
-            var selectedIndex = MethodParametersGrid.SelectedRows[0].Index;
+            var selectedIndex = GetFirstSelectedRowIndex(0);
             SwapParameters(selectedIndex, selectedIndex + 1);
             
             ReselectParameter();
+        }
+
+        private int GetFirstSelectedRowIndex(int index)
+        {
+            return MethodParametersGrid.SelectedRows[index].Index;
         }
 
         private void SwapParameters(int index1, int index2)
