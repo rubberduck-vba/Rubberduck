@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.UI.GoToAnything
+namespace Rubberduck.UI.FindSymbol
 {
     public class SearchResult
     {

@@ -7,11 +7,11 @@ using System.Runtime.CompilerServices;
 using Rubberduck.Annotations;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.UI.GoToAnything
+namespace Rubberduck.UI.FindSymbol
 {
-    public class GoToAnythingViewModel : INotifyPropertyChanged
+    public class FindSymbolViewModel : INotifyPropertyChanged
     {
-        public GoToAnythingViewModel(IEnumerable<Declaration> declarations)
+        public FindSymbolViewModel(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations;
             var initialResults = _declarations.OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())

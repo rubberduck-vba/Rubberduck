@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="Rubberduck.UI.GoToAnything.GoToAnythingControl"
+﻿<UserControl x:Class="Rubberduck.UI.FindSymbol.FindSymbolControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Rubberduck.UI.GoToAnything"
+             xmlns:local="clr-namespace:Rubberduck.UI.FindSymbol"
              mc:Ignorable="d" 
              d:DesignHeight="27" d:DesignWidth="270">
     <UserControl.Resources>
@@ -20,9 +20,9 @@
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Margin="2" Source="{Binding Declaration, Converter={StaticResource DeclarationImageConverter}}" />
-                        <TextBlock Margin="2" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="140" />
-                        <TextBlock Margin="2" Text="{Binding Location}" />
+                        <Image Height="16" Width="16" Margin="2,0,2,0" Source="{Binding Declaration, Converter={StaticResource DeclarationImageConverter}}" />
+                        <TextBlock Margin="2,0,2,0" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="140" />
+                        <TextBlock Margin="2,0,2,0" Text="{Binding Location}" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>

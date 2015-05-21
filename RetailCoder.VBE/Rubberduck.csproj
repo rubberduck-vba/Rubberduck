@@ -267,18 +267,18 @@
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
-    <Compile Include="UI\GoToAnything\DeclarationImageConverter.cs" />
-    <Compile Include="UI\GoToAnything\GoToAnythingControl.xaml.cs">
-      <DependentUpon>GoToAnythingControl.xaml</DependentUpon>
+    <Compile Include="UI\FindSymbol\DeclarationImageConverter.cs" />
+    <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
+      <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\GoToAnything\FindSymbolDialog.cs">
+    <Compile Include="UI\FindSymbol\FindSymbolDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\GoToAnything\FindSymbolDialog.Designer.cs">
+    <Compile Include="UI\FindSymbol\FindSymbolDialog.Designer.cs">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\GoToAnything\FindSymbolViewModel.cs" />
-    <Compile Include="UI\GoToAnything\SearchResult.cs" />
+    <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
+    <Compile Include="UI\FindSymbol\SearchResult.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
       <SubType>UserControl</SubType>
@@ -571,7 +571,7 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\GoToAnything\FindSymbolDialog.resx">
+    <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
@@ -990,7 +990,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\GoToAnything\GoToAnythingControl.xaml">
+    <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

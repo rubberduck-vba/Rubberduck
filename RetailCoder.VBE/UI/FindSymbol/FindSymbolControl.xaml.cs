@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rubberduck.UI.GoToAnything
+namespace Rubberduck.UI.FindSymbol
 {
     /// <summary>
-    /// Interaction logic for GoToAnythingControl.xaml
+    /// Interaction logic for FindSymbolControl.xaml
     /// </summary>
-    public partial class GoToAnythingControl : UserControl
+    public partial class FindSymbolControl : UserControl
     {
-        public GoToAnythingControl()
+        public FindSymbolControl()
         {
             InitializeComponent();
         }

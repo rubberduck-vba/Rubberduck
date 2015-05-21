@@ -8,17 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI.GoToAnything
+namespace Rubberduck.UI.FindSymbol
 {
-    public partial class GoToAnythingDialog : Form
+    public partial class FindSymbolDialog : Form
     {
-        public GoToAnythingDialog(GoToAnythingViewModel viewModel)
+        public FindSymbolDialog(FindSymbolViewModel viewModel)
             : this()
         {
-            goToAnythingControl1.DataContext = viewModel;
+            _findSymbolControl1.DataContext = viewModel;
         }
 
-        public GoToAnythingDialog()
+        public FindSymbolDialog()
         {
             InitializeComponent();
         }
