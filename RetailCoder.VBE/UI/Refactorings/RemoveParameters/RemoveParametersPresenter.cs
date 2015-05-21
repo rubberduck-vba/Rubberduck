@@ -14,6 +14,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
         private readonly Declaration _target;
+        private List<Parameter> parameters = new List<Parameter>();
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
@@ -21,15 +22,29 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             _selection = selection;
 
             FindTarget(out _target, selection);
-            /*_target = _declarations.Items
-                        .Where(item => item.DeclarationType == DeclarationType.Parameter
-                                    && item.ComponentName == selection.QualifiedName.ComponentName)
-                        .FirstOrDefault();*/
 
             if (_target != null)
                 MessageBox.Show(_target.IdentifierName, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OKCancel);
             else
                 MessageBox.Show("null", RubberduckUI.RemoveParamsDialog_TitleText);
+
+            AdjustSignatures();
+        }
+
+        /// <summary>
+        /// Loads the parameters into the dialog window.
+        /// </summary>
+        private void LoadParameters()
+        {
+            var procedure = (dynamic)_target.Context;
+            var argList = (VBAParser.ArgListContext)procedure.argList();
+            var args = argList.arg();
+
+            var index = 0;
+            foreach (var arg in args)
+            {
+                parameters.Add(new Parameter(arg.GetText(), index++));
+            }
         }
 
         /// <summary>
@@ -159,12 +174,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         /// </summary>
         private void AdjustSignatures()
         {
-            /*var proc = (dynamic)_view.Target.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-
+            var proc = (dynamic)_target.Context.Parent;
+            var paramList = (VBAParser.ArgListContext)proc;
+            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
+            /*if (_view.Target.DeclarationType == DeclarationType.PropertyGet)
             {
                 var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _view.Target.ParentScope &&
                                               item.IdentifierName == _view.Target.IdentifierName &&
@@ -183,11 +198,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 {
                     AdjustSignatures(letter);
                 }
-            }
+            }*/
 
-            RewriteSignature(paramList, module);
+            RemoveSignatureParameter(paramList, module);
 
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
+            /*foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
@@ -217,7 +232,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var module = reference.QualifiedModuleName.Component.CodeModule;
             var paramList = (VBAParser.ArgListContext)proc.argList();
 
-            RewriteSignature(paramList, module);*/
+            RemoveSignatureParameter(paramList, module);*/
         }
 
         /// <summary>
@@ -239,7 +254,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
 
-            RewriteSignature(paramList, module);*/
+            RemoveSignatureParameter(paramList, module);*/
         }
 
         /// <summary>
@@ -247,36 +262,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         /// </summary>
         /// <param name="paramList">The ArgListContext of the method signature being adjusted.</param>
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
-        private void RewriteSignature(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
+        private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            /*var args = paramList.arg();
-
             var parameterIndex = 0;
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
-                var newContent = module.Lines[lineNum, 1];
-                var currentStringIndex = 0;
+                var content = module.Lines[lineNum, 1];
+                var newContent = content.Replace(_target.Context.GetText(), "");
 
-                for (var i = parameterIndex; i < _view.Parameters.Count; i++)
+                if (content != newContent)
                 {
-                    var parameterStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration, currentStringIndex);
-
-                    if (parameterStringIndex > -1)
-                    {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
-                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
-                        var beginningSub = newContent.Substring(0, parameterStringIndex);
-                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldVariableString, newVariableString);
-
-                        newContent = beginningSub + replaceSub;
-
-                        parameterIndex++;
-                        currentStringIndex = beginningSub.Length + newVariableString.Length;
-                    }
+                    module.ReplaceLine(lineNum, newContent);
+                    return;
                 }
-
-                module.ReplaceLine(lineNum, newContent);
-            }*/
+            }
         }
 
         /// <summary>
