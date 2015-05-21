@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameter
 {
@@ -96,11 +97,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     continue;
                 }
 
-                RewriteCall(reference, paramList, module);
+                RemoveCallParameter(reference, paramList, module);
             }
         }
 
-        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext paramList, Microsoft.Vbe.Interop.CodeModule module)
+        private void RemoveCallParameter(IdentifierReference reference, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
             var paramIndex = _parameters.FindIndex(item => item.FullDeclaration == _target.Context.GetText());
@@ -147,11 +148,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var paramList = (VBAParser.ArgListContext)proc;
             var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
-            // if we are reordering a property getter, check if we need to reorder a letter/setter too
+            // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_target.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _target.ParentScope &&
-                                              item.IdentifierName == _target.IdentifierName &&
+                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _method.ParentScope &&
+                                              item.IdentifierName == _method.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
@@ -159,8 +160,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     AdjustSignatures(setter);
                 }
 
-                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _target.ParentScope &&
-                              item.IdentifierName == _target.IdentifierName &&
+                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _method.ParentScope &&
+                              item.IdentifierName == _method.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
                 if (letter != null)
@@ -171,7 +172,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             RemoveSignatureParameter(paramList, module);
 
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _target.ComponentName))
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _method.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
@@ -180,12 +181,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_target.Project) &&
-                                                               item.IdentifierName == _target.ComponentName + "_" + _target.IdentifierName);
+                                                        .Where(item => item.Project.Equals(_method.Project) &&
+                                                               item.IdentifierName == _method.ComponentName + "_" + _method.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
-
                 AdjustReferences(interfaceImplentation.References);
             }
         }
@@ -201,14 +201,23 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void AdjustSignatures(Declaration declaration)
         {
-            var proc = (dynamic)_target.Context.Parent;
-            var paramList = (VBAParser.ArgListContext)proc;
-            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var proc = (dynamic)declaration.Context.Parent;
+            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            VBAParser.ArgListContext paramList;
+
+            if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
+            {
+                paramList = (VBAParser.ArgListContext)proc.children[0].argList();
+            }
+            else
+            {
+                paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
+            }
 
             RemoveSignatureParameter(paramList, module);
         }
 
-        private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
+        private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, CodeModule module)
         {
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
@@ -394,6 +403,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         currentStartColumn = startColumn;
                         currentEndColumn = endColumn;
                     }
+                }
+            }
+
+            if (method != null && method.DeclarationType == DeclarationType.PropertySet)
+            {
+                var nonRefMethod = method;
+
+                var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == nonRefMethod.ParentScope &&
+                                              item.IdentifierName == nonRefMethod.IdentifierName &&
+                                              item.DeclarationType == DeclarationType.PropertyGet);
+
+                if (getter != null)
+                {
+                    method = getter;
                 }
             }
 

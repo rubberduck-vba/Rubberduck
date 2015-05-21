@@ -231,7 +231,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
-
                 AdjustReferences(interfaceImplentation.References);
             }
         }
