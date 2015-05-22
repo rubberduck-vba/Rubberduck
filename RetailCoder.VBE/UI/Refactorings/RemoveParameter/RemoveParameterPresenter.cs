@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             FindTarget(out _target, out _identifierName, selection);
             FindMethod(out _method, out _indexOfParam, selection);
 
-            if (_target == null && _method != null)
+            if (_target == null && _method != null && _indexOfParam != -1)
             {
                 var proc = (dynamic)_method.Context.Parent;
                 VBAParser.ArgListContext paramList;
@@ -385,10 +385,10 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             foreach (var declaration in methods)
             {
-                var startLine = declaration.Context.GetSelection().StartLine;
-                var startColumn = declaration.Context.GetSelection().StartColumn;
-                var endLine = declaration.Context.GetSelection().EndLine;
-                var endColumn = declaration.Context.GetSelection().EndColumn;
+                var startLine = declaration.Context.Start.Line;
+                var startColumn = declaration.Context.Start.Column;
+                var endLine = declaration.Context.Stop.Line;
+                var endColumn = declaration.Context.Stop.Column;
 
                 if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
                     currentStartLine <= startLine && currentEndLine >= endLine)
