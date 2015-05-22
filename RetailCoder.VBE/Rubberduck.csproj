@@ -306,7 +306,7 @@
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
-    <Compile Include="UI\Refactorings\Parameter.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
