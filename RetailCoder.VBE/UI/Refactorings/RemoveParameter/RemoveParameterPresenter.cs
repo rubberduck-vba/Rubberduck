@@ -144,37 +144,38 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             if (paramIndex >= paramNames.Count) { return; }
 
-            var paramToRemove = paramNames.ElementAt(paramIndex);
-
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + lineCount; lineNum++)
             {
                 var content = module.Lines[lineNum, 1];
 
-                if (!content.Contains(paramToRemove)) { continue; }
-
-                var valueToRemove = paramToRemove != paramNames.Last() ?
-                                    paramToRemove + "," :
-                                    paramToRemove;
-
-                var newContent = content.Replace(valueToRemove, "");
-
-                module.ReplaceLine(lineNum, newContent);
-                if (paramToRemove == paramNames.Last())
+                do
                 {
-                    for (var line = lineNum; line >= paramList.Start.Line; line--)
+                    var paramToRemove = paramNames.ElementAt(paramIndex);
+
+                    if (!content.Contains(paramToRemove)) { continue; }
+
+                    var valueToRemove = paramToRemove != paramNames.Last() ?
+                                        paramToRemove + "," :
+                                        paramToRemove;
+
+                    content = content.Replace(valueToRemove, "");
+
+                    module.ReplaceLine(lineNum, content);
+                    if (paramToRemove == paramNames.Last())
                     {
-                        var lineContent = module.Lines[line, 1];
-                        if (lineContent.Contains(','))
+                        for (var line = lineNum; line >= paramList.Start.Line; line--)
                         {
-                            module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
-                            return;
+                            var lineContent = module.Lines[line, 1];
+                            if (lineContent.Contains(','))
+                            {
+                                module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
+                                return;
+                            }
                         }
                     }
-                }
-
-                return;
+                } while (paramIndex >= _parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
             }
         }
 
