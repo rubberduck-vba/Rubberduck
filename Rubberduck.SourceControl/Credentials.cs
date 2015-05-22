@@ -21,7 +21,7 @@ namespace Rubberduck.SourceControl
     }
 
     /// <summary>
-    /// Stores user credentials.
+    /// Stores user name and password credentials.
     /// </summary>
     /// <remarks>
     /// Do no use internally. For COM Interop only. Use <see cref="SecureCredentials"/> instead./>
@@ -34,7 +34,7 @@ namespace Rubberduck.SourceControl
     }
 
     /// <summary>
-    /// Stores user name and password credentials.
+    /// Securely stores user name and password credentials.
     /// </summary>
     public class SecureCredentials : CredentialsBase<SecureString>
     {

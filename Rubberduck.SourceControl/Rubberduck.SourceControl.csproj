@@ -51,6 +51,7 @@
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
     <Compile Include="Interop\GitProvider.cs" />
+    <Compile Include="Interop\Credentials.cs" />
     <Compile Include="Interop\ISourceControlProvider.cs" />
     <Compile Include="Interop\SourceControlClassFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

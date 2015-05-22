@@ -11,10 +11,13 @@ namespace Rubberduck.SourceControl.Interop
     public interface _ISourceControlClassFactory
     {
         [DispId(1)]
-        ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] string userName, [Optional] string passWord);
+        ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials);
 
         [DispId(2)]
         IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl);
+
+        [DispId(3)]
+        ICredentials CreateCredentials(string username, string password);
     }
 
     [ComVisible(true)]
@@ -24,15 +27,16 @@ namespace Rubberduck.SourceControl.Interop
     public class SourceControlClassFactory : _ISourceControlClassFactory
     {
         [Description("Returns a new GitProvider. IRepository must be supplied if also passing user credentials.")]
-        public ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] string userName, [Optional] string passWord)
+        public ISourceControlProvider CreateGitProvider(VBProject project, [Optional] IRepository repository, [Optional] ICredentials credentials)
         {
-            if (passWord != null && userName != null)
+            if (credentials != null)
             {
                 if (repository == null)
                 {
                     throw new ArgumentNullException("Must supply an IRepository if supplying credentials.");
                 }
-                return new GitProvider(project, repository, userName, passWord);
+
+                return new GitProvider(project, repository, credentials);
             }
 
             if (repository != null) 
@@ -43,7 +47,7 @@ namespace Rubberduck.SourceControl.Interop
             return new GitProvider(project);
         }
 
-        [Description("Returns new instance of repository struct.")]
+        [Description("Returns new instance of type IRepository.")]
         public IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl)
         {
             if (remotePathOrUrl == null)
@@ -52,6 +56,12 @@ namespace Rubberduck.SourceControl.Interop
             }
 
             return new Repository(name, localDirectory, remotePathOrUrl);
+        }
+
+        [Description("Returns a new instance of type ICredentials.")]
+        public ICredentials CreateCredentials(string username, string password)
+        {
+            return new Credentials(username, password);
         }
     }
 }
