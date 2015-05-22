@@ -237,20 +237,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         }
 
         /// <summary>
-        /// Adjust the signature of a reference to a given method.
-        /// Used for letters.
-        /// </summary>
-        /// <param name="reference">A reference to the method signature to adjust.</param>
-        private void AdjustSignatures(IdentifierReference reference)
-        {
-            var proc = (dynamic)reference.Context.Parent;
-            var module = reference.QualifiedModuleName.Component.CodeModule;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-
-            RewriteSignature(paramList, module);
-        }
-
-        /// <summary>
         /// Adjust the signature of a declaration of a given method.
         /// </summary>
         /// <param name="declaration">A Declaration of the method signature to adjust.</param>
@@ -279,8 +265,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
         private void RewriteSignature(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
-            var args = paramList.arg();
-
             var parameterIndex = 0;
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
@@ -332,7 +316,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             FindTarget(out target, selection);
 
-            if (target != null && target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet)
+            if (target != null && (target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet))
             {
                 var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == target.ParentScope &&
                                               item.IdentifierName == target.IdentifierName &&
