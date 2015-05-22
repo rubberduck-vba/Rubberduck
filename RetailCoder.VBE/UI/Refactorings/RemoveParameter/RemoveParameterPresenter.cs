@@ -17,25 +17,16 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private readonly Declaration _target;
         private readonly Declaration _method;
         private readonly List<Parameter> _parameters = new List<Parameter>();
-        private readonly string _identifierName;
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _declarations = parseResult.Declarations;
             _selection = selection;
 
-            FindTarget(out _target, out _identifierName, selection);
-            FindMethod(out _method, selection);
+            FindTarget(out _target, selection);
 
-            if (_target == null && _method != null)
-            {
-                _target = _declarations.Items
-                          .Where(item => item.DeclarationType == DeclarationType.Parameter
-                                      && item.IdentifierName == _identifierName
-                                      && item.ComponentName == _method.ComponentName
-                                      && item.Project.Equals(_method.Project))
-                          .First();
-            }
+            if (_target == null) { return; }
+            FindMethod(out _method, selection);
 
             RemoveParameter();
         }
@@ -296,10 +287,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
-        private void FindTarget(out Declaration target, out string identifierName, QualifiedSelection selection)
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
             target = null;
-            identifierName = string.Empty;
 
             var targets = _declarations.Items
                         .Where(item => item.DeclarationType == DeclarationType.Parameter
@@ -311,6 +301,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 return;
             }
 
+            var currentStartLine = 0;
+            var currentEndLine = int.MaxValue;
+            var currentStartColumn = 0;
+            var currentEndColumn = int.MaxValue;
+
             foreach (var declaration in targets)
             {
                 var startLine = declaration.Context.Start.Line;
@@ -318,32 +313,68 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 var endLine = declaration.Context.Stop.Line;
                 var endColumn = declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length + 1;
 
-                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                    currentStartLine <= startLine && currentEndLine >= endLine)
                 {
                     if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
+                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                     {
                         target = declaration;
+
+                        currentStartLine = startLine;
+                        currentEndLine = endLine;
+                        currentStartColumn = startColumn;
+                        currentEndColumn = endColumn;
                     }
                 }
 
                 foreach (var reference in declaration.References)
                 {
-                    startLine = reference.Selection.StartLine;
-                    startColumn = reference.Selection.StartColumn;
-                    endLine = reference.Selection.EndLine;
-                    endColumn = reference.Selection.EndColumn;
+                    var proc = (dynamic)reference.Context.Parent;
 
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (paramList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = paramList.Start.Line;
+                    startColumn = paramList.Start.Column;
+                    endLine = paramList.Stop.Line;
+                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                        currentStartLine <= startLine && currentEndLine >= endLine)
                     {
                         if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                         {
-                            identifierName = reference.IdentifierName;
+                            target = reference.Declaration;
+
+                            currentStartLine = startLine;
+                            currentEndLine = endLine;
+                            currentStartColumn = startColumn;
+                            currentEndColumn = endColumn;
                         }
                     }
                 }
             }
+
+            if (target == null) { return; }
         }
 
         /// <summary>
@@ -400,50 +431,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         currentEndLine = endLine;
                         currentStartColumn = startColumn;
                         currentEndColumn = endColumn;
-                    }
-                }
-
-                foreach (var reference in declaration.References)
-                {
-                    var proc = (dynamic)reference.Context.Parent;
-
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try
-                    {
-                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
-
-                    if (paramList == null)
-                    {
-                        continue;
-                    }
-
-                    startLine = paramList.Start.Line;
-                    startColumn = paramList.Start.Column;
-                    endLine = paramList.Stop.Line;
-                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
-
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                        currentStartLine <= startLine && currentEndLine >= endLine)
-                    {
-                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
-                        {
-                            method = reference.Declaration;
-
-                            currentStartLine = startLine;
-                            currentEndLine = endLine;
-                            currentStartColumn = startColumn;
-                            currentEndColumn = endColumn;
-                        }
                     }
                 }
             }
