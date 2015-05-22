@@ -5,11 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.FindSymbol"
              mc:Ignorable="d" 
-             d:DesignHeight="27" d:DesignWidth="270">
-
-    <UserControl.Resources>
-        <local:DeclarationImageConverter x:Key="DeclarationImageConverter" />
-    </UserControl.Resources>
+             d:DesignHeight="24" d:DesignWidth="270">
 
     <UserControl.CommandBindings>
         <CommandBinding Command="local:FindSymbolControl.GoCommand" 
@@ -25,16 +21,23 @@
         </Grid.ColumnDefinitions>
         
         <ComboBox IsEditable="True"
-                    ItemsSource="{Binding MatchResults}"
-                    SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
-                    Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
-                    IsTextSearchCaseSensitive="False"
-                    IsTextSearchEnabled="True"
-                    TextSearch.TextPath="IdentifierName">
+                  ItemsSource="{Binding MatchResults}"
+                  SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                  IsTextSearchCaseSensitive="False"
+                  IsTextSearchEnabled="True"
+                  TextSearch.Text="{Binding SearchString, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                  TextSearch.TextPath="IdentifierName">
+            
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+    
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Height="16" Width="16" Margin="2,0,2,0" Source="{Binding Declaration, Converter={StaticResource DeclarationImageConverter}}" />
+                        <Image Height="16" Width="16" Margin="2,0,2,0" Source="{Binding Icon}" />
                         <TextBlock Margin="2,0,2,0" Text="{Binding IdentifierName}" FontWeight="Bold" MinWidth="160" VerticalAlignment="Center" />
                         <TextBlock Margin="2,0,2,0" Text="{Binding Location}" VerticalAlignment="Center" />
                     </StackPanel>

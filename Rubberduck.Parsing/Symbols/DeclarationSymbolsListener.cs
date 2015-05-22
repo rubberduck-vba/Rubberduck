@@ -16,7 +16,14 @@ namespace Rubberduck.Parsing.Symbols
         private string _currentScope;
 
         public DeclarationSymbolsListener(VBComponentParseResult result)
-            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type == vbext_ComponentType.vbext_ct_StdModule ? DeclarationType.Module : DeclarationType.Class)
+            : this(result.QualifiedName, Accessibility.Implicit, 
+            result.Component.Type == vbext_ComponentType.vbext_ct_StdModule 
+            ? DeclarationType.Module
+            //: result.Component.Type == vbext_ComponentType.vbext_ct_MSForm 
+            //    ? DeclarationType.UserForm
+            //    : result.Component.Type == vbext_ComponentType.vbext_ct_Document
+            //        ? DeclarationType.Document
+                    : DeclarationType.Class)
         {
             if (result.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
             {

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using System.Threading.Tasks;
 using Rubberduck.Annotations;
 using Rubberduck.Parsing.Symbols;
 
@@ -12,11 +12,21 @@ namespace Rubberduck.UI.FindSymbol
 {
     public class FindSymbolViewModel : INotifyPropertyChanged
     {
-        public FindSymbolViewModel(IEnumerable<Declaration> declarations)
+        private static readonly DeclarationType[] ExcludedTypes =
+        {
+            DeclarationType.Control, 
+            DeclarationType.ModuleOption
+        };
+
+        public FindSymbolViewModel(IEnumerable<Declaration> declarations, SearchResultIconCache cache)
         {
             _declarations = declarations;
-            var initialResults = _declarations.OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .Select(declaration => new SearchResult(declaration));
+            _cache = cache;
+            var initialResults = _declarations
+                .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType))
+                .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
+                .Select(declaration => new SearchResult(declaration, cache[declaration]))
+                .ToList();
 
             MatchResults = new ObservableCollection<SearchResult>(initialResults);
         }
@@ -44,14 +54,17 @@ namespace Rubberduck.UI.FindSymbol
         }
 
         private readonly IEnumerable<Declaration> _declarations;
+        private readonly SearchResultIconCache _cache;
 
         private void Search(string value)
         {
             var lower = value.ToLowerInvariant();
-            var results = _declarations.Where(
-                declaration => declaration.IdentifierName.ToLowerInvariant().Contains(lower))
+            var results = _declarations
+                .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
+                                        && (string.IsNullOrEmpty(value) || declaration.IdentifierName.ToLowerInvariant().Contains(lower)))
                 .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .Select(declaration => new SearchResult(declaration));
+                .Select(declaration => new SearchResult(declaration, _cache[declaration]))
+                .ToList();
 
             MatchResults = new ObservableCollection<SearchResult>(results);
         }

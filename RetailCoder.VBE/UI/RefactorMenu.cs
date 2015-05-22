@@ -24,11 +24,15 @@ namespace Rubberduck.UI
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
 
+        private readonly SearchResultIconCache _iconCache;
+
         public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor)
             : base(vbe, addin)
         {
             _parser = parser;
             _editor = editor;
+
+            _iconCache = new SearchResultIconCache();
         }
 
         private CommandBarButton _extractMethodButton;
@@ -99,7 +103,7 @@ namespace Rubberduck.UI
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
-            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn));
+            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
             vm.Navigate += vm_Navigate;
             using (var view = new FindSymbolDialog(vm))
             {

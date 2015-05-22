@@ -267,7 +267,6 @@
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
-    <Compile Include="UI\FindSymbol\DeclarationImageConverter.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -279,6 +278,7 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
+    <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
       <SubType>UserControl</SubType>
@@ -1006,7 +1006,8 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>c:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe "$(TargetPath)" /codebase /tlb</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
