@@ -240,20 +240,22 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, CodeModule module)
         {
+            var args = paramList.arg();
+            var paramToRemove = args.ElementAt(_parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText())).GetText();
+            var valueToRemove = paramToRemove != args.Last().GetText() ?
+                                paramToRemove + "," :
+                                paramToRemove;
+
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
                 var content = module.Lines[lineNum, 1];
 
-                if (!content.Contains(_target.Context.GetText())) { continue; }
-
-                var valueToRemove = _target.Context.GetText() != _parameters.Last().Context.GetText() ?
-                                    _target.Context.GetText() + "," :
-                                    _target.Context.GetText();
+                if (!content.Contains(valueToRemove)) { continue; }
 
                 var newContent = content.Replace(valueToRemove, "");
 
                 module.ReplaceLine(lineNum, newContent);
-                if (_target.Context.GetText() == _parameters.Last().Context.GetText())
+                if (paramToRemove == args.Last().GetText())
                 {
                     for (var line = lineNum; line >= paramList.Start.Line; line--)
                     {
