@@ -13,25 +13,42 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
     class RemoveParameterPresenter
     {
         private readonly Declarations _declarations;
-        private readonly Declaration _target;
+        private readonly Parameter _target;
         private readonly Declaration _method;
         private readonly List<Parameter> _parameters = new List<Parameter>();
+        private readonly int _indexOfParam;
+        private readonly string _identifierName;
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _declarations = parseResult.Declarations;
 
-            FindTarget(out _target, selection);
+            FindTarget(out _target, out _identifierName, selection);
+            FindMethod(out _method, out _indexOfParam, selection);
 
-            if (_target == null) { return; }
-            FindMethod(out _method, selection);
+            if (_target == null && _method != null)
+            {
+                var proc = (dynamic)_method.Context.Parent;
+                VBAParser.ArgListContext paramList;
+
+                if (_method.DeclarationType == DeclarationType.PropertySet || _method.DeclarationType == DeclarationType.PropertyLet)
+                {
+                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
+                }
+                else
+                {
+                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
+                }
+
+                _target = new Parameter(paramList.arg().ElementAt(_indexOfParam).GetText(), -1);
+            }
 
             RemoveParameter();
         }
 
         public RemoveParameterPresenter(Declaration target)
         {
-            if (target == null)
+            /*if (target == null)
             {
                 return;
             }
@@ -41,12 +58,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 throw new ArgumentException("Expected DeclarationType.Parameter, received DeclarationType." + target.DeclarationType.ToString() + ".");
             }
 
-            _target = target;
+            _target = new Parameter(target.Context.GetText(), -1);
             if (_target == null) { return; }
 
             //FindMethod(out _method, selection);
 
-            RemoveParameter();
+            RemoveParameter();*/
         }
 
         private void LoadParameters()
@@ -78,7 +95,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         {
             if (IsValidRemove())
             {
-                var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText());
+                var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.FullDeclaration);
                 var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                 if (confirm == DialogResult.Yes)
                 {
@@ -97,7 +114,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var module = _method.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
             if (_method.DeclarationType == DeclarationType.PropertyGet &&
-                _parameters.FindIndex(item => item.FullDeclaration == _target.Context.GetText()) < 0)
+                _parameters.FindIndex(item => item.FullDeclaration == _target.FullDeclaration) < 0)
             {
                 MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -108,7 +125,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
-            foreach (var reference in references.Where(item => item.Context != _target.Context))
+            foreach (var reference in references.Where(item => item.Context != _method.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -138,7 +155,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private void RemoveCallParameter(IdentifierReference reference, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = _parameters.FindIndex(item => item.FullDeclaration == _target.Context.GetText());
+            var paramIndex = _parameters.FindIndex(item => item.FullDeclaration == _target.FullDeclaration);
 
             if (paramIndex >= paramNames.Count) { return; }
 
@@ -259,16 +276,16 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             {
                 var content = module.Lines[lineNum, 1];
 
-                if (!content.Contains(_target.Context.GetText())) { continue; }
+                if (!content.Contains(_target.FullDeclaration)) { continue; }
 
-                var valueToRemove = _target.Context.GetText() != _parameters.Last().FullDeclaration ?
-                                    _target.Context.GetText() + "," :
-                                    _target.Context.GetText();
+                var valueToRemove = _target.FullDeclaration != _parameters.Last().FullDeclaration ?
+                                    _target.FullDeclaration + "," :
+                                    _target.FullDeclaration;
 
                 var newContent = content.Replace(valueToRemove, "");
 
                 module.ReplaceLine(lineNum, newContent);
-                if (_target.Context.GetText() == _parameters.Last().FullDeclaration)
+                if (_target.FullDeclaration == _parameters.Last().FullDeclaration)
                 {
                     for (var line = lineNum; line >= paramList.Start.Line; line--)
                     {
@@ -285,19 +302,15 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
-        private void FindTarget(out Declaration target, QualifiedSelection selection)
+        private void FindTarget(out Parameter target, out string identifierName, QualifiedSelection selection)
         {
             target = null;
+            identifierName = string.Empty;
 
             var targets = _declarations.Items
                           .Where(item => item.DeclarationType == DeclarationType.Parameter
                                       && item.ComponentName == selection.QualifiedName.ComponentName
                                       && item.Project.Equals(selection.QualifiedName.Project));
-
-            var currentStartLine = 0;
-            var currentEndLine = int.MaxValue;
-            var currentStartColumn = 0;
-            var currentEndColumn = int.MaxValue;
 
             foreach (var declaration in targets)
             {
@@ -306,19 +319,29 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 var endLine = declaration.Context.Stop.Line;
                 var endColumn = declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length + 1;
 
-                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                    currentStartLine <= startLine && currentEndLine >= endLine)
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
                 {
                     if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
                     {
-                        target = declaration;
+                        target = new Parameter(declaration.Context.GetText(), -1);
+                    }
+                }
 
-                        currentStartLine = startLine;
-                        currentEndLine = endLine;
-                        currentStartColumn = startColumn;
-                        currentEndColumn = endColumn;
+                foreach (var reference in declaration.References)
+                {
+                    startLine = reference.Selection.StartLine;
+                    startColumn = reference.Selection.StartColumn;
+                    endLine = reference.Selection.EndLine;
+                    endColumn = reference.Selection.EndColumn;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
+                    {
+                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
+                        {
+                            identifierName = reference.IdentifierName;
+                        }
                     }
                 }
             }
@@ -337,8 +360,10 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                  DeclarationType.PropertySet
             };
 
-        private void FindMethod(out Declaration method, QualifiedSelection selection)
+        private void FindMethod(out Declaration method, out int indexOfParam, QualifiedSelection selection)
         {
+            indexOfParam = -1;
+
             method = _declarations.Items
                 .Where(item => !item.IsBuiltIn)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item));
@@ -378,6 +403,56 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         currentEndLine = endLine;
                         currentStartColumn = startColumn;
                         currentEndColumn = endColumn;
+                    }
+                }
+
+                if (_target == null)
+                {
+                    foreach (var reference in declaration.References)
+                    {
+                        var proc = (dynamic)reference.Context.Parent;
+
+                        // This is to prevent throws when this statement fails:
+                        // (VBAParser.ArgsCallContext)proc.argsCall();
+                        try
+                        {
+                            var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                        var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                        if (paramList == null)
+                        {
+                            continue;
+                        }
+
+                        startLine = paramList.Start.Line;
+                        startColumn = paramList.Start.Column;
+                        endLine = paramList.Stop.Line;
+                        endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
+
+                        if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                            currentStartLine <= startLine && currentEndLine >= endLine)
+                        {
+                            if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                                endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                                currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                            {
+                                method = reference.Declaration;
+
+                                var args = paramList.argCall().ToList();
+                                indexOfParam = args.FindIndex(item => item.GetText() == _identifierName);
+
+                                currentStartLine = startLine;
+                                currentEndLine = endLine;
+                                currentStartColumn = startColumn;
+                                currentEndColumn = endColumn;
+                            }
+                        }
                     }
                 }
             }
