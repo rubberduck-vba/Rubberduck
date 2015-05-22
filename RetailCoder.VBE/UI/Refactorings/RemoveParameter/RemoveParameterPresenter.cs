@@ -28,11 +28,19 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             if (_target == null && _method != null && indexOfParam != -1)
             {
-                _target = _declarations.Items
+                var _targets = _declarations.Items
                             .Where(d => d.DeclarationType == DeclarationType.Parameter && d.Scope == _method.Scope)
                             .OrderBy(item => item.Selection.StartLine)
-                            .ThenBy(item => item.Selection.StartColumn)
-                            .ElementAt(indexOfParam);
+                            .ThenBy(item => item.Selection.StartColumn);
+
+                if (indexOfParam < _targets.Count()) 
+                {
+                    _target = _targets.ElementAt(indexOfParam); 
+                }
+                else
+                {
+                    _target = _targets.ElementAt(_targets.Count() - 1);
+                }
             }
 
             RemoveParameter();
