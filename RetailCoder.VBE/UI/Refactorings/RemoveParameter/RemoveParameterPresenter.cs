@@ -13,7 +13,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
     class RemoveParameterPresenter
     {
         private readonly Declarations _declarations;
-        private readonly QualifiedSelection _selection;
         private readonly Declaration _target;
         private readonly Declaration _method;
         private readonly List<Parameter> _parameters = new List<Parameter>();
@@ -21,7 +20,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _declarations = parseResult.Declarations;
-            _selection = selection;
 
             FindTarget(out _target, selection);
 
@@ -292,14 +290,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             target = null;
 
             var targets = _declarations.Items
-                        .Where(item => item.DeclarationType == DeclarationType.Parameter
-                                    && item.ComponentName == selection.QualifiedName.ComponentName
-                                    && item.Project.Equals(selection.QualifiedName.Project));
-
-            if (targets == null)
-            {
-                return;
-            }
+                          .Where(item => item.DeclarationType == DeclarationType.Parameter
+                                      && item.ComponentName == selection.QualifiedName.ComponentName
+                                      && item.Project.Equals(selection.QualifiedName.Project));
 
             var currentStartLine = 0;
             var currentEndLine = int.MaxValue;
@@ -328,53 +321,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         currentEndColumn = endColumn;
                     }
                 }
-
-                foreach (var reference in declaration.References)
-                {
-                    var proc = (dynamic)reference.Context.Parent;
-
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try
-                    {
-                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
-
-                    if (paramList == null)
-                    {
-                        continue;
-                    }
-
-                    startLine = paramList.Start.Line;
-                    startColumn = paramList.Start.Column;
-                    endLine = paramList.Stop.Line;
-                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
-
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                        currentStartLine <= startLine && currentEndLine >= endLine)
-                    {
-                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
-                        {
-                            target = reference.Declaration;
-
-                            currentStartLine = startLine;
-                            currentEndLine = endLine;
-                            currentStartColumn = startColumn;
-                            currentEndColumn = endColumn;
-                        }
-                    }
-                }
             }
-
-            if (target == null) { return; }
         }
 
         /// <summary>
@@ -472,13 +419,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
 
             target = interfaceMember;
-        }
-
-        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName == selection.QualifiedName &&
-                r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
