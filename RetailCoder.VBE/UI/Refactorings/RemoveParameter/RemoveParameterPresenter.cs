@@ -53,8 +53,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void LoadParameters()
         {
-            var procedure = (dynamic)_target.Context.Parent;
-            var argList = (VBAParser.ArgListContext)procedure;
+            var proc = (dynamic)_method.Context;
+            var argList = (VBAParser.ArgListContext)proc.argList();
             var args = argList.arg();
 
             var index = 0;
@@ -66,10 +66,46 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void RemoveParameter()
         {
+            if (_target == null || _method == null) { return; }
+
             LoadParameters();
+
+            if (!ConfirmRemove()) { return; }
 
             AdjustSignatures();
             AdjustReferences(_method.References);
+        }
+
+        private bool ConfirmRemove()
+        {
+            if (IsValidRemove())
+            {
+                var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText());
+                var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (confirm == DialogResult.Yes)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsValidRemove()
+        {
+            var proc = (dynamic)_method.Context;
+            var paramList = (VBAParser.ArgListContext)proc.argList();
+            var args = paramList.arg();
+            var module = _method.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            
+            if (_method.DeclarationType == DeclarationType.PropertyGet &&
+                _parameters.FindIndex(item => item.FullDeclaration == _target.Context.GetText()) < 0)
+            {
+                MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
@@ -338,13 +374,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
 
             if (target == null) { return; }
-
-            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, target.Context.GetText());
-            var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                target = null;
-            }
         }
 
         /// <summary>

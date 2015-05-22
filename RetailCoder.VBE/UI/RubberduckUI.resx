@@ -287,4 +287,7 @@
     <value>Remove parameter '{0}'?</value>
     <comment>0: Selected parameter</comment>
   </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Cannot remove last value from setter or letter.</value>
+  </data>
 </root>
