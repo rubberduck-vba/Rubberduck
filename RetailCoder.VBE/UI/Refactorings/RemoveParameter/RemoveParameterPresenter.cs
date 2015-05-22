@@ -50,7 +50,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         {
             _parameters.AddRange(_declarations.Items
                                     .Where(d => d.DeclarationType == DeclarationType.Parameter 
-                                             && d.Scope == _target.Scope
+                                             && d.ComponentName == _method.ComponentName
+                                             && d.Project.Equals(_method.Project)
                                              && _method.Context.Start.Line <= d.Selection.StartLine
                                              && _method.Context.Stop.Line >= d.Selection.EndLine
                                              && !(_method.Context.Start.Column > d.Selection.StartColumn && _method.Context.Start.Line == d.Selection.StartLine)
