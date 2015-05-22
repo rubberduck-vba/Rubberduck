@@ -12,6 +12,7 @@ using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.UI.Refactorings.RemoveParameter;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -38,6 +39,7 @@ namespace Rubberduck.UI
         private CommandBarButton _extractMethodButton;
         private CommandBarButton _renameButton;
         private CommandBarButton _reorderParametersButton;
+        private CommandBarButton _removeParameterButton;
 
         public void Initialize(CommandBarControls menuControls)
         {
@@ -52,6 +54,9 @@ namespace Rubberduck.UI
             _reorderParametersButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
             SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
+            _removeParameterButton = AddButton(menu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
+            //SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32_Mask);
+
             InitializeRefactorContextMenu();
         }
 
@@ -61,6 +66,7 @@ namespace Rubberduck.UI
         private CommandBarButton _extractMethodContextButton;
         private CommandBarButton _renameContextButton;
         private CommandBarButton _reorderParametersContextButton;
+        private CommandBarButton _removeParameterContextButton;
 
         private void InitializeRefactorContextMenu()
         {
@@ -76,6 +82,9 @@ namespace Rubberduck.UI
 
             _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
             SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
+
+            _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
+            //SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
             InitializeFindSymbolContextMenu();
@@ -260,6 +269,16 @@ namespace Rubberduck.UI
             ReorderParameters(selection);
         }
 
+        private void OnRemoveParameterButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            if (IDE.ActiveCodePane == null)
+            {
+                return;
+            }
+            var selection = IDE.ActiveCodePane.GetSelection();
+            RemoveParameter(selection);
+        }
+
         public void Rename(QualifiedSelection selection)
         {
             using (var view = new RenameDialog())
@@ -288,6 +307,12 @@ namespace Rubberduck.UI
                 var presenter = new ReorderParametersPresenter(view, parseResult, selection);
                 presenter.Show();
             }
+        }
+
+        public void RemoveParameter(QualifiedSelection selection)
+        {
+            var parseResult = _parser.Parse(IDE.ActiveVBProject);
+            var presenter = new RemoveParameterPresenter(parseResult, selection);
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)

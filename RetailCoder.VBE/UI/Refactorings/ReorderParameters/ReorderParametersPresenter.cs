@@ -222,6 +222,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
                     AdjustSignatures(reference);
+                    AdjustReferences(reference.References);
                 }
             }
 
@@ -231,7 +232,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustSignatures(interfaceImplentation);
-
                 AdjustReferences(interfaceImplentation.References);
             }
         }
@@ -332,7 +332,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             FindTarget(out target, selection);
 
-            if (target != null && target.DeclarationType == DeclarationType.PropertySet)
+            if (target != null && target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet)
             {
                 var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == target.ParentScope &&
                                               item.IdentifierName == target.IdentifierName &&
@@ -364,6 +364,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 return;
             }
+            else
+            {
+                target = null;
+            }
 
             var targets = _declarations.Items
                 .Where(item => !item.IsBuiltIn
@@ -377,10 +381,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             foreach (var declaration in targets)
             {
-                var startLine = declaration.Context.GetSelection().StartLine;
-                var startColumn = declaration.Context.GetSelection().StartColumn;
-                var endLine = declaration.Context.GetSelection().EndLine;
-                var endColumn = declaration.Context.GetSelection().EndColumn;
+                var startLine = declaration.Context.Start.Line;
+                var startColumn = declaration.Context.Start.Column;
+                var endLine = declaration.Context.Stop.Line;
+                var endColumn = declaration.Context.Stop.Column;
 
                 if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
                     currentStartLine <= startLine && currentEndLine >= endLine)

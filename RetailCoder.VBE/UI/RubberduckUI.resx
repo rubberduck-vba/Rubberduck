@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AllReferences_Caption" xml:space="preserve">
-    <value>All references: '{0}'</value>
-    <comment>0: IdentifierName</comment>
-  </data>
   <data name="CancelButtonText" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -260,6 +256,7 @@
   </data>
   <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
     <value>Less than two parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
   </data>
   <data name="AllReferences_NoneFound" xml:space="preserve">
     <value>No references were found for identifier '{0}'.</value>
@@ -269,5 +266,28 @@
   </data>
   <data name="ReorderPresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>No parameters in method '{0}'.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>All references: '{0}'</value>
+    <comment>0: IdentifierName</comment>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Remove parameters</value>
+  </data>
+  <data name="RemovePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RemovePresenter_ConfirmParameter" xml:space="preserve">
+    <value>Remove parameter '{0}'?</value>
+    <comment>0: Selected parameter</comment>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Cannot remove last value from setter or letter.</value>
   </data>
 </root>
