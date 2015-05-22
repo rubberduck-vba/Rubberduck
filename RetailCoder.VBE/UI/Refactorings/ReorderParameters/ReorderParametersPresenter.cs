@@ -265,6 +265,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
         private void RewriteSignature(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
         {
+            var args = paramList.arg();
+
             var parameterIndex = 0;
             for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
             {
@@ -273,19 +275,19 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 for (var i = parameterIndex; i < _view.Parameters.Count; i++)
                 {
-                    var parameterStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration, currentStringIndex);
+                    var oldParam = args.ElementAt(parameterIndex).GetText();
+                    var newParam = args.ElementAt(_view.Parameters.ElementAt(parameterIndex).Index).GetText();
+                    var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
 
                     if (parameterStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
-                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
                         var beginningSub = newContent.Substring(0, parameterStringIndex);
-                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldVariableString, newVariableString);
+                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParam, newParam);
 
                         newContent = beginningSub + replaceSub;
 
                         parameterIndex++;
-                        currentStringIndex = beginningSub.Length + newVariableString.Length;
+                        currentStringIndex = beginningSub.Length + newParam.Length;
                     }
                 }
 
