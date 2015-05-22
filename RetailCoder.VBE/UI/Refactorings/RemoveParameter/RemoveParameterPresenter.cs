@@ -41,7 +41,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private void LoadParameters()
         {
             _parameters.AddRange(_declarations.Items
-                                    .Where(d => d.DeclarationType == DeclarationType.Parameter && d.Scope == _method.Scope)
+                                    .Where(d => d.DeclarationType == DeclarationType.Parameter 
+                                             && d.Scope == _target.Scope
+                                             && _method.Context.Start.Line <= d.Selection.StartLine
+                                             && _method.Context.Stop.Line >= d.Selection.EndLine
+                                             && !(_method.Context.Start.Column > d.Selection.StartColumn && _method.Context.Start.Line == d.Selection.StartLine)
+                                             && !(_method.Context.Stop.Column < d.Selection.EndColumn && _method.Context.Stop.Line == d.Selection.EndLine))
                                     .OrderBy(item => item.Selection.StartLine)
                                     .ThenBy(item => item.Selection.StartColumn));
         }
@@ -165,16 +170,16 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_method.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _method.ParentScope &&
-                                              item.IdentifierName == _method.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertySet);
+                var setter = _declarations.Items.FirstOrDefault(item => item.Scope == _method.Scope &&
+                              item.IdentifierName == _method.IdentifierName &&
+                              item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
                 }
 
-                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == _method.ParentScope &&
+                var letter = _declarations.Items.FirstOrDefault(item => item.Scope == _method.Scope &&
                               item.IdentifierName == _method.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
@@ -183,7 +188,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     AdjustSignatures(letter);
                 }
             }
-
+                
             RemoveSignatureParameter(paramList, module);
 
             foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _method.ComponentName))
@@ -211,7 +216,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
             VBAParser.ArgListContext paramList;
 
-            if (declaration.DeclarationType == DeclarationType.PropertySet || declaration.DeclarationType == DeclarationType.PropertyLet)
+            if (declaration.DeclarationType == DeclarationType.PropertySet ||
+                declaration.DeclarationType == DeclarationType.PropertyLet)
             {
                 paramList = (VBAParser.ArgListContext)proc.children[0].argList();
             }
