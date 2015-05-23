@@ -253,6 +253,7 @@ namespace Rubberduck.SourceControl
             switch (result.Status)
             {
                 case MergeStatus.Conflicts:
+                    //abort the merge by resetting to the state prior to the merge
                     _repo.Reset(ResetMode.Hard, oldHeadCommit);
                     break;
                 case MergeStatus.NonFastForward:

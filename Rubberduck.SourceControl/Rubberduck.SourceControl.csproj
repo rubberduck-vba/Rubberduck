@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Branch.cs" />
+    <Compile Include="Commit.cs" />
     <Compile Include="Credentials.cs" />
     <Compile Include="Interop\Branches.cs" />
     <Compile Include="Interop\FileStatusEntries.cs" />
