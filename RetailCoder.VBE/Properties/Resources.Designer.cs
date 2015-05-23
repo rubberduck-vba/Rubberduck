@@ -605,7 +605,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap light_bulb_code {
             get {
-                object obj = ResourceManager.GetObject("light-bulb-code", resourceCulture);
+                object obj = ResourceManager.GetObject("light_bulb_code", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
