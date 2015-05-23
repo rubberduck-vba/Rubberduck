@@ -217,7 +217,7 @@ namespace Rubberduck.UI
 
         void refactoring_InvalidSelection(object sender, EventArgs e)
         {
-            MessageBox.Show("The current selection is not valid.", "Extract Method", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
