@@ -84,7 +84,13 @@ namespace Rubberduck.UI.Refactorings.Rename
                 {
                     if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
                     {
-                        module.Parent.Properties.Item("_CodeName").Value = (object)_view.NewName;
+                        module.Parent.Properties.Item("_CodeName").Value = _view.NewName;
+                    }
+                    else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
+                    {
+                        var codeModule = (CodeModuleClass)module;
+                        codeModule.Parent.Name = _view.NewName;
+                        module.Parent.Properties.Item("Caption").Value = _view.NewName;
                     }
                     else
                     {
@@ -151,7 +157,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                     var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _view.NewName + '_');
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
 
-                    var content = module.get_Lines(handler.Selection.StartLine, 1);
+                    var content = module.Lines[handler.Selection.StartLine, 1];
                     var newContent = GetReplacementLine(content, handler.IdentifierName, newMemberName);
                     module.ReplaceLine(handler.Selection.StartLine, newContent);
                 }
@@ -183,7 +189,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                         var newMemberName = _view.Target.ComponentName + '_' + _view.NewName;
                         var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
 
-                        var content = module.get_Lines(member.Selection.StartLine, 1);
+                        var content = module.Lines[member.Selection.StartLine, 1];
                         var newContent = GetReplacementLine(content, member.IdentifierName, newMemberName);
                         module.ReplaceLine(member.Selection.StartLine, newContent);
                     }
@@ -202,7 +208,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 var module = grouping.Key.Component.CodeModule;
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
-                    var content = module.get_Lines(line.Key, 1);
+                    var content = module.Lines[line.Key, 1];
                     var newContent = GetReplacementLine(content, _view.Target.IdentifierName, _view.NewName);
                     module.ReplaceLine(line.Key, newContent);
                 }
@@ -221,7 +227,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                             continue;
                         }
 
-                        var content = module.get_Lines(method.Selection.StartLine, 1);
+                        var content = module.Lines[method.Selection.StartLine, 1];
                         var newContent = GetReplacementLine(content, oldMemberName, newMemberName);
                         module.ReplaceLine(method.Selection.StartLine, newContent);
                     }
@@ -244,7 +250,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return null;
             }
 
-            var content = module.get_Lines(_view.Target.Selection.StartLine, 1);
+            var content = module.Lines[_view.Target.Selection.StartLine, 1];
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {

@@ -125,7 +125,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap application_resize {
             get {
-                object obj = ResourceManager.GetObject("application-resize", resourceCulture);
+                object obj = ResourceManager.GetObject("application_resize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -155,7 +155,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_090 {
             get {
-                object obj = ResourceManager.GetObject("arrow-090", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_090", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -165,7 +165,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_270 {
             get {
-                object obj = ResourceManager.GetObject("arrow-270", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_270", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -175,7 +175,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_branch_090 {
             get {
-                object obj = ResourceManager.GetObject("arrow-branch-090", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_branch_090", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -195,7 +195,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_merge_090 {
             get {
-                object obj = ResourceManager.GetObject("arrow-merge-090", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_merge_090", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -205,7 +205,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_split {
             get {
-                object obj = ResourceManager.GetObject("arrow-split", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_split", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -215,7 +215,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap arrow_step {
             get {
-                object obj = ResourceManager.GetObject("arrow-step", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_step", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -245,7 +245,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap control_000_small {
             get {
-                object obj = ResourceManager.GetObject("control-000-small", resourceCulture);
+                object obj = ResourceManager.GetObject("control_000_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -305,7 +305,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap drive_download {
             get {
-                object obj = ResourceManager.GetObject("drive-download", resourceCulture);
+                object obj = ResourceManager.GetObject("drive_download", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -315,7 +315,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap drive_upload {
             get {
-                object obj = ResourceManager.GetObject("drive-upload", resourceCulture);
+                object obj = ResourceManager.GetObject("drive_upload", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -385,7 +385,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap facebook_circle_256 {
             get {
-                object obj = ResourceManager.GetObject("facebook-circle-256", resourceCulture);
+                object obj = ResourceManager.GetObject("facebook_circle_256", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -395,7 +395,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap facebook_icon {
             get {
-                object obj = ResourceManager.GetObject("facebook-icon", resourceCulture);
+                object obj = ResourceManager.GetObject("facebook_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -475,7 +475,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap folder_horizontal {
             get {
-                object obj = ResourceManager.GetObject("folder-horizontal", resourceCulture);
+                object obj = ResourceManager.GetObject("folder_horizontal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -485,7 +485,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap folder_horizontal_open {
             get {
-                object obj = ResourceManager.GetObject("folder-horizontal-open", resourceCulture);
+                object obj = ResourceManager.GetObject("folder_horizontal_open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -525,7 +525,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap github_alt {
             get {
-                object obj = ResourceManager.GetObject("github-alt", resourceCulture);
+                object obj = ResourceManager.GetObject("github_alt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -535,7 +535,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap github_circle_black_128 {
             get {
-                object obj = ResourceManager.GetObject("github_circle_black-128", resourceCulture);
+                object obj = ResourceManager.GetObject("github_circle_black_128", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -545,7 +545,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap google_circle_512 {
             get {
-                object obj = ResourceManager.GetObject("google-circle-512", resourceCulture);
+                object obj = ResourceManager.GetObject("google_circle_512", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -605,7 +605,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap light_bulb_code {
             get {
-                object obj = ResourceManager.GetObject("light-bulb-code", resourceCulture);
+                object obj = ResourceManager.GetObject("light_bulb_code", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -625,7 +625,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap minus_circle {
             get {
-                object obj = ResourceManager.GetObject("minus-circle", resourceCulture);
+                object obj = ResourceManager.GetObject("minus_circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -655,7 +655,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap plus_circle {
             get {
-                object obj = ResourceManager.GetObject("plus-circle", resourceCulture);
+                object obj = ResourceManager.GetObject("plus_circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -675,7 +675,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RD_AboutWindow {
             get {
-                object obj = ResourceManager.GetObject("RD-AboutWindow", resourceCulture);
+                object obj = ResourceManager.GetObject("RD_AboutWindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -795,7 +795,7 @@ namespace Rubberduck.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap twitter_circle_black_512 {
             get {
-                object obj = ResourceManager.GetObject("twitter_circle_black-512", resourceCulture);
+                object obj = ResourceManager.GetObject("twitter_circle_black_512", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
