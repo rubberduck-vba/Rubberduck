@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             FindTarget(out _target, out identifierName, selection);
             FindMethod(out _method, out indexOfParam, selection, identifierName);
 
-            if (_target == null && _method != null && indexOfParam != -1)
+            if (_method != null && (_target == null && indexOfParam != -1 || _method.DeclarationType == DeclarationType.PropertyGet))
             {
                 var targets = _declarations.Items
                               .Where(d => d.DeclarationType == DeclarationType.Parameter
@@ -44,13 +44,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
 
-                if (indexOfParam < targets.Count()) 
+                if (_method.DeclarationType == DeclarationType.PropertyGet)
                 {
-                    _target = targets.ElementAt(indexOfParam); 
+                    _target = targets.First(item => _target.IdentifierName == item.IdentifierName);
                 }
                 else
                 {
-                    _target = targets.ElementAt(targets.Count() - 1);
+                    if (indexOfParam < targets.Count())
+                    {
+                        _target = targets.ElementAt(indexOfParam);
+                    }
+                    else
+                    {
+                        _target = targets.ElementAt(targets.Count() - 1);
+                    }
                 }
             }
 
@@ -387,6 +394,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         {
             var newContent = ReplaceCommas(GetReplacementSignature(target), target, paramList);
             var lineNum = paramList.GetSelection().LineCount;
+            var test = module.Lines[paramList.Start.Line, 1];
 
             module.ReplaceLine(paramList.Start.Line, newContent);
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
@@ -555,7 +563,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             {
                 var nonRefMethod = method;
 
-                var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == nonRefMethod.ParentScope &&
+                var getter = _declarations.Items.FirstOrDefault(item => item.Scope == nonRefMethod.Scope &&
                                               item.IdentifierName == nonRefMethod.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertyGet);
 
