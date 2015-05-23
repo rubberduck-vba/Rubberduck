@@ -11,6 +11,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using System.Reflection;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -85,6 +86,12 @@ namespace Rubberduck.UI.Refactorings.Rename
                     if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
                     {
                         module.Parent.Properties.Item("_CodeName").Value = (object)_view.NewName;
+                    }
+                    else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
+                    {
+                        var codeModule = (CodeModuleClass)module;
+                        codeModule.Parent.Name = _view.NewName;
+                        module.Parent.Properties.Item("Caption").Value = _view.NewName;
                     }
                     else
                     {
