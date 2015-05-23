@@ -14,13 +14,22 @@ namespace Rubberduck.SourceControl
         private readonly LibGit2Sharp.Repository _repo;
         private readonly LibGit2Sharp.Credentials _credentials;
         private readonly CredentialsHandler _credentialsHandler;
+        private List<ICommit> _unsyncedLocalCommits;
+        private List<ICommit> _unsyncedRemoteCommits;
 
-        public GitProvider(VBProject project) 
-            : base(project) { }
+        public GitProvider(VBProject project)
+            : base(project)
+        {
+            _unsyncedLocalCommits = new List<ICommit>();
+            _unsyncedRemoteCommits = new List<ICommit>();
+        }
 
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
+            _unsyncedLocalCommits = new List<ICommit>();
+            _unsyncedRemoteCommits = new List<ICommit>();
+
             try
             {
                 _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
@@ -82,6 +91,16 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override IList<ICommit> UnsyncedLocalCommits
+        {
+            get { return _unsyncedLocalCommits; }
+        }
+
+        public override IList<ICommit> UnsyncedRemoteCommits
+        {
+            get { return _unsyncedRemoteCommits; }
+        }
+
         public override IRepository Clone(string remotePathOrUrl, string workingDirectory)
         {
             try
@@ -104,7 +123,7 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(this.project.Name, workingDir, directory);
+                return new Repository(this.Project.Name, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
@@ -153,6 +172,8 @@ namespace Rubberduck.SourceControl
 
                 var branch = _repo.Branches[this.CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -175,6 +196,8 @@ namespace Rubberduck.SourceControl
             {
                 var remote = _repo.Network.Remotes[remoteName];
                 _repo.Network.Fetch(remote);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -186,7 +209,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-
                 var options = new PullOptions()
                 {
                     MergeOptions = new MergeOptions()
@@ -199,6 +221,8 @@ namespace Rubberduck.SourceControl
                 _repo.Network.Pull(signature, options);
 
                 base.Pull();
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -273,6 +297,8 @@ namespace Rubberduck.SourceControl
             {
                 _repo.Checkout(_repo.Branches[branch]);
                 base.Checkout(branch);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -286,6 +312,8 @@ namespace Rubberduck.SourceControl
             {
                 _repo.CreateBranch(branch);
                 _repo.Checkout(branch);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -385,6 +413,32 @@ namespace Rubberduck.SourceControl
         private Signature GetSignature()
         {
             return _repo.Config.BuildSignature(DateTimeOffset.Now);
+        }
+
+        private void RequeryUnsyncedCommits()
+        {
+            var currentBranch = _repo.Branches[this.CurrentBranch.Name];
+            var local = currentBranch.Commits;
+
+            if (currentBranch.TrackedBranch == null)
+            {
+                _unsyncedLocalCommits = local.Select(c => new Commit(c) as ICommit)
+                                            .ToList();
+
+                _unsyncedRemoteCommits = new List<ICommit>();
+            }
+            else
+            {
+                var remote = currentBranch.TrackedBranch.Commits;
+
+                _unsyncedLocalCommits = local.Where(c => !remote.Contains(c))
+                                            .Select(c => new Commit(c) as ICommit)
+                                            .ToList();
+
+                _unsyncedRemoteCommits = remote.Where(c => !local.Contains(c))
+                                               .Select(c => new Commit(c) as ICommit)
+                                               .ToList();
+            }
         }
     }
 }

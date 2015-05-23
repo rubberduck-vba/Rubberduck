@@ -8,6 +8,8 @@ namespace Rubberduck.SourceControl
         IRepository CurrentRepository { get; }
         IBranch CurrentBranch { get; }
         IEnumerable<IBranch> Branches { get; }
+        IList<ICommit> UnsyncedLocalCommits { get; }
+        IList<ICommit> UnsyncedRemoteCommits { get; }
 
         /// <summary>Clone a remote repository.</summary>
         /// <param name="remotePathOrUrl">Either a Url "https://github.com/retailcoder/Rubberduck.git" or a UNC path. "//server/share/path/to/repo.git"</param>
