@@ -117,7 +117,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         private void ExtractMethod()
         {
             _editor.DeleteLines(_selection.Selection);
-            _editor.ReplaceLine(_selection.Selection.StartLine, GetMethodCall());
+            _editor.InsertLines(_selection.Selection.StartLine, GetMethodCall());
 
             var insertionLine = _member.Context.GetSelection().EndLine - _selection.Selection.LineCount + 2;
             _editor.InsertLines(insertionLine, GetExtractedMethod());

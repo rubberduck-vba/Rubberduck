@@ -15,6 +15,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             _parameters = new BindingList<ExtractedParameter>();
 
             InitializeComponent();
+            Localize();
             RegisterViewEvents();
 
             MethodAccessibilityCombo.DataSource = new[]
@@ -23,6 +24,22 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
                 Accessibility.Public,
                 Accessibility.Friend
             }.ToList();
+        }
+
+        private void Localize()
+        {
+            Text = RubberduckUI.ExtractMethod_Caption;
+            OkButton.Text = RubberduckUI.OkButtonText;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+
+            TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
+            InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
+            NameLabel.Text = RubberduckUI.ExtractMethod_NameLabel;
+            ReturnLabel.Text = RubberduckUI.ExtractMethod_ReturnLabel;
+            SetReturnValueCheck.Text = RubberduckUI.ExtractMethod_SetBoxLabel;
+            AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;
+            ParametersLabel.Text = RubberduckUI.ExtractMethod_ParametersLabel;
+            PreviewLabel.Text = RubberduckUI.ExtractMethod_PreviewLabel;
         }
 
         private void InitializeParameterGrid()
