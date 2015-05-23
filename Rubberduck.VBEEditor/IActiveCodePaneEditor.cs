@@ -9,6 +9,12 @@
         string GetLines(Selection selection);
 
         /// <summary>
+        /// Gets a <see cref="QualifiedSelection"/> referring to the currently selected code.
+        /// </summary>
+        /// <returns></returns>
+        QualifiedSelection GetSelection();
+
+        /// <summary>
         /// Gets the scope of the selected procedure.
         /// Returns <c>null</c> if selection spans more than a single procedure.
         /// </summary>

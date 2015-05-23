@@ -1,4 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using Rubberduck.VBEditor.Extensions;
+using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor
 {
@@ -12,6 +13,11 @@ namespace Rubberduck.VBEditor
         }
 
         private CodeModule Editor { get { return _vbe.ActiveCodePane.CodeModule; } }
+
+        public QualifiedSelection GetSelection()
+        {
+            return Editor.CodePane.GetSelection();
+        }
 
         public string GetLines(Selection selection)
         {

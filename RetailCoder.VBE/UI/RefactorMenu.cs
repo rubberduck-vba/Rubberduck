@@ -8,6 +8,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.Refactoring;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.ExtractMethod;
@@ -84,7 +85,7 @@ namespace Rubberduck.UI
             SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
             _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
-            //SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32_Mask);
+            SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
             InitializeFindSymbolContextMenu();
@@ -208,43 +209,9 @@ namespace Rubberduck.UI
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (IDE.ActiveCodePane == null)
-            {
-                return;
-            }
-            var selection = IDE.ActiveCodePane.GetSelection();
-            if (selection.Selection.StartLine <= IDE.ActiveCodePane.CodeModule.CountOfDeclarationLines)
-            {
-                return;
-            }
-
-            var selectedScope = _editor.GetSelectedProcedureScope(selection.Selection);           
-            if (string.IsNullOrEmpty(selectedScope))
-            {
-                return;
-            }
-
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
-
-            // if method is a property, GetProcedure(name) can return up to 3 members:
-            var target = (declarations.Items
-                                .SingleOrDefault(declaration => declaration.Scope == selectedScope &&
-                                    (declaration.DeclarationType == DeclarationType.Procedure
-                                    || declaration.DeclarationType == DeclarationType.Function
-                                    || declaration.DeclarationType == DeclarationType.PropertyGet
-                                    || declaration.DeclarationType == DeclarationType.PropertyLet
-                                    || declaration.DeclarationType == DeclarationType.PropertySet)));
-
-            if (target == null)
-            {
-                return;
-            }
-
-            var view = new ExtractMethodDialog();
-            var presenter = new ExtractMethodPresenter(_editor, view, target, selection, declarations);
-            presenter.Show();
-
-            view.Dispose();
+            var refactoring = new ExtractMethodRefactoring(_editor, declarations);
+            refactoring.Refactor();
         }
 
         private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
