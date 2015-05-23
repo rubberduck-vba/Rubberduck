@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -9,13 +10,13 @@ namespace Rubberduck.Parsing
 {
     public class VBComponentParseResult
     {
-        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, TokenStreamRewriter rewriter)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ITokenStream tokenStream)
         {
             _component = component;
             _qualifiedName = new QualifiedModuleName(component);
             _parseTree = parseTree;
             _comments = comments;
-            _rewriter = rewriter;
+            _tokenStream = tokenStream;
         }
 
         private readonly VBComponent _component;
@@ -30,7 +31,10 @@ namespace Rubberduck.Parsing
         private IEnumerable<CommentNode> _comments;
         public IEnumerable<CommentNode> Comments { get { return _comments; } }
 
-        private readonly TokenStreamRewriter _rewriter;
-        public TokenStreamRewriter Rewriter { get { return _rewriter; } }
+        private readonly ITokenStream _tokenStream;
+        public TokenStreamRewriter GetRewriter()
+        {
+            return new TokenStreamRewriter(_tokenStream);
+        }
     }
 }

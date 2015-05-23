@@ -70,14 +70,14 @@ namespace Rubberduck.Parsing.VBA
             return parseResult;
         }
 
-        private IParseTree Parse(string code, out TokenStreamRewriter outRewriter)
+        private IParseTree Parse(string code, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
             parser.AddErrorListener(new ExceptionErrorListener());
-            outRewriter = new TokenStreamRewriter(tokens);
+            outStream = tokens;
 
             var result = parser.startRule();
             return result;
@@ -97,10 +97,10 @@ namespace Rubberduck.Parsing.VBA
                 var codeModule = component.CodeModule;
                 var lines = codeModule.Lines();
 
-                TokenStreamRewriter rewriter;
-                var parseTree = Parse(lines, out rewriter);
+                ITokenStream stream;
+                var parseTree = Parse(lines, out stream);
                 var comments = ParseComments(name);
-                var result = new VBComponentParseResult(component, parseTree, comments, rewriter);
+                var result = new VBComponentParseResult(component, parseTree, comments, stream);
 
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
                 return result;

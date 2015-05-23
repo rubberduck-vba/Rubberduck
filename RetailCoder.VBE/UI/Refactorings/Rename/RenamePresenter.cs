@@ -249,7 +249,8 @@ namespace Rubberduck.UI.Refactorings.Rename
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var argContext = (VBAParser.ArgContext)_view.Target.Context;
-                targetModule.Rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _view.NewName);
+                var rewriter = targetModule.GetRewriter();
+                rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _view.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
@@ -311,7 +312,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                     lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
                 }
 
-                return targetModule.Rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+                return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
             }
             else
             {
