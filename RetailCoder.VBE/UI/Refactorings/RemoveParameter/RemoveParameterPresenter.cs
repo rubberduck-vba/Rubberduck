@@ -33,16 +33,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             if (_method != null && (_target == null && indexOfParam != -1 || _method.DeclarationType == DeclarationType.PropertyGet))
             {
-                var targets = _declarations.Items
-                              .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == _method.ComponentName
-                                       && d.Project.Equals(_method.Project)
-                                       && _method.Context.Start.Line <= d.Selection.StartLine
-                                       && _method.Context.Stop.Line >= d.Selection.EndLine
-                                       && !(_method.Context.Start.Column > d.Selection.StartColumn && _method.Context.Start.Line == d.Selection.StartLine)
-                                       && !(_method.Context.Stop.Column < d.Selection.EndColumn && _method.Context.Stop.Line == d.Selection.EndLine))
-                              .OrderBy(item => item.Selection.StartLine)
-                              .ThenBy(item => item.Selection.StartColumn);
+                var targets = FindTargets(_method);
 
                 if (_method.DeclarationType == DeclarationType.PropertyGet)
                 {
@@ -66,16 +57,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void LoadParameters()
         {
-            _parameters.AddRange(_declarations.Items
-                                    .Where(d => d.DeclarationType == DeclarationType.Parameter 
-                                             && d.ComponentName == _method.ComponentName
-                                             && d.Project.Equals(_method.Project)
-                                             && _method.Context.Start.Line <= d.Selection.StartLine
-                                             && _method.Context.Stop.Line >= d.Selection.EndLine
-                                             && !(_method.Context.Start.Column > d.Selection.StartColumn && _method.Context.Start.Line == d.Selection.StartLine)
-                                             && !(_method.Context.Stop.Column < d.Selection.EndColumn && _method.Context.Stop.Line == d.Selection.EndLine))
-                                    .OrderBy(item => item.Selection.StartLine)
-                                    .ThenBy(item => item.Selection.StartColumn));
+            _parameters.AddRange(FindTargets(_method));
         }
 
         private void RemoveParameter()
@@ -367,24 +349,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             Declaration target;
             var indexOfParam = _parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText());
 
-            var targets = _declarations.Items
-                            .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                    && d.ComponentName == declaration.ComponentName
-                                    && d.Project.Equals(declaration.Project)
-                                    && declaration.Context.Start.Line <= d.Selection.StartLine
-                                    && declaration.Context.Stop.Line >= d.Selection.EndLine
-                                    && !(declaration.Context.Start.Column > d.Selection.StartColumn && declaration.Context.Start.Line == d.Selection.StartLine)
-                                    && !(declaration.Context.Stop.Column < d.Selection.EndColumn && declaration.Context.Stop.Line == d.Selection.EndLine))
-                            .OrderBy(item => item.Selection.StartLine)
-                            .ThenBy(item => item.Selection.StartColumn);
-
             if (indexOfParam < targets.Count())
             {
-                target = targets.ElementAt(indexOfParam);
+                target = FindTargets(declaration).ElementAt(indexOfParam);
             }
             else
             {
-                target = targets.ElementAt(targets.Count() - 1);
+                target = FindTargets(declaration).ElementAt(targets.Count() - 1);
             }
 
             RemoveSignatureParameter(target, paramList, module);
@@ -398,6 +369,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             module.ReplaceLine(paramList.Start.Line, newContent);
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+        }
+
+        private IEnumerable<Declaration> FindTargets(Declaration method)
+        {
+            return _declarations.Items
+                              .Where(d => d.DeclarationType == DeclarationType.Parameter
+                                       && d.ComponentName == method.ComponentName
+                                       && d.Project.Equals(method.Project)
+                                       && method.Context.Start.Line <= d.Selection.StartLine
+                                       && method.Context.Stop.Line >= d.Selection.EndLine
+                                       && !(method.Context.Start.Column > d.Selection.StartColumn && method.Context.Start.Line == d.Selection.StartLine)
+                                       && !(method.Context.Stop.Column < d.Selection.EndColumn && method.Context.Stop.Line == d.Selection.EndLine))
+                              .OrderBy(item => item.Selection.StartLine)
+                              .ThenBy(item => item.Selection.StartColumn);
         }
 
         private void FindTarget(out Declaration target, out string identifierName, QualifiedSelection selection)
