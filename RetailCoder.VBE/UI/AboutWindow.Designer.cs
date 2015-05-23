@@ -82,7 +82,6 @@ namespace Rubberduck.UI
             "@Duga SE chat bot",
             "Francis Veilleux-Gaboury",
             "Frank Van Heeswijk",
-            "@Hosch250",
             "@mjolka",
             "Philip Wales",
             "Rob Bovey",
