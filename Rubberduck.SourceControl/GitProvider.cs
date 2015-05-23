@@ -285,8 +285,6 @@ namespace Rubberduck.SourceControl
                     Pull();
                     Merge(sourceBranch, destinationBranch); //a little leary about this. Could stack overflow if I'm wrong.
                     break;
-                default:
-                    break;
             }
             base.Merge(sourceBranch, destinationBranch);
         }
