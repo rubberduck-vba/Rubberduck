@@ -30,38 +30,34 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             FindTarget(out _target, out identifierName, selection);
             FindMethod(out _method, out indexOfParam, selection, identifierName);
 
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(_method));
-            if (interfaceImplementation != null)
-            {
-                if (PromptIfTargetImplementsInterface(_method))
-                {
-                    var proc = (dynamic)_method.Context;
-                    var paramList = (VBAParser.ArgListContext)proc.argList();
-
-                    var indexOfInterfaceParam = paramList.arg().ToList().FindIndex(item => item.GetText() == _target.Context.GetText());
-
-                    _method = _declarations.FindInterfaceMember(interfaceImplementation);
-
-                    _target = FindTargets(_method).ElementAt(indexOfInterfaceParam);
-                }
-                else
-                {
-                    _method = null;
-                }
-            }
-
-            if (_method != null && (_target == null && indexOfParam != -1 || _method.DeclarationType == DeclarationType.PropertyGet))
+            if (_method != null && _target == null && indexOfParam != -1)
             {
                 var targets = FindTargets(_method).ToList();
 
-                if (_method.DeclarationType == DeclarationType.PropertyGet)
+                _target = indexOfParam < targets.Count() ? targets.ElementAt(indexOfParam) : targets.ElementAt(targets.Count() - 1);
+            }
+
+            if (_target != null && _method.DeclarationType == DeclarationType.PropertyGet)
+            {
+                var targets = FindTargets(_method).ToList();
+                _target = targets.FirstOrDefault(item => _target.IdentifierName == item.IdentifierName);
+
+                if (_target == null)
                 {
-                    _target = targets.First(item => _target.IdentifierName == item.IdentifierName);
+                    MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
-                {
-                    _target = indexOfParam < targets.Count() ? targets.ElementAt(indexOfParam) : targets.ElementAt(targets.Count() - 1);
-                }
+            }
+
+            var prevMethod = _method;
+            PromptIfTargetImplementsInterface(ref _method);
+
+            if (_method != null && _method != prevMethod)
+            {
+                var proc = (dynamic)prevMethod.Context;
+                var paramList = (VBAParser.ArgListContext)proc.argList();
+
+                var indexOfInterfaceParam = paramList.arg().ToList().FindIndex(item => item.GetText() == _target.Context.GetText());
+                _target = FindTargets(_method).ElementAt(indexOfInterfaceParam);
             }
 
             RemoveParameter();
@@ -86,29 +82,10 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private bool ConfirmRemove()
         {
-            if (IsValidRemove())
-            {
-                var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText());
-                var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                if (confirm == DialogResult.Yes)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsValidRemove()
-        {
-            if (_method.DeclarationType == DeclarationType.PropertyGet &&
-                _parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText()) < 0)
-            {
-                MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            return true;
+            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText());
+            var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            
+            return confirm == DialogResult.Yes;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
@@ -556,24 +533,26 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
-        private bool PromptIfTargetImplementsInterface(Declaration method)
+        private void PromptIfTargetImplementsInterface(ref Declaration target)
         {
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(method));
-            if (method == null || interfaceImplementation == null)
+            var declaration = target;
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            if (target == null || interfaceImplementation == null)
             {
-                return false;
+                return;
             }
 
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RemovePresenter_TargetIsInterfaceMemberImplementation, method.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirm == DialogResult.No)
             {
-                method = null;
-                return false;
+                target = null;
+                return;
             }
-            return true;
+
+            target = interfaceMember;
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
