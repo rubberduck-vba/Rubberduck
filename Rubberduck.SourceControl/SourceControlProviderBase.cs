@@ -111,8 +111,7 @@ namespace Rubberduck.SourceControl
         {
             var separators = new[] { '/', '\\', '.' };
             return directory.Split(separators, StringSplitOptions.RemoveEmptyEntries)
-                .Where(c => c != "git")
-                .LastOrDefault();
+                            .LastOrDefault(c => c != "git");
         }
 
         private void Refresh()
