@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Text;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -6,11 +7,14 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameter
 {
     class RemoveParameterPresenter
     {
+        private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
         private readonly Declaration _target;
         private readonly Declaration _method;
@@ -18,6 +22,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
+            _parseResult = parseResult;
             _declarations = parseResult.Declarations;
             
             int indexOfParam;
@@ -178,6 +183,107 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
         }
 
+        private string GetReplacementSignature()
+        {
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == _target.QualifiedName.QualifiedModuleName);
+            if (targetModule == null)
+            {
+                return null;
+            }
+
+            var argContext = (VBAParser.ArgContext)_target.Context;
+            targetModule.Rewriter.Replace(argContext.Start.TokenIndex, argContext.Stop.TokenIndex, "");
+
+            // Target.Context is an ArgContext, its parent is an ArgsListContext;
+            // the ArgsListContext's parent is the procedure context and it includes the body.
+            var context = (ParserRuleContext)_target.Context.Parent.Parent;
+            var firstTokenIndex = context.Start.TokenIndex;
+            var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
+
+            var subStmtContext = context as VBAParser.SubStmtContext;
+            if (subStmtContext != null)
+            {
+                lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var functionStmtContext = context as VBAParser.FunctionStmtContext;
+            if (functionStmtContext != null)
+            {
+                lastTokenIndex = functionStmtContext.asTypeClause() != null
+                    ? functionStmtContext.asTypeClause().Stop.TokenIndex
+                    : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
+            if (propertyGetStmtContext != null)
+            {
+                lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
+                    ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
+                    : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
+            if (propertyLetStmtContext != null)
+            {
+                lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
+            if (propertySetStmtContext != null)
+            {
+                lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var declareStmtContext = context as VBAParser.DeclareStmtContext;
+            if (declareStmtContext != null)
+            {
+                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
+                if (declareStmtContext.argList() != null)
+                {
+                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+                if (declareStmtContext.asTypeClause() != null)
+                {
+                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
+                }
+            }
+
+            var eventStmtContext = context as VBAParser.EventStmtContext;
+            if (eventStmtContext != null)
+            {
+                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            return targetModule.Rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+        }
+
+        private string ReplaceCommas(string signature)
+        {
+            var indexParamRemoved = _parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText());
+
+            if (indexParamRemoved != _parameters.Count - 1)
+            {
+                indexParamRemoved++;
+            }
+
+            var commaCounter = 0;
+            
+            for (int i = 0; i < signature.Length; i++)
+            {
+                if (signature.ElementAt(i) == ',')
+                {
+                    commaCounter++;
+                }
+
+                if (commaCounter == indexParamRemoved)
+                {
+                    return signature.Remove(i, 1);
+                }
+            }
+
+            return signature;
+        }
+
         private void AdjustSignatures()
         {
             var proc = (dynamic)_method.Context;
@@ -248,37 +354,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var args = paramList.arg();
+            var newContent = ReplaceCommas(GetReplacementSignature());
+            var lineNum = paramList.GetSelection().LineCount;
 
-            var paramToRemove = args.ElementAt(_parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText())).GetText();
-            var valueToRemove = paramToRemove != args.Last().GetText() ?
-                                paramToRemove + "," :
-                                paramToRemove;
-
-            for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
-            {
-                var content = module.Lines[lineNum, 1];
-
-                if (!content.Contains(valueToRemove)) { continue; }
-
-                var newContent = content.Replace(valueToRemove, "");
-
-                module.ReplaceLine(lineNum, newContent);
-                if (paramToRemove == args.Last().GetText())
-                {
-                    for (var line = lineNum; line >= paramList.Start.Line; line--)
-                    {
-                        var lineContent = module.Lines[line, 1];
-                        if (lineContent.Contains(','))
-                        {
-                            module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
-                            return;
-                        }
-                    }
-                }
-
-                return;
-            }
+            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
 
         private void FindTarget(out Declaration target, out string identifierName, QualifiedSelection selection)
