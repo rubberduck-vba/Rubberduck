@@ -294,6 +294,13 @@
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
+    <Compile Include="UI\ProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ProgressDialog.Designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ParsingProgressPresenter.cs" />
     <Compile Include="UI\Refactorings\RemoveParameter\RemoveParameterPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
@@ -579,6 +586,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
       <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
