@@ -21,6 +21,7 @@ namespace Rubberduck.SourceControl
         /// Creates a new repository in/from the given directory.
         /// </summary>
         /// <param name="directory">The directory where the new repository will be created.</param>
+        /// <param name="bare">Specifies whether or not the new repository will be intialized as a bare repo.</param>
         /// <returns>Newly created repository.</returns>
         IRepository Init(string directory, bool bare = false);
 
@@ -29,6 +30,7 @@ namespace Rubberduck.SourceControl
         /// </summary>
         /// <param name="directory"></param>
         /// <returns>Newly created Repository.</returns>
+        // ReSharper disable once InconsistentNaming : Changing this now will break the COM interface.
         IRepository InitVBAProject(string directory);
 
         /// <summary>
