@@ -113,16 +113,14 @@ namespace Rubberduck.UI
         {
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
             var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
-            vm.Navigate += vm_Navigate;
             using (var view = new FindSymbolDialog(vm))
             {
+                view.Navigate += view_Navigate;
                 view.ShowDialog();
             }
-
-            vm.Navigate -= vm_Navigate;
         }
 
-        private void vm_Navigate(object sender, NavigateCodeEventArgs e)
+        private void view_Navigate(object sender, NavigateCodeEventArgs e)
         {
             if (e.QualifiedName.Component == null)
             {

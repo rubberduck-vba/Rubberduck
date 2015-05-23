@@ -26,13 +26,14 @@
                   IsTextSearchCaseSensitive="False"
                   IsTextSearchEnabled="True"
                   TextSearch.Text="{Binding SearchString, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
-                  TextSearch.TextPath="IdentifierName">
+                  TextSearch.TextPath="IdentifierName"
+                  PreviewKeyDown="UIElement_OnPreviewKeyDown">
             
-            <ComboBox.ItemsPanel>
+            <!--<ComboBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel />
                 </ItemsPanelTemplate>
-            </ComboBox.ItemsPanel>
+            </ComboBox.ItemsPanel>-->
     
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="local:SearchResult">
