@@ -237,20 +237,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         }
 
         /// <summary>
-        /// Adjust the signature of a reference to a given method.
-        /// Used for letters.
-        /// </summary>
-        /// <param name="reference">A reference to the method signature to adjust.</param>
-        private void AdjustSignatures(IdentifierReference reference)
-        {
-            var proc = (dynamic)reference.Context.Parent;
-            var module = reference.QualifiedModuleName.Component.CodeModule;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-
-            RewriteSignature(paramList, module);
-        }
-
-        /// <summary>
         /// Adjust the signature of a declaration of a given method.
         /// </summary>
         /// <param name="declaration">A Declaration of the method signature to adjust.</param>
@@ -289,19 +275,19 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 for (var i = parameterIndex; i < _view.Parameters.Count; i++)
                 {
-                    var parameterStringIndex = newContent.IndexOf(_view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration, currentStringIndex);
+                    var oldParam = args.ElementAt(parameterIndex).GetText();
+                    var newParam = args.ElementAt(_view.Parameters.ElementAt(parameterIndex).Index).GetText();
+                    var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
 
                     if (parameterStringIndex > -1)
                     {
-                        var oldVariableString = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
-                        var newVariableString = _view.Parameters.ElementAt(i).FullDeclaration;
                         var beginningSub = newContent.Substring(0, parameterStringIndex);
-                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldVariableString, newVariableString);
+                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParam, newParam);
 
                         newContent = beginningSub + replaceSub;
 
                         parameterIndex++;
-                        currentStringIndex = beginningSub.Length + newVariableString.Length;
+                        currentStringIndex = beginningSub.Length + newParam.Length;
                     }
                 }
 
@@ -332,7 +318,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             FindTarget(out target, selection);
 
-            if (target != null && target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet)
+            if (target != null && (target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet))
             {
                 var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == target.ParentScope &&
                                               item.IdentifierName == target.IdentifierName &&
