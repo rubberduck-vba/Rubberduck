@@ -171,7 +171,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             }
 
             var argContext = (VBAParser.ArgContext)target.Context;
-            targetModule.Rewriter.Replace(argContext.Start.TokenIndex, argContext.Stop.TokenIndex, "");
+            var rewriter = targetModule.GetRewriter();
+            rewriter.Replace(argContext.Start.TokenIndex, argContext.Stop.TokenIndex, "");
 
             // Target.Context is an ArgContext, its parent is an ArgsListContext;
             // the ArgsListContext's parent is the procedure context and it includes the body.
@@ -233,7 +234,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            return targetModule.Rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
         private string ReplaceCommas(string signature, Declaration target, VBAParser.ArgListContext paramList)
