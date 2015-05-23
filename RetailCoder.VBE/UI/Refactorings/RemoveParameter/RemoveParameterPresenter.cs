@@ -60,8 +60,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
             if (!ConfirmRemove()) { return; }
 
+            AdjustReferences(_method.References, _method);
             AdjustSignatures();
-            AdjustReferences(_method.References);
         }
 
         private bool ConfirmRemove()
@@ -91,9 +91,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             return true;
         }
 
-        private void AdjustReferences(IEnumerable<IdentifierReference> references)
+        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
         {
-            foreach (var reference in references.Where(item => item.Context != _method.Context))
+            foreach (var reference in references.Where(item => item.Context != method.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -300,8 +300,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
+                    AdjustReferences(reference.References, reference);
                     AdjustSignatures(reference);
-                    AdjustReferences(reference.References);
                 }
             }
 
@@ -310,8 +310,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                                                                item.IdentifierName == _method.ComponentName + "_" + _method.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
                 AdjustSignatures(interfaceImplentation);
-                AdjustReferences(interfaceImplentation.References);
             }
         }
 
