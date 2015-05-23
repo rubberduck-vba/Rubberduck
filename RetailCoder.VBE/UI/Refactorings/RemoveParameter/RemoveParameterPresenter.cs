@@ -143,9 +143,17 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
                 do
                 {
-                    var paramToRemove = paramNames.ElementAt(paramIndex);
+                    string paramToRemove;
+                    if (paramNames.ElementAt(0).Contains(":="))
+                    {
+                        paramToRemove = paramNames.Find(item => item.Contains(_target.IdentifierName + ":="));
+                    }
+                    else
+                    {
+                        paramToRemove = paramNames.ElementAt(paramIndex);
+                    }
 
-                    if (!content.Contains(paramToRemove)) { continue; }
+                    if (paramToRemove == null || !content.Contains(paramToRemove)) { continue; }
 
                     var valueToRemove = paramToRemove != paramNames.Last() ?
                                         paramToRemove + "," :
@@ -241,6 +249,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private void RemoveSignatureParameter(VBAParser.ArgListContext paramList, CodeModule module)
         {
             var args = paramList.arg();
+
             var paramToRemove = args.ElementAt(_parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText())).GetText();
             var valueToRemove = paramToRemove != args.Last().GetText() ?
                                 paramToRemove + "," :
