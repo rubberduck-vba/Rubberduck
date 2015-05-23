@@ -112,7 +112,10 @@ namespace Rubberduck.UI
 
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+            var declarations = result.Declarations;
             var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(vm))
             {
@@ -140,7 +143,11 @@ namespace Rubberduck.UI
         private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var selection = IDE.ActiveCodePane.GetSelection();
-            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+
+            var declarations = result.Declarations;
 
             var target = declarations.Items
             .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
@@ -209,7 +216,11 @@ namespace Rubberduck.UI
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+            
+            var declarations = result.Declarations;
             var refactoring = new ExtractMethodRefactoring(_editor, declarations);
             refactoring.InvalidSelection += refactoring_InvalidSelection;
             refactoring.Refactor();
@@ -252,38 +263,50 @@ namespace Rubberduck.UI
 
         public void Rename(QualifiedSelection selection)
         {
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+
             using (var view = new RenameDialog())
             {
-                var parseResult = _parser.Parse(IDE.ActiveVBProject, this);
-                var presenter = new RenamePresenter(IDE, view, parseResult, selection);
+                var presenter = new RenamePresenter(IDE, view, result, selection);
                 presenter.Show();
             }
         }
 
         public void Rename(Declaration target)
         {
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+
             using (var view = new RenameDialog())
             {
-                var parseResult = _parser.Parse(IDE.ActiveVBProject, this);
-                var presenter = new RenamePresenter(IDE, view, parseResult, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+                var presenter = new RenamePresenter(IDE, view, result, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
                 presenter.Show(target);
             }
         }
 
         public void ReorderParameters(QualifiedSelection selection)
         {
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+
             using (var view = new ReorderParametersDialog())
             {
-                var parseResult = _parser.Parse(IDE.ActiveVBProject);
-                var presenter = new ReorderParametersPresenter(view, parseResult, selection);
+                var presenter = new ReorderParametersPresenter(view, result, selection);
                 presenter.Show();
             }
         }
 
         public void RemoveParameter(QualifiedSelection selection)
         {
-            var parseResult = _parser.Parse(IDE.ActiveVBProject);
-            var presenter = new RemoveParameterPresenter(parseResult, selection);
+            VBProjectParseResult result;
+            var progress = new ParsingProgressPresenter(_parser);
+            result = progress.Parse(IDE.ActiveVBProject);
+
+            var presenter = new RemoveParameterPresenter(result, selection);
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
