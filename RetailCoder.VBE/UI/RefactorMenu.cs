@@ -211,7 +211,13 @@ namespace Rubberduck.UI
         {
             var declarations = _parser.Parse(IDE.ActiveVBProject, this).Declarations;
             var refactoring = new ExtractMethodRefactoring(_editor, declarations);
+            refactoring.InvalidSelection += refactoring_InvalidSelection;
             refactoring.Refactor();
+        }
+
+        void refactoring_InvalidSelection(object sender, EventArgs e)
+        {
+            MessageBox.Show("The current selection is not valid.", "Extract Method", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)

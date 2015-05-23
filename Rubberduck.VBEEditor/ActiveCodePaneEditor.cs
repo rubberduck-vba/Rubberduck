@@ -12,10 +12,15 @@ namespace Rubberduck.VBEditor
             _vbe = vbe;
         }
 
-        private CodeModule Editor { get { return _vbe.ActiveCodePane.CodeModule; } }
+        private CodeModule Editor { get { return _vbe.ActiveCodePane == null ? null : _vbe.ActiveCodePane.CodeModule; } }
 
-        public QualifiedSelection GetSelection()
+        public QualifiedSelection? GetSelection()
         {
+            if (Editor == null)
+            {
+                return null;
+            }
+
             return Editor.CodePane.GetSelection();
         }
 

@@ -52,7 +52,13 @@ namespace Rubberduck.Refactoring
         public void Refactor()
         {
             var selection = _editor.GetSelection();
-            Refactor(selection);
+            if (selection == null)
+            {
+                OnInvalidSelection();
+                return;
+            }
+            
+            Refactor(selection.Value);
         }
 
         /// <summary>
@@ -75,6 +81,7 @@ namespace Rubberduck.Refactoring
             if (member == null)
             {
                 OnInvalidSelection();
+                return;
             }
 
             using (var view = new ExtractMethodDialog())

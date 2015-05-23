@@ -12,7 +12,7 @@
         /// Gets a <see cref="QualifiedSelection"/> referring to the currently selected code.
         /// </summary>
         /// <returns></returns>
-        QualifiedSelection GetSelection();
+        QualifiedSelection? GetSelection();
 
         /// <summary>
         /// Gets the scope of the selected procedure.
