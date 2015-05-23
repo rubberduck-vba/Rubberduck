@@ -109,7 +109,7 @@ namespace Rubberduck.SourceControl
 
         protected string GetProjectNameFromDirectory(string directory)
         {
-            var separators = new char[] { '/', '\\', '.' };
+            var separators = new[] { '/', '\\', '.' };
             return directory.Split(separators, StringSplitOptions.RemoveEmptyEntries)
                 .Where(c => c != "git")
                 .LastOrDefault();
