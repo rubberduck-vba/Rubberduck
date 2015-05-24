@@ -64,6 +64,7 @@ namespace Rubberduck.Parsing.VBA
             var parseResult = new VBProjectParseResult(project, results);
             parseResult.Progress += parseResult_Progress;
             parseResult.Resolve();
+            parseResult.Progress -= parseResult_Progress;
 
             if (owner != null)
             {
@@ -110,7 +111,11 @@ namespace Rubberduck.Parsing.VBA
                 var comments = ParseComments(name);
                 var result = new VBComponentParseResult(component, parseTree, comments, stream);
 
+                var existing = ParseResultCache.Keys.SingleOrDefault(k => k.Project == name.Project && k.ComponentName == name.ComponentName);
+                VBComponentParseResult removed;
+                ParseResultCache.TryRemove(existing, out removed);
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
+
                 return result;
             }
             catch (SyntaxErrorException exception)

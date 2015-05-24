@@ -66,6 +66,11 @@ namespace Rubberduck.VBEditor
             try
             {
                 var other = (QualifiedModuleName)obj;
+                if (other.Component == null)
+                {
+                    return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
+                }
+
                 var result = other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
                 return result;
             }

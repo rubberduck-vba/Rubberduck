@@ -211,8 +211,11 @@ namespace Rubberduck.UI
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
         {
+            var isSameProject = declaration.Project == selection.QualifiedName.Project;
+            var isSameModule = isSameProject && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName;
+
             return declaration.References.Any(r =>
-                r.QualifiedModuleName == selection.QualifiedName &&
+                isSameModule &&
                 r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
