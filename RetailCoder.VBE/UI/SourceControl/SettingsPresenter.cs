@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Rubberduck.SourceControl;
 using Rubberduck.Config;
 
@@ -69,7 +70,17 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnBrowseDefaultRepositoryLocation(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            using (var folderPicker = new FolderBrowserDialog())
+            {
+                folderPicker.Description = "Default Repository Directory";
+                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
+                folderPicker.ShowNewFolderButton = true;
+
+                if (folderPicker.ShowDialog() == DialogResult.OK)
+                {
+                    _view.DefaultRepositoryLocation = folderPicker.SelectedPath;
+                }
+            }
         }
     }
 }
