@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.Parsing.Grammar;
 
@@ -29,6 +30,22 @@ namespace Rubberduck.VBA
         public static string StripStringLiterals(this string line)
         {
             return Regex.Replace(line, "\"[^\"]*\"", match => new string(' ', match.Length));
+        }
+
+        public static string RemoveExtraSpaces(this string line)
+        {
+            var newString = new StringBuilder();
+            var lastWasWhiteSpace = false;
+
+            foreach (var c in line)
+            {
+                if (char.IsWhiteSpace(c) && lastWasWhiteSpace) { continue; }
+
+                newString.Append(c);
+                lastWasWhiteSpace = char.IsWhiteSpace(c);
+            }
+
+            return newString.ToString();
         }
     }
 }
