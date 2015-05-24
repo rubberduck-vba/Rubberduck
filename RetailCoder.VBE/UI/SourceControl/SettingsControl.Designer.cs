@@ -33,8 +33,8 @@ namespace Rubberduck.UI.SourceControl
         {
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.RepositorySettingsBox = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.EditAttributeFileButton = new System.Windows.Forms.Button();
+            this.EditIgnoreFileButton = new System.Windows.Forms.Button();
             this.GlobalSettingsBox = new System.Windows.Forms.GroupBox();
             this.CancelGlobalSettingsButton = new System.Windows.Forms.Button();
             this.UpdateGlobalSettingsButton = new System.Windows.Forms.Button();
@@ -66,8 +66,8 @@ namespace Rubberduck.UI.SourceControl
             // 
             this.RepositorySettingsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RepositorySettingsBox.Controls.Add(this.button2);
-            this.RepositorySettingsBox.Controls.Add(this.button1);
+            this.RepositorySettingsBox.Controls.Add(this.EditAttributeFileButton);
+            this.RepositorySettingsBox.Controls.Add(this.EditIgnoreFileButton);
             this.RepositorySettingsBox.Location = new System.Drawing.Point(6, 212);
             this.RepositorySettingsBox.Name = "RepositorySettingsBox";
             this.RepositorySettingsBox.Padding = new System.Windows.Forms.Padding(6);
@@ -76,23 +76,25 @@ namespace Rubberduck.UI.SourceControl
             this.RepositorySettingsBox.TabStop = false;
             this.RepositorySettingsBox.Text = "Repository Settings";
             // 
-            // button2
+            // EditAttributeFileButton
             // 
-            this.button2.Location = new System.Drawing.Point(105, 31);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(92, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Attributes File";
-            this.button2.UseVisualStyleBackColor = true;
+            this.EditAttributeFileButton.Location = new System.Drawing.Point(105, 31);
+            this.EditAttributeFileButton.Name = "EditAttributeFileButton";
+            this.EditAttributeFileButton.Size = new System.Drawing.Size(92, 23);
+            this.EditAttributeFileButton.TabIndex = 1;
+            this.EditAttributeFileButton.Text = "Attributes File";
+            this.EditAttributeFileButton.UseVisualStyleBackColor = true;
+            this.EditAttributeFileButton.Click += new System.EventHandler(this.EditAttributeButton_Click);
             // 
-            // button1
+            // EditIgnoreFileButton
             // 
-            this.button1.Location = new System.Drawing.Point(7, 31);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Ignore File";
-            this.button1.UseVisualStyleBackColor = true;
+            this.EditIgnoreFileButton.Location = new System.Drawing.Point(7, 31);
+            this.EditIgnoreFileButton.Name = "EditIgnoreFileButton";
+            this.EditIgnoreFileButton.Size = new System.Drawing.Size(92, 23);
+            this.EditIgnoreFileButton.TabIndex = 0;
+            this.EditIgnoreFileButton.Text = "Ignore File";
+            this.EditIgnoreFileButton.UseVisualStyleBackColor = true;
+            this.EditIgnoreFileButton.Click += new System.EventHandler(this.EditIgnoreFileButton_Click);
             // 
             // GlobalSettingsBox
             // 
@@ -123,6 +125,7 @@ namespace Rubberduck.UI.SourceControl
             this.CancelGlobalSettingsButton.TabIndex = 8;
             this.CancelGlobalSettingsButton.Text = "Cancel";
             this.CancelGlobalSettingsButton.UseVisualStyleBackColor = true;
+            this.CancelGlobalSettingsButton.Click += new System.EventHandler(this.CancelGlobalSettingsButton_Click);
             // 
             // UpdateGlobalSettingsButton
             // 
@@ -132,6 +135,7 @@ namespace Rubberduck.UI.SourceControl
             this.UpdateGlobalSettingsButton.TabIndex = 7;
             this.UpdateGlobalSettingsButton.Text = "Update";
             this.UpdateGlobalSettingsButton.UseVisualStyleBackColor = true;
+            this.UpdateGlobalSettingsButton.Click += new System.EventHandler(this.UpdateGlobalSettingsButton_Click);
             // 
             // BrowseDefaultRepositoryLocationButton
             // 
@@ -142,6 +146,7 @@ namespace Rubberduck.UI.SourceControl
             this.BrowseDefaultRepositoryLocationButton.TabIndex = 6;
             this.BrowseDefaultRepositoryLocationButton.Text = "...";
             this.BrowseDefaultRepositoryLocationButton.UseVisualStyleBackColor = true;
+            this.BrowseDefaultRepositoryLocationButton.Click += new System.EventHandler(this.BrowseDefaultRepositoryLocationButton_Click);
             // 
             // DefaultRepositoryLocation
             // 
@@ -217,8 +222,8 @@ namespace Rubberduck.UI.SourceControl
 
         private Panel SettingsPanel;
         private GroupBox RepositorySettingsBox;
-        private Button button2;
-        private Button button1;
+        private Button EditAttributeFileButton;
+        private Button EditIgnoreFileButton;
         private GroupBox GlobalSettingsBox;
         private Button CancelGlobalSettingsButton;
         private Button UpdateGlobalSettingsButton;

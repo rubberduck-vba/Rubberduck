@@ -9,7 +9,7 @@ namespace Rubberduck.UI.SourceControl
 
     public interface ISettingsView : ISourceControlUserSettings
     {
-        event EventHandler<EventArgs> SelectDefaultRepositoryLocation; 
+        event EventHandler<EventArgs> BrowseDefaultRepositoryLocation; 
         event EventHandler<EventArgs> Save;
         event EventHandler<EventArgs> Cancel; 
         event EventHandler<EventArgs> EditIgnoreFile;

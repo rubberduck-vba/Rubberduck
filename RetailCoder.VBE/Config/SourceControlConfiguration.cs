@@ -24,5 +24,19 @@ namespace Rubberduck.Config
             this.EmailAddress = string.Empty;
             this.DefaultRepositoryLocation = string.Empty;
         }
+
+        public SourceControlConfiguration
+            (
+                string username, 
+                string email, 
+                string defaultRepoLocation,
+                List<Repository> repositories
+            )
+        {
+            this.Repositories = repositories;
+            this.UserName = username;
+            this.EmailAddress = email;
+            this.DefaultRepositoryLocation = defaultRepoLocation;
+        }
     }
 }
