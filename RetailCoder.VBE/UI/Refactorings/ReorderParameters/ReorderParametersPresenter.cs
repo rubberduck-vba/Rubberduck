@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     class ReorderParametersPresenter
     {
         private readonly IReorderParametersView _view;
+        private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
         private readonly QualifiedSelection _selection;
 
         public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _view = view;
+            _parseResult = parseResult;
             _declarations = parseResult.Declarations;
             _selection = selection;
 
@@ -140,7 +145,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// <param name="reference">The reference to the method call to be re-written.</param>
         /// <param name="paramList">The ArgsCallContext of the reference.</param>
         /// <param name="module">The CodeModule to rewrite to.</param>
-        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext paramList, Microsoft.Vbe.Interop.CodeModule module)
+        private void RewriteCall(IdentifierReference reference, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
 
@@ -151,7 +156,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 var newContent = module.Lines[line, 1].Replace(" , ", "");
 
-                var currentStringIndex = line == paramList.Start.Line ? reference.Declaration.IdentifierName.Length : 0;
+                var currentStringIndex = 0;
 
                 for (var i = 0; i < paramNames.Count && parameterIndex < _view.Parameters.Count; i++)
                 {
@@ -263,36 +268,108 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         /// <param name="paramList">The ArgListContext of the method signature being adjusted.</param>
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
-        private void RewriteSignature(VBAParser.ArgListContext paramList, Microsoft.Vbe.Interop.CodeModule module)
+        private void RewriteSignature(VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var args = paramList.arg();
+            var newContent = GetOldSignature(module);
+            var lineNum = paramList.GetSelection().LineCount;
 
             var parameterIndex = 0;
-            for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + paramList.GetSelection().LineCount; lineNum++)
+
+            var currentStringIndex = 0;
+
+            for (var i = parameterIndex; i < _view.Parameters.Count; i++)
             {
-                var newContent = module.Lines[lineNum, 1];
-                var currentStringIndex = 0;
+                var oldParam = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
+                var newParam = _view.Parameters.ElementAt(parameterIndex).FullDeclaration;
+                var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
 
-                for (var i = parameterIndex; i < _view.Parameters.Count; i++)
+                if (parameterStringIndex > -1)
                 {
-                    var oldParam = args.ElementAt(parameterIndex).GetText();
-                    var newParam = args.ElementAt(_view.Parameters.ElementAt(parameterIndex).Index).GetText();
-                    var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
+                    var beginningSub = newContent.Substring(0, parameterStringIndex);
+                    var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParam, newParam);
 
-                    if (parameterStringIndex > -1)
-                    {
-                        var beginningSub = newContent.Substring(0, parameterStringIndex);
-                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParam, newParam);
+                    newContent = beginningSub + replaceSub;
 
-                        newContent = beginningSub + replaceSub;
-
-                        parameterIndex++;
-                        currentStringIndex = beginningSub.Length + newParam.Length;
-                    }
+                    parameterIndex++;
+                    currentStringIndex = beginningSub.Length + newParam.Length;
                 }
-
-                module.ReplaceLine(lineNum, newContent);
             }
+
+            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+        }
+
+        private string GetOldSignature(CodeModule module)
+        {
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == _view.Target.QualifiedName.QualifiedModuleName);
+            if (targetModule == null)
+            {
+                return null;
+            }
+
+            var content = module.Lines[_view.Target.Selection.StartLine, 1];
+
+            var rewriter = targetModule.GetRewriter();
+
+            var context = (ParserRuleContext)_view.Target.Context;
+            var firstTokenIndex = context.Start.TokenIndex;
+            var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
+
+            var subStmtContext = context as VBAParser.SubStmtContext;
+            if (subStmtContext != null)
+            {
+                lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var functionStmtContext = context as VBAParser.FunctionStmtContext;
+            if (functionStmtContext != null)
+            {
+                lastTokenIndex = functionStmtContext.asTypeClause() != null
+                    ? functionStmtContext.asTypeClause().Stop.TokenIndex
+                    : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
+            if (propertyGetStmtContext != null)
+            {
+                lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
+                    ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
+                    : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
+            if (propertyLetStmtContext != null)
+            {
+                lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
+            if (propertySetStmtContext != null)
+            {
+                lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            var declareStmtContext = context as VBAParser.DeclareStmtContext;
+            if (declareStmtContext != null)
+            {
+                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
+                if (declareStmtContext.argList() != null)
+                {
+                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
+                }
+                if (declareStmtContext.asTypeClause() != null)
+                {
+                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
+                }
+            }
+
+            var eventStmtContext = context as VBAParser.EventStmtContext;
+            if (eventStmtContext != null)
+            {
+                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
+            }
+
+            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
         }
 
         /// <summary>
