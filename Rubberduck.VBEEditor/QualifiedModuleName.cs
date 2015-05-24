@@ -66,7 +66,8 @@ namespace Rubberduck.VBEditor
             try
             {
                 var other = (QualifiedModuleName)obj;
-                return other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
+                var result = other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
+                return result;
             }
             catch (InvalidCastException)
             {

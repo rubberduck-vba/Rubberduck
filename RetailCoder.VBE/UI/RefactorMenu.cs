@@ -156,12 +156,13 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var declarations = result.Declarations;
+            var declarations = result.Declarations.Items.Where(item => item.DeclarationType != DeclarationType.ModuleOption
+                && item.ComponentName == selection.QualifiedName.ComponentName)
+                .ToList();
 
-            var target = declarations.Items
-                .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                        || IsSelectedReference(selection, item));
+            var target = declarations.SingleOrDefault(item =>
+                IsSelectedDeclaration(selection, item)
+                || IsSelectedReference(selection, item));
 
             if (target != null)
             {
@@ -217,8 +218,11 @@ namespace Rubberduck.UI
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
         {
-            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
+            var isSameProject = declaration.Project == selection.QualifiedName.Project;
+            var isSameModule = isSameProject && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName;
+
+            // bug: QualifiedModuleName.Equals doesn't return expected value.
+            return isSameModule && declaration.Selection.ContainsFirstCharacter(selection.Selection);
         }
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
