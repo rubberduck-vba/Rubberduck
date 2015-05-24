@@ -223,6 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\SourceControlConfiguration.cs" />
+    <Compile Include="Config\SourceControlConfigurationService.cs" />
     <Compile Include="Config\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />

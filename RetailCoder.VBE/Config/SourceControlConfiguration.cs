@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using Rubberduck.SourceControl;
-using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.Config
 {
@@ -28,32 +25,4 @@ namespace Rubberduck.Config
             this.DefaultRepositoryLocation = string.Empty;
         }
     }
-
-    public class SourceControlConfigurationService : XmlConfigurationServiceBase<SourceControlConfiguration>
-    {
-
-        protected override string ConfigFile
-        {
-            get { return Path.Combine(this.rootPath, "SourceControl.rubberduck"); }
-        }
-
-        public override SourceControlConfiguration LoadConfiguration()
-        {
-            return base.LoadConfiguration();
-        }
-
-        protected override SourceControlConfiguration HandleIOException(IOException ex)
-        {
-            //couldn't load file
-            return new SourceControlConfiguration();
-        }
-
-        protected override SourceControlConfiguration HandleInvalidOperationException(InvalidOperationException ex)
-        {
-            //couldn't load file
-            return new SourceControlConfiguration();
-        }
-    }
-
-
 }
