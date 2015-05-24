@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
@@ -17,7 +18,16 @@ namespace Rubberduck.Parsing
             _parseTree = parseTree;
             _comments = comments;
             _tokenStream = tokenStream;
+
+            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type);
+            var walker = new ParseTreeWalker();
+            walker.Walk(listener, _parseTree);
+
+            _declarations.AddRange(listener.Declarations.Items);
         }
+
+        private readonly List<Declaration> _declarations = new List<Declaration>();
+        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
 
         private readonly VBComponent _component;
         public VBComponent Component { get { return _component; } }

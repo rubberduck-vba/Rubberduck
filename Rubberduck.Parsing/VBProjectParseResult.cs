@@ -19,6 +19,11 @@ namespace Rubberduck.Parsing
             {
                 _declarations.Add(declaration);
             }
+
+            foreach (var declaration in _parseResults.SelectMany(item => item.Declarations))
+            {
+                _declarations.Add(declaration);
+            }
         }
 
         public event EventHandler<ResolutionProgressEventArgs> Progress;
@@ -50,22 +55,22 @@ namespace Rubberduck.Parsing
             {
                 try
                 {
-                    var listener = new DeclarationSymbolsListener(componentParseResult);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, componentParseResult.ParseTree);
+                    //var listener = new DeclarationSymbolsListener(componentParseResult);
+                    //var walker = new ParseTreeWalker();
+                    //walker.Walk(listener, componentParseResult.ParseTree);
 
                     if (!_declarations.Items.Any())
                     { 
-                        var projectIdentifier = componentParseResult.QualifiedName.Project.Name;
+                        var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
                         var memberName = componentParseResult.QualifiedName.QualifyMemberName(projectIdentifier);
                         var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
                         _declarations.Add(projectDeclaration);
                     }
 
-                    foreach (var declaration in listener.Declarations.Items)
-                    {
-                        _declarations.Add(declaration);
-                    }
+                    //foreach (var declaration in listener.Declarations.Items)
+                    //{
+                    //    _declarations.Add(declaration);
+                    //}
                 }
                 catch (COMException)
                 {

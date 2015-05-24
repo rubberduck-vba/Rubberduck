@@ -59,13 +59,26 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
-            results.AddRange(modules.Select(Parse).Where(result => result != null));
+            var mustResolve = false;
+            foreach (var vbComponent in modules)
+            {
+                bool fromCache;
+                var componentResult = Parse(vbComponent, out fromCache);
+
+                if (componentResult != null)
+                {
+                    mustResolve = mustResolve || !fromCache;
+                    results.Add(componentResult);
+                }
+            }
 
             var parseResult = new VBProjectParseResult(project, results);
-            parseResult.Progress += parseResult_Progress;
-            parseResult.Resolve();
-            parseResult.Progress -= parseResult_Progress;
-
+            if (mustResolve)
+            {
+                parseResult.Progress += parseResult_Progress;
+                parseResult.Resolve();
+                parseResult.Progress -= parseResult_Progress;
+            }
             if (owner != null)
             {
                 OnParseCompleted(new[] {parseResult}, owner);
@@ -92,7 +105,7 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        private VBComponentParseResult Parse(VBComponent component)
+        private VBComponentParseResult Parse(VBComponent component, out bool cached)
         {
             try
             {
@@ -100,6 +113,7 @@ namespace Rubberduck.Parsing.VBA
                 var name = new QualifiedModuleName(component); // already a performance hit
                 if (ParseResultCache.TryGetValue(name, out cachedValue))
                 {
+                    cached = true;
                     return cachedValue;
                 }
 
@@ -116,6 +130,7 @@ namespace Rubberduck.Parsing.VBA
                 ParseResultCache.TryRemove(existing, out removed);
                 ParseResultCache.AddOrUpdate(name, module => result, (qName, module) => result);
 
+                cached = false;
                 return result;
             }
             catch (SyntaxErrorException exception)
@@ -124,10 +139,12 @@ namespace Rubberduck.Parsing.VBA
                 {
                     LogParseException(component, exception);
                 }
+                cached = false;
                 return null;
             }
             catch (COMException)
             {
+                cached = false;
                 return null;
             }
         }
