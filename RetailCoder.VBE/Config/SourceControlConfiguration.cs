@@ -2,16 +2,30 @@
 using System.Collections.Generic;
 using System.IO;
 using Rubberduck.SourceControl;
+using Rubberduck.UI.SourceControl;
 
 namespace Rubberduck.Config
 {
-    public class SourceControlConfiguration
+    public interface ISourceControlUserSettings
     {
+        string UserName { get; set; }
+        string EmailAddress { get; set; }
+        string DefaultRepositoryLocation { get; set; }
+    }
+
+    public class SourceControlConfiguration : ISourceControlUserSettings
+    {
+        public string UserName { get; set; }
+        public string EmailAddress { get; set; }
+        public string DefaultRepositoryLocation { get; set; }
         public List<Repository> Repositories;
 
         public SourceControlConfiguration()
         {
             this.Repositories = new List<Repository>();
+            this.UserName = string.Empty;
+            this.EmailAddress = string.Empty;
+            this.DefaultRepositoryLocation = string.Empty;
         }
     }
 

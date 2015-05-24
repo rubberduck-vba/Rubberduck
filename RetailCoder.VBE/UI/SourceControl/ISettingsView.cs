@@ -1,13 +1,14 @@
 ﻿using System;
+using Rubberduck.Config;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface ISettingsView
-    {
-        string UserName { get; set; }
-        string EmailAddress { get; set; }
-        string DefaultRepositoryLocation { get; set; }
+    //string UserName { get; set; }
+    //string EmailAddress { get; set; }
+    //string DefaultRepositoryLocation { get; set; }
 
+    public interface ISettingsView : ISourceControlUserSettings
+    {
         event EventHandler<EventArgs> SelectDefaultRepositoryLocation; 
         event EventHandler<EventArgs> Save;
         event EventHandler<EventArgs> Cancel; 
