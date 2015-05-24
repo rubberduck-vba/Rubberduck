@@ -339,6 +339,7 @@
     <Compile Include="UI\Settings\GeneralSettingsControl.Designer.cs">
       <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
