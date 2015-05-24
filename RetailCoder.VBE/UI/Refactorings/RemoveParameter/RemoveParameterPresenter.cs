@@ -37,15 +37,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 _target = indexOfParam < targets.Count() ? targets.ElementAt(indexOfParam) : targets.ElementAt(targets.Count() - 1);
             }
 
-            if (_target != null && _method.DeclarationType == DeclarationType.PropertyGet)
+            if (_method != null && (_method.DeclarationType == DeclarationType.PropertySet || _method.DeclarationType == DeclarationType.PropertyLet))
             {
-                var targets = FindTargets(_method).ToList();
-                _target = targets.FirstOrDefault(item => _target.IdentifierName == item.IdentifierName);
-
-                if (_target == null)
-                {
-                    MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                GetGetter(out _target, ref _method);
             }
 
             PromptIfTargetImplementsInterface(ref _target, ref _method);
@@ -60,11 +54,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private void RemoveParameter()
         {
-            if (_target == null || _method == null) { return; }
+            if (_target == null || _method == null || !ConfirmRemove()) { return; }
 
             LoadParameters();
-
-            if (!ConfirmRemove()) { return; }
 
             AdjustReferences(_method.References, _method);
             AdjustSignatures();
@@ -262,19 +254,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_method.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.FirstOrDefault(item => item.Scope == _method.Scope &&
-                              item.IdentifierName == _method.IdentifierName &&
-                              item.DeclarationType == DeclarationType.PropertySet);
-
+                var setter = GetLetterOrSetter(_method, DeclarationType.PropertySet);
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
                 }
 
-                var letter = _declarations.Items.FirstOrDefault(item => item.Scope == _method.Scope &&
-                              item.IdentifierName == _method.IdentifierName &&
-                              item.DeclarationType == DeclarationType.PropertyLet);
-
+                var letter = GetLetterOrSetter(_method, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
@@ -300,6 +286,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 AdjustReferences(interfaceImplentation.References, interfaceImplentation);
                 AdjustSignatures(interfaceImplentation);
             }
+        }
+
+        private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
+        {
+            return _declarations.Items.FirstOrDefault(item => item.Scope == declaration.Scope &&
+                              item.IdentifierName == declaration.IdentifierName &&
+                              item.DeclarationType == declarationType);
         }
 
         private void AdjustSignatures(Declaration declaration)
@@ -507,19 +500,27 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     }
                 }
             }
+        }
 
-            if (method != null && (method.DeclarationType == DeclarationType.PropertySet || method.DeclarationType == DeclarationType.PropertyLet))
+        private void GetGetter(out Declaration target, ref Declaration method)
+        {
+            var nonRefMethod = method;
+
+            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == nonRefMethod.Scope &&
+                                          item.IdentifierName == nonRefMethod.IdentifierName &&
+                                          item.DeclarationType == DeclarationType.PropertyGet);
+
+            if (getter != null)
             {
-                var nonRefMethod = method;
+                method = getter;
+            }
 
-                var getter = _declarations.Items.FirstOrDefault(item => item.Scope == nonRefMethod.Scope &&
-                                              item.IdentifierName == nonRefMethod.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertyGet);
+            var targets = FindTargets(_method).ToList();
+            target = targets.FirstOrDefault(item => _target.IdentifierName == item.IdentifierName);
 
-                if (getter != null)
-                {
-                    method = getter;
-                }
+            if (target == null)
+            {
+                MessageBox.Show(RubberduckUI.RemoveParamsDialog_RemoveIllegalSetterLetterParameter, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
