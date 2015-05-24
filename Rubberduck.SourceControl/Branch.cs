@@ -33,7 +33,7 @@ namespace Rubberduck.SourceControl
         public bool IsCurrentHead { get; private set; }
 
         public Branch(LibGit2Sharp.Branch branch)
-            : this(branch.Name, branch.CanonicalName, branch.IsRemote, branch.IsCurrentRepositoryHead)
+            : this(branch.FriendlyName, branch.CanonicalName, branch.IsRemote, branch.IsCurrentRepositoryHead)
         { }
 
         public Branch(string name, string canonicalName, bool isRemote, bool isCurrentHead)

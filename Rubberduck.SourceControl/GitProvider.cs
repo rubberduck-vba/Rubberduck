@@ -5,21 +5,31 @@ using System.Runtime.InteropServices;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Vbe.Interop;
+using System.Security;
 
 namespace Rubberduck.SourceControl
 {
     public class GitProvider : SourceControlProviderBase
     {
         private readonly LibGit2Sharp.Repository _repo;
-        private readonly Credentials _credentials;
+        private readonly LibGit2Sharp.Credentials _credentials;
         private readonly CredentialsHandler _credentialsHandler;
+        private List<ICommit> _unsyncedLocalCommits;
+        private List<ICommit> _unsyncedRemoteCommits;
 
-        public GitProvider(VBProject project) 
-            : base(project) { }
+        public GitProvider(VBProject project)
+            : base(project)
+        {
+            _unsyncedLocalCommits = new List<ICommit>();
+            _unsyncedRemoteCommits = new List<ICommit>();
+        }
 
         public GitProvider(VBProject project, IRepository repository)
             : base(project, repository) 
         {
+            _unsyncedLocalCommits = new List<ICommit>();
+            _unsyncedRemoteCommits = new List<ICommit>();
+
             try
             {
                 _repo = new LibGit2Sharp.Repository(CurrentRepository.LocalLocation);
@@ -29,7 +39,7 @@ namespace Rubberduck.SourceControl
                 throw new SourceControlException("Repository not found.", ex);
             }
         }
-
+        
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
             : this(project, repository)
         {
@@ -40,6 +50,20 @@ namespace Rubberduck.SourceControl
             };
 
             _credentialsHandler = (url, user, cred) => _credentials;
+        }
+
+        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials)
+            :this(project, repository, credentials.Username, credentials.Password)
+        { }
+
+        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials)
+            : this(project, repository)
+        {
+            _credentials = new SecureUsernamePasswordCredentials()
+            {
+                Username = credentials.Username,
+                Password = credentials.Password
+            };
         }
 
         ~GitProvider()
@@ -67,6 +91,16 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        public override IList<ICommit> UnsyncedLocalCommits
+        {
+            get { return _unsyncedLocalCommits; }
+        }
+
+        public override IList<ICommit> UnsyncedRemoteCommits
+        {
+            get { return _unsyncedRemoteCommits; }
+        }
+
         public override IRepository Clone(string remotePathOrUrl, string workingDirectory)
         {
             try
@@ -89,7 +123,7 @@ namespace Rubberduck.SourceControl
 
                 LibGit2Sharp.Repository.Init(directory, bare);
 
-                return new Repository(this.project.Name, workingDir, directory);
+                return new Repository(this.Project.Name, workingDir, directory);
             }
             catch (LibGit2SharpException ex)
             {
@@ -97,6 +131,11 @@ namespace Rubberduck.SourceControl
             }
         }
 
+        /// <summary>
+        /// Exports files from VBProject to the file system, initalizes the repository, and creates an inital commit of those files to the repo.
+        /// </summary>
+        /// <param name="directory">Local file path of the directory where the new repository will be created.</param>
+        /// <returns>Newly initialized repository.</returns>
         public override IRepository InitVBAProject(string directory)
         {
             var repository = base.InitVBAProject(directory);
@@ -133,6 +172,8 @@ namespace Rubberduck.SourceControl
 
                 var branch = _repo.Branches[this.CurrentBranch.Name];
                 _repo.Network.Push(branch, options);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -155,6 +196,8 @@ namespace Rubberduck.SourceControl
             {
                 var remote = _repo.Network.Remotes[remoteName];
                 _repo.Network.Fetch(remote);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -166,7 +209,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-
                 var options = new PullOptions()
                 {
                     MergeOptions = new MergeOptions()
@@ -179,6 +221,8 @@ namespace Rubberduck.SourceControl
                 _repo.Network.Pull(signature, options);
 
                 base.Pull();
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -233,14 +277,13 @@ namespace Rubberduck.SourceControl
             switch (result.Status)
             {
                 case MergeStatus.Conflicts:
+                    //abort the merge by resetting to the state prior to the merge
                     _repo.Reset(ResetMode.Hard, oldHeadCommit);
                     break;
                 case MergeStatus.NonFastForward:
                     //https://help.github.com/articles/dealing-with-non-fast-forward-errors/
                     Pull();
                     Merge(sourceBranch, destinationBranch); //a little leary about this. Could stack overflow if I'm wrong.
-                    break;
-                default:
                     break;
             }
             base.Merge(sourceBranch, destinationBranch);
@@ -252,6 +295,8 @@ namespace Rubberduck.SourceControl
             {
                 _repo.Checkout(_repo.Branches[branch]);
                 base.Checkout(branch);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -265,6 +310,8 @@ namespace Rubberduck.SourceControl
             {
                 _repo.CreateBranch(branch);
                 _repo.Checkout(branch);
+
+                RequeryUnsyncedCommits();
             }
             catch (LibGit2SharpException ex)
             {
@@ -350,7 +397,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                if (_repo.Branches.Any(b => b.Name == branch && !b.IsRemote))
+                if (_repo.Branches.Any(b => b.FriendlyName == branch && !b.IsRemote))
                 {
                     _repo.Branches.Remove(branch);
                 }
@@ -364,6 +411,32 @@ namespace Rubberduck.SourceControl
         private Signature GetSignature()
         {
             return _repo.Config.BuildSignature(DateTimeOffset.Now);
+        }
+
+        private void RequeryUnsyncedCommits()
+        {
+            var currentBranch = _repo.Branches[this.CurrentBranch.Name];
+            var local = currentBranch.Commits;
+
+            if (currentBranch.TrackedBranch == null)
+            {
+                _unsyncedLocalCommits = local.Select(c => new Commit(c) as ICommit)
+                                            .ToList();
+
+                _unsyncedRemoteCommits = new List<ICommit>();
+            }
+            else
+            {
+                var remote = currentBranch.TrackedBranch.Commits;
+
+                _unsyncedLocalCommits = local.Where(c => !remote.Contains(c))
+                                            .Select(c => new Commit(c) as ICommit)
+                                            .ToList();
+
+                _unsyncedRemoteCommits = remote.Where(c => !local.Contains(c))
+                                               .Select(c => new Commit(c) as ICommit)
+                                               .ToList();
+            }
         }
     }
 }

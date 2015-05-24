@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,13 +15,21 @@ namespace Rubberduck.SourceControl.Interop
     class GitProvider : SourceControl.GitProvider, ISourceControlProvider
     {
         public GitProvider(VBProject project) 
-            : base(project){}
+            : base(project)
+        { }
 
         public GitProvider(VBProject project, IRepository repository)
-            : base(project, repository){}
+            : base(project, repository)
+        { }
 
+        [Obsolete]
         public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
-            : base(project, repository, userName, passWord){}
+            : base(project, repository, userName, passWord)
+        { }
+
+        public GitProvider(VBProject project, IRepository repository, ICredentials credentials)
+            :base(project, repository, credentials.Username, credentials.Password)
+        { }
 
         public new string CurrentBranch
         {
