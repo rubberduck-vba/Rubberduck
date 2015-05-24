@@ -62,12 +62,20 @@ namespace Rubberduck.Parsing.VBA
             results.AddRange(modules.Select(Parse).Where(result => result != null));
 
             var parseResult = new VBProjectParseResult(project, results);
+            parseResult.Progress += parseResult_Progress;
+            parseResult.Resolve();
+
             if (owner != null)
             {
                 OnParseCompleted(new[] {parseResult}, owner);
             }
 
             return parseResult;
+        }
+
+        private void parseResult_Progress(object sender, ResolutionProgressEventArgs e)
+        {
+            OnParseProgress(e.ParseResult);
         }
 
         private IParseTree Parse(string code, out ITokenStream outStream)
@@ -178,6 +186,17 @@ namespace Rubberduck.Parsing.VBA
             if (handler != null)
             {
                 handler(owner, new ParseStartedEventArgs(projectNames));
+            }
+        }
+
+        public event EventHandler<ResolutionProgressEventArgs> ParseProgress;
+
+        private void OnParseProgress(VBComponentParseResult result)
+        {
+            var handler = ParseProgress;
+            if (handler != null)
+            {
+                handler(this, new ResolutionProgressEventArgs(result));
             }
         }
 

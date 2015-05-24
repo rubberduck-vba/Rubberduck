@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,6 +19,21 @@ namespace Rubberduck.Parsing
             {
                 _declarations.Add(declaration);
             }
+        }
+
+        public event EventHandler<ResolutionProgressEventArgs> Progress;
+
+        private void OnProgress(VBComponentParseResult result)
+        {
+            var handler = Progress;
+            if (handler != null)
+            {
+                handler(null, new ResolutionProgressEventArgs(result));
+            }
+        }
+
+        public void Resolve()
+        {
             IdentifySymbols();
             IdentifySymbolUsages();
         }
@@ -62,6 +78,8 @@ namespace Rubberduck.Parsing
         {
             foreach (var componentParseResult in _parseResults)
             {
+                OnProgress(componentParseResult);
+
                 var listener = new IdentifierReferenceListener(componentParseResult, _declarations);
                 var walker = new ParseTreeWalker();
                 walker.Walk(listener, componentParseResult.ParseTree);

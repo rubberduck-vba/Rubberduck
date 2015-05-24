@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -112,9 +113,13 @@ namespace Rubberduck.UI
 
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            FindSymbol();
+        }
+
+        private void FindSymbol()
+        {
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
             var declarations = result.Declarations;
             var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
             using (var view = new FindSymbolDialog(vm))
@@ -142,24 +147,26 @@ namespace Rubberduck.UI
 
         private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            FindAllReferences();
+        }
+
+        private void FindAllReferences()
+        {
             var selection = IDE.ActiveCodePane.GetSelection();
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var declarations = result.Declarations;
 
             var target = declarations.Items
-            .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
-            .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                  || IsSelectedReference(selection, item));
+                .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                        || IsSelectedReference(selection, item));
 
-            if (target == null)
+            if (target != null)
             {
-                return;
+                FindAllReferences(target);
             }
-
-            FindAllReferences(target);
         }
 
         public void FindAllReferences(Declaration target)
@@ -216,10 +223,14 @@ namespace Rubberduck.UI
 
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
-            
+            ExtractMethod();
+        }
+
+        private void ExtractMethod()
+        {
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
+
             var declarations = result.Declarations;
             var refactoring = new ExtractMethodRefactoring(_editor, declarations);
             refactoring.InvalidSelection += refactoring_InvalidSelection;
@@ -263,9 +274,8 @@ namespace Rubberduck.UI
 
         public void Rename(QualifiedSelection selection)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             using (var view = new RenameDialog())
             {
@@ -276,9 +286,8 @@ namespace Rubberduck.UI
 
         public void Rename(Declaration target)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             using (var view = new RenameDialog())
             {
@@ -289,9 +298,8 @@ namespace Rubberduck.UI
 
         public void ReorderParameters(QualifiedSelection selection)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             using (var view = new ReorderParametersDialog())
             {
@@ -302,11 +310,11 @@ namespace Rubberduck.UI
 
         public void RemoveParameter(QualifiedSelection selection)
         {
-            VBProjectParseResult result;
-            var progress = new ParsingProgressPresenter(_parser);
-            result = progress.Parse(IDE.ActiveVBProject);
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var presenter = new RemoveParameterPresenter(result, selection);
+            
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
