@@ -9,11 +9,11 @@ namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        protected VBProject project;
+        protected VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
         {
-            this.project = project;
+            this.Project = project;
         }
 
         protected SourceControlProviderBase(VBProject project, IRepository repository)
@@ -25,6 +25,8 @@ namespace Rubberduck.SourceControl
         public IRepository CurrentRepository { get; private set; }
         public abstract IBranch CurrentBranch { get; }
         public abstract IEnumerable<IBranch> Branches { get; }
+        public abstract IList<ICommit> UnsyncedLocalCommits { get; }
+        public abstract IList<ICommit> UnsyncedRemoteCommits { get; }
         public abstract IRepository Clone(string remotePathOrUrl, string workingDirectory);
         public abstract void Push();
         public abstract void Fetch(string remoteName);
@@ -38,9 +40,9 @@ namespace Rubberduck.SourceControl
         public virtual IRepository InitVBAProject(string directory)
         {
             var projectName = GetProjectNameFromDirectory(directory);
-            if (projectName != string.Empty && projectName != this.project.Name)
+            if (projectName != string.Empty && projectName != this.Project.Name)
             {
-                directory = Path.Combine(directory, project.Name);
+                directory = Path.Combine(directory, Project.Name);
             }
 
             if (!Directory.Exists(directory))
@@ -48,8 +50,8 @@ namespace Rubberduck.SourceControl
                 Directory.CreateDirectory(directory);
             }
 
-            this.project.ExportSourceFiles(directory);
-            this.CurrentRepository = new Repository(project.Name, directory, directory);
+            this.Project.ExportSourceFiles(directory);
+            this.CurrentRepository = new Repository(Project.Name, directory, directory);
             return this.CurrentRepository;
         }
 
@@ -60,12 +62,12 @@ namespace Rubberduck.SourceControl
 
         public virtual void Stage(string filePath)
         {
-            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
         }
 
         public virtual void Stage(IEnumerable<string> filePaths)
         {
-            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
         }
 
         public virtual void Merge(string sourceBranch, string destinationBranch)
@@ -88,9 +90,9 @@ namespace Rubberduck.SourceControl
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
             if (componentName != String.Empty)
             {
-                var component = this.project.VBComponents.Item(componentName);
-                this.project.VBComponents.RemoveSafely(component);
-                this.project.VBComponents.ImportSourceFile(filePath);
+                var component = this.Project.VBComponents.Item(componentName);
+                this.Project.VBComponents.RemoveSafely(component);
+                this.Project.VBComponents.ImportSourceFile(filePath);
             }
         }
 
@@ -101,28 +103,27 @@ namespace Rubberduck.SourceControl
 
         public virtual IEnumerable<IFileStatusEntry> Status()
         {
-            this.project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
+            this.Project.ExportSourceFiles(this.CurrentRepository.LocalLocation);
             return null;
         }
 
         protected string GetProjectNameFromDirectory(string directory)
         {
-            var separators = new char[] { '/', '\\', '.' };
+            var separators = new[] { '/', '\\', '.' };
             return directory.Split(separators, StringSplitOptions.RemoveEmptyEntries)
-                .Where(c => c != "git")
-                .LastOrDefault();
+                            .LastOrDefault(c => c != "git");
         }
 
         private void Refresh()
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
-            var selection = project.VBE.ActiveCodePane.GetSelection();
+            var selection = Project.VBE.ActiveCodePane.GetSelection();
 
-            project.RemoveAllComponents();
-            project.ImportSourceFiles(CurrentRepository.LocalLocation);
+            Project.RemoveAllComponents();
+            Project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            project.VBE.SetSelection(selection);
+            Project.VBE.SetSelection(selection);
         }
     }
 }
