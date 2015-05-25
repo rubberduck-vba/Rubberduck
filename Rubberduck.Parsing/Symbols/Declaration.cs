@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddReference(IdentifierReference reference)
         {
-            if (!_references.Select(r => r.Context).Contains(reference.Context) && reference.Context.Parent != Context)
+            if (!_references.Select(r => r.Context).Contains(reference.Context))
             {
                 _references.Add(reference);
             }
