@@ -86,6 +86,7 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
+    <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
