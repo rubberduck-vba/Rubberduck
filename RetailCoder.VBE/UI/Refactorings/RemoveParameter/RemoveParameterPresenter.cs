@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
@@ -64,7 +65,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
 
         private bool ConfirmRemove()
         {
-            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText());
+            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText().RemoveExtraSpaces());
             var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             
             return confirm == DialogResult.Yes;

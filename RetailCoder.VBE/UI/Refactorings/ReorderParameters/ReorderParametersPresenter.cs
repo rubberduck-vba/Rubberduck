@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             var index = 0;
             foreach (var arg in args)
             {
-                _view.Parameters.Add(new Parameter(arg.GetText(), index++));
+                _view.Parameters.Add(new Parameter(arg.GetText().RemoveExtraSpaces(), index++));
             }
         }
 
@@ -102,8 +103,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            AdjustSignatures();
             AdjustReferences(_view.Target.References);
+            AdjustSignatures();
         }
 
         /// <summary>
@@ -226,8 +227,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustSignatures(reference);
                     AdjustReferences(reference.References);
+                    AdjustSignatures(reference);
                 }
             }
 
@@ -236,8 +237,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                                                                item.IdentifierName == _view.Target.ComponentName + "_" + _view.Target.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustSignatures(interfaceImplentation);
                 AdjustReferences(interfaceImplentation.References);
+                AdjustSignatures(interfaceImplentation);
             }
         }
 
