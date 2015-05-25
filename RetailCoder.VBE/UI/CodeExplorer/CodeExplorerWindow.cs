@@ -51,6 +51,7 @@ namespace Rubberduck.UI.CodeExplorer
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
             InspectContextButton.Click += InspectContextButton_Click;
             FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
+            FindAllImplementationsContextButton.Click += FindAllImplementationsContextButton_Click;
         }
 
         public void EnableRefresh(bool enabled = true)
@@ -62,6 +63,20 @@ namespace Rubberduck.UI.CodeExplorer
         private void FindAllReferencesContextButton_Click(object sender, EventArgs e)
         {
             var handler = FindAllReferences;
+            if (handler != null && SolutionTree.SelectedNode != null)
+            {
+                var target = SolutionTree.SelectedNode.Tag as Declaration;
+                if (target != null)
+                {
+                    handler(this, new NavigateCodeEventArgs(target));
+                }
+            }
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindAllImplementations;
+        private void FindAllImplementationsContextButton_Click(object sender, EventArgs e)
+        {
+            var handler = FindAllImplementations;
             if (handler != null && SolutionTree.SelectedNode != null)
             {
                 var target = SolutionTree.SelectedNode.Tag as Declaration;
