@@ -28,8 +28,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
             int indexOfParam;
             string identifierName;
 
-            FindTarget(out _target, out identifierName, selection);
-            FindMethod(out _method, out indexOfParam, selection, identifierName);
+            FindTarget(out _target, selection);
+            FindMethod(out _method, out indexOfParam, selection);
 
             if (_method != null && _target == null && indexOfParam != -1)
             {
@@ -343,10 +343,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                               .ThenBy(item => item.Selection.StartColumn);
         }
 
-        private void FindTarget(out Declaration target, out string identifierName, QualifiedSelection selection)
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
             target = null;
-            identifierName = string.Empty;
 
             var targets = _declarations.Items
                           .Where(item => item.DeclarationType == DeclarationType.Parameter
@@ -369,24 +368,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                         return;
                     }
                 }
-
-                foreach (var reference in declaration.References)
-                {
-                    startLine = reference.Selection.StartLine;
-                    startColumn = reference.Selection.StartColumn;
-                    endLine = reference.Selection.EndLine;
-                    endColumn = reference.Selection.EndColumn;
-
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
-                    {
-                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
-                        {
-                            identifierName = reference.IdentifierName;
-                            return;
-                        }
-                    }
-                }
             }
         }
 
@@ -403,7 +384,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                  DeclarationType.PropertySet
             };
 
-        private void FindMethod(out Declaration method, out int indexOfParam, QualifiedSelection selection, string identifierName)
+        private void FindMethod(out Declaration method, out int indexOfParam, QualifiedSelection selection)
         {
             indexOfParam = -1;
 
@@ -451,52 +432,50 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                     }
                 }
 
-                if (_target == null && identifierName != string.Empty)
+                foreach (var reference in declaration.References)
                 {
-                    foreach (var reference in declaration.References)
+                    var proc = (dynamic)reference.Context.Parent;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
                     {
-                        var proc = (dynamic)reference.Context.Parent;
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
-                        // This is to prevent throws when this statement fails:
-                        // (VBAParser.ArgsCallContext)proc.argsCall();
-                        try
+                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (paramList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = paramList.Start.Line;
+                    startColumn = paramList.Start.Column;
+                    endLine = paramList.Stop.Line;
+                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                        currentStartLine <= startLine && currentEndLine >= endLine)
+                    {
+                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                         {
-                            var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                        }
-                        catch
-                        {
-                            continue;
-                        }
+                            method = reference.Declaration;
 
-                        var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+                            var args = paramList.argCall().ToList();
+                            indexOfParam = args.FindIndex(item => item.Start.Column <= selection.Selection.StartColumn
+                                                               && item.Start.Column + item.GetText().Length >= selection.Selection.EndColumn);
 
-                        if (paramList == null)
-                        {
-                            continue;
-                        }
-
-                        startLine = paramList.Start.Line;
-                        startColumn = paramList.Start.Column;
-                        endLine = paramList.Stop.Line;
-                        endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
-
-                        if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                            currentStartLine <= startLine && currentEndLine >= endLine)
-                        {
-                            if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                                endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                                currentStartColumn <= startColumn && currentEndColumn >= endColumn)
-                            {
-                                method = reference.Declaration;
-
-                                var args = paramList.argCall().ToList();
-                                indexOfParam = args.FindIndex(item => item.GetText() == identifierName);
-
-                                currentStartLine = startLine;
-                                currentEndLine = endLine;
-                                currentStartColumn = startColumn;
-                                currentEndColumn = endColumn;
-                            }
+                            currentStartLine = startLine;
+                            currentEndLine = endLine;
+                            currentStartColumn = startColumn;
+                            currentEndColumn = endColumn;
                         }
                     }
                 }
