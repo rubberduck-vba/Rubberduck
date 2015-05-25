@@ -62,7 +62,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.NavigateContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FindAllReferencesContextButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FindAllImplementationsContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowDesignerContextButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -238,7 +237,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.toolStripSeparator4,
             this.NavigateContextButton,
             this.FindAllReferencesContextButton,
-            this.FindAllImplementationsContextButton,
             this.RenameContextButton,
             this.ShowDesignerContextButton,
             this.toolStripSeparator5,
@@ -317,12 +315,6 @@ namespace Rubberduck.UI.CodeExplorer
             this.FindAllReferencesContextButton.Name = "FindAllReferencesContextButton";
             this.FindAllReferencesContextButton.Size = new System.Drawing.Size(178, 22);
             this.FindAllReferencesContextButton.Text = "&Find all references...";
-            // 
-            // FindAllImplementationsContextButton
-            // 
-            this.FindAllImplementationsContextButton.Name = "FindAllImplementationsContextButton";
-            this.FindAllImplementationsContextButton.Size = new System.Drawing.Size(178, 22);
-            this.FindAllImplementationsContextButton.Text = "Find all &implementations...";
             // 
             // RenameContextButton
             // 
@@ -460,6 +452,5 @@ namespace Rubberduck.UI.CodeExplorer
         private ToolStripMenuItem InspectContextButton;
         private ToolStripMenuItem RenameContextButton;
         private ToolStripMenuItem FindAllReferencesContextButton;
-        private ToolStripMenuItem FindAllImplementationsContextButton;
     }
 }

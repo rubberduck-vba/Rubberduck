@@ -54,7 +54,6 @@ namespace Rubberduck.UI
             codePresenter.RunInspections += codePresenter_RunInspections;
             codePresenter.Rename += codePresenter_Rename;
             codePresenter.FindAllReferences += codePresenter_FindAllReferences;
-            codePresenter.FindAllImplementations += codePresenter_FindAllImplementations;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
@@ -72,11 +71,6 @@ namespace Rubberduck.UI
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
         {
             _refactorMenu.FindAllReferences(e.Declaration);
-        }
-
-        private void codePresenter_FindAllImplementations(object sender, NavigateCodeEventArgs e)
-        {
-            _refactorMenu.FindAllImplementations(e.Declaration);
         }
 
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)

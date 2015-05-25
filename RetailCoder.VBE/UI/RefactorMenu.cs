@@ -89,7 +89,6 @@ namespace Rubberduck.UI
             SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
-            InitializeFindImplementationsContextMenu(); //todo: untangle that mess...
             InitializeFindSymbolContextMenu();
         }
 
@@ -100,15 +99,6 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _findAllReferencesContextMenu.Caption = "&Find all references...";
             _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
-        }
-
-        private CommandBarButton _findAllImplementationsContextMenu;
-        private void InitializeFindImplementationsContextMenu()
-        {
-            var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _findAllImplementationsContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
-            _findAllImplementationsContextMenu.Caption = "Find all &implementations...";
-            _findAllImplementationsContextMenu.Click += _findAllImplementationsContextMenu_Click;
         }
 
         private CommandBarButton _findSymbolContextMenu;
@@ -217,66 +207,6 @@ namespace Rubberduck.UI
             var window = new IdentifierReferencesListControl(target);
             var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
             presenter.Show();
-        }
-
-        private void _findAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            FindAllImplementations();
-        }
-
-        private void FindAllImplementations()
-        {
-            var selection = IDE.ActiveCodePane.GetSelection();
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            var test1 = selection.QualifiedName.Project;
-            var test2 = selection.Selection;
-            
-            var declarations = result.Declarations.Items.Where(item => item.DeclarationType != DeclarationType.ModuleOption
-                && selection.QualifiedName.Project.Equals(item.Project)
-                && item.Selection.Contains(selection.Selection));
-
-            var target = declarations.SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.Class);
-
-            if (target != null)
-            {
-                var withEvents = result.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == target.ComponentName);
-                //FindAllReferences(target);
-            }
-        }
-
-        public void FindAllImplementations(Declaration target)
-        {
-            var test = target.DeclarationType;
-            var referenceCount = 0;
-
-            if (referenceCount == 1)
-            {
-                // if there's only 1 reference, just jump to it:
-                IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
-            }
-            else if (referenceCount > 1)
-            {
-                // if there's more than one reference, show the dockable reference navigation window:
-                try
-                {
-                    ShowReferencesToolwindow(target);
-                }
-                catch (COMException)
-                {
-                    // the exception is related to the docked control host instance,
-                    // trying again will work (I know, that's bad bad bad code)
-                    ShowReferencesToolwindow(target);
-                }
-            }
-            else
-            {
-                var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
-                var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
-                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)

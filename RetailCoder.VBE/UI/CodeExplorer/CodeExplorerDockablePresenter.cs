@@ -112,23 +112,12 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SelectionChanged += SelectionChanged;
             Control.Rename += RenameSelection;
             Control.FindAllReferences += FindAllReferencesForSelection;
-            Control.FindAllImplementations += FindAllImplementationsForSelection;
         }
 
         public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
         private void FindAllReferencesForSelection(object sender, NavigateCodeEventArgs e)
         {
             var handler = FindAllReferences;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
-        }
-
-        public event EventHandler<NavigateCodeEventArgs> FindAllImplementations;
-        private void FindAllImplementationsForSelection(object sender, NavigateCodeEventArgs e)
-        {
-            var handler = FindAllImplementations;
             if (handler != null)
             {
                 handler(sender, e);
