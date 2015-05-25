@@ -230,21 +230,17 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var test1 = selection.QualifiedName.Project;
-            var test2 = selection.Selection;
-            
-            var declarations = result.Declarations.Items.Where(item => item.DeclarationType != DeclarationType.ModuleOption
-                && selection.QualifiedName.Project.Equals(item.Project)
-                && item.Selection.Contains(selection.Selection));
+            var targets = result.Declarations.Items
+                          .Where(item => !item.IsBuiltIn
+                                      && item.ComponentName == selection.QualifiedName.ComponentName);
 
-            var target = declarations.SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.Class);
-
-            if (target != null)
+            var interfaceImplementation = result.Declarations.FindInterfaceImplementationMembers();
+            if (interfaceImplementation == null)
             {
-                var withEvents = result.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == target.ComponentName);
-                //FindAllReferences(target);
+                return;
             }
+
+            FindAllImplementations(interfaceMember);
         }
 
         public void FindAllImplementations(Declaration target)
