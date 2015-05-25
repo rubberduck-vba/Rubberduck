@@ -92,7 +92,9 @@ namespace Rubberduck.Inspections
         {
             "Chart_",
             "Worksheet_",
-            "Workbook_"
+            "Workbook_",
+            "Document_",
+            "Application_"
         };
 
         private static readonly string[] ClassLifeCycleHandlers =
