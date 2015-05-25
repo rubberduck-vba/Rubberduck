@@ -71,7 +71,9 @@ namespace Rubberduck.VBEditor
                     return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
                 }
 
-                var result = other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
+                var result = other.Project == Project 
+                    && other.ComponentName == ComponentName 
+                    && other._contentHashCode == _contentHashCode;
                 return result;
             }
             catch (InvalidCastException)
