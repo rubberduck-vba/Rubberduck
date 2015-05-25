@@ -64,6 +64,7 @@
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\IdentifierReferencesListener.cs" />
     <Compile Include="Symbols\IdentifierResolver.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
+    <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
