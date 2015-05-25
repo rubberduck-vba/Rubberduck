@@ -41,10 +41,14 @@ namespace Rubberduck.Inspections
 
             var issues = parseResult.Declarations.Items
                 .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
-                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName))
-                .ToList();
+                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            return issues;
+            foreach (var item in DocumentEventHandlerPrefixes)
+            {
+                issues = issues.Where(issue => !issue.Name.Contains("'" + item));
+            }
+
+            return issues.ToList();
         }
 
         private static readonly DeclarationType[] ProcedureTypes =
@@ -83,6 +87,13 @@ namespace Rubberduck.Inspections
 
             return parent != null;
         }
+
+        private static readonly string[] DocumentEventHandlerPrefixes =
+        {
+            "Chart_",
+            "Worksheet_",
+            "Workbook_"
+        };
 
         private static readonly string[] ClassLifeCycleHandlers =
         {
