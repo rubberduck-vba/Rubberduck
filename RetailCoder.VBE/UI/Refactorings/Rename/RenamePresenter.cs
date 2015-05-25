@@ -392,13 +392,15 @@ namespace Rubberduck.UI.Refactorings.Rename
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
         {
             return declaration.References.Any(r =>
-                r.QualifiedModuleName == selection.QualifiedName &&
-                r.Selection.ContainsFirstCharacter(selection.Selection));
+                r.QualifiedModuleName.Project == selection.QualifiedName.Project
+                && r.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
+                && r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
         {
-            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
+            return declaration.QualifiedName.QualifiedModuleName.Project == selection.QualifiedName.Project
+                   && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
                    && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
     }
