@@ -247,7 +247,9 @@ namespace Rubberduck.UI
             }
 
             var member = parseResult.Declarations.FindInterfaceImplementationMembers()
-                .SingleOrDefault(m => m.Selection.Contains(selection.Selection));
+                    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+                                          && m.ComponentName == selection.QualifiedName.ComponentName
+                                          && m.Selection.Contains(selection.Selection));
 
             if (member == null)
             {
