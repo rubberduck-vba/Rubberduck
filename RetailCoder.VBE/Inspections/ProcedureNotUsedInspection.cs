@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -43,7 +44,7 @@ namespace Rubberduck.Inspections
                 .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
                 .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            issues = DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));
+            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));
 
             return issues.ToList();
         }
@@ -84,15 +85,6 @@ namespace Rubberduck.Inspections
 
             return parent != null;
         }
-
-        private static readonly string[] DocumentEventHandlerPrefixes =
-        {
-            "Chart_",
-            "Worksheet_",
-            "Workbook_",
-            "Document_",
-            "Application_"
-        };
 
         private static readonly string[] ClassLifeCycleHandlers =
         {
