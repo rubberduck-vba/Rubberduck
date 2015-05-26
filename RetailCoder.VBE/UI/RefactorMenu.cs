@@ -210,10 +210,10 @@ namespace Rubberduck.UI
             }
         }
 
-        private void ShowImplementationsToolwindow(Declaration target, IEnumerable<Declaration> implementations)
+        private void ShowImplementationsToolwindow(Declaration target, IEnumerable<Declaration> implementations, string name)
         {
             // throws a COMException if toolwindow was already closed
-            var window = new SimpleListControl(string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName));
+            var window = new SimpleListControl(string.Format(RubberduckUI.AllImplementations_Caption, name));
             var presenter = new ImplementationsListDockablePresenter(IDE, AddIn, window, implementations);
             presenter.Show();
         }
@@ -277,13 +277,14 @@ namespace Rubberduck.UI
         public void FindAllImplementations(Declaration target, VBProjectParseResult parseResult)
         {
             IEnumerable<Declaration> implementations;
+            string name;
             if (target.DeclarationType == DeclarationType.Class)
             {
-                implementations = FindAllImplementationsOfClass(target, parseResult);
+                implementations = FindAllImplementationsOfClass(target, parseResult, out name);
             }
             else
             {
-                implementations = FindAllImplementationsOfMember(target, parseResult);
+                implementations = FindAllImplementationsOfMember(target, parseResult, out name);
             }
 
             if (implementations == null)
@@ -304,27 +305,28 @@ namespace Rubberduck.UI
                 // if there's more than one implementation, show the dockable navigation window:
                 try
                 {
-                    ShowImplementationsToolwindow(target, declarations);
+                    ShowImplementationsToolwindow(target, declarations, name);
                 }
                 catch (COMException)
                 {
                     // the exception is related to the docked control host instance,
                     // trying again will work (I know, that's bad bad bad code)
-                    ShowImplementationsToolwindow(target, declarations);
+                    ShowImplementationsToolwindow(target, declarations, name);
                 }
             }
             else
             {
-                var message = string.Format(RubberduckUI.AllImplementations_NoneFound, target.IdentifierName);
-                var caption = string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName);
+                var message = string.Format(RubberduckUI.AllImplementations_NoneFound, name);
+                var caption = string.Format(RubberduckUI.AllImplementations_Caption, name);
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult)
+        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult, out string name)
         {
             if (target.DeclarationType != DeclarationType.Class)
             {
+                name = string.Empty;
                 return null;
             }
 
@@ -333,13 +335,15 @@ namespace Rubberduck.UI
                 .SelectMany(reference => parseResult.Declarations[reference.QualifiedModuleName.ComponentName])
                 .ToList();
 
+            name = target.ComponentName;
             return result;
         }
 
-        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult)
+        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult, out string name)
         {
             if (!target.DeclarationType.HasFlag(DeclarationType.Member))
             {
+                name = string.Empty;
                 return null;
             }
 
@@ -349,11 +353,13 @@ namespace Rubberduck.UI
 
             if (isInterface)
             {
+                name = target.ComponentName + "." + target.IdentifierName;
                 return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName)
                        .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
             }
             
             var member = parseResult.Declarations.FindInterfaceMember(target);
+            name = member.ComponentName + "." + member.IdentifierName;
             return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }

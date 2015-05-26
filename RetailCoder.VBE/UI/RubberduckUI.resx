@@ -274,7 +274,6 @@
   </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>All references: '{0}'</value>
-    <comment>0: IdentifierName</comment>
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Remove parameters</value>
