@@ -347,11 +347,13 @@ namespace Rubberduck.UI
 
             if (isInterface)
             {
-                return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName);
+                return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName)
+                       .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
             }
             
             var member = parseResult.Declarations.FindInterfaceMember(target);
-            return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName);
+            return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
+                   .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
