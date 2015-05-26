@@ -496,7 +496,22 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
+            Declaration type;
+            IEnumerable<Declaration> members;
+            var name = context.ambiguousIdentifier().GetText();
+
             var parent = context.implicitCallStmt_InStmt();
+            if (parent == null && _withQualifiers.Any())
+            {
+                type = _withQualifiers.Pop();
+                members = _declarations.FindMembers(type);
+                return members.SingleOrDefault(m => m.IdentifierName == name);
+            }
+            if (parent == null)
+            {
+                return null; // bug in grammar..
+            }
+
             var parentCall = Resolve(parent.iCS_S_VariableOrProcedureCall())
                              ?? Resolve(parent.iCS_S_ProcedureOrArrayCall())
                              ?? Resolve(parent.iCS_S_DictionaryCall())
@@ -509,13 +524,11 @@ namespace Rubberduck.Parsing.Symbols
                     : null;
             }
 
-            var type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
+            type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.Class
                 || item.DeclarationType == DeclarationType.UserDefinedType);
 
-            var members = _declarations.FindMembers(type);
-            var name = context.ambiguousIdentifier().GetText();
-
+            members = _declarations.FindMembers(type);
             return members.SingleOrDefault(m => m.IdentifierName == name);
         }
 

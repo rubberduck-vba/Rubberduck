@@ -57,7 +57,23 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertySet
         };
 
+        private IEnumerable<Declaration> _interfaces;
         private IEnumerable<Declaration> _interfaceMembers;
+
+        public IEnumerable<Declaration> FindInterfaces()
+        {
+            if (_interfaces != null)
+            {
+                return _interfaces;
+            }
+
+            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            _interfaces = classes.Where(item => item.References.Any(reference =>
+                reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                .ToList();
+
+            return _interfaces;
+        }
 
         /// <summary>
         /// Finds all interface members.
@@ -69,12 +85,7 @@ namespace Rubberduck.Parsing.Symbols
                 return _interfaceMembers;
             }
 
-            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .Select(i => i.Scope)
-                .ToList();
-
+            var interfaces = FindInterfaces().Select(i => i.Scope).ToList();
             _interfaceMembers = _declarations.Where(item => !item.IsBuiltIn 
                                                 && ProcedureTypes.Contains(item.DeclarationType)
                                                 && interfaces.Any(i => item.ParentScope.StartsWith(i)))
@@ -162,6 +173,12 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
 
             return _interfaceImplementationMembers;
+        }
+
+        public IEnumerable<Declaration> FindInterfaceImplementationMembers(string interfaceMember)
+        {
+            return FindInterfaceImplementationMembers()
+                .Where(m => m.IdentifierName.EndsWith(interfaceMember));
         }
 
         public Declaration FindInterfaceMember(Declaration implementation)

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactoring;
@@ -43,17 +45,17 @@ namespace Rubberduck.UI
         public void Initialize(CommandBarControls menuControls)
         {
             var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
-            menu.Caption = "&Refactor";
+            menu.Caption = RubberduckUI.RubberduckMenu_Refactor;
 
-            _extractMethodButton = AddButton(menu, "Extract &Method", false, OnExtractMethodButtonClick);
+            _extractMethodButton = AddButton(menu, RubberduckUI.RefactorMenu_ExtractMethod, false, OnExtractMethodButtonClick);
             SetButtonImage(_extractMethodButton, Resources.ExtractMethod_6786_32, Resources.ExtractMethod_6786_32_Mask);
 
-            _renameButton = AddButton(menu, "&Rename", false, OnRenameButtonClick);
+            _renameButton = AddButton(menu, RubberduckUI.RefactorMenu_Rename, false, OnRenameButtonClick);
             
-            _reorderParametersButton = AddButton(menu, "Reorder &Parameters", false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
+            _reorderParametersButton = AddButton(menu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
             SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
-            _removeParameterButton = AddButton(menu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
+            _removeParameterButton = AddButton(menu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
             SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeRefactorContextMenu();
@@ -72,17 +74,17 @@ namespace Rubberduck.UI
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _refactorCodePaneContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlPopup, Temporary: true, Before:beforeItem) as CommandBarPopup;
             _refactorCodePaneContextMenu.BeginGroup = true;
-            _refactorCodePaneContextMenu.Caption = "&Refactor";
+            _refactorCodePaneContextMenu.Caption = RubberduckUI.RubberduckMenu_Refactor;
 
-            _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, "Extract &Method", false, OnExtractMethodButtonClick);
+            _extractMethodContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_ExtractMethod, false, OnExtractMethodButtonClick);
             SetButtonImage(_extractMethodContextButton, Resources.ExtractMethod_6786_32, Resources.ExtractMethod_6786_32_Mask);
 
-            _renameContextButton = AddButton(_refactorCodePaneContextMenu, "&Rename", false, OnRenameButtonClick);
+            _renameContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_Rename, false, OnRenameButtonClick);
 
-            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, "Reorder &Parameters", false, OnReorderParametersButtonClick);
+            _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick);
             SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
-            _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
+            _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
             SetButtonImage(_removeParameterContextButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
@@ -95,7 +97,7 @@ namespace Rubberduck.UI
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
-            _findAllReferencesContextMenu.Caption = "&Find all references...";
+            _findAllReferencesContextMenu.Caption = RubberduckUI.ContextMenu_FindAllReferences;
             _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
         }
 
@@ -104,7 +106,7 @@ namespace Rubberduck.UI
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _findAllImplementationsContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
-            _findAllImplementationsContextMenu.Caption = "Find all &implementations...";
+            _findAllImplementationsContextMenu.Caption = RubberduckUI.ContextMenu_GoToImplementation;
             _findAllImplementationsContextMenu.Click += _findAllImplementationsContextMenu_Click;
         }
 
@@ -114,7 +116,7 @@ namespace Rubberduck.UI
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _findSymbolContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             SetButtonImage(_findSymbolContextMenu, Resources.FindSymbol_6263_32, Resources.FindSymbol_6263_32_Mask);
-            _findSymbolContextMenu.Caption = "Find &Symbol...";
+            _findSymbolContextMenu.Caption = RubberduckUI.ContextMenu_FindSymbol;
             _findSymbolContextMenu.Click += FindSymbolContextMenuClick;
         }
 
@@ -208,18 +210,18 @@ namespace Rubberduck.UI
             }
         }
 
-        private void ShowImplementationsToolwindow(Declaration target)
+        private void ShowImplementationsToolwindow(Declaration target, IEnumerable<Declaration> implementations)
         {
             // throws a COMException if toolwindow was already closed
-            var window = new IdentifierReferencesListControl(target, string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName));
-            var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
+            var window = new SimpleListControl(string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName));
+            var presenter = new ImplementationsListDockablePresenter(IDE, AddIn, window, implementations);
             presenter.Show();
         }
 
         private void ShowReferencesToolwindow(Declaration target)
         {
             // throws a COMException if toolwindow was already closed
-            var window = new IdentifierReferencesListControl(target);
+            var window = new SimpleListControl(target);
             var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
             presenter.Show();
         }
@@ -233,52 +235,123 @@ namespace Rubberduck.UI
         {
             var selection = IDE.ActiveCodePane.GetSelection();
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
+            var parseResult = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var interfaceNames = result.Declarations.FindInterfaceMembers().Where(item => item.Project.Equals(selection.QualifiedName.Project)).Select(item => item.ComponentName).Distinct();
-            var interfaceReferences = result.Declarations.Items.Where(item => interfaceNames.Contains(item.IdentifierName)).Select(item => item.References);
+            var implementsStatement = parseResult.Declarations.FindInterfaces()
+                .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
 
-            var interfaces = from reference in interfaceReferences 
-                             from item in reference 
-                             where item.QualifiedModuleName == selection.QualifiedName && item.Selection.Contains(selection.Selection) 
-                             select item;
-
-            foreach (var item in interfaces)
+            if (implementsStatement != null)
             {
-                FindAllImplementations(item.Declaration);
+                FindAllImplementations(implementsStatement.Declaration, parseResult);
+            }
+
+            var member = parseResult.Declarations.FindInterfaceImplementationMembers()
+                .SingleOrDefault(m => m.Selection.Contains(selection.Selection));
+
+            if (member == null)
+            {
+                member = parseResult.Declarations.FindInterfaceMembers()
+                    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+                                          && m.ComponentName == selection.QualifiedName.ComponentName
+                                          && m.Selection.Contains(selection.Selection));
+            }
+
+            if (member == null)
+            {
                 return;
             }
+
+            FindAllImplementations(member, parseResult);
         }
 
         public void FindAllImplementations(Declaration target)
         {
-            var referenceCount = target.References.Count();
+            var progress = new ParsingProgressPresenter();
+            var parseResult = progress.Parse(_parser, IDE.ActiveVBProject);
+            FindAllImplementations(target, parseResult);
+        }
 
-            if (referenceCount == 1)
+        public void FindAllImplementations(Declaration target, VBProjectParseResult parseResult)
+        {
+            IEnumerable<Declaration> implementations;
+            if (target.DeclarationType == DeclarationType.Class)
+            {
+                implementations = FindAllImplementationsOfClass(target, parseResult);
+            }
+            else
+            {
+                implementations = FindAllImplementationsOfMember(target, parseResult);
+            }
+
+            if (implementations == null)
+            {
+                implementations = new List<Declaration>();
+            }
+
+            var declarations = implementations as IList<Declaration> ?? implementations.ToList();
+            var implementationsCount = declarations.Count();
+
+            if (implementationsCount == 1)
             {
                 // if there's only 1 implementation, just jump to it:
-                IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
+                ImplementationsListDockablePresenter.OnNavigateImplementation(IDE, declarations.First());
             }
-            else if (referenceCount > 1)
+            else if (implementationsCount > 1)
             {
                 // if there's more than one implementation, show the dockable navigation window:
                 try
                 {
-                    ShowImplementationsToolwindow(target);
+                    ShowImplementationsToolwindow(target, declarations);
                 }
                 catch (COMException)
                 {
                     // the exception is related to the docked control host instance,
                     // trying again will work (I know, that's bad bad bad code)
-                    ShowImplementationsToolwindow(target);
+                    ShowImplementationsToolwindow(target, declarations);
                 }
             }
             else
             {
-                var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
-                var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
+                var message = string.Format(RubberduckUI.AllImplementations_NoneFound, target.IdentifierName);
+                var caption = string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName);
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult)
+        {
+            if (target.DeclarationType != DeclarationType.Class)
+            {
+                return null;
+            }
+
+            var result = target.References
+                .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
+                .SelectMany(reference => parseResult.Declarations[reference.QualifiedModuleName.ComponentName])
+                .ToList();
+
+            return result;
+        }
+
+        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult)
+        {
+            if (!target.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                return null;
+            }
+
+            var isInterface = parseResult.Declarations.FindInterfaces()
+                .Select(i => i.QualifiedName.QualifiedModuleName.ToString())
+                .Contains(target.QualifiedName.QualifiedModuleName.ToString());
+
+            if (isInterface)
+            {
+                return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName);
+            }
+            
+            var member = parseResult.Declarations.FindInterfaceMember(target);
+            return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName);
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
@@ -393,11 +466,6 @@ namespace Rubberduck.UI
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var presenter = new RemoveParameterPresenter(result, selection);
-        }
-
-        private CommandBarButton AddMenuButton(CommandBarPopup menu)
-        {
-            return menu.Controls.Add(MsoControlType.msoControlButton) as CommandBarButton;
         }
     }
 }

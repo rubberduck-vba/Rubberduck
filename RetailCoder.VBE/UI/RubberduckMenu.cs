@@ -102,7 +102,7 @@ namespace Rubberduck.UI
             var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
             Debug.Assert(menu != null, "menu != null");
 
-            menu.Caption = "Ru&bberduck";
+            menu.Caption = RubberduckUI.RubberduckMenu;
 
             _testMenu.Initialize(menu.Controls);
             _codeExplorerMenu.Initialize(menu);
@@ -110,9 +110,9 @@ namespace Rubberduck.UI
             _todoItemsMenu.Initialize(menu);
             _codeInspectionsMenu.Initialize(menu);
 
-            _sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
-            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
-            _about = AddButton(menu, "&About...", true, OnAboutClick);
+            _sourceControl = AddButton(menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
+            _settings = AddButton(menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
+            _about = AddButton(menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
         }
 
         private Rubberduck.SourceControl.App _sourceControlApp;

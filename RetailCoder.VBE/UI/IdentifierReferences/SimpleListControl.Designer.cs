@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
-    partial class IdentifierReferencesListControl
+    partial class SimpleListControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -43,12 +43,12 @@ namespace Rubberduck.UI.IdentifierReferences
             this.ResultBox.Size = new System.Drawing.Size(302, 149);
             this.ResultBox.TabIndex = 0;
             // 
-            // IdentifierReferencesListControl
+            // SimpleListControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ResultBox);
-            this.Name = "IdentifierReferencesListControl";
+            this.Name = "SimpleListControl";
             this.Size = new System.Drawing.Size(302, 149);
             this.ResumeLayout(false);
 

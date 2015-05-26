@@ -70,6 +70,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class or member &apos;{0}&apos; is not implemented..
+        /// </summary>
+        internal static string AllImplementations_NoneFound {
+            get {
+                return ResourceManager.GetString("AllImplementations_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All references: &apos;{0}&apos;.
         /// </summary>
         internal static string AllReferences_Caption {
@@ -111,6 +120,33 @@ namespace Rubberduck.UI {
         internal static string CodeInspections_NoIssues {
             get {
                 return ResourceManager.GetString("CodeInspections_NoIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Find all references....
+        /// </summary>
+        internal static string ContextMenu_FindAllReferences {
+            get {
+                return ResourceManager.GetString("ContextMenu_FindAllReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find &amp;symbol....
+        /// </summary>
+        internal static string ContextMenu_FindSymbol {
+            get {
+                return ResourceManager.GetString("ContextMenu_FindSymbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to &amp;implementation....
+        /// </summary>
+        internal static string ContextMenu_GoToImplementation {
+            get {
+                return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
             }
         }
         
@@ -412,6 +448,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extract &amp;Method.
+        /// </summary>
+        internal static string RefactorMenu_ExtractMethod {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ExtractMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remo&amp;ve Parameter.
+        /// </summary>
+        internal static string RefactorMenu_RemoveParameter {
+            get {
+                return ResourceManager.GetString("RefactorMenu_RemoveParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Rename.
+        /// </summary>
+        internal static string RefactorMenu_Rename {
+            get {
+                return ResourceManager.GetString("RefactorMenu_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reorder &amp;Parameters.
+        /// </summary>
+        internal static string RefactorMenu_ReorderParameters {
+            get {
+                return ResourceManager.GetString("RefactorMenu_ReorderParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot remove last value from setter or letter..
         /// </summary>
         internal static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
@@ -601,6 +673,87 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubber&amp;duck.
+        /// </summary>
+        internal static string RubberduckMenu {
+            get {
+                return ResourceManager.GetString("RubberduckMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;About....
+        /// </summary>
+        internal static string RubberduckMenu_About {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Code Explorer.
+        /// </summary>
+        internal static string RubberduckMenu_CodeExplorer {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_CodeExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code &amp;Inspections.
+        /// </summary>
+        internal static string RubberduckMenu_CodeInspections {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_CodeInspections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Options.
+        /// </summary>
+        internal static string RubberduckMenu_Options {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Refactor.
+        /// </summary>
+        internal static string RubberduckMenu_Refactor {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_Refactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Source Control.
+        /// </summary>
+        internal static string RubberduckMenu_SourceControl {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_SourceControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To&amp;Do Items.
+        /// </summary>
+        internal static string RubberduckMenu_ToDoItems {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_ToDoItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unit &amp;Tests.
+        /// </summary>
+        internal static string RubberduckMenu_UnitTests {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Inspection Settings.
         /// </summary>
         internal static string SettingsCaption_CodeInspections {
@@ -651,6 +804,24 @@ namespace Rubberduck.UI {
         internal static string SettingsInstructions_ToDoSettings {
             get {
                 return ResourceManager.GetString("SettingsInstructions_ToDoSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Run All Tests.
+        /// </summary>
+        internal static string TestMenu_RunAllTests {
+            get {
+                return ResourceManager.GetString("TestMenu_RunAllTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Test Explorer.
+        /// </summary>
+        internal static string TestMenu_TextExplorer {
+            get {
+                return ResourceManager.GetString("TestMenu_TextExplorer", resourceCulture);
             }
         }
     }

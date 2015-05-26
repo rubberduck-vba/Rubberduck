@@ -323,4 +323,61 @@
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
   </data>
+  <data name="AllImplementations_NoneFound" xml:space="preserve">
+    <value>Class or member '{0}' is not implemented.</value>
+  </data>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Find all references...</value>
+  </data>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>Find &amp;symbol...</value>
+  </data>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>Go to &amp;implementation...</value>
+  </data>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>Extract &amp;Method</value>
+  </data>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>Remo&amp;ve Parameter</value>
+  </data>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>&amp;Rename</value>
+  </data>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>Reorder &amp;Parameters</value>
+  </data>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Rubber&amp;duck</value>
+  </data>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;About...</value>
+  </data>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>&amp;Code Explorer</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>Code &amp;Inspections</value>
+  </data>
+  <data name="RubberduckMenu_Options" xml:space="preserve">
+    <value>&amp;Options</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Refactor</value>
+  </data>
+  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+    <value>&amp;Source Control</value>
+  </data>
+  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+    <value>To&amp;Do Items</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>Unit &amp;Tests</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>&amp;Run All Tests</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>&amp;Test Explorer</value>
+  </data>
 </root>

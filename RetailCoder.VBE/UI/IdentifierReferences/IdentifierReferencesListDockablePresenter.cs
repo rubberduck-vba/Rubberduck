@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -8,7 +9,7 @@ namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferencesListDockablePresenter : DockablePresenterBase
     {
-        public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, IdentifierReferencesListControl control, Declaration target)
+        public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, Declaration target)
             : base(vbe, addin, control)
         {
             BindTarget(target);
@@ -20,7 +21,7 @@ namespace Rubberduck.UI.IdentifierReferences
             listBox.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference)).ToList();
             listBox.DisplayMember = "DisplayString";
             listBox.ValueMember = "Selection";
-            Control.NavigateIdentifierReference += Control_NavigateIdentifierReference;
+            Control.Navigate += ControlNavigate;
         }
 
         public static void OnNavigateIdentifierReference(VBE vbe, IdentifierReference reference)
@@ -28,11 +29,15 @@ namespace Rubberduck.UI.IdentifierReferences
             vbe.SetSelection(new QualifiedSelection(reference.QualifiedModuleName, reference.Selection));
         }
 
-        private void Control_NavigateIdentifierReference(object sender, NavigateCodeEventArgs e)
+        private void ControlNavigate(object sender, ListItemActionEventArgs e)
         {
-            OnNavigateIdentifierReference(VBE, e.Reference);
+            var reference = e.SelectedItem as IdentifierReferenceListItem;
+            if (reference != null)
+            {
+                OnNavigateIdentifierReference(VBE, reference.GetReferenceItem());
+            }
         }
 
-        IdentifierReferencesListControl Control { get { return UserControl as IdentifierReferencesListControl; } }
+        SimpleListControl Control { get { return UserControl as SimpleListControl; } }
     }
 }

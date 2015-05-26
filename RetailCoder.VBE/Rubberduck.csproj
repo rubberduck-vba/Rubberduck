@@ -288,11 +288,14 @@
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
     <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
-    <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
+    <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
+    <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />
+    <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
+    <Compile Include="UI\IdentifierReferences\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.Designer.cs">
-      <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
+    <Compile Include="UI\IdentifierReferences\SimpleListControl.Designer.cs">
+      <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
     <Compile Include="UI\ProgressDialog.cs">
@@ -585,8 +588,8 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
-      <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\IdentifierReferences\SimpleListControl.resx">
+      <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ProgressDialog.resx">
       <DependentUpon>ProgressDialog.cs</DependentUpon>
