@@ -221,7 +221,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            RewriteSignature(paramList, module);
+            RewriteSignature(_view.Target, paramList, module);
 
             foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _view.Target.ComponentName))
             {
@@ -261,7 +261,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
 
-            RewriteSignature(paramList, module);
+            RewriteSignature(declaration, paramList, module);
         }
 
         /// <summary>
@@ -269,9 +269,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         /// <param name="paramList">The ArgListContext of the method signature being adjusted.</param>
         /// <param name="module">The CodeModule of the method signature being adjusted.</param>
-        private void RewriteSignature(VBAParser.ArgListContext paramList, CodeModule module)
+        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var newContent = GetOldSignature(module);
+            var argList = paramList.arg();
+
+            var newContent = GetOldSignature(target);
             var lineNum = paramList.GetSelection().LineCount;
 
             var parameterIndex = 0;
@@ -280,8 +282,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             for (var i = parameterIndex; i < _view.Parameters.Count; i++)
             {
-                var oldParam = _view.Parameters.Find(item => item.Index == parameterIndex).FullDeclaration;
-                var newParam = _view.Parameters.ElementAt(parameterIndex).FullDeclaration;
+                var oldParam = argList.ElementAt(parameterIndex).GetText();
+                var newParam = argList.ElementAt(_view.Parameters.FindIndex(item => item.Index == parameterIndex)).GetText();
                 var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
 
                 if (parameterStringIndex > -1)
@@ -300,19 +302,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
         }
 
-        private string GetOldSignature(CodeModule module)
+        private string GetOldSignature(Declaration target)
         {
-            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == _view.Target.QualifiedName.QualifiedModuleName);
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
             if (targetModule == null)
             {
                 return null;
             }
 
-            var content = module.Lines[_view.Target.Selection.StartLine, 1];
-
             var rewriter = targetModule.GetRewriter();
 
-            var context = (ParserRuleContext)_view.Target.Context;
+            var context = (ParserRuleContext)target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
             var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
 
