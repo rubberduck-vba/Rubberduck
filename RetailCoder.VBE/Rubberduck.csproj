@@ -807,6 +807,7 @@
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <None Include="Resources\RemoveParameters_6781_32_Mask.png" />

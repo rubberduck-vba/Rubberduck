@@ -54,7 +54,7 @@ namespace Rubberduck.UI
             SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
             _removeParameterButton = AddButton(menu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
-            //SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32_Mask);
+            SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeRefactorContextMenu();
         }
@@ -83,7 +83,7 @@ namespace Rubberduck.UI
             SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
             _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, "Remo&ve Parameter", false, OnRemoveParameterButtonClick);
-            SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32);
+            SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
             InitializeFindImplementationsContextMenu(); //todo: untangle that mess...
