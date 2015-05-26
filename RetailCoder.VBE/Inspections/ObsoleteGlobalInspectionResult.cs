@@ -14,15 +14,15 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
                 {"Replace 'Global' access modifier with 'Public'", ChangeAccessModifier}
             };
         }
 
-        private void ChangeAccessModifier(VBE vbe)
+        private void ChangeAccessModifier()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)

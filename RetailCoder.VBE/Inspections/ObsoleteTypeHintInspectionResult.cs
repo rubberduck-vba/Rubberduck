@@ -20,9 +20,9 @@ namespace Rubberduck.Inspections
             _declaration = declaration;
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
                 { "Remove type hints", RemoveTypeHints }
             };
@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections
             { "$", Tokens.String }
         };
 
-        private void RemoveTypeHints(VBE vbe)
+        private void RemoveTypeHints()
         {
             string hint;
             if (_declaration.HasTypeHint(out hint))

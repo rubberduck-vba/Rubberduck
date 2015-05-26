@@ -15,35 +15,35 @@ namespace Rubberduck.Inspections
 
         private new VBAParser.ArgContext Context { get { return base.Context as VBAParser.ArgContext; } }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             if ((Context.LPAREN() != null && Context.RPAREN() != null) || Context.PARAMARRAY() != null)
             {
                 // array parameters & paramarrays must be passed by reference
-                return new Dictionary<string, Action<VBE>>
+                return new Dictionary<string, Action>
                 {
                     {"Pass parameter by reference explicitly", PassParameterByRef}
                 };
             }
 
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
                 {
                     {"Pass parameter by reference explicitly", PassParameterByRef},
                     {"Pass parameter by value", PassParameterByVal}
                 };
         }
 
-        private void PassParameterByRef(VBE vbe)
+        private void PassParameterByRef()
         {
-            ChangeParameterPassing(vbe, Tokens.ByRef);
+            ChangeParameterPassing(Tokens.ByRef);
         }
 
-        private void PassParameterByVal(VBE vbe)
+        private void PassParameterByVal()
         {
-            ChangeParameterPassing(vbe, Tokens.ByVal);
+            ChangeParameterPassing(Tokens.ByVal);
         }
 
-        private void ChangeParameterPassing(VBE vbe, string newValue)
+        private void ChangeParameterPassing(string newValue)
         {
             var parameter = Context.GetText();
             var newContent = string.Concat(newValue, " ", parameter);

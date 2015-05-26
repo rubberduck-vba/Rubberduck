@@ -17,9 +17,9 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
                 {"Separate multiple declarations into multiple instructions", SplitDeclarations},
             };
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
             }
         }
 
-        private void SplitDeclarations(VBE vbe)
+        private void SplitDeclarations()
         {
             var newContent = new StringBuilder();
             var selection = QualifiedSelection.Selection;

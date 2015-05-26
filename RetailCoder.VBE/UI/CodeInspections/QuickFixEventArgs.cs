@@ -1,18 +1,17 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.CodeInspections
 {
     public class QuickFixEventArgs : EventArgs
     {
-        private readonly Action<VBE> _quickFix;
+        private readonly Action _quickFix;
 
-        public QuickFixEventArgs(Action<VBE> quickFix)
+        public QuickFixEventArgs(Action quickFix)
         {
             _quickFix = quickFix;
         }
 
-        public Action<VBE> QuickFix
+        public Action QuickFix
         {
             get { return _quickFix; }
         }

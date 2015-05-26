@@ -14,15 +14,15 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
                 { "Specify Public access modifier explicitly",  SpecifyPublicModifier}
             };
         }
 
-        private void SpecifyPublicModifier(VBE vbe)
+        private void SpecifyPublicModifier()
         {
             var oldContent = Context.GetText();
             var newContent = Tokens.Public + ' ' + oldContent;

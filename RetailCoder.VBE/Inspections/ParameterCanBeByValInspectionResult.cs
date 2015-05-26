@@ -15,15 +15,15 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
                 {"Pass parameter by value", PassParameterByValue}
             };
         }
 
-        private void PassParameterByValue(VBE vbe)
+        private void PassParameterByValue()
         {
             var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());

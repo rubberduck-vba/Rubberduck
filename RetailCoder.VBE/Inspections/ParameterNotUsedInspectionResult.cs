@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -17,12 +16,12 @@ namespace Rubberduck.Inspections
             _isInterfaceImplementation = isInterfaceImplementation;
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            var result = new Dictionary<string, Action<VBE>>();
+            var result = new Dictionary<string, Action>();
             if (!_isInterfaceImplementation)
             {
-                // don't bother implementing this without implementing a ChangeSignatureRefactoring
+                // todo: use RemoveParameter refactoring
                 //{"Remove unused parameter", RemoveUnusedParameter}
             };
 

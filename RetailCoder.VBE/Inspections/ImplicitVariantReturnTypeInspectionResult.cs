@@ -17,16 +17,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
                     {"Return explicit Variant", ReturnExplicitVariant}
                 };
         }
 
-        private void ReturnExplicitVariant(VBE vbe)
+        private void ReturnExplicitVariant()
         {
             // note: turns a multiline signature into a one-liner signature.
             // bug: removes all comments.

@@ -158,7 +158,7 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(item);
         }
 
-        private IDictionary<string, Action<VBE>> _availableQuickFixes;
+        private IDictionary<string, Action> _availableQuickFixes;
         private void CodeIssuesGridView_SelectionChanged(object sender, EventArgs e)
         {
             var enableNavigation = (CodeIssuesGridView.SelectedRows.Count != 0);

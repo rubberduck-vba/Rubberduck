@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
@@ -13,57 +12,10 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>(); // these fixes could break the code.
-            /*
-                new Dictionary<string, Action<VBE>>
-                {
-                    {"Remove Option statement", RemoveOptionStatement},
-                    {"Specify Option Base 0", SpecifyOptionBaseZero}
-                }; 
-            */
-        }
-
-        private void SpecifyOptionBaseZero(VBE vbe)
-        {
-            RebaseAllArrayReferences(vbe);
-        }
-
-        private void RebaseAllArrayReferences(VBE vbe)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RemoveOptionStatement(VBE vbe)
-        {
-            var module = QualifiedName.Component.CodeModule;
-            if (module == null)
-            {
-                return;
-            }
-
-            var selection = Comment.QualifiedSelection.Selection;
-            
-            // remove line continuations to compare against Context:
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                .Replace("\r\n", " ")
-                .Replace("_", string.Empty);
-            var originalInstruction = Comment.Comment;
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = string.Empty;
-            var newCodeLines = string.IsNullOrEmpty(newInstruction)
-                ? string.Empty
-                : originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            if (!string.IsNullOrEmpty(newCodeLines))
-            {
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
-
-            RebaseAllArrayReferences(vbe);
+            // removing or changing option statement could break the code.
+            return new Dictionary<string, Action>(); 
         }
     }
 }
