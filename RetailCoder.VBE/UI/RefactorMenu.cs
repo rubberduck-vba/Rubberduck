@@ -234,7 +234,7 @@ namespace Rubberduck.UI
             {
                 foreach (var item in reference)
                 {
-                    if (item.Selection.Contains(selection.Selection))
+                    if (item.QualifiedModuleName == selection.QualifiedName && item.Selection.Contains(selection.Selection))
                     {
                         FindAllImplementations(item.Declaration);
                         return;
