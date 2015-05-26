@@ -355,7 +355,7 @@ namespace Rubberduck.UI
             
             var member = parseResult.Declarations.FindInterfaceMember(target);
             return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
-                   .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
+                   .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
