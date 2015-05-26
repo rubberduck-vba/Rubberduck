@@ -59,7 +59,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             // must rename usages first; if target is a module or a project,
             // then renaming the declaration first would invalidate the parse results.
-            RenameUsages();
+            RenameUsages(_view.Target);
 
             if (ModuleDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
@@ -172,26 +172,27 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
         }
 
-        private void RenameUsages()
+        private void RenameUsages(Declaration target, string interfaceName = null)
         {
             // todo: refactor
 
             // rename interface member
-            if (_declarations.FindInterfaceMembers().Contains(_view.Target))
+            if (_declarations.FindInterfaceMembers().Contains(target))
             {
                 var implementations = _declarations.FindInterfaceImplementationMembers()
-                    .Where(m => m.IdentifierName == _view.Target.ComponentName + '_' + _view.Target.IdentifierName);
+                    .Where(m => m.IdentifierName == target.ComponentName + '_' + target.IdentifierName);
 
                 foreach (var member in implementations)
                 {
                     try
                     {
-                        var newMemberName = _view.Target.ComponentName + '_' + _view.NewName;
+                        var newMemberName = target.ComponentName + '_' + _view.NewName;
                         var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
 
                         var content = module.Lines[member.Selection.StartLine, 1];
                         var newContent = GetReplacementLine(content, member.IdentifierName, newMemberName);
                         module.ReplaceLine(member.Selection.StartLine, newContent);
+                        RenameUsages(member, target.ComponentName);
                     }
                     catch (COMException)
                     {
@@ -202,24 +203,34 @@ namespace Rubberduck.UI.Refactorings.Rename
                 return;
             }
 
-            var modules = _view.Target.References.GroupBy(r => r.QualifiedModuleName);
+            var modules = target.References.GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
                 var module = grouping.Key.Component.CodeModule;
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
                     var content = module.Lines[line.Key, 1];
-                    var newContent = GetReplacementLine(content, _view.Target.IdentifierName, _view.NewName);
+                    string newContent;
+
+                    if (interfaceName == null)
+                    {
+                        newContent = GetReplacementLine(content, target.IdentifierName, _view.NewName);
+                    }
+                    else
+                    {
+                        newContent = GetReplacementLine(content, target.IdentifierName, interfaceName + "_" + _view.NewName);
+                    }
+
                     module.ReplaceLine(line.Key, newContent);
                 }
 
                 // renaming interface
                 if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                 {
-                    var members = _declarations.FindMembers(_view.Target);
+                    var members = _declarations.FindMembers(target);
                     foreach (var member in members)
                     {
-                        var oldMemberName = _view.Target.IdentifierName + '_' + member.IdentifierName;
+                        var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
                         var newMemberName = _view.NewName + '_' + member.IdentifierName;
                         var method = _declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
                         if (method == null)
