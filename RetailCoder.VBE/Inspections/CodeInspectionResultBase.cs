@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -24,7 +23,9 @@ namespace Rubberduck.Inspections
         protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
             if (context == null && comment == null)
+            {
                 throw new ArgumentNullException("[context] and [comment] cannot both be null.");
+            }
 
             _name = inspection;
             _type = type;
@@ -72,22 +73,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         /// <returns>Returns a <c>Dictionary&lt;string&gt;, Action&lt;VBE&gt;</c>
         /// where the keys are descriptions for each quick fix, and
-        /// each value is a method returning <c>void</c> and taking a <c>VBE</c> parameter.</returns>
-        public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
-
-        public VBComponent FindComponent(VBE vbe)
-        {
-            var vbProject = vbe.VBProjects.Cast<VBProject>()
-                .SingleOrDefault(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                         && project.Equals(QualifiedName.Project));
-
-            if (vbProject == null)
-            {
-                return null;
-            }
-
-            return vbProject.VBComponents.Cast<VBComponent>()
-                .SingleOrDefault(component => component.Equals(QualifiedName.Component));
-        }
+        /// each value is a parameterless method returning <c>void</c>.</returns>
+        public abstract IDictionary<string, Action> GetQuickFixes();
     }
 }

@@ -14,17 +14,17 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
                     {"Replace 'Rem' usage with a single-quote comment marker", ReplaceWithSingleQuote},
                     {"Remove comment", RemoveComment}
                 };
         }
 
-        private void ReplaceWithSingleQuote(VBE vbe)
+        private void ReplaceWithSingleQuote()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)
@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections
             module.ReplaceLine(QualifiedSelection.Selection.StartLine, newContent);
         }
 
-        private void RemoveComment(VBE vbe)
+        private void RemoveComment()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
 using Rubberduck.VBEditor;
@@ -30,7 +29,7 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private object _quickFix;
-        private Action<VBE> FirstOrDefaultQuickFix(IDictionary<string, Action<VBE>> fixes)
+        private Action FirstOrDefaultQuickFix(IDictionary<string, Action> fixes)
         {
             return fixes.FirstOrDefault().Value;
         }

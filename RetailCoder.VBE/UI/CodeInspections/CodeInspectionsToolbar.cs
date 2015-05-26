@@ -161,7 +161,7 @@ namespace Rubberduck.UI.CodeInspections
                 var fix = _issues[_currentIssue].GetQuickFixes().FirstOrDefault();
                 if (!string.IsNullOrEmpty(fix.Key))
                 {
-                    fix.Value(_vbe);
+                    fix.Value();
                     _refreshButton_Click(null, ref CancelDefault);
                     _navigateNextButton_Click(null, ref CancelDefault);
                 }

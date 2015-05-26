@@ -28,15 +28,11 @@ namespace Rubberduck.UI.CodeExplorer
             RegisterControlEvents();
         }
 
-        // indicates that the _parseResults are no longer in sync with UI
-        private bool _needsResync;
-
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender == this)
             {
                 _parseResults = e.ParseResults;
-                _needsResync = false;
                 Control.Invoke((MethodInvoker)delegate
                 {
                     Control.SolutionTree.Nodes.Clear();
@@ -54,7 +50,6 @@ namespace Rubberduck.UI.CodeExplorer
             else
             {
                 _parseResults = e.ParseResults;
-                _needsResync = true;
             }
 
             Control.Invoke((MethodInvoker)delegate

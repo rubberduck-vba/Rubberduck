@@ -118,7 +118,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private void Control_QuickFix(object sender, QuickFixEventArgs e)
         {
-            e.QuickFix(VBE);
+            e.QuickFix();
             Control_RefreshCodeInspections(null, EventArgs.Empty);
         }
 

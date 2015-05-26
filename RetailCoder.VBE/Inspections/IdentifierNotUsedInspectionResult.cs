@@ -14,16 +14,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
                     {"Remove unused declaration", RemoveUnusedDeclaration}
                 };
         }
 
-        protected virtual void RemoveUnusedDeclaration(VBE vbe)
+        protected virtual void RemoveUnusedDeclaration()
         {
             var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;
