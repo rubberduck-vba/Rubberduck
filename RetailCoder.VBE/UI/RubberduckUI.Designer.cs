@@ -61,6 +61,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implementations of &apos;{0}&apos;.
+        /// </summary>
+        internal static string AllImplementations_Caption {
+            get {
+                return ResourceManager.GetString("AllImplementations_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All references: &apos;{0}&apos;.
         /// </summary>
         internal static string AllReferences_Caption {

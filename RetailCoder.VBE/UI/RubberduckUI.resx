@@ -320,4 +320,7 @@
   <data name="ExtractMethod_TitleText" xml:space="preserve">
     <value>Extract method</value>
   </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>Implementations of '{0}'</value>
+  </data>
 </root>

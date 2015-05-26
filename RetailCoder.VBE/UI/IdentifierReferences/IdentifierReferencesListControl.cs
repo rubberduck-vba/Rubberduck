@@ -6,8 +6,15 @@ namespace Rubberduck.UI.IdentifierReferences
 {
     public partial class IdentifierReferencesListControl : UserControl, IDockableUserControl
     {
+        private readonly string _caption;
+
         public IdentifierReferencesListControl(Declaration target)
+            : this(target, string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName))
+        { }
+
+        public IdentifierReferencesListControl(Declaration target, string caption)
         {
+            _caption = caption;
             InitializeComponent();
             Target = target;
             ResultBox.DoubleClick += ResultBox_DoubleClick;
@@ -36,6 +43,10 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private const string ClassId = "972A7CE8-55A0-48F5-B607-2035E81D28CF";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return string.Format(RubberduckUI.AllReferences_Caption, Target.IdentifierName); } }
+
+        string IDockableUserControl.Caption
+        {
+            get { return _caption; }
+        }
     }
 }

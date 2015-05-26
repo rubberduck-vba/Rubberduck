@@ -208,6 +208,14 @@ namespace Rubberduck.UI
             }
         }
 
+        private void ShowImplementationsToolwindow(Declaration target)
+        {
+            // throws a COMException if toolwindow was already closed
+            var window = new IdentifierReferencesListControl(target, string.Format(RubberduckUI.AllImplementations_Caption, target.IdentifierName));
+            var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target);
+            presenter.Show();
+        }
+
         private void ShowReferencesToolwindow(Declaration target)
         {
             // throws a COMException if toolwindow was already closed
@@ -230,16 +238,15 @@ namespace Rubberduck.UI
             var interfaceNames = result.Declarations.FindInterfaceMembers().Where(item => item.Project.Equals(selection.QualifiedName.Project)).Select(item => item.ComponentName).Distinct();
             var interfaceReferences = result.Declarations.Items.Where(item => interfaceNames.Contains(item.IdentifierName)).Select(item => item.References);
 
-            foreach (var reference in interfaceReferences)
+            var interfaces = from reference in interfaceReferences 
+                             from item in reference 
+                             where item.QualifiedModuleName == selection.QualifiedName && item.Selection.Contains(selection.Selection) 
+                             select item;
+
+            foreach (var item in interfaces)
             {
-                foreach (var item in reference)
-                {
-                    if (item.QualifiedModuleName == selection.QualifiedName && item.Selection.Contains(selection.Selection))
-                    {
-                        FindAllImplementations(item.Declaration);
-                        return;
-                    }
-                }
+                FindAllImplementations(item.Declaration);
+                return;
             }
         }
 
@@ -249,21 +256,21 @@ namespace Rubberduck.UI
 
             if (referenceCount == 1)
             {
-                // if there's only 1 reference, just jump to it:
+                // if there's only 1 implementation, just jump to it:
                 IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
             }
             else if (referenceCount > 1)
             {
-                // if there's more than one reference, show the dockable reference navigation window:
+                // if there's more than one implementation, show the dockable navigation window:
                 try
                 {
-                    ShowReferencesToolwindow(target);
+                    ShowImplementationsToolwindow(target);
                 }
                 catch (COMException)
                 {
                     // the exception is related to the docked control host instance,
                     // trying again will work (I know, that's bad bad bad code)
-                    ShowReferencesToolwindow(target);
+                    ShowImplementationsToolwindow(target);
                 }
             }
             else
