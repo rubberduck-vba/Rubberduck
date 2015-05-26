@@ -73,6 +73,9 @@ namespace Rubberduck.UI.UnitTesting
                 }
             }
 
+            _runAllTestsButton.Click -= OnRunAllTestsButtonClick;
+            _windowsTestExplorerButton.Click -= OnTestExplorerButtonClick;
+
             _disposed = true;
             base.Dispose(disposing);
         }

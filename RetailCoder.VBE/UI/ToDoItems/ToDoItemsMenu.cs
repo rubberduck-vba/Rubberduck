@@ -44,6 +44,8 @@ namespace Rubberduck.UI.ToDoItems
                 uc.Dispose();
             }
 
+            _todoItemsButton.Click -= OnShowTaskListButtonClick;
+
             _disposed = true;
 
             base.Dispose();

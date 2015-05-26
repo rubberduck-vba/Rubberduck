@@ -31,5 +31,24 @@ namespace Rubberduck.UI.CodeInspections
         {
             Inspect();
         }
+
+        bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing && _window != null)
+            {
+                _window.Dispose();
+            }
+
+            _codeInspectionsButton.Click -= OnCodeInspectionsButtonClick;
+
+            _disposed = true;
+            base.Dispose(disposing);
+        }
     }
 }

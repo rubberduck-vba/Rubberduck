@@ -98,7 +98,7 @@ namespace Rubberduck.UI
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _findAllReferencesContextMenu.Caption = RubberduckUI.ContextMenu_FindAllReferences;
-            _findAllReferencesContextMenu.Click += _findAllReferencesContextMenu_Click;
+            _findAllReferencesContextMenu.Click += FindAllReferencesContextMenu_Click;
         }
 
         private CommandBarButton _findAllImplementationsContextMenu;
@@ -107,7 +107,7 @@ namespace Rubberduck.UI
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
             _findAllImplementationsContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _findAllImplementationsContextMenu.Caption = RubberduckUI.ContextMenu_GoToImplementation;
-            _findAllImplementationsContextMenu.Click += _findAllImplementationsContextMenu_Click;
+            _findAllImplementationsContextMenu.Click += FindAllImplementationsContextMenu_Click;
         }
 
         private CommandBarButton _findSymbolContextMenu;
@@ -154,7 +154,7 @@ namespace Rubberduck.UI
             }
         }
 
-        private void _findAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void FindAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             FindAllReferences();
         }
@@ -226,7 +226,7 @@ namespace Rubberduck.UI
             presenter.Show();
         }
 
-        private void _findAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             FindAllImplementations();
         }
@@ -476,6 +476,30 @@ namespace Rubberduck.UI
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var presenter = new RemoveParameterPresenter(result, selection);
+        }
+
+        bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _extractMethodButton.Click -= OnExtractMethodButtonClick;
+            _extractMethodContextButton.Click -= OnExtractMethodButtonClick;
+            _removeParameterButton.Click -= OnRemoveParameterButtonClick;
+            _removeParameterContextButton.Click -= OnRemoveParameterButtonClick;
+            _renameButton.Click -= OnRenameButtonClick;
+            _renameContextButton.Click -= OnRenameButtonClick;
+            _reorderParametersButton.Click -= OnReorderParametersButtonClick;
+            _reorderParametersContextButton.Click -= OnReorderParametersButtonClick;
+            _findAllReferencesContextMenu.Click -= FindAllReferencesContextMenu_Click;
+            _findAllImplementationsContextMenu.Click -= FindAllImplementationsContextMenu_Click;
+            _findSymbolContextMenu.Click -= FindSymbolContextMenuClick;
+
+            _disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

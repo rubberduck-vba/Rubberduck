@@ -185,6 +185,10 @@ namespace Rubberduck.UI
                 }
             }
 
+            _about.Click -= OnAboutClick;
+            _settings.Click -= OnOptionsClick;
+            _sourceControl.Click -= OnSourceControlClick;
+
             _disposed = true;
 
             base.Dispose(disposing);

@@ -40,6 +40,8 @@ namespace Rubberduck.UI.CodeExplorer
                 _window.Dispose();
             }
 
+            _codeExplorerButton.Click -= OnCodeExplorerButtonClick;
+
             _disposed = true;
             base.Dispose(disposing);
         }

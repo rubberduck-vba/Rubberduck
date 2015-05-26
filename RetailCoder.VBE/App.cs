@@ -50,7 +50,6 @@ namespace Rubberduck
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -58,6 +57,11 @@ namespace Rubberduck
             if (disposing && _menu != null)
             {
                 _menu.Dispose();
+            }
+
+            if (disposing && _codeInspectionsToolbar != null)
+            {
+                _codeInspectionsToolbar.Dispose();
             }
         }
 
