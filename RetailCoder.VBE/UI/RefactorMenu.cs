@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -12,9 +10,8 @@ using Rubberduck.Properties;
 using Rubberduck.Refactoring;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.UI.Refactorings.ExtractMethod;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.RemoveParameter;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -230,23 +227,25 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var targets = result.Declarations.Items
-                          .Where(item => !item.IsBuiltIn
-                                      && item.ComponentName == selection.QualifiedName.ComponentName);
+            var interfaceNames = result.Declarations.FindInterfaceMembers().Where(item => item.Project.Equals(selection.QualifiedName.Project)).Select(item => item.ComponentName).Distinct();
+            var interfaceReferences = result.Declarations.Items.Where(item => interfaceNames.Contains(item.IdentifierName)).Select(item => item.References);
 
-            var interfaceImplementation = result.Declarations.FindInterfaceImplementationMembers();
-            if (interfaceImplementation == null)
+            foreach (var reference in interfaceReferences)
             {
-                return;
+                foreach (var item in reference)
+                {
+                    if (item.Selection.Contains(selection.Selection))
+                    {
+                        FindAllImplementations(item.Declaration);
+                        return;
+                    }
+                }
             }
-
-            FindAllImplementations(interfaceMember);
         }
 
         public void FindAllImplementations(Declaration target)
         {
-            var test = target.DeclarationType;
-            var referenceCount = 0;
+            var referenceCount = target.References.Count();
 
             if (referenceCount == 1)
             {
@@ -387,7 +386,6 @@ namespace Rubberduck.UI
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var presenter = new RemoveParameterPresenter(result, selection);
-            
         }
 
         private CommandBarButton AddMenuButton(CommandBarPopup menu)
