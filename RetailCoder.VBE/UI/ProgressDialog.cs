@@ -40,9 +40,11 @@ namespace Rubberduck.UI
         private void _bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ResolutionProgress += _parser_ResolutionProgress;
             _parser.ParseProgress += _parser_ParseProgress;
             Result = _parser.Parse(_project);
             _parser.ParseStarted -= _parser_ParseStarted;
+            _parser.ResolutionProgress -= _parser_ResolutionProgress;
             _parser.ParseProgress -= _parser_ParseProgress;
         }
 
@@ -51,9 +53,14 @@ namespace Rubberduck.UI
             Close();
         }
 
-        void _parser_ParseProgress(object sender, ResolutionProgressEventArgs e)
+        void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
         {
             SetStatus("Resolving '" + e.ParseResult.QualifiedName.ComponentName + "'...");
+        }
+
+        void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
+        {
+            SetStatus("Parsing '" + e.ParseResult.Name + "'...");
         }
 
         void _parser_ParseStarted(object sender, ParseStartedEventArgs e)

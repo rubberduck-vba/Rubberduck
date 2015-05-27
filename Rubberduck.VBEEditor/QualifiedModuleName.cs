@@ -13,6 +13,7 @@ namespace Rubberduck.VBEditor
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
             var module = _component.CodeModule;
+
             _contentHashCode = module.CountOfLines > 0 
                 ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
                 : 0;

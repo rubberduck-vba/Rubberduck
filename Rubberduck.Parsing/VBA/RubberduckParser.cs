@@ -62,6 +62,8 @@ namespace Rubberduck.Parsing.VBA
             var mustResolve = false;
             foreach (var vbComponent in modules)
             {
+                OnParseProgress(vbComponent);
+
                 bool fromCache;
                 var componentResult = Parse(vbComponent, out fromCache);
 
@@ -89,7 +91,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void parseResult_Progress(object sender, ResolutionProgressEventArgs e)
         {
-            OnParseProgress(e.ParseResult);
+            OnResolveProgress(e.ParseResult);
         }
 
         private IParseTree Parse(string code, out ITokenStream outStream)
@@ -201,7 +203,6 @@ namespace Rubberduck.Parsing.VBA
         }
 
         public event EventHandler<ParseStartedEventArgs> ParseStarted;
-
         private void OnParseStarted(IEnumerable<string> projectNames, object owner)
         {
             var handler = ParseStarted;
@@ -211,19 +212,27 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public event EventHandler<ResolutionProgressEventArgs> ParseProgress;
-
-        private void OnParseProgress(VBComponentParseResult result)
+        public event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
+        private void OnResolveProgress(VBComponentParseResult result)
         {
-            var handler = ParseProgress;
+            var handler = ResolutionProgress;
             if (handler != null)
             {
                 handler(this, new ResolutionProgressEventArgs(result));
             }
         }
 
-        public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
+        public event EventHandler<ParseProgressEventArgs> ParseProgress;
+        private void OnParseProgress(VBComponent result)
+        {
+            var handler = ParseProgress;
+            if (handler != null)
+            {
+                handler(this, new ParseProgressEventArgs(result));
+            }
+        }
 
+        public event EventHandler<ParseCompletedEventArgs> ParseCompleted;
         private void OnParseCompleted(IEnumerable<VBProjectParseResult> results, object owner)
         {
             var handler = ParseCompleted;
