@@ -17,6 +17,7 @@ namespace Rubberduck
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
         private readonly IGeneralConfigService _configService;
+        private readonly Inspector _inspector;
 
         public App(VBE vbe, AddIn addIn)
         {
@@ -28,9 +29,9 @@ namespace Rubberduck
             var parser = new RubberduckParser();
             var editor = new ActiveCodePaneEditor(vbe);
 
-            var inspector = new Inspector(parser, _inspections);
-            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, editor, inspector);
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, inspector);
+            _inspector = new Inspector(parser, _inspections);
+            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, editor, _inspector);
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
         }
 
         private void EnableCodeInspections(Configuration config)
@@ -54,14 +55,21 @@ namespace Rubberduck
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && _menu != null)
+            if (!disposing) { return; }
+
+            if (_menu != null)
             {
                 _menu.Dispose();
             }
 
-            if (disposing && _codeInspectionsToolbar != null)
+            if (_codeInspectionsToolbar != null)
             {
                 _codeInspectionsToolbar.Dispose();
+            }
+
+            if (_inspector != null)
+            {
+                _inspector.Dispose();
             }
         }
 

@@ -9,7 +9,7 @@ using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
-    public class Inspector : IInspector
+    public class Inspector : IInspector, IDisposable
     {
         private readonly IRubberduckParser _parser;
         private readonly IList<IInspection> _inspections;
@@ -127,6 +127,18 @@ namespace Rubberduck.Inspections
             }
 
             handler(owner, args);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+            _parser.ParseStarted -= _parser_ParseStarted;
+            _parser.ParseCompleted -= _parser_ParseCompleted;
         }
     }
 }
