@@ -138,6 +138,9 @@
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
     <value>Module options should be specified first</value>
   </data>
+  <data name="EasterEgg" xml:space="preserve">
+    <value>Easter egg. This isn't supposed to happen.</value>
+  </data>
   <data name="MultipleDeclarations" xml:space="preserve">
     <value>Instruction contains multiple declarations</value>
   </data>
