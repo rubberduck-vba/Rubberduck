@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -19,11 +20,11 @@ namespace Rubberduck.Inspections
         {
             var declarations = from item in parseResult.Declarations.Items
                 where !item.IsBuiltIn && item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(string.Format(Name, "declaration of " + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, RubberduckUI.Inspections_DeclarationOf + item.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedName, item.Context), item);
 
             var references = from item in parseResult.Declarations.Items.Where(item => !item.IsBuiltIn).SelectMany(d => d.References)
                 where item.HasTypeHint()
-                select new ObsoleteTypeHintInspectionResult(string.Format(Name, "usage of " + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
+                select new ObsoleteTypeHintInspectionResult(string.Format(Name, RubberduckUI.Inspections_UsageOf + item.Declaration.DeclarationType.ToString().ToLower(), item.IdentifierName), Severity, new QualifiedContext(item.QualifiedModuleName, item.Context), item.Declaration);
 
             return declarations.Union(references);
         }

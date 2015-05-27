@@ -540,6 +540,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to declaration of .
+        /// </summary>
+        internal static string Inspections_DeclarationOf {
+            get {
+                return ResourceManager.GetString("Inspections_DeclarationOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Declare as explicit Variant.
         /// </summary>
         internal static string Inspections_DeclareAsExplicitVariant {
@@ -689,6 +698,15 @@ namespace Rubberduck.UI {
         internal static string Inspections_UnassignedVariableToDo {
             get {
                 return ResourceManager.GetString("Inspections_UnassignedVariableToDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to usage of .
+        /// </summary>
+        internal static string Inspections_UsageOf {
+            get {
+                return ResourceManager.GetString("Inspections_UsageOf", resourceCulture);
             }
         }
         
@@ -1275,6 +1293,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue..
+        /// </summary>
+        internal static string TestExplorerDockablePresenter_MultipleTestsSameNameError {
+            get {
+                return ResourceManager.GetString("TestExplorerDockablePresenter_MultipleTestsSameNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Explorer.
+        /// </summary>
+        internal static string TestExplorerWindow_Caption {
+            get {
+                return ResourceManager.GetString("TestExplorerWindow_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Run All Tests.
         /// </summary>
         internal static string TestMenu_RunAllTests {
@@ -1289,6 +1325,15 @@ namespace Rubberduck.UI {
         internal static string TestMenu_TextExplorer {
             get {
                 return ResourceManager.GetString("TestMenu_TextExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ToDo Explorer.
+        /// </summary>
+        internal static string ToDoExplorer_Caption {
+            get {
+                return ResourceManager.GetString("ToDoExplorer_Caption", resourceCulture);
             }
         }
         
@@ -1325,6 +1370,15 @@ namespace Rubberduck.UI {
         internal static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        internal static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

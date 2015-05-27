@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.ToDoItems;
+using Rubberduck.UI;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.ToDoItems
     {
         private const string ClassId = "8B071EDA-2C9C-4009-9A22-A1958BF98B28";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return "ToDo Explorer"; } }
+        string IDockableUserControl.Caption { get { return RubberduckUI.ToDoExplorer_Caption; } }
 
         public string SortedByColumn { get; set; }
         public bool SortedAscending { get; set; }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UnitTesting;
+using Rubberduck.UI;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public string Caption
         {
-            get { return "Test Explorer"; }
+            get { return RubberduckUI.TestExplorerWindow_Caption; }
         }
 
         public TestExplorerWindow()
