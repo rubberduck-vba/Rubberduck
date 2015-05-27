@@ -30,8 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgressDialog));
             this.panel2 = new System.Windows.Forms.Panel();
-            this.TitleLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.TitleLabel = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -47,17 +47,6 @@
             this.panel2.Size = new System.Drawing.Size(309, 40);
             this.panel2.TabIndex = 14;
             // 
-            // TitleLabel
-            // 
-            this.TitleLabel.AutoSize = true;
-            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleLabel.Location = new System.Drawing.Point(26, 9);
-            this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
-            this.TitleLabel.Size = new System.Drawing.Size(154, 19);
-            this.TitleLabel.TabIndex = 2;
-            this.TitleLabel.Text = "Parsing. Please wait...";
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Rubberduck.Properties.Resources.hourglass;
@@ -66,6 +55,17 @@
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            // 
+            // TitleLabel
+            // 
+            this.TitleLabel.AutoSize = true;
+            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleLabel.Location = new System.Drawing.Point(26, 9);
+            this.TitleLabel.Name = "TitleLabel";
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Size = new System.Drawing.Size(131, 19);
+            this.TitleLabel.TabIndex = 2;
+            this.TitleLabel.Text = "Parsing. Please wait...";
             // 
             // ProgressDialog
             // 

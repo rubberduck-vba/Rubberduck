@@ -28,14 +28,14 @@ namespace Rubberduck.Parsing
 
     public class ResolutionProgressEventArgs : EventArgs
     {
-        private readonly VBComponentParseResult _result;
+        private readonly VBComponent _component;
 
-        public ResolutionProgressEventArgs(VBComponentParseResult result)
+        public ResolutionProgressEventArgs(VBComponent component)
         {
-            _result = result;
+            _component = component;
         }
 
-        public VBComponentParseResult ParseResult { get { return _result; } }
+        public VBComponent Component { get { return _component; } }
     }
 
     public class ParseProgressEventArgs : EventArgs
@@ -47,7 +47,7 @@ namespace Rubberduck.Parsing
             _result = result;
         }
 
-        public VBComponent ParseResult { get { return _result; } }
+        public VBComponent Component { get { return _result; } }
     }
 
     public interface IParseResultProvider

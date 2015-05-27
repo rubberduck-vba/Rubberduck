@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -25,6 +26,7 @@ namespace Rubberduck.UI
             _bgw.RunWorkerCompleted += _bgw_RunWorkerCompleted;
         }
 
+        //public for designer only
         public ProgressDialog()
         {
             InitializeComponent();
@@ -53,22 +55,27 @@ namespace Rubberduck.UI
             Close();
         }
 
-        void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
+        private void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
         {
-            SetStatus(string.Format(RubberduckUI.ResolutionProgress, e.ParseResult.QualifiedName.ComponentName));
+            SetStatus(string.Format(RubberduckUI.ResolutionProgress, QualifyComponentName(e.Component)));
         }
 
-        void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
+        private void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
         {
-            SetStatus(string.Format(RubberduckUI.ParseProgress, e.ParseResult.Name));
+            SetStatus(string.Format(RubberduckUI.ParseProgress, QualifyComponentName(e.Component)));
         }
 
-        void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
+        private string QualifyComponentName(VBComponent component)
+        {
+            return component.Collection.Parent.Name + "." + component.Name;
+        }
+
+        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
         {
             SetStatus(RubberduckUI.ParseStarted);
         }
 
-        public void SetStatus(string status)
+        private void SetStatus(string status)
         {
             Invoke(((MethodInvoker) delegate
             {

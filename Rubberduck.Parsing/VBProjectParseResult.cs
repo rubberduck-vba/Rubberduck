@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing
             var handler = Progress;
             if (handler != null)
             {
-                handler(null, new ResolutionProgressEventArgs(result));
+                handler(null, new ResolutionProgressEventArgs(result.Component));
             }
         }
 
