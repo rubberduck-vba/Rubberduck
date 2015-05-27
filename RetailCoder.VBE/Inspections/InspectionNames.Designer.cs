@@ -97,11 +97,11 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Easter egg. This isn&apos;t supposed to happen..
+        ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
-        internal static string EasterEgg {
+        internal static string EasterEgg_Continuator {
             get {
-                return ResourceManager.GetString("EasterEgg", resourceCulture);
+                return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
             }
         }
         
