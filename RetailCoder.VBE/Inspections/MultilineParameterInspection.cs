@@ -8,17 +8,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    /// <summary>
-    /// An EasterEgg inspection. Because I couldn't help it.
-    /// </summary>
     public class MultilineParameterInspection : IInspection 
     {
         public MultilineParameterInspection()
         {
-            Severity = CodeInspectionSeverity.DoNotShow;
+            Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.EasterEgg; } }
+        public string Name { get { return InspectionNames.MultilineParameter_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -26,11 +23,11 @@ namespace Rubberduck.Inspections
         {
             var multilineParameters = from p in parseResult.Declarations.Items
                 .Where(item => item.DeclarationType == DeclarationType.Parameter)
-                where p.Context.GetSelection().LineCount > 3
+                where p.Context.GetSelection().LineCount > 1
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(string.Format(Name, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? InspectionNames.EasterEgg : Name, param.IdentifierName), Severity, param.Context, param.QualifiedName));
 
             return issues;
         }
@@ -45,6 +42,7 @@ namespace Rubberduck.Inspections
 
             public override IDictionary<string, Action> GetQuickFixes()
             {
+                // todo: implement a quickfix to rewrite the signature on 1 line
                 return new Dictionary<string, Action>();
             }
         }

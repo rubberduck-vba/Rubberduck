@@ -192,4 +192,7 @@
   <data name="_TypeNotDeclared_" xml:space="preserve">
     <value>{0} '{1}' is implicitly Variant</value>
   </data>
+  <data name="MultilineParameter_" xml:space="preserve">
+    <value>Parameter '{0}' is declared on multiple lines</value>
+  </data>
 </root>

@@ -151,6 +151,15 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is declared on multiple lines.
+        /// </summary>
+        internal static string MultilineParameter_ {
+            get {
+                return ResourceManager.GetString("MultilineParameter_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instruction contains multiple declarations.
         /// </summary>
         internal static string MultipleDeclarations {
