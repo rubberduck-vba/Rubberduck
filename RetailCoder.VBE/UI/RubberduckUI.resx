@@ -553,4 +553,22 @@ Warning: All customized settings will be lost.</value>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="Inspections_DeclarationOf" xml:space="preserve">
+    <value>declaration of </value>
+  </data>
+  <data name="Inspections_UsageOf" xml:space="preserve">
+    <value>usage of </value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="ToDoExplorer_Caption" xml:space="preserve">
+    <value>ToDo Explorer</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>

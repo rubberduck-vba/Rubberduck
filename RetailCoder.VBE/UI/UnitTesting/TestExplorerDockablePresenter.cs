@@ -77,8 +77,8 @@ namespace Rubberduck.UI.UnitTesting
             catch (ArgumentException)
             {
                 MessageBox.Show(
-                    "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
-                    "Warning", MessageBoxButtons.OK,
+                    RubberduckUI.TestExplorerDockablePresenter_MultipleTestsSameNameError,
+                    RubberduckUI.Warning, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
             }
         }
