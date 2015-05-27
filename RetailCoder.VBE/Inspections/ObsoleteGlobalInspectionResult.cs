@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>
             {
-                {"Replace 'Global' access modifier with 'Public'", ChangeAccessModifier}
+                {RubberduckUI.Inspections_ChangeGlobalAccessModifierToPublic, ChangeAccessModifier}
             };
         }
 

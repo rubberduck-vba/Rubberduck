@@ -379,4 +379,109 @@
   <data name="TestMenu_TextExplorer" xml:space="preserve">
     <value>&amp;Test Explorer</value>
   </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (parsing...)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
+    <value>Rubberduck Code Inspections - {0}
+{1} issue{2} found.
+</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
+    <value>Replace 'Global' access modifier with 'Public'</value>
+  </data>
+  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
+    <value>Convert function to procedure</value>
+  </data>
+  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
+    <value>Declare as explicit Variant</value>
+  </data>
+  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
+    <value>Introduce local variable</value>
+  </data>
+  <data name="Inspections_PassParamByReference" xml:space="preserve">
+    <value>Pass parameter by reference</value>
+  </data>
+  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
+    <value>Pass parameter by reference explicitly</value>
+  </data>
+  <data name="Inspections_PassParamByValue" xml:space="preserve">
+    <value>Pass parameter by value</value>
+  </data>
+  <data name="Inspections_RemoveComment" xml:space="preserve">
+    <value>Remove comment</value>
+  </data>
+  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
+    <value>Remove obsolete statement</value>
+  </data>
+  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
+    <value>Remove type hints</value>
+  </data>
+  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
+    <value>Remove unassigned variable</value>
+  </data>
+  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
+    <value>Remove unused declaration</value>
+  </data>
+  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
+    <value>Remove unused parameter</value>
+  </data>
+  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
+    <value>Remove usage (breaks code)</value>
+  </data>
+  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
+    <value>Replace 'Rem' usage with a single-quote comment marker</value>
+  </data>
+  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
+    <value>Return explicit Variant</value>
+  </data>
+  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
+    <value>Specify Public access modifier explicitly</value>
+  </data>
+  <data name="Inspections_SplitDeclarations" xml:space="preserve">
+    <value>Separate multiple declarations into multiple instructions</value>
+  </data>
+  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Error Loading Rubberduck Configuration</value>
+  </data>
+  <data name="ParseProgress" xml:space="preserve">
+    <value>Parsing '{0}'...</value>
+  </data>
+  <data name="ParseStarted" xml:space="preserve">
+    <value>Parsing project components...</value>
+  </data>
+  <data name="PromptLoadDefaultConfig" xml:space="preserve">
+    <value>{0}
+{1}
+
+{2}
+
+Would you like to restore default configuration?
+Warning: All customized settings will be lost.</value>
+  </data>
+  <data name="ResolutionProgress" xml:space="preserve">
+    <value>Resolving '{0}'...</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Rubberduck Add-In could not be loaded</value>
+  </data>
+  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+    <value>Build {0} ({1})</value>
+    <comment>0: Version; 1: ProcessorArchitecture</comment>
+  </data>
+  <data name="ToDoMarkerBug" xml:space="preserve">
+    <value>BUG:</value>
+  </data>
+  <data name="ToDoMarkerNote" xml:space="preserve">
+    <value>NOTE:</value>
+  </data>
+  <data name="ToDoMarkerToDo" xml:space="preserve">
+    <value>TODO:</value>
+  </data>
 </root>

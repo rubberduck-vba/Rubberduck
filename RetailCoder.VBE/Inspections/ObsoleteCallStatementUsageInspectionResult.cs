@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>
             {
-                {"Remove obsolete statement", RemoveObsoleteStatement}
+                {RubberduckUI.Inspections_RemoveObsoleteStatement, RemoveObsoleteStatement}
             };
         }
 

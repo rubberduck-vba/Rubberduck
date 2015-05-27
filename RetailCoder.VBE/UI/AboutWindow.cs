@@ -19,7 +19,7 @@ namespace Rubberduck.UI
         private static readonly IDictionary<string, string> Links =
             new Dictionary<string, string>
             {
-                {"Home","http://www.rubberduck-vba.com"},
+                {RubberduckUI.Home,"http://www.rubberduck-vba.com"},
                 {"GitHub", "http://www.github.com/retailcoder/rubberduck"},
                 {"Twitter","http://www.twitter.com/rubberduckvba"},
                 {"Facebook", "http://www.facebook.com/rubberduckvba"},
@@ -32,7 +32,7 @@ namespace Rubberduck.UI
             var assembly = Assembly.GetExecutingAssembly();
             var name = assembly.GetName();
 
-            AppVersionLabel.Text = string.Format("Build {0} ({1})", name.Version, name.ProcessorArchitecture);
+            AppVersionLabel.Text = string.Format(RubberduckUI.Rubberduck_AboutBuild, name.Version, name.ProcessorArchitecture);
             CloseButton.Click += CloseButton_Click;
 
             OfficialWebsiteLinkLabel.LinkClicked += OfficialWebsiteLinkLabel_LinkClicked;
@@ -64,7 +64,7 @@ namespace Rubberduck.UI
 
         private void OfficialWebsiteLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            VisitLink(Links["Home"]);
+            VisitLink(Links[RubberduckUI.Home]);
         }
 
         private void CloseButton_Click(object sender, EventArgs e)

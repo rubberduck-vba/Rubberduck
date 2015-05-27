@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBA.Nodes;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action>
                 {
-                    {"Return explicit Variant", ReturnExplicitVariant}
+                    {RubberduckUI.Inspections_ReturnExplicitVariant, ReturnExplicitVariant}
                 };
         }
 

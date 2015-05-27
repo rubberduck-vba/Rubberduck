@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
+using Rubberduck.UI;
 
 namespace Rubberduck.Config
 {
@@ -59,12 +60,9 @@ namespace Rubberduck.Config
 
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
             {
-                var message = ex.Message + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + Environment.NewLine +
-                        ConfigFile + Environment.NewLine + Environment.NewLine +
-                        "Would you like to restore default configuration?" + Environment.NewLine + 
-                        "Warning: All customized settings will be lost.";
+                var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
 
-            DialogResult result = MessageBox.Show(message, "Error Loading Rubberduck Configuration", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            DialogResult result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
                 if (result == DialogResult.Yes)
                 {
@@ -112,9 +110,9 @@ namespace Rubberduck.Config
 
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
-            var note = new ToDoMarker("NOTE:", TodoPriority.Low);
-            var todo = new ToDoMarker("TODO:", TodoPriority.Normal);
-            var bug = new ToDoMarker("BUG:", TodoPriority.High);
+            var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
+            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Normal);
+            var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
 
             return new ToDoMarker[] { note, todo, bug };
         }

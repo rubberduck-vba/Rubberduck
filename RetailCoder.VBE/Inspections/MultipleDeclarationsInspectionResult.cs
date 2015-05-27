@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>
             {
-                {"Separate multiple declarations into multiple instructions", SplitDeclarations},
+                {RubberduckUI.Inspections_SplitDeclarations, SplitDeclarations},
             };
         }
 

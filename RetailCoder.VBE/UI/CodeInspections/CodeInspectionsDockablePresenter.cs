@@ -87,8 +87,7 @@ namespace Rubberduck.UI.CodeInspections
         private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
             var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var text = string.Format("Rubberduck Code Inspections - {0}\n{1} issue" + (_results.Count != 1 ? "s" : string.Empty) + " found.\n",
-                            DateTime.Now, _results.Count) + results;
+            var text = string.Format(RubberduckUI.CodeInspections_NumberOfIssuesFound, DateTime.Now, _results.Count, (_results.Count != 1 ? "s" : string.Empty)) + results;
 
             Clipboard.SetText(text);
         }

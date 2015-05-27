@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action>
                 {
-                    {"Remove usage (breaks code)", RemoveUsage}
+                    {RubberduckUI.Inspections_RemoveUsageBreaksCode, RemoveUsage}
                 };
         }
 
@@ -35,7 +36,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = "TODO";
+            var newInstruction = RubberduckUI.Inspections_UnassignedVariableToDo;
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action>
                 {
-                    {"Remove unassigned variable", RemoveUnusedDeclaration}
+                    {RubberduckUI.Inspections_RemoveUnassignedVariable, RemoveUnusedDeclaration}
                 };
         }
 

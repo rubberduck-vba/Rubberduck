@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -18,8 +19,8 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>
             {
-                {"Pass parameter by reference", PassParameterByReference}
-                //,{"Introduce local variable", IntroduceLocalVariable}
+                {RubberduckUI.Inspections_PassParamByReference, PassParameterByReference}
+                //,{RubberduckUI.InspectionsIntroduceLocalVariable, IntroduceLocalVariable}
             };
         }
 

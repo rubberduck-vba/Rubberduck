@@ -55,17 +55,17 @@ namespace Rubberduck.UI
 
         void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
         {
-            SetStatus("Resolving '" + e.ParseResult.QualifiedName.ComponentName + "'...");
+            SetStatus(string.Format(RubberduckUI.ResolutionProgress, e.ParseResult.QualifiedName.ComponentName));
         }
 
         void _parser_ParseProgress(object sender, ParseProgressEventArgs e)
         {
-            SetStatus("Parsing '" + e.ParseResult.Name + "'...");
+            SetStatus(string.Format(RubberduckUI.ParseProgress, e.ParseResult.Name));
         }
 
         void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
         {
-            SetStatus("Parsing project components...");
+            SetStatus(RubberduckUI.ParseStarted);
         }
 
         public void SetStatus(string status)

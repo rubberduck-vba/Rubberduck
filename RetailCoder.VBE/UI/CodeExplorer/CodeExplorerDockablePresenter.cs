@@ -72,7 +72,7 @@ namespace Rubberduck.UI.CodeExplorer
                     Control.SolutionTree.Nodes.Clear();
                     foreach (var name in e.ProjectNames)
                     {
-                        var node = new TreeNode(name + " (parsing...)");
+                        var node = new TreeNode(string.Format(RubberduckUI.CodeExplorerDockablePresenter_ParseStarted, name));
                         node.ImageKey = "Hourglass";
                         node.SelectedImageKey = node.ImageKey;
 

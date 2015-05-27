@@ -4,6 +4,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBA;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -19,8 +20,8 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action>
                 {
-                    {"Replace 'Rem' usage with a single-quote comment marker", ReplaceWithSingleQuote},
-                    {"Remove comment", RemoveComment}
+                    {RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker, ReplaceWithSingleQuote},
+                    {RubberduckUI.Inspections_RemoveComment, RemoveComment}
                 };
         }
 

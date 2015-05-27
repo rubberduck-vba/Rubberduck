@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>
             {
-                { "Remove type hints", RemoveTypeHints }
+                { RubberduckUI.Inspections_RemoveTypeHints, RemoveTypeHints }
             };
         }
 

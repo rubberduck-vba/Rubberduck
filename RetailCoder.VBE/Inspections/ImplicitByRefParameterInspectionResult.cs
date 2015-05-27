@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -22,14 +23,14 @@ namespace Rubberduck.Inspections
                 // array parameters & paramarrays must be passed by reference
                 return new Dictionary<string, Action>
                 {
-                    {"Pass parameter by reference explicitly", PassParameterByRef}
+                    {RubberduckUI.Inspections_PassParamByRefExplicitly, PassParameterByRef}
                 };
             }
 
             return new Dictionary<string, Action>
                 {
-                    {"Pass parameter by reference explicitly", PassParameterByRef},
-                    {"Pass parameter by value", PassParameterByVal}
+                    {RubberduckUI.Inspections_PassParamByRefExplicitly, PassParameterByRef},
+                    {RubberduckUI.Inspections_PassParamByValue, PassParameterByVal}
                 };
         }
 

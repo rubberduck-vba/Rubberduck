@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections
             var result = new Dictionary<string, Action>();
             if (!_isInterfaceImplementation) // changing procedure type would break interface implementation
             {
-                result.Add("Convert function to procedure", ConvertFunctionToProcedure);
+                result.Add(RubberduckUI.Inspections_ConvertFunctionToProcedure, ConvertFunctionToProcedure);
             }
 
             return result;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections
             return
                 new Dictionary<string, Action>
                 {
-                    {"Declare as explicit Variant", DeclareAsExplicitVariant}
+                    {RubberduckUI.Inspections_DeclareAsExplicitVariant, DeclareAsExplicitVariant}
                 };
         }
 

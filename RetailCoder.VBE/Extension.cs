@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Extensibility;
 using Microsoft.Vbe.Interop;
+using Rubberduck.UI;
 
 namespace Rubberduck
 {
@@ -35,7 +36,7 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Rubberduck Add-In could not be loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exception.Message, RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
