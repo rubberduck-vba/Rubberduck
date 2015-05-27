@@ -52,20 +52,20 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             var paramNameColumn = new DataGridViewTextBoxColumn();
             paramNameColumn.Name = "Name";
             paramNameColumn.DataPropertyName = "Name";
-            paramNameColumn.HeaderText = "Name";
+            paramNameColumn.HeaderText = RubberduckUI.Name;
             paramNameColumn.ReadOnly = true;
 
             var paramTypeColumn = new DataGridViewTextBoxColumn();
             paramTypeColumn.Name = "TypeName";
             paramTypeColumn.DataPropertyName = "TypeName";
-            paramTypeColumn.HeaderText = "Type";
+            paramTypeColumn.HeaderText = RubberduckUI.Type;
             paramTypeColumn.ReadOnly = true;
 
             var paramPassedByColumn = new DataGridViewComboBoxColumn();
             paramPassedByColumn.Name = "Passed";
             paramPassedByColumn.DataSource = Enum.GetValues(typeof (ExtractedParameter.PassedBy));
             paramPassedByColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            paramPassedByColumn.HeaderText = "Passed";
+            paramPassedByColumn.HeaderText = RubberduckUI.Passed;
             paramPassedByColumn.DataPropertyName = "Passed";
             paramPassedByColumn.ReadOnly = true;
 

@@ -115,11 +115,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Inspections.
+        /// </summary>
+        internal static string CodeInspections {
+            get {
+                return ResourceManager.GetString("CodeInspections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inspecting....
         /// </summary>
         internal static string CodeInspections_Inspecting {
             get {
                 return ResourceManager.GetString("CodeInspections_Inspecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1} issue{2}).
+        /// </summary>
+        internal static string CodeInspections_InspectingIssues {
+            get {
+                return ResourceManager.GetString("CodeInspections_InspectingIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to next issue.
+        /// </summary>
+        internal static string CodeInspections_NavigateToNextIssue {
+            get {
+                return ResourceManager.GetString("CodeInspections_NavigateToNextIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to previous issue.
+        /// </summary>
+        internal static string CodeInspections_NavigateToPreviousIssue {
+            get {
+                return ResourceManager.GetString("CodeInspections_NavigateToPreviousIssue", resourceCulture);
             }
         }
         
@@ -133,6 +169,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} issue{1}.
+        /// </summary>
+        internal static string CodeInspections_NumberOfIssues {
+            get {
+                return ResourceManager.GetString("CodeInspections_NumberOfIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
         ///{1} issue{2} found.
         ///.
@@ -140,6 +185,24 @@ namespace Rubberduck.UI {
         internal static string CodeInspections_NumberOfIssuesFound {
             get {
                 return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run code inspections.
+        /// </summary>
+        internal static string CodeInspections_Run {
+            get {
+                return ResourceManager.GetString("CodeInspections_Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0 issues.
+        /// </summary>
+        internal static string CodeInspections_StatusButtonCaption {
+            get {
+                return ResourceManager.GetString("CodeInspections_StatusButtonCaption", resourceCulture);
             }
         }
         
@@ -441,6 +504,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fix.
+        /// </summary>
+        internal static string Fix {
+            get {
+                return ResourceManager.GetString("Fix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         internal static string Home {
@@ -621,11 +693,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Issue.
+        /// </summary>
+        internal static string Issue {
+            get {
+                return ResourceManager.GetString("Issue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Loading Rubberduck Configuration.
         /// </summary>
         internal static string LoadConfigError {
             get {
                 return ResourceManager.GetString("LoadConfigError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -639,11 +729,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        internal static string Next {
+            get {
+                return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offline.
+        /// </summary>
+        internal static string Offline {
+            get {
+                return ResourceManager.GetString("Offline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         internal static string OkButtonText {
             get {
                 return ResourceManager.GetString("OkButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        internal static string Online {
+            get {
+                return ResourceManager.GetString("Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter.
+        /// </summary>
+        internal static string Parameter {
+            get {
+                return ResourceManager.GetString("Parameter", resourceCulture);
             }
         }
         
@@ -671,6 +797,24 @@ namespace Rubberduck.UI {
         internal static string Parsing {
             get {
                 return ResourceManager.GetString("Parsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passed.
+        /// </summary>
+        internal static string Passed {
+            get {
+                return ResourceManager.GetString("Passed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        internal static string Previous {
+            get {
+                return ResourceManager.GetString("Previous", resourceCulture);
             }
         }
         
@@ -1077,6 +1221,60 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Severity.
+        /// </summary>
+        internal static string Severity {
+            get {
+                return ResourceManager.GetString("Severity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create New Repository.
+        /// </summary>
+        internal static string SourceControl_CreateNewRepo {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Working Directory.
+        /// </summary>
+        internal static string SourceControl_OpenWorkingDirectory {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Failed.
+        /// </summary>
+        internal static string TestExplorer_TestNumberFailed {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestNumberFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Inconclusive.
+        /// </summary>
+        internal static string TestExplorer_TestNumberInconclusive {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestNumberInconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Passed.
+        /// </summary>
+        internal static string TestExplorer_TestNumberPassed {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestNumberPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Run All Tests.
         /// </summary>
         internal static string TestMenu_RunAllTests {
@@ -1118,6 +1316,15 @@ namespace Rubberduck.UI {
         internal static string ToDoMarkerToDo {
             get {
                 return ResourceManager.GetString("ToDoMarkerToDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
     }

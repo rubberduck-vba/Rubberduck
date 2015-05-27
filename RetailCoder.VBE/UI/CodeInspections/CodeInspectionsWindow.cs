@@ -12,7 +12,7 @@ namespace Rubberduck.UI.CodeInspections
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return "Code Inspections"; } }
+        string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
         public BindingList<CodeInspectionResultGridViewItem> InspectionResults 
         {
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(items);
 
             CodeIssuesGridView.AutoResizeColumns();
-            CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            CodeIssuesGridView.Columns[RubberduckUI.Issue].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
@@ -89,12 +89,12 @@ namespace Rubberduck.UI.CodeInspections
                 if (completed)
                 {
                     StatusLabel.Image = Resources.exclamation_diamond;
-                    StatusLabel.Text = string.Format("{0} issue" + (issueCount != 1 ? "s" : string.Empty), issueCount);
+                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, issueCount, (issueCount != 1 ? "s" : string.Empty));
                 }
                 else
                 {
                     StatusLabel.Image = Resources.hourglass;
-                    StatusLabel.Text = string.Format("{0} ({1} issue" + (issueCount != 1 ? "s" : string.Empty) + ")", RubberduckUI.CodeInspections_Inspecting, issueCount);
+                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_InspectingIssues, RubberduckUI.CodeInspections_Inspecting, issueCount, (issueCount != 1 ? "s" : string.Empty));
                 }
             }
         }

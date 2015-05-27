@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Settings
             var nameColumn = new DataGridViewTextBoxColumn();
             nameColumn.Name = "InspectionName";
             nameColumn.DataPropertyName = "Name";
-            nameColumn.HeaderText = "Name";
+            nameColumn.HeaderText = RubberduckUI.Name;
             nameColumn.FillWeight = 150;
             nameColumn.ReadOnly = true;
             codeInspectionsGrid.Columns.Add(nameColumn);
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Settings
             var typeColumn = new DataGridViewTextBoxColumn();
             typeColumn.Name = "InspectionType";
             typeColumn.DataPropertyName = "InspectionType";
-            typeColumn.HeaderText = "Type";
+            typeColumn.HeaderText = RubberduckUI.Type;
             typeColumn.ReadOnly = true;
             codeInspectionsGrid.Columns.Add(typeColumn);
 
@@ -60,7 +60,7 @@ namespace Rubberduck.UI.Settings
             severityColumn.Name = "InspectionSeverity";
             severityColumn.DataPropertyName = "Severity";
             severityColumn.DataSource = Enum.GetValues(typeof(CodeInspectionSeverity));
-            severityColumn.HeaderText = "Severity";
+            severityColumn.HeaderText = RubberduckUI.Severity;
             severityColumn.DefaultCellStyle.Font = codeInspectionsGrid.Font;
             codeInspectionsGrid.Columns.Add(severityColumn);
 

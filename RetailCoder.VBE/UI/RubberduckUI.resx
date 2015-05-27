@@ -319,9 +319,6 @@
   <data name="ExtractMethod_TitleText" xml:space="preserve">
     <value>Extract method</value>
   </data>
-  <data name="AllImplementations_Caption" xml:space="preserve">
-    <value>Implementations of '{0}'</value>
-  </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Class or member '{0}' is not implemented.</value>
   </data>
@@ -483,5 +480,77 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="ToDoMarkerToDo" xml:space="preserve">
     <value>TODO:</value>
+  </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>Implementations of '{0}'</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Code Inspections</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues" xml:space="preserve">
+    <value>{0} ({1} issue{2})</value>
+  </data>
+  <data name="CodeInspections_NavigateToNextIssue" xml:space="preserve">
+    <value>Navigate to next issue</value>
+  </data>
+  <data name="CodeInspections_NavigateToPreviousIssue" xml:space="preserve">
+    <value>Navigate to previous issue</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
+    <value>{0} issue{1}</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Run code inspections</value>
+  </data>
+  <data name="CodeInspections_StatusButtonCaption" xml:space="preserve">
+    <value>0 issues</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>Fix</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Parameter" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Passed</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Severity" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
+    <value>Create New Repository</value>
+  </data>
+  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
+    <value>Open Working Directory</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} Failed</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Inconclusive</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} Passed</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
   </data>
 </root>

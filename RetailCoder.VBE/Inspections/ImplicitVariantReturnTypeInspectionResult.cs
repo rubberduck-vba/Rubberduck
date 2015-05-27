@@ -48,10 +48,9 @@ namespace Rubberduck.Inspections
         private ProcedureNode GetNode(ParserRuleContext context)
         {
             var result = GetNode(context as VBAParser.FunctionStmtContext);
-            if (result != null) return result;
+            if (result != null) { return result; }
             
             result = GetNode(context as VBAParser.PropertyGetStmtContext);
-            Debug.Assert(result != null, "result != null");
 
             return result;
         }

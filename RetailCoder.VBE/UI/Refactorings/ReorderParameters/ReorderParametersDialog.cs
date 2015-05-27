@@ -122,7 +122,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 Name = "Parameter",
                 DataPropertyName = "FullDeclaration",
-                HeaderText = "Parameter",
+                HeaderText = RubberduckUI.Parameter,
                 ReadOnly = true,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
