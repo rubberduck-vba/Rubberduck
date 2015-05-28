@@ -64,24 +64,6 @@ namespace Rubberduck.UI.ToDoItems
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
 
             Control.TodoItems = _gridViewSort.Sort(Control.TodoItems, columnName);
-
-            /*
-            IOrderedEnumerable<ToDoItem> resortedItems = null;
-
-
-            if (columnName == Control.SortedByColumn && Control.SortedAscending)
-            {
-                resortedItems = Control.TodoItems.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
-                Control.SortedAscending = false;
-            }
-            else
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
-                Control.SortedByColumn = columnName;
-                Control.SortedAscending = true;
-            }
-
-            Control.TodoItems = resortedItems;*/
         }
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
