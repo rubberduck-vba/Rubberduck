@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
@@ -21,6 +22,10 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addIn)
         {
+            //note: uncomment to debug localization issues
+            //InspectionNames.Culture = CultureInfo.GetCultureInfo("fr-CA");
+            //RubberduckUI.Culture = CultureInfo.GetCultureInfo("fr-CA");
+
             _configService = new ConfigurationLoader();
             _inspections = _configService.GetImplementedCodeInspections();
 

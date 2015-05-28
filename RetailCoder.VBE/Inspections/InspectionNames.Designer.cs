@@ -277,15 +277,6 @@ namespace Rubberduck.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not declared.
-        /// </summary>
-        internal static string VariableNotDeclared_ {
-            get {
-                return ResourceManager.GetString("VariableNotDeclared_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never used.
         /// </summary>
         internal static string VariableNotUsed_ {

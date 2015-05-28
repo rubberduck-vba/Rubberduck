@@ -240,6 +240,11 @@
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
+    <Compile Include="Inspections\InspectionNames.fr.Designer.cs">
+      <DependentUpon>InspectionNames.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Inspections\Inspector.cs" />
     <Compile Include="Inspections\MultilineParameterInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
@@ -328,6 +333,11 @@
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
+    <Compile Include="UI\RubberduckUI.fr.Designer.cs">
+      <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="UI\RubberduckUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -568,6 +578,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Inspections\InspectionNames.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionNames.fr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
@@ -603,6 +617,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>

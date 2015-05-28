@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(items);
 
             CodeIssuesGridView.AutoResizeColumns();
-            CodeIssuesGridView.Columns[RubberduckUI.Issue].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
