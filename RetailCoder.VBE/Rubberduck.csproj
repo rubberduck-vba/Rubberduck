@@ -288,6 +288,7 @@
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
     <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
+    <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />

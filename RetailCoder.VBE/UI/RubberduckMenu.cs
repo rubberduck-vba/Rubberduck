@@ -1,12 +1,10 @@
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -15,7 +13,9 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Rubberduck.UI
 {
@@ -59,7 +59,8 @@ namespace Rubberduck.UI
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
             var todoExplorer = new ToDoExplorerWindow();
-            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
+            var gridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, gridViewSort);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
