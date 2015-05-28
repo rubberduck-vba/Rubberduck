@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ObsoleteLet; } }
+        public string Name { get { return RubberduckUI.ObsoleteLet; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 

@@ -240,11 +240,6 @@
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
-    <Compile Include="Inspections\InspectionNames.fr.Designer.cs">
-      <DependentUpon>InspectionNames.fr.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Inspections\Inspector.cs" />
     <Compile Include="Inspections\MultilineParameterInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
@@ -416,11 +411,6 @@
     <Compile Include="Config\ConfigurationLoader.cs" />
     <Compile Include="Config\UserSettings.cs" />
     <Compile Include="Config\CodeInspectionSettings.cs" />
-    <Compile Include="Inspections\InspectionNames.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionNames.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
@@ -578,14 +568,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Inspections\InspectionNames.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionNames.fr.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\InspectionNames.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>

@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames._ObsoleteTypeHint_; } }
+        public string Name { get { return RubberduckUI._ObsoleteTypeHint_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
