@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    class ReorderParametersPresenter
+    class ReorderParametersPresenter : IDisposable
     {
         private readonly IReorderParametersView _view;
         private readonly VBProjectParseResult _parseResult;
@@ -550,6 +550,18 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
                    && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+
+            _view.OkButtonClicked -= OkButtonClicked;
         }
     }
 }

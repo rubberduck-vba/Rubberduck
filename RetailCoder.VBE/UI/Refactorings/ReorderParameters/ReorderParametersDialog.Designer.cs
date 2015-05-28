@@ -18,6 +18,19 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             if (disposing && (components != null))
             {
+                MethodParametersGrid.SelectionChanged -= MethodParametersGrid_SelectionChanged;
+                MethodParametersGrid.MouseMove -= MethodParametersGrid_MouseMove;
+                MethodParametersGrid.MouseDown -= MethodParametersGrid_MouseDown;
+                MethodParametersGrid.DragOver -= MethodParametersGrid_DragOver;
+                MethodParametersGrid.DragDrop -= MethodParametersGrid_DragDrop;
+
+                this.OkButton.Click -= new System.EventHandler(this.OkButtonClick);
+                this.CancelButton.Click -= new System.EventHandler(this.CancelButtonClick);
+                this.MoveDownButton.Click -= new System.EventHandler(this.MoveDownButtonClicked);
+                this.MoveUpButton.Click -= new System.EventHandler(this.MoveUpButtonClicked);
+
+                Parameters.Clear();
+
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -84,6 +97,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.CancelButton.TabIndex = 0;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = false;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButtonClick);
             // 
             // OkButton
             // 

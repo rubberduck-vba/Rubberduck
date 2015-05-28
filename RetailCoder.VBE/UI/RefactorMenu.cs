@@ -467,6 +467,7 @@ namespace Rubberduck.UI
             {
                 var presenter = new ReorderParametersPresenter(view, result, selection);
                 presenter.Show();
+                presenter.Dispose();
             }
         }
 
