@@ -136,11 +136,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             OnOkButtonClicked();
         }
 
-        private void CancelButtonClick(object sender, EventArgs e)
-        {
-            OnCancelButtonClicked();
-        }
-
         public event EventHandler CancelButtonClicked;
         public void OnCancelButtonClicked()
         {
