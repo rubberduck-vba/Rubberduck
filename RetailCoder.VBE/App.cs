@@ -22,13 +22,12 @@ namespace Rubberduck
 
         public App(VBE vbe, AddIn addIn)
         {
-            //note: uncomment to debug localization issues
-            //RubberduckUI.Culture = CultureInfo.GetCultureInfo("fr-CA");
-
             _configService = new ConfigurationLoader();
             _inspections = _configService.GetImplementedCodeInspections();
 
             var config = _configService.LoadConfiguration();
+            RubberduckUI.Culture = CultureInfo.GetCultureInfo(config.UserSettings.LanguageSetting.Code);
+
             EnableCodeInspections(config);
             var parser = new RubberduckParser();
             var editor = new ActiveCodePaneEditor(vbe);

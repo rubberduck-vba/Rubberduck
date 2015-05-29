@@ -810,6 +810,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        internal static string Language_EN {
+            get {
+                return ResourceManager.GetString("Language_EN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to French.
+        /// </summary>
+        internal static string Language_FR {
+            get {
+                return ResourceManager.GetString("Language_FR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Loading Rubberduck Configuration.
         /// </summary>
         internal static string LoadConfigError {
@@ -1415,6 +1433,15 @@ namespace Rubberduck.UI {
         internal static string RubberduckMenu_UnitTests {
             get {
                 return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display language:.
+        /// </summary>
+        internal static string Settings_LanguageLabel {
+            get {
+                return ResourceManager.GetString("Settings_LanguageLabel", resourceCulture);
             }
         }
         

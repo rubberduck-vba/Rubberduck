@@ -18,69 +18,74 @@ namespace Rubberduck.Config
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
-        {
-
+    {
         protected override string ConfigFile
-            {
-            get { return Path.Combine(this.rootPath, "rubberduck.config"); }
-            }
+        {
+            get { return Path.Combine(rootPath, "rubberduck.config"); }
+        }
 
-        /// <summary>   Loads the configuration from Rubberduck.config xml file. </summary>
-        /// <remarks> If an IOException occurs, returns a default configuration.</remarks>
+        /// <summary>
+        /// Loads the configuration from Rubberduck.config xml file.
+        /// </summary>
+        /// <remarks>
+        /// Returns default configuration when an IOException is caught.
+        /// </remarks>
         public override Configuration LoadConfiguration()
         {
-                    //deserialization can silently fail for just parts of the config, 
-                    //  so we null check and return defaults if necessary.
+            //deserialization can silently fail for just parts of the config, 
+            //so we null-check and return defaults if necessary.
 
             var config = base.LoadConfiguration();
 
-                    if (config.UserSettings.ToDoListSettings == null)
-                    {
-                        config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
-                    }
-
-                    if (config.UserSettings.CodeInspectionSettings == null)
-                    {
-                        config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
-                    }
-
-                    var implementedInspections = GetImplementedCodeInspections();
-                    var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
-                    
-                    configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
-                    config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
-
-                    return config;
-                }
-
-        protected override Configuration HandleIOException(IOException ex)
+            if (config.UserSettings.LanguageSetting == null)
             {
-                return GetDefaultConfiguration();
+                config.UserSettings.LanguageSetting = new DisplayLanguageSetting("en-US");
             }
 
-        protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
+            if (config.UserSettings.ToDoListSettings == null)
             {
-                var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
+                config.UserSettings.ToDoListSettings = new ToDoListSettings(GetDefaultTodoMarkers());
+            }
 
-            DialogResult result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (config.UserSettings.CodeInspectionSettings == null)
+            {
+                config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
+            }
 
-                if (result == DialogResult.Yes)
-                {
-                    var config = GetDefaultConfiguration();
+            var implementedInspections = GetImplementedCodeInspections();
+            var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
+            
+            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+            config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
+
+            return config;
+        }
+
+        protected override Configuration HandleIOException(IOException ex)
+        {
+            return GetDefaultConfiguration();
+        }
+
+        protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
+        {
+            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
+            var result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+            if (result == DialogResult.Yes)
+            {
+                var config = GetDefaultConfiguration();
                 SaveConfiguration(config);
-                    return config;
-                }
+                return config;
+            }
 
             throw ex;
-
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
         {
-            bool found;
             foreach (var implementedInspection in implementedInspections)
             {
-                found = false;
+                var found = false;
                 foreach (var configInspection in configInspections)
                 {
                     if (implementedInspection.Name == configInspection.Name)
@@ -101,6 +106,7 @@ namespace Rubberduck.Config
         public Configuration GetDefaultConfiguration()
         {
             var userSettings = new UserSettings(
+                                    new DisplayLanguageSetting("en-US"), 
                                     new ToDoListSettings(GetDefaultTodoMarkers()),
                                     new CodeInspectionSettings(GetDefaultCodeInspections())
                                );
@@ -114,7 +120,7 @@ namespace Rubberduck.Config
             var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Normal);
             var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
 
-            return new ToDoMarker[] { note, todo, bug };
+            return new[] { note, todo, bug };
         }
 
         /// <summary>   Converts implemented code inspections into array of Config.CodeInspection objects. </summary>

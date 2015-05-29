@@ -230,6 +230,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\DisplayLanguageSetting.cs" />
     <Compile Include="Config\SourceControlConfiguration.cs" />
     <Compile Include="Config\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
@@ -463,11 +464,11 @@
     <Compile Include="Config\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
     <Compile Include="UI\Menu.cs" />
-    <Compile Include="UI\Settings\CodeInspectionControl.cs">
+    <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Settings\CodeInspectionControl.Designer.cs">
-      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    <Compile Include="UI\Settings\CodeInspectionSettingsControl.Designer.cs">
+      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\ConfigurationTreeView.cs">
       <SubType>UserControl</SubType>
@@ -613,8 +614,8 @@
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
-      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
+      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
       <DependentUpon>ConfigurationTreeView.cs</DependentUpon>

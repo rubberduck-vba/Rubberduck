@@ -658,4 +658,13 @@ Warning: All customized settings will be lost.</value>
   <data name="Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
+  <data name="Settings_LanguageLabel" xml:space="preserve">
+    <value>Display language:</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>French</value>
+  </data>
 </root>

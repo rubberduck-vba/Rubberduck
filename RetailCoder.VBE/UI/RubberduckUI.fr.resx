@@ -646,4 +646,13 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="_TypeNotDeclared_" xml:space="preserve">
     <value>{0} '{1}' est implicitement Variant</value>
   </data>
+  <data name="Settings_LanguageLabel" xml:space="preserve">
+    <value>Langue d'affichage:</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Anglais</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Français</value>
+  </data>
 </root>

@@ -34,6 +34,8 @@ namespace Rubberduck.UI.Settings
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.InstructionsLabel = new System.Windows.Forms.Label();
+            this.LanguageLabel = new System.Windows.Forms.Label();
+            this.LanguageList = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -69,11 +71,31 @@ namespace Rubberduck.UI.Settings
             this.InstructionsLabel.Size = new System.Drawing.Size(8, 21);
             this.InstructionsLabel.TabIndex = 5;
             // 
+            // LanguageLabel
+            // 
+            this.LanguageLabel.AutoSize = true;
+            this.LanguageLabel.Location = new System.Drawing.Point(14, 161);
+            this.LanguageLabel.Name = "LanguageLabel";
+            this.LanguageLabel.Size = new System.Drawing.Size(58, 13);
+            this.LanguageLabel.TabIndex = 6;
+            this.LanguageLabel.Text = "Language:";
+            // 
+            // LanguageList
+            // 
+            this.LanguageList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguageList.FormattingEnabled = true;
+            this.LanguageList.Location = new System.Drawing.Point(17, 178);
+            this.LanguageList.Name = "LanguageList";
+            this.LanguageList.Size = new System.Drawing.Size(156, 21);
+            this.LanguageList.TabIndex = 7;
+            // 
             // GeneralSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.LanguageList);
+            this.Controls.Add(this.LanguageLabel);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.InstructionsLabel);
             this.Controls.Add(this.pictureBox1);
@@ -91,5 +113,7 @@ namespace Rubberduck.UI.Settings
         private PictureBox pictureBox1;
         private Label TitleLabel;
         private Label InstructionsLabel;
+        private Label LanguageLabel;
+        private ComboBox LanguageList;
     }
 }
