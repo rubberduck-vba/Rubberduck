@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -12,21 +13,35 @@ namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerDockablePresenter : DockablePresenterBase
     {
-        private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
+        private ITestExplorerWindow Control { get { return UserControl as ITestExplorerWindow; } }
+        private GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
+            _gridViewSort = gridViewSort;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
             _testEngine.ModuleCleanup += _testEngine_ModuleCleanup;
             _testEngine.MethodInitialize += TestEngineMethodInitialize;
             _testEngine.MethodCleanup += TestEngineMethodCleanup;
 
+            Control.SortColumn += SortColumn;
+
             RegisterTestExplorerEvents();
         }
+
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+
+            // type "Image" doesn't implement "IComparable", so we need to sort by the outcome instead
+            if (columnName == RubberduckUI.Result) { columnName = RubberduckUI.Outcome; }
+            Control.AllTests = new BindingList<TestExplorerItem>(_gridViewSort.Sort(Control.AllTests.AsEnumerable(), columnName).ToList());
+        }
+
 
         private void TestEngineMethodCleanup(object sender, TestModuleEventArgs e)
         {

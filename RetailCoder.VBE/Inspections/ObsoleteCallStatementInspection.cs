@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -13,7 +14,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ObsoleteCall; } }
+        public string Name { get { return RubberduckUI.ObsoleteCall; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 

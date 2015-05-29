@@ -11,8 +11,6 @@ namespace Rubberduck.UI.ToDoItems
         event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;
         event EventHandler RefreshToDoItems;
         event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
-        bool SortedAscending { get; set; }
-        string SortedByColumn { get; set; }
         IEnumerable<ToDoItem> TodoItems { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -15,7 +16,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return InspectionNames.ObsoleteComment; } }
+        public string Name { get { return RubberduckUI.ObsoleteComment; } }
         public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 

@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -15,7 +16,7 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.MultilineParameter_; } }
+        public string Name { get { return RubberduckUI.MultilineParameter_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? InspectionNames.EasterEgg_Continuator : Name, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Name, param.IdentifierName), Severity, param.Context, param.QualifiedName));
 
             return issues;
         }

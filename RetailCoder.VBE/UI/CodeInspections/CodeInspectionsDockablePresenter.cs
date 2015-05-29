@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,6 +19,7 @@ namespace Rubberduck.UI.CodeInspections
 
         private IEnumerable<VBProjectParseResult> _parseResults;
         private IList<ICodeInspectionResult> _results;
+        private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
 
         /// <summary>
@@ -27,7 +29,7 @@ namespace Rubberduck.UI.CodeInspections
         /// <param name="vbe"></param>
         /// <param name="addin"></param>
         /// <param name="window"></param>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -36,11 +38,20 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Parsing += _inspector_Parsing;
             _inspector.ParseCompleted += _inspector_ParseCompleted;
 
+            _gridViewSort = gridViewSort;
+
             Control.RefreshCodeInspections += Control_RefreshCodeInspections;
             Control.NavigateCodeIssue += Control_NavigateCodeIssue;
             Control.QuickFix += Control_QuickFix;
             Control.CopyResults += Control_CopyResultsToClipboard;
             Control.Cancel += Control_Cancel;
+            Control.SortColumn += SortColumn;
+        }
+
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            Control.InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(_gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), columnName).ToList());
         }
 
         private void Control_Cancel(object sender, EventArgs e)

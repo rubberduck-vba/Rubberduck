@@ -48,6 +48,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             MethodParametersGrid.Columns.Clear();
             MethodParametersGrid.DataSource = _parameters;
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
+            MethodParametersGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
             var paramNameColumn = new DataGridViewTextBoxColumn();
             paramNameColumn.Name = "Name";

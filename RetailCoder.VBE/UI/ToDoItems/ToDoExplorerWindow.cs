@@ -14,9 +14,6 @@ namespace Rubberduck.UI.ToDoItems
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.ToDoExplorer_Caption; } }
 
-        public string SortedByColumn { get; set; }
-        public bool SortedAscending { get; set; }
-
         private BindingList<ToDoItem> _todoItems;
         public IEnumerable<ToDoItem> TodoItems 
         { 

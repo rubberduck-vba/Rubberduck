@@ -309,6 +309,7 @@ namespace Rubberduck.UI.UnitTesting
             this.testOutputGridView.Size = new System.Drawing.Size(600, 175);
             this.testOutputGridView.TabIndex = 1;
             this.testOutputGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridCellDoubleClicked);
+            this.testOutputGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ColumnHeaderMouseClicked);
             // 
             // TestExplorerWindow
             // 

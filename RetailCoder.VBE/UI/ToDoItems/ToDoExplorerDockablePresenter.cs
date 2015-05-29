@@ -10,6 +10,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.UI;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -20,13 +21,15 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;
+        private GridViewSort<ToDoItem> _gridViewSort;
         private IToDoExplorerWindow Control { get { return UserControl as IToDoExplorerWindow; } }
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort)
             : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
+            _gridViewSort = gridViewSort;
             Control.NavigateToDoItem += NavigateToDoItem;
             Control.RefreshToDoItems += RefreshToDoList;
             Control.SortColumn += SortColumn;
@@ -59,22 +62,8 @@ namespace Rubberduck.UI.ToDoItems
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
-            IOrderedEnumerable<ToDoItem> resortedItems = null;
 
-
-            if (columnName == Control.SortedByColumn && Control.SortedAscending)
-            {
-                resortedItems = Control.TodoItems.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
-                Control.SortedAscending = false;
-            }
-            else
-            {
-                resortedItems = Control.TodoItems.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
-                Control.SortedByColumn = columnName;
-                Control.SortedAscending = true;
-            }
-
-            Control.TodoItems = resortedItems;
+            Control.TodoItems = _gridViewSort.Sort(Control.TodoItems, columnName);
         }
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()

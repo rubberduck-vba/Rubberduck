@@ -571,4 +571,91 @@ Warning: All customized settings will be lost.</value>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="ByValParameterIsAssigned_" xml:space="preserve">
+    <value>ByVal parameter '{0}' is assigned</value>
+  </data>
+  <data name="ConstantNotUsed_" xml:space="preserve">
+    <value>Constant '{0}' is never used</value>
+  </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>You've earned the "Continuator" badge!</value>
+  </data>
+  <data name="FunctionNotUsed_" xml:space="preserve">
+    <value>Function '{0}' is never used</value>
+  </data>
+  <data name="ImplicitByRef_" xml:space="preserve">
+    <value>Parameter '{0}' is passed ByRef implicitly</value>
+  </data>
+  <data name="ImplicitPublicMember_" xml:space="preserve">
+    <value>Member '{0}' is implicitly Public</value>
+  </data>
+  <data name="ImplicitVariantReturnType_" xml:space="preserve">
+    <value>Function '{0}' returns an implicit Variant</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Module options should be specified first</value>
+  </data>
+  <data name="MultilineParameter_" xml:space="preserve">
+    <value>Parameter '{0}' is declared on multiple lines</value>
+  </data>
+  <data name="MultipleDeclarations" xml:space="preserve">
+    <value>Instruction contains multiple declarations</value>
+  </data>
+  <data name="NonReturningFunction_" xml:space="preserve">
+    <value>Return value for member '{0}' is never assigned</value>
+  </data>
+  <data name="ObsoleteCall" xml:space="preserve">
+    <value>Use of obsolete Call statement</value>
+  </data>
+  <data name="ObsoleteComment" xml:space="preserve">
+    <value>Use of obsolete Rem comment syntax</value>
+  </data>
+  <data name="ObsoleteGlobal" xml:space="preserve">
+    <value>Use of obsolete Global access modifier</value>
+  </data>
+  <data name="ObsoleteLet" xml:space="preserve">
+    <value>Use of obsolete Let statement</value>
+  </data>
+  <data name="OptionBase" xml:space="preserve">
+    <value>Potentially confusing implicit array lower bound</value>
+  </data>
+  <data name="OptionExplicit" xml:space="preserve">
+    <value>Option Explicit is not specified</value>
+  </data>
+  <data name="ParameterCanBeByVal_" xml:space="preserve">
+    <value>Parameter '{0}' can be passed by value</value>
+  </data>
+  <data name="ParameterNotUsed_" xml:space="preserve">
+    <value>Parameter '{0}' is not used</value>
+  </data>
+  <data name="ProcedureNotUsed_" xml:space="preserve">
+    <value>Procedure '{0}' is never used</value>
+  </data>
+  <data name="UnassignedVariableUsage_" xml:space="preserve">
+    <value>Use of unassigned variable '{0}'</value>
+  </data>
+  <data name="VariableNotAssigned_" xml:space="preserve">
+    <value>Variable '{0}' is never assigned</value>
+  </data>
+  <data name="VariableNotUsed_" xml:space="preserve">
+    <value>Variable '{0}' is never used</value>
+  </data>
+  <data name="_ObsoleteTypeHint_" xml:space="preserve">
+    <value>Use of obsolete type hint in {0} '{1}'</value>
+  </data>
+  <data name="_TypeNotDeclared_" xml:space="preserve">
+    <value>{0} '{1}' is implicitly Variant</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
 </root>

@@ -1,12 +1,10 @@
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -15,7 +13,9 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Rubberduck.UI
 {
@@ -45,7 +45,8 @@ namespace Rubberduck.UI
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
+            var testGridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
@@ -59,11 +60,13 @@ namespace Rubberduck.UI
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
             var todoExplorer = new ToDoExplorerWindow();
-            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
+            var todoGridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, todoGridViewSort);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
+            var inspectionGridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor);
