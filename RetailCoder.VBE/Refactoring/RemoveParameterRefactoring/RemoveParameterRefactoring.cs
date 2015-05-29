@@ -1,26 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 
-namespace Rubberduck.UI.Refactorings.RemoveParameter
+namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 {
-    class RemoveParameterPresenter
+    public class RemoveParameterRefactoring : IRefactoring
     {
         private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
         private readonly Declaration _target;
         private readonly Declaration _method;
-        private readonly List<Declaration> _parameters = new List<Declaration>();
+        public List<Parameter> Parameters = new List<Parameter>();
 
-        public RemoveParameterPresenter(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target)
+        {
+            _parseResult = parseResult;
+            _declarations = parseResult.Declarations;
+            
+            int indexOfParam;
+
+            if (target.DeclarationType != DeclarationType.Parameter) { throw new ArgumentException("Invalid target type"); }
+            _target = target;
+
+            FindMethod(out _method, out indexOfParam, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+
+            LoadParameters();
+        }
+
+        public RemoveParameterRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
@@ -43,32 +61,33 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 GetGetter(out _target, ref _method);
             }
 
-            PromptIfTargetImplementsInterface(ref _target, ref _method);
+            LoadParameters();
+        }
 
+        public void Refactor()
+        {
             RemoveParameter();
         }
 
+        public Declaration AcquireTarget(QualifiedSelection selection) { return null; }
+
         private void LoadParameters()
         {
-            _parameters.AddRange(FindTargets(_method));
+            var index = 0;
+            foreach (var target in FindTargets(_method))
+            {
+                Parameters.Add(new Parameter(target, index++));
+            }
         }
 
         private void RemoveParameter()
         {
-            if (_target == null || _method == null || !ConfirmRemove()) { return; }
+            if (_target == null || _method == null) { throw new NullReferenceException("Parameter is null."); }
 
             LoadParameters();
 
             AdjustReferences(_method.References, _method);
             AdjustSignatures();
-        }
-
-        private bool ConfirmRemove()
-        {
-            var message = string.Format(RubberduckUI.RemovePresenter_ConfirmParameter, _target.Context.GetText().RemoveExtraSpaces());
-            var confirm = MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            
-            return confirm == DialogResult.Yes;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
@@ -103,7 +122,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
         private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = _parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText());
+            var paramIndex = Parameters.FindIndex(item => item.Declaration.Context.GetText() == _target.Context.GetText());
 
             if (paramIndex >= paramNames.Count) { return; }
 
@@ -138,7 +157,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                             }
                         }
                     }
-                } while (paramIndex >= _parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
+                } while (paramIndex >= Parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
             }
         }
 
@@ -312,7 +331,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameter
                 paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
 
-            var indexOfParam = _parameters.FindIndex(item => item.Context.GetText() == _target.Context.GetText());
+            var indexOfParam = Parameters.FindIndex(item => item.Declaration.Context.GetText() == _target.Context.GetText());
 
             var targets = FindTargets(declaration).ToList();
             var target = indexOfParam < targets.Count() ? targets.ElementAt(indexOfParam) : targets.ElementAt(targets.Count() - 1);

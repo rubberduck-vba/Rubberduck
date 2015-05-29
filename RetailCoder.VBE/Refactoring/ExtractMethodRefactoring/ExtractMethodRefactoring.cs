@@ -90,10 +90,5 @@ namespace Rubberduck.Refactoring.ExtractMethodRefactoring
                 presenter.Show();
             }
         }
-
-        void IRefactoring.Refactor(Declaration target)
-        {
-            throw new NotImplementedException("This refactoring requires a QualifiedSelection.");
-        }
     }
 }

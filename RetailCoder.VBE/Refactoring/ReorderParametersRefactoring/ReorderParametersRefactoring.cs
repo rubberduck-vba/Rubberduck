@@ -50,16 +50,6 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             AdjustSignatures();
         }
 
-        public void Refactor(Declaration target)
-        {
-            Refactor();
-        }
-
-        public void Refactor(QualifiedSelection selection)
-        {
-            Refactor();
-        }
-
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
             foreach (var reference in references.Where(item => item.Context != Target.Context))

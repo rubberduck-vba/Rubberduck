@@ -8,7 +8,7 @@ namespace Rubberduck.Refactoring
         Declaration AcquireTarget(QualifiedSelection selection);
 
         void Refactor();
-        void Refactor(QualifiedSelection selection);
-        void Refactor(Declaration target);
+        //void Refactor(QualifiedSelection selection);
+        //void Refactor(Declaration target);
     }
 }
