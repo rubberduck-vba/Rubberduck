@@ -23,7 +23,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
         private readonly Declaration _method;
         public List<Parameter> Parameters = new List<Parameter>();
 
-        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target)
+        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target, bool removeTarget = true)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
@@ -36,9 +36,13 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             FindMethod(out _method, out indexOfParam, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
 
             LoadParameters();
+            if (removeTarget)
+            {
+                Parameters.Find(item => item.Declaration == target).IsRemoved = true;
+            }
         }
 
-        public RemoveParameterRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public RemoveParameterRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection, bool removeSelectionTarget = false)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
@@ -62,11 +66,19 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             }
 
             LoadParameters();
+            if (removeSelectionTarget)
+            {
+                Parameters.Find(item => item.Declaration == _target).IsRemoved = true;
+            }
         }
 
         public void Refactor()
         {
-            RemoveParameter();
+            var paramsToRemove = Parameters.Where(item => item.IsRemoved);
+            foreach (var param in paramsToRemove)
+            {
+                RemoveParameter(param.Declaration);
+            }
         }
 
         public Declaration AcquireTarget(QualifiedSelection selection) { return null; }
@@ -80,17 +92,17 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             }
         }
 
-        private void RemoveParameter()
+        private void RemoveParameter(Declaration paramToRemove)
         {
             if (_target == null || _method == null) { throw new NullReferenceException("Parameter is null."); }
 
             LoadParameters();
 
-            AdjustReferences(_method.References, _method);
-            AdjustSignatures();
+            AdjustReferences(paramToRemove, _method.References, _method);
+            AdjustSignatures(paramToRemove);
         }
 
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
+        private void AdjustReferences(Declaration paramToRemove, IEnumerable<IdentifierReference> references, Declaration method)
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
@@ -115,14 +127,14 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                     continue;
                 }
 
-                RemoveCallParameter(paramList, module);
+                RemoveCallParameter(paramToRemove, paramList, module);
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RemoveCallParameter(Declaration paramToRemove, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = Parameters.FindIndex(item => item.Declaration.Context.GetText() == _target.Context.GetText());
+            var paramIndex = Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
 
             if (paramIndex >= paramNames.Count) { return; }
 
@@ -134,18 +146,18 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
                 do
                 {
-                    var paramToRemove = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(_target.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
+                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(paramToRemove.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
 
-                    if (paramToRemove == null || !content.Contains(paramToRemove)) { continue; }
+                    if (paramToRemoveName == null || !content.Contains(paramToRemoveName)) { continue; }
 
-                    var valueToRemove = paramToRemove != paramNames.Last() ?
-                                        paramToRemove + "," :
-                                        paramToRemove;
+                    var valueToRemove = paramToRemoveName != paramNames.Last() ?
+                                        paramToRemoveName + "," :
+                                        paramToRemoveName;
 
                     content = content.Replace(valueToRemove, "");
 
                     module.ReplaceLine(lineNum, content);
-                    if (paramToRemove == paramNames.Last())
+                    if (paramToRemoveName == paramNames.Last())
                     {
                         for (var line = lineNum; line >= paramList.Start.Line; line--)
                         {
@@ -161,21 +173,21 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             }
         }
 
-        private string GetReplacementSignature(Declaration target)
+        private string GetReplacementSignature(Declaration paramToRemove)
         {
-            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == paramToRemove.QualifiedName.QualifiedModuleName);
             if (targetModule == null)
             {
                 return null;
             }
 
-            var argContext = (VBAParser.ArgContext)target.Context;
+            var argContext = (VBAParser.ArgContext)paramToRemove.Context;
             var rewriter = targetModule.GetRewriter();
             rewriter.Replace(argContext.Start.TokenIndex, argContext.Stop.TokenIndex, "");
 
             // Target.Context is an ArgContext, its parent is an ArgsListContext;
             // the ArgsListContext's parent is the procedure context and it includes the body.
-            var context = (ParserRuleContext)target.Context.Parent.Parent;
+            var context = (ParserRuleContext)paramToRemove.Context.Parent.Parent;
             var firstTokenIndex = context.Start.TokenIndex;
             var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
 
@@ -265,7 +277,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             return signature;
         }
 
-        private void AdjustSignatures()
+        private void AdjustSignatures(Declaration paramToRemove)
         {
             var proc = (dynamic)_method.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
@@ -287,14 +299,14 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                 }
             }
                 
-            RemoveSignatureParameter(_target, paramList, module);
+            RemoveSignatureParameter(paramToRemove, paramList, module);
 
             foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _method.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References, reference);
-                    AdjustSignatures(reference);
+                    AdjustReferences(paramToRemove, reference.References, reference);
+                    AdjustSignatures(paramToRemove, reference);
                 }
             }
 
@@ -303,8 +315,8 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                                                                item.IdentifierName == _method.ComponentName + "_" + _method.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
-                AdjustSignatures(interfaceImplentation);
+                AdjustReferences(paramToRemove, interfaceImplentation.References, interfaceImplentation);
+                AdjustSignatures(paramToRemove, interfaceImplentation);
             }
         }
 
@@ -315,7 +327,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                               item.DeclarationType == declarationType);
         }
 
-        private void AdjustSignatures(Declaration declaration)
+        private void AdjustSignatures(Declaration paramToRemove, Declaration declaration)
         {
             var proc = (dynamic)declaration.Context.Parent;
             var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
@@ -331,7 +343,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                 paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
             }
 
-            var indexOfParam = Parameters.FindIndex(item => item.Declaration.Context.GetText() == _target.Context.GetText());
+            var indexOfParam = Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
 
             var targets = FindTargets(declaration).ToList();
             var target = indexOfParam < targets.Count() ? targets.ElementAt(indexOfParam) : targets.ElementAt(targets.Count() - 1);
@@ -339,9 +351,9 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             RemoveSignatureParameter(target, paramList, module);
         }
 
-        private void RemoveSignatureParameter(Declaration target, VBAParser.ArgListContext paramList, CodeModule module)
+        private void RemoveSignatureParameter(Declaration paramToRemove, VBAParser.ArgListContext paramList, CodeModule module)
         {
-            var newContent = ReplaceCommas(GetReplacementSignature(target), target, paramList);
+            var newContent = ReplaceCommas(GetReplacementSignature(paramToRemove), paramToRemove, paramList);
             var lineNum = paramList.GetSelection().LineCount;
 
             module.ReplaceLine(paramList.Start.Line, newContent);

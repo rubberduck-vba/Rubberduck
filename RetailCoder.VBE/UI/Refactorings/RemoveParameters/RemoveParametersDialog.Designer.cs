@@ -80,6 +80,7 @@
             this.OkButton.TabIndex = 1;
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
+            this.OkButton.Click += new System.EventHandler(this.OkButtonClick);
             // 
             // AddButton
             // 
@@ -94,6 +95,7 @@
             this.AddButton.Text = "Add";
             this.AddButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
             this.AddButton.UseVisualStyleBackColor = true;
+            this.AddButton.Click += new System.EventHandler(this.AddButtonClicked);
             // 
             // panel1
             // 
@@ -165,6 +167,7 @@
             this.RemoveButton.Text = "Remove";
             this.RemoveButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.RemoveButton.UseVisualStyleBackColor = true;
+            this.RemoveButton.Click += new System.EventHandler(this.RemoveButtonClicked);
             // 
             // RemoveParametersDialog
             // 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -23,12 +24,24 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             _view.RemoveParams = new Refactoring.RemoveParameterRefactoring.RemoveParameterRefactoring(parseResult, selection);
 
             _declarations = parseResult.Declarations;
+
+            _view.OkButtonClicked += OkButtonClicked;
         }
 
         public void Show()
         {
             _view.InitializeParameterGrid();
             _view.ShowDialog();
+        }
+
+        private void OkButtonClicked(object sender, EventArgs e)
+        {
+            if (!_view.RemoveParams.Parameters.Where(item => item.IsRemoved).Any())
+            {
+                return;
+            }
+
+            _view.RemoveParams.Refactor();
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target, ref Declaration method)

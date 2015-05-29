@@ -19,8 +19,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             InitializeCaptions();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
-            RemoveButton.Click += RemoveButtonClicked;
-            AddButton.Click += AddButtonClicked;
             MethodParametersGrid.CellMouseDoubleClick += MethodParametersGrid_CellMouseDoubleClick;
         }
 
