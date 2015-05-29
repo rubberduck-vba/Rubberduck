@@ -45,9 +45,13 @@ namespace Rubberduck.UI.CodeInspections
 
             CodeIssuesGridView.AutoResizeColumns();
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.Issue;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
+
+            NextButton.Text = RubberduckUI.CodeInspections_NavigateToNextIssue;
+            PreviousButton.Text = RubberduckUI.CodeInspections_NavigateToPreviousIssue;
         }
 
         public void ToggleParsingStatus(bool enabled = true)

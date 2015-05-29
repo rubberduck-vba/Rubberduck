@@ -221,7 +221,7 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspection...</value>
   </data>
-  <data name="CodeInspections_NoIssues" xml:space="preserve">
+  <data name="CodeInspections_StatusOK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
@@ -514,7 +514,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Name" xml:space="preserve">
     <value>Nom</value>
   </data>
-  <data name="Next" xml:space="preserve">
+  <data name="NavigateNextIssue" xml:space="preserve">
     <value>Suivant</value>
   </data>
   <data name="Offline" xml:space="preserve">
@@ -526,10 +526,10 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Parameter" xml:space="preserve">
     <value>Paramètre</value>
   </data>
-  <data name="Passed" xml:space="preserve">
-    <value>Succès</value>
+  <data name="ExtractMethod_ParamPassedBy" xml:space="preserve">
+    <value>Passé</value>
   </data>
-  <data name="Previous" xml:space="preserve">
+  <data name="NavigatePreviousIssue" xml:space="preserve">
     <value>Précédent</value>
   </data>
   <data name="Severity" xml:space="preserve">

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
 
@@ -7,12 +10,38 @@ namespace Rubberduck.UnitTesting
 {
     public static class NewUnitTestModuleCommand
     {
-        private static readonly string TestModuleEmptyTemplate = string.Concat(
+        public static void EnsureReferenceToAddInLibrary(this VBProject project)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var name = assembly.GetName().Name.Replace('.', '_');
+            var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
+
+            var references = project.References.Cast<Reference>().ToList();
+
+            var reference = references.SingleOrDefault(r => r.Name == name);
+            if (reference != null)
+            {
+                project.References.Remove(reference);
+            }
+
+            if (references.All(r => r.FullPath != referencePath))
+            {
+                project.References.AddFromFile(referencePath);
+            }
+        }
+
+        private static readonly string TestModuleEmptyTemplate = String.Concat(
                  "'@TestModule\n"
+                , "'' uncomment for late-binding:\n"
+                , "'Private Assert As Object\n"
+                , "'' early-binding requires reference to Rubberduck.UnitTesting.tlb:\n"
                 , "Private Assert As New Rubberduck_UnitTesting.AssertClass\n\n"
-                ,"'@ModuleInitialize\n"
+                , "'@ModuleInitialize\n"
                 ,"Public Sub ModuleInitialize()\n"
                 ,"    'this method runs once per module.\n"
+                ,"    '' uncomment for late-binding:\n"
+                ,"    'Set Assert = CreateObject(\"Rubberduck_UnitTesting.AssertClass\")\n"
                 ,"End Sub\n\n"
                 , "'@ModuleCleanup\n"
                 , "Public Sub ModuleCleanup()\n"
@@ -46,7 +75,7 @@ namespace Rubberduck.UnitTesting
                     hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
                 }
 
-                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\n", "Option Private Module\n\n");
+                var options = String.Concat(hasOptionExplicit ? String.Empty : "Option Explicit\n", "Option Private Module\n\n");
 
                 module.CodeModule.AddFromString(options + TestModuleEmptyTemplate);
                 module.Activate();
@@ -61,7 +90,7 @@ namespace Rubberduck.UnitTesting
             var names = project.ComponentNames();
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
 
-            return string.Concat(TestModuleBaseName, index);
+            return String.Concat(TestModuleBaseName, index);
         }
     }
 }
