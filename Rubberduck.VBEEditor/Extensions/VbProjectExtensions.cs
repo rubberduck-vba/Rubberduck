@@ -16,22 +16,6 @@ namespace Rubberduck.VBEditor.Extensions
             }
         }
 
-        public static void EnsureReferenceToAddInLibrary(this VBProject project)
-        {
-            var referencePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".tlb");
-
-            List<Reference> existing = project.References.Cast<Reference>().Where(r => r.Name == "Rubberduck").ToList();
-            foreach (Reference reference in existing)
-            {
-                project.References.Remove(reference);
-            }
-
-            if (project.References.Cast<Reference>().All(r => r.FullPath != referencePath))
-            {
-                project.References.AddFromFile(referencePath);
-            }
-        }
-
         /// <summary>
         /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
         /// </summary>
