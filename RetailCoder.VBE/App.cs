@@ -23,7 +23,7 @@ namespace Rubberduck
         public App(VBE vbe, AddIn addIn)
         {
             //note: uncomment to debug localization issues
-            RubberduckUI.Culture = CultureInfo.GetCultureInfo("fr-CA");
+            //RubberduckUI.Culture = CultureInfo.GetCultureInfo("fr-CA");
 
             _configService = new ConfigurationLoader();
             _inspections = _configService.GetImplementedCodeInspections();

@@ -490,6 +490,7 @@
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
+    <Compile Include="UI\UnitTesting\ITestExplorerWindow.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />

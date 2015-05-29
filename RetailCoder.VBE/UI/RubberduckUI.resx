@@ -652,4 +652,7 @@ Warning: All customized settings will be lost.</value>
   <data name="Component" xml:space="preserve">
     <value>Component</value>
   </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
 </root>

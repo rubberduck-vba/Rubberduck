@@ -45,7 +45,8 @@ namespace Rubberduck.UI
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
+            var testGridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
