@@ -152,13 +152,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
 
-        private Declaration _target;
-        public Declaration Target
-        {
-            get { return _target; }
-            set { _target = value; }
-        }
-
         private void MoveUpButtonClicked(object sender, EventArgs e)
         {
             if (MethodParametersGrid.SelectedRows.Count == 0)

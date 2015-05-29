@@ -272,8 +272,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Refactoring\ExtractMethodRefactoring.cs" />
+    <Compile Include="Refactoring\ExtractMethodRefactoring\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactoring\IRefactoring.cs" />
+    <Compile Include="Refactoring\ReorderParametersRefactoring\ReorderParametersRefactoring.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
@@ -687,6 +688,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="Refactoring\RemoveParameterRefactoring\" />
+    <Folder Include="Refactoring\RenameRefactoring\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\rubberduck_adsize.png" />

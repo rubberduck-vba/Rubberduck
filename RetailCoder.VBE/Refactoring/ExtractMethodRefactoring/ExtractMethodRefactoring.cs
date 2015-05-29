@@ -4,7 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactoring
+namespace Rubberduck.Refactoring.ExtractMethodRefactoring
 {
     /// <summary>
     /// A refactoring that extracts a method (procedure or function) 
