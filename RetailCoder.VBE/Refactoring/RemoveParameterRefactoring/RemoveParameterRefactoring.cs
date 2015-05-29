@@ -94,9 +94,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
         private void RemoveParameter(Declaration paramToRemove)
         {
-            if (_target == null || _method == null) { throw new NullReferenceException("Parameter is null."); }
-
-            LoadParameters();
+            if (paramToRemove == null || _method == null) { throw new NullReferenceException("Parameter is null."); }
 
             AdjustReferences(paramToRemove, _method.References, _method);
             AdjustSignatures(paramToRemove);
