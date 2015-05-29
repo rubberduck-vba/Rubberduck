@@ -655,4 +655,7 @@ Warning: All customized settings will be lost.</value>
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
 </root>

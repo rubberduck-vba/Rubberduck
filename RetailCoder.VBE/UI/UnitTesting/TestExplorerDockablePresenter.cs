@@ -36,6 +36,9 @@ namespace Rubberduck.UI.UnitTesting
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+
+            // type "Image" doesn't implement "IComparable", so we need to sort by the outcome instead
+            if (columnName == RubberduckUI.Result) { columnName = RubberduckUI.Outcome; }
             Control.AllTests = new BindingList<TestExplorerItem>(_gridViewSort.Sort(Control.AllTests.AsEnumerable(), columnName).ToList());
         }
 

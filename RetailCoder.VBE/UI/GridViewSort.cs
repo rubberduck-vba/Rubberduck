@@ -22,6 +22,7 @@ namespace Rubberduck.UI
             if (ColumnName == _columnName && _sortedAscending)
             {
                 _sortedAscending = false;
+                var test = Items.Select(x => x.GetType().GetProperty(ColumnName).GetValue(x));
                 return Items.OrderByDescending(x => x.GetType().GetProperty(ColumnName).GetValue(x));
             }
             else
