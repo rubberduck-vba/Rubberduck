@@ -4,12 +4,13 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactoring.ReorderParametersRefactoring;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     public partial class ReorderParametersDialog : Form, IReorderParametersView
     {
-        public List<Parameter> Parameters { get; set; }
+        public ReorderParametersRefactoring ReorderParams { get; set; }
         private Parameter _selectedItem;
         private Rectangle _dragBoxFromMouseDown;
         Point _startPoint;
@@ -17,7 +18,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         public ReorderParametersDialog()
         {
-            Parameters = new List<Parameter>();
+            //ReorderParams.Parameters = new List<Parameter>();
             InitializeComponent();
             InitializeCaptions();
 
@@ -91,13 +92,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     }
                     else
                     {
-                        rowIndexOfItemUnderMouse = Parameters.Count - 1;
+                        rowIndexOfItemUnderMouse = ReorderParams.Parameters.Count - 1;
                     }
                 }
 
-                var tmp = Parameters.ElementAt(_newRowIndex);
-                Parameters.RemoveAt(_newRowIndex);
-                Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
+                var tmp = ReorderParams.Parameters.ElementAt(_newRowIndex);
+                ReorderParams.Parameters.RemoveAt(_newRowIndex);
+                ReorderParams.Parameters.Insert(rowIndexOfItemUnderMouse, tmp);
                 ReselectParameter();
             }
         }
@@ -111,7 +112,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             MethodParametersGrid.AutoGenerateColumns = false;
             MethodParametersGrid.Columns.Clear();
-            MethodParametersGrid.DataSource = Parameters;
+            MethodParametersGrid.DataSource = ReorderParams.Parameters;
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
             MethodParametersGrid.AllowUserToResizeRows = false;
@@ -128,7 +129,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             };
 
             MethodParametersGrid.Columns.Add(column);
-            _selectedItem = Parameters[0];
+            _selectedItem = ReorderParams.Parameters[0];
         }
 
         private void OkButtonClick(object sender, EventArgs e)
@@ -185,9 +186,9 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void SwapParameters(int index1, int index2)
         {
-            var tmp = Parameters[index1];
-            Parameters[index1] = Parameters[index2];
-            Parameters[index2] = tmp;
+            var tmp = ReorderParams.Parameters[index1];
+            ReorderParams.Parameters[index1] = ReorderParams.Parameters[index2];
+            ReorderParams.Parameters[index2] = tmp;
         }
 
         private void ReselectParameter()
@@ -210,7 +211,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 && MethodParametersGrid.SelectedRows[0].Index != 0;
 
             MoveDownButton.Enabled = _selectedItem != null
-                && MethodParametersGrid.SelectedRows[0].Index != Parameters.Count - 1;
+                && MethodParametersGrid.SelectedRows[0].Index != ReorderParams.Parameters.Count - 1;
         }
     }
 }

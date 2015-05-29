@@ -12,17 +12,14 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     {
         private readonly IReorderParametersView _view;
         private readonly Declarations _declarations;
-        private readonly ReorderParametersRefactoring _reorderParams;
-
+        
         public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _view = view;
             _declarations = parseResult.Declarations;
 
-            _reorderParams = new ReorderParametersRefactoring(parseResult, selection)
-            {
-                Target = PromptIfTargetImplementsInterface()
-            };
+            _view.ReorderParams = new ReorderParametersRefactoring(parseResult, selection);
+            _view.ReorderParams.Target = PromptIfTargetImplementsInterface();
 
             _view.OkButtonClicked += OkButtonClicked;
         }
@@ -32,13 +29,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         public void Show()
         {
-            if (_reorderParams.Target == null) { return; }
-            
-            LoadParameters();
+            if (_view.ReorderParams.Target == null) { return; }
 
-            if (_reorderParams.Parameters.Count < 2) 
+            if (_view.ReorderParams.Parameters.Count < 2) 
             {
-                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _reorderParams.Target.IdentifierName);
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _view.ReorderParams.Target.IdentifierName);
                 MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return; 
             }
@@ -48,37 +43,29 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         }
 
         /// <summary>
-        /// Loads the parameters into the dialog window.
-        /// </summary>
-        private void LoadParameters()
-        {
-            _view.Parameters.AddRange(_reorderParams.Parameters);
-        }
-
-        /// <summary>
         /// Handler for OK button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OkButtonClicked(object sender, EventArgs e)
         {
-            if (!_view.Parameters.Where((t, i) => t.Index != i).Any() || !IsValidParamOrder())
+            if (!_view.ReorderParams.Parameters.Where((t, i) => t.Index != i).Any() || !IsValidParamOrder())
             {
                 return;
             }
 
-            _reorderParams.Parameters = _view.Parameters;
-            _reorderParams.Refactor();
+            _view.ReorderParams.Parameters = _view.ReorderParams.Parameters;
+            _view.ReorderParams.Refactor();
         }
 
         private bool IsValidParamOrder()
         {
-            var indexOfFirstOptionalParam = _view.Parameters.FindIndex(param => param.IsOptional);
+            var indexOfFirstOptionalParam = _view.ReorderParams.Parameters.FindIndex(param => param.IsOptional);
             if (indexOfFirstOptionalParam >= 0)
             {
-                for (var index = indexOfFirstOptionalParam + 1; index < _view.Parameters.Count; index++)
+                for (var index = indexOfFirstOptionalParam + 1; index < _view.ReorderParams.Parameters.Count; index++)
                 {
-                    if (!_view.Parameters.ElementAt(index).IsOptional)
+                    if (!_view.ReorderParams.Parameters.ElementAt(index).IsOptional)
                     {
                         MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -86,10 +73,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 }
             }
 
-            var indexOfParamArray = _view.Parameters.FindIndex(param => param.IsParamArray);
+            var indexOfParamArray = _view.ReorderParams.Parameters.FindIndex(param => param.IsParamArray);
             if (indexOfParamArray >= 0)
             {
-                if (indexOfParamArray != _view.Parameters.Count - 1)
+                if (indexOfParamArray != _view.ReorderParams.Parameters.Count - 1)
                 {
                     MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -104,7 +91,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         private Declaration PromptIfTargetImplementsInterface()
         {
-            var declaration = _reorderParams.Target;
+            var declaration = _view.ReorderParams.Target;
             var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
             if (declaration == null || interfaceImplementation == null)
             {
