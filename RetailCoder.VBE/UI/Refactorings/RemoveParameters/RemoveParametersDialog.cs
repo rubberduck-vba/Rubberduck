@@ -21,6 +21,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
             RemoveButton.Click += RemoveButtonClicked;
             AddButton.Click += AddButtonClicked;
+            MethodParametersGrid.CellMouseDoubleClick += MethodParametersGrid_CellMouseDoubleClick;
         }
 
         private void InitializeCaptions()
@@ -83,7 +84,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveButtonClicked(object sender, EventArgs e)
+        private void MarkToRemoveParam()
         {
             if (_selectedItem != null)
             {
@@ -92,12 +93,36 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        private void AddButtonClicked(object sender, EventArgs e)
+        private void MarkToAddParam()
         {
             if (_selectedItem != null)
             {
                 RemoveParams.Parameters.Find(item => item == _selectedItem).IsRemoved = false;
                 SelectionChanged();
+            }
+        }
+
+        private void RemoveButtonClicked(object sender, EventArgs e)
+        {
+            MarkToRemoveParam();
+        }
+
+        private void AddButtonClicked(object sender, EventArgs e)
+        {
+            MarkToAddParam();
+        }
+
+        private void MethodParametersGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (_selectedItem == null) { return; }
+        
+            if (_selectedItem.IsRemoved)
+            {
+                MarkToAddParam();
+            }
+            else
+            {
+                MarkToRemoveParam();
             }
         }
 
