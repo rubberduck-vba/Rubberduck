@@ -49,13 +49,6 @@ namespace Rubberduck.UI.Settings
             nameColumn.ReadOnly = true;
             codeInspectionsGrid.Columns.Add(nameColumn);
 
-            var typeColumn = new DataGridViewTextBoxColumn();
-            typeColumn.Name = "InspectionType";
-            typeColumn.DataPropertyName = "InspectionType";
-            typeColumn.HeaderText = RubberduckUI.Type;
-            typeColumn.ReadOnly = true;
-            codeInspectionsGrid.Columns.Add(typeColumn);
-
             var severityColumn = new DataGridViewComboBoxColumn();
             severityColumn.Name = "InspectionSeverity";
             severityColumn.DataPropertyName = "Severity";
