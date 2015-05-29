@@ -11,6 +11,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
     public partial class RemoveParametersDialog : Form, IRemoveParametersView
     {
         public RemoveParameterRefactoring RemoveParams { get; set; }
+        private Parameter _selectedItem;
 
         public RemoveParametersDialog()
         {
@@ -18,6 +19,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             InitializeCaptions();
 
             MethodParametersGrid.SelectionChanged += MethodParametersGrid_SelectionChanged;
+            RemoveButton.Click += RemoveButtonClicked;
+            AddButton.Click += AddButtonClicked;
         }
 
         private void InitializeCaptions()
@@ -82,12 +85,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private void RemoveButtonClicked(object sender, EventArgs e)
         {
-            
+            if (_selectedItem != null)
+            {
+                RemoveParams.Parameters.Find(item => item == _selectedItem).IsRemoved = true;
+                SelectionChanged();
+            }
         }
 
         private void AddButtonClicked(object sender, EventArgs e)
         {
-            
+            if (_selectedItem != null)
+            {
+                RemoveParams.Parameters.Find(item => item == _selectedItem).IsRemoved = false;
+                SelectionChanged();
+            }
         }
 
         private int GetFirstSelectedRowIndex(int index)
@@ -95,23 +106,14 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             return MethodParametersGrid.SelectedRows[index].Index;
         }
 
-        /*private void ReselectParameter()
-        {
-            MethodParametersGrid.Refresh();
-            MethodParametersGrid.Rows
-                                .Cast<DataGridViewRow>()
-                                .Single(row => row.DataBoundItem == _selectedItem).Selected = true;
-
-            SelectionChanged();
-        }*/
-
         private void SelectionChanged()
         {
-           /*MoveUpButton.Enabled = _selectedItem != null
-                && MethodParametersGrid.SelectedRows[0].Index != 0;
+            _selectedItem = MethodParametersGrid.SelectedRows.Count == 0
+                ? null
+                : (Parameter)MethodParametersGrid.SelectedRows[0].DataBoundItem;
 
-            MoveDownButton.Enabled = _selectedItem != null
-                && MethodParametersGrid.SelectedRows[0].Index != RemoveParams.Parameters.Count - 1;*/
+            RemoveButton.Enabled = _selectedItem != null && !_selectedItem.IsRemoved;
+            AddButton.Enabled = _selectedItem != null && _selectedItem.IsRemoved;
         }
     }
 }
