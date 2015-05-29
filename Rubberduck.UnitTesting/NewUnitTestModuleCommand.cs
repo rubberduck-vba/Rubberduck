@@ -33,10 +33,15 @@ namespace Rubberduck.UnitTesting
 
         private static readonly string TestModuleEmptyTemplate = String.Concat(
                  "'@TestModule\n"
+                , "'' uncomment for late-binding:\n"
+                , "'Private Assert As Object\n"
+                , "'' early-binding requires reference to Rubberduck.UnitTesting.tlb:\n"
                 , "Private Assert As New Rubberduck_UnitTesting.AssertClass\n\n"
-                ,"'@ModuleInitialize\n"
+                , "'@ModuleInitialize\n"
                 ,"Public Sub ModuleInitialize()\n"
                 ,"    'this method runs once per module.\n"
+                ,"    '' uncomment for late-binding:\n"
+                ,"    'Set Assert = CreateObject(\"Rubberduck_UnitTesting.AssertClass\")\n"
                 ,"End Sub\n\n"
                 , "'@ModuleCleanup\n"
                 , "Public Sub ModuleCleanup()\n"
