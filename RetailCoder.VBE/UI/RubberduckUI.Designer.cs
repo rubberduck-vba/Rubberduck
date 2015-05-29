@@ -234,6 +234,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Component.
+        /// </summary>
+        internal static string Component {
+            get {
+                return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constant &apos;{0}&apos; is never used.
         /// </summary>
         internal static string ConstantNotUsed_ {

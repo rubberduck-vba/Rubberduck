@@ -188,6 +188,7 @@ namespace Rubberduck.UI.CodeInspections
             this.CodeIssuesGridView.ReadOnly = true;
             this.CodeIssuesGridView.Size = new System.Drawing.Size(555, 100);
             this.CodeIssuesGridView.TabIndex = 0;
+            this.CodeIssuesGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ColumnHeaderMouseClicked);
             // 
             // CodeInspectionsWindow
             // 

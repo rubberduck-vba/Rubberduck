@@ -8,17 +8,25 @@ using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
+    public partial class CodeInspectionsWindow : UserControl, IDockableUserControl//, ICodeInspectionsWindow
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
-        public BindingList<CodeInspectionResultGridViewItem> InspectionResults 
+        private BindingList<CodeInspectionResultGridViewItem> _inspectionResults;
+        public BindingList<CodeInspectionResultGridViewItem> InspectionResults
         {
-            get { return CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>; }
-            set { CodeIssuesGridView.DataSource = value; }
+            get { return _inspectionResults; }
+            set
+            {
+                _inspectionResults = value;
+                CodeIssuesGridView.DataSource = _inspectionResults;
+                CodeIssuesGridView.Refresh();
+            }
         }
+
+        public DataGridView GridView { get { return CodeIssuesGridView; } }
 
         public CodeInspectionsWindow()
         {
@@ -33,6 +41,7 @@ namespace Rubberduck.UI.CodeInspections
             var items = new List<CodeInspectionResultGridViewItem>();
             CodeIssuesGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(items);
+            InspectionResults = CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>;
 
             CodeIssuesGridView.AutoResizeColumns();
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -216,8 +225,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             var results = inspectionResults.ToList();
 
-            CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(results);
-            CodeIssuesGridView.Refresh();
+            InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(results);
         }
 
         private void GoButton_Click(object sender, EventArgs e)
@@ -261,6 +269,18 @@ namespace Rubberduck.UI.CodeInspections
             toolStrip1.Refresh();
 
             handler(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
+        private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var handler = SortColumn;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, e);
         }
     }
 }
