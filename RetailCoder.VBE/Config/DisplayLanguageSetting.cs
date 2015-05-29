@@ -18,7 +18,7 @@ namespace Rubberduck.Config
         public DisplayLanguageSetting(string code)
         {
             Code = code;
-            _name = RubberduckUI.ResourceManager.GetString("Language_" + Code.Substring(0, 2).ToUpper());
+            _name = RubberduckUI.ResourceManager.GetString("Language_" + Code.Substring(0, 2).ToUpper(), RubberduckUI.Culture);
         }
 
         private readonly string _name;
