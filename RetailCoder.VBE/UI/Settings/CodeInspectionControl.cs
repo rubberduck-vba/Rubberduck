@@ -11,20 +11,29 @@ namespace Rubberduck.UI.Settings
 {
     public partial class CodeInspectionSettingsControl : UserControl
     {
+        private GridViewSort<CodeInspectionSetting> _gridViewSort;
+
+        private BindingList<CodeInspectionSetting> _allInspections;
+        public BindingList<CodeInspectionSetting> AllInspections
+        {
+            get { return _allInspections; }
+            set
+            {
+                _allInspections = value;
+                FillGrid();
+            }
+        }
+
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
         public CodeInspectionSettingsControl()
         {
             InitializeComponent();
         }
 
-        public CodeInspectionSettingsControl(IEnumerable<CodeInspectionSetting> inspections)
+        public CodeInspectionSettingsControl(IEnumerable<CodeInspectionSetting> inspections, GridViewSort<CodeInspectionSetting> gridViewSort)
             : this()
         {
-            var allInspections = new BindingList<CodeInspectionSetting>(inspections
-                .OrderBy(c => c.InspectionType.ToString())
-                .ThenBy(c => c.Name)
-                .ToList()
-                );
+            _gridViewSort = gridViewSort;
 
             codeInspectionsGrid.AutoGenerateColumns = false;
             
@@ -41,8 +50,22 @@ namespace Rubberduck.UI.Settings
             codeInspectionsGrid.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.LightBlue;
             codeInspectionsGrid.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.MediumBlue;
 
+            AllInspections = new BindingList<CodeInspectionSetting>(inspections
+                                 .OrderBy(c => c.Name)
+                                 .ToList());
+
+            // temporal coupling here: this code should run after columns are formatted.
+            //codeInspectionsGrid.DataSource = AllInspections;
+            codeInspectionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            codeInspectionsGrid.ColumnHeaderMouseClick += SortColumn;
+        }
+
+        private void FillGrid()
+        {
+            codeInspectionsGrid.Columns.Clear();
+
             var nameColumn = new DataGridViewTextBoxColumn();
-            nameColumn.Name = "InspectionName";
+            nameColumn.Name = "Name";
             nameColumn.DataPropertyName = "Name";
             nameColumn.HeaderText = RubberduckUI.Name;
             nameColumn.FillWeight = 150;
@@ -50,16 +73,20 @@ namespace Rubberduck.UI.Settings
             codeInspectionsGrid.Columns.Add(nameColumn);
 
             var severityColumn = new DataGridViewComboBoxColumn();
-            severityColumn.Name = "InspectionSeverity";
+            severityColumn.Name = "Severity";
             severityColumn.DataPropertyName = "Severity";
             severityColumn.DataSource = Enum.GetValues(typeof(CodeInspectionSeverity));
             severityColumn.HeaderText = RubberduckUI.Severity;
             severityColumn.DefaultCellStyle.Font = codeInspectionsGrid.Font;
             codeInspectionsGrid.Columns.Add(severityColumn);
 
-            // temporal coupling here: this code should run after columns are formatted.
-            codeInspectionsGrid.DataSource = allInspections;
-            codeInspectionsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            codeInspectionsGrid.DataSource = AllInspections;
+        }
+
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = codeInspectionsGrid.Columns[e.ColumnIndex].Name;
+            AllInspections = new BindingList<CodeInspectionSetting>(_gridViewSort.Sort(AllInspections.AsEnumerable(), columnName).ToList());
         }
     }
 }
