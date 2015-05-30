@@ -46,8 +46,40 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
         {
             if (Target == null) { throw new NullReferenceException("Target is null"); }
 
+            if (!_view.ReorderParams.Parameters.Where((t, i) => t.Index != i).Any() || !IsValidParamOrder())
+            {
+                return;
+            }
+
             AdjustReferences(Target.References);
             AdjustSignatures();
+        }
+
+        private bool IsValidParamOrder()
+        {
+            var indexOfFirstOptionalParam = _view.ReorderParams.Parameters.FindIndex(param => param.IsOptional);
+            if (indexOfFirstOptionalParam >= 0)
+            {
+                for (var index = indexOfFirstOptionalParam + 1; index < _view.ReorderParams.Parameters.Count; index++)
+                {
+                    if (!_view.ReorderParams.Parameters.ElementAt(index).IsOptional)
+                    {
+                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+            }
+
+            var indexOfParamArray = _view.ReorderParams.Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray >= 0)
+            {
+                if (indexOfParamArray != _view.ReorderParams.Parameters.Count - 1)
+                {
+                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
