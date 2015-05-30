@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactoring;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters

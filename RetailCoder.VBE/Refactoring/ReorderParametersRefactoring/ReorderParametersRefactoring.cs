@@ -35,15 +35,6 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             Parameters = parameters;
         }
 
-        public ReorderParametersRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection, List<Parameter> parameters)
-        {
-            _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
-
-            TargetDeclaration = AcquireTarget(selection);
-            Parameters = parameters;
-        }
-
         public void Refactor()
         {
             TargetDeclaration = PromptIfTargetImplementsInterface();
@@ -237,7 +228,7 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             for (var i = parameterIndex; i < Parameters.Count; i++)
             {
                 var oldParam = argList.ElementAt(parameterIndex).GetText();
-                var newParam = argList.ElementAt(Parameters.FindIndex(item => item.Index == parameterIndex)).GetText();
+                var newParam = argList.ElementAt(Parameters.ElementAt(parameterIndex).Index).GetText();
                 var parameterStringIndex = newContent.IndexOf(oldParam, currentStringIndex);
 
                 if (parameterStringIndex > -1)
@@ -329,118 +320,8 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
 
         public Declaration AcquireTarget(QualifiedSelection selection)
         {
-            /*Declaration target;
-
-            FindTarget(out target, selection);
-
-            if (target != null && (target.DeclarationType == DeclarationType.PropertySet || target.DeclarationType == DeclarationType.PropertyLet))
-            {
-                var getter = _declarations.Items.FirstOrDefault(item => item.ParentScope == target.ParentScope &&
-                                              item.IdentifierName == target.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertyGet);
-
-                if (getter != null)
-                {
-                    target = getter;
-                }
-            }
-
-            return target;*/
-            throw new NotImplementedException();
+            return TargetDeclaration;
         }
-
-        /*private void FindTarget(out Declaration target, QualifiedSelection selection)
-        {
-            target = _declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                     || IsSelectedReference(selection, item));
-
-            if (target != null && ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                return;
-            }
-            
-            target = null;
-
-            var targets = _declarations.Items
-                .Where(item => !item.IsBuiltIn
-                            && item.ComponentName == selection.QualifiedName.ComponentName
-                            && ValidDeclarationTypes.Contains(item.DeclarationType));
-
-            var currentStartLine = 0;
-            var currentEndLine = int.MaxValue;
-            var currentStartColumn = 0;
-            var currentEndColumn = int.MaxValue;
-
-            foreach (var declaration in targets)
-            {
-                var startLine = declaration.Context.Start.Line;
-                var startColumn = declaration.Context.Start.Column;
-                var endLine = declaration.Context.Stop.Line;
-                var endColumn = declaration.Context.Stop.Column;
-
-                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                    currentStartLine <= startLine && currentEndLine >= endLine)
-                {
-                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
-                    {
-                        target = declaration;
-
-                        currentStartLine = startLine;
-                        currentEndLine = endLine;
-                        currentStartColumn = startColumn;
-                        currentEndColumn = endColumn;
-                    }
-                }
-
-                foreach (var reference in declaration.References)
-                {
-                    var proc = (dynamic)reference.Context.Parent;
-
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try
-                    {
-                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
-
-                    if (paramList == null)
-                    {
-                        continue;
-                    }
-
-                    startLine = paramList.Start.Line;
-                    startColumn = paramList.Start.Column;
-                    endLine = paramList.Stop.Line;
-                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
-
-                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
-                        currentStartLine <= startLine && currentEndLine >= endLine)
-                    {
-                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
-                        {
-                            target = reference.Declaration;
-
-                            currentStartLine = startLine;
-                            currentEndLine = endLine;
-                            currentStartColumn = startColumn;
-                            currentEndColumn = endColumn;
-                        }
-                    }
-                }
-            }
-        }*/
 
         private Declaration PromptIfTargetImplementsInterface()
         {
