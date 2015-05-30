@@ -114,9 +114,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
                     currentStartLine <= startLine && currentEndLine >= endLine)
                 {
-                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                    if (!(startLine == selection.Selection.StartLine && (startColumn > selection.Selection.StartColumn || currentStartColumn > startColumn) ||
+                          endLine == selection.Selection.EndLine && (endColumn < selection.Selection.EndColumn || currentEndColumn < endColumn)))
                     {
                         target = declaration;
 
@@ -157,9 +156,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
                         currentStartLine <= startLine && currentEndLine >= endLine)
                     {
-                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
-                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                        if (!(startLine == selection.Selection.StartLine && (startColumn > selection.Selection.StartColumn || currentStartColumn > startColumn) ||
+                              endLine == selection.Selection.EndLine && (endColumn < selection.Selection.EndColumn || currentEndColumn < endColumn)))
                         {
                             target = reference.Declaration;
 
