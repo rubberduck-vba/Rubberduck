@@ -80,7 +80,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             }
 
             method = interfaceMember;
-            var methodParams = FindTargets(method);
+            var methodParams = FindTargets(method).ToList();
 
             for (var i = 0; i < Parameters.Count; i++)
             {
@@ -372,34 +372,6 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                                        && !(method.Context.Stop.Column < d.Selection.EndColumn && method.Context.Stop.Line == d.Selection.EndLine))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
-        }
-
-        private void FindTarget(out Declaration target, QualifiedSelection selection)
-        {
-            target = null;
-
-            var targets = _declarations.Items
-                          .Where(item => item.DeclarationType == DeclarationType.Parameter
-                                      && item.ComponentName == selection.QualifiedName.ComponentName
-                                      && item.Project.Equals(selection.QualifiedName.Project));
-
-            foreach (var declaration in targets)
-            {
-                var startLine = declaration.Context.Start.Line;
-                var startColumn = declaration.Context.Start.Column;
-                var endLine = declaration.Context.Stop.Line;
-                var endColumn = declaration.Context.Stop.Column + declaration.Context.Stop.Text.Length + 1;
-
-                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine)
-                {
-                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
-                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn))
-                    {
-                        target = declaration;
-                        return;
-                    }
-                }
-            }
         }
 
         /// <summary>
