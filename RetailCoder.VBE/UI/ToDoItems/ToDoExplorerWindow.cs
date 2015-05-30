@@ -48,6 +48,14 @@ namespace Rubberduck.UI.ToDoItems
             
             todoItemsGridView.CellDoubleClick += ToDoGridViewCellDoubleClicked;
             refreshButton.Click += RefreshButtonClicked;
+
+            todoItemsGridView.Columns["Priority"].HeaderText = RubberduckUI.TodoExplorer_Priority;
+            todoItemsGridView.Columns["Description"].HeaderText = RubberduckUI.TodoExplorer_Description;
+            todoItemsGridView.Columns["ProjectName"].HeaderText = RubberduckUI.TodoExplorer_ProjectName;
+            todoItemsGridView.Columns["ModuleName"].HeaderText = RubberduckUI.TodoExplorer_ModuleName;
+            todoItemsGridView.Columns["LineNumber"].HeaderText = RubberduckUI.TodoExplorer_LineNumber;
+
+            refreshButton.ToolTipText = RubberduckUI.TodoExplorer_RefreshToolTip;
         }
 
         public event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;

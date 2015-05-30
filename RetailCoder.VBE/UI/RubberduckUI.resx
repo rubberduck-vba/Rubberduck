@@ -753,4 +753,22 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
     <value>Run code inspections</value>
   </data>
+  <data name="TodoExplorer_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="TodoExplorer_LineNumber" xml:space="preserve">
+    <value>Line Number</value>
+  </data>
+  <data name="TodoExplorer_ModuleName" xml:space="preserve">
+    <value>Module Name</value>
+  </data>
+  <data name="TodoExplorer_Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="TodoExplorer_ProjectName" xml:space="preserve">
+    <value>Project Name</value>
+  </data>
+  <data name="TodoExplorer_RefreshToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

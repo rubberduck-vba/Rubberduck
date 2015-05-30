@@ -1860,6 +1860,60 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string TodoExplorer_Description {
+            get {
+                return ResourceManager.GetString("TodoExplorer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line Number.
+        /// </summary>
+        internal static string TodoExplorer_LineNumber {
+            get {
+                return ResourceManager.GetString("TodoExplorer_LineNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module Name.
+        /// </summary>
+        internal static string TodoExplorer_ModuleName {
+            get {
+                return ResourceManager.GetString("TodoExplorer_ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority.
+        /// </summary>
+        internal static string TodoExplorer_Priority {
+            get {
+                return ResourceManager.GetString("TodoExplorer_Priority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        internal static string TodoExplorer_ProjectName {
+            get {
+                return ResourceManager.GetString("TodoExplorer_ProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string TodoExplorer_RefreshToolTip {
+            get {
+                return ResourceManager.GetString("TodoExplorer_RefreshToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BUG:.
         /// </summary>
         internal static string ToDoMarkerBug {
