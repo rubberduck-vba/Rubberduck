@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBA;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         public Parameter(Declaration declaration, int index, bool isRemoved = false)
         {
             Declaration = declaration;
-            Name = declaration.Context.GetText();
+            Name = declaration.Context.GetText().RemoveExtraSpaces();
             Index = index;
             IsRemoved = isRemoved;
         }
