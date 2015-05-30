@@ -235,7 +235,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
         {
             if (signature.Count(c => c == ',') > indexParamRemoved) { indexParamRemoved++; }
 
-            for (int i = 0, commaCounter = 0; i < signature.Length; i++)
+            for (int i = 0, commaCounter = 0; i < signature.Length && indexParamRemoved != 0; i++)
             {
                 if (signature.ElementAt(i) == ',')
                 {
