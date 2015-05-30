@@ -1140,7 +1140,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a parameter and double-click it or use buttons to add or remove it..
+        ///   Looks up a localized string similar to Select a parameter and double-click it or use buttons to remove or restore it..
         /// </summary>
         internal static string RemoveParamsDialog_InstructionsLabelText {
             get {

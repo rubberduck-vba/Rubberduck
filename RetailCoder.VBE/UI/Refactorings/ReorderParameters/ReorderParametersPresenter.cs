@@ -1,8 +1,11 @@
 ﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactoring.ReorderParametersRefactoring;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,15 +14,17 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
     class ReorderParametersPresenter
     {
         private readonly IReorderParametersView _view;
+        private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
+        private readonly Declaration _targetDeclaration;
         
         public ReorderParametersPresenter(IReorderParametersView view, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _view = view;
+            _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            _view.ReorderParams = new ReorderParametersRefactoring(parseResult, selection);
-            _view.ReorderParams.Target = PromptIfTargetImplementsInterface();
+            FindTarget(out _targetDeclaration, selection);
 
             _view.OkButtonClicked += OkButtonClicked;
         }
@@ -29,11 +34,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         public void Show()
         {
-            if (_view.ReorderParams.Target == null) { return; }
+            if (_targetDeclaration == null) { return; }
 
-            if (_view.ReorderParams.Parameters.Count < 2) 
+            _view.Parameters = LoadParameters();
+
+            if (_view.Parameters.Count < 2) 
             {
-                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _view.ReorderParams.Target.IdentifierName);
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _targetDeclaration.IdentifierName);
                 MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return; 
             }
@@ -49,32 +56,134 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// <param name="e"></param>
         private void OkButtonClicked(object sender, EventArgs e)
         {
-            _view.ReorderParams.Refactor();
+            var reorderParams = new ReorderParametersRefactoring(_parseResult, _targetDeclaration, _view.Parameters);
+            reorderParams.Refactor();
         }
 
-        /// <summary>
-        /// Displays a prompt asking the user whether the method signature should be adjusted
-        /// if the target declaration implements an interface method.
-        /// </summary>
-        private Declaration PromptIfTargetImplementsInterface()
+        private List<Parameter> LoadParameters()
         {
-            var declaration = _view.ReorderParams.Target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
+            var procedure = (dynamic)_targetDeclaration.Context;
+            var argList = (VBAParser.ArgListContext)procedure.argList();
+            var args = argList.arg();
+
+            var index = 0;
+            return args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+        }
+
+        private static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
+        {
+            target = _declarations.Items
+                .Where(item => !item.IsBuiltIn)
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                     || IsSelectedReference(selection, item));
+
+            if (target != null && ValidDeclarationTypes.Contains(target.DeclarationType))
             {
-                return declaration;
+                return;
             }
 
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            target = null;
 
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
+            var targets = _declarations.Items
+                .Where(item => !item.IsBuiltIn
+                            && item.ComponentName == selection.QualifiedName.ComponentName
+                            && ValidDeclarationTypes.Contains(item.DeclarationType));
+
+            var currentStartLine = 0;
+            var currentEndLine = int.MaxValue;
+            var currentStartColumn = 0;
+            var currentEndColumn = int.MaxValue;
+
+            foreach (var declaration in targets)
             {
-                return null;
-            }
+                var startLine = declaration.Context.Start.Line;
+                var startColumn = declaration.Context.Start.Column;
+                var endLine = declaration.Context.Stop.Line;
+                var endColumn = declaration.Context.Stop.Column;
 
-            return interfaceMember;
+                if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                    currentStartLine <= startLine && currentEndLine >= endLine)
+                {
+                    if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                        endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                        currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                    {
+                        target = declaration;
+
+                        currentStartLine = startLine;
+                        currentEndLine = endLine;
+                        currentStartColumn = startColumn;
+                        currentEndColumn = endColumn;
+                    }
+                }
+
+                foreach (var reference in declaration.References)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try
+                    {
+                        var check = (VBAParser.ArgsCallContext)proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                    var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
+
+                    if (paramList == null)
+                    {
+                        continue;
+                    }
+
+                    startLine = paramList.Start.Line;
+                    startColumn = paramList.Start.Column;
+                    endLine = paramList.Stop.Line;
+                    endColumn = paramList.Stop.Column + paramList.Stop.Text.Length + 1;
+
+                    if (startLine <= selection.Selection.StartLine && endLine >= selection.Selection.EndLine &&
+                        currentStartLine <= startLine && currentEndLine >= endLine)
+                    {
+                        if (!(startLine == selection.Selection.StartLine && startColumn > selection.Selection.StartColumn ||
+                            endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
+                            currentStartColumn <= startColumn && currentEndColumn >= endColumn)
+                        {
+                            target = reference.Declaration;
+
+                            currentStartLine = startLine;
+                            currentEndLine = endLine;
+                            currentStartColumn = startColumn;
+                            currentEndColumn = endColumn;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.References.Any(r =>
+                r.QualifiedModuleName == selection.QualifiedName &&
+                r.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
+                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
     }
 }

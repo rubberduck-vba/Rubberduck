@@ -670,7 +670,7 @@ Warning: All customized settings will be lost.</value>
     <value>Rubberduck - Remove Parameters</value>
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Select a parameter and double-click it or use buttons to add or remove it.</value>
+    <value>Select a parameter and double-click it or use buttons to remove or restore it.</value>
   </data>
   <data name="RemoveParamsDialog_RestoreButtonText" xml:space="preserve">
     <value>Restore</value>

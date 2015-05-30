@@ -11,7 +11,7 @@ namespace Rubberduck.Refactoring.ExtractMethodRefactoring
     /// out of a selection in the active code pane and 
     /// replaces the selected code with a call to the extracted method.
     /// </summary>
-    public class ExtractMethodRefactoring : IRefactoring
+    public class ExtractMethodRefactoring// : IRefactoring
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly Declarations _declarations;
