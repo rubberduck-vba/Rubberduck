@@ -133,6 +133,159 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class module (.cls).
+        /// </summary>
+        internal static string CodeExplorer_AddClassText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddClassText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User form.
+        /// </summary>
+        internal static string CodeExplorer_AddFormText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard module (.bas).
+        /// </summary>
+        internal static string CodeExplorer_AddStdModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddStdModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test module.
+        /// </summary>
+        internal static string CodeExplorer_AddTestModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddTestModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display member names.
+        /// </summary>
+        internal static string CodeExplorer_DisplayMemberNamesText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_DisplayMemberNamesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display full signatures.
+        /// </summary>
+        internal static string CodeExplorer_DisplaySignaturesText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find All Implementations....
+        /// </summary>
+        internal static string CodeExplorer_FindAllImplementationsText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_FindAllImplementationsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find all references....
+        /// </summary>
+        internal static string CodeExplorer_FindAllReferencesText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_FindAllReferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspect.
+        /// </summary>
+        internal static string CodeExplorer_InspectText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_InspectText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate.
+        /// </summary>
+        internal static string CodeExplorer_NavigateText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_NavigateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string CodeExplorer_RefreshText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string CodeExplorer_RefreshToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RefreshToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        internal static string CodeExplorer_RenameText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RenameText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run all tests.
+        /// </summary>
+        internal static string CodeExplorer_RunAllTestsText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_RunAllTestsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Designer.
+        /// </summary>
+        internal static string CodeExplorer_ShowDesignerText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ShowDesignerText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Designer.
+        /// </summary>
+        internal static string CodeExplorer_ShowDesignerToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ShowDesignerToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle folders.
+        /// </summary>
+        internal static string CodeExplorer_ShowFoldersToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ShowFoldersToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} (parsing...).
         /// </summary>
         internal static string CodeExplorerDockablePresenter_ParseStarted {

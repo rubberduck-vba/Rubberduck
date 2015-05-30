@@ -678,6 +678,57 @@ Warning: All customized settings will be lost.</value>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Errors</value>
   </data>
+  <data name="CodeExplorer_AddClassText" xml:space="preserve">
+    <value>Class module (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>User form</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>Standard module (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>Test module</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>Display member names</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>Display full signatures</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>Find All Implementations...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>Find all references...</value>
+  </data>
+  <data name="CodeExplorer_InspectText" xml:space="preserve">
+    <value>Inspect</value>
+  </data>
+  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+    <value>Navigate</value>
+  </data>
+  <data name="CodeExplorer_RefreshText" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CodeExplorer_RefreshToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CodeExplorer_RenameText" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>Run all tests</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
+    <value>Show Designer</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>Open Designer</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Toggle folders</value>
+  </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copy inspection results to clipboard</value>
   </data>

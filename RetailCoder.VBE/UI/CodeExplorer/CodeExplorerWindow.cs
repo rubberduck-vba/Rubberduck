@@ -52,6 +52,30 @@ namespace Rubberduck.UI.CodeExplorer
             InspectContextButton.Click += InspectContextButton_Click;
             FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
             FindAllImplementationsContextButton.Click += FindAllImplementationsContextButton_Click;
+            
+            RefreshButton.ToolTipText = RubberduckUI.CodeExplorer_RefreshToolTip;
+            ShowFoldersToggleButton.ToolTipText = RubberduckUI.CodeExplorer_ShowFoldersToolTip;
+            ShowDesignerButton.ToolTipText = RubberduckUI.CodeExplorer_ShowDesignerToolTip;
+
+            AddClassButton.Text = RubberduckUI.CodeExplorer_AddClassText;
+            AddStdModuleButton.Text = RubberduckUI.CodeExplorer_AddStdModuleText;
+            AddFormButton.Text = RubberduckUI.CodeExplorer_AddFormText;
+            AddTestModuleButton.Text = RubberduckUI.CodeExplorer_AddTestModuleText;
+            DisplayMemberNamesButton.Text = RubberduckUI.CodeExplorer_DisplayMemberNamesText;
+            DisplaySignaturesButton.Text = RubberduckUI.CodeExplorer_DisplaySignaturesText;
+
+            RefreshContextButton.Text = RubberduckUI.CodeExplorer_RefreshText;
+            ShowDesignerContextButton.Text = RubberduckUI.CodeExplorer_ShowDesignerText;
+            AddClassContextButton.Text = RubberduckUI.CodeExplorer_AddClassText;
+            AddStdModuleContextButton.Text = RubberduckUI.CodeExplorer_AddStdModuleText;
+            AddFormContextButton.Text = RubberduckUI.CodeExplorer_AddFormText;
+            AddTestModuleContextButton.Text = RubberduckUI.CodeExplorer_AddTestModuleText;
+            NavigateContextButton.Text = RubberduckUI.CodeExplorer_NavigateText;
+            RenameContextButton.Text = RubberduckUI.CodeExplorer_RenameText;
+            RunAllTestsContextButton.Text = RubberduckUI.CodeExplorer_RunAllTestsText;
+            InspectContextButton.Text = RubberduckUI.CodeExplorer_InspectText;
+            FindAllReferencesContextButton.Text = RubberduckUI.CodeExplorer_FindAllReferencesText;
+            FindAllImplementationsContextButton.Text = RubberduckUI.CodeExplorer_FindAllImplementationsText;
         }
 
         public void EnableRefresh(bool enabled = true)
