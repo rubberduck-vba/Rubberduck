@@ -92,6 +92,7 @@
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
+    <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />

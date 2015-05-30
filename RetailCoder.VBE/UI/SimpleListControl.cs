@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.IdentifierReferences;
 
-namespace Rubberduck.UI.IdentifierReferences
+namespace Rubberduck.UI
 {
     public partial class SimpleListControl : UserControl, IDockableUserControl
     {

@@ -1017,6 +1017,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parse Errors.
+        /// </summary>
+        internal static string ParseErrors_Caption {
+            get {
+                return ResourceManager.GetString("ParseErrors_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing &apos;{0}&apos;....
         /// </summary>
         internal static string ParseProgress {

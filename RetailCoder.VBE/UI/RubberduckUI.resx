@@ -667,4 +667,7 @@ Warning: All customized settings will be lost.</value>
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Parse Errors</value>
+  </data>
 </root>

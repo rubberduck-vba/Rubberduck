@@ -296,10 +296,11 @@
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
-    <Compile Include="UI\IdentifierReferences\SimpleListControl.cs">
+    <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
+    <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\IdentifierReferences\SimpleListControl.Designer.cs">
+    <Compile Include="UI\SimpleListControl.Designer.cs">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
@@ -590,7 +591,7 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\IdentifierReferences\SimpleListControl.resx">
+    <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ProgressDialog.resx">

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI.IdentifierReferences
+namespace Rubberduck.UI
 {
     partial class SimpleListControl
     {
