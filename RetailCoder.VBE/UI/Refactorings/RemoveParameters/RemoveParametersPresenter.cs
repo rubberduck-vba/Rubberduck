@@ -30,6 +30,13 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         public void Show()
         {
+            if (_view.RemoveParams.Parameters.Count == 0)
+            {
+                var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _view.RemoveParams.TargetDeclaration.IdentifierName);
+                MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             _view.InitializeParameterGrid();
             _view.ShowDialog();
         }
