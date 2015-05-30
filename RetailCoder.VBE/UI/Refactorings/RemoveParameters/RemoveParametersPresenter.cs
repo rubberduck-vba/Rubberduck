@@ -43,33 +43,5 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
             _view.RemoveParams.Refactor();
         }
-
-        private void PromptIfTargetImplementsInterface(ref Declaration target, ref Declaration method)
-        {
-            /*var declaration = method;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (method == null || interfaceImplementation == null)
-            {
-                return;
-            }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, method.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                method = null;
-                return;
-            }
-
-            method = interfaceMember;
-
-            var proc = (dynamic)declaration.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-
-            var indexOfInterfaceParam = paramList.arg().ToList().FindIndex(item => item.GetText() == _target.Context.GetText());
-            target = FindTargets(_method).ElementAt(indexOfInterfaceParam);*/
-        }
     }
 }
