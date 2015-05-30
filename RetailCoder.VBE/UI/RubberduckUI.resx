@@ -663,8 +663,8 @@ Warning: All customized settings will be lost.</value>
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
-  <data name="RemoveParamsDialog_AddButtonText" xml:space="preserve">
-    <value>Add</value>
+  <data name="RemoveParamsDialog_RemoveButtonText" xml:space="preserve">
+    <value>Remove</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Remove Parameters</value>
@@ -672,7 +672,7 @@ Warning: All customized settings will be lost.</value>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Select a parameter and double-click it or use buttons to add or remove it.</value>
   </data>
-  <data name="RemoveParamsDialog_RemoveButtonText" xml:space="preserve">
-    <value>Remove</value>
+  <data name="RemoveParamsDialog_RestoreButtonText" xml:space="preserve">
+    <value>Restore</value>
   </data>
 </root>

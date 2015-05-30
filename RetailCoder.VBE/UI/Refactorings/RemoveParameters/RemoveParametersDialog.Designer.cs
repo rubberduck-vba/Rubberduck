@@ -32,7 +32,7 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
-            this.AddButton = new System.Windows.Forms.Button();
+            this.RestoreButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.InstructionsLabel = new System.Windows.Forms.Label();
             this.TitleLabel = new System.Windows.Forms.Label();
@@ -82,20 +82,20 @@
             this.OkButton.UseVisualStyleBackColor = false;
             this.OkButton.Click += new System.EventHandler(this.OkButtonClick);
             // 
-            // AddButton
+            // RestoreButton
             // 
-            this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.AddButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AddButton.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.AddButton.Location = new System.Drawing.Point(421, 190);
-            this.AddButton.Margin = new System.Windows.Forms.Padding(4);
-            this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(100, 89);
-            this.AddButton.TabIndex = 10;
-            this.AddButton.Text = "Add";
-            this.AddButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
-            this.AddButton.UseVisualStyleBackColor = true;
-            this.AddButton.Click += new System.EventHandler(this.AddButtonClicked);
+            this.RestoreButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RestoreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RestoreButton.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.RestoreButton.Location = new System.Drawing.Point(421, 190);
+            this.RestoreButton.Margin = new System.Windows.Forms.Padding(4);
+            this.RestoreButton.Name = "RestoreButton";
+            this.RestoreButton.Size = new System.Drawing.Size(100, 89);
+            this.RestoreButton.TabIndex = 10;
+            this.RestoreButton.Text = "Restore";
+            this.RestoreButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.RestoreButton.UseVisualStyleBackColor = true;
+            this.RestoreButton.Click += new System.EventHandler(this.RestoreButtonClicked);
             // 
             // panel1
             // 
@@ -175,7 +175,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(536, 338);
             this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.AddButton);
+            this.Controls.Add(this.RestoreButton);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MethodParametersGrid);
             this.Controls.Add(this.RemoveButton);
@@ -195,7 +195,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.Button AddButton;
+        private System.Windows.Forms.Button RestoreButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label InstructionsLabel;
         private System.Windows.Forms.Label TitleLabel;

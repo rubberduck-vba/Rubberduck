@@ -1131,15 +1131,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add.
-        /// </summary>
-        internal static string RemoveParamsDialog_AddButtonText {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_AddButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Remove Parameters.
         /// </summary>
         internal static string RemoveParamsDialog_Caption {
@@ -1172,6 +1163,15 @@ namespace Rubberduck.UI {
         internal static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
             get {
                 return ResourceManager.GetString("RemoveParamsDialog_RemoveIllegalSetterLetterParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        internal static string RemoveParamsDialog_RestoreButtonText {
+            get {
+                return ResourceManager.GetString("RemoveParamsDialog_RestoreButtonText", resourceCulture);
             }
         }
         

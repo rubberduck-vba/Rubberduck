@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             TitleLabel.Text = RubberduckUI.RemoveParamsDialog_TitleText;
             InstructionsLabel.Text = RubberduckUI.RemoveParamsDialog_InstructionsLabelText;
             RemoveButton.Text = RubberduckUI.RemoveParamsDialog_RemoveButtonText;
-            AddButton.Text = RubberduckUI.RemoveParamsDialog_AddButtonText;
+            RestoreButton.Text = RubberduckUI.RemoveParamsDialog_RestoreButtonText;
         }
 
         private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)
@@ -82,32 +82,40 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        private void MarkToRemoveParam()
+        private void MarkAsRemovedParam()
         {
             if (_selectedItem != null)
             {
-                RemoveParams.Parameters.Find(item => item == _selectedItem).IsRemoved = true;
+                var indexOfRemoved = RemoveParams.Parameters.FindIndex(item => item == _selectedItem);
+
+                RemoveParams.Parameters.ElementAt(indexOfRemoved).IsRemoved = true;
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Strikeout);
+
                 SelectionChanged();
             }
         }
 
-        private void MarkToAddParam()
+        private void MarkAsRestoredParam()  // really just un-mark as removed, but [tag:naming-is-hard]
         {
             if (_selectedItem != null)
             {
-                RemoveParams.Parameters.Find(item => item == _selectedItem).IsRemoved = false;
+                var indexOfRemoved = RemoveParams.Parameters.FindIndex(item => item == _selectedItem);
+
+                RemoveParams.Parameters.ElementAt(indexOfRemoved).IsRemoved = false;
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Regular);
+
                 SelectionChanged();
             }
         }
 
         private void RemoveButtonClicked(object sender, EventArgs e)
         {
-            MarkToRemoveParam();
+            MarkAsRemovedParam();
         }
 
-        private void AddButtonClicked(object sender, EventArgs e)
+        private void RestoreButtonClicked(object sender, EventArgs e)
         {
-            MarkToAddParam();
+            MarkAsRestoredParam();
         }
 
         private void MethodParametersGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -116,11 +124,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         
             if (_selectedItem.IsRemoved)
             {
-                MarkToAddParam();
+                MarkAsRestoredParam();
             }
             else
             {
-                MarkToRemoveParam();
+                MarkAsRemovedParam();
             }
         }
 
@@ -136,7 +144,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 : (Parameter)MethodParametersGrid.SelectedRows[0].DataBoundItem;
 
             RemoveButton.Enabled = _selectedItem != null && !_selectedItem.IsRemoved;
-            AddButton.Enabled = _selectedItem != null && _selectedItem.IsRemoved;
+            RestoreButton.Enabled = _selectedItem != null && _selectedItem.IsRemoved;
         }
     }
 }

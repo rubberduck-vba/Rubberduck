@@ -20,7 +20,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
         private Declaration _method;
         public List<Parameter> Parameters = new List<Parameter>();
 
-        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target, bool removeTarget = true)
+        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
@@ -32,10 +32,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             FindMethod(out _method, out indexOfParam, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
 
             LoadParameters();
-            if (removeTarget)
-            {
-                Parameters.Find(item => Equals(item.Declaration, target)).IsRemoved = true;
-            }
+            Parameters.Find(item => Equals(item.Declaration, target)).IsRemoved = true;
         }
 
         public RemoveParameterRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection)
