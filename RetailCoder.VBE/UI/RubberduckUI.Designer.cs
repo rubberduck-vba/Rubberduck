@@ -450,15 +450,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0 issues.
-        /// </summary>
-        internal static string CodeInspections_StatusButtonCaption {
-            get {
-                return ResourceManager.GetString("CodeInspections_StatusButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Component.
         /// </summary>
         internal static string Component {

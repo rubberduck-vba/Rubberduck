@@ -60,6 +60,8 @@ namespace Rubberduck.UI.CodeInspections
             NextButton.Text = RubberduckUI.CodeInspections_NavigateToNextIssue;
             PreviousButton.Text = RubberduckUI.CodeInspections_NavigateToPreviousIssue;
 
+            StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
+
             RefreshButton.ToolTipText = RubberduckUI.CodeInspections_RefreshToolTip;
             QuickFixButton.ToolTipText = RubberduckUI.CodeInspections_QuickFixToolTip;
             GoButton.ToolTipText = RubberduckUI.CodeInspections_GoToolTip;

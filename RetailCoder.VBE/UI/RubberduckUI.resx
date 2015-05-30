@@ -498,9 +498,6 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeInspections_Run" xml:space="preserve">
     <value>Run code inspections</value>
   </data>
-  <data name="CodeInspections_StatusButtonCaption" xml:space="preserve">
-    <value>0 issues</value>
-  </data>
   <data name="Fix" xml:space="preserve">
     <value>Fix</value>
   </data>

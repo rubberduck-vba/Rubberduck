@@ -57,7 +57,7 @@ namespace Rubberduck.UI.CodeInspections
             Menu.SetButtonImage(_refreshButton, refreshIcon);
 
             _statusButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
-            _statusButton.Caption = RubberduckUI.CodeInspections_StatusButtonCaption;
+            _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
             _statusButton.FaceId = 463; // Resources.Warning doesn't look good here
             _statusButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
 
