@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing
 {
@@ -52,6 +53,7 @@ namespace Rubberduck.Parsing
 
     public interface IParseResultProvider
     {
+        event EventHandler<ParseErrorEventArgs> ParserError;
         event EventHandler<ParseStartedEventArgs> ParseStarted;
         event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
         event EventHandler<ParseProgressEventArgs> ParseProgress;

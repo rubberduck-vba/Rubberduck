@@ -675,4 +675,7 @@ Warning: All customized settings will be lost.</value>
   <data name="RemoveParamsDialog_RestoreButtonText" xml:space="preserve">
     <value>Restore</value>
   </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Parser Errors</value>
+  </data>
 </root>

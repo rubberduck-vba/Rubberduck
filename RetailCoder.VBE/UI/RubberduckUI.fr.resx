@@ -655,4 +655,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Language_FR" xml:space="preserve">
     <value>Français</value>
   </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Erreurs d'analyse</value>
+  </data>
 </root>

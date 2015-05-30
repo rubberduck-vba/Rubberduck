@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Antlr4.Runtime;
@@ -137,10 +138,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                if (LogManager.IsLoggingEnabled())
-                {
-                    LogParseException(component, exception);
-                }
+                OnParserError(exception, component);
                 cached = false;
                 return null;
             }
@@ -151,7 +149,23 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void LogParseException(VBComponent component, SyntaxErrorException exception)
+        public event EventHandler<ParseErrorEventArgs> ParserError;
+
+        private void OnParserError(SyntaxErrorException exception, VBComponent component)
+        {
+            if (LogManager.IsLoggingEnabled())
+            {
+                LogParseException(exception, component);
+            }
+
+            var handler = ParserError;
+            if (handler != null)
+            {
+                handler(this, new ParseErrorEventArgs(exception, component));
+            }
+        }
+
+        private void LogParseException(SyntaxErrorException exception, VBComponent component)
         {
             var offendingProject = component.Collection.Parent.Name;
             var offendingComponent = component.Name;
