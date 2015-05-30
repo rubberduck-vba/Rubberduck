@@ -121,14 +121,19 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                     continue;
                 }
 
-                RemoveCallParameter(paramList, module);
+                var numParams = paramList.argCall().Count;  // handles optional variables
+
+                foreach (var param in Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
+                {
+                    RemoveCallParameter(param, paramList, module);
+                }
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RemoveCallParameter(Declaration paramToRemove, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = Parameters.FindIndex(item => item.Declaration.Context.GetText() == _target.Context.GetText());
+            var paramIndex = Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
 
             if (paramIndex >= paramNames.Count) { return; }
 
@@ -140,7 +145,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
                 do
                 {
-                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(_target.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
+                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(paramToRemove.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
 
                     if (paramToRemoveName == null || !content.Contains(paramToRemoveName)) { continue; }
 
