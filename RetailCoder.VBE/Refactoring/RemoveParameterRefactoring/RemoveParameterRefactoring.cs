@@ -25,11 +25,9 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
             
-            int indexOfParam;
-
             if (target.DeclarationType != DeclarationType.Parameter) { throw new ArgumentException("Invalid target type"); }
 
-            FindMethod(out _method, out indexOfParam, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+            FindTarget(out _method, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
 
             LoadParameters();
             Parameters.Find(item => Equals(item.Declaration, target)).IsRemoved = true;
@@ -39,10 +37,8 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
-            
-            int indexOfParam;
 
-            FindMethod(out _method, out indexOfParam, selection);
+            FindTarget(out _method, selection);
 
             if (_method != null && (_method.DeclarationType == DeclarationType.PropertySet || _method.DeclarationType == DeclarationType.PropertyLet))
             {
@@ -387,22 +383,21 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                  DeclarationType.PropertySet
             };
 
-        private void FindMethod(out Declaration method, out int indexOfParam, QualifiedSelection selection)
+        private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
-            indexOfParam = -1;
-
-            method = _declarations.Items
+            target = _declarations.Items
                 .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item));
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                                     || IsSelectedReference(selection, item));
 
-            if (method != null && ValidDeclarationTypes.Contains(method.DeclarationType))
+            if (target != null && ValidDeclarationTypes.Contains(target.DeclarationType))
             {
                 return;
             }
 
-            method = null;
+            target = null;
 
-            var methods = _declarations.Items
+            var targets = _declarations.Items
                 .Where(item => !item.IsBuiltIn
                             && item.ComponentName == selection.QualifiedName.ComponentName
                             && ValidDeclarationTypes.Contains(item.DeclarationType));
@@ -412,7 +407,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             var currentStartColumn = 0;
             var currentEndColumn = int.MaxValue;
 
-            foreach (var declaration in methods)
+            foreach (var declaration in targets)
             {
                 var startLine = declaration.Context.Start.Line;
                 var startColumn = declaration.Context.Start.Column;
@@ -426,7 +421,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                         endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
                         currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                     {
-                        method = declaration;
+                        target = declaration;
 
                         currentStartLine = startLine;
                         currentEndLine = endLine;
@@ -469,11 +464,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
                             endLine == selection.Selection.EndLine && endColumn < selection.Selection.EndColumn) &&
                             currentStartColumn <= startColumn && currentEndColumn >= endColumn)
                         {
-                            method = reference.Declaration;
-
-                            var args = paramList.argCall().ToList();
-                            indexOfParam = args.FindIndex(item => item.Start.Column <= selection.Selection.StartColumn
-                                                               && item.Start.Column + item.GetText().Length >= selection.Selection.EndColumn);
+                            target = reference.Declaration;
 
                             currentStartLine = startLine;
                             currentEndLine = endLine;
@@ -497,6 +488,13 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             {
                 method = getter;
             }
+        }
+
+        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
+        {
+            return declaration.References.Any(r =>
+                r.QualifiedModuleName == selection.QualifiedName &&
+                r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
