@@ -9,7 +9,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     public partial class ReorderParametersDialog : Form, IReorderParametersView
     {
-        public IRefactoring ReorderParams { get; set; }
         public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;
         private Rectangle _dragBoxFromMouseDown;

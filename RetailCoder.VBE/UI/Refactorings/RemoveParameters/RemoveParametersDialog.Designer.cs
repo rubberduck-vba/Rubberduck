@@ -119,7 +119,7 @@
             this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
             this.InstructionsLabel.Size = new System.Drawing.Size(511, 42);
             this.InstructionsLabel.TabIndex = 6;
-            this.InstructionsLabel.Text = "Select a parameter and double-click it or use buttons to add or remove it.";
+            this.InstructionsLabel.Text = "Select a parameter and double-click it or use buttons to remove or restore it.";
             // 
             // TitleLabel
             // 

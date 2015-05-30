@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     interface IRemoveParametersView : IDialogView
     {
-        RemoveParameterRefactoring RemoveParams { get; set; }
+        List<Parameter> Parameters { get; set; }
         void InitializeParameterGrid();
     }
 }

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public partial class RemoveParametersDialog : Form, IRemoveParametersView
     {
-        public RemoveParameterRefactoring RemoveParams { get; set; }
+        public List<Parameter> Parameters { get; set; }
         private Parameter _selectedItem;
 
         public RemoveParametersDialog()
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         {
             MethodParametersGrid.AutoGenerateColumns = false;
             MethodParametersGrid.Columns.Clear();
-            MethodParametersGrid.DataSource = RemoveParams.Parameters;
+            MethodParametersGrid.DataSource = Parameters;
             MethodParametersGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
             MethodParametersGrid.MultiSelect = false;
             MethodParametersGrid.AllowUserToResizeRows = false;
@@ -86,9 +86,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         {
             if (_selectedItem != null)
             {
-                var indexOfRemoved = RemoveParams.Parameters.FindIndex(item => item == _selectedItem);
+                var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
-                RemoveParams.Parameters.ElementAt(indexOfRemoved).IsRemoved = true;
+                Parameters.ElementAt(indexOfRemoved).IsRemoved = true;
                 MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Strikeout);
 
                 SelectionChanged();
@@ -99,9 +99,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         {
             if (_selectedItem != null)
             {
-                var indexOfRemoved = RemoveParams.Parameters.FindIndex(item => item == _selectedItem);
+                var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
-                RemoveParams.Parameters.ElementAt(indexOfRemoved).IsRemoved = false;
+                Parameters.ElementAt(indexOfRemoved).IsRemoved = false;
                 MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Regular);
 
                 SelectionChanged();

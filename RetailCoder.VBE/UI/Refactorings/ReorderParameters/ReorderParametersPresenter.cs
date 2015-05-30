@@ -36,7 +36,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             if (_targetDeclaration == null) { return; }
 
-            _view.Parameters = MethodParameters();
+            _view.Parameters = LoadParameters();
 
             if (_view.Parameters.Count < 2) 
             {
@@ -60,7 +60,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             reorderParams.Refactor();
         }
 
-        private List<Parameter> MethodParameters()
+        private List<Parameter> LoadParameters()
         {
             var procedure = (dynamic)_targetDeclaration.Context;
             var argList = (VBAParser.ArgListContext)procedure.argList();
