@@ -13,11 +13,11 @@ using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 {
-    public class RemoveParameterRefactoring : IRefactoring
+    public class RemoveParameterRefactoring// : IRefactoring
     {
         private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
-        private Declaration _method;
+        private Declaration _target;
         public List<Parameter> Parameters = new List<Parameter>();
 
         public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration target)
@@ -27,7 +27,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             
             if (target.DeclarationType != DeclarationType.Parameter) { throw new ArgumentException("Invalid target type"); }
 
-            FindTarget(out _method, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
+            FindTarget(out _target, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
 
             LoadParameters();
             Parameters.Find(item => Equals(item.Declaration, target)).IsRemoved = true;
@@ -38,11 +38,11 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            FindTarget(out _method, selection);
+            FindTarget(out _target, selection);
 
-            if (_method != null && (_method.DeclarationType == DeclarationType.PropertySet || _method.DeclarationType == DeclarationType.PropertyLet))
+            if (_target != null && (_target.DeclarationType == DeclarationType.PropertySet || _target.DeclarationType == DeclarationType.PropertyLet))
             {
-                GetGetter(ref _method);
+                GetGetter(ref _target);
             }
 
             LoadParameters();
@@ -50,8 +50,8 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
         public void Refactor()
         {
-            PromptIfTargetImplementsInterface(ref _method);
-            if (_method == null) { return; }
+            PromptIfTargetImplementsInterface(ref _target);
+            if (_target == null) { return; }
 
             RemoveParameters();
         }
@@ -89,7 +89,7 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
         private void LoadParameters()
         {
             var index = 0;
-            foreach (var target in FindTargets(_method))
+            foreach (var target in FindTargets(_target))
             {
                 Parameters.Add(new Parameter(target, index++));
             }
@@ -97,9 +97,9 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
         private void RemoveParameters()
         {
-            if (_method == null) { throw new NullReferenceException("Parameter is null."); }
+            if (_target == null) { throw new NullReferenceException("Parameter is null."); }
 
-            AdjustReferences(_method.References, _method);
+            AdjustReferences(_target.References, _target);
             AdjustSignatures();
         }
 
@@ -272,29 +272,29 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
         private void AdjustSignatures()
         {
-            var proc = (dynamic)_method.Context;
+            var proc = (dynamic)_target.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = _method.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var module = _target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (_method.DeclarationType == DeclarationType.PropertyGet)
+            if (_target.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = GetLetterOrSetter(_method, DeclarationType.PropertySet);
+                var setter = GetLetterOrSetter(_target, DeclarationType.PropertySet);
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
                 }
 
-                var letter = GetLetterOrSetter(_method, DeclarationType.PropertyLet);
+                var letter = GetLetterOrSetter(_target, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
                 }
             }
                 
-            RemoveSignatureParameters(_method, paramList, module);
+            RemoveSignatureParameters(_target, paramList, module);
 
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _method.ComponentName))
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _target.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
@@ -304,8 +304,8 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(_method.Project) &&
-                                                               item.IdentifierName == _method.ComponentName + "_" + _method.IdentifierName);
+                                                        .Where(item => item.Project.Equals(_target.Project) &&
+                                                               item.IdentifierName == _target.ComponentName + "_" + _target.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustReferences(interfaceImplentation.References, interfaceImplentation);

@@ -6,9 +6,8 @@ namespace Rubberduck.Refactoring
     public interface IRefactoring
     {
         Declaration AcquireTarget(QualifiedSelection selection);
-
         void Refactor();
-        //void Refactor(QualifiedSelection selection);
-        //void Refactor(Declaration target);
+
+        Declaration TargetDeclaration { get; set; }
     }
 }

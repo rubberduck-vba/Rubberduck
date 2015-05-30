@@ -18,10 +18,10 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
     {
         private readonly VBProjectParseResult _parseResult;
         private readonly Declarations _declarations;
-        public List<Parameter> Parameters { get; set; }
-        public Declaration Target { get; set; }
+        private List<Parameter> Parameters { get; set; }
+        public Declaration TargetDeclaration { get; set; }
 
-        public ReorderParametersRefactoring(VBProjectParseResult parseResult, Declaration target)
+        public ReorderParametersRefactoring(VBProjectParseResult parseResult, Declaration target, List<Parameter> parameters)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
@@ -31,29 +31,29 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
                 throw new ArgumentException("Invalid declaration type.");
             }
 
-            Target = target;
-            Parameters = MethodParameters().ToList();
+            TargetDeclaration = target;
+            Parameters = parameters;
         }
 
-        public ReorderParametersRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection)
+        public ReorderParametersRefactoring(VBProjectParseResult parseResult, QualifiedSelection selection, List<Parameter> parameters)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            Target = AcquireTarget(selection);
-            Parameters = MethodParameters().ToList();
+            TargetDeclaration = AcquireTarget(selection);
+            Parameters = parameters;
         }
 
         public void Refactor()
         {
-            if (Target == null) { throw new NullReferenceException("Target is null"); }
+            TargetDeclaration = PromptIfTargetImplementsInterface();
 
-            if (!Parameters.Where((t, i) => t.Index != i).Any() || !IsValidParamOrder())
+            if (TargetDeclaration == null || !Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
             {
                 return;
             }
 
-            AdjustReferences(Target.References);
+            AdjustReferences(TargetDeclaration.References);
             AdjustSignatures();
         }
 
@@ -86,7 +86,7 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
         {
-            foreach (var reference in references.Where(item => item.Context != Target.Context))
+            foreach (var reference in references.Where(item => item.Context != TargetDeclaration.Context))
             {
                 var proc = (dynamic)reference.Context.Parent;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -158,15 +158,15 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
 
         private void AdjustSignatures()
         {
-            var proc = (dynamic)Target.Context;
+            var proc = (dynamic)TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var module = TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            if (Target.DeclarationType == DeclarationType.PropertyGet)
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == Target.ParentScope &&
-                                              item.IdentifierName == Target.IdentifierName &&
+                var setter = _declarations.Items.FirstOrDefault(item => item.ParentScope == TargetDeclaration.ParentScope &&
+                                              item.IdentifierName == TargetDeclaration.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
@@ -174,8 +174,8 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
                     AdjustSignatures(setter);
                 }
 
-                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == Target.ParentScope &&
-                              item.IdentifierName == Target.IdentifierName &&
+                var letter = _declarations.Items.FirstOrDefault(item => item.ParentScope == TargetDeclaration.ParentScope &&
+                              item.IdentifierName == TargetDeclaration.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
                 if (letter != null)
@@ -184,9 +184,9 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
                 }
             }
 
-            RewriteSignature(Target, paramList, module);
+            RewriteSignature(TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == Target.ComponentName))
+            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == TargetDeclaration.ComponentName))
             {
                 foreach (var reference in _declarations.FindEventProcedures(withEvents))
                 {
@@ -196,8 +196,8 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             }
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(Target.Project) &&
-                                                               item.IdentifierName == Target.ComponentName + "_" + Target.IdentifierName);
+                                                        .Where(item => item.Project.Equals(TargetDeclaration.Project) &&
+                                                               item.IdentifierName == TargetDeclaration.ComponentName + "_" + TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustReferences(interfaceImplentation.References);
@@ -329,7 +329,7 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
 
         public Declaration AcquireTarget(QualifiedSelection selection)
         {
-            Declaration target;
+            /*Declaration target;
 
             FindTarget(out target, selection);
 
@@ -345,10 +345,11 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
                 }
             }
 
-            return target;
+            return target;*/
+            throw new NotImplementedException();
         }
 
-        private void FindTarget(out Declaration target, QualifiedSelection selection)
+        /*private void FindTarget(out Declaration target, QualifiedSelection selection)
         {
             target = _declarations.Items
                 .Where(item => !item.IsBuiltIn)
@@ -439,11 +440,32 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
                     }
                 }
             }
+        }*/
+
+        private Declaration PromptIfTargetImplementsInterface()
+        {
+            var declaration = TargetDeclaration;
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            if (declaration == null || interfaceImplementation == null)
+            {
+                return declaration;
+            }
+
+            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
+            var message = string.Format(RubberduckUI.ReorderPresenter_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirm == DialogResult.No)
+            {
+                return null;
+            }
+
+            return interfaceMember;
         }
 
         public IEnumerable<Parameter> MethodParameters()
         {
-            var procedure = (dynamic)Target.Context;
+            var procedure = (dynamic)TargetDeclaration.Context;
             var argList = (VBAParser.ArgListContext)procedure.argList();
             var args = argList.arg();
 
@@ -460,18 +482,5 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             DeclarationType.PropertyLet,
             DeclarationType.PropertySet
         };
-
-        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName == selection.QualifiedName &&
-                r.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
-        }
     }
 }
