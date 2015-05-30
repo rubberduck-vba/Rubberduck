@@ -133,7 +133,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class module (.cls).
+        ///   Looks up a localized string similar to &amp;Class module (.cls).
         /// </summary>
         internal static string CodeExplorer_AddClassText {
             get {
@@ -142,7 +142,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User form.
+        ///   Looks up a localized string similar to User &amp;form.
         /// </summary>
         internal static string CodeExplorer_AddFormText {
             get {
@@ -151,7 +151,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Standard module (.bas).
+        ///   Looks up a localized string similar to &amp;Standard module (.bas).
         /// </summary>
         internal static string CodeExplorer_AddStdModuleText {
             get {
@@ -160,7 +160,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test module.
+        ///   Looks up a localized string similar to &amp;Test module.
         /// </summary>
         internal static string CodeExplorer_AddTestModuleText {
             get {
@@ -169,7 +169,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display member names.
+        ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         internal static string CodeExplorer_DisplayMemberNamesText {
             get {
@@ -178,7 +178,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display full signatures.
+        ///   Looks up a localized string similar to Display full &amp;signatures.
         /// </summary>
         internal static string CodeExplorer_DisplaySignaturesText {
             get {

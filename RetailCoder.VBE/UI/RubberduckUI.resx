@@ -679,22 +679,22 @@ Warning: All customized settings will be lost.</value>
     <value>Rubberduck - Parser Errors</value>
   </data>
   <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>Class module (.cls)</value>
+    <value>&amp;Class module (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>User form</value>
+    <value>User &amp;form</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standard module (.bas)</value>
+    <value>&amp;Standard module (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Test module</value>
+    <value>&amp;Test module</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Display member names</value>
+    <value>Display member &amp;names</value>
   </data>
   <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Display full signatures</value>
+    <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
     <value>Find All Implementations...</value>
