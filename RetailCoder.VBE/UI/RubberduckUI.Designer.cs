@@ -1788,6 +1788,204 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Add.
+        /// </summary>
+        internal static string TestExplorer_AddButtonText {
+            get {
+                return ResourceManager.GetString("TestExplorer_AddButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string TestExplorer_AddButtonToolTip {
+            get {
+                return ResourceManager.GetString("TestExplorer_AddButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Method (Expected &amp;Error).
+        /// </summary>
+        internal static string TestExplorer_AddExpectedErrorTestMethod {
+            get {
+                return ResourceManager.GetString("TestExplorer_AddExpectedErrorTestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Test Method.
+        /// </summary>
+        internal static string TestExplorer_AddTestMethod {
+            get {
+                return ResourceManager.GetString("TestExplorer_AddTestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test &amp;Module.
+        /// </summary>
+        internal static string TestExplorer_AddTestModule {
+            get {
+                return ResourceManager.GetString("TestExplorer_AddTestModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        internal static string TestExplorer_Duration {
+            get {
+                return ResourceManager.GetString("TestExplorer_Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to selected.
+        /// </summary>
+        internal static string TestExplorer_GotoSelectionToolTip {
+            get {
+                return ResourceManager.GetString("TestExplorer_GotoSelectionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        internal static string TestExplorer_Message {
+            get {
+                return ResourceManager.GetString("TestExplorer_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method Name.
+        /// </summary>
+        internal static string TestExplorer_MethodName {
+            get {
+                return ResourceManager.GetString("TestExplorer_MethodName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module Name.
+        /// </summary>
+        internal static string TestExplorer_ModuleName {
+            get {
+                return ResourceManager.GetString("TestExplorer_ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outcome.
+        /// </summary>
+        internal static string TestExplorer_Outcome {
+            get {
+                return ResourceManager.GetString("TestExplorer_Outcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        internal static string TestExplorer_ProjectName {
+            get {
+                return ResourceManager.GetString("TestExplorer_ProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Qualified Member Name.
+        /// </summary>
+        internal static string TestExplorer_QualifiedMemberName {
+            get {
+                return ResourceManager.GetString("TestExplorer_QualifiedMemberName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result.
+        /// </summary>
+        internal static string TestExplorer_Result {
+            get {
+                return ResourceManager.GetString("TestExplorer_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;All Tests.
+        /// </summary>
+        internal static string TestExplorer_RunAllTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunAllTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Run.
+        /// </summary>
+        internal static string TestExplorer_RunButtonText {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        internal static string TestExplorer_RunButtonToolTip {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Failed Tests.
+        /// </summary>
+        internal static string TestExplorer_RunFailedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunFailedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat &amp;Last Run.
+        /// </summary>
+        internal static string TestExplorer_RunLastRunAllTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunLastRunAllTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Not Run Tests.
+        /// </summary>
+        internal static string TestExplorer_RunNotRunTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunNotRunTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Passed Tests.
+        /// </summary>
+        internal static string TestExplorer_RunPassedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunPassedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Selected Tests.
+        /// </summary>
+        internal static string TestExplorer_RunSelectedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunSelectedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} Failed.
         /// </summary>
         internal static string TestExplorer_TestNumberFailed {
@@ -1847,6 +2045,15 @@ namespace Rubberduck.UI {
         internal static string TestMenu_TextExplorer {
             get {
                 return ResourceManager.GetString("TestMenu_TextExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string TestsExplorer_RefreshToolTip {
+            get {
+                return ResourceManager.GetString("TestsExplorer_RefreshToolTip", resourceCulture);
             }
         }
         

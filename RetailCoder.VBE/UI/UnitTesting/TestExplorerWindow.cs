@@ -54,6 +54,15 @@ namespace Rubberduck.UI.UnitTesting
             {
                 messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+
+            testOutputGridView.Columns["Result"].HeaderText = RubberduckUI.TestExplorer_Result;
+            testOutputGridView.Columns["QualifiedMemberName"].HeaderText = RubberduckUI.TestExplorer_QualifiedMemberName;
+            testOutputGridView.Columns["ProjectName"].HeaderText = RubberduckUI.TestExplorer_ProjectName;
+            testOutputGridView.Columns["ModuleName"].HeaderText = RubberduckUI.TestExplorer_ModuleName;
+            testOutputGridView.Columns["MethodName"].HeaderText = RubberduckUI.TestExplorer_MethodName;
+            testOutputGridView.Columns["Outcome"].HeaderText = RubberduckUI.TestExplorer_Outcome;
+            testOutputGridView.Columns["Message"].HeaderText = RubberduckUI.TestExplorer_Message;
+            testOutputGridView.Columns["Duration"].HeaderText = RubberduckUI.TestExplorer_Duration;
         }
 
         private void RegisterUIEvents()
@@ -71,6 +80,27 @@ namespace Rubberduck.UI.UnitTesting
             runNotRunTestsMenuItem.Click += RunNotRunTestsMenuItemClicked;
             runLastRunMenuItem.Click += RunLastRunMenuItemClicked;
             runSelectedTestMenuItem.Click += RunSelectedTestMenuItemClicked;
+
+            addTestMethodButton.Text = RubberduckUI.TestExplorer_AddTestMethod;
+            addTestModuleButton.Text = RubberduckUI.TestExplorer_AddTestModule;
+            addExpectedErrorTestMethodButton.Text = RubberduckUI.TestExplorer_AddExpectedErrorTestMethod;
+            runAllTestsMenuItem.Text = RubberduckUI.TestExplorer_RunAllTests;
+            runFailedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunFailedTests;
+            runPassedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunPassedTests;
+            runNotRunTestsMenuItem.Text = RubberduckUI.TestExplorer_RunNotRunTests;
+            runLastRunMenuItem.Text = RubberduckUI.TestExplorer_RunLastRunAllTests;
+            runSelectedTestMenuItem.Text = RubberduckUI.TestExplorer_RunSelectedTests;
+            addButton.Text = RubberduckUI.TestExplorer_AddButtonText;
+            runButton.Text = RubberduckUI.TestExplorer_RunButtonText;
+
+            passedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberInconclusive, 0);
+            failedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberFailed, 0);
+            inconclusiveTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberPassed, 0);
+
+            addButton.ToolTipText = RubberduckUI.TestExplorer_AddButtonToolTip;
+            runButton.ToolTipText = RubberduckUI.TestExplorer_RunButtonToolTip;
+            refreshTestsButton.ToolTipText = RubberduckUI.TestsExplorer_RefreshToolTip;
+            gotoSelectionButton.ToolTipText = RubberduckUI.TestExplorer_GotoSelectionToolTip;
         }
 
         private void GridSelectionChanged(object sender, EventArgs e)

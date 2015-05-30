@@ -771,4 +771,73 @@ Warning: All customized settings will be lost.</value>
   <data name="TodoExplorer_RefreshToolTip" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>&amp;Add</value>
+  </data>
+  <data name="TestExplorer_AddButtonToolTip" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Test Method (Expected &amp;Error)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>&amp;Test Method</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Test &amp;Module</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Navigate to selected</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Method Name</value>
+  </data>
+  <data name="TestExplorer_ModuleName" xml:space="preserve">
+    <value>Module Name</value>
+  </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="TestExplorer_ProjectName" xml:space="preserve">
+    <value>Project Name</value>
+  </data>
+  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
+    <value>Qualified Member Name</value>
+  </data>
+  <data name="TestExplorer_Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>&amp;All Tests</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>&amp;Run</value>
+  </data>
+  <data name="TestExplorer_RunButtonToolTip" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>&amp;Failed Tests</value>
+  </data>
+  <data name="TestExplorer_RunLastRunAllTests" xml:space="preserve">
+    <value>Repeat &amp;Last Run</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>&amp;Not Run Tests</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>&amp;Passed Tests</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>&amp;Selected Tests</value>
+  </data>
+  <data name="TestsExplorer_RefreshToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

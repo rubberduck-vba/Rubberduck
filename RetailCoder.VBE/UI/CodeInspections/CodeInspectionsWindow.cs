@@ -31,6 +31,11 @@ namespace Rubberduck.UI.CodeInspections
         public CodeInspectionsWindow()
         {
             InitializeComponent();
+            InitWindow();
+        }
+
+        private void InitWindow()
+        {
             RefreshButton.Click += RefreshButtonClicked;
             QuickFixButton.ButtonClick += QuickFixButton_Click;
             GoButton.Click += GoButton_Click;
