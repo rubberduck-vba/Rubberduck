@@ -1017,7 +1017,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parse Errors.
+        ///   Looks up a localized string similar to Rubberduck - Parser Errors.
         /// </summary>
         internal static string ParseErrors_Caption {
             get {
@@ -1113,7 +1113,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remo&amp;ve Parameter.
+        ///   Looks up a localized string similar to Remo&amp;ve Parameters.
         /// </summary>
         internal static string RefactorMenu_RemoveParameter {
             get {
@@ -1140,6 +1140,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Remove Parameters.
+        /// </summary>
+        internal static string RemoveParamsDialog_Caption {
+            get {
+                return ResourceManager.GetString("RemoveParamsDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a parameter and double-click it or use buttons to add or remove it..
+        /// </summary>
+        internal static string RemoveParamsDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("RemoveParamsDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        internal static string RemoveParamsDialog_RemoveButtonText {
+            get {
+                return ResourceManager.GetString("RemoveParamsDialog_RemoveButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot remove last value from setter or letter..
         /// </summary>
         internal static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
@@ -1149,20 +1176,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        internal static string RemoveParamsDialog_RestoreButtonText {
+            get {
+                return ResourceManager.GetString("RemoveParamsDialog_RestoreButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove parameters.
         /// </summary>
         internal static string RemoveParamsDialog_TitleText {
             get {
                 return ResourceManager.GetString("RemoveParamsDialog_TitleText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove parameter &apos;{0}&apos;?.
-        /// </summary>
-        internal static string RemovePresenter_ConfirmParameter {
-            get {
-                return ResourceManager.GetString("RemovePresenter_ConfirmParameter", resourceCulture);
             }
         }
         

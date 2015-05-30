@@ -7,7 +7,7 @@ using Rubberduck.Properties;
 using Rubberduck.Refactoring.ExtractMethodRefactoring;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.UI.Refactorings.RemoveParameter;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
@@ -39,7 +39,7 @@ namespace Rubberduck.UI
         private CommandBarButton _extractMethodButton;
         private CommandBarButton _renameButton;
         private CommandBarButton _reorderParametersButton;
-        private CommandBarButton _removeParameterButton;
+        private CommandBarButton _removeParametersButton;
 
         public void Initialize(CommandBarControls menuControls)
         {
@@ -54,8 +54,8 @@ namespace Rubberduck.UI
             _reorderParametersButton = AddButton(menu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
             SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
-            _removeParameterButton = AddButton(menu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
-            SetButtonImage(_removeParameterButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
+            _removeParametersButton = AddButton(menu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
+            SetButtonImage(_removeParametersButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeRefactorContextMenu();
         }
@@ -66,7 +66,7 @@ namespace Rubberduck.UI
         private CommandBarButton _extractMethodContextButton;
         private CommandBarButton _renameContextButton;
         private CommandBarButton _reorderParametersContextButton;
-        private CommandBarButton _removeParameterContextButton;
+        private CommandBarButton _removeParametersContextButton;
 
         private void InitializeRefactorContextMenu()
         {
@@ -83,8 +83,8 @@ namespace Rubberduck.UI
             _reorderParametersContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick);
             SetButtonImage(_reorderParametersContextButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
-            _removeParameterContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
-            SetButtonImage(_removeParameterContextButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
+            _removeParametersContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
+            SetButtonImage(_removeParametersContextButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeFindReferencesContextMenu(); //todo: untangle that mess...
             InitializeFindImplementationsContextMenu(); //todo: untangle that mess...
@@ -474,7 +474,11 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var presenter = new RemoveParameterPresenter(result, selection);
+            using (var view = new RemoveParametersDialog())
+            {
+                var presenter = new RemoveParametersPresenter(view, result, selection);
+                presenter.Show();
+            }
         }
 
         bool _disposed;
@@ -487,8 +491,8 @@ namespace Rubberduck.UI
 
             _extractMethodButton.Click -= OnExtractMethodButtonClick;
             _extractMethodContextButton.Click -= OnExtractMethodButtonClick;
-            _removeParameterButton.Click -= OnRemoveParameterButtonClick;
-            _removeParameterContextButton.Click -= OnRemoveParameterButtonClick;
+            _removeParametersButton.Click -= OnRemoveParameterButtonClick;
+            _removeParametersContextButton.Click -= OnRemoveParameterButtonClick;
             _renameButton.Click -= OnRenameButtonClick;
             _renameContextButton.Click -= OnRenameButtonClick;
             _reorderParametersButton.Click -= OnReorderParametersButtonClick;

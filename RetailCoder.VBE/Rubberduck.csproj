@@ -274,6 +274,7 @@
     </Compile>
     <Compile Include="Refactoring\ExtractMethodRefactoring\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactoring\IRefactoring.cs" />
+    <Compile Include="Refactoring\RemoveParameterRefactoring\RemoveParameterRefactoring.cs" />
     <Compile Include="Refactoring\ReorderParametersRefactoring\ReorderParametersRefactoring.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
@@ -311,7 +312,15 @@
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ParsingProgressPresenter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameter\RemoveParameterPresenter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\IRemoveParametersView.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\Parameter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.Designer.cs">
+      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
@@ -600,6 +609,9 @@
     <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
+      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -689,7 +701,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="Refactoring\RemoveParameterRefactoring\" />
     <Folder Include="Refactoring\RenameRefactoring\" />
   </ItemGroup>
   <ItemGroup>

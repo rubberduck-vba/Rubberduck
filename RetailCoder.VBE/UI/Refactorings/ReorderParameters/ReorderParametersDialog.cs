@@ -18,7 +18,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         public ReorderParametersDialog()
         {
-            //ReorderParams.Parameters = new List<Parameter>();
             InitializeComponent();
             InitializeCaptions();
 

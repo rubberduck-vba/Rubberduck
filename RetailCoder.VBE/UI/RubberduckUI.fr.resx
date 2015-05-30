@@ -656,6 +656,6 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Français</value>
   </data>
   <data name="ParseErrors_Caption" xml:space="preserve">
-    <value>Erreurs d'analyse</value>
+    <value>Rubberduck - Erreurs d'analyse</value>
   </data>
 </root>

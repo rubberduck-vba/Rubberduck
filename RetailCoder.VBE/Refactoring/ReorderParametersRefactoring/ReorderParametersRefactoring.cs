@@ -3,12 +3,14 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.Refactoring.ReorderParametersRefactoring
 {
@@ -46,18 +48,40 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
         {
             if (Target == null) { throw new NullReferenceException("Target is null"); }
 
+            if (!Parameters.Where((t, i) => t.Index != i).Any() || !IsValidParamOrder())
+            {
+                return;
+            }
+
             AdjustReferences(Target.References);
             AdjustSignatures();
         }
 
-        public void Refactor(Declaration target)
+        private bool IsValidParamOrder()
         {
-            Refactor();
-        }
+            var indexOfFirstOptionalParam = Parameters.FindIndex(param => param.IsOptional);
+            if (indexOfFirstOptionalParam >= 0)
+            {
+                for (var index = indexOfFirstOptionalParam + 1; index < Parameters.Count; index++)
+                {
+                    if (!Parameters.ElementAt(index).IsOptional)
+                    {
+                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+            }
 
-        public void Refactor(QualifiedSelection selection)
-        {
-            Refactor();
+            var indexOfParamArray = Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray >= 0)
+            {
+                if (indexOfParamArray != Parameters.Count - 1)
+                {
+                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
@@ -335,10 +359,8 @@ namespace Rubberduck.Refactoring.ReorderParametersRefactoring
             {
                 return;
             }
-            else
-            {
-                target = null;
-            }
+            
+            target = null;
 
             var targets = _declarations.Items
                 .Where(item => !item.IsBuiltIn
