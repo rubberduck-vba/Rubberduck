@@ -678,4 +678,28 @@ Warning: All customized settings will be lost.</value>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Errors</value>
   </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>Copy inspection results to clipboard</value>
+  </data>
+  <data name="CodeInspections_GoButtonLabel" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Navigate to selected issue</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Navigate to next issue</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Navigate to previous issue</value>
+  </data>
+  <data name="CodeInspections_QuickFixLabel" xml:space="preserve">
+    <value>Fix</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Address the issue</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Run code inspections</value>
+  </data>
 </root>

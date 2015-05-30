@@ -50,8 +50,17 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
 
+            QuickFixButton.Text = RubberduckUI.CodeInspections_QuickFixLabel;
+            GoButton.Text = RubberduckUI.CodeInspections_GoButtonLabel;
             NextButton.Text = RubberduckUI.CodeInspections_NavigateToNextIssue;
             PreviousButton.Text = RubberduckUI.CodeInspections_NavigateToPreviousIssue;
+
+            RefreshButton.ToolTipText = RubberduckUI.CodeInspections_RefreshToolTip;
+            QuickFixButton.ToolTipText = RubberduckUI.CodeInspections_QuickFixToolTip;
+            GoButton.ToolTipText = RubberduckUI.CodeInspections_GoToolTip;
+            PreviousButton.ToolTipText = RubberduckUI.CodeInspections_PreviousToolTip;
+            NextButton.ToolTipText = RubberduckUI.CodeInspections_NextToolTip;
+            CopyButton.ToolTipText = RubberduckUI.CodeInspections_CopyToolTip;
         }
 
         public void ToggleParsingStatus(bool enabled = true)
