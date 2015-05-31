@@ -36,6 +36,15 @@ namespace Rubberduck.UI.Settings
 
             OkButton.Click += OkButton_Click;
             CancelButton.Click += CancelButton_Click;
+
+            InitWindow();
+        }
+
+        private void InitWindow()
+        {
+            this.Text = RubberduckUI.Settings_Caption;
+            InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
+            TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

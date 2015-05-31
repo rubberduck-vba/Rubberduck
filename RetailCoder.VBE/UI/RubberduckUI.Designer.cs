@@ -79,6 +79,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implementations of &apos;{0}&apos;.
         /// </summary>
         internal static string AllImplementations_Caption {
@@ -129,6 +138,15 @@ namespace Rubberduck.UI {
         internal static string CancelButtonText {
             get {
                 return ResourceManager.GetString("CancelButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        internal static string Change {
+            get {
+                return ResourceManager.GetString("Change", resourceCulture);
             }
         }
         
@@ -1374,6 +1392,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        internal static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Remove Parameters.
         /// </summary>
         internal static string RemoveParamsDialog_Caption {
@@ -1392,29 +1419,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove.
-        /// </summary>
-        internal static string RemoveParamsDialog_RemoveButtonText {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_RemoveButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot remove last value from setter or letter..
         /// </summary>
         internal static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
             get {
                 return ResourceManager.GetString("RemoveParamsDialog_RemoveIllegalSetterLetterParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Restore.
-        /// </summary>
-        internal static string RemoveParamsDialog_RestoreButtonText {
-            get {
-                return ResourceManager.GetString("RemoveParamsDialog_RestoreButtonText", resourceCulture);
             }
         }
         
@@ -1590,6 +1599,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        internal static string Restore {
+            get {
+                return ResourceManager.GetString("Restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result.
         /// </summary>
         internal static string Result {
@@ -1694,6 +1712,15 @@ namespace Rubberduck.UI {
         internal static string RubberduckMenu_UnitTests {
             get {
                 return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Settings.
+        /// </summary>
+        internal static string Settings_Caption {
+            get {
+                return ResourceManager.GetString("Settings_Caption", resourceCulture);
             }
         }
         
@@ -2063,6 +2090,33 @@ namespace Rubberduck.UI {
         internal static string ToDoMarkerToDo {
             get {
                 return ResourceManager.GetString("ToDoMarkerToDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority:.
+        /// </summary>
+        internal static string TodoSettings_PriorityLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_PriorityLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token Text:.
+        /// </summary>
+        internal static string TodoSettings_TokenLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token List:.
+        /// </summary>
+        internal static string TodoSettings_TokenListLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
             }
         }
         

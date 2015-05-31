@@ -28,8 +28,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             Text = RubberduckUI.RemoveParamsDialog_Caption;
             TitleLabel.Text = RubberduckUI.RemoveParamsDialog_TitleText;
             InstructionsLabel.Text = RubberduckUI.RemoveParamsDialog_InstructionsLabelText;
-            RemoveButton.Text = RubberduckUI.RemoveParamsDialog_RemoveButtonText;
-            RestoreButton.Text = RubberduckUI.RemoveParamsDialog_RestoreButtonText;
+            RemoveButton.Text = RubberduckUI.Remove;
+            RestoreButton.Text = RubberduckUI.Restore;
         }
 
         private void MethodParametersGrid_SelectionChanged(object sender, EventArgs e)

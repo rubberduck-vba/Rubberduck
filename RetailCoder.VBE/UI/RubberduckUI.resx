@@ -645,16 +645,13 @@ Warning: All customized settings will be lost.</value>
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
-  <data name="RemoveParamsDialog_RemoveButtonText" xml:space="preserve">
-    <value>Remove</value>
-  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Remove Parameters</value>
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
     <value>Select a parameter and double-click it or use buttons to remove or restore it.</value>
   </data>
-  <data name="RemoveParamsDialog_RestoreButtonText" xml:space="preserve">
+  <data name="Restore" xml:space="preserve">
     <value>Restore</value>
   </data>
   <data name="ParseErrors_Caption" xml:space="preserve">
@@ -812,5 +809,26 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>project</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>Rubberduck Settings</value>
+  </data>
+  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
+    <value>Priority:</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Token Text:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Token List:</value>
   </data>
 </root>
