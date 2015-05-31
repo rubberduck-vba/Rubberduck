@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Refactorings.Rename
             CancelButton.Text = RubberduckUI.CancelButtonText;
             TitleLabel.Text = RubberduckUI.RenameDialog_TitleText;
             InstructionsLabel.Text = RubberduckUI.RenameDialog_InstructionsLabelText;
-            NameLabel.Text = RubberduckUI.RenameDialog_NameLabelText;
+            NameLabel.Text = RubberduckUI.NameLabelText;
         }
 
         private void NewNameBox_TextChanged(object sender, EventArgs e)

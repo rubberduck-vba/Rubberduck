@@ -55,12 +55,12 @@ namespace Rubberduck.UI.UnitTesting
                 messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
 
-            testOutputGridView.Columns["Result"].HeaderText = RubberduckUI.TestExplorer_Result;
+            testOutputGridView.Columns["Result"].HeaderText = RubberduckUI.Result;
             testOutputGridView.Columns["QualifiedMemberName"].HeaderText = RubberduckUI.TestExplorer_QualifiedMemberName;
-            testOutputGridView.Columns["ProjectName"].HeaderText = RubberduckUI.TestExplorer_ProjectName;
-            testOutputGridView.Columns["ModuleName"].HeaderText = RubberduckUI.TestExplorer_ModuleName;
+            testOutputGridView.Columns["ProjectName"].HeaderText = RubberduckUI.ProjectName;
+            testOutputGridView.Columns["ModuleName"].HeaderText = RubberduckUI.ModuleName;
             testOutputGridView.Columns["MethodName"].HeaderText = RubberduckUI.TestExplorer_MethodName;
-            testOutputGridView.Columns["Outcome"].HeaderText = RubberduckUI.TestExplorer_Outcome;
+            testOutputGridView.Columns["Outcome"].HeaderText = RubberduckUI.Outcome;
             testOutputGridView.Columns["Message"].HeaderText = RubberduckUI.TestExplorer_Message;
             testOutputGridView.Columns["Duration"].HeaderText = RubberduckUI.TestExplorer_Duration;
         }
@@ -99,7 +99,7 @@ namespace Rubberduck.UI.UnitTesting
 
             addButton.ToolTipText = RubberduckUI.TestExplorer_AddButtonToolTip;
             runButton.ToolTipText = RubberduckUI.TestExplorer_RunButtonToolTip;
-            refreshTestsButton.ToolTipText = RubberduckUI.TestsExplorer_RefreshToolTip;
+            refreshTestsButton.ToolTipText = RubberduckUI.Refresh;
             gotoSelectionButton.ToolTipText = RubberduckUI.TestExplorer_GotoSelectionToolTip;
         }
 

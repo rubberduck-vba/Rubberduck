@@ -70,14 +70,14 @@ namespace Rubberduck.UI.CodeInspections
             _navigatePreviousButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary:true);
             _navigatePreviousButton.BeginGroup = true;
             _navigatePreviousButton.Caption = RubberduckUI.Previous;
-            _navigatePreviousButton.TooltipText = RubberduckUI.CodeInspections_NavigateToPreviousIssue;
+            _navigatePreviousButton.TooltipText = RubberduckUI.Previous;
             _navigatePreviousButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
             _navigatePreviousButton.FaceId = 41; // Resources.112_LeftArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigatePreviousButton.Enabled = false;
 
             _navigateNextButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _navigateNextButton.Caption = RubberduckUI.Next;
-            _navigateNextButton.TooltipText = RubberduckUI.CodeInspections_NavigateToNextIssue;
+            _navigateNextButton.TooltipText = RubberduckUI.Next;
             _navigateNextButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
             _navigateNextButton.FaceId = 39; // Resources.112_RightArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigateNextButton.Enabled = false;

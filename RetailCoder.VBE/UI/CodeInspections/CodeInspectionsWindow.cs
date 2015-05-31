@@ -52,19 +52,19 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             CodeIssuesGridView.Columns["Severity"].Visible = false;
 
-            CodeIssuesGridView.Columns["Icon"].HeaderText = RubberduckUI.CodeInspections_Severity;
+            CodeIssuesGridView.Columns["Icon"].HeaderText = RubberduckUI.Severity;
             CodeIssuesGridView.Columns["Project"].HeaderText = RubberduckUI.CodeInspections_Project;
             CodeIssuesGridView.Columns["Component"].HeaderText = RubberduckUI.CodeInspections_Component;
             CodeIssuesGridView.Columns["Line"].HeaderText = RubberduckUI.CodeInspections_Line;
-            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.CodeInspections_Issue;
+            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.Issue;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
 
             QuickFixButton.Text = RubberduckUI.CodeInspections_QuickFixLabel;
             GoButton.Text = RubberduckUI.CodeInspections_GoButtonLabel;
-            NextButton.Text = RubberduckUI.CodeInspections_NavigateToNextIssue;
-            PreviousButton.Text = RubberduckUI.CodeInspections_NavigateToPreviousIssue;
+            NextButton.Text = RubberduckUI.Next;
+            PreviousButton.Text = RubberduckUI.Previous;
 
             StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
 
