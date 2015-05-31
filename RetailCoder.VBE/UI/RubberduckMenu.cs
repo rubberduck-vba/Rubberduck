@@ -16,6 +16,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI
 {
@@ -84,7 +85,12 @@ namespace Rubberduck.UI
 
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            _refactorMenu.Rename(e.Node.Tag as Declaration);
+            var declaration = e.Node.Tag as Declaration;
+            if (declaration != null)
+            {
+                IDE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
+                _refactorMenu.Rename();
+            }
         }
 
         private void codePresenter_RunInspections(object sender, EventArgs e)

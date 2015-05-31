@@ -412,8 +412,8 @@ namespace Rubberduck.UI
             {
                 return;
             }
-            var selection = IDE.ActiveCodePane.GetSelection();
-            Rename(selection);
+
+            Rename();
         }
 
         private void OnReorderParametersButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -432,31 +432,21 @@ namespace Rubberduck.UI
             {
                 return;
             }
+
             var selection = IDE.ActiveCodePane.GetSelection();
             RemoveParameter(selection);
         }
 
-        public void Rename(QualifiedSelection selection)
+        public void Rename()
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             using (var view = new RenameDialog())
             {
-                var presenter = new RenamePresenter(IDE, view, result, selection);
-                presenter.Show();
-            }
-        }
-
-        public void Rename(Declaration target)
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            using (var view = new RenameDialog())
-            {
-                var presenter = new RenamePresenter(IDE, view, result, new QualifiedSelection(target.QualifiedName.QualifiedModuleName, target.Selection));
-                presenter.Show(target);
+                var factory = new RenamePresenterFactory(IDE, view, result);
+                var refactoring = new RenameRefactoring(factory);
+                refactoring.Refactor();
             }
         }
 

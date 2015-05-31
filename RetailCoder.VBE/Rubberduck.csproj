@@ -279,6 +279,8 @@
     <Compile Include="Refactorings\IRefactoring.cs" />
     <Compile Include="Refactorings\IRefactoringPresenterFactory.cs" />
     <Compile Include="Refactorings\RemoveParameterRefactoring.cs" />
+    <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParametersRefactoring.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
