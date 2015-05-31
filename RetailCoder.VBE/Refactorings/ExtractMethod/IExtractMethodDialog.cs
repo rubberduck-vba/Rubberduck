@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
-namespace Rubberduck.Refactoring.ExtractMethod
+namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodDialog : IDialogView
     {

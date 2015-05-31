@@ -1,5 +1,5 @@
 ﻿
-namespace Rubberduck.Refactoring
+namespace Rubberduck.Refactorings
 {
     public interface IRefactoring
     {

@@ -274,12 +274,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Refactoring\ExtractMethod\ExtractMethodPresenterFactory.cs" />
-    <Compile Include="Refactoring\ExtractMethod\ExtractMethodRefactoring.cs" />
-    <Compile Include="Refactoring\IRefactoring.cs" />
-    <Compile Include="Refactoring\IRefactoringPresenterFactory.cs" />
-    <Compile Include="Refactoring\RemoveParameterRefactoring.cs" />
-    <Compile Include="Refactoring\ReorderParametersRefactoring.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenterFactory.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
+    <Compile Include="Refactorings\IRefactoring.cs" />
+    <Compile Include="Refactorings\IRefactoringPresenterFactory.cs" />
+    <Compile Include="Refactorings\RemoveParameterRefactoring.cs" />
+    <Compile Include="Refactorings\ReorderParametersRefactoring.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
@@ -302,7 +302,7 @@
     <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
-    <Compile Include="Refactoring\ExtractMethod\ExtractMethodModel.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
     <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -326,15 +326,15 @@
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
-    <Compile Include="Refactoring\ExtractMethod\ExtractMethodPresenter.cs" />
-    <Compile Include="Refactoring\ExtractMethod\ExtractedParameter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Refactoring\ExtractMethod\IExtractMethodDialog.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\Parameter.cs" />
@@ -395,14 +395,14 @@
     <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
       <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\Rename\IRenameView.cs" />
+    <Compile Include="Refactorings\Rename\IRenameView.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\Rename\RenamePresenter.cs" />
+    <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
     <Compile Include="UI\Settings\GeneralSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

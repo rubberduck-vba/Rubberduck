@@ -11,7 +11,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactoring
+namespace Rubberduck.Refactorings
 {
     public class RemoveParameterRefactoring : IRefactoring
     {

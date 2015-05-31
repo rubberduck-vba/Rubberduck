@@ -1,6 +1,6 @@
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Refactoring.ExtractMethod
+namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractedParameter
     {

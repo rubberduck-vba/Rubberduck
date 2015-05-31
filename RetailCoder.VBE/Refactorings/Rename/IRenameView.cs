@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
-namespace Rubberduck.UI.Refactorings.Rename
+namespace Rubberduck.Refactorings.Rename
 {
     public interface IRenameView : IDialogView
     {

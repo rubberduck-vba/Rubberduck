@@ -10,7 +10,7 @@ using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
-using Rubberduck.Refactoring;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {

@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactoring.ExtractMethod
+namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory<ExtractMethodPresenter>
     {

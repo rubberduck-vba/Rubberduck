@@ -12,7 +12,7 @@ using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactoring
+namespace Rubberduck.Refactorings
 {
     public class ReorderParametersRefactoring : IRefactoring
     {

@@ -6,7 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactoring.ExtractMethod
+namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodModel
     {
