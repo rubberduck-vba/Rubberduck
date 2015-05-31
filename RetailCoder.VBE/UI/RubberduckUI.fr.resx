@@ -121,7 +121,7 @@
     <value>Annuler</value>
   </data>
   <data name="DeclarationType_Class" xml:space="preserve">
-    <value>classs</value>
+    <value>z classs</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
     <value>constante</value>
@@ -209,7 +209,7 @@
     <value>Impossible de renommer le projet.</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
-    <value>projet</value>
+    <value>z projet</value>
   </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>étiquette de ligne</value>
@@ -331,7 +331,7 @@
     <value>&amp;Inspections</value>
   </data>
   <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>&amp;Options</value>
+    <value>z &amp;Options</value>
   </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactorer</value>
@@ -505,7 +505,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>{0} Succès</value>
   </data>
   <data name="Type" xml:space="preserve">
-    <value>Type</value>
+    <value>z Type</value>
   </data>
   <data name="Inspections_DeclarationOf" xml:space="preserve">
     <value>déclaration de</value>
