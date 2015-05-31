@@ -111,7 +111,7 @@ namespace Rubberduck.UI.CodeInspections
                 if (completed)
                 {
                     StatusLabel.Image = Resources.tick_circle;
-                    StatusLabel.Text = RubberduckUI.OK;
+                    StatusLabel.Text = RubberduckUI.OK_AllCaps;
                 }
                 else
                 {
