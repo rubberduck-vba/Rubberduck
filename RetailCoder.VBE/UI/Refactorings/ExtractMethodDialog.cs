@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Refactorings
 
             TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
             InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
-            NameLabel.Text = RubberduckUI.ExtractMethod_NameLabel;
+            NameLabel.Text = RubberduckUI.NameLabelText;
             ReturnLabel.Text = RubberduckUI.ExtractMethod_ReturnLabel;
             SetReturnValueCheck.Text = RubberduckUI.ExtractMethod_SetBoxLabel;
             AccessibilityLabel.Text = RubberduckUI.ExtractMethod_AccessibilityLabel;

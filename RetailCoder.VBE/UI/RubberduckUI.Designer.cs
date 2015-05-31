@@ -223,24 +223,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        internal static string CodeExplorer_RefreshText {
-            get {
-                return ResourceManager.GetString("CodeExplorer_RefreshText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        internal static string CodeExplorer_RefreshToolTip {
-            get {
-                return ResourceManager.GetString("CodeExplorer_RefreshToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rename.
         /// </summary>
         internal static string CodeExplorer_RenameText {
@@ -358,38 +340,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Issue.
-        /// </summary>
-        internal static string CodeInspections_Issue {
-            get {
-                return ResourceManager.GetString("CodeInspections_Issue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Line.
         /// </summary>
         internal static string CodeInspections_Line {
             get {
                 return ResourceManager.GetString("CodeInspections_Line", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Navigate to next issue.
-        /// </summary>
-        internal static string CodeInspections_NavigateToNextIssue {
-            get {
-                return ResourceManager.GetString("CodeInspections_NavigateToNextIssue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Navigate to previous issue.
-        /// </summary>
-        internal static string CodeInspections_NavigateToPreviousIssue {
-            get {
-                return ResourceManager.GetString("CodeInspections_NavigateToPreviousIssue", resourceCulture);
             }
         }
         
@@ -482,15 +437,6 @@ namespace Rubberduck.UI {
         internal static string CodeInspections_Run {
             get {
                 return ResourceManager.GetString("CodeInspections_Run", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Severity.
-        /// </summary>
-        internal static string CodeInspections_Severity {
-            get {
-                return ResourceManager.GetString("CodeInspections_Severity", resourceCulture);
             }
         }
         
@@ -752,15 +698,6 @@ namespace Rubberduck.UI {
         internal static string ExtractMethod_InvalidSelectionMessage {
             get {
                 return ResourceManager.GetString("ExtractMethod_InvalidSelectionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name:.
-        /// </summary>
-        internal static string ExtractMethod_NameLabel {
-            get {
-                return ResourceManager.GetString("ExtractMethod_NameLabel", resourceCulture);
             }
         }
         
@@ -1107,6 +1044,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module Name.
+        /// </summary>
+        internal static string ModuleName {
+            get {
+                return ResourceManager.GetString("ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module options should be specified first.
         /// </summary>
         internal static string ModuleOptionsNotSpecifiedFirst {
@@ -1359,6 +1305,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        internal static string ProjectName {
+            get {
+                return ResourceManager.GetString("ProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///{1}
         ///
@@ -1406,6 +1361,15 @@ namespace Rubberduck.UI {
         internal static string RefactorMenu_ReorderParameters {
             get {
                 return ResourceManager.GetString("RefactorMenu_ReorderParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        internal static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
             }
         }
         
@@ -1505,15 +1469,6 @@ namespace Rubberduck.UI {
         internal static string RenameDialog_ModuleRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_ModuleRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name:.
-        /// </summary>
-        internal static string RenameDialog_NameLabelText {
-            get {
-                return ResourceManager.GetString("RenameDialog_NameLabelText", resourceCulture);
             }
         }
         
@@ -1914,47 +1869,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module Name.
-        /// </summary>
-        internal static string TestExplorer_ModuleName {
-            get {
-                return ResourceManager.GetString("TestExplorer_ModuleName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Outcome.
-        /// </summary>
-        internal static string TestExplorer_Outcome {
-            get {
-                return ResourceManager.GetString("TestExplorer_Outcome", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project Name.
-        /// </summary>
-        internal static string TestExplorer_ProjectName {
-            get {
-                return ResourceManager.GetString("TestExplorer_ProjectName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Qualified Member Name.
         /// </summary>
         internal static string TestExplorer_QualifiedMemberName {
             get {
                 return ResourceManager.GetString("TestExplorer_QualifiedMemberName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Result.
-        /// </summary>
-        internal static string TestExplorer_Result {
-            get {
-                return ResourceManager.GetString("TestExplorer_Result", resourceCulture);
             }
         }
         
@@ -2094,15 +2013,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        internal static string TestsExplorer_RefreshToolTip {
-            get {
-                return ResourceManager.GetString("TestsExplorer_RefreshToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ToDo Explorer.
         /// </summary>
         internal static string ToDoExplorer_Caption {
@@ -2126,42 +2036,6 @@ namespace Rubberduck.UI {
         internal static string TodoExplorer_LineNumber {
             get {
                 return ResourceManager.GetString("TodoExplorer_LineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Module Name.
-        /// </summary>
-        internal static string TodoExplorer_ModuleName {
-            get {
-                return ResourceManager.GetString("TodoExplorer_ModuleName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Priority.
-        /// </summary>
-        internal static string TodoExplorer_Priority {
-            get {
-                return ResourceManager.GetString("TodoExplorer_Priority", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project Name.
-        /// </summary>
-        internal static string TodoExplorer_ProjectName {
-            get {
-                return ResourceManager.GetString("TodoExplorer_ProjectName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        internal static string TodoExplorer_RefreshToolTip {
-            get {
-                return ResourceManager.GetString("TodoExplorer_RefreshToolTip", resourceCulture);
             }
         }
         

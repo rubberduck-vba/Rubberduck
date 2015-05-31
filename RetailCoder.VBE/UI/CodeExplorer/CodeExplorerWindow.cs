@@ -53,7 +53,7 @@ namespace Rubberduck.UI.CodeExplorer
             FindAllReferencesContextButton.Click += FindAllReferencesContextButton_Click;
             FindAllImplementationsContextButton.Click += FindAllImplementationsContextButton_Click;
             
-            RefreshButton.ToolTipText = RubberduckUI.CodeExplorer_RefreshToolTip;
+            RefreshButton.ToolTipText = RubberduckUI.Refresh;
             ShowFoldersToggleButton.ToolTipText = RubberduckUI.CodeExplorer_ShowFoldersToolTip;
             ShowDesignerButton.ToolTipText = RubberduckUI.CodeExplorer_ShowDesignerToolTip;
 
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer
             DisplayMemberNamesButton.Text = RubberduckUI.CodeExplorer_DisplayMemberNamesText;
             DisplaySignaturesButton.Text = RubberduckUI.CodeExplorer_DisplaySignaturesText;
 
-            RefreshContextButton.Text = RubberduckUI.CodeExplorer_RefreshText;
+            RefreshContextButton.Text = RubberduckUI.Refresh;
             ShowDesignerContextButton.Text = RubberduckUI.CodeExplorer_ShowDesignerText;
             AddClassContextButton.Text = RubberduckUI.CodeExplorer_AddClassText;
             AddStdModuleContextButton.Text = RubberduckUI.CodeExplorer_AddStdModuleText;

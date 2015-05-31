@@ -212,9 +212,6 @@
   <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
     <value>Could not rename project.</value>
   </data>
-  <data name="DeclarationType_Project" xml:space="preserve">
-    <value>project</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
@@ -229,9 +226,6 @@
   </data>
   <data name="Parsing" xml:space="preserve">
     <value>(parsing...)</value>
-  </data>
-  <data name="RenameDialog_NameLabelText" xml:space="preserve">
-    <value>Name:</value>
   </data>
   <data name="ReorderParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Reorder Parameters</value>
@@ -296,9 +290,6 @@
   </data>
   <data name="ExtractMethod_InstructionsText" xml:space="preserve">
     <value>Please specify method name, return type and/or parameters (if applicable), and other options.</value>
-  </data>
-  <data name="ExtractMethod_NameLabel" xml:space="preserve">
-    <value>Name:</value>
   </data>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parameters:</value>
@@ -485,12 +476,6 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="CodeInspections_InspectingIssues" xml:space="preserve">
     <value>{0} ({1} issue{2})</value>
-  </data>
-  <data name="CodeInspections_NavigateToNextIssue" xml:space="preserve">
-    <value>Navigate to next issue</value>
-  </data>
-  <data name="CodeInspections_NavigateToPreviousIssue" xml:space="preserve">
-    <value>Navigate to previous issue</value>
   </data>
   <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
     <value>{0} issue{1}</value>
@@ -705,10 +690,7 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeExplorer_NavigateText" xml:space="preserve">
     <value>Navigate</value>
   </data>
-  <data name="CodeExplorer_RefreshText" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="CodeExplorer_RefreshToolTip" xml:space="preserve">
+  <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
   <data name="CodeExplorer_RenameText" xml:space="preserve">
@@ -756,17 +738,8 @@ Warning: All customized settings will be lost.</value>
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Line Number</value>
   </data>
-  <data name="TodoExplorer_ModuleName" xml:space="preserve">
-    <value>Module Name</value>
-  </data>
-  <data name="TodoExplorer_Priority" xml:space="preserve">
-    <value>Priority</value>
-  </data>
-  <data name="TodoExplorer_ProjectName" xml:space="preserve">
+  <data name="ProjectName" xml:space="preserve">
     <value>Project Name</value>
-  </data>
-  <data name="TodoExplorer_RefreshToolTip" xml:space="preserve">
-    <value>Refresh</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
     <value>&amp;Add</value>
@@ -795,20 +768,11 @@ Warning: All customized settings will be lost.</value>
   <data name="TestExplorer_MethodName" xml:space="preserve">
     <value>Method Name</value>
   </data>
-  <data name="TestExplorer_ModuleName" xml:space="preserve">
+  <data name="ModuleName" xml:space="preserve">
     <value>Module Name</value>
-  </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Outcome</value>
-  </data>
-  <data name="TestExplorer_ProjectName" xml:space="preserve">
-    <value>Project Name</value>
   </data>
   <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
     <value>Qualified Member Name</value>
-  </data>
-  <data name="TestExplorer_Result" xml:space="preserve">
-    <value>Result</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
     <value>&amp;All Tests</value>
@@ -834,17 +798,11 @@ Warning: All customized settings will be lost.</value>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
     <value>&amp;Selected Tests</value>
   </data>
-  <data name="TestsExplorer_RefreshToolTip" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Project '{0}' has generic name</value>
   </data>
   <data name="CodeInspections_Component" xml:space="preserve">
     <value>Component</value>
-  </data>
-  <data name="CodeInspections_Issue" xml:space="preserve">
-    <value>Issue</value>
   </data>
   <data name="CodeInspections_Line" xml:space="preserve">
     <value>Line</value>
@@ -852,7 +810,7 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeInspections_Project" xml:space="preserve">
     <value>Project</value>
   </data>
-  <data name="CodeInspections_Severity" xml:space="preserve">
-    <value>Severity</value>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>project</value>
   </data>
 </root>
