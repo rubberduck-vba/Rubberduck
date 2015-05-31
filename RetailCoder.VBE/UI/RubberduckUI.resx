@@ -837,4 +837,7 @@ Warning: All customized settings will be lost.</value>
   <data name="TestsExplorer_RefreshToolTip" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="GenericProjectName_" xml:space="preserve">
+    <value>Project '{0}' has generic name</value>
+  </data>
 </root>

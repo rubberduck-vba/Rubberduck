@@ -792,6 +792,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project &apos;{0}&apos; has generic name.
+        /// </summary>
+        internal static string GenericProjectName_ {
+            get {
+                return ResourceManager.GetString("GenericProjectName_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         internal static string Home {
