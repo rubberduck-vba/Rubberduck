@@ -1,4 +1,8 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -7,12 +11,8 @@ using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
-namespace Rubberduck.Refactoring.ReorderParametersRefactoring
+namespace Rubberduck.Refactoring
 {
     public class ReorderParametersRefactoring : IRefactoring
     {

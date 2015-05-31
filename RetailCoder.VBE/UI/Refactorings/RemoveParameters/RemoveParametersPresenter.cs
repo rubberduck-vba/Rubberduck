@@ -6,11 +6,11 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactoring.RemoveParameterRefactoring;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
+using Rubberduck.Refactoring;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {

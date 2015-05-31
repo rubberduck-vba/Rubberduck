@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime.Misc;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -9,9 +10,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
-using Antlr4.Runtime.Misc;
 
-namespace Rubberduck.Refactoring.RemoveParameterRefactoring
+namespace Rubberduck.Refactoring
 {
     public class RemoveParameterRefactoring : IRefactoring
     {
@@ -329,7 +329,13 @@ namespace Rubberduck.Refactoring.RemoveParameterRefactoring
 
             foreach (var param in paramsRemoved)
             {
-                signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
+                try
+                {
+                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                }
             }
             var lineNum = paramList.GetSelection().LineCount;
 

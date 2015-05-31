@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI.Refactorings.ExtractMethod
+namespace Rubberduck.UI.Refactorings
 {
     partial class ExtractMethodDialog
     {

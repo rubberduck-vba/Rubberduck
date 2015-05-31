@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     /// <summary>
     /// An exception that is thrown when the parser encounters a syntax error.
-    /// This exception indicates a bug in the grammar.
+    /// This exception indicates either a bug in the grammar... or non-compilable VBA code.
     /// </summary>
     [Serializable]
     public class SyntaxErrorException : Exception

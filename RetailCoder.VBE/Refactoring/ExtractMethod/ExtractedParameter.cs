@@ -1,6 +1,6 @@
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.UI.Refactorings.ExtractMethod
+namespace Rubberduck.Refactoring.ExtractMethod
 {
     public class ExtractedParameter
     {
@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             ByVal
         }
 
-        public static readonly string None = RubberduckUI.ExtractMethod_OutputNone;
+        public static readonly string None = UI.RubberduckUI.ExtractMethod_OutputNone;
 
         private readonly string _name;
         private readonly string _typeName;
@@ -31,6 +31,11 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public string TypeName
         {
             get { return _typeName; }
+        }
+
+        public PassedBy Passed
+        {
+            get { return _passedBy; }
         }
 
         public override string ToString()

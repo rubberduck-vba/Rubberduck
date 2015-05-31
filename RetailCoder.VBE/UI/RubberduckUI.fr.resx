@@ -658,4 +658,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Erreurs d'analyse</value>
   </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Passage</value>
+  </data>
 </root>

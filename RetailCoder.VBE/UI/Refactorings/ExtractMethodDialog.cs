@@ -5,8 +5,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactoring.ExtractMethod;
 
-namespace Rubberduck.UI.Refactorings.ExtractMethod
+namespace Rubberduck.UI.Refactorings
 {
     public partial class ExtractMethodDialog : Form, IExtractMethodDialog
     {
@@ -153,18 +154,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
 
             handler(this, args ?? EventArgs.Empty);
-        }
-
-        private void OnViewEvent<T>(EventHandler<T> target, T args)
-            where T : EventArgs
-        {
-            var handler = target;
-            if (handler == null)
-            {
-                return;
-            }
-
-            handler(this, args);
         }
 
         public event EventHandler CancelButtonClicked;

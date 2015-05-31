@@ -4,7 +4,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
-using Rubberduck.Refactoring.ExtractMethodRefactoring;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.RemoveParameters;
@@ -17,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Rubberduck.Refactoring;
+using Rubberduck.Refactoring.ExtractMethod;
 
 namespace Rubberduck.UI
 {
@@ -393,7 +394,8 @@ namespace Rubberduck.UI
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
             var declarations = result.Declarations;
-            var refactoring = new ExtractMethodRefactoring(_editor, declarations);
+            var factory = new ExtractMethodPresenterFactory(_editor, declarations);
+            var refactoring = new ExtractMethodRefactoring(factory, _editor);
             refactoring.InvalidSelection += refactoring_InvalidSelection;
             refactoring.Refactor();
         }

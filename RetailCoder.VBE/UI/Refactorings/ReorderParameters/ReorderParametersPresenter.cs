@@ -1,13 +1,13 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactoring.ReorderParametersRefactoring;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Refactoring;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
