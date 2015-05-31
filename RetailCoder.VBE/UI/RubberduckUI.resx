@@ -831,4 +831,19 @@ Warning: All customized settings will be lost.</value>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Token List:</value>
   </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Code Quality Issues</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Language Opportunities</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability and Readability Issues</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>To-Do Explorer</value>
+  </data>
 </root>

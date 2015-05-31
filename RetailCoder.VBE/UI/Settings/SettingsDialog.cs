@@ -100,22 +100,21 @@ namespace Rubberduck.UI.Settings
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
-                ActivateControl(_generalSettingsView);
-                return;
+                controlToActivate = _generalSettingsView;
             }
 
-            if (e.Node.Text == "To-Do Explorer")
+            if (e.Node.Text == RubberduckUI.TodoSettings_Caption)
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_ToDoSettings;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_ToDoSettings;
                 controlToActivate = _todoView;
             }
 
-            if (e.Node.Parent.Text == "Code Inspections")
+            if (e.Node.Parent.Text == RubberduckUI.CodeInspections)
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
-                var inspectionType = (CodeInspectionType)Enum.Parse(typeof(CodeInspectionType), e.Node.Text);
+                var inspectionType = (CodeInspectionType)Enum.Parse(typeof(CodeInspectionType), e.Node.Name);
                 var settingGridViewSort = new GridViewSort<CodeInspectionSetting>(RubberduckUI.Name, true);
                 controlToActivate = new CodeInspectionSettingsControl(GetInspectionSettings(inspectionType), settingGridViewSort);
             }

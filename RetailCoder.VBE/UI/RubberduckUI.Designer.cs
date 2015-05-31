@@ -459,6 +459,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Quality Issues.
+        /// </summary>
+        internal static string CodeInspectionSettings_CodeQualityIssues {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_CodeQualityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language Opportunities.
+        /// </summary>
+        internal static string CodeInspectionSettings_LanguageOpportunities {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_LanguageOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintainability and Readability Issues.
+        /// </summary>
+        internal static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Component.
         /// </summary>
         internal static string Component {
@@ -1112,6 +1139,15 @@ namespace Rubberduck.UI {
         internal static string NameLabelText {
             get {
                 return ResourceManager.GetString("NameLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation.
+        /// </summary>
+        internal static string Navigation {
+            get {
+                return ResourceManager.GetString("Navigation", resourceCulture);
             }
         }
         
@@ -2090,6 +2126,15 @@ namespace Rubberduck.UI {
         internal static string ToDoMarkerToDo {
             get {
                 return ResourceManager.GetString("ToDoMarkerToDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To-Do Explorer.
+        /// </summary>
+        internal static string TodoSettings_Caption {
+            get {
+                return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
             }
         }
         
