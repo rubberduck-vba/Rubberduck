@@ -262,10 +262,10 @@
     <value>Références: '{0}'</value>
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>Supprimer un paramètre</value>
+    <value>z Remove parameters</value>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Impossible de supprimer tous les paramètres d'un mutateur de propriété.</value>
+    <value>z Cannot remove last parameter from setter or letter.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
     <value>La sélection n'est pas valide.</value>

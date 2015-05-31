@@ -1436,7 +1436,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot remove last value from setter or letter..
+        ///   Looks up a localized string similar to Cannot remove last parameter from setter or letter..
         /// </summary>
         internal static string RemoveParamsDialog_RemoveIllegalSetterLetterParameter {
             get {

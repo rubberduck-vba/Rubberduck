@@ -266,7 +266,7 @@
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Cannot remove last value from setter or letter.</value>
+    <value>Cannot remove last parameter from setter or letter.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
     <value>The current selection is not valid.</value>
