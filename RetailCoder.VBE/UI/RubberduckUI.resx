@@ -171,7 +171,7 @@
   <data name="NameLabelText" xml:space="preserve">
     <value>Name:</value>
   </data>
-  <data name="OkButtonText" xml:space="preserve">
+  <data name="OK" xml:space="preserve">
     <value>Ok</value>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
@@ -218,9 +218,6 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspecting...</value>
   </data>
-  <data name="CodeInspections_NoIssues" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(none)</value>
   </data>
@@ -258,10 +255,6 @@
   <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>ParamArray parameter must be specified last.</value>
   </data>
-  <data name="ReorderPresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
     <value>No parameters in method '{0}'.</value>
     <comment>0: Selected target</comment>
@@ -272,7 +265,7 @@
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Remove parameters</value>
   </data>
-  <data name="RemovePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (will propagate to all implementations)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
@@ -365,11 +358,6 @@
   </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsing...)</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
-    <value>Rubberduck Code Inspections - {0}
-{1} issue{2} found.
-</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
@@ -681,16 +669,16 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
     <value>Find all references...</value>
   </data>
-  <data name="CodeExplorer_InspectText" xml:space="preserve">
+  <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
   </data>
-  <data name="CodeExplorer_NavigateText" xml:space="preserve">
+  <data name="Navigate" xml:space="preserve">
     <value>Navigate</value>
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
-  <data name="CodeExplorer_RenameText" xml:space="preserve">
+  <data name="Rename" xml:space="preserve">
     <value>Rename</value>
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
@@ -708,7 +696,7 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copy inspection results to clipboard</value>
   </data>
-  <data name="CodeInspections_GoButtonLabel" xml:space="preserve">
+  <data name="Go" xml:space="preserve">
     <value>Go</value>
   </data>
   <data name="CodeInspections_GoToolTip" xml:space="preserve">
@@ -719,9 +707,6 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Navigate to previous issue</value>
-  </data>
-  <data name="CodeInspections_QuickFixLabel" xml:space="preserve">
-    <value>Fix</value>
   </data>
   <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
     <value>Address the issue</value>
@@ -740,9 +725,6 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
     <value>&amp;Add</value>
-  </data>
-  <data name="TestExplorer_AddButtonToolTip" xml:space="preserve">
-    <value>Add</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Test Method (Expected &amp;Error)</value>
@@ -777,13 +759,13 @@ Warning: All customized settings will be lost.</value>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
     <value>&amp;Run</value>
   </data>
-  <data name="TestExplorer_RunButtonToolTip" xml:space="preserve">
+  <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
     <value>&amp;Failed Tests</value>
   </data>
-  <data name="TestExplorer_RunLastRunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
     <value>Repeat &amp;Last Run</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
@@ -798,13 +780,10 @@ Warning: All customized settings will be lost.</value>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Project '{0}' has generic name</value>
   </data>
-  <data name="CodeInspections_Component" xml:space="preserve">
-    <value>Component</value>
-  </data>
-  <data name="CodeInspections_Line" xml:space="preserve">
+  <data name="Line" xml:space="preserve">
     <value>Line</value>
   </data>
-  <data name="CodeInspections_Project" xml:space="preserve">
+  <data name="Project" xml:space="preserve">
     <value>Project</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
@@ -845,5 +824,9 @@ Warning: All customized settings will be lost.</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>To-Do Explorer</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
+    <value>Rubberduck Code Inspections - {0}
+{1} {2} found.</value>
   </data>
 </root>

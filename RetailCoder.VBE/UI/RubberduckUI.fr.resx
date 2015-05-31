@@ -221,17 +221,11 @@
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspection...</value>
   </data>
-  <data name="CodeInspections_StatusOK" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="ExtractMethod_OutputNone" xml:space="preserve">
     <value>(aucun)</value>
   </data>
   <data name="Parsing" xml:space="preserve">
     <value>(analyse...)</value>
-  </data>
-  <data name="RenameDialog_NameLabelText" xml:space="preserve">
-    <value>Nom:</value>
   </data>
   <data name="ReorderParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Modifier l'ordre des paramètres</value>
@@ -264,10 +258,6 @@
   <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
     <value>Un paramètre ParamArray doit être spécifié en dernier.</value>
   </data>
-  <data name="ReorderPresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
     <value>Aucun paramètre dans la méthode '{0}'.</value>
     <comment>0: Selected target</comment>
@@ -277,14 +267,6 @@
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
     <value>Supprimer un paramètre</value>
-  </data>
-  <data name="RemovePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
-  <data name="RemovePresenter_ConfirmParameter" xml:space="preserve">
-    <value>Supprimer le paramètre '{0}'?</value>
-    <comment>0: Selected parameter</comment>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
     <value>Impossible de supprimer tous les paramètres d'un mutateur de propriété.</value>
@@ -300,9 +282,6 @@
   </data>
   <data name="ExtractMethod_InstructionsText" xml:space="preserve">
     <value>Veuillez spécifier le nom de la méthode, le type de sa valeur de retour et les paramètres (si applicable).</value>
-  </data>
-  <data name="ExtractMethod_NameLabel" xml:space="preserve">
-    <value>Nom:</value>
   </data>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Paramètres:</value>
@@ -484,26 +463,14 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
   </data>
-  <data name="CodeInspections" xml:space="preserve">
-    <value>Inspections</value>
-  </data>
   <data name="CodeInspections_InspectingIssues" xml:space="preserve">
     <value>{0} ({1} problème{2})</value>
   </data>
-  <data name="CodeInspections_NavigateToNextIssue" xml:space="preserve">
-    <value>Naviguer au prochain problème</value>
-  </data>
-  <data name="CodeInspections_NavigateToPreviousIssue" xml:space="preserve">
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Naviguer au problème précédent</value>
-  </data>
-  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
-    <value>{0} problème{1}</value>
   </data>
   <data name="CodeInspections_Run" xml:space="preserve">
     <value>Exécuter les inspections</value>
-  </data>
-  <data name="CodeInspections_StatusButtonCaption" xml:space="preserve">
-    <value>0 problèmes</value>
   </data>
   <data name="Fix" xml:space="preserve">
     <value>Régler</value>
@@ -525,9 +492,6 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="Parameter" xml:space="preserve">
     <value>Paramètre</value>
-  </data>
-  <data name="ExtractMethod_ParamPassedBy" xml:space="preserve">
-    <value>Passé</value>
   </data>
   <data name="NavigatePreviousIssue" xml:space="preserve">
     <value>Précédent</value>
@@ -660,5 +624,210 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="Passed" xml:space="preserve">
     <value>Passage</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>z Add</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>z Change</value>
+  </data>
+  <data name="CodeExplorer_AddClassText" xml:space="preserve">
+    <value>z &amp;Class module (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>z User &amp;form</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>z &amp;Standard module (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>z &amp;Test module</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>z Display member &amp;names</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>z Display full &amp;signatures</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>z Find All Implementations...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>z Find all references...</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>z Run all tests</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
+    <value>z Show Designer</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>z Open Designer</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>z Toggle folders</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>z Code Inspections</value>
+  </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>z Copy inspection results to clipboard</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>z Navigate to selected issue</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>z Go</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>z Inspect</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>z Module Name</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>z Navigate</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>z Outcome</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>z Previous</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>z Priority</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>z Project Name</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>z Refresh</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>z Remove</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>z Rubberduck - Remove Parameters</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>z Select a parameter and double-click it or use buttons to remove or restore it.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>z Rename</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>z Restore</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>z Result</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>z Run</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>z Rubberduck Settings</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>z &amp;Add</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>z Test Method (Expected &amp;Error)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>z &amp;Test Method</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>z Test &amp;Module</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>z Duration</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>z Navigate to selected</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>z Message</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>z Method Name</value>
+  </data>
+  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
+    <value>z Qualified Member Name</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>z &amp;All Tests</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>z &amp;Run</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>z &amp;Failed Tests</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>z Repeat &amp;Last Run</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>z &amp;Not Run Tests</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>z &amp;Passed Tests</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>z &amp;Selected Tests</value>
+  </data>
+  <data name="TodoExplorer_Description" xml:space="preserve">
+    <value>z Description</value>
+  </data>
+  <data name="TodoExplorer_LineNumber" xml:space="preserve">
+    <value>z Line Number</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>z To-Do Explorer</value>
+  </data>
+  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
+    <value>z Priority:</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>z Token Text:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>z Token List:</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>z Code Quality Issues</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>z Language Opportunities</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>z Maintainability and Readability Issues</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Naviguer au prochain problème</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
+    <value>{0} problème{1}</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>z Address the issue</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>z Run code inspections</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>z Component</value>
+  </data>
+  <data name="GenericProjectName_" xml:space="preserve">
+    <value>z Project '{0}' has generic name</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>z Line</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>z Project</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
 </root>

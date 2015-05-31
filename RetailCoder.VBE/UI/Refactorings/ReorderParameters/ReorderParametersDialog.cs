@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void InitializeCaptions()
         {
-            OkButton.Text = RubberduckUI.OkButtonText;
+            OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             Text = RubberduckUI.ReorderParamsDialog_Caption;
             TitleLabel.Text = RubberduckUI.ReorderParamsDialog_TitleText;

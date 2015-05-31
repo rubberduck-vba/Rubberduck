@@ -100,7 +100,8 @@ namespace Rubberduck.UI.Settings
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
-                controlToActivate = _generalSettingsView;
+                ActivateControl(_generalSettingsView);
+                return;
             }
 
             if (e.Node.Text == RubberduckUI.TodoSettings_Caption)

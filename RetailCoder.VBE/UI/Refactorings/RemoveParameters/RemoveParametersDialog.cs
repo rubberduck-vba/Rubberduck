@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private void InitializeCaptions()
         {
-            OkButton.Text = RubberduckUI.OkButtonText;
+            OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             Text = RubberduckUI.RemoveParamsDialog_Caption;
             TitleLabel.Text = RubberduckUI.RemoveParamsDialog_TitleText;

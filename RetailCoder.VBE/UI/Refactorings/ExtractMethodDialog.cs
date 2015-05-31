@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Refactorings
         private void Localize()
         {
             Text = RubberduckUI.ExtractMethod_Caption;
-            OkButton.Text = RubberduckUI.OkButtonText;
+            OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
 
             TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;

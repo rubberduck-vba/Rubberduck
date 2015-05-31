@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Refactorings
 
         private void InitializeCaptions()
         {
-            Text = RubberduckUI.RenameDialog_Caption; OkButton.Text = RubberduckUI.OkButtonText;
+            Text = RubberduckUI.RenameDialog_Caption; OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             TitleLabel.Text = RubberduckUI.RenameDialog_TitleText;
             InstructionsLabel.Text = RubberduckUI.RenameDialog_InstructionsLabelText;

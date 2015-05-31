@@ -70,10 +70,10 @@ namespace Rubberduck.UI.CodeExplorer
             AddStdModuleContextButton.Text = RubberduckUI.CodeExplorer_AddStdModuleText;
             AddFormContextButton.Text = RubberduckUI.CodeExplorer_AddFormText;
             AddTestModuleContextButton.Text = RubberduckUI.CodeExplorer_AddTestModuleText;
-            NavigateContextButton.Text = RubberduckUI.CodeExplorer_NavigateText;
-            RenameContextButton.Text = RubberduckUI.CodeExplorer_RenameText;
+            NavigateContextButton.Text = RubberduckUI.Navigate;
+            RenameContextButton.Text = RubberduckUI.Rename;
             RunAllTestsContextButton.Text = RubberduckUI.CodeExplorer_RunAllTestsText;
-            InspectContextButton.Text = RubberduckUI.CodeExplorer_InspectText;
+            InspectContextButton.Text = RubberduckUI.Inspect;
             FindAllReferencesContextButton.Text = RubberduckUI.CodeExplorer_FindAllReferencesText;
             FindAllImplementationsContextButton.Text = RubberduckUI.CodeExplorer_FindAllImplementationsText;
         }

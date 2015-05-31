@@ -53,16 +53,16 @@ namespace Rubberduck.UI.CodeInspections
             CodeIssuesGridView.Columns["Severity"].Visible = false;
 
             CodeIssuesGridView.Columns["Icon"].HeaderText = RubberduckUI.Severity;
-            CodeIssuesGridView.Columns["Project"].HeaderText = RubberduckUI.CodeInspections_Project;
-            CodeIssuesGridView.Columns["Component"].HeaderText = RubberduckUI.CodeInspections_Component;
-            CodeIssuesGridView.Columns["Line"].HeaderText = RubberduckUI.CodeInspections_Line;
+            CodeIssuesGridView.Columns["Project"].HeaderText = RubberduckUI.Project;
+            CodeIssuesGridView.Columns["Component"].HeaderText = RubberduckUI.Component;
+            CodeIssuesGridView.Columns["Line"].HeaderText = RubberduckUI.Line;
             CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.Issue;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
 
-            QuickFixButton.Text = RubberduckUI.CodeInspections_QuickFixLabel;
-            GoButton.Text = RubberduckUI.CodeInspections_GoButtonLabel;
+            QuickFixButton.Text = RubberduckUI.Fix;
+            GoButton.Text = RubberduckUI.Go;
             NextButton.Text = RubberduckUI.Next;
             PreviousButton.Text = RubberduckUI.Previous;
 
@@ -111,7 +111,7 @@ namespace Rubberduck.UI.CodeInspections
                 if (completed)
                 {
                     StatusLabel.Image = Resources.tick_circle;
-                    StatusLabel.Text = RubberduckUI.CodeInspections_NoIssues;
+                    StatusLabel.Text = RubberduckUI.OK;
                 }
                 else
                 {

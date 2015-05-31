@@ -90,7 +90,7 @@ namespace Rubberduck.UI.UnitTesting
             runFailedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunFailedTests;
             runPassedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunPassedTests;
             runNotRunTestsMenuItem.Text = RubberduckUI.TestExplorer_RunNotRunTests;
-            runLastRunMenuItem.Text = RubberduckUI.TestExplorer_RunLastRunAllTests;
+            runLastRunMenuItem.Text = RubberduckUI.TestExplorer_RunLastRunTests;
             runSelectedTestMenuItem.Text = RubberduckUI.TestExplorer_RunSelectedTests;
             addButton.Text = RubberduckUI.TestExplorer_AddButtonText;
             runButton.Text = RubberduckUI.TestExplorer_RunButtonText;
@@ -99,8 +99,8 @@ namespace Rubberduck.UI.UnitTesting
             failedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberFailed, 0);
             inconclusiveTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberPassed, 0);
 
-            addButton.ToolTipText = RubberduckUI.TestExplorer_AddButtonToolTip;
-            runButton.ToolTipText = RubberduckUI.TestExplorer_RunButtonToolTip;
+            addButton.ToolTipText = RubberduckUI.Add;
+            runButton.ToolTipText = RubberduckUI.Run;
             refreshTestsButton.ToolTipText = RubberduckUI.Refresh;
             gotoSelectionButton.ToolTipText = RubberduckUI.TestExplorer_GotoSelectionToolTip;
         }
