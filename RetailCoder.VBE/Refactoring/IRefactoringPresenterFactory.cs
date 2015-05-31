@@ -1,7 +1,7 @@
 ﻿namespace Rubberduck.Refactoring
 {
-    public interface IRefactoringPresenterFactory
+    public interface IRefactoringPresenterFactory<out TPresenter>
     {
-        IRefactoringPresenter Create();
+        TPresenter Create();
     }
 }

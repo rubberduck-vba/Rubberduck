@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactoring.ExtractMethod
 {
-    public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory
+    public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory<ExtractMethodPresenter>
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly Declarations _declarations;
@@ -16,7 +16,7 @@ namespace Rubberduck.Refactoring.ExtractMethod
             _declarations = declarations;
         }
 
-        public IRefactoringPresenter Create()
+        public ExtractMethodPresenter Create()
         {
             var selection = _editor.GetSelection();
             if (selection == null)
