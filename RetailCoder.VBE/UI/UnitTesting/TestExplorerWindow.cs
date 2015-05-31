@@ -49,6 +49,8 @@ namespace Rubberduck.UI.UnitTesting
         private void InitializeGrid()
         {
             testOutputGridView.DataSource = AllTests;
+            testOutputGridView.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
             var messageColumn = testOutputGridView.Columns["Message"];
             if (messageColumn != null)
             {
