@@ -829,4 +829,7 @@ Warning: All customized settings will be lost.</value>
     <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

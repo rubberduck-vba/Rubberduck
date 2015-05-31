@@ -1178,6 +1178,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OK_AllCaps {
+            get {
+                return ResourceManager.GetString("OK_AllCaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
         internal static string Online {

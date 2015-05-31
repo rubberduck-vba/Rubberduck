@@ -830,4 +830,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>
