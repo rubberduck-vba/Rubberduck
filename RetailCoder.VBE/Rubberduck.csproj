@@ -396,10 +396,10 @@
       <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\IRenameView.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
+    <Compile Include="UI\Refactorings\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\RenameDialog.Designer.cs">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
@@ -615,7 +615,7 @@
     <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">

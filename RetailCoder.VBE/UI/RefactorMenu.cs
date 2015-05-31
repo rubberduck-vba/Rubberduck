@@ -7,7 +7,6 @@ using Rubberduck.Properties;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
@@ -19,6 +18,7 @@ using System.Windows.Forms;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI
 {

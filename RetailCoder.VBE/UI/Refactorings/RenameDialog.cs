@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 
-namespace Rubberduck.UI.Refactorings.Rename
+namespace Rubberduck.UI.Refactorings
 {
     public partial class RenameDialog : Form, IRenameView
     {

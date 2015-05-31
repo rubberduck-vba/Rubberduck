@@ -6,7 +6,7 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.UI.Refactorings.Rename
