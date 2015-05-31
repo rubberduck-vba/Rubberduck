@@ -209,7 +209,7 @@
     <value>Impossible de renommer le projet.</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
-    <value>z projet</value>
+    <value>projet</value>
   </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>étiquette de ligne</value>
