@@ -171,7 +171,7 @@
   <data name="NameLabelText" xml:space="preserve">
     <value>Nom:</value>
   </data>
-  <data name="OkButtonText" xml:space="preserve">
+  <data name="OK" xml:space="preserve">
     <value>Ok</value>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
@@ -186,10 +186,6 @@
   </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Renommer l'identifiant</value>
-  </data>
-  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
-    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
-    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
     <value>Options générales</value>
@@ -481,9 +477,6 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Name" xml:space="preserve">
     <value>Nom</value>
   </data>
-  <data name="NavigateNextIssue" xml:space="preserve">
-    <value>Suivant</value>
-  </data>
   <data name="Offline" xml:space="preserve">
     <value>Hors-ligne</value>
   </data>
@@ -492,9 +485,6 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="Parameter" xml:space="preserve">
     <value>Paramètre</value>
-  </data>
-  <data name="NavigatePreviousIssue" xml:space="preserve">
-    <value>Précédent</value>
   </data>
   <data name="Severity" xml:space="preserve">
     <value>Sévérité</value>
@@ -828,6 +818,16 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>z Navigation</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>z Next</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
 </root>
