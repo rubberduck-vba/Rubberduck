@@ -50,7 +50,13 @@ namespace Rubberduck.UI.CodeInspections
 
             CodeIssuesGridView.AutoResizeColumns();
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.Issue;
+            CodeIssuesGridView.Columns["Severity"].Visible = false;
+
+            CodeIssuesGridView.Columns["Icon"].HeaderText = RubberduckUI.CodeInspections_Severity;
+            CodeIssuesGridView.Columns["Project"].HeaderText = RubberduckUI.CodeInspections_Project;
+            CodeIssuesGridView.Columns["Component"].HeaderText = RubberduckUI.CodeInspections_Component;
+            CodeIssuesGridView.Columns["Line"].HeaderText = RubberduckUI.CodeInspections_Line;
+            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.CodeInspections_Issue;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;

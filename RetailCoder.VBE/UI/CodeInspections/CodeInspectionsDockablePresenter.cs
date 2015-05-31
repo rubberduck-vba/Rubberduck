@@ -51,6 +51,8 @@ namespace Rubberduck.UI.CodeInspections
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            if (columnName == "Icon") { columnName = "Severity"; }
+
             Control.InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(_gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), columnName).ToList());
         }
 

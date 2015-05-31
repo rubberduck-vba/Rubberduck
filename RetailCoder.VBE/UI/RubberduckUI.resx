@@ -840,4 +840,19 @@ Warning: All customized settings will be lost.</value>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Project '{0}' has generic name</value>
   </data>
+  <data name="CodeInspections_Component" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="CodeInspections_Issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="CodeInspections_Line" xml:space="preserve">
+    <value>Line</value>
+  </data>
+  <data name="CodeInspections_Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="CodeInspections_Severity" xml:space="preserve">
+    <value>Severity</value>
+  </data>
 </root>

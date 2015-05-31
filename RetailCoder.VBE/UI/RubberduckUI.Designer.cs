@@ -304,6 +304,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Component.
+        /// </summary>
+        internal static string CodeInspections_Component {
+            get {
+                return ResourceManager.GetString("CodeInspections_Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy inspection results to clipboard.
         /// </summary>
         internal static string CodeInspections_CopyToolTip {
@@ -345,6 +354,24 @@ namespace Rubberduck.UI {
         internal static string CodeInspections_InspectingIssues {
             get {
                 return ResourceManager.GetString("CodeInspections_InspectingIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issue.
+        /// </summary>
+        internal static string CodeInspections_Issue {
+            get {
+                return ResourceManager.GetString("CodeInspections_Issue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line.
+        /// </summary>
+        internal static string CodeInspections_Line {
+            get {
+                return ResourceManager.GetString("CodeInspections_Line", resourceCulture);
             }
         }
         
@@ -414,6 +441,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        internal static string CodeInspections_Project {
+            get {
+                return ResourceManager.GetString("CodeInspections_Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix.
         /// </summary>
         internal static string CodeInspections_QuickFixLabel {
@@ -446,6 +482,15 @@ namespace Rubberduck.UI {
         internal static string CodeInspections_Run {
             get {
                 return ResourceManager.GetString("CodeInspections_Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity.
+        /// </summary>
+        internal static string CodeInspections_Severity {
+            get {
+                return ResourceManager.GetString("CodeInspections_Severity", resourceCulture);
             }
         }
         

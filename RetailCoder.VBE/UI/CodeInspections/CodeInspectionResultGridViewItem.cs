@@ -13,7 +13,8 @@ namespace Rubberduck.UI.CodeInspections
         public CodeInspectionResultGridViewItem(ICodeInspectionResult result)
         {
             _item = result;
-            _severity = GetSeverityIcon(result.Severity);
+            _icon = GetSeverityIcon(result.Severity);
+            _severity = result.Severity;
             _selection = result.QualifiedSelection;
             _issue = result.Name;
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
@@ -51,8 +52,14 @@ namespace Rubberduck.UI.CodeInspections
             return image;
         }
 
-        private readonly Image _severity;
-        public Image Severity
+        private readonly Image _icon;
+        public Image Icon
+        {
+            get { return _icon; }
+        }
+
+        private readonly CodeInspectionSeverity _severity;
+        public CodeInspectionSeverity Severity
         {
             get { return _severity; }
         }
