@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Config;
 using Rubberduck.Inspections;
@@ -10,39 +9,36 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ParserErrors;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck
 {
     public class App : IDisposable
     {
-        private readonly IRubberduckParser _parser;
         private readonly RubberduckMenu _menu;
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
-        private readonly IGeneralConfigService _configService;
         private readonly Inspector _inspector;
         private readonly ParserErrorsPresenter _parserErrorsPresenter;
 
         public App(VBE vbe, AddIn addIn)
         {
-            _configService = new ConfigurationLoader();
-            _inspections = _configService.GetImplementedCodeInspections();
+            IGeneralConfigService configService = new ConfigurationLoader();
+            _inspections = configService.GetImplementedCodeInspections();
 
-            var config = _configService.LoadConfiguration();
+            var config = configService.LoadConfiguration();
             RubberduckUI.Culture = CultureInfo.GetCultureInfo(config.UserSettings.LanguageSetting.Code);
 
             EnableCodeInspections(config);
-            _parser = new RubberduckParser();
+            IRubberduckParser parser = new RubberduckParser();
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
+            parser.ParseStarted += _parser_ParseStarted;
+            parser.ParserError += _parser_ParserError;
 
             var editor = new ActiveCodePaneEditor(vbe);
 
-            _inspector = new Inspector(_parser, _inspections);
-            _menu = new RubberduckMenu(vbe, addIn, _configService, _parser, editor, _inspector);
+            _inspector = new Inspector(parser, _inspections);
+            _menu = new RubberduckMenu(vbe, addIn, configService, parser, editor, _inspector);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
         }
 
