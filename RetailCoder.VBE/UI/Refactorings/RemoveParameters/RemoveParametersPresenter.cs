@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (_view.Parameters.Count == 0)
             {
                 var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _targetDeclaration.IdentifierName);
-                MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 

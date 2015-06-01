@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             if (_view.Parameters.Count < 2) 
             {
                 var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _targetDeclaration.IdentifierName);
-                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return; 
             }
 

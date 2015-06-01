@@ -836,4 +836,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="New" xml:space="preserve">
     <value>Nouveau</value>
   </data>
+  <data name="Settings_ResetSettings" xml:space="preserve">
+    <value>z Reset Settings</value>
+  </data>
 </root>

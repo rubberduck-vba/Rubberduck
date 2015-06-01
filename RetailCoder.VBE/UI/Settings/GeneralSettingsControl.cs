@@ -11,8 +11,27 @@ namespace Rubberduck.UI.Settings
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
             InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             LanguageLabel.Text = RubberduckUI.Settings_LanguageLabel;
+            resetSettings.Text = RubberduckUI.Settings_ResetSettings;
 
             LoadLanguageList();
+
+            resetSettings.Click += resetSettings_Click;
+        }
+
+        private void resetSettings_Click(object sender, System.EventArgs e)
+        {
+            var resetSettings = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (resetSettings == DialogResult.No)
+            {
+                return;
+            }
+
+            ResetSettings();
+        }
+
+        private void ResetSettings()
+        {
+            throw new System.NotImplementedException();
         }
 
         public GeneralSettingsControl(DisplayLanguageSetting displayLanguage)
