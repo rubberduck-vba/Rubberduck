@@ -839,4 +839,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Settings_ResetSettings" xml:space="preserve">
     <value>z Reset Settings</value>
   </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>z Reset settings to default?</value>
+  </data>
 </root>

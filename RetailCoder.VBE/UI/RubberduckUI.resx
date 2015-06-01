@@ -838,4 +838,7 @@ Warning: All customized settings will be lost.</value>
   <data name="Settings_ResetSettings" xml:space="preserve">
     <value>Reset Settings</value>
   </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>Reset settings to default?</value>
+  </data>
 </root>

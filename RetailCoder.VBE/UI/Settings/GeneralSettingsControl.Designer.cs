@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Settings
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox1.Image = global::Rubberduck.Properties.Resources.Rubberduck;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(533, 96);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Settings
             this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstructionsLabel.MaximumSize = new System.Drawing.Size(467, 0);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
             this.InstructionsLabel.Size = new System.Drawing.Size(10, 27);
             this.InstructionsLabel.TabIndex = 5;
             // 
@@ -90,19 +90,21 @@ namespace Rubberduck.UI.Settings
             this.LanguageList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LanguageList.FormattingEnabled = true;
             this.LanguageList.Location = new System.Drawing.Point(23, 219);
-            this.LanguageList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.LanguageList.Margin = new System.Windows.Forms.Padding(4);
             this.LanguageList.Name = "LanguageList";
             this.LanguageList.Size = new System.Drawing.Size(207, 24);
             this.LanguageList.TabIndex = 7;
             // 
             // resetSettings
             // 
+            this.resetSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.resetSettings.ForeColor = System.Drawing.Color.Black;
             this.resetSettings.Location = new System.Drawing.Point(23, 299);
             this.resetSettings.Name = "resetSettings";
             this.resetSettings.Size = new System.Drawing.Size(120, 42);
             this.resetSettings.TabIndex = 8;
             this.resetSettings.Text = "Reset Settings";
-            this.resetSettings.UseVisualStyleBackColor = true;
+            this.resetSettings.UseVisualStyleBackColor = false;
             // 
             // GeneralSettingsControl
             // 
@@ -115,7 +117,7 @@ namespace Rubberduck.UI.Settings
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.InstructionsLabel);
             this.Controls.Add(this.pictureBox1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(533, 492);
             this.Name = "GeneralSettingsControl";
             this.Size = new System.Drawing.Size(533, 492);

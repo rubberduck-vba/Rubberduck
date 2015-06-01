@@ -1769,6 +1769,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset settings to default?.
+        /// </summary>
+        internal static string Settings_ResetSettingsConfirmation {
+            get {
+                return ResourceManager.GetString("Settings_ResetSettingsConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Inspection Settings.
         /// </summary>
         internal static string SettingsCaption_CodeInspections {

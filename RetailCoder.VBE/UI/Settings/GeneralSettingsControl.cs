@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
 using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
@@ -31,7 +33,7 @@ namespace Rubberduck.UI.Settings
 
         private void ResetSettings()
         {
-            throw new System.NotImplementedException();
+            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck\\rubberduck.config"));
         }
 
         public GeneralSettingsControl(DisplayLanguageSetting displayLanguage)
