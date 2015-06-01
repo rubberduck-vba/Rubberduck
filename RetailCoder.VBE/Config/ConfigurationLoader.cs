@@ -85,15 +85,7 @@ namespace Rubberduck.Config
         {
             foreach (var implementedInspection in implementedInspections)
             {
-                var found = false;
-                foreach (var configInspection in configInspections)
-                {
-                    if (implementedInspection.Name == configInspection.Name)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
+                var found = configInspections.Any(configInspection => implementedInspection.Name == configInspection.Name);
 
                 if (!found)
                 {

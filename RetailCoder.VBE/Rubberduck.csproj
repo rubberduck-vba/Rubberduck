@@ -708,6 +708,7 @@
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\rubberduck.config" />
     <None Include="Resources\rubberduck_adsize.png" />
   </ItemGroup>
   <ItemGroup>
