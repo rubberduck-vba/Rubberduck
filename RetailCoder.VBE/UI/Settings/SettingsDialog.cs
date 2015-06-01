@@ -65,8 +65,16 @@ namespace Rubberduck.UI.Settings
             _config = _configService.LoadConfiguration();
             _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
 
+            LoadWindow();
+
+            RegisterEvents();
+        }
+
+        private void LoadWindow()
+        {
             _treeview = new ConfigurationTreeViewControl(_config);
 
+            splitContainer1.Panel1.Controls.Clear();
             splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
@@ -77,12 +85,19 @@ namespace Rubberduck.UI.Settings
             _todoController = new TodoSettingPresenter(_todoView);
 
             ActivateControl(_generalSettingsView);
-            RegisterEvents();
         }
 
         private void RegisterEvents()
         {
             _treeview.NodeSelected += _treeview_NodeSelected;
+            _configService.SettingsChanged += _configService_SettingsChanged;
+        }
+
+        private void _configService_SettingsChanged(object sender, EventArgs e)
+        {
+            _config = _configService.LoadConfiguration();
+
+            LoadWindow();
         }
 
         private readonly IEnumerable<CodeInspectionSetting> _codeInspectionSettings;

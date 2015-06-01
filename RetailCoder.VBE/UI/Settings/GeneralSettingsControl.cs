@@ -19,13 +19,13 @@ namespace Rubberduck.UI.Settings
 
             LoadLanguageList();
 
-            resetSettings.Click += resetSettings_Click;
+            resetSettings.Click += ResetSettingsClick;
         }
 
-        private void resetSettings_Click(object sender, System.EventArgs e)
+        private void ResetSettingsClick(object sender, System.EventArgs e)
         {
-            var resetSettings = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (resetSettings == DialogResult.No)
+            var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirmReset == DialogResult.No)
             {
                 return;
             }
@@ -36,9 +36,8 @@ namespace Rubberduck.UI.Settings
         private void ResetSettings()
         {
             File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck\\rubberduck.config"));
-
-            var config = _configService.LoadConfiguration();
-            _configService.SaveConfiguration(config);  // we already destroyed the old config irrecoverably...
+            var config = _configService.GetDefaultConfiguration();
+            _configService.SaveConfiguration(config);
         }
 
         public GeneralSettingsControl(DisplayLanguageSetting displayLanguage, IGeneralConfigService configService)
