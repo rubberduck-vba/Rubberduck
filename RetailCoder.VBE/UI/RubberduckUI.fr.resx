@@ -121,52 +121,52 @@
     <value>Annuler</value>
   </data>
   <data name="DeclarationType_Class" xml:space="preserve">
-    <value>z classs</value>
+    <value>la classe</value>
   </data>
   <data name="DeclarationType_Constant" xml:space="preserve">
-    <value>constante</value>
+    <value>la constante</value>
   </data>
   <data name="DeclarationType_Enumeration" xml:space="preserve">
-    <value>énumération</value>
+    <value>l'énumération</value>
   </data>
   <data name="DeclarationType_EnumerationMember" xml:space="preserve">
-    <value>membre de l'énumération</value>
+    <value>le membre de l'énumération</value>
   </data>
   <data name="DeclarationType_Event" xml:space="preserve">
-    <value>événement</value>
+    <value>l'événement</value>
   </data>
   <data name="DeclarationType_Function" xml:space="preserve">
-    <value>fonction</value>
+    <value>la fonction</value>
   </data>
   <data name="DeclarationType_LibraryFunction" xml:space="preserve">
-    <value>fonction externe</value>
+    <value>la fonction externe</value>
   </data>
   <data name="DeclarationType_Module" xml:space="preserve">
-    <value>module</value>
+    <value>le module</value>
   </data>
   <data name="DeclarationType_Parameter" xml:space="preserve">
-    <value>paramètre</value>
+    <value>le paramètre</value>
   </data>
   <data name="DeclarationType_Procedure" xml:space="preserve">
-    <value>procédure</value>
+    <value>la procédure</value>
   </data>
   <data name="DeclarationType_PropertyGet" xml:space="preserve">
-    <value>accesseur property get</value>
+    <value>l'accesseur property get</value>
   </data>
   <data name="DeclarationType_PropertyLet" xml:space="preserve">
-    <value>accesseur property let</value>
+    <value>l'accesseur property let</value>
   </data>
   <data name="DeclarationType_PropertySet" xml:space="preserve">
-    <value>accesseur property set</value>
+    <value>l'accesseur property set</value>
   </data>
   <data name="DeclarationType_UserDefinedType" xml:space="preserve">
-    <value>type définit par l'utilisateur</value>
+    <value>le type définit par l'utilisateur</value>
   </data>
   <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
-    <value>membre d'un type définit par l'utilisateur</value>
+    <value>le membre d'un type définit par l'utilisateur</value>
   </data>
   <data name="DeclarationType_Variable" xml:space="preserve">
-    <value>variable</value>
+    <value>la variable</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Nom:</value>
@@ -209,10 +209,10 @@
     <value>Impossible de renommer le projet.</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
-    <value>projet</value>
+    <value>le projet</value>
   </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
-    <value>étiquette de ligne</value>
+    <value>l'étiquette de ligne</value>
   </data>
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Inspection...</value>
@@ -239,7 +239,7 @@
     <value>Modifier l'ordre des paramètres</value>
   </data>
   <data name="DeclarationType_Control" xml:space="preserve">
-    <value>contrôle</value>
+    <value>le contrôle</value>
   </data>
   <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
     <value>Les paramètres optionels doivent être spéficiés à la fin de la liste.</value>
@@ -255,17 +255,17 @@
     <value>Un paramètre ParamArray doit être spécifié en dernier.</value>
   </data>
   <data name="RemovePresenter_NoParametersError" xml:space="preserve">
-    <value>Aucun paramètre dans la méthode '{0}'.</value>
+    <value>La méthode '{0}' n'a pas de paramètres.</value>
     <comment>0: Selected target</comment>
   </data>
   <data name="AllReferences_Caption" xml:space="preserve">
     <value>Références: '{0}'</value>
   </data>
   <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
-    <value>z Remove parameters</value>
+    <value>Supprimer les paramètres</value>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>z Cannot remove last parameter from setter or letter.</value>
+    <value>Les accesseurs Property Let et Property Set requièrent au moins un paramètre.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
     <value>La sélection n'est pas valide.</value>
@@ -331,7 +331,7 @@
     <value>&amp;Inspections</value>
   </data>
   <data name="RubberduckMenu_Options" xml:space="preserve">
-    <value>z &amp;Options</value>
+    <value>&amp;Options</value>
   </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactorer</value>
@@ -505,7 +505,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>{0} Succès</value>
   </data>
   <data name="Type" xml:space="preserve">
-    <value>z Type</value>
+    <value>Type</value>
   </data>
   <data name="Inspections_DeclarationOf" xml:space="preserve">
     <value>déclaration de</value>
@@ -520,7 +520,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Explorateur de tests</value>
   </data>
   <data name="ToDoExplorer_Caption" xml:space="preserve">
-    <value>Explorateur de ToDo's</value>
+    <value>Explorateur de marqueurs "TODO"</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Avertissement</value>
@@ -616,181 +616,181 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Passage</value>
   </data>
   <data name="Add" xml:space="preserve">
-    <value>z Add</value>
+    <value>Ajouter</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>z Change</value>
+    <value>Modifier</value>
   </data>
   <data name="CodeExplorer_AddClassText" xml:space="preserve">
-    <value>z &amp;Class module (.cls)</value>
+    <value>Module de &amp;classe (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>z User &amp;form</value>
+    <value>&amp;Fenêtre</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>z &amp;Standard module (.bas)</value>
+    <value>Module &amp;standard (.bas)</value>
   </data>
   <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>z &amp;Test module</value>
+    <value>Module de &amp;tests</value>
   </data>
   <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>z Display member &amp;names</value>
+    <value>Afficher les &amp;noms</value>
   </data>
   <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>z Display full &amp;signatures</value>
+    <value>Afficher les &amp;signatures complètes</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>z Find All Implementations...</value>
+    <value>Trouver toutes les implémentations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>z Find all references...</value>
+    <value>Trouver toutes les références...</value>
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>z Run all tests</value>
+    <value>Exécuter tous les tests</value>
   </data>
   <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>z Show Designer</value>
+    <value>Afficher le mode création</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>z Open Designer</value>
+    <value>Ouvrir le mode création</value>
   </data>
   <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>z Toggle folders</value>
+    <value>Activer/désactiver les dossiers</value>
   </data>
   <data name="CodeInspections" xml:space="preserve">
-    <value>z Code Inspections</value>
+    <value>Inspections</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>z Copy inspection results to clipboard</value>
+    <value>Copier les résultats au presse-papier</value>
   </data>
   <data name="CodeInspections_GoToolTip" xml:space="preserve">
-    <value>z Navigate to selected issue</value>
+    <value>Naviguer au problème sélectionné</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>z Go</value>
+    <value>Aller</value>
   </data>
   <data name="Inspect" xml:space="preserve">
-    <value>z Inspect</value>
+    <value>Inspecter</value>
   </data>
   <data name="ModuleName" xml:space="preserve">
-    <value>z Module Name</value>
+    <value>Nom du module</value>
   </data>
   <data name="Navigate" xml:space="preserve">
-    <value>z Navigate</value>
+    <value>Naviguer</value>
   </data>
   <data name="Outcome" xml:space="preserve">
-    <value>z Outcome</value>
+    <value>Résultat</value>
   </data>
   <data name="Previous" xml:space="preserve">
-    <value>z Previous</value>
+    <value>Précédent</value>
   </data>
   <data name="Priority" xml:space="preserve">
-    <value>z Priority</value>
+    <value>Priorité</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
-    <value>z Project Name</value>
+    <value>Nom du projet</value>
   </data>
   <data name="Refresh" xml:space="preserve">
-    <value>z Refresh</value>
+    <value>Rafraîchir</value>
   </data>
   <data name="Remove" xml:space="preserve">
-    <value>z Remove</value>
+    <value>Supprimer</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>z Rubberduck - Remove Parameters</value>
+    <value>Rubberduck - Supprimer les paramètres</value>
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>z Select a parameter and double-click it or use buttons to remove or restore it.</value>
+    <value>Sélectionner un paramètre et utiliser les boutons ou un double-clic pour le supprimer.</value>
   </data>
   <data name="Rename" xml:space="preserve">
-    <value>z Rename</value>
+    <value>Renommer</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>z Restore</value>
+    <value>Restaurer</value>
   </data>
   <data name="Result" xml:space="preserve">
-    <value>z Result</value>
+    <value>Résultat</value>
   </data>
   <data name="Run" xml:space="preserve">
-    <value>z Run</value>
+    <value>Exécuter</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
-    <value>z Rubberduck Settings</value>
+    <value>Configuration Rubberduck</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>z &amp;Add</value>
+    <value>&amp;Ajouter</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>z Test Method (Expected &amp;Error)</value>
+    <value>Test (&amp;erreur attendue)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>z &amp;Test Method</value>
+    <value>&amp;Test</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>z Test &amp;Module</value>
+    <value>&amp;Module de tests</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>z Duration</value>
+    <value>Durée</value>
   </data>
   <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>z Navigate to selected</value>
+    <value>Naviguer au test sélectionné</value>
   </data>
   <data name="TestExplorer_Message" xml:space="preserve">
-    <value>z Message</value>
+    <value>Message</value>
   </data>
   <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>z Method Name</value>
+    <value>Nom</value>
   </data>
   <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
-    <value>z Qualified Member Name</value>
+    <value>Nom du membre</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>z &amp;All Tests</value>
+    <value>&amp;Tous les tests</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>z &amp;Run</value>
+    <value>&amp;Exécuter</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>z &amp;Failed Tests</value>
+    <value>Tests é&amp;choués</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>z Repeat &amp;Last Run</value>
+    <value>&amp;Répéter</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>z &amp;Not Run Tests</value>
+    <value>Tests &amp;non exécutés</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>z &amp;Passed Tests</value>
+    <value>Tests &amp;passés</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>z &amp;Selected Tests</value>
+    <value>Tests &amp;sélectionnés</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
-    <value>z Description</value>
+    <value>Description</value>
   </data>
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
-    <value>z Line Number</value>
+    <value>Ligne</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>z To-Do Explorer</value>
+    <value>Marqueurs "TODO"</value>
   </data>
   <data name="TodoSettings_PriorityLabel" xml:space="preserve">
-    <value>z Priority:</value>
+    <value>Priorité:</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
-    <value>z Token Text:</value>
+    <value>Texte:</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
-    <value>z Token List:</value>
+    <value>Liste:</value>
   </data>
   <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>z Code Quality Issues</value>
+    <value>Problème de qualité du code</value>
   </data>
   <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
-    <value>z Language Opportunities</value>
+    <value>Opportunités du language</value>
   </data>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>z Maintainability and Readability Issues</value>
+    <value>Problème de lisibilité et de maintenance</value>
   </data>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Naviguer au prochain problème</value>
@@ -799,32 +799,32 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>{0} problème{1}</value>
   </data>
   <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>z Address the issue</value>
+    <value>Appliquer une solution</value>
   </data>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>z Run code inspections</value>
+    <value>Exécuter les inspections à nouveau</value>
   </data>
   <data name="Component" xml:space="preserve">
-    <value>z Component</value>
+    <value>Componsant</value>
   </data>
   <data name="GenericProjectName_" xml:space="preserve">
-    <value>z Project '{0}' has generic name</value>
+    <value>Le project '{0}' a le nom par défaut</value>
   </data>
   <data name="Line" xml:space="preserve">
-    <value>z Line</value>
+    <value>Ligne</value>
   </data>
   <data name="Project" xml:space="preserve">
-    <value>z Project</value>
+    <value>le projet</value>
   </data>
   <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (cette modification serait propagée à toutes les implémentations)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
   </data>
   <data name="Navigation" xml:space="preserve">
-    <value>z Navigation</value>
+    <value>Navigation</value>
   </data>
   <data name="Next" xml:space="preserve">
-    <value>z Next</value>
+    <value>Suivant</value>
   </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier l'interface? (cette modification serait propagée à toutes les implémentations)</value>
@@ -832,5 +832,8 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nouveau</value>
   </data>
 </root>

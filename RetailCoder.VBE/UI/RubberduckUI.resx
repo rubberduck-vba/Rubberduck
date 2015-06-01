@@ -832,4 +832,7 @@ Warning: All customized settings will be lost.</value>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
 </root>
