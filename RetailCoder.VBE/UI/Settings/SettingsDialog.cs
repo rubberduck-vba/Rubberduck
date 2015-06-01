@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
             splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting);
+            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
             _todoView = new TodoListSettingsUserControl(markers);

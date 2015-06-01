@@ -6,6 +6,16 @@ namespace Rubberduck.Config
 {
     public abstract class XmlConfigurationServiceBase<T> : IConfigurationService<T>
     {
+        public event EventHandler SettingsChanged;
+        protected virtual void OnSettingsChanged(EventArgs e)
+        {
+            var handler = SettingsChanged;
+            if (handler != null)
+            {
+                SettingsChanged(this, e);
+            }
+        }
+
         /// <summary>
         /// Defines the root path where all Rubberduck Configuration files are stored.
         /// </summary>
@@ -33,6 +43,8 @@ namespace Rubberduck.Config
             {
                 serializer.Serialize(writer, toSerialize);
             }
+
+            OnSettingsChanged(EventArgs.Empty);
         }
 
         /// <summary>
