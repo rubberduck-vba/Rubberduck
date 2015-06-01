@@ -63,7 +63,7 @@ namespace Rubberduck
             {           
                 foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
                 {
-                    if (inspection.Name == setting.Name)
+                    if (inspection.Description == setting.Description)
                     {
                         inspection.Severity = setting.Severity;
                     }

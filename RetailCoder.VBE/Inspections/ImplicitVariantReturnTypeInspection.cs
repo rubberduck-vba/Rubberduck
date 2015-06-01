@@ -16,7 +16,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ImplicitVariantReturnType_; } }
+        public string Name { get { return "ImplicitVariantReturnTypeInspection"; } }
+        public string Description { get { return RubberduckUI.ImplicitVariantReturnType_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -34,7 +35,7 @@ namespace Rubberduck.Inspections
                                 && ProcedureTypes.Contains(item.DeclarationType)
                                 && !item.IsTypeSpecified()
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                               select new ImplicitVariantReturnTypeInspectionResult(string.Format(Name, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
+                               select new ImplicitVariantReturnTypeInspectionResult(string.Format(Description, issue.Declaration.IdentifierName), Severity, issue.QualifiedContext);
             return issues;
         }
 

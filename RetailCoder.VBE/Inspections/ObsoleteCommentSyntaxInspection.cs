@@ -16,7 +16,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteComment; } }
+        public string Name { get { return "ObsoleteCommentSyntaxInspection"; } }
+        public string Description { get { return RubberduckUI.ObsoleteComment; } }
         public CodeInspectionType InspectionType { get {return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections
             {
                 if (comment.Marker == Tokens.Rem)
                 {
-                    yield return new ObsoleteCommentSyntaxInspectionResult(Name, Severity, comment);
+                    yield return new ObsoleteCommentSyntaxInspectionResult(Description, Severity, comment);
                 }
             }
         }

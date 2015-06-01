@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteCall; } }
+        public string Name { get { return "ObsoleteCallStatementInspection"; } }
+        public string Description { get { return RubberduckUI.ObsoleteCall; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -35,7 +36,7 @@ namespace Rubberduck.Inspections
                 where context != null
                 let qualifiedContext = new QualifiedContext<VBAParser.ExplicitCallStmtContext>
                     (reference.QualifiedModuleName, (VBAParser.ExplicitCallStmtContext)reference.Context.Parent.Parent)
-                select new ObsoleteCallStatementUsageInspectionResult(Name, Severity, qualifiedContext);
+                select new ObsoleteCallStatementUsageInspectionResult(Description, Severity, qualifiedContext);
 
             return issues;
         }

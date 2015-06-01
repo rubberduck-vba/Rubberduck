@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Settings
             codeInspectionsGrid.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.MediumBlue;
 
             AllInspections = new BindingList<CodeInspectionSetting>(inspections
-                                 .OrderBy(c => c.Name)
+                                 .OrderBy(c => c.Description)
                                  .ToList());
 
             // temporal coupling here: this code should run after columns are formatted.

@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.MultipleDeclarations; } }
+        public string Name { get { return "MultipleDeclarationsInspection"; } }
+        public string Description { get { return RubberduckUI.MultipleDeclarations; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)
                 .Where(grouping => grouping.Count() > 1)
-                .Select(grouping => new MultipleDeclarationsInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
+                .Select(grouping => new MultipleDeclarationsInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
 
             return issues;
         }

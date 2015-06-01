@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.VariableNotUsed_; } }
+        public string Name { get { return "VariableNotUsedInspection"; } }
+        public string Description { get { return RubberduckUI.VariableNotUsed_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections
 
             foreach (var issue in declarations)
             {
-                yield return new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
+                yield return new IdentifierNotUsedInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
             }
         }
     }

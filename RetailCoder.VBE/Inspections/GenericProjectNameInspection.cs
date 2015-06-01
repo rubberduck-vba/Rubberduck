@@ -7,14 +7,15 @@ using System.Linq;
 
 namespace Rubberduck.Inspections
 {
-    /*class GenericProjectNameInspection : IInspection
+    class GenericProjectNameInspection : IInspection
     {
         public GenericProjectNameInspection()
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.GenericProjectName_; } }
+        public string Name { get { return "GenericProjectNameInspection"; } }
+        public string Description { get { return RubberduckUI.GenericProjectName_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -23,10 +24,10 @@ namespace Rubberduck.Inspections
             var issues = parseResult.Declarations.Items
                             .Where(declaration => declaration.DeclarationType == DeclarationType.Project
                                                && declaration.IdentifierName.Contains("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName))
+                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue.QualifiedName.QualifiedModuleName))
                             .ToList();
 
             return issues;
         }
-    }*/
+    }
 }

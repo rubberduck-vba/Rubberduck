@@ -282,6 +282,7 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParametersRefactoring.cs" />
+    <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
@@ -678,7 +679,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\rubberduck.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\minus-circle.png" />

@@ -16,7 +16,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.MultilineParameter_; } }
+        public string Name { get { return "MultilineParameterInspection"; } }
+        public string Description { get { return RubberduckUI.MultilineParameter_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Name, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), Severity, param.Context, param.QualifiedName));
 
             return issues;
         }

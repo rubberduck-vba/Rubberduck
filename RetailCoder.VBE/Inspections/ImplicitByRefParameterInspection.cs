@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ImplicitByRef_; } }
+        public string Name { get { return "ImplicitByRefParameterInspection"; } }
+        public string Description { get { return RubberduckUI.ImplicitByRef_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections
                 let arg = item.Context.Parent as VBAParser.ArgContext
                 where arg != null && arg.BYREF() == null && arg.BYVAL() == null
                 select new QualifiedContext<VBAParser.ArgContext>(item.QualifiedName, arg))
-                .Select(issue => new ImplicitByRefParameterInspectionResult(string.Format(Name, issue.Context.ambiguousIdentifier().GetText()), Severity, issue));
+                .Select(issue => new ImplicitByRefParameterInspectionResult(string.Format(Description, issue.Context.ambiguousIdentifier().GetText()), Severity, issue));
 
             return issues;
         }

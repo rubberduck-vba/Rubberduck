@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return RubberduckUI.ParameterCanBeByVal_; } }
+        public string Name { get { { return "ParameterCanBeByValInspection"; } } }
+        public string Description { get { return RubberduckUI.ParameterCanBeByVal_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -62,7 +63,7 @@ namespace Rubberduck.Inspections
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(string.Format(Name, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
 
             return issues;
         }

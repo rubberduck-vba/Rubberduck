@@ -27,6 +27,9 @@ namespace Rubberduck.Config
         public string Name { get; set; }
 
         [XmlAttribute]
+        public string Description { get; set; }
+
+        [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlAttribute]
@@ -39,13 +42,13 @@ namespace Rubberduck.Config
 
         public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity severity)
         {
-            this.Name = name;
+            this.Description = name;
             this.InspectionType = type;
             this.Severity = severity;
         }
 
         public CodeInspectionSetting(IInspectionModel inspection)
-            : this(inspection.Name, inspection.InspectionType, inspection.Severity)
+            : this(inspection.Description, inspection.InspectionType, inspection.Severity)
         { }
     }
 }

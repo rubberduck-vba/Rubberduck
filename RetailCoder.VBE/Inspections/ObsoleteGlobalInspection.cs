@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return RubberduckUI.ObsoleteGlobal; } }
+        public string Name { get { return "ObsoleteGlobalInspection"; } }
+        public string Description { get { return RubberduckUI.ObsoleteGlobal; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections
             var issues = from item in parseResult.Declarations.Items
                          where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
                          && item.Context != null
-                         select new ObsoleteGlobalInspectionResult(Name, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+                         select new ObsoleteGlobalInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 
             return issues;
         }

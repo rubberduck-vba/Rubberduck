@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    /*public class GenericProjectNameInspectionResult : CodeInspectionResultBase
+    public class GenericProjectNameInspectionResult : CodeInspectionResultBase
     {
         public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
             : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
@@ -18,5 +18,5 @@ namespace Rubberduck.Inspections
         {
             return new Dictionary<string, Action>();
         }
-    }*/
+    }
 }
