@@ -46,6 +46,17 @@ namespace Rubberduck.Refactorings
             RemoveParameters();
         }
 
+        public void Refactor(QualifiedSelection target)
+        {
+            target.Select();
+            Refactor();
+        }
+
+        public void Refactor(Declaration target)
+        {
+            Refactor(target.QualifiedSelection);
+        }
+
         private Declaration PromptIfTargetImplementsInterface()
         {
             var declaration = TargetDeclaration;

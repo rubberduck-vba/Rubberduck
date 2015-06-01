@@ -48,6 +48,17 @@ namespace Rubberduck.Refactorings
             AdjustSignatures();
         }
 
+        public void Refactor(QualifiedSelection target)
+        {
+            target.Select();
+            Refactor();
+        }
+
+        public void Refactor(Declaration target)
+        {
+            Refactor(target.QualifiedSelection);
+        }
+
         private bool IsValidParamOrder()
         {
             var indexOfFirstOptionalParam = Parameters.FindIndex(param => param.IsOptional);

@@ -65,6 +65,8 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public Selection Selection { get { return _selection; } }
 
+        public QualifiedSelection QualifiedSelection { get { return new QualifiedSelection(_qualifiedName.QualifiedModuleName, _selection); } }
+
         /// <summary>
         /// Gets a reference to the VBProject the declaration is made in.
         /// </summary>

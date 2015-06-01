@@ -133,7 +133,7 @@ namespace Rubberduck.UI.CodeExplorer
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
         private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            if (e.Node == null || e.Node.Tag == null)
             {
                 return;
             }
@@ -277,6 +277,7 @@ namespace Rubberduck.UI.CodeExplorer
                 root.Expand();
             }
 
+            root.Tag = parseResult.Declarations[project.Name].SingleOrDefault(d => d.DeclarationType == DeclarationType.Project);
             root.Text = project.Name;
         }
 

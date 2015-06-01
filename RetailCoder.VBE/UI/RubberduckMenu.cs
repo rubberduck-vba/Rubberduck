@@ -86,11 +86,12 @@ namespace Rubberduck.UI
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
         {
             var declaration = e.Node.Tag as Declaration;
-            if (declaration != null)
+            if (declaration == null)
             {
-                IDE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
-                _refactorMenu.Rename();
+                return;
             }
+
+            _refactorMenu.Rename(declaration);
         }
 
         private void codePresenter_RunInspections(object sender, EventArgs e)

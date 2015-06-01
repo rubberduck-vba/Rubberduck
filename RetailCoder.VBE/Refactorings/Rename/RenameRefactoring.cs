@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -19,6 +21,18 @@ namespace Rubberduck.Refactorings.Rename
         {
             var presenter = _factory.Create();
             presenter.Show(); //todo: move presenter's renaming logic into this IRefactoring class
+        }
+
+        public void Refactor(QualifiedSelection target)
+        {
+            target.Select();
+            Refactor();
+        }
+
+        public void Refactor(Declaration target)
+        {
+            var presenter = _factory.Create();
+            presenter.Show(target);
         }
     }
 }

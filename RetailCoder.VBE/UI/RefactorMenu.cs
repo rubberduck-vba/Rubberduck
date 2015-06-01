@@ -450,6 +450,19 @@ namespace Rubberduck.UI
             }
         }
 
+        public void Rename(Declaration target)
+        {
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
+
+            using (var view = new RenameDialog())
+            {
+                var factory = new RenamePresenterFactory(IDE, view, result);
+                var refactoring = new RenameRefactoring(factory);
+                refactoring.Refactor(target);
+            }
+        }
+
         public void ReorderParameters(QualifiedSelection selection)
         {
             var progress = new ParsingProgressPresenter();

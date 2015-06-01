@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -40,6 +41,17 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             ExtractMethod(model);
+        }
+
+        public void Refactor(QualifiedSelection target)
+        {
+            target.Select();
+            Refactor();
+        }
+
+        public void Refactor(Declaration target)
+        {
+            OnInvalidSelection();
         }
 
         private void ExtractMethod(ExtractMethodModel model)
