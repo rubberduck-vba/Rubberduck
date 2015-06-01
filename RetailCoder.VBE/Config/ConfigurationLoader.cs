@@ -19,8 +19,6 @@ namespace Rubberduck.Config
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
-        public event EventHandler SettingsChanged;
-
         protected override string ConfigFile
         {
             get { return Path.Combine(rootPath, "rubberduck.config"); }
