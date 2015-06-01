@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Settings
 
             var nameColumn = new DataGridViewTextBoxColumn();
             nameColumn.Name = "Name";
-            nameColumn.DataPropertyName = "Name";
+            nameColumn.DataPropertyName = "Description";
             nameColumn.HeaderText = RubberduckUI.Name;
             nameColumn.FillWeight = 150;
             nameColumn.ReadOnly = true;
