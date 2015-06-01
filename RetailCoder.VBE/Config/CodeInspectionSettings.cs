@@ -16,7 +16,7 @@ namespace Rubberduck.Config
 
         public CodeInspectionSettings(CodeInspectionSetting[] inspections)
         {
-            this.CodeInspections = inspections;
+            CodeInspections = inspections;
         }
     }
 
@@ -26,8 +26,8 @@ namespace Rubberduck.Config
         [XmlAttribute]
         public string Name { get; set; }
 
-        [XmlAttribute]
-        public string Description { get; set; }
+        [XmlIgnore]
+        public string Description { get; set; } // not serialized because culture-dependent
 
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
@@ -40,15 +40,16 @@ namespace Rubberduck.Config
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity severity)
         {
-            this.Description = name;
-            this.InspectionType = type;
-            this.Severity = severity;
+            Name = name;
+            Description = description;
+            InspectionType = type;
+            Severity = severity;
         }
 
         public CodeInspectionSetting(IInspectionModel inspection)
-            : this(inspection.Description, inspection.InspectionType, inspection.Severity)
+            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.Severity)
         { }
     }
 }

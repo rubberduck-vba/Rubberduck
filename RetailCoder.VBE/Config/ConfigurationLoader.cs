@@ -85,11 +85,15 @@ namespace Rubberduck.Config
         {
             foreach (var implementedInspection in implementedInspections)
             {
-                var found = configInspections.Any(configInspection => implementedInspection.Name == configInspection.Name);
-
-                if (!found)
+                var inspection = configInspections.SingleOrDefault(i => i.Name == implementedInspection.Name);
+                if (inspection == null)
                 {
                     configInspections.Add(new CodeInspectionSetting(implementedInspection));
+                }
+                else
+                {
+                    // description isn't serialized
+                    inspection.Description = implementedInspection.Description;
                 }
             }
             return configInspections;
