@@ -44,8 +44,6 @@ namespace Rubberduck
             _editor = new ActiveCodePaneEditor(vbe);
 
             _inspector = new Inspector(_parser, _inspections);
-            //_menu = new RubberduckMenu(vbe, addIn, _configService, _parser, _editor, _inspector);
-            //_codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
 
             LoadConfig();
         }
@@ -68,7 +66,7 @@ namespace Rubberduck
             }
 
             var displayToolbar = false;
-            Point toolbarCoords = new Point(-1, -1);
+            var toolbarCoords = new Point(-1, -1);
             if (_codeInspectionsToolbar != null)
             {
                 displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
@@ -142,12 +140,6 @@ namespace Rubberduck
             {
                 _parserErrorsPresenter.Dispose();
             }
-        }
-
-        public void CreateExtUi()
-        {
-            //_menu.Initialize();
-            //_codeInspectionsToolbar.Initialize();
         }
     }
 }

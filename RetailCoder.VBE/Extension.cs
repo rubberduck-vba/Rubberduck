@@ -42,10 +42,7 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            if (_app != null)
-            {
-                _app.CreateExtUi();
-            }
+
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
