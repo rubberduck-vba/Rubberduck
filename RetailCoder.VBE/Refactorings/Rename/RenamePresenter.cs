@@ -36,9 +36,11 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Show()
         {
-            AcquireTarget(_selection);
-            if (_view.Target != null)
+            Declaration target;
+            AcquireTarget(out target, _selection);
+            if (target != null)
             {
+                _view.Target = target;
                 _view.ShowDialog();
             }
         }
@@ -52,11 +54,33 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration AmbiguousId()
         {
-            var values = _declarations.Items.Where(item => (item.Scope.Contains(_view.Target.ParentScope)
-                                              || _view.Target.Scope.Contains(item.Scope))
+            var values = _declarations.Items.Where(item => (item.Scope.Contains(_view.Target.Scope)
+                                              || _view.Target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
-            return values.FirstOrDefault();
+            if (values.Any())
+            {
+                return values.FirstOrDefault();
+            }
+
+            /*foreach (var reference in _view.Target.References)
+            {
+                Declaration target;
+                AcquireTarget(out target, new QualifiedSelection(reference.QualifiedModuleName,
+                    new Selection(reference.Context.Start.Line, reference.Context.Start.Column,
+                                  reference.Context.Stop.Line, reference.Context.Stop.Column)));
+
+                values = _declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
+                                              || target.ParentScope.Contains(item.ParentScope))
+                                              && _view.NewName == item.IdentifierName);
+
+                if (values.Any())
+                {
+                    return values.FirstOrDefault();
+                }
+            }*/
+
+            return null;
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
@@ -370,17 +394,16 @@ namespace Rubberduck.Refactorings.Rename
                 DeclarationType.PropertySet
             };
 
-        private void AcquireTarget(QualifiedSelection selection)
+        private void AcquireTarget(out Declaration target, QualifiedSelection selection)
         {
-            var target = _declarations.Items
+            target = _declarations.Items
                 .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
 
             PromptIfTargetImplementsInterface(ref target);
-            _view.Target = target;
 
-            if (_view.Target == null)
+            /*if (target == null)
             {
                 return;
 
@@ -391,7 +414,7 @@ namespace Rubberduck.Refactorings.Rename
                             && item.Context.GetSelection().Contains(selection.Selection));
             }
 
-            if (_view.Target == null)
+            if (target == null)
             {
                 return;
                 // rename the containing module:
@@ -399,7 +422,7 @@ namespace Rubberduck.Refactorings.Rename
                     !item.IsBuiltIn
                     && ModuleDeclarationTypes.Contains(item.DeclarationType)
                     && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
-            }
+            }*/
         }
 
         private void PromptIfTargetImplementsInterface(ref Declaration target)
