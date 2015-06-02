@@ -842,4 +842,8 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
     <value>Réinitialiser les paramètres par défaut?</value>
   </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>z Renaming to '{0}' will cause a confliction with '{1}'.
+Do you want to continue?</value>
+  </data>
 </root>

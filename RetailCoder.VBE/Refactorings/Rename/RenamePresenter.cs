@@ -50,6 +50,15 @@ namespace Rubberduck.Refactorings.Rename
             _view.ShowDialog();
         }
 
+        private Declaration AmbiguousId()
+        {
+            var values = _declarations.Items.Where(item => (item.Scope.Contains(_view.Target.ParentScope)
+                                              || _view.Target.Scope.Contains(item.Scope))
+                                              && _view.NewName == item.IdentifierName);
+
+            return values.FirstOrDefault();
+        }
+
         private static readonly DeclarationType[] ModuleDeclarationTypes =
             {
                 DeclarationType.Class,
@@ -58,6 +67,20 @@ namespace Rubberduck.Refactorings.Rename
 
         private void OnOkButtonClicked(object sender, EventArgs e)
         {
+            var ambiguousId = AmbiguousId();
+            if (ambiguousId != null)
+            {
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _view.NewName,
+                    ambiguousId.IdentifierName);
+                var rename = MessageBox.Show(message, RubberduckUI.RenameDialog_Caption,
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+                if (rename == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             // must rename usages first; if target is a module or a project,
             // then renaming the declaration first would invalidate the parse results.
             RenameUsages(_view.Target);

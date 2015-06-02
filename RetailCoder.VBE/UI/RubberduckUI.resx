@@ -841,4 +841,8 @@ Warning: All customized settings will be lost.</value>
   <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
     <value>Reset settings to default configuration?</value>
   </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Renaming to '{0}' will cause a confliction with '{1}'.
+Do you want to continue?</value>
+  </data>
 </root>
