@@ -176,6 +176,12 @@ namespace Rubberduck.UI.CodeInspections
         private CancellationTokenSource _tokenSource;
         private CommandBar _toolbar;
 
+        public bool ToolbarVisible
+        {
+            get { return _toolbar.Visible; }
+            set { _toolbar.Visible = value; }
+        }
+
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _tokenSource = new CancellationTokenSource();

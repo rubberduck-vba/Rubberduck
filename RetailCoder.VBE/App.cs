@@ -66,8 +66,10 @@ namespace Rubberduck
                 _menu.Dispose();
             }
 
+            var displayToolbar = false;
             if (_codeInspectionsToolbar != null)
             {
+                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
                 _codeInspectionsToolbar.Dispose();
             }
 
@@ -76,6 +78,7 @@ namespace Rubberduck
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
             _codeInspectionsToolbar.Initialize();
+            _codeInspectionsToolbar.ToolbarVisible = displayToolbar;
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
