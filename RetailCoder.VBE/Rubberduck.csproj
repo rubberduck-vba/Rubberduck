@@ -230,9 +230,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\DisplayLanguageSetting.cs" />
-    <Compile Include="Config\SourceControlConfiguration.cs" />
-    <Compile Include="Config\XmlConfigurationServiceBase.cs" />
+    <Compile Include="Settings\DisplayLanguageSetting.cs" />
+    <Compile Include="Settings\SourceControlConfiguration.cs" />
+    <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
@@ -426,11 +426,11 @@
       <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
-    <Compile Include="Config\IConfigurationService.cs" />
+    <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="Config\ConfigurationLoader.cs" />
-    <Compile Include="Config\UserSettings.cs" />
-    <Compile Include="Config\CodeInspectionSettings.cs" />
+    <Compile Include="Settings\ConfigurationLoader.cs" />
+    <Compile Include="Settings\UserSettings.cs" />
+    <Compile Include="Settings\CodeInspectionSettings.cs" />
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
@@ -476,9 +476,9 @@
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockablePresenterBase.cs" />
-    <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Config\ToDoListSettings.cs" />
-    <Compile Include="Config\ToDoMarkers.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\ToDoListSettings.cs" />
+    <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">

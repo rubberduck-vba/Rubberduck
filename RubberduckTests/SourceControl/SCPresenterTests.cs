@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
 using RubberduckTests.Mocks;

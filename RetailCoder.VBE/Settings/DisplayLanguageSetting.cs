@@ -1,8 +1,7 @@
-﻿using System.Globalization;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Rubberduck.UI;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     [XmlType(AnonymousType = true)]
     public class DisplayLanguageSetting

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     [XmlType(AnonymousType = true)]
     public class UserSettings
@@ -19,8 +19,8 @@ namespace Rubberduck.Config
                             CodeInspectionSettings codeInspectionSettings)
         {
             LanguageSetting = languageSetting;
-            ToDoListSettings = todoSettings;
-            CodeInspectionSettings = codeInspectionSettings;
+            Settings.ToDoListSettings = todoSettings;
+            Settings.CodeInspectionSettings = codeInspectionSettings;
         }
     }
 }

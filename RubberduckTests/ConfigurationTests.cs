@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace RubberduckTests
 {

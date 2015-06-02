@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     public abstract class XmlConfigurationServiceBase<T> : IConfigurationService<T>
     {

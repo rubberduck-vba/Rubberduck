@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl

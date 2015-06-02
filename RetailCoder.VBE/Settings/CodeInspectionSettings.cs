@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
 using Rubberduck.Inspections;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     [XmlType(AnonymousType = true)]
     public class CodeInspectionSettings

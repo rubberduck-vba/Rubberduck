@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     public interface IConfigurationService<T>
     {

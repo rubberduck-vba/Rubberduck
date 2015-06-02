@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;

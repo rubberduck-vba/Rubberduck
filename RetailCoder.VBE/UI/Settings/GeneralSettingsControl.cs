@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using Rubberduck.Config;
 
 namespace Rubberduck.UI.Settings
 {
