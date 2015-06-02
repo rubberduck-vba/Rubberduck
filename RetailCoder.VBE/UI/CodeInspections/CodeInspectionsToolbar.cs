@@ -242,6 +242,11 @@ namespace Rubberduck.UI.CodeInspections
         {
             if (!disposing) { return; }
 
+            _refreshButton.Click -= _refreshButton_Click;
+            _quickFixButton.Click -= _quickFixButton_Click;
+            _navigatePreviousButton.Click -= _navigatePreviousButton_Click;
+            _navigateNextButton.Click -= _navigateNextButton_Click;  
+
             _toolbar.Delete();
         }
     }
