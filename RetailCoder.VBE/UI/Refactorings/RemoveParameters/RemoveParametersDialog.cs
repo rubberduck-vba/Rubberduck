@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
@@ -88,7 +87,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
                 Parameters.ElementAt(indexOfRemoved).IsRemoved = true;
-                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Strikeout);
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Strikeout);
 
                 SelectionChanged();
             }
@@ -101,7 +100,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 var indexOfRemoved = Parameters.FindIndex(item => item == _selectedItem);
 
                 Parameters.ElementAt(indexOfRemoved).IsRemoved = false;
-                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new System.Drawing.Font(this.Font, FontStyle.Regular);
+                MethodParametersGrid.Rows[indexOfRemoved].DefaultCellStyle.Font = new Font(this.Font, FontStyle.Regular);
 
                 SelectionChanged();
             }

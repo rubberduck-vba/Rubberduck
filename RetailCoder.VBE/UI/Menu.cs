@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using stdole;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
@@ -13,12 +14,12 @@ namespace Rubberduck.UI
         {
             private AxHostConverter() : base("") { }
 
-            static public stdole.IPictureDisp ImageToPictureDisp(Image image)
+            static public IPictureDisp ImageToPictureDisp(Image image)
             {
-                return (stdole.IPictureDisp)GetIPictureDispFromPicture(image);
+                return (IPictureDisp)GetIPictureDispFromPicture(image);
             }
 
-            static public Image PictureDispToImage(stdole.IPictureDisp pictureDisp)
+            static public Image PictureDispToImage(IPictureDisp pictureDisp)
             {
                 return GetPictureFromIPicture(pictureDisp);
             }

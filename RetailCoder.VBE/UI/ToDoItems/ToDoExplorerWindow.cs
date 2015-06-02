@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.ToDoItems;
-using Rubberduck.UI;
 
 namespace Rubberduck.UI.ToDoItems
 {

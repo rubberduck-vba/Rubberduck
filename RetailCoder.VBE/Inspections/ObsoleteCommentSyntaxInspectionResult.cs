@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
-using Rubberduck.VBA;
 using Rubberduck.UI;
+using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
 {

@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBA;
-using Rubberduck.VBEditor;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime;
 using Rubberduck.Refactorings;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {

@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.UnitTesting
 {

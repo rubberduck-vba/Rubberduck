@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters

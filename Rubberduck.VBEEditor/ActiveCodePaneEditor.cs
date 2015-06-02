@@ -1,5 +1,5 @@
-﻿using Rubberduck.VBEditor.Extensions;
-using Microsoft.Vbe.Interop;
+﻿using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor
 {

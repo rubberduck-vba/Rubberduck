@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Settings
             resetSettings.Click += ResetSettingsClick;
         }
 
-        private void ResetSettingsClick(object sender, System.EventArgs e)
+        private void ResetSettingsClick(object sender, EventArgs e)
         {
             var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirmReset == DialogResult.No)

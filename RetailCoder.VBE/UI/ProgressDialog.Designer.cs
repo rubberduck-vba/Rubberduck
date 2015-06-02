@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI
 {
     partial class ProgressDialog
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -91,8 +94,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label TitleLabel;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private Panel panel2;
+        private Label TitleLabel;
+        private PictureBox pictureBox1;
     }
 }

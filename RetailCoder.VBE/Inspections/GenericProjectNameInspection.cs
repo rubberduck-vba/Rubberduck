@@ -1,9 +1,8 @@
-﻿using Antlr4.Runtime;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.Inspections
 {

@@ -1,8 +1,11 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
@@ -12,10 +15,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI
 {

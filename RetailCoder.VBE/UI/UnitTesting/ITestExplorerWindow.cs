@@ -1,8 +1,8 @@
-﻿using Rubberduck.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {

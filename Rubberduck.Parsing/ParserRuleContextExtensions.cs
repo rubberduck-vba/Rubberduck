@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;

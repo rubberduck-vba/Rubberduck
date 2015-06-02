@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.IdentifierReferences;
 
 namespace Rubberduck.UI.ParserErrors
 {
@@ -48,7 +44,7 @@ namespace Rubberduck.UI.ParserErrors
             Control.Navigate += Control_Navigate;
         }
 
-        void Control_Navigate(object sender, IdentifierReferences.ListItemActionEventArgs e)
+        void Control_Navigate(object sender, ListItemActionEventArgs e)
         {
             var selection = (ParseErrorListItem) e.SelectedItem;
             selection.Navigate();

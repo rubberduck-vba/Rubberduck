@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UnitTesting;
-using Rubberduck.UI;
 
 namespace Rubberduck.UI.UnitTesting
 {

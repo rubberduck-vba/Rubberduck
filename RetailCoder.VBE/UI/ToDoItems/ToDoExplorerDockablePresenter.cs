@@ -10,7 +10,6 @@ using Rubberduck.Parsing.Nodes;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.UI;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -48,10 +47,9 @@ namespace Rubberduck.UI.ToDoItems
                 Cursor.Current = Cursors.WaitCursor;
                 Control.TodoItems = await GetItems();
             }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            catch { }
+
+            Cursor.Current = Cursors.Default;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)

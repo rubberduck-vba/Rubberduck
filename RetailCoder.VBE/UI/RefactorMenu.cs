@@ -1,23 +1,23 @@
-﻿using Microsoft.Office.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Rubberduck.Refactorings.ExtractMethod;
-using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI
 {

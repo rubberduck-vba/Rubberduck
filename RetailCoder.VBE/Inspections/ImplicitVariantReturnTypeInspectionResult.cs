@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBA.Nodes;
 using Rubberduck.UI;
+using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
 {

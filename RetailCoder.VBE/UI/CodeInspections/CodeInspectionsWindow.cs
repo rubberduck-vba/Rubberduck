@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections

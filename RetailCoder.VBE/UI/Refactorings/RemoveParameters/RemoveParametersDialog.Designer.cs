@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Refactorings.RemoveParameters
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     partial class RemoveParametersDialog
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -192,15 +195,15 @@
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.Button RestoreButton;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label InstructionsLabel;
-        private System.Windows.Forms.Label TitleLabel;
-        private System.Windows.Forms.DataGridView MethodParametersGrid;
-        private System.Windows.Forms.Button RemoveButton;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Button CancelButton;
+        private Button OkButton;
+        private Button RestoreButton;
+        private Panel panel1;
+        private Label InstructionsLabel;
+        private Label TitleLabel;
+        private DataGridView MethodParametersGrid;
+        private Button RemoveButton;
 
 
 
