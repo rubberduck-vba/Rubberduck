@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
@@ -67,9 +68,11 @@ namespace Rubberduck
             }
 
             var displayToolbar = false;
+            Point toolbarCoords = new Point(-1, -1);
             if (_codeInspectionsToolbar != null)
             {
                 displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
+                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
             }
 
@@ -78,6 +81,11 @@ namespace Rubberduck
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
             _codeInspectionsToolbar.Initialize();
+
+            if (toolbarCoords.X != -1 && toolbarCoords.Y != -1)
+            {
+                _codeInspectionsToolbar.ToolbarCoords = toolbarCoords;
+            }
             _codeInspectionsToolbar.ToolbarVisible = displayToolbar;
         }
 

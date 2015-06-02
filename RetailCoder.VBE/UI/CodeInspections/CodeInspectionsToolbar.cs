@@ -182,6 +182,16 @@ namespace Rubberduck.UI.CodeInspections
             set { _toolbar.Visible = value; }
         }
 
+        public Point ToolbarCoords
+        {
+            get { return new Point(_toolbar.Top, _toolbar.Left); }
+            set
+            {
+                _toolbar.Top = value.X;
+                _toolbar.Left = value.Y;
+            }
+        }
+
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _tokenSource = new CancellationTokenSource();
