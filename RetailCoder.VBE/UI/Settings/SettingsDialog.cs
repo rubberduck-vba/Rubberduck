@@ -110,6 +110,11 @@ namespace Rubberduck.UI.Settings
         private void _treeview_NodeSelected(object sender, TreeViewEventArgs e)
         {
             Control controlToActivate = null;
+            if (e.Node == null)
+            {
+                // a "parent" node is selected. todo: create a page for "parent" nodes.
+                return;
+            }
 
             if (e.Node.Text == "Rubberduck")
             {

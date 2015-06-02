@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
-            InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
+            //InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             LanguageLabel.Text = RubberduckUI.Settings_LanguageLabel;
             resetSettings.Text = RubberduckUI.Settings_ResetSettings;
 

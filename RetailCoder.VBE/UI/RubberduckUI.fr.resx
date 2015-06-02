@@ -200,7 +200,7 @@
     <value>Configuration des niveaux de sévérité des inspections. Utiliser "DoNotShow" pour désactiver une inspection.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>Les modifications prendront effet après que Rubberduck ait été rechargé.</value>
+    <value>Cliquez [Ok] pour appliquer les modifications, ou [Annuler] pour conserver la configuration actuelle.</value>
   </data>
   <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
     <value>Configurer les marqueurs à reconnaître dans les commentaires.</value>

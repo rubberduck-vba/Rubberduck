@@ -33,7 +33,6 @@ namespace Rubberduck.UI.Settings
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
-            this.InstructionsLabel = new System.Windows.Forms.Label();
             this.LanguageLabel = new System.Windows.Forms.Label();
             this.LanguageList = new System.Windows.Forms.ComboBox();
             this.resetSettings = new System.Windows.Forms.Button();
@@ -57,20 +56,10 @@ namespace Rubberduck.UI.Settings
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(3, 81);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
             this.TitleLabel.Size = new System.Drawing.Size(118, 19);
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "General Settings";
-            // 
-            // InstructionsLabel
-            // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(3, 100);
-            this.InstructionsLabel.MaximumSize = new System.Drawing.Size(350, 0);
-            this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(8, 21);
-            this.InstructionsLabel.TabIndex = 5;
             // 
             // LanguageLabel
             // 
@@ -95,7 +84,7 @@ namespace Rubberduck.UI.Settings
             this.resetSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.resetSettings.ForeColor = System.Drawing.Color.Black;
             this.resetSettings.Location = new System.Drawing.Point(17, 243);
-            this.resetSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.resetSettings.Margin = new System.Windows.Forms.Padding(2);
             this.resetSettings.Name = "resetSettings";
             this.resetSettings.Size = new System.Drawing.Size(90, 34);
             this.resetSettings.TabIndex = 8;
@@ -111,7 +100,6 @@ namespace Rubberduck.UI.Settings
             this.Controls.Add(this.LanguageList);
             this.Controls.Add(this.LanguageLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.InstructionsLabel);
             this.Controls.Add(this.pictureBox1);
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "GeneralSettingsControl";
@@ -126,7 +114,6 @@ namespace Rubberduck.UI.Settings
 
         private PictureBox pictureBox1;
         private Label TitleLabel;
-        private Label InstructionsLabel;
         private Label LanguageLabel;
         private ComboBox LanguageList;
         private Button resetSettings;

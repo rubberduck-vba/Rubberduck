@@ -1814,7 +1814,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes will be applied after Rubberduck is reloaded..
+        ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
         /// </summary>
         internal static string SettingsInstructions_GeneralSettings {
             get {

@@ -200,7 +200,7 @@
     <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>Changes will be applied after Rubberduck is reloaded.</value>
+    <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
   </data>
   <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>
