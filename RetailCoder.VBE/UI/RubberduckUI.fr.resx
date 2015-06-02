@@ -837,9 +837,9 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Nouveau</value>
   </data>
   <data name="Settings_ResetSettings" xml:space="preserve">
-    <value>z Reset Settings</value>
+    <value>Réinitialiser</value>
   </data>
   <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
-    <value>z Reset settings to default?</value>
+    <value>Réinitialiser les paramètres par défaut?</value>
   </data>
 </root>
