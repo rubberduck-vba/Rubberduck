@@ -109,20 +109,19 @@ namespace Rubberduck.UI
             const int windowMenuId = 30009;
             var menuBarControls = IDE.CommandBars[1].Controls;
             var beforeIndex = FindMenuInsertionIndex(menuBarControls, windowMenuId);
-            var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
-            Debug.Assert(menu != null, "menu != null");
+            _menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
 
-            menu.Caption = RubberduckUI.RubberduckMenu;
+            _menu.Caption = RubberduckUI.RubberduckMenu;
 
-            _testMenu.Initialize(menu.Controls);
-            _codeExplorerMenu.Initialize(menu);
-            _refactorMenu.Initialize(menu.Controls);
-            _todoItemsMenu.Initialize(menu);
-            _codeInspectionsMenu.Initialize(menu);
+            _testMenu.Initialize(_menu.Controls);
+            _codeExplorerMenu.Initialize(_menu);
+            _refactorMenu.Initialize(_menu.Controls);
+            _todoItemsMenu.Initialize(_menu);
+            _codeInspectionsMenu.Initialize(_menu);
 
-            _sourceControl = AddButton(menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
-            _settings = AddButton(menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
-            _about = AddButton(menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
+            _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
+            _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
+            _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
         }
 
         private Rubberduck.SourceControl.App _sourceControlApp;
@@ -162,42 +161,44 @@ namespace Rubberduck.UI
         }
 
         private bool _disposed;
+        private CommandBarPopup _menu;
+
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed || !disposing)
             {
                 return;
             }
 
-            if (disposing)
+            if (_todoItemsMenu != null)
             {
-                if (_todoItemsMenu != null)
-                {
-                    _todoItemsMenu.Dispose();
-                }
+                _todoItemsMenu.Dispose();
+            }
 
-                if (_refactorMenu != null)
-                {
-                    _refactorMenu.Dispose();
-                }
+            if (_refactorMenu != null)
+            {
+                _refactorMenu.Dispose();
+            }
 
-                if (_codeExplorerMenu != null)
-                {
-                    _codeExplorerMenu.Dispose();
-                }
-                if (_testMenu != null)
-                {
-                    _testMenu.Dispose();
-                }
-                if (_codeInspectionsMenu != null)
-                {
-                    _codeInspectionsMenu.Dispose();
-                }
+            if (_codeExplorerMenu != null)
+            {
+                _codeExplorerMenu.Dispose();
+            }
+            if (_testMenu != null)
+            {
+                _testMenu.Dispose();
+            }
+            if (_codeInspectionsMenu != null)
+            {
+                _codeInspectionsMenu.Dispose();
             }
 
             _about.Click -= OnAboutClick;
             _settings.Click -= OnOptionsClick;
             _sourceControl.Click -= OnSourceControlClick;
+
+            var menuBarControls = IDE.CommandBars[1].Controls;
+            menuBarControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
             _disposed = true;
 

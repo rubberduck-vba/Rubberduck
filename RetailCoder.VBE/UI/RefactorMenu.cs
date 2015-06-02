@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
@@ -45,18 +44,20 @@ namespace Rubberduck.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
-            menu.Caption = RubberduckUI.RubberduckMenu_Refactor;
+            _menuControls = menuControls;
 
-            _extractMethodButton = AddButton(menu, RubberduckUI.RefactorMenu_ExtractMethod, false, OnExtractMethodButtonClick);
+            _menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            _menu.Caption = RubberduckUI.RubberduckMenu_Refactor;
+
+            _extractMethodButton = AddButton(_menu, RubberduckUI.RefactorMenu_ExtractMethod, false, OnExtractMethodButtonClick);
             SetButtonImage(_extractMethodButton, Resources.ExtractMethod_6786_32, Resources.ExtractMethod_6786_32_Mask);
 
-            _renameButton = AddButton(menu, RubberduckUI.RefactorMenu_Rename, false, OnRenameButtonClick);
+            _renameButton = AddButton(_menu, RubberduckUI.RefactorMenu_Rename, false, OnRenameButtonClick);
             
-            _reorderParametersButton = AddButton(menu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
+            _reorderParametersButton = AddButton(_menu, RubberduckUI.RefactorMenu_ReorderParameters, false, OnReorderParametersButtonClick, Resources.ReorderParameters_6780_32);
             SetButtonImage(_reorderParametersButton, Resources.ReorderParameters_6780_32, Resources.ReorderParameters_6780_32_Mask);
 
-            _removeParametersButton = AddButton(menu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
+            _removeParametersButton = AddButton(_menu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
             SetButtonImage(_removeParametersButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
             InitializeRefactorContextMenu();
@@ -488,9 +489,12 @@ namespace Rubberduck.UI
         }
 
         bool _disposed;
+        private CommandBarPopup _menu;
+        private CommandBarControls _menuControls;
+
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed || !disposing)
             {
                 return;
             }
@@ -506,6 +510,8 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu.Click -= FindAllReferencesContextMenu_Click;
             _findAllImplementationsContextMenu.Click -= FindAllImplementationsContextMenu_Click;
             _findSymbolContextMenu.Click -= FindSymbolContextMenuClick;
+
+            _menuControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible);
 
             _disposed = true;
             base.Dispose(disposing);

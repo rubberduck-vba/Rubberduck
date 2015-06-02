@@ -15,32 +15,38 @@ namespace Rubberduck
 {
     public class App : IDisposable
     {
-        private readonly RubberduckMenu _menu;
+        private readonly VBE _vbe;
+        private readonly AddIn _addIn;
         private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
         private readonly Inspector _inspector;
         private readonly ParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService = new ConfigurationLoader();
+        private readonly ActiveCodePaneEditor _editor;
+        private readonly IRubberduckParser _parser;
 
         private Configuration _config;
+        private RubberduckMenu _menu;
 
         public App(VBE vbe, AddIn addIn)
         {
+            _vbe = vbe;
+            _addIn = addIn;
             _inspections = _configService.GetImplementedCodeInspections();
 
-            LoadConfig();
-
-            IRubberduckParser parser = new RubberduckParser();
+            _parser = new RubberduckParser();
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
-            parser.ParseStarted += _parser_ParseStarted;
-            parser.ParserError += _parser_ParserError;
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParserError += _parser_ParserError;
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            var editor = new ActiveCodePaneEditor(vbe);
+            _editor = new ActiveCodePaneEditor(vbe);
 
-            _inspector = new Inspector(parser, _inspections);
-            _menu = new RubberduckMenu(vbe, addIn, _configService, parser, editor, _inspector);
+            _inspector = new Inspector(_parser, _inspections);
+            //_menu = new RubberduckMenu(vbe, addIn, _configService, _parser, _editor, _inspector);
             _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
+
+            LoadConfig();
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
@@ -54,6 +60,14 @@ namespace Rubberduck
             RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
 
             EnableCodeInspections(_config);
+
+            if (_menu != null)
+            {
+                _menu.Dispose();
+            }
+
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
+            _menu.Initialize();
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -113,7 +127,7 @@ namespace Rubberduck
 
         public void CreateExtUi()
         {
-            _menu.Initialize();
+            //_menu.Initialize();
             _codeInspectionsToolbar.Initialize();
         }
     }

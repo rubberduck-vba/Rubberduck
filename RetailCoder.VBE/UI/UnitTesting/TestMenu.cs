@@ -25,13 +25,15 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Initialize(CommandBarControls menuControls)
         {
-            var menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
-            menu.Caption = RubberduckUI.RubberduckMenu_UnitTests;
+            _menuControls = menuControls;
 
-            _windowsTestExplorerButton = AddButton(menu, RubberduckUI.TestMenu_TextExplorer, false, OnTestExplorerButtonClick);
+            _menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            _menu.Caption = RubberduckUI.RubberduckMenu_UnitTests;
+
+            _windowsTestExplorerButton = AddButton(_menu, RubberduckUI.TestMenu_TextExplorer, false, OnTestExplorerButtonClick);
             SetButtonImage(_windowsTestExplorerButton, Resources.TestManager_8590_32, Resources.TestManager_8590_32_Mask);
 
-            _runAllTestsButton = AddButton(menu, RubberduckUI.TestMenu_RunAllTests, true, OnRunAllTestsButtonClick);
+            _runAllTestsButton = AddButton(_menu, RubberduckUI.TestMenu_RunAllTests, true, OnRunAllTestsButtonClick);
             SetButtonImage(_runAllTestsButton, Resources.AllLoadedTests_8644_24, Resources.AllLoadedTests_8644_24_Mask);
         }
 
@@ -53,25 +55,27 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         bool _disposed;
+        private CommandBarPopup _menu;
+        private CommandBarControls _menuControls;
+
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed || !disposing)
             {
                 return;
             }
 
-            if (disposing)
+            if (_view != null)
             {
-                if (_view != null)
-                {
-                    _view.Dispose();
-                }
-
-                if (_presenter != null)
-                {
-                    _presenter.Dispose();
-                }
+                _view.Dispose();
             }
+
+            if (_presenter != null)
+            {
+                _presenter.Dispose();
+            }
+
+            _menuControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
             _runAllTestsButton.Click -= OnRunAllTestsButtonClick;
             _windowsTestExplorerButton.Click -= OnTestExplorerButtonClick;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 
@@ -8,7 +10,7 @@ namespace Rubberduck.UI
     {
         private readonly AddIn _addin;
         private Window _window;
-        protected readonly UserControl UserControl;
+        protected UserControl UserControl;
 
         protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
         {
@@ -23,17 +25,27 @@ namespace Rubberduck.UI
 
         private Window CreateToolWindow(IDockableUserControl control)
         {
-                object userControlObject = null;
-                var toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId, ref userControlObject);
-                var userControlHost = (_DockableWindowHost)userControlObject;
-                toolWindow.Visible = true; //window resizing doesn't work without this
+            object userControlObject = null;
+            Window toolWindow;
+            try
+            {
+                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
+                    control.Caption, control.ClassId, ref userControlObject);
+            }
+            catch (COMException)
+            {
+                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
+                    control.Caption, control.ClassId, ref userControlObject);
+            }
+            var userControlHost = (_DockableWindowHost)userControlObject;
+            toolWindow.Visible = true; //window resizing doesn't work without this
 
-                EnsureMinimumWindowSize(toolWindow);
+            EnsureMinimumWindowSize(toolWindow);
 
-                toolWindow.Visible = false; //hide it again
+            toolWindow.Visible = false; //hide it again
 
-                userControlHost.AddUserControl(control as UserControl);
-                return toolWindow;
+            userControlHost.AddUserControl(control as UserControl);
+            return toolWindow;
         }
 
         private void EnsureMinimumWindowSize(Window window)
@@ -72,13 +84,14 @@ namespace Rubberduck.UI
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing) { return; }
+            
+            if (UserControl != null)
             {
-                if (UserControl != null)
-                {
-                    UserControl.Dispose();
-                }
+                UserControl.Dispose();
             }
+
+            Marshal.ReleaseComObject(_window);
         }
     }
 }
