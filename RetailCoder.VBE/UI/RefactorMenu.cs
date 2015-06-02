@@ -94,6 +94,19 @@ namespace Rubberduck.UI
             InitializeFindSymbolContextMenu();
         }
 
+        private void RemoveRefactorContextMenu()
+        {
+            _extractMethodContextButton.Delete();
+            _renameContextButton.Delete();
+            _reorderParametersContextButton.Delete();
+            _removeParametersContextButton.Delete();
+            _refactorCodePaneContextMenu.Delete();
+
+            _findAllReferencesContextMenu.Delete();
+            _findAllImplementationsContextMenu.Delete();
+            _findSymbolContextMenu.Delete();
+        }
+
         private CommandBarButton _findAllReferencesContextMenu;
         private void InitializeFindReferencesContextMenu()
         {
@@ -511,10 +524,10 @@ namespace Rubberduck.UI
             _findAllImplementationsContextMenu.Click -= FindAllImplementationsContextMenu_Click;
             _findSymbolContextMenu.Click -= FindSymbolContextMenuClick;
 
-            _menuControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible);
+            RemoveRefactorContextMenu();
 
             _disposed = true;
-            base.Dispose(disposing);
+            base.Dispose(true);
         }
     }
 }
