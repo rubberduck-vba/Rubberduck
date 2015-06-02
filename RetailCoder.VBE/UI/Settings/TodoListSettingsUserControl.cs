@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {

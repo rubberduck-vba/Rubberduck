@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 using RubberduckTests.Mocks;
 

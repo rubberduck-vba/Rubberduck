@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ParserErrors;

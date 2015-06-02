@@ -1,6 +1,5 @@
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -16,7 +15,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI
 {

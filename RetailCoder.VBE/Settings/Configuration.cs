@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot(Namespace = "", IsNullable = false)]

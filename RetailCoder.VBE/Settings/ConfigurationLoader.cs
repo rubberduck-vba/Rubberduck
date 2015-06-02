@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     public interface IGeneralConfigService : IConfigurationService<Configuration>
     {

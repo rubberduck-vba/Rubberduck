@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     interface IToDoListSettings
     {

@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {

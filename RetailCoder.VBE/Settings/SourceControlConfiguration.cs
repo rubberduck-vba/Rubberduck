@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Rubberduck.SourceControl;
 
-namespace Rubberduck.Config
+namespace Rubberduck.Settings
 {
     public class SourceControlConfiguration
     {

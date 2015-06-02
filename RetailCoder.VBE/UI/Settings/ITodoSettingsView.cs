@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
