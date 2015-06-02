@@ -19,8 +19,8 @@ namespace Rubberduck.Settings
                             CodeInspectionSettings codeInspectionSettings)
         {
             LanguageSetting = languageSetting;
-            Settings.ToDoListSettings = todoSettings;
-            Settings.CodeInspectionSettings = codeInspectionSettings;
+            ToDoListSettings = todoSettings;
+            CodeInspectionSettings = codeInspectionSettings;
         }
     }
 }
