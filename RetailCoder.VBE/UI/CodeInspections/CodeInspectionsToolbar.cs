@@ -48,26 +48,26 @@ namespace Rubberduck.UI.CodeInspections
 
         public void Initialize()
         {
-            var toolbar = _vbe.CommandBars.Add(RubberduckUI.CodeInspections, Temporary: true);
-            _refreshButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _toolbar = _vbe.CommandBars.Add(RubberduckUI.CodeInspections, Temporary: true);
+            _refreshButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _refreshButton.TooltipText = RubberduckUI.CodeInspections_Run;
 
             var refreshIcon = Resources.Refresh;
             refreshIcon.MakeTransparent(Color.Magenta);
             Menu.SetButtonImage(_refreshButton, refreshIcon);
 
-            _statusButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _statusButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
             _statusButton.FaceId = 463; // Resources.Warning doesn't look good here
             _statusButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
 
-            _quickFixButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _quickFixButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _quickFixButton.Caption = RubberduckUI.Fix;
             _quickFixButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
             _quickFixButton.FaceId = 305; // Resources.applycodechanges_6548_321 doesn't look good here
             _quickFixButton.Enabled = false;
 
-            _navigatePreviousButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary:true);
+            _navigatePreviousButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary:true);
             _navigatePreviousButton.BeginGroup = true;
             _navigatePreviousButton.Caption = RubberduckUI.Previous;
             _navigatePreviousButton.TooltipText = RubberduckUI.Previous;
@@ -75,7 +75,7 @@ namespace Rubberduck.UI.CodeInspections
             _navigatePreviousButton.FaceId = 41; // Resources.112_LeftArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigatePreviousButton.Enabled = false;
 
-            _navigateNextButton = (CommandBarButton)toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _navigateNextButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             _navigateNextButton.Caption = RubberduckUI.Next;
             _navigateNextButton.TooltipText = RubberduckUI.Next;
             _navigateNextButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
@@ -174,6 +174,8 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private CancellationTokenSource _tokenSource;
+        private CommandBar _toolbar;
+
         private void _refreshButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _tokenSource = new CancellationTokenSource();
@@ -233,6 +235,14 @@ namespace Rubberduck.UI.CodeInspections
 
         public void Dispose()
         {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+
+            _toolbar.Delete();
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private readonly CodeInspectionsToolbar _codeInspectionsToolbar;
         private readonly IList<IInspection> _inspections;
         private readonly Inspector _inspector;
         private readonly ParserErrorsPresenter _parserErrorsPresenter;
@@ -27,6 +26,7 @@ namespace Rubberduck
 
         private Configuration _config;
         private RubberduckMenu _menu;
+        private CodeInspectionsToolbar _codeInspectionsToolbar;
 
         public App(VBE vbe, AddIn addIn)
         {
@@ -44,7 +44,7 @@ namespace Rubberduck
 
             _inspector = new Inspector(_parser, _inspections);
             //_menu = new RubberduckMenu(vbe, addIn, _configService, _parser, _editor, _inspector);
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
+            //_codeInspectionsToolbar = new CodeInspectionsToolbar(vbe, _inspector);
 
             LoadConfig();
         }
@@ -66,8 +66,16 @@ namespace Rubberduck
                 _menu.Dispose();
             }
 
+            if (_codeInspectionsToolbar != null)
+            {
+                _codeInspectionsToolbar.Dispose();
+            }
+
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
             _menu.Initialize();
+
+            _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
+            _codeInspectionsToolbar.Initialize();
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -128,7 +136,7 @@ namespace Rubberduck
         public void CreateExtUi()
         {
             //_menu.Initialize();
-            _codeInspectionsToolbar.Initialize();
+            //_codeInspectionsToolbar.Initialize();
         }
     }
 }
