@@ -79,11 +79,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All contributors to our GitHub repository.
+        /// </summary>
+        internal static string About_AllContributors {
+            get {
+                return ResourceManager.GetString("About_AllContributors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ...and anyone reading this!.
+        /// </summary>
+        internal static string About_Anyone {
+            get {
+                return ResourceManager.GetString("About_Anyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attributions.
         /// </summary>
         internal static string About_Attributions {
             get {
                 return ResourceManager.GetString("About_Attributions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blogs:.
+        /// </summary>
+        internal static string About_Blogs {
+            get {
+                return ResourceManager.GetString("About_Blogs", resourceCulture);
             }
         }
         
@@ -97,6 +124,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Review Stack Exchange.
+        /// </summary>
+        internal static string About_CodeReview {
+            get {
+                return ResourceManager.GetString("About_CodeReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Community:.
+        /// </summary>
+        internal static string About_Community {
+            get {
+                return ResourceManager.GetString("About_Community", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contributors &amp; supporters:.
+        /// </summary>
+        internal static string About_Contributors {
+            get {
+                return ResourceManager.GetString("About_Contributors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         internal static string About_Copyright {
@@ -106,11 +160,65 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fugue icons by Yusuke Kamiyamane.
+        /// </summary>
+        internal static string About_FugueIconCredit {
+            get {
+                return ResourceManager.GetString("About_FugueIconCredit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JetBrains ReSharper Community Team.
+        /// </summary>
+        internal static string About_JetBrains {
+            get {
+                return ResourceManager.GetString("About_JetBrains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub integration powered by LibGit2Sharp.
+        /// </summary>
+        internal static string About_LibGit2SharpCredit {
+            get {
+                return ResourceManager.GetString("About_LibGit2SharpCredit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing powered by ANTLR.
+        /// </summary>
+        internal static string About_ParsingCredit {
+            get {
+                return ResourceManager.GetString("About_ParsingCredit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
         internal static string About_SpecialThanks {
             get {
                 return ResourceManager.GetString("About_SpecialThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stack Overflow.
+        /// </summary>
+        internal static string About_StackOverflow {
+            get {
+                return ResourceManager.GetString("About_StackOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All our stargazers, likers &amp; followers, for the warm fuzzies.
+        /// </summary>
+        internal static string About_Stargazers {
+            get {
+                return ResourceManager.GetString("About_Stargazers", resourceCulture);
             }
         }
         

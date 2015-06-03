@@ -841,16 +841,52 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>z Code Explorer</value>
   </data>
+  <data name="About_AllContributors" xml:space="preserve">
+    <value>z All contributors to our GitHub repository</value>
+  </data>
+  <data name="About_Anyone" xml:space="preserve">
+    <value>z ...and anyone reading this!</value>
+  </data>
   <data name="About_Attributions" xml:space="preserve">
     <value>z Attributions</value>
+  </data>
+  <data name="About_Blogs" xml:space="preserve">
+    <value>z Blogs:</value>
   </data>
   <data name="About_Caption" xml:space="preserve">
     <value>z About Rubberduck</value>
   </data>
+  <data name="About_CodeReview" xml:space="preserve">
+    <value>z Code Review Stack Exchange</value>
+  </data>
+  <data name="About_Community" xml:space="preserve">
+    <value>z Community:</value>
+  </data>
+  <data name="About_Contributors" xml:space="preserve">
+    <value>z Contributors &amp; supporters:</value>
+  </data>
   <data name="About_Copyright" xml:space="preserve">
     <value>z © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
+  <data name="About_FugueIconCredit" xml:space="preserve">
+    <value>z Fugue icons by Yusuke Kamiyamane</value>
+  </data>
+  <data name="About_JetBrains" xml:space="preserve">
+    <value>z JetBrains ReSharper Community Team</value>
+  </data>
+  <data name="About_LibGit2SharpCredit" xml:space="preserve">
+    <value>z GitHub integration powered by LibGit2Sharp</value>
+  </data>
+  <data name="About_ParsingCredit" xml:space="preserve">
+    <value>z Parsing powered by ANTLR</value>
+  </data>
   <data name="About_SpecialThanks" xml:space="preserve">
     <value>z Special Thanks</value>
+  </data>
+  <data name="About_StackOverflow" xml:space="preserve">
+    <value>z Stack Overflow</value>
+  </data>
+  <data name="About_Stargazers" xml:space="preserve">
+    <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
 </root>
