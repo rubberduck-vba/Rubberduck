@@ -67,9 +67,9 @@ namespace Rubberduck.UI.UnitTesting
             module.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
         }
 
-        public void Synchronize()
+        private void Synchronize()
         {
-            SynchronizeEngineWithIDE();
+            FindAllTests();
             Control.Refresh(_testEngine.AllTests);
         }
 
@@ -79,11 +79,11 @@ namespace Rubberduck.UI.UnitTesting
             base.Show();
         }
 
-        public void SynchronizeEngineWithIDE()
+        private void FindAllTests()
         {
             try
             {
-                _testEngine.AllTests = this.VBE.VBProjects
+                _testEngine.AllTests = VBE.VBProjects
                                 .Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked)
                                 .SelectMany(project => project.TestMethods())
                                 .ToDictionary(test => test, test => _testEngine.AllTests.ContainsKey(test) ? _testEngine.AllTests[test] : null);
@@ -111,7 +111,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.Run(tests);
         }
 
-        private void TestComplete(object sender, TestCompleteEventArgs e)
+        private void TestComplete(object sender, TestCompletedEventArgs e)
         {
             Control.WriteResult(e.Test, e.Result);
         }

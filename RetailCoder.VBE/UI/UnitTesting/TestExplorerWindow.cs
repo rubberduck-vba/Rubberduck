@@ -228,7 +228,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
         {
-            return items.FirstOrDefault(item => item.QualifiedMemberName.Equals(test.QualifiedMemberName));
+            return items.FirstOrDefault(item => item.QualifiedMemberName == test.QualifiedMemberName.ToString());
         }
 
         public void Refresh(IDictionary<TestMethod, TestResult> tests)

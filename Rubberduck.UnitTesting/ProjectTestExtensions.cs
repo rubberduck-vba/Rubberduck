@@ -37,17 +37,19 @@ namespace Rubberduck.UnitTesting
         {
             var hostApp = project.VBE.HostApplication();
 
-            return project.VBComponents
+            var result = project.VBComponents
                           .Cast<VBComponent>()
                           .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => 
                               new TestMethod(method.QualifiedMemberName, hostApp)));
+
+            return result;
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
-            IHostApplication hostApp = component.VBE.HostApplication();
+            var hostApp = component.VBE.HostApplication();
 
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule 
                 && component.CodeModule.HasAttribute<TestModuleAttribute>())
@@ -60,21 +62,30 @@ namespace Rubberduck.UnitTesting
             return new List<TestMethod>();
         }
 
-        private static readonly string[] ReservedTestAttributeNames = {"TestInitialize", "TestCleanup"};
+        private static readonly string[] ReservedTestAttributeNames =
+        {
+            "ModuleInitialize",
+            "TestInitialize", 
+            "TestCleanup",
+            "ModuleCleanup"
+        };
 
         private static bool IsTestMethod(Member member)
         {
-            return (member.QualifiedMemberName.MemberName.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
+            var isIgnoredMethod = member.HasAttribute<TestInitializeAttribute>()
+                               || member.HasAttribute<TestCleanupAttribute>()
+                               || member.HasAttribute<ModuleInitializeAttribute>()
+                               || member.HasAttribute<ModuleCleanupAttribute>()
+                               || ReservedTestAttributeNames.Any(attribute => 
+                                   member.QualifiedMemberName.MemberName.StartsWith(attribute));
+
+            var result = !isIgnoredMethod &&
+                (member.QualifiedMemberName.MemberName.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
                  && member.Signature.Contains(member.QualifiedMemberName.MemberName + "()")
-                 && !ReservedTestAttributeNames.Contains(member.QualifiedMemberName.MemberName)
                  && member.MemberType == MemberType.Sub
                  && member.MemberVisibility == MemberVisibility.Public;
-        }
 
-        private static bool IsTestModule(CodeModule module)
-        {
-            return (module.Parent.Type == vbext_ComponentType.vbext_ct_StdModule
-                && module.Name.StartsWith("Test") || module.HasAttribute<TestModuleAttribute>());
+            return result;
         }
     }
 }

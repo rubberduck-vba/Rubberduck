@@ -7,18 +7,14 @@ namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
-        public event EventHandler<TestCompleteEventArgs> TestComplete;
+        public event EventHandler<TestCompletedEventArgs> TestComplete;
 
         public TestEngine()
         {
             AllTests = new Dictionary<TestMethod, TestResult>();
         }
 
-        public IDictionary<TestMethod, TestResult> AllTests
-        {
-            get;
-            set;
-        }
+        public IDictionary<TestMethod, TestResult> AllTests { get; set; }
 
         public IEnumerable<TestMethod> FailedTests()
         {
@@ -98,11 +94,11 @@ namespace Rubberduck.UnitTesting
         {
             var tests = testMethods.ToList();
 
-            var modules = tests.GroupBy(t => t.QualifiedMemberName);
+            var modules = tests.GroupBy(t => t.QualifiedMemberName.QualifiedModuleName);
 
             foreach (var module in modules)
             {
-                RunModuleInitialize(module.Key.QualifiedModuleName);
+                RunModuleInitialize(module.Key);
 
                 foreach (var test in module)
                 {
@@ -116,7 +112,7 @@ namespace Rubberduck.UnitTesting
                         RunMethodCleanup(test.QualifiedMemberName.QualifiedModuleName);
 
 
-                        OnTestComplete(new TestCompleteEventArgs(test, result));
+                        OnTestCompleted(new TestCompletedEventArgs(test, result));
                     }
                     else
                     {
@@ -124,11 +120,11 @@ namespace Rubberduck.UnitTesting
                     }
                 }
 
-                RunModuleCleanup(module.Key.QualifiedModuleName);
+                RunModuleCleanup(module.Key);
             }
         }
 
-        protected virtual void OnTestComplete(TestCompleteEventArgs arg)
+        protected virtual void OnTestCompleted(TestCompletedEventArgs arg)
         {
             if (TestComplete != null)
             {
