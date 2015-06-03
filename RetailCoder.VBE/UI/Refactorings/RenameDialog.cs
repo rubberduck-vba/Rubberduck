@@ -96,13 +96,12 @@ namespace Rubberduck.UI.Refactorings
 
         private void ValidateNewName()
         {
-            Tokens.ResourceManager.IgnoreCase = true;
+            var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValueDirect(new TypedReference())).Cast<string>().Select(item => item.ToLower());
 
-            OkButton.Enabled = (NewName != Target.IdentifierName)
+            OkButton.Enabled = NewName != Target.IdentifierName
                                && char.IsLetter(NewName.FirstOrDefault())
-                               && Tokens.ResourceManager.GetString(NewName) == null;
-
-            Tokens.ResourceManager.IgnoreCase = false;
+                               && !tokenValues.Contains(NewName.ToLower())
+                               && !char.IsWhiteSpace(NewName.LastOrDefault());
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;
         }

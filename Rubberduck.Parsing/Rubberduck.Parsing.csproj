@@ -80,11 +80,6 @@
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\Declarations.cs" />
-    <Compile Include="Grammar\Tokens.Designer.cs">
-      <DependentUpon>Tokens.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
@@ -107,13 +102,6 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Grammar\Tokens.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
