@@ -649,9 +649,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Fel vid tolkning</value>
   </data>
-  <data name="Passed" xml:space="preserve">
-    <value>Passerade</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Lägg till</value>
   </data>
@@ -682,7 +679,7 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
     <value>Hitta alla referenser...</value>
   </data>
-    <data name="Inspect" xml:space="preserve">
+  <data name="Inspect" xml:space="preserve">
     <value>Inspektera</value>
   </data>
   <data name="Navigate" xml:space="preserve">
@@ -718,17 +715,11 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspections_GoToolTip" xml:space="preserve">
     <value>Navigera till markerat problem</value>
   </data>
-  <data name="Inspect" xml:space="preserve">
-    <value>Inspektera</value>
-  </data>
   <data name="ModuleName" xml:space="preserve">
     <value>Modulnamn</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Projektnamn</value>
-  </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>Uppdatera</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Ta bort</value>
@@ -736,23 +727,17 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Navigera till nästa problem</value>
   </data>
-  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
-    <value>Navigera till föregående problem</value>
-  </data>
   <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Åtgärda problemet</value>
+    <value>Applicera lösning</value>
   </data>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Kör kodinspektioner</value>
+    <value>Kör inspektioner igen</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Beskrivning</value>
   </data>
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Radnummer</value>
-  </data>
-  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
-    <value>Rubberduck - Ta bort parametrar</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Inställningar</value>
@@ -829,17 +814,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>Problem med läsbarhet och underhållning</value>
   </data>
-  <data name="CodeInspections_NextToolTip" xml:space="preserve">
-    <value>Navigera till nästa problem</value>
-  </data>
   <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
     <value>{0} problem{1}</value>
-  </data>
-  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
-    <value>Applicera lösning</value>
-  </data>
-  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Kör inspektioner igen</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Rad</value>
@@ -849,9 +825,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
-  </data>
-  <data name="Next" xml:space="preserve">
-    <value>Nästa</value>
   </data>
   <data name="OK_AllCaps" xml:space="preserve">
     <value>OK</value>
@@ -864,5 +837,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   </data>
   <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
     <value>Återställ standardinställningarna?</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>z Code Explorer</value>
   </data>
 </root>

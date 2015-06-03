@@ -259,6 +259,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Explorer.
+        /// </summary>
+        internal static string CodeExplorerDockablePresenter_Caption {
+            get {
+                return ResourceManager.GetString("CodeExplorerDockablePresenter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} (parsing...).
         /// </summary>
         internal static string CodeExplorerDockablePresenter_ParseStarted {
