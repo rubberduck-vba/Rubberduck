@@ -848,4 +848,7 @@ Do you want to continue?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
   </data>
+  <data name="Language_SV" xml:space="preserve">
+    <value>Swedish</value>
+  </data>
 </root>

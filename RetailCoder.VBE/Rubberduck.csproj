@@ -606,6 +606,7 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>

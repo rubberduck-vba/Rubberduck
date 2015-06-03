@@ -13,7 +13,6 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
-            //InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             LanguageLabel.Text = RubberduckUI.Settings_LanguageLabel;
             resetSettings.Text = RubberduckUI.Settings_ResetSettings;
 
@@ -56,6 +55,7 @@ namespace Rubberduck.UI.Settings
         {
             LanguageList.Items.Add(new DisplayLanguageSetting("en-US"));
             LanguageList.Items.Add(new DisplayLanguageSetting("fr-CA"));
+            LanguageList.Items.Add(new DisplayLanguageSetting("sv-SV"));
 
             LanguageList.DisplayMember = "Name";
         }

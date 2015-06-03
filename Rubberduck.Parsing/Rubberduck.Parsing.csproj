@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBABaseListener.cs" />
     <Compile Include="Grammar\VBABaseVisitor.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
