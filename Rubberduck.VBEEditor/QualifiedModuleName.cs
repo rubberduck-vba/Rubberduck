@@ -73,6 +73,7 @@ namespace Rubberduck.VBEditor
                 }
 
                 var result = other.Project == Project 
+                    && other.ProjectName == ProjectName
                     && other.ComponentName == ComponentName 
                     && other._contentHashCode == _contentHashCode;
                 return result;

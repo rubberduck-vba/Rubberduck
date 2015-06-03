@@ -846,4 +846,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>z Renaming to '{0}' will cause a confliction with '{1}'.
 Do you want to continue?</value>
   </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Renommer {0}</value>
+  </data>
 </root>

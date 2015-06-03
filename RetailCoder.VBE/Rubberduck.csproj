@@ -236,8 +236,8 @@
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
-    <Compile Include="Inspections\GenericProjectNameInspection.cs" />
-    <Compile Include="Inspections\GenericProjectNameInspectionResult.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspectionResult.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
     <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\IInspector.cs" />

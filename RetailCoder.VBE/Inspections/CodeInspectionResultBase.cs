@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
+            : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
+        {
+            _target = target;
+        }
+
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
@@ -21,11 +28,6 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
-            if (context == null && comment == null)
-            {
-                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
-            }
-
             _name = inspection;
             _type = type;
             _qualifiedName = qualifiedName;
@@ -54,6 +56,9 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
         public CommentNode Comment { get { return _comment; } }
 
+        private readonly Declaration _target;
+        protected Declaration Target { get { return _target; } }
+
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
@@ -61,8 +66,12 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return _context == null 
-                    ? _comment.QualifiedSelection 
+                if (_context == null && _comment == null)
+                {
+                    return _target.QualifiedSelection;
+                }
+                return _context == null
+                    ? _comment.QualifiedSelection
                     : new QualifiedSelection(_qualifiedName, _context.GetSelection());
             }
         }

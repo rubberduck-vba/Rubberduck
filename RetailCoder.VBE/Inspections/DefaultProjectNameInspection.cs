@@ -21,9 +21,10 @@ namespace Rubberduck.Inspections
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
             var issues = parseResult.Declarations.Items
-                            .Where(declaration => declaration.DeclarationType == DeclarationType.Project
-                                               && declaration.IdentifierName.Contains("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue.QualifiedName.QualifiedModuleName))
+                            .Where(declaration => !declaration.IsBuiltIn 
+                                                && declaration.DeclarationType == DeclarationType.Project
+                                                && declaration.IdentifierName.StartsWith("VBAProject"))
+                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult))
                             .ToList();
 
             return issues;

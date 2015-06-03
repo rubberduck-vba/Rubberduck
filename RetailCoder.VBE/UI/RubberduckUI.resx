@@ -845,4 +845,7 @@ Warning: All customized settings will be lost.</value>
     <value>Renaming to '{0}' will cause a confliction with '{1}'.
 Do you want to continue?</value>
   </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Rename {0}</value>
+  </data>
 </root>
