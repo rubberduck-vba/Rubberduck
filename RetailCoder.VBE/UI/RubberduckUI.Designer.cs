@@ -79,6 +79,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attributions.
+        /// </summary>
+        internal static string About_Attributions {
+            get {
+                return ResourceManager.GetString("About_Attributions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About Rubberduck.
+        /// </summary>
+        internal static string About_Caption {
+            get {
+                return ResourceManager.GetString("About_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan.
+        /// </summary>
+        internal static string About_Copyright {
+            get {
+                return ResourceManager.GetString("About_Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special Thanks.
+        /// </summary>
+        internal static string About_SpecialThanks {
+            get {
+                return ResourceManager.GetString("About_SpecialThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         internal static string Add {

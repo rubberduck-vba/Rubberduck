@@ -54,9 +54,10 @@ namespace Rubberduck.UI
             this.AppVersionLabel.AutoSize = true;
             this.AppVersionLabel.BackColor = System.Drawing.Color.Transparent;
             this.AppVersionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AppVersionLabel.Location = new System.Drawing.Point(180, 13);
+            this.AppVersionLabel.Location = new System.Drawing.Point(240, 16);
+            this.AppVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AppVersionLabel.Name = "AppVersionLabel";
-            this.AppVersionLabel.Size = new System.Drawing.Size(90, 24);
+            this.AppVersionLabel.Size = new System.Drawing.Size(114, 29);
             this.AppVersionLabel.TabIndex = 0;
             this.AppVersionLabel.Text = "[version]";
             // 
@@ -65,6 +66,7 @@ namespace Rubberduck.UI
             this.SpecialThanksList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SpecialThanksList.ForeColor = System.Drawing.Color.DimGray;
             this.SpecialThanksList.FormattingEnabled = true;
+            this.SpecialThanksList.ItemHeight = 16;
             this.SpecialThanksList.Items.AddRange(new object[] {
             "Community:",
             "Code Review Stack Exchange",
@@ -93,10 +95,11 @@ namespace Rubberduck.UI
             "All contributors to our GitHub repository",
             "All our stargazers, likers & followers, for the warm fuzzies",
             "...and anyone reading this!"});
-            this.SpecialThanksList.Location = new System.Drawing.Point(187, 164);
+            this.SpecialThanksList.Location = new System.Drawing.Point(249, 202);
+            this.SpecialThanksList.Margin = new System.Windows.Forms.Padding(4);
             this.SpecialThanksList.Name = "SpecialThanksList";
             this.SpecialThanksList.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.SpecialThanksList.Size = new System.Drawing.Size(300, 104);
+            this.SpecialThanksList.Size = new System.Drawing.Size(400, 128);
             this.SpecialThanksList.TabIndex = 1;
             // 
             // OfficialWebsiteLinkLabel
@@ -109,9 +112,10 @@ namespace Rubberduck.UI
             this.OfficialWebsiteLinkLabel.ForeColor = System.Drawing.Color.DimGray;
             this.OfficialWebsiteLinkLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.OfficialWebsiteLinkLabel.LinkColor = System.Drawing.Color.DimGray;
-            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(12, 125);
+            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(-1, 154);
+            this.OfficialWebsiteLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.OfficialWebsiteLinkLabel.Name = "OfficialWebsiteLinkLabel";
-            this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(156, 17);
+            this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(178, 20);
             this.OfficialWebsiteLinkLabel.TabIndex = 2;
             this.OfficialWebsiteLinkLabel.TabStop = true;
             this.OfficialWebsiteLinkLabel.Text = "rubberduck-vba.com";
@@ -121,9 +125,10 @@ namespace Rubberduck.UI
             // 
             this.TwitterIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TwitterIcon.Image = global::Rubberduck.Properties.Resources.twitter_circle_black_512;
-            this.TwitterIcon.Location = new System.Drawing.Point(53, 266);
+            this.TwitterIcon.Location = new System.Drawing.Point(71, 327);
+            this.TwitterIcon.Margin = new System.Windows.Forms.Padding(4);
             this.TwitterIcon.Name = "TwitterIcon";
-            this.TwitterIcon.Size = new System.Drawing.Size(32, 32);
+            this.TwitterIcon.Size = new System.Drawing.Size(43, 39);
             this.TwitterIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.TwitterIcon.TabIndex = 3;
             this.TwitterIcon.TabStop = false;
@@ -132,9 +137,10 @@ namespace Rubberduck.UI
             // 
             this.FacebookIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.FacebookIcon.Image = global::Rubberduck.Properties.Resources.facebook_circle_256;
-            this.FacebookIcon.Location = new System.Drawing.Point(91, 267);
+            this.FacebookIcon.Location = new System.Drawing.Point(121, 329);
+            this.FacebookIcon.Margin = new System.Windows.Forms.Padding(4);
             this.FacebookIcon.Name = "FacebookIcon";
-            this.FacebookIcon.Size = new System.Drawing.Size(30, 30);
+            this.FacebookIcon.Size = new System.Drawing.Size(40, 37);
             this.FacebookIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.FacebookIcon.TabIndex = 3;
             this.FacebookIcon.TabStop = false;
@@ -143,9 +149,10 @@ namespace Rubberduck.UI
             // 
             this.GitHubIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.GitHubIcon.Image = global::Rubberduck.Properties.Resources.github_circle_black_128;
-            this.GitHubIcon.Location = new System.Drawing.Point(15, 266);
+            this.GitHubIcon.Location = new System.Drawing.Point(20, 327);
+            this.GitHubIcon.Margin = new System.Windows.Forms.Padding(4);
             this.GitHubIcon.Name = "GitHubIcon";
-            this.GitHubIcon.Size = new System.Drawing.Size(32, 32);
+            this.GitHubIcon.Size = new System.Drawing.Size(43, 39);
             this.GitHubIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.GitHubIcon.TabIndex = 3;
             this.GitHubIcon.TabStop = false;
@@ -154,9 +161,10 @@ namespace Rubberduck.UI
             // 
             this.GooglePlusIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.GooglePlusIcon.Image = global::Rubberduck.Properties.Resources.google_circle_512;
-            this.GooglePlusIcon.Location = new System.Drawing.Point(129, 267);
+            this.GooglePlusIcon.Location = new System.Drawing.Point(172, 329);
+            this.GooglePlusIcon.Margin = new System.Windows.Forms.Padding(4);
             this.GooglePlusIcon.Name = "GooglePlusIcon";
-            this.GooglePlusIcon.Size = new System.Drawing.Size(30, 30);
+            this.GooglePlusIcon.Size = new System.Drawing.Size(40, 37);
             this.GooglePlusIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.GooglePlusIcon.TabIndex = 3;
             this.GooglePlusIcon.TabStop = false;
@@ -164,7 +172,8 @@ namespace Rubberduck.UI
             // CloseButton
             // 
             this.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CloseButton.Location = new System.Drawing.Point(46, 193);
+            this.CloseButton.Location = new System.Drawing.Point(61, 238);
+            this.CloseButton.Margin = new System.Windows.Forms.Padding(4);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(0, 0);
             this.CloseButton.TabIndex = 4;
@@ -177,9 +186,10 @@ namespace Rubberduck.UI
             this.CopyrightLabel.BackColor = System.Drawing.Color.Transparent;
             this.CopyrightLabel.Font = new System.Drawing.Font("Arial Narrow", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CopyrightLabel.ForeColor = System.Drawing.Color.DimGray;
-            this.CopyrightLabel.Location = new System.Drawing.Point(181, 282);
+            this.CopyrightLabel.Location = new System.Drawing.Point(241, 347);
+            this.CopyrightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CopyrightLabel.Name = "CopyrightLabel";
-            this.CopyrightLabel.Size = new System.Drawing.Size(278, 15);
+            this.CopyrightLabel.Size = new System.Drawing.Size(328, 17);
             this.CopyrightLabel.TabIndex = 5;
             this.CopyrightLabel.Text = "© Copyright 2014-2015 Mathieu Guindon & Christopher McClellan";
             this.CopyrightLabel.UseMnemonic = false;
@@ -189,9 +199,10 @@ namespace Rubberduck.UI
             this.AttributionsLabel.AutoSize = true;
             this.AttributionsLabel.BackColor = System.Drawing.Color.Transparent;
             this.AttributionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AttributionsLabel.Location = new System.Drawing.Point(184, 54);
+            this.AttributionsLabel.Location = new System.Drawing.Point(245, 66);
+            this.AttributionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AttributionsLabel.Name = "AttributionsLabel";
-            this.AttributionsLabel.Size = new System.Drawing.Size(91, 17);
+            this.AttributionsLabel.Size = new System.Drawing.Size(106, 20);
             this.AttributionsLabel.TabIndex = 6;
             this.AttributionsLabel.Text = "Attributions";
             // 
@@ -200,9 +211,10 @@ namespace Rubberduck.UI
             this.SpecialThanksLabel.AutoSize = true;
             this.SpecialThanksLabel.BackColor = System.Drawing.Color.Transparent;
             this.SpecialThanksLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SpecialThanksLabel.Location = new System.Drawing.Point(184, 144);
+            this.SpecialThanksLabel.Location = new System.Drawing.Point(245, 177);
+            this.SpecialThanksLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.SpecialThanksLabel.Name = "SpecialThanksLabel";
-            this.SpecialThanksLabel.Size = new System.Drawing.Size(119, 17);
+            this.SpecialThanksLabel.Size = new System.Drawing.Size(137, 20);
             this.SpecialThanksLabel.TabIndex = 6;
             this.SpecialThanksLabel.Text = "Special Thanks";
             // 
@@ -211,25 +223,27 @@ namespace Rubberduck.UI
             this.AttributionsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.AttributionsList.ForeColor = System.Drawing.Color.DimGray;
             this.AttributionsList.FormattingEnabled = true;
+            this.AttributionsList.ItemHeight = 16;
             this.AttributionsList.Items.AddRange(new object[] {
             "Parsing powered by ANTLR",
             "GitHub integration powered by LibGit2Sharp",
             "Fugue icons by Yusuke Kamiyamane"});
-            this.AttributionsList.Location = new System.Drawing.Point(187, 74);
+            this.AttributionsList.Location = new System.Drawing.Point(249, 91);
+            this.AttributionsList.Margin = new System.Windows.Forms.Padding(4);
             this.AttributionsList.Name = "AttributionsList";
             this.AttributionsList.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.AttributionsList.Size = new System.Drawing.Size(288, 52);
+            this.AttributionsList.Size = new System.Drawing.Size(384, 64);
             this.AttributionsList.TabIndex = 1;
             // 
             // _AboutWindow
             // 
             this.AcceptButton = this.CloseButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Rubberduck.Properties.Resources.RD_AboutWindow;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.CloseButton;
-            this.ClientSize = new System.Drawing.Size(499, 310);
+            this.ClientSize = new System.Drawing.Size(665, 382);
             this.Controls.Add(this.SpecialThanksLabel);
             this.Controls.Add(this.AttributionsLabel);
             this.Controls.Add(this.CopyrightLabel);
@@ -243,6 +257,7 @@ namespace Rubberduck.UI
             this.Controls.Add(this.SpecialThanksList);
             this.Controls.Add(this.AppVersionLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "_AboutWindow";

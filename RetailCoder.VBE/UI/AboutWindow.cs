@@ -32,6 +32,11 @@ namespace Rubberduck.UI
             var assembly = Assembly.GetExecutingAssembly();
             var name = assembly.GetName();
 
+            Text = RubberduckUI.About_Caption;
+            AttributionsLabel.Text = RubberduckUI.About_Attributions;
+            SpecialThanksLabel.Text = RubberduckUI.About_SpecialThanks;
+            CopyrightLabel.Text = RubberduckUI.About_Copyright;
+
             AppVersionLabel.Text = string.Format(RubberduckUI.Rubberduck_AboutBuild, name.Version, name.ProcessorArchitecture);
             CloseButton.Click += CloseButton_Click;
 

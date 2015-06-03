@@ -841,4 +841,16 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>z Code Explorer</value>
   </data>
+  <data name="About_Attributions" xml:space="preserve">
+    <value>z Attributions</value>
+  </data>
+  <data name="About_Caption" xml:space="preserve">
+    <value>z About Rubberduck</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>z © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+  </data>
+  <data name="About_SpecialThanks" xml:space="preserve">
+    <value>z Special Thanks</value>
+  </data>
 </root>

@@ -854,4 +854,16 @@ Do you want to continue?</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
+  <data name="About_Attributions" xml:space="preserve">
+    <value>Attributions</value>
+  </data>
+  <data name="About_Caption" xml:space="preserve">
+    <value>About Rubberduck</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+  </data>
+  <data name="About_SpecialThanks" xml:space="preserve">
+    <value>Special Thanks</value>
+  </data>
 </root>
