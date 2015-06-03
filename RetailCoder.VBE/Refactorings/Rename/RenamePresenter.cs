@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -58,29 +59,52 @@ namespace Rubberduck.Refactorings.Rename
                                               || _view.Target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
-            if (values.Any())
+            foreach (var reference in _view.Target.References)
             {
-                return values.FirstOrDefault();
-            }
+                var potentialDeclarations = _declarations.Items.Where(item => !item.IsBuiltIn
+                                                         && item.Project.Equals(reference.Declaration.Project)
+                                                         && ((item.Context != null
+                                                         && item.Context.Start.Line <= reference.Selection.StartLine
+                                                         && item.Context.Stop.Line >= reference.Selection.EndLine)
+                                                         || (item.Selection.StartLine <= reference.Selection.StartLine
+                                                         && item.Selection.EndLine >= reference.Selection.EndLine)));
 
-            /*foreach (var reference in _view.Target.References)
-            {
-                Declaration target;
-                AcquireTarget(out target, new QualifiedSelection(reference.QualifiedModuleName,
-                    new Selection(reference.Context.Start.Line, reference.Context.Start.Column,
-                                  reference.Context.Stop.Line, reference.Context.Stop.Column)));
+                var currentStartLine = 0;
+                var currentEndLine = int.MaxValue;
+                var currentStartColumn = 0;
+                var currentEndColumn = int.MaxValue;
+
+                Declaration target = null;
+
+                foreach (var item in potentialDeclarations)
+                {
+                    if (currentStartLine <= item.Selection.StartLine && currentEndLine >= item.Selection.EndLine)
+                    {
+                        if (!(item.Selection.StartLine == reference.Selection.StartLine &&
+                              (item.Selection.StartColumn > reference.Selection.StartColumn ||
+                               currentStartColumn > item.Selection.StartColumn) ||
+                              item.Selection.EndLine == reference.Selection.EndLine &&
+                              (item.Selection.EndColumn < reference.Selection.EndColumn ||
+                               currentEndColumn < item.Selection.EndColumn)))
+                        {
+                            currentStartLine = item.Selection.StartLine;
+                            currentEndLine = item.Selection.EndLine;
+                            currentStartColumn = item.Selection.StartColumn;
+                            currentEndColumn = item.Selection.EndColumn;
+
+                            target = item;
+                        }
+                    }
+                }
+
+                if (target == null) { return null; }
 
                 values = _declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
+            }
 
-                if (values.Any())
-                {
-                    return values.FirstOrDefault();
-                }
-            }*/
-
-            return null;
+            return values.FirstOrDefault();
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
@@ -379,20 +403,17 @@ namespace Rubberduck.Refactorings.Rename
 
                 return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
             }
-            else
-            {
-                return GetReplacementLine(content, target.IdentifierName, newName);
-            }
+            return GetReplacementLine(content, target.IdentifierName, newName);
         }
 
         private static readonly DeclarationType[] ProcedureDeclarationTypes =
-            {
-                DeclarationType.Procedure,
-                DeclarationType.Function,
-                DeclarationType.PropertyGet,
-                DeclarationType.PropertyLet,
-                DeclarationType.PropertySet
-            };
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
 
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
         {
