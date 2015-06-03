@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Refactorings.ReorderParameters
+﻿namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     /// <summary>
     /// Contains data about a method parameter for the Reorder Parameters refactoring.

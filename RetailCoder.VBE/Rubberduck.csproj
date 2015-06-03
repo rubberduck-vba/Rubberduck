@@ -230,6 +230,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Refactorings\ReorderParameters\IReorderParametersDialog.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
