@@ -59,15 +59,23 @@ namespace Rubberduck.Refactorings.Rename
                                               || _view.Target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
+            if (values.Any())
+            {
+                return values.FirstOrDefault();
+            }
+
             foreach (var reference in _view.Target.References)
             {
+                var test = _declarations.Items.FirstOrDefault(item => item.IdentifierName == "Main");
+
                 var potentialDeclarations = _declarations.Items.Where(item => !item.IsBuiltIn
                                                          && item.Project.Equals(reference.Declaration.Project)
                                                          && ((item.Context != null
                                                          && item.Context.Start.Line <= reference.Selection.StartLine
                                                          && item.Context.Stop.Line >= reference.Selection.EndLine)
                                                          || (item.Selection.StartLine <= reference.Selection.StartLine
-                                                         && item.Selection.EndLine >= reference.Selection.EndLine)));
+                                                         && item.Selection.EndLine >= reference.Selection.EndLine))
+                                                         && item.QualifiedName.QualifiedModuleName.ComponentName == reference.QualifiedModuleName.ComponentName);
 
                 var currentStartLine = 0;
                 var currentEndLine = int.MaxValue;
@@ -75,17 +83,21 @@ namespace Rubberduck.Refactorings.Rename
                 var currentEndColumn = int.MaxValue;
 
                 Declaration target = null;
-
                 foreach (var item in potentialDeclarations)
                 {
+                    var startLine = item.Context == null ? item.Selection.StartLine : item.Context.Start.Line;
+                    var endLine = item.Context == null ? item.Selection.EndLine : item.Context.Stop.Column;
+                    var startColumn = item.Context == null ? item.Selection.StartColumn : item.Context.Start.Column;
+                    var endColumn = item.Context == null ? item.Selection.EndColumn : item.Context.Stop.Column;
+
                     if (currentStartLine <= item.Selection.StartLine && currentEndLine >= item.Selection.EndLine)
                     {
-                        if (!(item.Selection.StartLine == reference.Selection.StartLine &&
-                              (item.Selection.StartColumn > reference.Selection.StartColumn ||
-                               currentStartColumn > item.Selection.StartColumn) ||
-                              item.Selection.EndLine == reference.Selection.EndLine &&
-                              (item.Selection.EndColumn < reference.Selection.EndColumn ||
-                               currentEndColumn < item.Selection.EndColumn)))
+                        if (!(startLine == reference.Selection.StartLine &&
+                              (startColumn > reference.Selection.StartColumn ||
+                               currentStartColumn > startColumn) ||
+                              endLine == reference.Selection.EndLine &&
+                              (endColumn < reference.Selection.EndColumn ||
+                               currentEndColumn < endColumn)))
                         {
                             currentStartLine = item.Selection.StartLine;
                             currentEndLine = item.Selection.EndLine;
@@ -97,14 +109,19 @@ namespace Rubberduck.Refactorings.Rename
                     }
                 }
 
-                if (target == null) { return null; }
+                if (target == null) { continue; }
 
                 values = _declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
+
+                if (values.Any())
+                {
+                    return values.FirstOrDefault();
+                }
             }
 
-            return values.FirstOrDefault();
+            return null;
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
