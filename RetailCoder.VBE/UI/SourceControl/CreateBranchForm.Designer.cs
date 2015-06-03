@@ -83,7 +83,7 @@ namespace Rubberduck.UI.SourceControl
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.OkayButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(300, 150);
             this.MinimizeBox = false;

@@ -182,7 +182,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MethodParametersGrid);
             this.Controls.Add(this.RemoveButton);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
             this.Name = "RemoveParametersDialog";
             this.Text = "RemoveParametersDialog";
             this.flowLayoutPanel2.ResumeLayout(false);

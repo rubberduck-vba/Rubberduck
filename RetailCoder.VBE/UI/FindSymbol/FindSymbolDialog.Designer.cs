@@ -52,7 +52,7 @@ namespace Rubberduck.UI.FindSymbol
             this.ClientSize = new System.Drawing.Size(287, 24);
             this.Controls.Add(this.elementHost1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FindSymbolDialog";

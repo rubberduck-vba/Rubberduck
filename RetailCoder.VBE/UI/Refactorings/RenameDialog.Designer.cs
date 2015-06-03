@@ -164,7 +164,7 @@ namespace Rubberduck.UI.Refactorings
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RenameDialog";

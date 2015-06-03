@@ -834,6 +834,7 @@
     <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
     <None Include="Resources\arrow1.png" />
+    <None Include="Resources\Ducky.ico" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />

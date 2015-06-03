@@ -186,7 +186,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             this.Controls.Add(this.MoveDownButton);
             this.Controls.Add(this.MoveUpButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
