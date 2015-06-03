@@ -59,6 +59,11 @@ namespace Rubberduck.Refactorings.Rename
                                               || _view.Target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
+            if (values.Any())
+            {
+                return values.FirstOrDefault();
+            }
+
             foreach (var reference in _view.Target.References)
             {
                 var potentialDeclarations = _declarations.Items.Where(item => !item.IsBuiltIn
@@ -102,9 +107,14 @@ namespace Rubberduck.Refactorings.Rename
                 values = _declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
+
+                if (values.Any())
+                {
+                    return values.FirstOrDefault();
+                }
             }
 
-            return values.FirstOrDefault();
+            return null;
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
