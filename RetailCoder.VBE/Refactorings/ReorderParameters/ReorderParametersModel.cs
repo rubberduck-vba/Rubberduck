@@ -26,11 +26,17 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
-            TargetDeclaration = PromptIfTargetImplementsInterface();
+            AcquireTaget(selection);
 
             Parameters = new List<Parameter>();
             LoadParameters();
+        }
+
+        private void AcquireTaget(QualifiedSelection selection)
+        {
+            TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+            TargetDeclaration = PromptIfTargetImplementsInterface();
+            TargetDeclaration = GetGetter();
         }
 
         private void LoadParameters()
@@ -145,6 +151,21 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
                    && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        private Declaration GetGetter()
+        {
+            if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
+                TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
+            {
+                return TargetDeclaration;
+            }
+
+            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+                                          item.IdentifierName == TargetDeclaration.IdentifierName &&
+                                          item.DeclarationType == DeclarationType.PropertyGet);
+
+            return getter ?? TargetDeclaration;
         }
     }
 }
