@@ -184,12 +184,6 @@ namespace Rubberduck.UI.UnitTesting
             OnButtonClick(OnAddTestModuleButtonClick);
         }
 
-        private void TestExplorerWindowFormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            Hide();
-        }
-
         public void ClearProgress()
         {
             _completedCount = 0;

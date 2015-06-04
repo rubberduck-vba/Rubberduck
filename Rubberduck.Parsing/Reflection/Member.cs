@@ -76,24 +76,26 @@ namespace Rubberduck.Parsing.Reflection
             return GetAttribute(new TAttribute().Name);
         }
 
-        private static readonly string[] _keywords = 
-            new[] { "Dim ", "Private ", "Public ", "Friend ", 
-                    "Function ", "Sub ", "Property ", 
-                    "Static ", "Const ", "Global ", "Enum ", "Type ", "Declare " };
+        private static readonly string[] Keywords = 
+            { 
+                "Dim ", "Private ", "Public ", "Friend ", 
+                "Function ", "Sub ", "Property ", 
+                "Static ", "Const ", "Global ", "Enum ", "Type ", "Declare " 
+            };
 
         public static bool TryParse(string[] body, QualifiedModuleName qualifiedModuleName, out Member result)
         {
-            var signature = body.FirstOrDefault(line => _keywords.Any(line.StartsWith));
+            var signature = body.FirstOrDefault(line => Keywords.Any(line.Trim().StartsWith));
             if (signature == null)
             {
                 result = null;
                 return false;
             }
 
-            signature = signature.Replace("\r", string.Empty);
-            body = body.Select(line => line.Replace("\r", string.Empty)).ToArray();
+            signature = signature.Trim().Replace("\r", string.Empty);
+            body = body.Select(line => line.Trim().Replace("\r", string.Empty)).ToArray();
 
-            var withoutKeyword = signature.Substring((_keywords.First(keyword => signature.StartsWith(keyword))).Length);
+            var withoutKeyword = signature.Substring((Keywords.First(keyword => signature.StartsWith(keyword))).Length);
             var name = withoutKeyword.Split(' ')[1]
                                      .Split('(')[0];
 
@@ -102,7 +104,7 @@ namespace Rubberduck.Parsing.Reflection
 
             var signatureLineIndex = body.ToList().IndexOf(signature);
             var attributes = MemberAttribute.GetAttributes(body.Take(signatureLineIndex)
-                                                               .Where(line => line.StartsWith("'@")));
+                                                               .Where(line => line.Trim().StartsWith("'@")));
 
             result = new Member(type, qualifiedModuleName.QualifyMemberName(name), signature, body, attributes);
             return true;
