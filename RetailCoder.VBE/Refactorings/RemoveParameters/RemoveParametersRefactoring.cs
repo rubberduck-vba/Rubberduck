@@ -1,47 +1,38 @@
-﻿using System;
+﻿using Microsoft.Vbe.Interop;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Antlr4.Runtime.Misc;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
-using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactorings
+namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParameterRefactoring : IRefactoring
+    class RemoveParametersRefactoring : IRefactoring
     {
-        private readonly VBProjectParseResult _parseResult;
-        private readonly Declarations _declarations;
-        private List<Parameter> _parameters;
-        public Declaration TargetDeclaration { get; set; }
+        private readonly IRefactoringPresenterFactory<RemoveParametersPresenter> _factory;
+        private RemoveParametersModel _model;
 
-        public RemoveParameterRefactoring(VBProjectParseResult parseResult, Declaration targetDeclaration, List<Parameter> parameters)
+        public RemoveParametersRefactoring(IRefactoringPresenterFactory<RemoveParametersPresenter> factory)
         {
-            if (!ValidDeclarationTypes.Contains(targetDeclaration.DeclarationType))
-            {
-                throw new ArgumentException("Invalid declaration type.");
-            }
-
-            _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
-            _parameters = parameters;
-            TargetDeclaration = targetDeclaration;
+            _factory = factory;
         }
 
         public void Refactor()
         {
-            if (!_parameters.Where(item => item.IsRemoved).Any())
+            var presenter = _factory.Create();
+            if (presenter == null)
             {
                 return;
             }
 
-            TargetDeclaration = PromptIfTargetImplementsInterface();
-            if (TargetDeclaration == null) { return; }
+            _model = presenter.Show();
+            if (_model == null || !_model.Parameters.Any(item => item.IsRemoved))
+            {
+                return;
+            }
 
             RemoveParameters();
         }
@@ -54,44 +45,20 @@ namespace Rubberduck.Refactorings
 
         public void Refactor(Declaration target)
         {
-            Refactor(target.QualifiedSelection);
+            if (!RemoveParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
+            {
+                throw new ArgumentException("Invalid declaration type");
+            }
+
+            target.QualifiedSelection.Select();
+            Refactor();
         }
-
-        private Declaration PromptIfTargetImplementsInterface()
-        {
-            var declaration = TargetDeclaration;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
-            {
-                return declaration;
-            }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                return null;
-            }
-
-            var methodParams = FindTargets(interfaceMember);
-
-            for (var i = 0; i < _parameters.Count; i++)
-            {
-                _parameters[i] = new Parameter(methodParams.ElementAt(i), _parameters[i].Index, _parameters[i].IsRemoved);
-            }
-
-            return interfaceMember;
-        }
-
-        public Declaration AcquireTarget(QualifiedSelection selection) { return null; }
 
         private void RemoveParameters()
         {
-            if (TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
+            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
 
-            AdjustReferences(TargetDeclaration.References, TargetDeclaration);
+            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
         }
 
@@ -101,28 +68,17 @@ namespace Rubberduck.Refactorings
             {
                 var proc = (dynamic)reference.Context.Parent;
                 var module = reference.QualifiedModuleName.Component.CodeModule;
+                VBAParser.ArgsCallContext paramList;
 
                 // This is to prevent throws when this statement fails:
                 // (VBAParser.ArgsCallContext)proc.argsCall();
-                try
-                {
-                    var check = (VBAParser.ArgsCallContext)proc.argsCall();
-                }
-                catch
-                {
-                    continue;
-                }
+                try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
+                catch { continue; }
 
-                var paramList = (VBAParser.ArgsCallContext)proc.argsCall();
-
-                if (paramList == null)
-                {
-                    continue;
-                }
-
+                if (paramList == null) { continue; }
                 var numParams = paramList.argCall().Count;  // handles optional variables
 
-                foreach (var param in _parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
+                foreach (var param in _model.Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
                 {
                     RemoveCallParameter(param, paramList, module);
                 }
@@ -132,7 +88,7 @@ namespace Rubberduck.Refactorings
         private void RemoveCallParameter(Declaration paramToRemove, VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = _parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
+            var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
 
             if (paramIndex >= paramNames.Count) { return; }
 
@@ -167,13 +123,13 @@ namespace Rubberduck.Refactorings
                             }
                         }
                     }
-                } while (paramIndex >= _parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
+                } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
             }
         }
 
         private string GetOldSignature(Declaration target)
         {
-            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
+            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
             if (targetModule == null)
             {
                 return null;
@@ -264,40 +220,40 @@ namespace Rubberduck.Refactorings
 
         private void AdjustSignatures()
         {
-            var proc = (dynamic)TargetDeclaration.Context;
+            var proc = (dynamic)_model.TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            
+            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = GetLetterOrSetter(TargetDeclaration, DeclarationType.PropertySet);
+                var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
                 }
 
-                var letter = GetLetterOrSetter(TargetDeclaration, DeclarationType.PropertyLet);
+                var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
                 }
             }
-                
-            RemoveSignatureParameters(TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == TargetDeclaration.ComponentName))
+            RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
+
+            foreach (var withEvents in _model.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
             {
-                foreach (var reference in _declarations.FindEventProcedures(withEvents))
+                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
                     AdjustReferences(reference.References, reference);
                     AdjustSignatures(reference);
                 }
             }
 
-            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.Project.Equals(TargetDeclaration.Project) &&
-                                                               item.IdentifierName == TargetDeclaration.ComponentName + "_" + TargetDeclaration.IdentifierName);
+            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
+                                                        .Where(item => item.Project.Equals(_model.TargetDeclaration.Project) &&
+                                                               item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
                 AdjustReferences(interfaceImplentation.References, interfaceImplentation);
@@ -307,7 +263,7 @@ namespace Rubberduck.Refactorings
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _declarations.Items.FirstOrDefault(item => item.Scope == declaration.Scope &&
+            return _model.Declarations.Items.FirstOrDefault(item => item.Scope == declaration.Scope &&
                               item.IdentifierName == declaration.IdentifierName &&
                               item.DeclarationType == declarationType);
         }
@@ -335,14 +291,14 @@ namespace Rubberduck.Refactorings
         {
             var paramNames = paramList.arg();
 
-            var paramsRemoved = _parameters.Where(item => item.IsRemoved).ToList();
+            var paramsRemoved = _model.Parameters.Where(item => item.IsRemoved).ToList();
             var signature = GetOldSignature(target);
 
             foreach (var param in paramsRemoved)
             {
                 try
                 {
-                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
+                    signature = ReplaceCommas(signature.Replace(paramNames.ElementAt(param.Index).GetText(), ""), _model.Parameters.FindIndex(item => item == param) - paramsRemoved.FindIndex(item => item == param));
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -352,47 +308,6 @@ namespace Rubberduck.Refactorings
 
             module.ReplaceLine(paramList.Start.Line, signature);
             module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
-        }
-
-        private IEnumerable<Declaration> FindTargets(Declaration method)
-        {
-            return _declarations.Items
-                              .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == method.ComponentName
-                                       && d.Project.Equals(method.Project)
-                                       && method.Context.Start.Line <= d.Selection.StartLine
-                                       && method.Context.Stop.Line >= d.Selection.EndLine
-                                       && !(method.Context.Start.Column > d.Selection.StartColumn && method.Context.Start.Line == d.Selection.StartLine)
-                                       && !(method.Context.Stop.Column < d.Selection.EndColumn && method.Context.Stop.Line == d.Selection.EndLine))
-                              .OrderBy(item => item.Selection.StartLine)
-                              .ThenBy(item => item.Selection.StartColumn);
-        }
-
-        /// <summary>
-        /// Declaration types that contain parameters that that can be removed.
-        /// </summary>
-        private static readonly DeclarationType[] ValidDeclarationTypes =
-            {
-                 DeclarationType.Event,
-                 DeclarationType.Function,
-                 DeclarationType.Procedure,
-                 DeclarationType.PropertyGet,
-                 DeclarationType.PropertyLet,
-                 DeclarationType.PropertySet
-            };
-
-        private void GetGetter(ref Declaration method)
-        {
-            var nonRefMethod = method;
-
-            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == nonRefMethod.Scope &&
-                                          item.IdentifierName == nonRefMethod.IdentifierName &&
-                                          item.DeclarationType == DeclarationType.PropertyGet);
-
-            if (getter != null)
-            {
-                method = getter;
-            }
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {

@@ -3,23 +3,30 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
-namespace Rubberduck.Refactorings.ReorderParameters
+namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class ReorderParametersPresenter
+    public class RemoveParametersPresenter
     {
-        private readonly IReorderParametersView _view;
-        private readonly ReorderParametersModel _model;
+        private readonly IRemoveParametersView _view;
+        private readonly RemoveParametersModel _model;
 
-        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model)
+        public RemoveParametersPresenter(IRemoveParametersView view, RemoveParametersModel model)
         {
             _view = view;
             _model = model;
         }
 
-        public ReorderParametersModel Show()
+        public RemoveParametersModel Show()
         {
             _model.TargetDeclaration = PromptIfTargetImplementsInterface();
             _model.LoadParameters();
+
+            if (_model.Parameters.Count == 0)
+            {
+                var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _model.TargetDeclaration.IdentifierName);
+                MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return null;
+            }
 
             _view.Parameters = _model.Parameters;
             _view.InitializeParameterGrid();
