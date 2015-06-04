@@ -2032,6 +2032,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attributes File.
+        /// </summary>
+        internal static string SourceControl_AttributesFile {
+            get {
+                return ResourceManager.GetString("SourceControl_AttributesFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string SourceControl_CancelGlobalSettings {
+            get {
+                return ResourceManager.GetString("SourceControl_CancelGlobalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         internal static string SourceControl_CreateNewRepo {
@@ -2041,11 +2059,74 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Repository Location.
+        /// </summary>
+        internal static string SourceControl_DefaultRepoLocationLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_DefaultRepoLocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Address.
+        /// </summary>
+        internal static string SourceControl_EmailAddressLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_EmailAddressLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global Settings.
+        /// </summary>
+        internal static string SourceControl_GlobalSettings {
+            get {
+                return ResourceManager.GetString("SourceControl_GlobalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore File.
+        /// </summary>
+        internal static string SourceControl_IgnoreFile {
+            get {
+                return ResourceManager.GetString("SourceControl_IgnoreFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         internal static string SourceControl_OpenWorkingDirectory {
             get {
                 return ResourceManager.GetString("SourceControl_OpenWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository Settings.
+        /// </summary>
+        internal static string SourceControl_RespositorySettings {
+            get {
+                return ResourceManager.GetString("SourceControl_RespositorySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string SourceControl_UpdateGlobalSettings {
+            get {
+                return ResourceManager.GetString("SourceControl_UpdateGlobalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Name.
+        /// </summary>
+        internal static string SourceControl_UserNameLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_UserNameLabel", resourceCulture);
             }
         }
         

@@ -33,18 +33,18 @@ namespace Rubberduck.UI.SourceControl
         {
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.RepositorySettingsBox = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.AttributesFileButton = new System.Windows.Forms.Button();
+            this.IgnoreFileButton = new System.Windows.Forms.Button();
             this.GlobalSettingsBox = new System.Windows.Forms.GroupBox();
             this.CancelGlobalSettingsButton = new System.Windows.Forms.Button();
             this.UpdateGlobalSettingsButton = new System.Windows.Forms.Button();
             this.BrowseDefaultRepositoryLocationButton = new System.Windows.Forms.Button();
-            this.DefaultRepositoryLocation = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.EmailAddress = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.UserName = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.DefaultRepositoryLocationTextBox = new System.Windows.Forms.TextBox();
+            this.DefaultRepositoryLocationLabel = new System.Windows.Forms.Label();
+            this.EmailAddressTextBox = new System.Windows.Forms.TextBox();
+            this.EmailAddressLabel = new System.Windows.Forms.Label();
+            this.UserNameTextBox = new System.Windows.Forms.TextBox();
+            this.UserNameLabel = new System.Windows.Forms.Label();
             this.SettingsPanel.SuspendLayout();
             this.RepositorySettingsBox.SuspendLayout();
             this.GlobalSettingsBox.SuspendLayout();
@@ -57,42 +57,46 @@ namespace Rubberduck.UI.SourceControl
             this.SettingsPanel.Controls.Add(this.GlobalSettingsBox);
             this.SettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPanel.Location = new System.Drawing.Point(0, 0);
+            this.SettingsPanel.Margin = new System.Windows.Forms.Padding(4);
             this.SettingsPanel.Name = "SettingsPanel";
-            this.SettingsPanel.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsPanel.Size = new System.Drawing.Size(238, 495);
+            this.SettingsPanel.Padding = new System.Windows.Forms.Padding(4);
+            this.SettingsPanel.Size = new System.Drawing.Size(317, 609);
             this.SettingsPanel.TabIndex = 1;
             // 
             // RepositorySettingsBox
             // 
             this.RepositorySettingsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RepositorySettingsBox.Controls.Add(this.button2);
-            this.RepositorySettingsBox.Controls.Add(this.button1);
-            this.RepositorySettingsBox.Location = new System.Drawing.Point(6, 212);
+            this.RepositorySettingsBox.Controls.Add(this.AttributesFileButton);
+            this.RepositorySettingsBox.Controls.Add(this.IgnoreFileButton);
+            this.RepositorySettingsBox.Location = new System.Drawing.Point(8, 261);
+            this.RepositorySettingsBox.Margin = new System.Windows.Forms.Padding(4);
             this.RepositorySettingsBox.Name = "RepositorySettingsBox";
-            this.RepositorySettingsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.RepositorySettingsBox.Size = new System.Drawing.Size(225, 71);
+            this.RepositorySettingsBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.RepositorySettingsBox.Size = new System.Drawing.Size(300, 87);
             this.RepositorySettingsBox.TabIndex = 3;
             this.RepositorySettingsBox.TabStop = false;
             this.RepositorySettingsBox.Text = "Repository Settings";
             // 
-            // MoveDownButton
+            // AttributesFileButton
             // 
-            this.button2.Location = new System.Drawing.Point(105, 31);
-            this.button2.Name = "MoveDownButton";
-            this.button2.Size = new System.Drawing.Size(92, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Attributes File";
-            this.button2.UseVisualStyleBackColor = true;
+            this.AttributesFileButton.Location = new System.Drawing.Point(140, 38);
+            this.AttributesFileButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AttributesFileButton.Name = "AttributesFileButton";
+            this.AttributesFileButton.Size = new System.Drawing.Size(123, 28);
+            this.AttributesFileButton.TabIndex = 1;
+            this.AttributesFileButton.Text = "Attributes File";
+            this.AttributesFileButton.UseVisualStyleBackColor = true;
             // 
-            // MoveUpButton
+            // IgnoreFileButton
             // 
-            this.button1.Location = new System.Drawing.Point(7, 31);
-            this.button1.Name = "MoveUpButton";
-            this.button1.Size = new System.Drawing.Size(92, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Ignore File";
-            this.button1.UseVisualStyleBackColor = true;
+            this.IgnoreFileButton.Location = new System.Drawing.Point(9, 38);
+            this.IgnoreFileButton.Margin = new System.Windows.Forms.Padding(4);
+            this.IgnoreFileButton.Name = "IgnoreFileButton";
+            this.IgnoreFileButton.Size = new System.Drawing.Size(123, 28);
+            this.IgnoreFileButton.TabIndex = 0;
+            this.IgnoreFileButton.Text = "Ignore File";
+            this.IgnoreFileButton.UseVisualStyleBackColor = true;
             // 
             // GlobalSettingsBox
             // 
@@ -101,34 +105,37 @@ namespace Rubberduck.UI.SourceControl
             this.GlobalSettingsBox.Controls.Add(this.CancelGlobalSettingsButton);
             this.GlobalSettingsBox.Controls.Add(this.UpdateGlobalSettingsButton);
             this.GlobalSettingsBox.Controls.Add(this.BrowseDefaultRepositoryLocationButton);
-            this.GlobalSettingsBox.Controls.Add(this.DefaultRepositoryLocation);
-            this.GlobalSettingsBox.Controls.Add(this.label7);
-            this.GlobalSettingsBox.Controls.Add(this.EmailAddress);
-            this.GlobalSettingsBox.Controls.Add(this.label6);
-            this.GlobalSettingsBox.Controls.Add(this.UserName);
-            this.GlobalSettingsBox.Controls.Add(this.label5);
-            this.GlobalSettingsBox.Location = new System.Drawing.Point(6, 6);
+            this.GlobalSettingsBox.Controls.Add(this.DefaultRepositoryLocationTextBox);
+            this.GlobalSettingsBox.Controls.Add(this.DefaultRepositoryLocationLabel);
+            this.GlobalSettingsBox.Controls.Add(this.EmailAddressTextBox);
+            this.GlobalSettingsBox.Controls.Add(this.EmailAddressLabel);
+            this.GlobalSettingsBox.Controls.Add(this.UserNameTextBox);
+            this.GlobalSettingsBox.Controls.Add(this.UserNameLabel);
+            this.GlobalSettingsBox.Location = new System.Drawing.Point(8, 7);
+            this.GlobalSettingsBox.Margin = new System.Windows.Forms.Padding(4);
             this.GlobalSettingsBox.Name = "GlobalSettingsBox";
-            this.GlobalSettingsBox.Padding = new System.Windows.Forms.Padding(6);
-            this.GlobalSettingsBox.Size = new System.Drawing.Size(225, 199);
+            this.GlobalSettingsBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.GlobalSettingsBox.Size = new System.Drawing.Size(300, 245);
             this.GlobalSettingsBox.TabIndex = 2;
             this.GlobalSettingsBox.TabStop = false;
             this.GlobalSettingsBox.Text = "Global Settings";
             // 
             // CancelGlobalSettingsButton
             // 
-            this.CancelGlobalSettingsButton.Location = new System.Drawing.Point(105, 168);
+            this.CancelGlobalSettingsButton.Location = new System.Drawing.Point(140, 207);
+            this.CancelGlobalSettingsButton.Margin = new System.Windows.Forms.Padding(4);
             this.CancelGlobalSettingsButton.Name = "CancelGlobalSettingsButton";
-            this.CancelGlobalSettingsButton.Size = new System.Drawing.Size(92, 23);
+            this.CancelGlobalSettingsButton.Size = new System.Drawing.Size(123, 28);
             this.CancelGlobalSettingsButton.TabIndex = 8;
             this.CancelGlobalSettingsButton.Text = "Cancel";
             this.CancelGlobalSettingsButton.UseVisualStyleBackColor = true;
             // 
             // UpdateGlobalSettingsButton
             // 
-            this.UpdateGlobalSettingsButton.Location = new System.Drawing.Point(7, 168);
+            this.UpdateGlobalSettingsButton.Location = new System.Drawing.Point(9, 207);
+            this.UpdateGlobalSettingsButton.Margin = new System.Windows.Forms.Padding(4);
             this.UpdateGlobalSettingsButton.Name = "UpdateGlobalSettingsButton";
-            this.UpdateGlobalSettingsButton.Size = new System.Drawing.Size(92, 23);
+            this.UpdateGlobalSettingsButton.Size = new System.Drawing.Size(123, 28);
             this.UpdateGlobalSettingsButton.TabIndex = 7;
             this.UpdateGlobalSettingsButton.Text = "Update";
             this.UpdateGlobalSettingsButton.UseVisualStyleBackColor = true;
@@ -136,75 +143,83 @@ namespace Rubberduck.UI.SourceControl
             // BrowseDefaultRepositoryLocationButton
             // 
             this.BrowseDefaultRepositoryLocationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseDefaultRepositoryLocationButton.Location = new System.Drawing.Point(181, 120);
+            this.BrowseDefaultRepositoryLocationButton.Location = new System.Drawing.Point(241, 148);
+            this.BrowseDefaultRepositoryLocationButton.Margin = new System.Windows.Forms.Padding(4);
             this.BrowseDefaultRepositoryLocationButton.Name = "BrowseDefaultRepositoryLocationButton";
-            this.BrowseDefaultRepositoryLocationButton.Size = new System.Drawing.Size(33, 20);
+            this.BrowseDefaultRepositoryLocationButton.Size = new System.Drawing.Size(44, 25);
             this.BrowseDefaultRepositoryLocationButton.TabIndex = 6;
             this.BrowseDefaultRepositoryLocationButton.Text = "...";
             this.BrowseDefaultRepositoryLocationButton.UseVisualStyleBackColor = true;
             // 
-            // DefaultRepositoryLocation
+            // DefaultRepositoryLocationTextBox
             // 
-            this.DefaultRepositoryLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.DefaultRepositoryLocationTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DefaultRepositoryLocation.Location = new System.Drawing.Point(12, 120);
-            this.DefaultRepositoryLocation.Name = "DefaultRepositoryLocation";
-            this.DefaultRepositoryLocation.Size = new System.Drawing.Size(170, 20);
-            this.DefaultRepositoryLocation.TabIndex = 5;
+            this.DefaultRepositoryLocationTextBox.Location = new System.Drawing.Point(16, 148);
+            this.DefaultRepositoryLocationTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.DefaultRepositoryLocationTextBox.Name = "DefaultRepositoryLocationTextBox";
+            this.DefaultRepositoryLocationTextBox.Size = new System.Drawing.Size(225, 22);
+            this.DefaultRepositoryLocationTextBox.TabIndex = 5;
             // 
-            // label7
+            // DefaultRepositoryLocationLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 103);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(138, 13);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Default Repository Location";
+            this.DefaultRepositoryLocationLabel.AutoSize = true;
+            this.DefaultRepositoryLocationLabel.Location = new System.Drawing.Point(12, 127);
+            this.DefaultRepositoryLocationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DefaultRepositoryLocationLabel.Name = "DefaultRepositoryLocationLabel";
+            this.DefaultRepositoryLocationLabel.Size = new System.Drawing.Size(183, 17);
+            this.DefaultRepositoryLocationLabel.TabIndex = 4;
+            this.DefaultRepositoryLocationLabel.Text = "Default Repository Location";
             // 
-            // EmailAddress
+            // EmailAddressTextBox
             // 
-            this.EmailAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.EmailAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.EmailAddress.Location = new System.Drawing.Point(12, 80);
-            this.EmailAddress.Name = "EmailAddress";
-            this.EmailAddress.Size = new System.Drawing.Size(203, 20);
-            this.EmailAddress.TabIndex = 3;
+            this.EmailAddressTextBox.Location = new System.Drawing.Point(16, 98);
+            this.EmailAddressTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EmailAddressTextBox.Name = "EmailAddressTextBox";
+            this.EmailAddressTextBox.Size = new System.Drawing.Size(269, 22);
+            this.EmailAddressTextBox.TabIndex = 3;
             // 
-            // label6
+            // EmailAddressLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 63);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(73, 13);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Email Address";
+            this.EmailAddressLabel.AutoSize = true;
+            this.EmailAddressLabel.Location = new System.Drawing.Point(12, 78);
+            this.EmailAddressLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.EmailAddressLabel.Name = "EmailAddressLabel";
+            this.EmailAddressLabel.Size = new System.Drawing.Size(98, 17);
+            this.EmailAddressLabel.TabIndex = 2;
+            this.EmailAddressLabel.Text = "Email Address";
             // 
-            // UserName
+            // UserNameTextBox
             // 
-            this.UserName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.UserNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.UserName.Location = new System.Drawing.Point(13, 40);
-            this.UserName.Name = "UserName";
-            this.UserName.Size = new System.Drawing.Size(203, 20);
-            this.UserName.TabIndex = 1;
+            this.UserNameTextBox.Location = new System.Drawing.Point(17, 49);
+            this.UserNameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.UserNameTextBox.Name = "UserNameTextBox";
+            this.UserNameTextBox.Size = new System.Drawing.Size(269, 22);
+            this.UserNameTextBox.TabIndex = 1;
             // 
-            // label5
+            // UserNameLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 23);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "User Name";
+            this.UserNameLabel.AutoSize = true;
+            this.UserNameLabel.Location = new System.Drawing.Point(13, 28);
+            this.UserNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UserNameLabel.Name = "UserNameLabel";
+            this.UserNameLabel.Size = new System.Drawing.Size(79, 17);
+            this.UserNameLabel.TabIndex = 0;
+            this.UserNameLabel.Text = "User Name";
             // 
             // SettingsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.Controls.Add(this.SettingsPanel);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsControl";
-            this.Size = new System.Drawing.Size(238, 495);
+            this.Size = new System.Drawing.Size(317, 609);
             this.SettingsPanel.ResumeLayout(false);
             this.RepositorySettingsBox.ResumeLayout(false);
             this.GlobalSettingsBox.ResumeLayout(false);
@@ -217,17 +232,17 @@ namespace Rubberduck.UI.SourceControl
 
         private Panel SettingsPanel;
         private GroupBox RepositorySettingsBox;
-        private Button button2;
-        private Button button1;
+        private Button AttributesFileButton;
+        private Button IgnoreFileButton;
         private GroupBox GlobalSettingsBox;
         private Button CancelGlobalSettingsButton;
         private Button UpdateGlobalSettingsButton;
         private Button BrowseDefaultRepositoryLocationButton;
-        private TextBox DefaultRepositoryLocation;
-        private Label label7;
-        private TextBox EmailAddress;
-        private Label label6;
-        private TextBox UserName;
-        private Label label5;
+        private TextBox DefaultRepositoryLocationTextBox;
+        private Label DefaultRepositoryLocationLabel;
+        private TextBox EmailAddressTextBox;
+        private Label EmailAddressLabel;
+        private TextBox UserNameTextBox;
+        private Label UserNameLabel;
     }
 }

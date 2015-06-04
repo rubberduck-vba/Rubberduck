@@ -903,4 +903,31 @@ Do you want to continue?</value>
   <data name="About_Stargazers" xml:space="preserve">
     <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
+  <data name="SourceControl_AttributesFile" xml:space="preserve">
+    <value>z Attributes File</value>
+  </data>
+  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
+    <value>z Cancel</value>
+  </data>
+  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
+    <value>z Default Repository Location</value>
+  </data>
+  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
+    <value>z Email Address</value>
+  </data>
+  <data name="SourceControl_GlobalSettings" xml:space="preserve">
+    <value>z Global Settings</value>
+  </data>
+  <data name="SourceControl_IgnoreFile" xml:space="preserve">
+    <value>z Ignore File</value>
+  </data>
+  <data name="SourceControl_RespositorySettings" xml:space="preserve">
+    <value>z Repository Settings</value>
+  </data>
+  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
+    <value>z Update</value>
+  </data>
+  <data name="SourceControl_UserNameLabel" xml:space="preserve">
+    <value>z User Name</value>
+  </data>
 </root>
