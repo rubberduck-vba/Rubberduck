@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing
             return HasAttribute(code, new TAttribute().Name);
         }
 
-        public static bool HasAttribute(this CodeModule code, string name)
+        private static bool HasAttribute(this CodeModule code, string name)
         {
             if (code.CountOfDeclarationLines == 0)
             {
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing
             return GetMembers(component.CodeModule, procedureKind);
         }
 
-        public static IEnumerable<Member> GetMembers(this CodeModule module, vbext_ProcKind? procedureKind = null)
+        private static IEnumerable<Member> GetMembers(this CodeModule module, vbext_ProcKind? procedureKind = null)
         {
             var currentLine = module.CountOfDeclarationLines + 1;
             while (currentLine < module.CountOfLines)
