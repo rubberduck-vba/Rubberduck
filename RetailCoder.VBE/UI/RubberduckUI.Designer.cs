@@ -2113,6 +2113,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter Branch Name.
+        /// </summary>
+        internal static string SourceControl_CreateNewBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         internal static string SourceControl_CreateNewRepo {

@@ -933,6 +933,9 @@ Do you want to continue?</value>
   <data name="SourceControl_CommitSync" xml:space="preserve">
     <value>z Commit and Sync</value>
   </data>
+  <data name="SourceControl_CreateNewBranch" xml:space="preserve">
+    <value>z Enter Branch Name</value>
+  </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>z Branch:</value>
   </data>
