@@ -2068,11 +2068,74 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit.
+        /// </summary>
+        internal static string SourceControl_Commit {
+            get {
+                return ResourceManager.GetString("SourceControl_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go.
+        /// </summary>
+        internal static string SourceControl_CommitButtonLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit message:.
+        /// </summary>
+        internal static string SourceControl_CommitMessageLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitMessageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and Push.
+        /// </summary>
+        internal static string SourceControl_CommitPush {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitPush", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and Sync.
+        /// </summary>
+        internal static string SourceControl_CommitSync {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter Branch Name.
+        /// </summary>
+        internal static string SourceControl_CreateNewBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_CreateNewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         internal static string SourceControl_CreateNewRepo {
             get {
                 return ResourceManager.GetString("SourceControl_CreateNewRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Branch:.
+        /// </summary>
+        internal static string SourceControl_CurrentBranchLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CurrentBranchLabel", resourceCulture);
             }
         }
         
@@ -2091,6 +2154,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_EmailAddressLabel {
             get {
                 return ResourceManager.GetString("SourceControl_EmailAddressLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excluded changes.
+        /// </summary>
+        internal static string SourceControl_ExcludedChanges {
+            get {
+                return ResourceManager.GetString("SourceControl_ExcludedChanges", resourceCulture);
             }
         }
         
@@ -2122,6 +2194,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Included changes.
+        /// </summary>
+        internal static string SourceControl_IncludedChanges {
+            get {
+                return ResourceManager.GetString("SourceControl_IncludedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incoming commits.
         /// </summary>
         internal static string SourceControl_IncomingCommits {
@@ -2136,6 +2217,24 @@ namespace Rubberduck.UI {
         internal static string SourceControl_InitRepoButtonToolTip {
             get {
                 return ResourceManager.GetString("SourceControl_InitRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge.
+        /// </summary>
+        internal static string SourceControl_MergeBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_MergeBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Branch.
+        /// </summary>
+        internal static string SourceControl_NewBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_NewBranch", resourceCulture);
             }
         }
         
@@ -2163,6 +2262,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_OutgoingCommits {
             get {
                 return ResourceManager.GetString("SourceControl_OutgoingCommits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published Branches.
+        /// </summary>
+        internal static string SourceControl_PublishedBranchesLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishedBranchesLabel", resourceCulture);
             }
         }
         
@@ -2221,11 +2329,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unpublished Branches.
+        /// </summary>
+        internal static string SourceControl_UnpublishedBranchesLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_UnpublishedBranchesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unsynced commits.
         /// </summary>
         internal static string SourceControl_UnsyncedCommits {
             get {
                 return ResourceManager.GetString("SourceControl_UnsyncedCommits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untracked files.
+        /// </summary>
+        internal static string SourceControl_UntrackedFiles {
+            get {
+                return ResourceManager.GetString("SourceControl_UntrackedFiles", resourceCulture);
             }
         }
         

@@ -8,6 +8,10 @@ namespace Rubberduck.UI.SourceControl
         public CreateBranchForm()
         {
             InitializeComponent();
+
+            Text = RubberduckUI.SourceControl_CreateNewBranch;
+            OkayButton.Text = RubberduckUI.OK_AllCaps;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
         public string UserInputText

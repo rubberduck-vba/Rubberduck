@@ -951,14 +951,50 @@ Do you want to continue?</value>
   <data name="SourceControl_Branches" xml:space="preserve">
     <value>Branches</value>
   </data>
+  <data name="SourceControl_Commit" xml:space="preserve">
+    <value>Commit</value>
+  </data>
+  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
+    <value>Commit message:</value>
+  </data>
+  <data name="SourceControl_CommitPush" xml:space="preserve">
+    <value>Commit and Push</value>
+  </data>
+  <data name="SourceControl_CommitSync" xml:space="preserve">
+    <value>Commit and Sync</value>
+  </data>
+  <data name="SourceControl_CreateNewBranch" xml:space="preserve">
+    <value>Enter Branch Name</value>
+  </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>Branch:</value>
+  </data>
+  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
+    <value>Excluded changes</value>
+  </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
     <value>Fetch</value>
+  </data>
+  <data name="SourceControl_IncludedChanges" xml:space="preserve">
+    <value>Included changes</value>
   </data>
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
     <value>Incoming commits</value>
   </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>New Branch</value>
+  </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>Outgoing commits</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>Published Branches</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>Pull</value>
@@ -972,7 +1008,13 @@ Do you want to continue?</value>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>Sync</value>
   </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>Unpublished Branches</value>
+  </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>Unsynced commits</value>
+  </data>
+  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
+    <value>Untracked files</value>
   </data>
 </root>

@@ -904,11 +904,35 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>z Changes</value>
   </data>
+  <data name="SourceControl_Commit" xml:space="preserve">
+    <value>z Commit</value>
+  </data>
+  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
+    <value>z Go</value>
+  </data>
+  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
+    <value>z Commit message:</value>
+  </data>
+  <data name="SourceControl_CommitPush" xml:space="preserve">
+    <value>z Commit and Push</value>
+  </data>
+  <data name="SourceControl_CommitSync" xml:space="preserve">
+    <value>z Commit and Sync</value>
+  </data>
+  <data name="SourceControl_CreateNewBranch" xml:space="preserve">
+    <value>z Enter Branch Name</value>
+  </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>z Branch:</value>
+  </data>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
     <value>z Default Repository Location</value>
   </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
     <value>z Email Address</value>
+  </data>
+  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
+    <value>z Excluded changes</value>
   </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
     <value>z Fetch</value>
@@ -919,17 +943,29 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>z Ignore File</value>
   </data>
+  <data name="SourceControl_IncludedChanges" xml:space="preserve">
+    <value>z Included changes</value>
+  </data>
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
     <value>z Incoming commits</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>z Init New Repo from this Project</value>
   </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>z Merge</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>z New Branch</value>
+  </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
     <value>z Open working folder</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>z Outgoing commits</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>z Published Branches</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>z Pull</value>
@@ -949,8 +985,14 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>z Sync</value>
   </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>z Unpublished Branches</value>
+  </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>z Unsynced commits</value>
+  </data>
+  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
+    <value>z Untracked files</value>
   </data>
   <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
     <value>z Update</value>
