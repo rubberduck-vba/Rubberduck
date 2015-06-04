@@ -2077,6 +2077,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branch:.
+        /// </summary>
+        internal static string SourceControl_CurrentBranchLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CurrentBranchLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Repository Location.
         /// </summary>
         internal static string SourceControl_DefaultRepoLocationLabel {
@@ -2140,6 +2149,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge.
+        /// </summary>
+        internal static string SourceControl_MergeBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_MergeBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Branch.
+        /// </summary>
+        internal static string SourceControl_NewBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_NewBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         internal static string SourceControl_OpenWorkingDirectory {
@@ -2163,6 +2190,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_OutgoingCommits {
             get {
                 return ResourceManager.GetString("SourceControl_OutgoingCommits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published Branches.
+        /// </summary>
+        internal static string SourceControl_PublishedBranchesLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_PublishedBranchesLabel", resourceCulture);
             }
         }
         
@@ -2217,6 +2253,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_SyncCommitsLabel {
             get {
                 return ResourceManager.GetString("SourceControl_SyncCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpublished Branches.
+        /// </summary>
+        internal static string SourceControl_UnpublishedBranchesLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_UnpublishedBranchesLabel", resourceCulture);
             }
         }
         

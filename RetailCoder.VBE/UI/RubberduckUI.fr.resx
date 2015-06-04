@@ -918,6 +918,9 @@ Do you want to continue?</value>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>z Changes</value>
   </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>z Branch:</value>
+  </data>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
     <value>z Default Repository Location</value>
   </data>
@@ -939,11 +942,20 @@ Do you want to continue?</value>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>z Init New Repo from this Project</value>
   </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>z Merge</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>z New Branch</value>
+  </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
     <value>z Open working folder</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
     <value>z Outgoing commits</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>z Published Branches</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
     <value>z Pull</value>
@@ -962,6 +974,9 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>z Sync</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>z Unpublished Branches</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>z Unsynced commits</value>
