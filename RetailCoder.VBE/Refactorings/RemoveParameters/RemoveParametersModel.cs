@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -23,10 +25,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+            AcquireTarget(selection);
 
             Parameters = new List<Parameter>();
             LoadParameters();
+        }
+
+        private void AcquireTarget(QualifiedSelection selection)
+        {
+            TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+            TargetDeclaration = PromptIfTargetImplementsInterface();
+            TargetDeclaration = GetGetter();
         }
 
         public void LoadParameters()
@@ -133,6 +142,22 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return target;
         }
 
+        private Declaration PromptIfTargetImplementsInterface()
+        {
+            var declaration = TargetDeclaration;
+            var interfaceImplementation = Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            if (declaration == null || interfaceImplementation == null)
+            {
+                return declaration;
+            }
+
+            var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            return confirm == DialogResult.No ? null : interfaceMember;
+        }
+
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
         {
             return declaration.References.Any(r =>
@@ -144,6 +169,21 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
                    && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
+        }
+
+        private Declaration GetGetter()
+        {
+            if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
+                TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
+            {
+                return TargetDeclaration;
+            }
+
+            var getter = _declarations.Items.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+                                          item.IdentifierName == TargetDeclaration.IdentifierName &&
+                                          item.DeclarationType == DeclarationType.PropertyGet);
+
+            return getter ?? TargetDeclaration;
         }
     }
 }

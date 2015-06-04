@@ -18,9 +18,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersModel Show()
         {
-            _model.TargetDeclaration = PromptIfTargetImplementsInterface();
-            _model.LoadParameters();
-
             if (_model.Parameters.Count == 0)
             {
                 var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _model.TargetDeclaration.IdentifierName);
@@ -38,22 +35,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             _model.Parameters = _view.Parameters;
             return _model;
-        }
-
-        private Declaration PromptIfTargetImplementsInterface()
-        {
-            var declaration = _model.TargetDeclaration;
-            var interfaceImplementation = _model.Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
-            {
-                return declaration;
-            }
-
-            var interfaceMember = _model.Declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            return confirm == DialogResult.No ? null : interfaceMember;
         }
     }
 }
