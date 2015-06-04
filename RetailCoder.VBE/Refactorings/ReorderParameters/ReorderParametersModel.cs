@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
@@ -25,13 +27,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _declarations = parseResult.Declarations;
 
             TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+            TargetDeclaration = PromptIfTargetImplementsInterface();
 
             Parameters = new List<Parameter>();
             LoadParameters();
         }
 
-        public void LoadParameters()
+        private void LoadParameters()
         {
+            if (TargetDeclaration == null) { return; }
+
             Parameters.Clear();
 
             var procedure = (dynamic)TargetDeclaration.Context;
@@ -111,6 +116,22 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
             return target;
+        }
+
+        private Declaration PromptIfTargetImplementsInterface()
+        {
+            var declaration = TargetDeclaration;
+            var interfaceImplementation = Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
+            if (declaration == null || interfaceImplementation == null)
+            {
+                return declaration;
+            }
+
+            var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+
+            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            return confirm == DialogResult.No ? null : interfaceMember;
         }
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)

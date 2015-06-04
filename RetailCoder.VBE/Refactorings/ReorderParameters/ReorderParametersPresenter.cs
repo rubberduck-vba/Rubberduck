@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
+﻿using System.Windows.Forms;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
@@ -18,9 +15,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public ReorderParametersModel Show()
         {
-            _model.TargetDeclaration = PromptIfTargetImplementsInterface();
-            _model.LoadParameters();
-
             _view.Parameters = _model.Parameters;
             _view.InitializeParameterGrid();
 
@@ -31,22 +25,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             _model.Parameters = _view.Parameters;
             return _model;
-        }
-
-        private Declaration PromptIfTargetImplementsInterface()
-        {
-            var declaration = _model.TargetDeclaration;
-            var interfaceImplementation = _model.Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
-            {
-                return declaration;
-            }
-
-            var interfaceMember = _model.Declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            return confirm == DialogResult.No ? null : interfaceMember;
         }
     }
 }
