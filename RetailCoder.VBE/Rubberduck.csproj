@@ -1031,9 +1031,8 @@
       <Name>Rubberduck.SourceControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
-      <Project>{83ed9bbf-5ad4-4eb2-b5f0-6eb97dfed9d0}</Project>
+      <Project>{83ED9BBF-5AD4-4EB2-B5F0-6EB97DFED9D0}</Project>
       <Name>Rubberduck.UnitTesting</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>

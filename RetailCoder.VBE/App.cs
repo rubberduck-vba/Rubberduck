@@ -56,7 +56,16 @@ namespace Rubberduck
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-            RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+
+            try
+            {
+                RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+            }
+            catch (CultureNotFoundException)
+            {
+                _config.UserSettings.LanguageSetting.Code = "en-US";
+                _configService.SaveConfiguration(_config);
+            }
 
             EnableCodeInspections(_config);
 
