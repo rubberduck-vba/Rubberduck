@@ -906,6 +906,9 @@ Do you want to continue?</value>
   <data name="Ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
+    <value>Source Control</value>
+  </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
     <value>Attributes File</value>
   </data>
@@ -924,6 +927,15 @@ Do you want to continue?</value>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>Ignore File</value>
   </data>
+  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
+    <value>Init New Repo from this Project</value>
+  </data>
+  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
+    <value>Open working folder</value>
+  </data>
+  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
+    <value>Refreshes pending changes</value>
+  </data>
   <data name="SourceControl_RespositorySettings" xml:space="preserve">
     <value>Repository Settings</value>
   </data>
@@ -932,5 +944,17 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
     <value>User Name</value>
+  </data>
+  <data name="SourceControl_Changes" xml:space="preserve">
+    <value>Changes</value>
+  </data>
+  <data name="SourceControl_Branches" xml:space="preserve">
+    <value>Branches</value>
+  </data>
+  <data name="SourceControl_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
+    <value>Unsynced commits</value>
   </data>
 </root>

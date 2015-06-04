@@ -24,6 +24,20 @@ namespace Rubberduck.UI.SourceControl
             this.ChangesTab.Controls.Add((Control)changesView);
             this.UnsyncedCommitsTab.Controls.Add((Control)commitsView);
             this.SettingsTab.Controls.Add((Control)settingsView);
+
+            SetText();
+        }
+
+        private void SetText()
+        {
+            RefreshButton.ToolTipText = RubberduckUI.SourceControl_RefreshButtonToolTip;
+            OpenWorkingFolderButton.ToolTipText = RubberduckUI.SourceControl_OpenWorkingFolderToolTip;
+            InitRepoButton.ToolTipText = RubberduckUI.SourceControl_InitRepoButtonToolTip;
+
+            ChangesTab.Text = RubberduckUI.SourceControl_Changes;
+            BranchesTab.Text = RubberduckUI.SourceControl_Branches;
+            UnsyncedCommitsTab.Text = RubberduckUI.SourceControl_UnsyncedCommits;
+            SettingsTab.Text = RubberduckUI.SourceControl_Settings;
         }
 
         public string ClassId
@@ -33,7 +47,7 @@ namespace Rubberduck.UI.SourceControl
 
         public string Caption
         {
-            get { return "Source Control"; }
+            get { return RubberduckUI.SourceControlPanel_Caption; }
         }
 
         public string Status 

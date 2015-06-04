@@ -2041,11 +2041,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branches.
+        /// </summary>
+        internal static string SourceControl_Branches {
+            get {
+                return ResourceManager.GetString("SourceControl_Branches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string SourceControl_CancelGlobalSettings {
             get {
                 return ResourceManager.GetString("SourceControl_CancelGlobalSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes.
+        /// </summary>
+        internal static string SourceControl_Changes {
+            get {
+                return ResourceManager.GetString("SourceControl_Changes", resourceCulture);
             }
         }
         
@@ -2095,6 +2113,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Init New Repo from this Project.
+        /// </summary>
+        internal static string SourceControl_InitRepoButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_InitRepoButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         internal static string SourceControl_OpenWorkingDirectory {
@@ -2104,11 +2131,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open working folder.
+        /// </summary>
+        internal static string SourceControl_OpenWorkingFolderToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_OpenWorkingFolderToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refreshes pending changes.
+        /// </summary>
+        internal static string SourceControl_RefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("SourceControl_RefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repository Settings.
         /// </summary>
         internal static string SourceControl_RespositorySettings {
             get {
                 return ResourceManager.GetString("SourceControl_RespositorySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SourceControl_Settings {
+            get {
+                return ResourceManager.GetString("SourceControl_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsynced commits.
+        /// </summary>
+        internal static string SourceControl_UnsyncedCommits {
+            get {
+                return ResourceManager.GetString("SourceControl_UnsyncedCommits", resourceCulture);
             }
         }
         
@@ -2127,6 +2190,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_UserNameLabel {
             get {
                 return ResourceManager.GetString("SourceControl_UserNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control.
+        /// </summary>
+        internal static string SourceControlPanel_Caption {
+            get {
+                return ResourceManager.GetString("SourceControlPanel_Caption", resourceCulture);
             }
         }
         
