@@ -25,6 +25,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _declarations = parseResult.Declarations;
 
             TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+
+            Parameters = new List<Parameter>();
             LoadParameters();
         }
 

@@ -7,10 +7,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersPresenter
     {
-        private readonly IReorderParametersDialog _view;
+        private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;
 
-        public ReorderParametersPresenter(IReorderParametersDialog view, ReorderParametersModel model)
+        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model)
         {
             _view = view;
             _model = model;
@@ -22,6 +22,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _model.LoadParameters();
 
             _view.Parameters = _model.Parameters;
+            _view.InitializeParameterGrid();
 
             if (_view.ShowDialog() != DialogResult.OK)
             {

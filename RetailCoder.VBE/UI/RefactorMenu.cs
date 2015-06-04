@@ -11,11 +11,11 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
@@ -484,8 +484,9 @@ namespace Rubberduck.UI
 
             using (var view = new ReorderParametersDialog())
             {
-                var presenter = new ReorderParametersPresenter(view, result, selection);
-                presenter.Show();
+                var factory = new ReorderParametersPresenterFactory(_editor, view, result);
+                var refactoring = new ReorderParametersRefactoring(factory);
+                refactoring.Refactor(selection);
             }
         }
 

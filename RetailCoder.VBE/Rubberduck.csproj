@@ -230,7 +230,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Refactorings\ReorderParameters\IReorderParametersDialog.cs" />
+    <Compile Include="Refactorings\ReorderParameters\IReorderParametersView.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
@@ -286,7 +286,6 @@
     <Compile Include="Refactorings\RemoveParameterRefactoring.cs" />
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
-    <Compile Include="Refactorings\ReorderParametersRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
@@ -344,15 +343,12 @@
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.Designer.cs">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="UI\RubberduckUI.fr.Designer.cs">
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -627,7 +623,7 @@
     <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\ReorderParametersDialog.resx">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.fr.resx">

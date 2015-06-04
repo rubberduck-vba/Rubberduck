@@ -3,7 +3,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public interface IReorderParametersDialog : IDialogView
+    public interface IReorderParametersView : IDialogView
     {
         List<Parameter> Parameters { get; set; }
         void InitializeParameterGrid();
