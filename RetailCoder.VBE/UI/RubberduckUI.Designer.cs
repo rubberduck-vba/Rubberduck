@@ -2068,6 +2068,51 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commit.
+        /// </summary>
+        internal static string SourceControl_Commit {
+            get {
+                return ResourceManager.GetString("SourceControl_Commit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go.
+        /// </summary>
+        internal static string SourceControl_CommitButtonLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit message:.
+        /// </summary>
+        internal static string SourceControl_CommitMessageLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitMessageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and Push.
+        /// </summary>
+        internal static string SourceControl_CommitPush {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitPush", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit and Sync.
+        /// </summary>
+        internal static string SourceControl_CommitSync {
+            get {
+                return ResourceManager.GetString("SourceControl_CommitSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Repository.
         /// </summary>
         internal static string SourceControl_CreateNewRepo {
@@ -2104,6 +2149,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Excluded changes.
+        /// </summary>
+        internal static string SourceControl_ExcludedChanges {
+            get {
+                return ResourceManager.GetString("SourceControl_ExcludedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch.
         /// </summary>
         internal static string SourceControl_FetchCommitsLabel {
@@ -2127,6 +2181,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_IgnoreFile {
             get {
                 return ResourceManager.GetString("SourceControl_IgnoreFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Included changes.
+        /// </summary>
+        internal static string SourceControl_IncludedChanges {
+            get {
+                return ResourceManager.GetString("SourceControl_IncludedChanges", resourceCulture);
             }
         }
         
@@ -2271,6 +2334,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_UnsyncedCommits {
             get {
                 return ResourceManager.GetString("SourceControl_UnsyncedCommits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untracked files.
+        /// </summary>
+        internal static string SourceControl_UntrackedFiles {
+            get {
+                return ResourceManager.GetString("SourceControl_UntrackedFiles", resourceCulture);
             }
         }
         

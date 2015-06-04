@@ -13,6 +13,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void SetText()
         {
+            CurrentBranchLabel.Text = RubberduckUI.SourceControl_CurrentBranchLabel;
             FetchIncomingCommitsButton.Text = RubberduckUI.SourceControl_FetchCommitsLabel;
             PullButton.Text = RubberduckUI.SourceControl_PullCommitsLabel;
             PushButton.Text = RubberduckUI.SourceControl_PushCommitsLabel;

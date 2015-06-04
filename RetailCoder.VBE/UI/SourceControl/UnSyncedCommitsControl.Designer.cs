@@ -35,7 +35,7 @@ namespace Rubberduck.UI.SourceControl
             this.UnsyncedCommitsBranchNameLabel = new System.Windows.Forms.Label();
             this.SyncButton = new System.Windows.Forms.Button();
             this.FetchIncomingCommitsButton = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.CurrentBranchLabel = new System.Windows.Forms.Label();
             this.PushButton = new System.Windows.Forms.Button();
             this.PullButton = new System.Windows.Forms.Button();
             this.OutgoingCommitsBox = new System.Windows.Forms.GroupBox();
@@ -55,16 +55,16 @@ namespace Rubberduck.UI.SourceControl
             this.UnsyncedCommitsPanel.Controls.Add(this.UnsyncedCommitsBranchNameLabel);
             this.UnsyncedCommitsPanel.Controls.Add(this.SyncButton);
             this.UnsyncedCommitsPanel.Controls.Add(this.FetchIncomingCommitsButton);
-            this.UnsyncedCommitsPanel.Controls.Add(this.label3);
+            this.UnsyncedCommitsPanel.Controls.Add(this.CurrentBranchLabel);
             this.UnsyncedCommitsPanel.Controls.Add(this.PushButton);
             this.UnsyncedCommitsPanel.Controls.Add(this.PullButton);
             this.UnsyncedCommitsPanel.Controls.Add(this.OutgoingCommitsBox);
             this.UnsyncedCommitsPanel.Controls.Add(this.IncomingCommitsBox);
             this.UnsyncedCommitsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UnsyncedCommitsPanel.Location = new System.Drawing.Point(0, 0);
-            this.UnsyncedCommitsPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UnsyncedCommitsPanel.Margin = new System.Windows.Forms.Padding(4);
             this.UnsyncedCommitsPanel.Name = "UnsyncedCommitsPanel";
-            this.UnsyncedCommitsPanel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UnsyncedCommitsPanel.Padding = new System.Windows.Forms.Padding(4);
             this.UnsyncedCommitsPanel.Size = new System.Drawing.Size(320, 593);
             this.UnsyncedCommitsPanel.TabIndex = 1;
             // 
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.SourceControl
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SyncButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.SyncButton.Location = new System.Drawing.Point(12, 84);
-            this.SyncButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.SyncButton.Margin = new System.Windows.Forms.Padding(4);
             this.SyncButton.Name = "SyncButton";
             this.SyncButton.Size = new System.Drawing.Size(300, 28);
             this.SyncButton.TabIndex = 11;
@@ -98,7 +98,7 @@ namespace Rubberduck.UI.SourceControl
             this.FetchIncomingCommitsButton.Image = global::Rubberduck.Properties.Resources.arrow_step;
             this.FetchIncomingCommitsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.FetchIncomingCommitsButton.Location = new System.Drawing.Point(12, 48);
-            this.FetchIncomingCommitsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FetchIncomingCommitsButton.Margin = new System.Windows.Forms.Padding(4);
             this.FetchIncomingCommitsButton.Name = "FetchIncomingCommitsButton";
             this.FetchIncomingCommitsButton.Size = new System.Drawing.Size(84, 28);
             this.FetchIncomingCommitsButton.TabIndex = 13;
@@ -106,22 +106,22 @@ namespace Rubberduck.UI.SourceControl
             this.FetchIncomingCommitsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.FetchIncomingCommitsButton.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // CurrentBranchLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 17);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 17);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Branch:";
+            this.CurrentBranchLabel.AutoSize = true;
+            this.CurrentBranchLabel.Location = new System.Drawing.Point(8, 17);
+            this.CurrentBranchLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CurrentBranchLabel.Name = "CurrentBranchLabel";
+            this.CurrentBranchLabel.Size = new System.Drawing.Size(57, 17);
+            this.CurrentBranchLabel.TabIndex = 9;
+            this.CurrentBranchLabel.Text = "Branch:";
             // 
             // PushButton
             // 
             this.PushButton.Image = global::Rubberduck.Properties.Resources.drive_upload;
             this.PushButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.PushButton.Location = new System.Drawing.Point(196, 48);
-            this.PushButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PushButton.Margin = new System.Windows.Forms.Padding(4);
             this.PushButton.Name = "PushButton";
             this.PushButton.Size = new System.Drawing.Size(84, 28);
             this.PushButton.TabIndex = 14;
@@ -134,7 +134,7 @@ namespace Rubberduck.UI.SourceControl
             this.PullButton.Image = global::Rubberduck.Properties.Resources.drive_download;
             this.PullButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.PullButton.Location = new System.Drawing.Point(104, 48);
-            this.PullButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PullButton.Margin = new System.Windows.Forms.Padding(4);
             this.PullButton.Name = "PullButton";
             this.PullButton.Size = new System.Drawing.Size(84, 28);
             this.PullButton.TabIndex = 12;
@@ -148,7 +148,7 @@ namespace Rubberduck.UI.SourceControl
             | System.Windows.Forms.AnchorStyles.Right)));
             this.OutgoingCommitsBox.Controls.Add(this.OutgoingCommitsGrid);
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(12, 331);
-            this.OutgoingCommitsBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.OutgoingCommitsBox.Margin = new System.Windows.Forms.Padding(4);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
             this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.OutgoingCommitsBox.Size = new System.Drawing.Size(300, 199);
@@ -171,7 +171,7 @@ namespace Rubberduck.UI.SourceControl
             this.OutgoingCommitsGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.OutgoingCommitsGrid.GridColor = System.Drawing.Color.White;
             this.OutgoingCommitsGrid.Location = new System.Drawing.Point(13, 27);
-            this.OutgoingCommitsGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.OutgoingCommitsGrid.Margin = new System.Windows.Forms.Padding(4);
             this.OutgoingCommitsGrid.Name = "OutgoingCommitsGrid";
             this.OutgoingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.OutgoingCommitsGrid.Size = new System.Drawing.Size(275, 161);
@@ -183,7 +183,7 @@ namespace Rubberduck.UI.SourceControl
             | System.Windows.Forms.AnchorStyles.Right)));
             this.IncomingCommitsBox.Controls.Add(this.IncomingCommitsGrid);
             this.IncomingCommitsBox.Location = new System.Drawing.Point(12, 124);
-            this.IncomingCommitsBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.IncomingCommitsBox.Margin = new System.Windows.Forms.Padding(4);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
             this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.IncomingCommitsBox.Size = new System.Drawing.Size(300, 199);
@@ -206,7 +206,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncomingCommitsGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.IncomingCommitsGrid.GridColor = System.Drawing.Color.White;
             this.IncomingCommitsGrid.Location = new System.Drawing.Point(13, 27);
-            this.IncomingCommitsGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.IncomingCommitsGrid.Margin = new System.Windows.Forms.Padding(4);
             this.IncomingCommitsGrid.Name = "IncomingCommitsGrid";
             this.IncomingCommitsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.IncomingCommitsGrid.Size = new System.Drawing.Size(275, 161);
@@ -218,7 +218,7 @@ namespace Rubberduck.UI.SourceControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.Controls.Add(this.UnsyncedCommitsPanel);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "UnSyncedCommitsControl";
             this.Size = new System.Drawing.Size(320, 593);
             this.UnsyncedCommitsPanel.ResumeLayout(false);
@@ -237,7 +237,7 @@ namespace Rubberduck.UI.SourceControl
         private Label UnsyncedCommitsBranchNameLabel;
         private Button SyncButton;
         private Button FetchIncomingCommitsButton;
-        private Label label3;
+        private Label CurrentBranchLabel;
         private Button PushButton;
         private Button PullButton;
         private GroupBox OutgoingCommitsBox;
