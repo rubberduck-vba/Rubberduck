@@ -889,6 +889,9 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="About_Stargazers" xml:space="preserve">
     <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
+  <data name="Okay" xml:space="preserve">
+    <value>z Okay</value>
+  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>z Source Control</value>
   </data>
@@ -928,6 +931,9 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
     <value>z Default Repository Location</value>
   </data>
+  <data name="SourceControl_DestinationLabel" xml:space="preserve">
+    <value>z Destination</value>
+  </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
     <value>z Email Address</value>
   </data>
@@ -955,6 +961,9 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
     <value>z Merge</value>
   </data>
+  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
+    <value>z Merge Branch</value>
+  </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
     <value>z New Branch</value>
   </data>
@@ -981,6 +990,9 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>z Settings</value>
+  </data>
+  <data name="SourceControl_SourceLabel" xml:space="preserve">
+    <value>z Source</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>z Sync</value>

@@ -10,6 +10,12 @@ namespace Rubberduck.UI.SourceControl
         public MergeForm()
         {
             InitializeComponent();
+
+            Text = RubberduckUI.SourceControl_MergeFormCaption;
+            SourceLabel.Text = RubberduckUI.SourceControl_SourceLabel;
+            DestinationLabel.Text = RubberduckUI.SourceControl_DestinationLabel;
+            OkayButton.Text = RubberduckUI.Okay;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
         public bool OkayButtonEnabled

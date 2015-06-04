@@ -948,6 +948,9 @@ Do you want to continue?</value>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Changes</value>
   </data>
+  <data name="Okay" xml:space="preserve">
+    <value>Okay</value>
+  </data>
   <data name="SourceControl_Branches" xml:space="preserve">
     <value>Branches</value>
   </data>
@@ -972,6 +975,9 @@ Do you want to continue?</value>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>Branch:</value>
   </data>
+  <data name="SourceControl_DestinationLabel" xml:space="preserve">
+    <value>Destination</value>
+  </data>
   <data name="SourceControl_ExcludedChanges" xml:space="preserve">
     <value>Excluded changes</value>
   </data>
@@ -986,6 +992,9 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
     <value>Merge</value>
+  </data>
+  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
+    <value>Merge Branch</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
     <value>New Branch</value>
@@ -1004,6 +1013,9 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SourceControl_SourceLabel" xml:space="preserve">
+    <value>Source</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
     <value>Sync</value>

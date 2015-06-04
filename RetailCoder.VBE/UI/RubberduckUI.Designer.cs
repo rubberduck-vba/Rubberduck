@@ -1368,6 +1368,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Okay.
+        /// </summary>
+        internal static string Okay {
+            get {
+                return ResourceManager.GetString("Okay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
         internal static string Online {
@@ -2149,6 +2158,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Destination.
+        /// </summary>
+        internal static string SourceControl_DestinationLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_DestinationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email Address.
         /// </summary>
         internal static string SourceControl_EmailAddressLabel {
@@ -2226,6 +2244,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_MergeBranch {
             get {
                 return ResourceManager.GetString("SourceControl_MergeBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge Branch.
+        /// </summary>
+        internal static string SourceControl_MergeFormCaption {
+            get {
+                return ResourceManager.GetString("SourceControl_MergeFormCaption", resourceCulture);
             }
         }
         
@@ -2316,6 +2343,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_Settings {
             get {
                 return ResourceManager.GetString("SourceControl_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source.
+        /// </summary>
+        internal static string SourceControl_SourceLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_SourceLabel", resourceCulture);
             }
         }
         
