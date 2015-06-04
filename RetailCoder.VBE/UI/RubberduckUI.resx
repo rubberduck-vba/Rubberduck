@@ -951,8 +951,26 @@ Do you want to continue?</value>
   <data name="SourceControl_Branches" xml:space="preserve">
     <value>Branches</value>
   </data>
+  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
+    <value>Fetch</value>
+  </data>
+  <data name="SourceControl_IncomingCommits" xml:space="preserve">
+    <value>Incoming commits</value>
+  </data>
+  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
+    <value>Outgoing commits</value>
+  </data>
+  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
+    <value>Push</value>
+  </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
+    <value>Sync</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>Unsynced commits</value>

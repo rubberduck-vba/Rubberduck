@@ -2095,6 +2095,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fetch.
+        /// </summary>
+        internal static string SourceControl_FetchCommitsLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_FetchCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global Settings.
         /// </summary>
         internal static string SourceControl_GlobalSettings {
@@ -2109,6 +2118,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_IgnoreFile {
             get {
                 return ResourceManager.GetString("SourceControl_IgnoreFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incoming commits.
+        /// </summary>
+        internal static string SourceControl_IncomingCommits {
+            get {
+                return ResourceManager.GetString("SourceControl_IncomingCommits", resourceCulture);
             }
         }
         
@@ -2140,6 +2158,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Outgoing commits.
+        /// </summary>
+        internal static string SourceControl_OutgoingCommits {
+            get {
+                return ResourceManager.GetString("SourceControl_OutgoingCommits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pull.
+        /// </summary>
+        internal static string SourceControl_PullCommitsLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_PullCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push.
+        /// </summary>
+        internal static string SourceControl_PushCommitsLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_PushCommitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refreshes pending changes.
         /// </summary>
         internal static string SourceControl_RefreshButtonToolTip {
@@ -2163,6 +2208,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_Settings {
             get {
                 return ResourceManager.GetString("SourceControl_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync.
+        /// </summary>
+        internal static string SourceControl_SyncCommitsLabel {
+            get {
+                return ResourceManager.GetString("SourceControl_SyncCommitsLabel", resourceCulture);
             }
         }
         

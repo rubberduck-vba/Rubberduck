@@ -924,17 +924,32 @@ Do you want to continue?</value>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
     <value>z Email Address</value>
   </data>
+  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
+    <value>z Fetch</value>
+  </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
     <value>z Global Settings</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
     <value>z Ignore File</value>
   </data>
+  <data name="SourceControl_IncomingCommits" xml:space="preserve">
+    <value>z Incoming commits</value>
+  </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
     <value>z Init New Repo from this Project</value>
   </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
     <value>z Open working folder</value>
+  </data>
+  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
+    <value>z Outgoing commits</value>
+  </data>
+  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
+    <value>z Pull</value>
+  </data>
+  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
+    <value>z Push</value>
   </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>z Refreshes pending changes</value>
@@ -944,6 +959,9 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
     <value>z Settings</value>
+  </data>
+  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
+    <value>z Sync</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
     <value>z Unsynced commits</value>
