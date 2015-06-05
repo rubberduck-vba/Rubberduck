@@ -3,8 +3,11 @@ using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI
 {
@@ -49,24 +52,23 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(_vbe, view, result);
-                var refactoring = new RenameRefactoring(factory);
-                refactoring.Refactor();
+                var designer = (dynamic) _vbe.SelectedVBComponent.Designer;
+
+                foreach (var control in designer.Controls)
+                {
+                    if (control.InSelection)
+                    {
+                        var controlToRename =
+                            result.Declarations.Items
+                                .FirstOrDefault(item => item.IdentifierName == control.Name);
+
+                        var factory = new RenamePresenterFactory(_vbe, view, result);
+                        var refactoring = new RenameRefactoring(factory);
+                        refactoring.Refactor(controlToRename);
+                    }
+                }
             }
         }
-
-        /*public void Rename(Declaration target)
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            using (var view = new RenameDialog())
-            {
-                var factory = new RenamePresenterFactory(IDE, view, result);
-                var refactoring = new RenameRefactoring(factory);
-                refactoring.Refactor(target);
-            }
-        }*/
 
         public void Dispose()
         {
