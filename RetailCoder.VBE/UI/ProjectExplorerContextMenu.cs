@@ -3,10 +3,12 @@ using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI
 {
-    public class ProjectExplorerContextMenu
+    public class ProjectExplorerContextMenu : Menu
     {
         private readonly VBE _vbe;
         private readonly IRubberduckParser _parser;
@@ -24,7 +26,8 @@ namespace Rubberduck.UI
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _runAllTests;
         
-        public ProjectExplorerContextMenu(VBE vbe, IRubberduckParser parser)
+        public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser)
+            : base(vbe, addIn)
         {
             _vbe = vbe;
             _parser = parser;
@@ -80,7 +83,20 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRenameClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            Rename();
+        }
 
+        private void Rename()
+        {
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, _vbe.ActiveVBProject);
+
+            using (var view = new RenameDialog())
+            {
+                var factory = new RenamePresenterFactory(_vbe, view, result);
+                var refactoring = new RenameRefactoring(factory);
+                refactoring.Refactor();
+            }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -95,14 +111,10 @@ namespace Rubberduck.UI
 
         }
 
-        public void Dispose()
+        bool _disposed;
+        protected override void Dispose(bool disposing)
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
+            if (_disposed)
             {
                 return;
             }
@@ -142,6 +154,8 @@ namespace Rubberduck.UI
                 _runAllTests.Click -= OnRunAllTestsClick;
                 _runAllTests.Delete();
             }
+
+            _disposed = true;
         }
     }
 }

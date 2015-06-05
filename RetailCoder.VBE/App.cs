@@ -91,7 +91,7 @@ namespace Rubberduck
             _formContextMenu = new FormContextMenu(_vbe, _parser);
             _formContextMenu.Initialize();
 
-            _projectExplorerContextMenu = new ProjectExplorerContextMenu(_vbe, _parser);
+            _projectExplorerContextMenu = new ProjectExplorerContextMenu(_vbe, _addIn, _parser);
             _projectExplorerContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
