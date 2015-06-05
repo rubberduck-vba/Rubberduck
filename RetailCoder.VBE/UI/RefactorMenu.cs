@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -132,6 +133,7 @@ namespace Rubberduck.UI
             _findSymbolContextMenu.Click += FindSymbolContextMenuClick;
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             FindSymbol();
@@ -166,6 +168,7 @@ namespace Rubberduck.UI
             }
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             FindAllReferences();
@@ -238,6 +241,7 @@ namespace Rubberduck.UI
             presenter.Show();
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             FindAllImplementations();
@@ -282,23 +286,13 @@ namespace Rubberduck.UI
             FindAllImplementations(target, parseResult);
         }
 
-        public void FindAllImplementations(Declaration target, VBProjectParseResult parseResult)
+        private void FindAllImplementations(Declaration target, VBProjectParseResult parseResult)
         {
-            IEnumerable<Declaration> implementations;
             string name;
-            if (target.DeclarationType == DeclarationType.Class)
-            {
-                implementations = FindAllImplementationsOfClass(target, parseResult, out name);
-            }
-            else
-            {
-                implementations = FindAllImplementationsOfMember(target, parseResult, out name);
-            }
-
-            if (implementations == null)
-            {
-                implementations = new List<Declaration>();
-            }
+            var implementations = (target.DeclarationType == DeclarationType.Class
+                ? FindAllImplementationsOfClass(target, parseResult, out name)
+                : FindAllImplementationsOfMember(target, parseResult, out name)) ??
+                                  new List<Declaration>();
 
             var declarations = implementations as IList<Declaration> ?? implementations.ToList();
             var implementationsCount = declarations.Count();
@@ -391,6 +385,7 @@ namespace Rubberduck.UI
             return isSameModule && declaration.Selection.ContainsFirstCharacter(selection.Selection);
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             ExtractMethod();
@@ -413,6 +408,7 @@ namespace Rubberduck.UI
             MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             if (IDE.ActiveCodePane == null)
@@ -423,6 +419,7 @@ namespace Rubberduck.UI
             Rename();
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnReorderParametersButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             if (IDE.ActiveCodePane == null)
@@ -433,6 +430,7 @@ namespace Rubberduck.UI
             ReorderParameters(selection);
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRemoveParameterButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             if (IDE.ActiveCodePane == null)
@@ -444,7 +442,7 @@ namespace Rubberduck.UI
             RemoveParameter(selection);
         }
 
-        public void Rename()
+        private void Rename()
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
@@ -470,7 +468,7 @@ namespace Rubberduck.UI
             }
         }
 
-        public void ReorderParameters(QualifiedSelection selection)
+        private void ReorderParameters(QualifiedSelection selection)
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
@@ -483,7 +481,7 @@ namespace Rubberduck.UI
             }
         }
 
-        public void RemoveParameter(QualifiedSelection selection)
+        private void RemoveParameter(QualifiedSelection selection)
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
