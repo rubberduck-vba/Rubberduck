@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly Declarations _declarations;
         public Declarations Declarations { get { return _declarations; } }
 
-        public Declaration TargetDeclaration { get; set; }
+        public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
         public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
@@ -38,7 +38,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             TargetDeclaration = GetGetter();
         }
 
-        public void LoadParameters()
+        private void LoadParameters()
         {
             Parameters.Clear();
 
@@ -70,7 +70,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             DeclarationType.PropertySet
         };
 
-        private Declaration FindTarget(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
+        public Declaration FindTarget(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
         {
             var target = Declarations.Items
                 .Where(item => !item.IsBuiltIn)

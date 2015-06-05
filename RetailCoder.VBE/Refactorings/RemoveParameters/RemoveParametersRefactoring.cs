@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    class RemoveParametersRefactoring : IRefactoring
+    public class RemoveParametersRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<RemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
@@ -52,6 +52,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             target.QualifiedSelection.Select();
             Refactor();
+        }
+
+        public void QuickFix(VBProjectParseResult parseResult, QualifiedSelection selection)
+        {
+            _model = new RemoveParametersModel(parseResult, selection);
+            var target = _model.FindTarget(selection, new[] { DeclarationType.Parameter });
+
+            _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
+            RemoveParameters();
         }
 
         private void RemoveParameters()

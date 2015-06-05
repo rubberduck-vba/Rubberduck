@@ -3,7 +3,10 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -33,7 +36,8 @@ namespace Rubberduck.Inspections
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                         select new ParameterNotUsedInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember);
+                         let quickFixRefactoring = new RemoveParametersRefactoring(new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE), new RemoveParametersDialog(), parseResult))
+                         select new ParameterNotUsedInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, parseResult);
 
             return issues.ToList();
         }
