@@ -27,6 +27,7 @@ namespace Rubberduck
 
         private Configuration _config;
         private RubberduckMenu _menu;
+        private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
 
         public App(VBE vbe, AddIn addIn)
@@ -86,6 +87,9 @@ namespace Rubberduck
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
             _menu.Initialize();
 
+            _formContextMenu = new FormContextMenu(_vbe, _parser);
+            _formContextMenu.Initialize();
+
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
             _codeInspectionsToolbar.Initialize();
 
@@ -133,6 +137,11 @@ namespace Rubberduck
             if (_menu != null)
             {
                 _menu.Dispose();
+            }
+
+            if (_formContextMenu != null)
+            {
+                _formContextMenu.Dispose();
             }
 
             if (_codeInspectionsToolbar != null)
