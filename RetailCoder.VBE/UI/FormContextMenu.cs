@@ -3,11 +3,8 @@ using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI
 {
@@ -30,7 +27,7 @@ namespace Rubberduck.UI
             var beforeItem = _vbe.CommandBars["MSForms Control"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2558).Index;
             _rename = _vbe.CommandBars["MSForms Control"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _rename.BeginGroup = true;
-            _rename.Caption = RubberduckUI.Rename;
+            _rename.Caption = RubberduckUI.FormContextMenu_Rename;
             _rename.Click += OnRenameButtonClick;
         }
 
@@ -79,8 +76,11 @@ namespace Rubberduck.UI
         {
             if (!disposing) { return; }
 
-            _rename.Click -= OnRenameButtonClick;
-            _rename.Delete();
+            if (_rename != null)
+            {
+                _rename.Click -= OnRenameButtonClick;
+                _rename.Delete();
+            }
         }
     }
 }

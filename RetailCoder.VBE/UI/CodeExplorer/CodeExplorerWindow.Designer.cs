@@ -76,6 +76,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // CodeExplorerToolbar
             // 
+            this.CodeExplorerToolbar.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.CodeExplorerToolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshButton,
             this.ShowFoldersToggleButton,
@@ -87,7 +88,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.SelectedNodeLabel});
             this.CodeExplorerToolbar.Location = new System.Drawing.Point(0, 0);
             this.CodeExplorerToolbar.Name = "CodeExplorerToolbar";
-            this.CodeExplorerToolbar.Size = new System.Drawing.Size(280, 25);
+            this.CodeExplorerToolbar.Size = new System.Drawing.Size(373, 27);
             this.CodeExplorerToolbar.TabIndex = 0;
             this.CodeExplorerToolbar.Text = "toolStrip1";
             // 
@@ -97,7 +98,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.RefreshButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
             this.RefreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(23, 22);
+            this.RefreshButton.Size = new System.Drawing.Size(24, 24);
             this.RefreshButton.ToolTipText = "Refresh";
             // 
             // ShowFoldersToggleButton
@@ -108,13 +109,13 @@ namespace Rubberduck.UI.CodeExplorer
             this.ShowFoldersToggleButton.Image = global::Rubberduck.Properties.Resources.VSFolder_closed;
             this.ShowFoldersToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ShowFoldersToggleButton.Name = "ShowFoldersToggleButton";
-            this.ShowFoldersToggleButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowFoldersToggleButton.Size = new System.Drawing.Size(24, 24);
             this.ShowFoldersToggleButton.ToolTipText = "Toggle folders";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // ShowDesignerButton
             // 
@@ -122,13 +123,13 @@ namespace Rubberduck.UI.CodeExplorer
             this.ShowDesignerButton.Image = global::Rubberduck.Properties.Resources.VSProject_form;
             this.ShowDesignerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ShowDesignerButton.Name = "ShowDesignerButton";
-            this.ShowDesignerButton.Size = new System.Drawing.Size(23, 22);
+            this.ShowDesignerButton.Size = new System.Drawing.Size(24, 24);
             this.ShowDesignerButton.ToolTipText = "Open designer";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
             // 
             // AddButton
             // 
@@ -140,7 +141,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.AddTestModuleButton});
             this.AddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(44, 22);
+            this.AddButton.Size = new System.Drawing.Size(53, 24);
             this.AddButton.Text = "New";
             this.AddButton.ToolTipText = "Add a component to the active project";
             // 
@@ -148,32 +149,32 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             this.AddClassButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
             this.AddClassButton.Name = "AddClassButton";
-            this.AddClassButton.Size = new System.Drawing.Size(197, 22);
+            this.AddClassButton.Size = new System.Drawing.Size(239, 26);
             this.AddClassButton.Text = "&Class module (.cls)";
             // 
             // AddStdModuleButton
             // 
             this.AddStdModuleButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
             this.AddStdModuleButton.Name = "AddStdModuleButton";
-            this.AddStdModuleButton.Size = new System.Drawing.Size(197, 22);
+            this.AddStdModuleButton.Size = new System.Drawing.Size(239, 26);
             this.AddStdModuleButton.Text = "&Standard module (.bas)";
             // 
             // AddFormButton
             // 
             this.AddFormButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
             this.AddFormButton.Name = "AddFormButton";
-            this.AddFormButton.Size = new System.Drawing.Size(197, 22);
+            this.AddFormButton.Size = new System.Drawing.Size(239, 26);
             this.AddFormButton.Text = "User &form";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(194, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(236, 6);
             // 
             // AddTestModuleButton
             // 
             this.AddTestModuleButton.Name = "AddTestModuleButton";
-            this.AddTestModuleButton.Size = new System.Drawing.Size(197, 22);
+            this.AddTestModuleButton.Size = new System.Drawing.Size(239, 26);
             this.AddTestModuleButton.Text = "&Test module";
             // 
             // DisplayModeButton
@@ -185,7 +186,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.DisplayModeButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
             this.DisplayModeButton.ImageTransparentColor = System.Drawing.Color.White;
             this.DisplayModeButton.Name = "DisplayModeButton";
-            this.DisplayModeButton.Size = new System.Drawing.Size(29, 22);
+            this.DisplayModeButton.Size = new System.Drawing.Size(34, 24);
             this.DisplayModeButton.Text = "toolStripSplitButton1";
             this.DisplayModeButton.ToolTipText = "Display style";
             // 
@@ -195,7 +196,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.DisplayMemberNamesButton.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DisplayMemberNamesButton.Image = global::Rubberduck.Properties.Resources.DisplayName_13394_32;
             this.DisplayMemberNamesButton.Name = "DisplayMemberNamesButton";
-            this.DisplayMemberNamesButton.Size = new System.Drawing.Size(198, 22);
+            this.DisplayMemberNamesButton.Size = new System.Drawing.Size(240, 26);
             this.DisplayMemberNamesButton.Text = "Display member &names";
             // 
             // DisplaySignaturesButton
@@ -203,22 +204,23 @@ namespace Rubberduck.UI.CodeExplorer
             this.DisplaySignaturesButton.Image = global::Rubberduck.Properties.Resources.DisplayFullSignature_13393_32;
             this.DisplaySignaturesButton.ImageTransparentColor = System.Drawing.Color.White;
             this.DisplaySignaturesButton.Name = "DisplaySignaturesButton";
-            this.DisplaySignaturesButton.Size = new System.Drawing.Size(198, 22);
+            this.DisplaySignaturesButton.Size = new System.Drawing.Size(240, 26);
             this.DisplaySignaturesButton.Text = "Display full &signatures";
             // 
             // SelectedNodeLabel
             // 
             this.SelectedNodeLabel.Enabled = false;
             this.SelectedNodeLabel.Name = "SelectedNodeLabel";
-            this.SelectedNodeLabel.Size = new System.Drawing.Size(0, 22);
+            this.SelectedNodeLabel.Size = new System.Drawing.Size(0, 24);
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.SolutionTree);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Location = new System.Drawing.Point(0, 27);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(280, 343);
+            this.panel1.Size = new System.Drawing.Size(373, 426);
             this.panel1.TabIndex = 1;
             // 
             // SolutionTree
@@ -226,12 +228,14 @@ namespace Rubberduck.UI.CodeExplorer
             this.SolutionTree.ContextMenuStrip = this.CodeExplorerContextMenu;
             this.SolutionTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SolutionTree.Location = new System.Drawing.Point(0, 0);
+            this.SolutionTree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SolutionTree.Name = "SolutionTree";
-            this.SolutionTree.Size = new System.Drawing.Size(280, 343);
+            this.SolutionTree.Size = new System.Drawing.Size(373, 426);
             this.SolutionTree.TabIndex = 0;
             // 
             // CodeExplorerContextMenu
             // 
+            this.CodeExplorerContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.CodeExplorerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshContextButton,
             this.newToolStripMenuItem,
@@ -245,13 +249,13 @@ namespace Rubberduck.UI.CodeExplorer
             this.InspectContextButton,
             this.RunAllTestsContextButton});
             this.CodeExplorerContextMenu.Name = "CodeExplorerContextMenu";
-            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(179, 192);
+            this.CodeExplorerContextMenu.Size = new System.Drawing.Size(258, 250);
             // 
             // RefreshContextButton
             // 
             this.RefreshContextButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
             this.RefreshContextButton.Name = "RefreshContextButton";
-            this.RefreshContextButton.Size = new System.Drawing.Size(178, 22);
+            this.RefreshContextButton.Size = new System.Drawing.Size(257, 26);
             this.RefreshContextButton.Text = "Refresh";
             // 
             // newToolStripMenuItem
@@ -263,7 +267,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.toolStripSeparator6,
             this.AddTestModuleContextButton});
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(257, 26);
             this.newToolStripMenuItem.Text = "&New";
             // 
             // AddClassContextButton
@@ -271,7 +275,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.AddClassContextButton.Image = global::Rubberduck.Properties.Resources.AddClass_5561_32;
             this.AddClassContextButton.ImageTransparentColor = System.Drawing.Color.White;
             this.AddClassContextButton.Name = "AddClassContextButton";
-            this.AddClassContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddClassContextButton.Size = new System.Drawing.Size(199, 26);
             this.AddClassContextButton.Text = "&Class module";
             // 
             // AddStdModuleContextButton
@@ -279,7 +283,7 @@ namespace Rubberduck.UI.CodeExplorer
             this.AddStdModuleContextButton.Image = global::Rubberduck.Properties.Resources.AddModule_368_32;
             this.AddStdModuleContextButton.ImageTransparentColor = System.Drawing.Color.White;
             this.AddStdModuleContextButton.Name = "AddStdModuleContextButton";
-            this.AddStdModuleContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddStdModuleContextButton.Size = new System.Drawing.Size(199, 26);
             this.AddStdModuleContextButton.Text = "Standard &module";
             // 
             // AddFormContextButton
@@ -287,47 +291,47 @@ namespace Rubberduck.UI.CodeExplorer
             this.AddFormContextButton.Image = global::Rubberduck.Properties.Resources.AddForm_369_32;
             this.AddFormContextButton.ImageTransparentColor = System.Drawing.Color.White;
             this.AddFormContextButton.Name = "AddFormContextButton";
-            this.AddFormContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddFormContextButton.Size = new System.Drawing.Size(199, 26);
             this.AddFormContextButton.Text = "User &form";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(196, 6);
             // 
             // AddTestModuleContextButton
             // 
             this.AddTestModuleContextButton.Name = "AddTestModuleContextButton";
-            this.AddTestModuleContextButton.Size = new System.Drawing.Size(165, 22);
+            this.AddTestModuleContextButton.Size = new System.Drawing.Size(199, 26);
             this.AddTestModuleContextButton.Text = "&Test module";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(254, 6);
             // 
             // NavigateContextButton
             // 
             this.NavigateContextButton.Name = "NavigateContextButton";
-            this.NavigateContextButton.Size = new System.Drawing.Size(178, 22);
+            this.NavigateContextButton.Size = new System.Drawing.Size(257, 26);
             this.NavigateContextButton.Text = "Navi&gate";
             // 
             // FindAllReferencesContextButton
             // 
             this.FindAllReferencesContextButton.Name = "FindAllReferencesContextButton";
-            this.FindAllReferencesContextButton.Size = new System.Drawing.Size(178, 22);
+            this.FindAllReferencesContextButton.Size = new System.Drawing.Size(257, 26);
             this.FindAllReferencesContextButton.Text = "&Find all references...";
             // 
             // FindAllImplementationsContextButton
             // 
             this.FindAllImplementationsContextButton.Name = "FindAllImplementationsContextButton";
-            this.FindAllImplementationsContextButton.Size = new System.Drawing.Size(178, 22);
+            this.FindAllImplementationsContextButton.Size = new System.Drawing.Size(257, 26);
             this.FindAllImplementationsContextButton.Text = "Find all &implementations...";
             // 
             // RenameContextButton
             // 
             this.RenameContextButton.Name = "RenameContextButton";
-            this.RenameContextButton.Size = new System.Drawing.Size(178, 22);
+            this.RenameContextButton.Size = new System.Drawing.Size(257, 26);
             this.RenameContextButton.Text = "Re&name";
             // 
             // ShowDesignerContextButton
@@ -337,25 +341,25 @@ namespace Rubberduck.UI.CodeExplorer
             this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
             this.ShowDesignerContextButton.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.ShowDesignerContextButton.Size = new System.Drawing.Size(178, 22);
+            this.ShowDesignerContextButton.Size = new System.Drawing.Size(257, 26);
             this.ShowDesignerContextButton.Text = "Show &designer";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(254, 6);
             // 
             // InspectContextButton
             // 
             this.InspectContextButton.Image = global::Rubberduck.Properties.Resources.light_bulb_code;
             this.InspectContextButton.Name = "InspectContextButton";
-            this.InspectContextButton.Size = new System.Drawing.Size(178, 22);
+            this.InspectContextButton.Size = new System.Drawing.Size(257, 26);
             this.InspectContextButton.Text = "&Inspect";
             // 
             // RunAllTestsContextButton
             // 
             this.RunAllTestsContextButton.Name = "RunAllTestsContextButton";
-            this.RunAllTestsContextButton.Size = new System.Drawing.Size(178, 22);
+            this.RunAllTestsContextButton.Size = new System.Drawing.Size(257, 26);
             this.RunAllTestsContextButton.Text = "&Run all tests";
             // 
             // TreeNodeIcons
@@ -408,12 +412,13 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // CodeExplorerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.CodeExplorerToolbar);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CodeExplorerWindow";
-            this.Size = new System.Drawing.Size(280, 368);
+            this.Size = new System.Drawing.Size(373, 453);
             this.CodeExplorerToolbar.ResumeLayout(false);
             this.CodeExplorerToolbar.PerformLayout();
             this.panel1.ResumeLayout(false);
