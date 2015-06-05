@@ -33,10 +33,13 @@ namespace Rubberduck.Inspections
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
+            var quickFixRefactoring =
+                new RemoveParametersRefactoring(
+                    new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE),
+                        new RemoveParametersDialog(), parseResult));
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                         let quickFixRefactoring = new RemoveParametersRefactoring(new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE), new RemoveParametersDialog(), parseResult))
                          select new ParameterNotUsedInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName, isInterfaceImplementationMember, quickFixRefactoring, parseResult);
 
             return issues.ToList();
