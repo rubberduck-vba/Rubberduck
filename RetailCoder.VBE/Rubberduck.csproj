@@ -230,7 +230,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Refactorings\ReorderParameters\IReorderParametersDialog.cs" />
+    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
+    <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersRefactoring.cs" />
+    <Compile Include="Refactorings\ReorderParameters\IReorderParametersView.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
@@ -283,10 +289,8 @@
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactorings\IRefactoring.cs" />
     <Compile Include="Refactorings\IRefactoringPresenterFactory.cs" />
-    <Compile Include="Refactorings\RemoveParameterRefactoring.cs" />
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
-    <Compile Include="Refactorings\ReorderParametersRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
@@ -325,15 +329,12 @@
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ParsingProgressPresenter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameters\IRemoveParametersView.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameters\Parameter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.cs">
+    <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\RemoveParametersDialog.Designer.cs">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
@@ -344,15 +345,12 @@
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\IReorderParametersView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.Designer.cs">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="UI\RubberduckUI.fr.Designer.cs">
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -621,13 +619,13 @@
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\RemoveParametersDialog.resx">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\ReorderParametersDialog.resx">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.fr.resx">

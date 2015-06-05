@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Refactorings.ReorderParameters;
 
-namespace Rubberduck.UI.Refactorings.ReorderParameters
+namespace Rubberduck.UI.Refactorings
 {
     public partial class ReorderParametersDialog : Form, IReorderParametersView
     {

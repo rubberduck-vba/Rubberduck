@@ -1,16 +1,14 @@
-﻿using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
+﻿using System.Windows.Forms;
 using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersPresenter
     {
-        private readonly IReorderParametersDialog _view;
+        private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;
 
-        public ReorderParametersPresenter(IReorderParametersDialog view, ReorderParametersModel model)
+        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model)
         {
             _view = view;
             _model = model;
@@ -18,10 +16,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public ReorderParametersModel Show()
         {
-            _model.TargetDeclaration = PromptIfTargetImplementsInterface();
-            _model.LoadParameters();
+            if (_model.Parameters.Count < 2)
+            {
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _model.TargetDeclaration.IdentifierName);
+                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return null;
+            }
 
             _view.Parameters = _model.Parameters;
+            _view.InitializeParameterGrid();
 
             if (_view.ShowDialog() != DialogResult.OK)
             {
@@ -30,27 +33,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             _model.Parameters = _view.Parameters;
             return _model;
-        }
-
-        private Declaration PromptIfTargetImplementsInterface()
-        {
-            var declaration = _model.TargetDeclaration;
-            var interfaceImplementation = _model.Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
-            {
-                return declaration;
-            }
-
-            var interfaceMember = _model.Declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                return null;
-            }
-
-            return interfaceMember;
         }
     }
 }

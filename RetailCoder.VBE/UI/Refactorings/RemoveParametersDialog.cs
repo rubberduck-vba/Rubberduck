@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Refactorings.RemoveParameters;
 
-namespace Rubberduck.UI.Refactorings.RemoveParameters
+namespace Rubberduck.UI.Refactorings
 {
     public partial class RemoveParametersDialog : Form, IRemoveParametersView
     {

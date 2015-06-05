@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.UI;
 
-namespace Rubberduck.UI.Refactorings.RemoveParameters
+namespace Rubberduck.Refactorings.RemoveParameters
 {
-    interface IRemoveParametersView : IDialogView
+    public interface IRemoveParametersView : IDialogView
     {
         List<Parameter> Parameters { get; set; }
         void InitializeParameterGrid();

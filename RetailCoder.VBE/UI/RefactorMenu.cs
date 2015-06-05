@@ -11,11 +11,11 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.Refactorings.ReorderParameters;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
@@ -44,8 +44,6 @@ namespace Rubberduck.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            _menuControls = menuControls;
-
             _menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
             _menu.Caption = RubberduckUI.RubberduckMenu_Refactor;
 
@@ -64,7 +62,6 @@ namespace Rubberduck.UI
         }
 
         private CommandBarPopup _refactorCodePaneContextMenu;
-        public CommandBarPopup RefactorCodePaneContextMenu { get { return _refactorCodePaneContextMenu; } }
 
         private CommandBarButton _extractMethodContextButton;
         private CommandBarButton _renameContextButton;
@@ -225,7 +222,7 @@ namespace Rubberduck.UI
             }
         }
 
-        private void ShowImplementationsToolwindow(Declaration target, IEnumerable<Declaration> implementations, string name)
+        private void ShowImplementationsToolwindow(IEnumerable<Declaration> implementations, string name)
         {
             // throws a COMException if toolwindow was already closed
             var window = new SimpleListControl(string.Format(RubberduckUI.AllImplementations_Caption, name));
@@ -262,17 +259,13 @@ namespace Rubberduck.UI
             }
 
             var member = parseResult.Declarations.FindInterfaceImplementationMembers()
-                    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                          && m.ComponentName == selection.QualifiedName.ComponentName
-                                          && m.Selection.Contains(selection.Selection));
-
-            if (member == null)
-            {
-                member = parseResult.Declarations.FindInterfaceMembers()
-                    .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                          && m.ComponentName == selection.QualifiedName.ComponentName
-                                          && m.Selection.Contains(selection.Selection));
-            }
+                .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+                                      && m.ComponentName == selection.QualifiedName.ComponentName
+                                      && m.Selection.Contains(selection.Selection)) ??
+                         parseResult.Declarations.FindInterfaceMembers()
+                                          .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
+                                                                && m.ComponentName == selection.QualifiedName.ComponentName
+                                                                && m.Selection.Contains(selection.Selection));
 
             if (member == null)
             {
@@ -320,13 +313,13 @@ namespace Rubberduck.UI
                 // if there's more than one implementation, show the dockable navigation window:
                 try
                 {
-                    ShowImplementationsToolwindow(target, declarations, name);
+                    ShowImplementationsToolwindow(declarations, name);
                 }
                 catch (COMException)
                 {
                     // the exception is related to the docked control host instance,
                     // trying again will work (I know, that's bad bad bad code)
-                    ShowImplementationsToolwindow(target, declarations, name);
+                    ShowImplementationsToolwindow(declarations, name);
                 }
             }
             else
@@ -484,8 +477,9 @@ namespace Rubberduck.UI
 
             using (var view = new ReorderParametersDialog())
             {
-                var presenter = new ReorderParametersPresenter(view, result, selection);
-                presenter.Show();
+                var factory = new ReorderParametersPresenterFactory(_editor, view, result);
+                var refactoring = new ReorderParametersRefactoring(factory);
+                refactoring.Refactor(selection);
             }
         }
 
@@ -496,14 +490,14 @@ namespace Rubberduck.UI
 
             using (var view = new RemoveParametersDialog())
             {
-                var presenter = new RemoveParametersPresenter(view, result, selection);
-                presenter.Show();
+                var factory = new RemoveParametersPresenterFactory(_editor, view, result);
+                var refactoring = new RemoveParametersRefactoring(factory);
+                refactoring.Refactor(selection);
             }
         }
 
         bool _disposed;
         private CommandBarPopup _menu;
-        private CommandBarControls _menuControls;
 
         protected override void Dispose(bool disposing)
         {

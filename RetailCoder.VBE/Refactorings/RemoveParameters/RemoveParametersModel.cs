@@ -5,12 +5,11 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Refactorings.ReorderParameters
+namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class ReorderParametersModel
+    public class RemoveParametersModel
     {
         private readonly VBProjectParseResult _parseResult;
         public VBProjectParseResult ParseResult { get { return _parseResult; } }
@@ -18,21 +17,21 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly Declarations _declarations;
         public Declarations Declarations { get { return _declarations; } }
 
-        public Declaration TargetDeclaration { get; set; }
+        public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
-            
-        public ReorderParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
+
+        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
 
-            AcquireTaget(selection);
+            AcquireTarget(selection);
 
             Parameters = new List<Parameter>();
             LoadParameters();
         }
 
-        private void AcquireTaget(QualifiedSelection selection)
+        private void AcquireTarget(QualifiedSelection selection)
         {
             TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
@@ -41,16 +40,24 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void LoadParameters()
         {
-            if (TargetDeclaration == null) { return; }
-
             Parameters.Clear();
 
-            var procedure = (dynamic)TargetDeclaration.Context;
-            var argList = (VBAParser.ArgListContext)procedure.argList();
-            var args = argList.arg();
-
             var index = 0;
-            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+            Parameters = GetParameters(TargetDeclaration).Select(arg => new Parameter(arg, index++)).ToList();
+        }
+
+        private IEnumerable<Declaration> GetParameters(Declaration method)
+        {
+            return Declarations.Items
+                              .Where(d => d.DeclarationType == DeclarationType.Parameter
+                                       && d.ComponentName == method.ComponentName
+                                       && d.Project.Equals(method.Project)
+                                       && method.Context.Start.Line <= d.Selection.StartLine
+                                       && method.Context.Stop.Line >= d.Selection.EndLine
+                                       && !(method.Context.Start.Column > d.Selection.StartColumn && method.Context.Start.Line == d.Selection.StartLine)
+                                       && !(method.Context.Stop.Column < d.Selection.EndColumn && method.Context.Stop.Line == d.Selection.EndLine))
+                              .OrderBy(item => item.Selection.StartLine)
+                              .ThenBy(item => item.Selection.StartColumn);
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =
@@ -63,12 +70,12 @@ namespace Rubberduck.Refactorings.ReorderParameters
             DeclarationType.PropertySet
         };
 
-        private Declaration FindTarget(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
+        public Declaration FindTarget(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
         {
             var target = Declarations.Items
                 .Where(item => !item.IsBuiltIn)
                 .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                     || IsSelectedReference(selection, item));
+                                        || IsSelectedReference(selection, item));
 
             if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
             {
@@ -79,19 +86,20 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var targets = Declarations.Items
                 .Where(item => !item.IsBuiltIn
-                            && item.ComponentName == selection.QualifiedName.ComponentName
-                            && validDeclarationTypes.Contains(item.DeclarationType));
+                               && item.ComponentName == selection.QualifiedName.ComponentName
+                               && validDeclarationTypes.Contains(item.DeclarationType));
 
             var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
             foreach (var declaration in targets)
             {
                 var declarationSelection = new Selection(declaration.Context.Start.Line,
-                                                         declaration.Context.Start.Column,
-                                                         declaration.Context.Stop.Line,
-                                                         declaration.Context.Stop.Column);
+                    declaration.Context.Start.Column,
+                    declaration.Context.Stop.Line,
+                    declaration.Context.Stop.Column);
 
-                if (currentSelection.Contains(declarationSelection) && declarationSelection.Contains(selection.Selection))
+                if (currentSelection.Contains(declarationSelection) &&
+                    declarationSelection.Contains(selection.Selection))
                 {
                     target = declaration;
                     currentSelection = declarationSelection;
@@ -99,22 +107,32 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
                 foreach (var reference in declaration.References)
                 {
-                    var proc = (dynamic)reference.Context.Parent;
+                    var proc = (dynamic) reference.Context.Parent;
                     VBAParser.ArgsCallContext paramList;
 
                     // This is to prevent throws when this statement fails:
                     // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
-                    catch { continue; }
+                    try
+                    {
+                        paramList = (VBAParser.ArgsCallContext) proc.argsCall();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
-                    if (paramList == null) { continue; }
+                    if (paramList == null)
+                    {
+                        continue;
+                    }
 
                     var referenceSelection = new Selection(paramList.Start.Line,
-                                                           paramList.Start.Column,
-                                                           paramList.Stop.Line,
-                                                           paramList.Stop.Column + paramList.Stop.Text.Length + 1);
+                        paramList.Start.Column,
+                        paramList.Stop.Line,
+                        paramList.Stop.Column + paramList.Stop.Text.Length + 1);
 
-                    if (currentSelection.Contains(declarationSelection) && referenceSelection.Contains(selection.Selection))
+                    if (currentSelection.Contains(declarationSelection) &&
+                        referenceSelection.Contains(selection.Selection))
                     {
                         target = reference.Declaration;
                         currentSelection = referenceSelection;

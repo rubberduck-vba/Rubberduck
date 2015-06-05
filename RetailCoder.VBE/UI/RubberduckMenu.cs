@@ -26,7 +26,6 @@ namespace Rubberduck.UI
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
-        private readonly IActiveCodePaneEditor _editor;
 
         //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
@@ -40,7 +39,6 @@ namespace Rubberduck.UI
             : base(vbe, addIn)
         {
             _configService = configService;
-            _editor = editor;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();

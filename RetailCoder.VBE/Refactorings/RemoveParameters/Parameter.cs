@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
 
-namespace Rubberduck.UI.Refactorings.RemoveParameters
+namespace Rubberduck.Refactorings.RemoveParameters
 {
     /// <summary>
     /// Contains data about a method parameter for the Remove Parameters refactoring.

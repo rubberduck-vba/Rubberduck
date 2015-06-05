@@ -31,7 +31,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             _model = presenter.Show();
-            if (!_model.Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
+            if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
             {
                 return;
             }
