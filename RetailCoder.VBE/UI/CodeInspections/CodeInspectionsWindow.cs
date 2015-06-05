@@ -7,7 +7,7 @@ using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public partial class CodeInspectionsWindow : UserControl, IDockableUserControl//, ICodeInspectionsWindow
+    public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
@@ -124,6 +124,7 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     StatusLabel.Image = Resources.exclamation_diamond;
                     StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, issueCount, (issueCount != 1 ? "s" : string.Empty));
+                    QuickFixButton.Enabled = QuickFixButton.HasDropDownItems;
                 }
                 else
                 {

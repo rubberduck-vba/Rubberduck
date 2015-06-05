@@ -25,6 +25,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return null;
             }
 
+            if (_model.Parameters.Count == 1)
+            {
+                _model.Parameters[0].IsRemoved = true;
+                return _model;
+            }
+
             _view.Parameters = _model.Parameters;
             _view.InitializeParameterGrid();
 
