@@ -87,12 +87,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 catch { continue; }
 
                 if (paramList == null) { continue; }
-                var numParams = paramList.argCall().Count;  // handles optional variables
 
-                //foreach (var param in _model.Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
-                {
-                    RemoveCallParameter(paramList, module);
-                }
+                RemoveCallParameter(paramList, module);
             }
         }
 
