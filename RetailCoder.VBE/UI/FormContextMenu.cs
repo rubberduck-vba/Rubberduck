@@ -34,11 +34,6 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRenameButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (_vbe.ActiveCodePane == null)
-            {
-                return;
-            }
-
             Rename();
         }
 
@@ -47,22 +42,23 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, _vbe.ActiveVBProject);
 
-            using (var view = new RenameDialog())
+            var designer = (dynamic) _vbe.SelectedVBComponent.Designer;
+
+            foreach (var control in designer.Controls)
             {
-                var designer = (dynamic) _vbe.SelectedVBComponent.Designer;
+                if (!control.InSelection) { continue; }
 
-                foreach (var control in designer.Controls)
+                var controlToRename =
+                    result.Declarations.Items
+                        .FirstOrDefault(item => item.IdentifierName == control.Name
+                                                && item.ComponentName == _vbe.SelectedVBComponent.Name
+                                                && _vbe.ActiveVBProject.Equals(item.Project));
+
+                using (var view = new RenameDialog())
                 {
-                    if (control.InSelection)
-                    {
-                        var controlToRename =
-                            result.Declarations.Items
-                                .FirstOrDefault(item => item.IdentifierName == control.Name);
-
-                        var factory = new RenamePresenterFactory(_vbe, view, result);
-                        var refactoring = new RenameRefactoring(factory);
-                        refactoring.Refactor(controlToRename);
-                    }
+                    var factory = new RenamePresenterFactory(_vbe, view, result);
+                    var refactoring = new RenameRefactoring(factory);
+                    refactoring.Refactor(controlToRename);
                 }
             }
         }
