@@ -7,10 +7,22 @@ using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public partial class TestExplorerWindow : UserControl, IDockableUserControl
+    public partial class TestExplorerWindow : UserControl, ITestExplorerWindow
     {
-        private BindingList<TestExplorerItem> _allTests;
         private IList<TestExplorerItem> _playList;
+        public DataGridView GridView { get { return testOutputGridView; } }
+
+        private BindingList<TestExplorerItem> _allTests;
+        public BindingList<TestExplorerItem> AllTests
+        {
+            get { return _allTests; }
+            set
+            {
+                _allTests = value;
+                testOutputGridView.DataSource = _allTests;
+                testOutputGridView.Refresh();
+            }
+        }
 
         public string ClassId
         {
@@ -19,14 +31,14 @@ namespace Rubberduck.UI.UnitTesting
 
         public string Caption
         {
-            get { return "Test Explorer"; }
+            get { return RubberduckUI.TestExplorerWindow_Caption; }
         }
 
         public TestExplorerWindow()
         {
             InitializeComponent();
 
-            _allTests = new BindingList<TestExplorerItem>();
+            AllTests = new BindingList<TestExplorerItem>();
             _playList = new List<TestExplorerItem>();
 
             InitializeGrid();
@@ -35,12 +47,23 @@ namespace Rubberduck.UI.UnitTesting
 
         private void InitializeGrid()
         {
-            testOutputGridView.DataSource = _allTests;
+            testOutputGridView.DataSource = AllTests;
+            testOutputGridView.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
             var messageColumn = testOutputGridView.Columns["Message"];
             if (messageColumn != null)
             {
                 messageColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+
+            testOutputGridView.Columns["Result"].HeaderText = RubberduckUI.Result;
+            testOutputGridView.Columns["QualifiedMemberName"].HeaderText = RubberduckUI.TestExplorer_QualifiedMemberName;
+            testOutputGridView.Columns["ProjectName"].HeaderText = RubberduckUI.ProjectName;
+            testOutputGridView.Columns["ModuleName"].HeaderText = RubberduckUI.ModuleName;
+            testOutputGridView.Columns["MethodName"].HeaderText = RubberduckUI.TestExplorer_MethodName;
+            testOutputGridView.Columns["Outcome"].HeaderText = RubberduckUI.Outcome;
+            testOutputGridView.Columns["Message"].HeaderText = RubberduckUI.TestExplorer_Message;
+            testOutputGridView.Columns["Duration"].HeaderText = RubberduckUI.TestExplorer_Duration;
         }
 
         private void RegisterUIEvents()
@@ -58,6 +81,27 @@ namespace Rubberduck.UI.UnitTesting
             runNotRunTestsMenuItem.Click += RunNotRunTestsMenuItemClicked;
             runLastRunMenuItem.Click += RunLastRunMenuItemClicked;
             runSelectedTestMenuItem.Click += RunSelectedTestMenuItemClicked;
+
+            addTestMethodButton.Text = RubberduckUI.TestExplorer_AddTestMethod;
+            addTestModuleButton.Text = RubberduckUI.TestExplorer_AddTestModule;
+            addExpectedErrorTestMethodButton.Text = RubberduckUI.TestExplorer_AddExpectedErrorTestMethod;
+            runAllTestsMenuItem.Text = RubberduckUI.TestExplorer_RunAllTests;
+            runFailedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunFailedTests;
+            runPassedTestsMenuItem.Text = RubberduckUI.TestExplorer_RunPassedTests;
+            runNotRunTestsMenuItem.Text = RubberduckUI.TestExplorer_RunNotRunTests;
+            runLastRunMenuItem.Text = RubberduckUI.TestExplorer_RunLastRunTests;
+            runSelectedTestMenuItem.Text = RubberduckUI.TestExplorer_RunSelectedTests;
+            addButton.Text = RubberduckUI.TestExplorer_AddButtonText;
+            runButton.Text = RubberduckUI.TestExplorer_RunButtonText;
+
+            passedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberInconclusive, 0);
+            failedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberFailed, 0);
+            inconclusiveTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberPassed, 0);
+
+            addButton.ToolTipText = RubberduckUI.Add;
+            runButton.ToolTipText = RubberduckUI.Run;
+            refreshTestsButton.ToolTipText = RubberduckUI.Refresh;
+            gotoSelectionButton.ToolTipText = RubberduckUI.TestExplorer_GotoSelectionToolTip;
         }
 
         private void GridSelectionChanged(object sender, EventArgs e)
@@ -78,9 +122,9 @@ namespace Rubberduck.UI.UnitTesting
         private void RunSelectedTestMenuItemClicked(object sender, EventArgs e)
         {
             var handler = OnRunSelectedTestButtonClick;
-            if (handler != null && _allTests.Any())
+            if (handler != null && AllTests.Any())
             {
-                var selection = _allTests.Where(test => testOutputGridView.SelectedRows
+                var selection = AllTests.Where(test => testOutputGridView.SelectedRows
                                                                           .Cast<DataGridViewRow>()
                                                                           .Select(row => row.DataBoundItem as TestExplorerItem)
                                                                           .Select(item => item.GetTestMethod())
@@ -140,24 +184,18 @@ namespace Rubberduck.UI.UnitTesting
             OnButtonClick(OnAddTestModuleButtonClick);
         }
 
-        private void TestExplorerWindowFormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            Hide();
-        }
-
         public void ClearProgress()
         {
             _completedCount = 0;
-            testProgressBar.Maximum = _allTests.Count;
+            testProgressBar.Maximum = AllTests.Count;
             testProgressBar.Value = 0;
             UpdateCompletedTestsLabels();
         }
 
         public void ClearResults()
         {
-            _allTests = new BindingList<TestExplorerItem>(_allTests.Select(test => new TestExplorerItem(test.GetTestMethod(), null)).ToList());
-            testOutputGridView.DataSource = _allTests;
+            AllTests = new BindingList<TestExplorerItem>(AllTests.Select(test => new TestExplorerItem(test.GetTestMethod(), null)).ToList());
+            testOutputGridView.DataSource = AllTests;
         }
 
         private int _completedCount;
@@ -177,20 +215,20 @@ namespace Rubberduck.UI.UnitTesting
         private void UpdateCompletedTestsLabels()
         {
             TotalElapsedMilisecondsLabel.Text = string.Format("{0} ms", _playList.Sum(item => item.GetDuration() == TimeSpan.Zero ? 0 : item.GetDuration().Milliseconds));
-            passedTestsLabel.Text = string.Format("{0} Passed", _playList.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
-            failedTestsLabel.Text = string.Format("{0} Failed", _playList.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
-            inconclusiveTestsLabel.Text = string.Format("{0} Inconclusive", _playList.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
+            passedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberPassed, _playList.Count(item => item.Outcome == TestOutcome.Succeeded.ToString()));
+            failedTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberFailed, _playList.Count(item => item.Outcome == TestOutcome.Failed.ToString()));
+            inconclusiveTestsLabel.Text = string.Format(RubberduckUI.TestExplorer_TestNumberInconclusive, _playList.Count(item => item.Outcome == TestOutcome.Inconclusive.ToString()));
         }
 
         private TestExplorerItem FindItem(IEnumerable<TestExplorerItem> items, TestMethod test)
         {
-            return items.FirstOrDefault(item => item.QualifiedMemberName.Equals(test.QualifiedMemberName));
+            return items.FirstOrDefault(item => item.QualifiedMemberName == test.QualifiedMemberName.ToString());
         }
 
         public void Refresh(IDictionary<TestMethod, TestResult> tests)
         {
-            _allTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
-            testOutputGridView.DataSource = _allTests;
+            AllTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
+            testOutputGridView.DataSource = AllTests;
             testOutputGridView.Refresh();
         }
 
@@ -222,30 +260,30 @@ namespace Rubberduck.UI.UnitTesting
             var handler = OnGoToSelectedTest;
             if (handler != null && e.RowIndex >= 0)
             {
-                handler(this, new SelectedTestEventArgs(_allTests[e.RowIndex]));
+                handler(this, new SelectedTestEventArgs(AllTests[e.RowIndex]));
             }
         }
 
         private void GotoSelectionButtonClicked(object sender, EventArgs e)
         {
             var handler = OnGoToSelectedTest;
-            if (handler != null && _allTests.Any())
+            if (handler != null && AllTests.Any())
             {
                 var selectionIndex = testOutputGridView.SelectedRows[0].Index;
-                handler(this, new SelectedTestEventArgs(_allTests[selectionIndex]));
+                handler(this, new SelectedTestEventArgs(AllTests[selectionIndex]));
             }
         }
 
         public void WriteResult(TestMethod test, TestResult result)
         {
-            var gridItem = FindItem(_allTests, test);
+            var gridItem = FindItem(AllTests, test);
             var playListItem = FindItem(_playList, test);
 
             if (gridItem == null)
             {
                 var item = new TestExplorerItem(test, result);
-                _allTests.Add(item);
-                gridItem = FindItem(_allTests, test);
+                AllTests.Add(item);
+                gridItem = FindItem(AllTests, test);
             }
 
             gridItem.SetResult(result);
@@ -253,6 +291,18 @@ namespace Rubberduck.UI.UnitTesting
 
             UpdateProgress();
             testOutputGridView.Refresh();
+        }
+
+        public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
+        private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var handler = SortColumn;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, e);
         }
     }
 }

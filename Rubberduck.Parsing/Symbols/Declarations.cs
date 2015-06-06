@@ -1,14 +1,32 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class Declarations
     {
         private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
+
+        public static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        public static readonly DeclarationType[] PropertyTypes =
+        {
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
 
         /// <summary>
         /// Adds specified declaration to available lookups.
@@ -48,16 +66,59 @@ namespace Rubberduck.Parsing.Symbols
                 && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
 
-        private static readonly DeclarationType[] ProcedureTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
+        private IEnumerable<Declaration> _interfaces;
         private IEnumerable<Declaration> _interfaceMembers;
+
+        /// <summary>
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="type"/>, 
+        /// at the specified <see cref="selection"/>.
+        /// Returns the declaration if selection is on an identifier reference.
+        /// </summary>
+        public Declaration FindSelectedDeclaration(QualifiedSelection selection, DeclarationType type, Func<Declaration, Selection> selector = null)
+        {
+            return FindSelectedDeclaration(selection, new[] {type}, selector);
+        }
+
+        public Declaration FindSelectedDeclaration(QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration,Selection> selector = null)
+        {
+            var userDeclarations = _declarations.Where(item => !item.IsBuiltIn);
+            var declarations = userDeclarations.Where(item => types.Contains(item.DeclarationType)
+                && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
+
+            var declaration = declarations.SingleOrDefault(item => 
+                selector == null
+                    ? item.Selection.Contains(selection.Selection)
+                    : selector(item).Contains(selection.Selection));
+
+            if (declaration != null)
+            {
+                return declaration;
+            }
+
+            // if we haven't returned yet, then we must be on an identifier reference.
+            declaration = _declarations.SingleOrDefault(item => !item.IsBuiltIn
+                && types.Contains(item.DeclarationType)
+                && item.References.Any(reference =>
+                reference.QualifiedModuleName == selection.QualifiedName
+                && reference.Selection.Contains(selection.Selection)));
+
+            return declaration;
+        }
+
+        public IEnumerable<Declaration> FindInterfaces()
+        {
+            if (_interfaces != null)
+            {
+                return _interfaces;
+            }
+
+            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            _interfaces = classes.Where(item => item.References.Any(reference =>
+                reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                .ToList();
+
+            return _interfaces;
+        }
 
         /// <summary>
         /// Finds all interface members.
@@ -69,12 +130,7 @@ namespace Rubberduck.Parsing.Symbols
                 return _interfaceMembers;
             }
 
-            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .Select(i => i.Scope)
-                .ToList();
-
+            var interfaces = FindInterfaces().Select(i => i.Scope).ToList();
             _interfaceMembers = _declarations.Where(item => !item.IsBuiltIn 
                                                 && ProcedureTypes.Contains(item.DeclarationType)
                                                 && interfaces.Any(i => item.ParentScope.StartsWith(i)))
@@ -162,6 +218,12 @@ namespace Rubberduck.Parsing.Symbols
                 .ToList();
 
             return _interfaceImplementationMembers;
+        }
+
+        public IEnumerable<Declaration> FindInterfaceImplementationMembers(string interfaceMember)
+        {
+            return FindInterfaceImplementationMembers()
+                .Where(m => m.IdentifierName.EndsWith(interfaceMember));
         }
 
         public Declaration FindInterfaceMember(Declaration implementation)

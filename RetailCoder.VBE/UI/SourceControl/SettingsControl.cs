@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -9,24 +9,40 @@ namespace Rubberduck.UI.SourceControl
         public SettingsControl()
         {
             InitializeComponent();
+
+            SetText();
+        }
+
+        private void SetText()
+        {
+            GlobalSettingsBox.Text = RubberduckUI.SourceControl_GlobalSettings;
+            UserNameLabel.Text = RubberduckUI.SourceControl_UserNameLabel;
+            EmailAddressLabel.Text = RubberduckUI.SourceControl_EmailAddressLabel;
+            DefaultRepositoryLocationLabel.Text = RubberduckUI.SourceControl_DefaultRepoLocationLabel;
+            UpdateGlobalSettingsButton.Text = RubberduckUI.SourceControl_UpdateGlobalSettings;
+            CancelGlobalSettingsButton.Text = RubberduckUI.SourceControl_CancelGlobalSettings;
+
+            RepositorySettingsBox.Text = RubberduckUI.SourceControl_RespositorySettings;
+            EditIgnoreFileButton.Text = RubberduckUI.SourceControl_IgnoreFile;
+            EditAttributeFileButton.Text = RubberduckUI.SourceControl_AttributesFile;
         }
 
         string ISourceControlUserSettings.UserName
         {
-            get { return this.UserName.Text; }
-            set { this.UserName.Text = value; }
+            get { return this.UserNameTextBox.Text; }
+            set { this.UserNameTextBox.Text = value; }
         }
 
         string ISourceControlUserSettings.EmailAddress
         {
-            get { return this.EmailAddress.Text; }
-            set { this.EmailAddress.Text = value; }
+            get { return this.EmailAddressTextBox.Text; }
+            set { this.EmailAddressTextBox.Text = value; }
         }
 
         string ISourceControlUserSettings.DefaultRepositoryLocation
         {
-            get { return this.DefaultRepositoryLocation.Text; }
-            set { this.DefaultRepositoryLocation.Text = value; }
+            get { return this.DefaultRepositoryLocationTextBox.Text; }
+            set { this.DefaultRepositoryLocationTextBox.Text = value; }
         }
 
         public event EventHandler<EventArgs> BrowseDefaultRepositoryLocation;

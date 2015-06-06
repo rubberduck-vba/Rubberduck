@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -12,6 +12,19 @@ namespace Rubberduck.UI.Settings
         public TodoListSettingsUserControl()
         {
             InitializeComponent();
+
+            InitControl();
+        }
+
+        private void InitControl()
+        {
+            tokenListLabel.Text = RubberduckUI.TodoSettings_TokenListLabel;
+            priorityLabel.Text = RubberduckUI.TodoSettings_PriorityLabel;
+            tokenLabel.Text = RubberduckUI.TodoSettings_TokenLabel;
+
+            addButton.Text = RubberduckUI.Add;
+            saveChangesButton.Text = RubberduckUI.Change;
+            removeButton.Text = RubberduckUI.Remove;
         }
 
         public TodoListSettingsUserControl(IList<ToDoMarker> markers)

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 
 namespace RubberduckTests

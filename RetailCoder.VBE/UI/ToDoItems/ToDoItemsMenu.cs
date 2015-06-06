@@ -22,7 +22,7 @@ namespace Rubberduck.UI.ToDoItems
         public void Initialize(CommandBarPopup menu)
         {
             const int clipboardWithCheck = 837;
-            _todoItemsButton = AddButton(menu, "&ToDo Items", false, new CommandBarButtonClickEvent(OnShowTaskListButtonClick), clipboardWithCheck);
+            _todoItemsButton = AddButton(menu, RubberduckUI.RubberduckMenu_ToDoItems, false, new CommandBarButtonClickEvent(OnShowTaskListButtonClick), clipboardWithCheck);
         }
 
         private void OnShowTaskListButtonClick(CommandBarButton ctrl, ref bool CancelDefault)
@@ -30,10 +30,10 @@ namespace Rubberduck.UI.ToDoItems
             _presenter.Show();
         }
 
-        bool disposed = false;
+        bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
             {
                 return;
             }
@@ -44,7 +44,9 @@ namespace Rubberduck.UI.ToDoItems
                 uc.Dispose();
             }
 
-            disposed = true;
+            _todoItemsButton.Click -= OnShowTaskListButtonClick;
+
+            _disposed = true;
 
             base.Dispose();
         }

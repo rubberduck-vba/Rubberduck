@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeInspections
 
         public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeInspectionsButton = AddButton(parentMenu, "Code &Inspections", false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
+            _codeInspectionsButton = AddButton(parentMenu, RubberduckUI.RubberduckMenu_CodeInspections, false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
         }
 
         public void Inspect()
@@ -30,6 +30,25 @@ namespace Rubberduck.UI.CodeInspections
         private void OnCodeInspectionsButtonClick(CommandBarButton ctrl, ref bool canceldefault)
         {
             Inspect();
+        }
+
+        bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing && _window != null)
+            {
+                _window.Dispose();
+            }
+
+            _codeInspectionsButton.Click -= OnCodeInspectionsButtonClick;
+
+            _disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
@@ -8,8 +9,9 @@ namespace Rubberduck.Inspections
 {
     public interface IInspector
     {
-        Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project);
+        Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project, CancellationToken token);
         void Parse(VBE vbe, object owner);
+        Task<VBProjectParseResult> Parse(VBProject project, object owner);
         event EventHandler<InspectorIssuesFoundEventArg> IssuesFound;
         event EventHandler Reset;
         event EventHandler Parsing;

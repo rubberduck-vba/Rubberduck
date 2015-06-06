@@ -540,7 +540,7 @@ withStmt :
 writeStmt : WRITE WS fileNumber WS? ',' (WS? outputList)?;
 
 
-fileNumber : '#' (ambiguousIdentifier | literal);
+fileNumber : '#'? (ambiguousIdentifier | INTEGERLITERAL);
 
 
 // complex call statements ----------------------------------

@@ -44,7 +44,6 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Sets current scope to specified module member.
         /// </summary>
-        /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(string name, DeclarationType scopeType)
         {
             _currentScope = _qualifiedName + "." + name;
@@ -225,6 +224,47 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private Stack<Declaration> _parentMember;
+        public override void EnterECS_MemberProcedureCall(VBAParser.ECS_MemberProcedureCallContext context)
+        {
+            var implicitCall = context.implicitCallStmt_InStmt();
+            var member = Resolve(implicitCall.iCS_S_VariableOrProcedureCall())
+                         ?? Resolve(implicitCall.iCS_S_ProcedureOrArrayCall())
+                         ?? Resolve(implicitCall.iCS_S_DictionaryCall())
+                         ?? Resolve(implicitCall.iCS_S_MembersCall());
+
+            if (member == null && implicitCall.Start.Text == Tokens.Me)
+            {
+                member = _declarations[_qualifiedName.ComponentName].SingleOrDefault(item => item.DeclarationType == DeclarationType.Class);
+            }
+            if (member == null)
+            {
+                return;
+            }
+
+            EnterIdentifier(member.Context, member.Selection);
+
+            var identifier = context.ambiguousIdentifier();
+            EnterIdentifier(identifier, identifier.GetSelection());
+        }
+
+        public override void EnterECS_ProcedureCall(VBAParser.ECS_ProcedureCallContext context)
+        {
+            var identifier = context.ambiguousIdentifier();
+            EnterIdentifier(identifier, identifier.GetSelection());
+        }
+
+        public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
+        {
+            var member = Resolve(context);
+            if (member == null)
+            {
+                return;
+            }
+
+            EnterIdentifier(member.Context, member.Selection);
+        }
+
         private bool IsAssignmentContext(ParserRuleContext context)
         {
             return context.Parent is VBAParser.ForNextStmtContext
@@ -247,6 +287,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool EnterIdentifier(ParserRuleContext context, Selection selection, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false, DeclarationType accessorType = DeclarationType.PropertyGet)
         {
+            if (context == null)
+            {
+                return false;
+            }
+
             var name = context.GetText();
             var matches = _declarations[name].Where(IsInScope);
 
@@ -254,14 +299,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declaration != null)
             {
                 var reference = new IdentifierReference(_qualifiedName, name, selection, context, declaration, isAssignmentTarget, hasExplicitLetStatement);
+                declaration.AddReference(reference); // doesn't re-add an existing one
+                return true;
 
-                // thread-local copy
-                var references = declaration.References.ToList();
-                if (!references.Select(r => r.Context).Contains(reference.Context))
-                {
-                    declaration.AddReference(reference);
-                    return true;
-                }
                 // note: non-matching names are not necessarily undeclared identifiers, e.g. "String" in "Dim foo As String".
             }
 
@@ -456,7 +496,22 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration Resolve(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
+            Declaration type;
+            IEnumerable<Declaration> members;
+            var name = context.ambiguousIdentifier().GetText();
+
             var parent = context.implicitCallStmt_InStmt();
+            if (parent == null && _withQualifiers.Any())
+            {
+                type = _withQualifiers.Pop();
+                members = _declarations.FindMembers(type);
+                return members.SingleOrDefault(m => m.IdentifierName == name);
+            }
+            if (parent == null)
+            {
+                return null; // bug in grammar..
+            }
+
             var parentCall = Resolve(parent.iCS_S_VariableOrProcedureCall())
                              ?? Resolve(parent.iCS_S_ProcedureOrArrayCall())
                              ?? Resolve(parent.iCS_S_DictionaryCall())
@@ -464,16 +519,16 @@ namespace Rubberduck.Parsing.Symbols
 
             if (parentCall == null)
             {
-                return null;
+                return parent.Start.Text == Tokens.Me 
+                    ? _declarations[_qualifiedName.ComponentName].SingleOrDefault(item => item.DeclarationType == DeclarationType.Class)
+                    : null;
             }
 
-            var type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
+            type = _declarations[parentCall.AsTypeName].SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.Class
                 || item.DeclarationType == DeclarationType.UserDefinedType);
 
-            var members = _declarations.FindMembers(type);
-            var name = context.ambiguousIdentifier().GetText();
-
+            members = _declarations.FindMembers(type);
             return members.SingleOrDefault(m => m.IdentifierName == name);
         }
 
@@ -640,7 +695,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // handle indexed property getters
-            var currentScopeMatches = matches.Where(declaration =>
+            var currentScopeMatches = matches.Where(declaration => declaration.Context != null &&
                 (declaration.Scope == _currentScope && !PropertyContexts.Contains(declaration.Context.Parent.Parent.GetType()))
                 || ((declaration.Context != null && declaration.Context.Parent.Parent is VBAParser.PropertyGetStmtContext
                     && _currentScopeType == DeclarationType.PropertyGet)

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.SourceControl
         {
             using (var folderPicker = new FolderBrowserDialog())
             {
-                folderPicker.Description = "Create New Repository";
+                folderPicker.Description = RubberduckUI.SourceControl_CreateNewRepo;
                 folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
                 folderPicker.ShowNewFolderButton = true;
 
@@ -76,7 +76,7 @@ namespace Rubberduck.UI.SourceControl
         {
             using (var folderPicker = new FolderBrowserDialog())
             {
-                folderPicker.Description = "Open Working Directory";
+                folderPicker.Description = RubberduckUI.SourceControl_OpenWorkingDirectory;
                 folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
                 folderPicker.ShowNewFolderButton = false;
 
@@ -108,7 +108,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!ValidRepoExists())
             {
-                _view.Status = "Offline";
+                _view.Status = RubberduckUI.Offline;
                 return;
             }
 
@@ -124,7 +124,7 @@ namespace Rubberduck.UI.SourceControl
 
             SetChildPresenterSourceControlProviders(_provider);
 
-            _view.Status = "Online";
+            _view.Status = RubberduckUI.Online;
         }
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)

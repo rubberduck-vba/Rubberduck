@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -14,15 +14,15 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
-                {"Replace 'Global' access modifier with 'Public'", ChangeAccessModifier}
+                {RubberduckUI.Inspections_ChangeGlobalAccessModifierToPublic, ChangeAccessModifier}
             };
         }
 
-        private void ChangeAccessModifier(VBE vbe)
+        private void ChangeAccessModifier()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)

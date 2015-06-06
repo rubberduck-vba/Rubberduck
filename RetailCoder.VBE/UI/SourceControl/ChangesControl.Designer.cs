@@ -37,9 +37,9 @@ namespace Rubberduck.UI.SourceControl
             this.IncludedChangesGrid = new System.Windows.Forms.DataGridView();
             this.CommitButton = new System.Windows.Forms.Button();
             this.CommitActionDropdown = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.CommitMessageLabel = new System.Windows.Forms.Label();
             this.CommitMessageBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.CurrentBranchLabel = new System.Windows.Forms.Label();
             this.ExcludedChangesBox = new System.Windows.Forms.GroupBox();
             this.ExcludedChangesGrid = new System.Windows.Forms.DataGridView();
             this.UntrackedFilesBox = new System.Windows.Forms.GroupBox();
@@ -62,25 +62,27 @@ namespace Rubberduck.UI.SourceControl
             this.ChangesPanel.Controls.Add(this.IncludedChangesBox);
             this.ChangesPanel.Controls.Add(this.CommitButton);
             this.ChangesPanel.Controls.Add(this.CommitActionDropdown);
-            this.ChangesPanel.Controls.Add(this.label2);
+            this.ChangesPanel.Controls.Add(this.CommitMessageLabel);
             this.ChangesPanel.Controls.Add(this.CommitMessageBox);
-            this.ChangesPanel.Controls.Add(this.label1);
+            this.ChangesPanel.Controls.Add(this.CurrentBranchLabel);
             this.ChangesPanel.Controls.Add(this.ExcludedChangesBox);
             this.ChangesPanel.Controls.Add(this.UntrackedFilesBox);
             this.ChangesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ChangesPanel.Location = new System.Drawing.Point(0, 0);
+            this.ChangesPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ChangesPanel.Name = "ChangesPanel";
-            this.ChangesPanel.Padding = new System.Windows.Forms.Padding(3);
-            this.ChangesPanel.Size = new System.Drawing.Size(238, 560);
+            this.ChangesPanel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ChangesPanel.Size = new System.Drawing.Size(317, 690);
             this.ChangesPanel.TabIndex = 1;
             // 
             // ChangesBranchNameLabel
             // 
             this.ChangesBranchNameLabel.AutoSize = true;
             this.ChangesBranchNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ChangesBranchNameLabel.Location = new System.Drawing.Point(56, 14);
+            this.ChangesBranchNameLabel.Location = new System.Drawing.Point(75, 17);
+            this.ChangesBranchNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ChangesBranchNameLabel.Name = "ChangesBranchNameLabel";
-            this.ChangesBranchNameLabel.Size = new System.Drawing.Size(45, 13);
+            this.ChangesBranchNameLabel.Size = new System.Drawing.Size(57, 17);
             this.ChangesBranchNameLabel.TabIndex = 18;
             this.ChangesBranchNameLabel.Text = "Master";
             // 
@@ -89,10 +91,11 @@ namespace Rubberduck.UI.SourceControl
             this.IncludedChangesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.IncludedChangesBox.Controls.Add(this.IncludedChangesGrid);
-            this.IncludedChangesBox.Location = new System.Drawing.Point(9, 119);
+            this.IncludedChangesBox.Location = new System.Drawing.Point(12, 146);
+            this.IncludedChangesBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.IncludedChangesBox.Name = "IncludedChangesBox";
-            this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.IncludedChangesBox.Size = new System.Drawing.Size(223, 141);
+            this.IncludedChangesBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.IncludedChangesBox.Size = new System.Drawing.Size(297, 174);
             this.IncludedChangesBox.TabIndex = 15;
             this.IncludedChangesBox.TabStop = false;
             this.IncludedChangesBox.Text = "Included changes";
@@ -110,10 +113,11 @@ namespace Rubberduck.UI.SourceControl
             this.IncludedChangesGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IncludedChangesGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.IncludedChangesGrid.GridColor = System.Drawing.Color.White;
-            this.IncludedChangesGrid.Location = new System.Drawing.Point(6, 19);
+            this.IncludedChangesGrid.Location = new System.Drawing.Point(8, 22);
+            this.IncludedChangesGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.IncludedChangesGrid.Name = "IncludedChangesGrid";
             this.IncludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.IncludedChangesGrid.Size = new System.Drawing.Size(211, 116);
+            this.IncludedChangesGrid.Size = new System.Drawing.Size(281, 145);
             this.IncludedChangesGrid.TabIndex = 0;
             this.IncludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragDrop);
             this.IncludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.IncludedChangesGrid_DragOver);
@@ -128,10 +132,11 @@ namespace Rubberduck.UI.SourceControl
             this.CommitButton.Enabled = false;
             this.CommitButton.Image = global::Rubberduck.Properties.Resources.tick;
             this.CommitButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CommitButton.Location = new System.Drawing.Point(170, 87);
-            this.CommitButton.MinimumSize = new System.Drawing.Size(62, 23);
+            this.CommitButton.Location = new System.Drawing.Point(227, 107);
+            this.CommitButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CommitButton.MinimumSize = new System.Drawing.Size(83, 28);
             this.CommitButton.Name = "CommitButton";
-            this.CommitButton.Size = new System.Drawing.Size(62, 23);
+            this.CommitButton.Size = new System.Drawing.Size(83, 28);
             this.CommitButton.TabIndex = 14;
             this.CommitButton.Text = "Go";
             this.CommitButton.UseVisualStyleBackColor = true;
@@ -142,56 +147,61 @@ namespace Rubberduck.UI.SourceControl
             this.CommitActionDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CommitActionDropdown.FormattingEnabled = true;
             this.CommitActionDropdown.Items.AddRange(new object[] {
-            "Commit",
-            "Commit and Push",
-            "Commit and Sync"});
-            this.CommitActionDropdown.Location = new System.Drawing.Point(9, 87);
-            this.CommitActionDropdown.MinimumSize = new System.Drawing.Size(121, 0);
+            RubberduckUI.SourceControl_Commit,
+            RubberduckUI.SourceControl_CommitPush,
+            RubberduckUI.SourceControl_CommitSync});
+            this.CommitActionDropdown.Location = new System.Drawing.Point(12, 107);
+            this.CommitActionDropdown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CommitActionDropdown.MinimumSize = new System.Drawing.Size(160, 0);
             this.CommitActionDropdown.Name = "CommitActionDropdown";
-            this.CommitActionDropdown.Size = new System.Drawing.Size(155, 21);
+            this.CommitActionDropdown.Size = new System.Drawing.Size(205, 24);
             this.CommitActionDropdown.TabIndex = 13;
             this.CommitActionDropdown.SelectedIndexChanged += new System.EventHandler(this.CommitActionDropdown_SelectedIndexChanged);
             // 
-            // label2
+            // CommitMessageLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 39);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Commit message:";
+            this.CommitMessageLabel.AutoSize = true;
+            this.CommitMessageLabel.Location = new System.Drawing.Point(8, 48);
+            this.CommitMessageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CommitMessageLabel.Name = "CommitMessageLabel";
+            this.CommitMessageLabel.Size = new System.Drawing.Size(119, 17);
+            this.CommitMessageLabel.TabIndex = 12;
+            this.CommitMessageLabel.Text = "Commit message:";
             // 
             // CommitMessageBox
             // 
             this.CommitMessageBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CommitMessageBox.BackColor = System.Drawing.Color.LightYellow;
-            this.CommitMessageBox.Location = new System.Drawing.Point(9, 55);
+            this.CommitMessageBox.Location = new System.Drawing.Point(12, 68);
+            this.CommitMessageBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CommitMessageBox.Multiline = true;
             this.CommitMessageBox.Name = "CommitMessageBox";
             this.CommitMessageBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.CommitMessageBox.Size = new System.Drawing.Size(226, 29);
+            this.CommitMessageBox.Size = new System.Drawing.Size(300, 35);
             this.CommitMessageBox.TabIndex = 11;
             this.CommitMessageBox.TextChanged += new System.EventHandler(this.CommitMessageBox_TextChanged);
             // 
-            // label1
+            // CurrentBranchLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Branch:";
+            this.CurrentBranchLabel.AutoSize = true;
+            this.CurrentBranchLabel.Location = new System.Drawing.Point(8, 17);
+            this.CurrentBranchLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CurrentBranchLabel.Name = "CurrentBranchLabel";
+            this.CurrentBranchLabel.Size = new System.Drawing.Size(57, 17);
+            this.CurrentBranchLabel.TabIndex = 9;
+            this.CurrentBranchLabel.Text = "Branch:";
             // 
             // ExcludedChangesBox
             // 
             this.ExcludedChangesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ExcludedChangesBox.Controls.Add(this.ExcludedChangesGrid);
-            this.ExcludedChangesBox.Location = new System.Drawing.Point(9, 266);
+            this.ExcludedChangesBox.Location = new System.Drawing.Point(12, 327);
+            this.ExcludedChangesBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ExcludedChangesBox.Name = "ExcludedChangesBox";
-            this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.ExcludedChangesBox.Size = new System.Drawing.Size(223, 141);
+            this.ExcludedChangesBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.ExcludedChangesBox.Size = new System.Drawing.Size(297, 174);
             this.ExcludedChangesBox.TabIndex = 16;
             this.ExcludedChangesBox.TabStop = false;
             this.ExcludedChangesBox.Text = "Excluded changes";
@@ -209,10 +219,11 @@ namespace Rubberduck.UI.SourceControl
             this.ExcludedChangesGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ExcludedChangesGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.ExcludedChangesGrid.GridColor = System.Drawing.Color.White;
-            this.ExcludedChangesGrid.Location = new System.Drawing.Point(6, 19);
+            this.ExcludedChangesGrid.Location = new System.Drawing.Point(8, 22);
+            this.ExcludedChangesGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ExcludedChangesGrid.Name = "ExcludedChangesGrid";
             this.ExcludedChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ExcludedChangesGrid.Size = new System.Drawing.Size(211, 116);
+            this.ExcludedChangesGrid.Size = new System.Drawing.Size(281, 145);
             this.ExcludedChangesGrid.TabIndex = 1;
             this.ExcludedChangesGrid.DragDrop += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragDrop);
             this.ExcludedChangesGrid.DragOver += new System.Windows.Forms.DragEventHandler(this.ExcludedChangesGrid_DragOver);
@@ -224,10 +235,11 @@ namespace Rubberduck.UI.SourceControl
             this.UntrackedFilesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.UntrackedFilesBox.Controls.Add(this.UntrackedFilesGrid);
-            this.UntrackedFilesBox.Location = new System.Drawing.Point(9, 413);
+            this.UntrackedFilesBox.Location = new System.Drawing.Point(12, 508);
+            this.UntrackedFilesBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UntrackedFilesBox.Name = "UntrackedFilesBox";
-            this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(6);
-            this.UntrackedFilesBox.Size = new System.Drawing.Size(223, 141);
+            this.UntrackedFilesBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.UntrackedFilesBox.Size = new System.Drawing.Size(297, 174);
             this.UntrackedFilesBox.TabIndex = 17;
             this.UntrackedFilesBox.TabStop = false;
             this.UntrackedFilesBox.Text = "Untracked files";
@@ -246,23 +258,25 @@ namespace Rubberduck.UI.SourceControl
             this.UntrackedFilesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.UntrackedFilesGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.UntrackedFilesGrid.GridColor = System.Drawing.Color.White;
-            this.UntrackedFilesGrid.Location = new System.Drawing.Point(10, 22);
+            this.UntrackedFilesGrid.Location = new System.Drawing.Point(13, 27);
+            this.UntrackedFilesGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UntrackedFilesGrid.Name = "UntrackedFilesGrid";
             this.UntrackedFilesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.UntrackedFilesGrid.Size = new System.Drawing.Size(204, 110);
+            this.UntrackedFilesGrid.Size = new System.Drawing.Size(272, 135);
             this.UntrackedFilesGrid.TabIndex = 1;
             this.UntrackedFilesGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseDown);
             this.UntrackedFilesGrid.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UntrackedFilesGrid_MouseMove);
             // 
             // ChangesControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.Controls.Add(this.ChangesPanel);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ChangesControl";
-            this.Size = new System.Drawing.Size(238, 560);
+            this.Size = new System.Drawing.Size(317, 690);
             this.ChangesPanel.ResumeLayout(false);
             this.ChangesPanel.PerformLayout();
             this.IncludedChangesBox.ResumeLayout(false);
@@ -284,9 +298,9 @@ namespace Rubberduck.UI.SourceControl
         private DataGridView IncludedChangesGrid;
         private Button CommitButton;
         private ComboBox CommitActionDropdown;
-        private Label label2;
+        private Label CommitMessageLabel;
         private TextBox CommitMessageBox;
-        private Label label1;
+        private Label CurrentBranchLabel;
         private GroupBox ExcludedChangesBox;
         private DataGridView ExcludedChangesGrid;
         private GroupBox UntrackedFilesBox;

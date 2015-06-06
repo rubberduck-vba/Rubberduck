@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,6 +19,26 @@ namespace Rubberduck.Parsing
             {
                 _declarations.Add(declaration);
             }
+
+            foreach (var declaration in _parseResults.SelectMany(item => item.Declarations))
+            {
+                _declarations.Add(declaration);
+            }
+        }
+
+        public event EventHandler<ResolutionProgressEventArgs> Progress;
+
+        private void OnProgress(VBComponentParseResult result)
+        {
+            var handler = Progress;
+            if (handler != null)
+            {
+                handler(null, new ResolutionProgressEventArgs(result.Component));
+            }
+        }
+
+        public void Resolve()
+        {
             IdentifySymbols();
             IdentifySymbolUsages();
         }
@@ -34,21 +55,15 @@ namespace Rubberduck.Parsing
             {
                 try
                 {
-                    var listener = new DeclarationSymbolsListener(componentParseResult);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, componentParseResult.ParseTree);
-
-                    if (!_declarations.Items.Any())
+                    var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
+                    if (!_declarations.Items.Any(declaration => 
+                        !declaration.IsBuiltIn 
+                        && declaration.DeclarationType == DeclarationType.Project 
+                        && declaration.IdentifierName == projectIdentifier))
                     { 
-                        var projectIdentifier = componentParseResult.QualifiedName.Project.Name;
                         var memberName = componentParseResult.QualifiedName.QualifyMemberName(projectIdentifier);
                         var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
                         _declarations.Add(projectDeclaration);
-                    }
-
-                    foreach (var declaration in listener.Declarations.Items)
-                    {
-                        _declarations.Add(declaration);
                     }
                 }
                 catch (COMException)
@@ -62,6 +77,8 @@ namespace Rubberduck.Parsing
         {
             foreach (var componentParseResult in _parseResults)
             {
+                OnProgress(componentParseResult);
+
                 var listener = new IdentifierReferenceListener(componentParseResult, _declarations);
                 var walker = new ParseTreeWalker();
                 walker.Walk(listener, componentParseResult.ParseTree);

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -14,16 +14,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Declare as explicit Variant", DeclareAsExplicitVariant}
+                    {RubberduckUI.Inspections_DeclareAsExplicitVariant, DeclareAsExplicitVariant}
                 };
         }
 
-        private void DeclareAsExplicitVariant(VBE vbe)
+        private void DeclareAsExplicitVariant()
         {
             var codeModule = QualifiedSelection.QualifiedName.Component.CodeModule;
             var codeLine = codeModule.get_Lines(QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount);

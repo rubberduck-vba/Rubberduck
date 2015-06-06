@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -17,15 +17,15 @@ namespace Rubberduck.Inspections
 
         private new VBAParser.LetStmtContext Context { get { return base.Context as VBAParser.LetStmtContext; } }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
-                {"Remove obsolete statement", RemoveObsoleteStatement}
+                {RubberduckUI.Inspections_RemoveObsoleteStatement, RemoveObsoleteStatement}
             };
         }
 
-        private void RemoveObsoleteStatement(VBE vbe)
+        private void RemoveObsoleteStatement()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)

@@ -12,6 +12,18 @@ namespace Rubberduck.UI.SourceControl
         public ChangesControl()
         {
             InitializeComponent();
+
+            SetText();
+        }
+
+        private void SetText()
+        {
+            CurrentBranchLabel.Text = RubberduckUI.SourceControl_CurrentBranchLabel;
+            CommitMessageLabel.Text = RubberduckUI.SourceControl_CommitMessageLabel;
+            CommitButton.Text = RubberduckUI.SourceControl_CommitButtonLabel;
+            IncludedChangesBox.Text = RubberduckUI.SourceControl_IncludedChanges;
+            ExcludedChangesBox.Text = RubberduckUI.SourceControl_ExcludedChanges;
+            UntrackedFilesBox.Text = RubberduckUI.SourceControl_UntrackedFiles;
         }
 
         public string CurrentBranch

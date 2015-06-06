@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
+            : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
+        {
+            _target = target;
+        }
+
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
@@ -23,9 +28,6 @@ namespace Rubberduck.Inspections
         /// </summary>
         protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
-            if (context == null && comment == null)
-                throw new ArgumentNullException("[context] and [comment] cannot both be null.");
-
             _name = inspection;
             _type = type;
             _qualifiedName = qualifiedName;
@@ -54,6 +56,9 @@ namespace Rubberduck.Inspections
         private readonly CommentNode _comment;
         public CommentNode Comment { get { return _comment; } }
 
+        private readonly Declaration _target;
+        protected Declaration Target { get { return _target; } }
+
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
@@ -61,8 +66,12 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return _context == null 
-                    ? _comment.QualifiedSelection 
+                if (_context == null && _comment == null)
+                {
+                    return _target.QualifiedSelection;
+                }
+                return _context == null
+                    ? _comment.QualifiedSelection
                     : new QualifiedSelection(_qualifiedName, _context.GetSelection());
             }
         }
@@ -72,22 +81,7 @@ namespace Rubberduck.Inspections
         /// </summary>
         /// <returns>Returns a <c>Dictionary&lt;string&gt;, Action&lt;VBE&gt;</c>
         /// where the keys are descriptions for each quick fix, and
-        /// each value is a method returning <c>void</c> and taking a <c>VBE</c> parameter.</returns>
-        public abstract IDictionary<string, Action<VBE>> GetQuickFixes();
-
-        public VBComponent FindComponent(VBE vbe)
-        {
-            var vbProject = vbe.VBProjects.Cast<VBProject>()
-                .SingleOrDefault(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked
-                                         && project.Equals(QualifiedName.Project));
-
-            if (vbProject == null)
-            {
-                return null;
-            }
-
-            return vbProject.VBComponents.Cast<VBComponent>()
-                .SingleOrDefault(component => component.Equals(QualifiedName.Component));
-        }
+        /// each value is a parameterless method returning <c>void</c>.</returns>
+        public abstract IDictionary<string, Action> GetQuickFixes();
     }
 }

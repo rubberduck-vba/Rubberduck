@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Mocks

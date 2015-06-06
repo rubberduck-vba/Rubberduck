@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -15,16 +15,17 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
-                {"Pass parameter by reference", PassParameterByReference}
-                //,{"Introduce local variable", IntroduceLocalVariable}
+                {RubberduckUI.Inspections_PassParamByReference, PassParameterByReference}
+                //,{RubberduckUI.InspectionsIntroduceLocalVariable, IntroduceLocalVariable}
             };
         }
 
-        private void PassParameterByReference(VBE vbe)
+        //note: vbe parameter is not used
+        private void PassParameterByReference()
         {
             var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByRef, " ", parameter.Replace(Tokens.ByVal, string.Empty).Trim());
@@ -35,11 +36,6 @@ namespace Rubberduck.Inspections
 
             var result = lines.Replace(parameter, newContent);
             module.ReplaceLine(selection.StartLine, result);
-        }
-
-        private void IntroduceLocalVariable(VBE vbe)
-        {
-            var parameter = Context.GetText().Replace(Tokens.ByVal, string.Empty).Trim();
         }
     }
 }

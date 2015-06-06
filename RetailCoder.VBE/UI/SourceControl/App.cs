@@ -1,5 +1,5 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.SourceControl
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Properties;
 using Rubberduck.VBEditor;
@@ -14,7 +13,8 @@ namespace Rubberduck.UI.CodeInspections
         public CodeInspectionResultGridViewItem(ICodeInspectionResult result)
         {
             _item = result;
-            _severity = GetSeverityIcon(result.Severity);
+            _icon = GetSeverityIcon(result.Severity);
+            _severity = result.Severity;
             _selection = result.QualifiedSelection;
             _issue = result.Name;
             _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private object _quickFix;
-        private Action<VBE> FirstOrDefaultQuickFix(IDictionary<string, Action<VBE>> fixes)
+        private Action FirstOrDefaultQuickFix(IDictionary<string, Action> fixes)
         {
             return fixes.FirstOrDefault().Value;
         }
@@ -52,8 +52,14 @@ namespace Rubberduck.UI.CodeInspections
             return image;
         }
 
-        private readonly Image _severity;
-        public Image Severity
+        private readonly Image _icon;
+        public Image Icon
+        {
+            get { return _icon; }
+        }
+
+        private readonly CodeInspectionSeverity _severity;
+        public CodeInspectionSeverity Severity
         {
             get { return _severity; }
         }

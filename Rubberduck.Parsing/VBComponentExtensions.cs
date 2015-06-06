@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.VBA
+namespace Rubberduck.Parsing
 {
+    [ComVisible(false)]
     public static class VBComponentExtensions
     {
         public static bool HasAttribute<TAttribute>(this CodeModule code) where TAttribute : MemberAttributeBase, new()
@@ -13,7 +16,7 @@ namespace Rubberduck.VBA
             return HasAttribute(code, new TAttribute().Name);
         }
 
-        public static bool HasAttribute(this CodeModule code, string name)
+        private static bool HasAttribute(this CodeModule code, string name)
         {
             if (code.CountOfDeclarationLines == 0)
             {
@@ -28,7 +31,7 @@ namespace Rubberduck.VBA
             return GetMembers(component.CodeModule, procedureKind);
         }
 
-        public static IEnumerable<Member> GetMembers(this CodeModule module, vbext_ProcKind? procedureKind = null)
+        private static IEnumerable<Member> GetMembers(this CodeModule module, vbext_ProcKind? procedureKind = null)
         {
             var currentLine = module.CountOfDeclarationLines + 1;
             while (currentLine < module.CountOfLines)

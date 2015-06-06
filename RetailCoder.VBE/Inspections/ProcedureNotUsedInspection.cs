@@ -4,6 +4,8 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -14,7 +16,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.ProcedureNotUsed_; } }
+        public string Name { get { return "ProcedureNotUsedInspection"; } }
+        public string Description { get { return RubberduckUI.ProcedureNotUsed_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -41,10 +44,11 @@ namespace Rubberduck.Inspections
 
             var issues = parseResult.Declarations.Items
                 .Where(item => !item.IsBuiltIn && !IsIgnoredDeclaration(parseResult.Declarations, item, handlers, classes, modules))
-                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Name, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName))
-                .ToList();
+                .Select(issue => new IdentifierNotUsedInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue.Context, issue.QualifiedName.QualifiedModuleName));
 
-            return issues;
+            issues = DocumentNames.DocumentEventHandlerPrefixes.Aggregate(issues, (current, item) => current.Where(issue => !issue.Name.Contains("'" + item)));
+
+            return issues.ToList();
         }
 
         private static readonly DeclarationType[] ProcedureTypes =

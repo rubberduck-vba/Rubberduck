@@ -10,6 +10,17 @@ namespace Rubberduck.UI.SourceControl
         public BranchesControl()
         {
             InitializeComponent();
+
+            SetText();
+        }
+
+        private void SetText()
+        {
+            CurrentBranch.Text = RubberduckUI.SourceControl_CurrentBranchLabel;
+            NewBranchButton.Text = RubberduckUI.SourceControl_NewBranch;
+            MergeBranchButton.Text = RubberduckUI.SourceControl_MergeBranch;
+            PublishedBranchesBox.Text = RubberduckUI.SourceControl_PublishedBranchesLabel;
+            UnpublishedBranchesBox.Text = RubberduckUI.SourceControl_UnpublishedBranchesLabel;
         }
 
         private BindingList<string> _branches;

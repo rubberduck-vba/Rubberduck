@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -12,21 +13,35 @@ namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerDockablePresenter : DockablePresenterBase
     {
-        private TestExplorerWindow Control { get { return UserControl as TestExplorerWindow; } }
+        private ITestExplorerWindow Control { get { return UserControl as ITestExplorerWindow; } }
+        private GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
+            _gridViewSort = gridViewSort;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
             _testEngine.ModuleCleanup += _testEngine_ModuleCleanup;
             _testEngine.MethodInitialize += TestEngineMethodInitialize;
             _testEngine.MethodCleanup += TestEngineMethodCleanup;
 
+            Control.SortColumn += SortColumn;
+
             RegisterTestExplorerEvents();
         }
+
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+
+            // type "Image" doesn't implement "IComparable", so we need to sort by the outcome instead
+            if (columnName == RubberduckUI.Result) { columnName = RubberduckUI.Outcome; }
+            Control.AllTests = new BindingList<TestExplorerItem>(_gridViewSort.Sort(Control.AllTests.AsEnumerable(), columnName).ToList());
+        }
+
 
         private void TestEngineMethodCleanup(object sender, TestModuleEventArgs e)
         {
@@ -52,9 +67,9 @@ namespace Rubberduck.UI.UnitTesting
             module.Parent.RunMethodsWithAttribute<ModuleInitializeAttribute>();
         }
 
-        public void Synchronize()
+        private void Synchronize()
         {
-            SynchronizeEngineWithIDE();
+            FindAllTests();
             Control.Refresh(_testEngine.AllTests);
         }
 
@@ -64,11 +79,11 @@ namespace Rubberduck.UI.UnitTesting
             base.Show();
         }
 
-        public void SynchronizeEngineWithIDE()
+        private void FindAllTests()
         {
             try
             {
-                _testEngine.AllTests = this.VBE.VBProjects
+                _testEngine.AllTests = VBE.VBProjects
                                 .Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked)
                                 .SelectMany(project => project.TestMethods())
                                 .ToDictionary(test => test, test => _testEngine.AllTests.ContainsKey(test) ? _testEngine.AllTests[test] : null);
@@ -77,8 +92,8 @@ namespace Rubberduck.UI.UnitTesting
             catch (ArgumentException)
             {
                 MessageBox.Show(
-                    "Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.",
-                    "Warning", MessageBoxButtons.OK,
+                    RubberduckUI.TestExplorerDockablePresenter_MultipleTestsSameNameError,
+                    RubberduckUI.Warning, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
             }
         }
@@ -96,7 +111,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.Run(tests);
         }
 
-        private void TestComplete(object sender, TestCompleteEventArgs e)
+        private void TestComplete(object sender, TestCompletedEventArgs e)
         {
             Control.WriteResult(e.Test, e.Result);
         }

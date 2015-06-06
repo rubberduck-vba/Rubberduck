@@ -11,10 +11,7 @@ namespace Rubberduck.UI.ToDoItems
     {
         private const string ClassId = "8B071EDA-2C9C-4009-9A22-A1958BF98B28";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return "ToDo Explorer"; } }
-
-        public string SortedByColumn { get; set; }
-        public bool SortedAscending { get; set; }
+        string IDockableUserControl.Caption { get { return RubberduckUI.ToDoExplorer_Caption; } }
 
         private BindingList<ToDoItem> _todoItems;
         public IEnumerable<ToDoItem> TodoItems 
@@ -50,6 +47,14 @@ namespace Rubberduck.UI.ToDoItems
             
             todoItemsGridView.CellDoubleClick += ToDoGridViewCellDoubleClicked;
             refreshButton.Click += RefreshButtonClicked;
+
+            todoItemsGridView.Columns["Priority"].HeaderText = RubberduckUI.Priority;
+            todoItemsGridView.Columns["Description"].HeaderText = RubberduckUI.TodoExplorer_Description;
+            todoItemsGridView.Columns["ProjectName"].HeaderText = RubberduckUI.ProjectName;
+            todoItemsGridView.Columns["ModuleName"].HeaderText = RubberduckUI.ModuleName;
+            todoItemsGridView.Columns["LineNumber"].HeaderText = RubberduckUI.TodoExplorer_LineNumber;
+
+            refreshButton.ToolTipText = RubberduckUI.Refresh;
         }
 
         public event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;

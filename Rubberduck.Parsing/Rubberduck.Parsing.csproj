@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBABaseListener.cs" />
     <Compile Include="Grammar\VBABaseVisitor.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
@@ -63,11 +64,10 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
-    <Compile Include="Listeners\DeclarationListener.cs" />
-    <Compile Include="Listeners\ExceptionErrorListener.cs" />
-    <Compile Include="Listeners\IExtensionListener.cs" />
-    <Compile Include="Listeners\SyntaxErrorException.cs" />
-    <Compile Include="Listeners\VariableReferencesListener.cs" />
+    <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\IdentifierReferencesListener.cs" />
+    <Compile Include="Symbols\IdentifierResolver.cs" />
+    <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
@@ -80,18 +80,15 @@
     <Compile Include="Symbols\DeclarationSymbolsListener.cs" />
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\Declarations.cs" />
-    <Compile Include="Grammar\Tokens.Designer.cs">
-      <DependentUpon>Tokens.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\MsFormsLib.cs" />
+    <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="Symbols\VbaStandardLib.cs" />
     <Compile Include="VBA\Nodes\INode.cs" />
     <Compile Include="VBA\Nodes\Node.cs" />
     <Compile Include="VBA\Nodes\ProcedureNode.cs" />
+    <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\RubberduckParser.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="VBA\WalkerCancelledException.cs" />
@@ -107,13 +104,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Grammar\Tokens.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tokens.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -121,7 +111,8 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
     </COMReference>
     <COMReference Include="VBIDE">
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
@@ -131,6 +122,7 @@
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
     </COMReference>
   </ItemGroup>
   <ItemGroup>

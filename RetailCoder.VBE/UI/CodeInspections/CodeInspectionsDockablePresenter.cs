@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
@@ -17,54 +19,88 @@ namespace Rubberduck.UI.CodeInspections
 
         private IEnumerable<VBProjectParseResult> _parseResults;
         private IList<ICodeInspectionResult> _results;
+        private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
 
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
+        /// <summary>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
+        /// <param name="inspector"></param>
+        /// <param name="vbe"></param>
+        /// <param name="addin"></param>
+        /// <param name="window"></param>
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
-            _inspector.IssuesFound += OnIssuesFound;
-            _inspector.Reset += OnReset;
-            _inspector.Parsing += OnParsing;
-            _inspector.ParseCompleted += OnParseCompleted;
+            _inspector.IssuesFound += _inspector_IssuesFound;
+            _inspector.Reset += _inspector_Reset;
+            _inspector.Parsing += _inspector_Parsing;
+            _inspector.ParseCompleted += _inspector_ParseCompleted;
 
-            Control.RefreshCodeInspections += OnRefreshCodeInspections;
-            Control.NavigateCodeIssue += OnNavigateCodeIssue;
-            Control.QuickFix += OnQuickFix;
-            Control.CopyResults += OnCopyResultsToClipboard;
+            _gridViewSort = gridViewSort;
+
+            Control.RefreshCodeInspections += Control_RefreshCodeInspections;
+            Control.NavigateCodeIssue += Control_NavigateCodeIssue;
+            Control.QuickFix += Control_QuickFix;
+            Control.CopyResults += Control_CopyResultsToClipboard;
+            Control.Cancel += Control_Cancel;
+            Control.SortColumn += SortColumn;
         }
 
-        // indicates that the _parseResults are no longer in sync with the UI
-        private bool _needsResync;
-
-        private void OnParseCompleted(object sender, ParseCompletedEventArgs e)
+        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (sender == this)
-            {
-                _needsResync = false;
-                _parseResults = e.ParseResults;
-                Task.Run(() => RefreshAsync());
-            }
-            else
-            {
-                _parseResults = e.ParseResults;
-                _needsResync = true;
+            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            if (columnName == "Icon") { columnName = "Severity"; }
+
+            Control.InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(_gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), columnName).ToList());
+        }
+
+        private void Control_Cancel(object sender, EventArgs e)
+        {
+            if (_cancelTokenSource != null)
+            { 
+                _cancelTokenSource.Cancel();
             }
         }
 
-        private void OnParsing(object sender, EventArgs e)
+        private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
+            if (sender != this)
+            {
+                return;
+            }
+
+            ToggleParsingStatus(false);
+            _parseResults = e.ParseResults;
+        }
+
+        private void _inspector_Parsing(object sender, EventArgs e)
+        {
+            if (sender != this)
+            {
+                return;
+            }
+
+            ToggleParsingStatus();
             Control.Invoke((MethodInvoker) delegate
             {
                 Control.EnableRefresh(false);
             });
         }
 
-        private void OnCopyResultsToClipboard(object sender, EventArgs e)
+        private void ToggleParsingStatus(bool isParsing = true)
+        {
+            Control.Invoke((MethodInvoker) delegate
+            {
+                Control.ToggleParsingStatus(isParsing);
+            });
+        }
+
+        private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
             var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var text = string.Format("Rubberduck Code Inspections - {0}\n{1} issue" + (_results.Count != 1 ? "s" : string.Empty) + " found.\n",
-                            DateTime.Now, _results.Count) + results;
+            var text = string.Format(RubberduckUI.CodeInspections_NumberOfIssuesFound, DateTime.Now, _results.Count, (_results.Count != 1 ? "s" : string.Empty)) + results;
 
             Clipboard.SetText(text);
         }
@@ -81,29 +117,30 @@ namespace Rubberduck.UI.CodeInspections
                 result.QualifiedSelection.Selection.StartLine);
         }
 
-        private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
+        private int _issues;
+        private void _inspector_IssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
+            Interlocked.Add(ref _issues, e.Issues.Count);
             Control.Invoke((MethodInvoker) delegate
             {
-                var newCount = Control.IssueCount + e.Issues.Count;
-                Control.IssueCount = newCount;
-                Control.IssueCountText = string.Format("{0} issue" + (newCount != 1 ? "s" : string.Empty), newCount);
+                var newCount = _issues;
+                Control.SetIssuesStatus(newCount);
             });
         }
 
-        private void OnQuickFix(object sender, QuickFixEventArgs e)
+        private void Control_QuickFix(object sender, QuickFixEventArgs e)
         {
-            e.QuickFix(VBE);
-            OnRefreshCodeInspections(null, EventArgs.Empty);
+            e.QuickFix();
+            Control_RefreshCodeInspections(null, EventArgs.Empty);
         }
 
         public override void Show()
         {
             base.Show();
-            Task.Run(() => RefreshAsync());
+            Refresh();
         }
 
-        private void OnNavigateCodeIssue(object sender, NavigateCodeEventArgs e)
+        private void Control_NavigateCodeIssue(object sender, NavigateCodeEventArgs e)
         {
             try
             {
@@ -115,67 +152,64 @@ namespace Rubberduck.UI.CodeInspections
             }
         }
 
-        private void OnRefreshCodeInspections(object sender, EventArgs e)
+        private void Control_RefreshCodeInspections(object sender, EventArgs e)
         {
-            Task.Run(() => RefreshAsync());
+            Refresh();
         }
 
-        private async Task RefreshAsync()
+        private CancellationTokenSource _cancelTokenSource;
+        private async void Refresh()
         {
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.EnableRefresh(false);
-                Control.Cursor = Cursors.WaitCursor;
-            });
+            _cancelTokenSource = new CancellationTokenSource();
+            var token = _cancelTokenSource.Token;
+
+            Control.EnableRefresh(false);
+            Control.Cursor = Cursors.WaitCursor;
 
             try
             {
-                if (VBE != null)
+                await Task.Run(() => RefreshAsync(token), token);
+                if (_results != null)
                 {
-                    if (_parseResults == null || !_needsResync)
-                    {
-                        _inspector.Parse(VBE, this);
-                        return;
-                    }
-
-                    var parseResults = _parseResults.SingleOrDefault(p => p.Project == VBE.ActiveVBProject);
-                    if (parseResults == null || !_needsResync)
-                    {
-                        _inspector.Parse(VBE, this);
-                        return;
-                    }
-
-                    _results = await _inspector.FindIssuesAsync(parseResults);
-
-                    Control.Invoke((MethodInvoker) delegate
-                    {
-                        Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
-                            .OrderBy(item => item.Component)
-                            .ThenBy(item => item.Line));
-                    });
+                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
+                        .OrderBy(item => item.Component)
+                        .ThenBy(item => item.Line));
                 }
             }
-            catch (COMException exception)
+            catch (TaskCanceledException)
             {
-                // swallow
             }
             finally
             {
-                Control.Invoke((MethodInvoker) delegate
-                {
-                    Control.Cursor = Cursors.Default;
-                    Control.EnableRefresh();
-                });
+                Control.SetIssuesStatus(_issues, true);
+                Control.EnableRefresh();
+            }
+
+            Control.Cursor = Cursors.Default;
+        }
+
+        private async Task RefreshAsync(CancellationToken token)
+        {
+            try
+            {
+                var projectParseResult = await _inspector.Parse(VBE.ActiveVBProject, this);
+                _results = await _inspector.FindIssuesAsync(projectParseResult, token);
+            }
+            catch (COMException)
+            {
+                // burp
             }
         }
 
-        private void OnReset(object sender, EventArgs e)
+        private void _inspector_Reset(object sender, EventArgs e)
         {
+            _issues = 0;
             Control.Invoke((MethodInvoker) delegate
             {
-                Control.IssueCount = 0;
-                Control.IssueCountText = "0 issues";
+                Control.SetIssuesStatus(_issues);
                 Control.InspectionResults.Clear();
+                Control.EnableRefresh();
+                Control.Cursor = Cursors.Default;
             });
         }
     }

@@ -13,6 +13,7 @@ namespace Rubberduck.VBEditor
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
             var module = _component.CodeModule;
+
             _contentHashCode = module.CountOfLines > 0 
                 ? module.get_Lines(1, module.CountOfLines).GetHashCode() 
                 : 0;
@@ -66,7 +67,16 @@ namespace Rubberduck.VBEditor
             try
             {
                 var other = (QualifiedModuleName)obj;
-                return other.Component.Equals(Component) && other._contentHashCode == _contentHashCode;
+                if (other.Component == null)
+                {
+                    return other.ProjectName == ProjectName && other.ComponentName == ComponentName;
+                }
+
+                var result = other.Project == Project 
+                    && other.ProjectName == ProjectName
+                    && other.ComponentName == ComponentName 
+                    && other._contentHashCode == _contentHashCode;
+                return result;
             }
             catch (InvalidCastException)
             {

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.SourceControl;
 using Moq;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace RubberduckTests.SourceControl
 {

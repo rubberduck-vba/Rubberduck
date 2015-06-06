@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -13,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.ImplicitPublicMember_; } }
+        public string Name { get { return "ImplicitPublicMemberInspection"; } }
+        public string Description { get { return RubberduckUI.ImplicitPublicMember_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -33,7 +35,7 @@ namespace Rubberduck.Inspections
                                && ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
-                               select new ImplicitPublicMemberInspectionResult(string.Format(Name, ((dynamic)context.Context).ambiguousIdentifier().GetText()), Severity, context);
+                               select new ImplicitPublicMemberInspectionResult(string.Format(Description, ((dynamic)context.Context).ambiguousIdentifier().GetText()), Severity, context);
             return issues;
         }
     }

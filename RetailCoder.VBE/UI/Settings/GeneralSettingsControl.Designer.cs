@@ -33,7 +33,9 @@ namespace Rubberduck.UI.Settings
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
-            this.InstructionsLabel = new System.Windows.Forms.Label();
+            this.LanguageLabel = new System.Windows.Forms.Label();
+            this.LanguageList = new System.Windows.Forms.ComboBox();
+            this.resetSettings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,23 +61,45 @@ namespace Rubberduck.UI.Settings
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "General Settings";
             // 
-            // InstructionsLabel
+            // LanguageLabel
             // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(3, 100);
-            this.InstructionsLabel.MaximumSize = new System.Drawing.Size(350, 0);
-            this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(8, 21);
-            this.InstructionsLabel.TabIndex = 5;
+            this.LanguageLabel.AutoSize = true;
+            this.LanguageLabel.Location = new System.Drawing.Point(14, 161);
+            this.LanguageLabel.Name = "LanguageLabel";
+            this.LanguageLabel.Size = new System.Drawing.Size(58, 13);
+            this.LanguageLabel.TabIndex = 6;
+            this.LanguageLabel.Text = "Language:";
+            // 
+            // LanguageList
+            // 
+            this.LanguageList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguageList.FormattingEnabled = true;
+            this.LanguageList.Location = new System.Drawing.Point(17, 178);
+            this.LanguageList.Name = "LanguageList";
+            this.LanguageList.Size = new System.Drawing.Size(156, 21);
+            this.LanguageList.TabIndex = 7;
+            // 
+            // resetSettings
+            // 
+            this.resetSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.resetSettings.ForeColor = System.Drawing.Color.Black;
+            this.resetSettings.Location = new System.Drawing.Point(17, 243);
+            this.resetSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.resetSettings.Name = "resetSettings";
+            this.resetSettings.Size = new System.Drawing.Size(90, 34);
+            this.resetSettings.TabIndex = 8;
+            this.resetSettings.Text = "Reset";
+            this.resetSettings.UseVisualStyleBackColor = false;
             // 
             // GeneralSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.resetSettings);
+            this.Controls.Add(this.LanguageList);
+            this.Controls.Add(this.LanguageLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.InstructionsLabel);
             this.Controls.Add(this.pictureBox1);
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "GeneralSettingsControl";
@@ -90,6 +114,8 @@ namespace Rubberduck.UI.Settings
 
         private PictureBox pictureBox1;
         private Label TitleLabel;
-        private Label InstructionsLabel;
+        private Label LanguageLabel;
+        private ComboBox LanguageList;
+        private Button resetSettings;
     }
 }

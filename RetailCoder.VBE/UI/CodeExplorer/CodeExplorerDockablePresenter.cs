@@ -28,15 +28,11 @@ namespace Rubberduck.UI.CodeExplorer
             RegisterControlEvents();
         }
 
-        // indicates that the _parseResults are no longer in sync with UI
-        private bool _needsResync;
-
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender == this)
             {
                 _parseResults = e.ParseResults;
-                _needsResync = false;
                 Control.Invoke((MethodInvoker)delegate
                 {
                     Control.SolutionTree.Nodes.Clear();
@@ -54,7 +50,6 @@ namespace Rubberduck.UI.CodeExplorer
             else
             {
                 _parseResults = e.ParseResults;
-                _needsResync = true;
             }
 
             Control.Invoke((MethodInvoker)delegate
@@ -77,7 +72,7 @@ namespace Rubberduck.UI.CodeExplorer
                     Control.SolutionTree.Nodes.Clear();
                     foreach (var name in e.ProjectNames)
                     {
-                        var node = new TreeNode(name + " (parsing...)");
+                        var node = new TreeNode(string.Format(RubberduckUI.CodeExplorerDockablePresenter_ParseStarted, name));
                         node.ImageKey = "Hourglass";
                         node.SelectedImageKey = node.ImageKey;
 
@@ -112,6 +107,7 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SelectionChanged += SelectionChanged;
             Control.Rename += RenameSelection;
             Control.FindAllReferences += FindAllReferencesForSelection;
+            Control.FindAllImplementations += FindAllImplementationsForSelection;
         }
 
         public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
@@ -124,10 +120,20 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
+        public event EventHandler<NavigateCodeEventArgs> FindAllImplementations;
+        private void FindAllImplementationsForSelection(object sender, NavigateCodeEventArgs e)
+        {
+            var handler = FindAllImplementations;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
         private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            if (e.Node == null || e.Node.Tag == null)
             {
                 return;
             }
@@ -271,6 +277,7 @@ namespace Rubberduck.UI.CodeExplorer
                 root.Expand();
             }
 
+            root.Tag = parseResult.Declarations[project.Name].SingleOrDefault(d => d.DeclarationType == DeclarationType.Project);
             root.Text = project.Name;
         }
 
@@ -588,6 +595,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser.ParseStarted -= _parser_ParseStarted;
             _parser.ParseCompleted -= _parser_ParseCompleted;
+            base.Dispose();
         }
     }
 }

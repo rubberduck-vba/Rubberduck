@@ -3,12 +3,28 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using stdole;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
     public class Menu : IDisposable
     {
+        internal class AxHostConverter : AxHost
+        {
+            private AxHostConverter() : base("") { }
+
+            static public IPictureDisp ImageToPictureDisp(Image image)
+            {
+                return (IPictureDisp)GetIPictureDispFromPicture(image);
+            }
+
+            static public Image PictureDispToImage(IPictureDisp pictureDisp)
+            {
+                return GetPictureFromIPicture(pictureDisp);
+            }
+        }
+
         private readonly VBE _vbe;
         protected readonly AddIn AddIn;
 
@@ -59,9 +75,17 @@ namespace Rubberduck.UI
 
             if (image != null)
             {
+                image.MakeTransparent(Color.Transparent);
                 Clipboard.SetDataObject(image, true);
                 button.PasteFace();
             }
+        }
+
+        public static void SetButtonImage(CommandBarButton button, Bitmap image, Bitmap mask)
+        {
+            button.FaceId = 0;
+            button.Picture = AxHostConverter.ImageToPictureDisp(image);
+            button.Mask = AxHostConverter.ImageToPictureDisp(mask);
         }
 
         /// <summary>
@@ -87,11 +111,10 @@ namespace Rubberduck.UI
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
-        {            
+        {
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -14,16 +14,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Remove unassigned variable", RemoveUnusedDeclaration}
+                    {RubberduckUI.Inspections_RemoveUnassignedVariable, RemoveUnusedDeclaration}
                 };
         }
 
-        protected override void RemoveUnusedDeclaration(VBE vbe)
+        protected override void RemoveUnusedDeclaration()
         {
             var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;

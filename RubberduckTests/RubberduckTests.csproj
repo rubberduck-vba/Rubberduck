@@ -139,10 +139,10 @@
       <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Rubberduck">
-      <HintPath>..\RetailCoder.VBE\bin\Debug\Rubberduck.dll</HintPath>
+      <HintPath>..\RetailCoder.VBE\obj\Debug\Rubberduck.dll</HintPath>
     </Reference>
     <Reference Include="Rubberduck.Parsing">
-      <HintPath>..\Rubberduck.Parsing\bin\Debug\Rubberduck.Parsing.dll</HintPath>
+      <HintPath>..\Rubberduck.Parsing\obj\Debug\Rubberduck.Parsing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />

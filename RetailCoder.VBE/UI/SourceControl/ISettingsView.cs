@@ -1,5 +1,5 @@
 ﻿using System;
-using Rubberduck.Config;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.SourceControl
 {
