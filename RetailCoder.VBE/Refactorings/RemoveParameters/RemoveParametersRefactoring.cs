@@ -95,10 +95,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
             var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var currentStringIndex = 0;
 
             foreach (
                 var param in
@@ -123,7 +123,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
                         ? paramToRemoveName + ","
                         : paramToRemoveName;
 
-                    newContent = newContent.Replace(valueToRemove, "");
+                    var parameterStringIndex = newContent.IndexOf(valueToRemove, currentStringIndex, StringComparison.Ordinal);
+                    if (parameterStringIndex <= -1) { continue; }
+
+                    newContent = newContent.Remove(parameterStringIndex, valueToRemove.Length);
+
+                    currentStringIndex = parameterStringIndex;
 
                     if (paramToRemoveName == paramNames.Last() && newContent.LastIndexOf(',') != -1)
                     {
