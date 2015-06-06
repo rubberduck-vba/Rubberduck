@@ -45,7 +45,7 @@ namespace Rubberduck.VBA
                 lastWasWhiteSpace = char.IsWhiteSpace(c);
             }
 
-            return newString.ToString();
+            return newString.ToString().Replace('\r', ' ');
         }
     }
 }
