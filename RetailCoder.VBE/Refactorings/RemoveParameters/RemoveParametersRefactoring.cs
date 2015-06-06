@@ -89,41 +89,53 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (paramList == null) { continue; }
                 var numParams = paramList.argCall().Count;  // handles optional variables
 
-                foreach (var param in _model.Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
+                //foreach (var param in _model.Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
                 {
-                    RemoveCallParameter(param, paramList, module);
+                    RemoveCallParameter(paramList, module);
                 }
             }
         }
 
-        private void RemoveCallParameter(Declaration paramToRemove, VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
-
-            if (paramIndex >= paramNames.Count) { return; }
 
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
             var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
 
-            do
+            foreach (
+                var param in
+                    _model.Parameters.Where(item => item.IsRemoved && item.Index < paramNames.Count)
+                        .Select(item => item.Declaration))
             {
-                var paramToRemoveName = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(paramToRemove.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
+                var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == param.Context.GetText()); 
+                if (paramIndex >= paramNames.Count) { return; }
 
-                if (paramToRemoveName == null || !newContent.Contains(paramToRemoveName)) { continue; }
-
-                var valueToRemove = paramToRemoveName != paramNames.Last() ?
-                                    paramToRemoveName + "," :
-                                    paramToRemoveName;
-
-                newContent = newContent.Replace(valueToRemove, "");
-
-                if (paramToRemoveName == paramNames.Last() && newContent.LastIndexOf(',') != -1)
+                do
                 {
-                    newContent = newContent.Remove(newContent.LastIndexOf(','), 1);
-                }
-            } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count && newContent.Contains(paramNames.ElementAt(paramIndex)));
+                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=")
+                        ? paramNames.Find(item => item.Contains(param.IdentifierName + ":="))
+                        : paramNames.ElementAt(paramIndex);
+
+                    if (paramToRemoveName == null || !newContent.Contains(paramToRemoveName))
+                    {
+                        continue;
+                    }
+
+                    var valueToRemove = paramToRemoveName != paramNames.Last()
+                        ? paramToRemoveName + ","
+                        : paramToRemoveName;
+
+                    newContent = newContent.Replace(valueToRemove, "");
+
+                    if (paramToRemoveName == paramNames.Last() && newContent.LastIndexOf(',') != -1)
+                    {
+                        newContent = newContent.Remove(newContent.LastIndexOf(','), 1);
+                    }
+                } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count &&
+                         newContent.Contains(paramNames.ElementAt(paramIndex)));
+            }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
             module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
