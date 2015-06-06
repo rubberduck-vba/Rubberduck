@@ -101,7 +101,7 @@ namespace Rubberduck.UI.Refactorings
             OkButton.Enabled = NewName != Target.IdentifierName
                                && char.IsLetter(NewName.FirstOrDefault())
                                && !tokenValues.Contains(NewName.ToLower())
-                               && !char.IsWhiteSpace(NewName.LastOrDefault());
+                               && !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
 
             InvalidNameValidationIcon.Visible = !OkButton.Enabled;
         }

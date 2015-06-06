@@ -8,6 +8,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -36,7 +37,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            AdjustReferences(_model.TargetDeclaration.References);
+            AdjustReferences(_model.TargetDeclaration.References.OrderByDescending(item => item.Selection.StartLine));
             AdjustSignatures();
         }
 
@@ -73,13 +74,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray >= 0)
+            if (indexOfParamArray >= 0 && indexOfParamArray != _model.Parameters.Count - 1)
             {
-                if (indexOfParamArray != _model.Parameters.Count - 1)
-                {
-                    MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return false;
-                }
+                MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false;
             }
             return true;
         }
@@ -109,44 +107,40 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private void RewriteCall(VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+
             var parameterIndex = 0;
-            for (var line = paramList.Start.Line; line < paramList.Start.Line + lineCount; line++)
+            var currentStringIndex = 0;
+
+            for (var i = 0; i < paramNames.Count && parameterIndex < _model.Parameters.Count; i++)
             {
-                var newContent = module.Lines[line, 1].Replace(" , ", "");
+                var parameterStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex, StringComparison.Ordinal);
 
-                var currentStringIndex = 0;
+                if (parameterStringIndex <= -1) { continue; }
 
-                for (var i = 0; i < paramNames.Count && parameterIndex < _model.Parameters.Count; i++)
+                if (_model.Parameters.ElementAt(parameterIndex).Index >= paramNames.Count)
                 {
-                    var parameterStringIndex = newContent.IndexOf(paramNames.ElementAt(i), currentStringIndex, StringComparison.Ordinal);
-
-                    if (parameterStringIndex > -1)
-                    {
-                        if (_model.Parameters.ElementAt(parameterIndex).Index >= paramNames.Count)
-                        {
-                            newContent = newContent.Insert(parameterStringIndex, " , ");
-                            i--;
-                            parameterIndex++;
-                            continue;
-                        }
-
-                        var oldParameterString = paramNames.ElementAt(i);
-                        var newParameterString = paramNames.ElementAt(_model.Parameters.ElementAt(parameterIndex).Index);
-                        var beginningSub = newContent.Substring(0, parameterStringIndex);
-                        var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParameterString, newParameterString);
-
-                        newContent = beginningSub + replaceSub;
-
-                        parameterIndex++;
-                        currentStringIndex = beginningSub.Length + newParameterString.Length;
-                    }
+                    newContent = newContent.Insert(parameterStringIndex, " , ");
+                    i--;
+                    parameterIndex++;
+                    continue;
                 }
 
-                module.ReplaceLine(line, newContent);
+                var oldParameterString = paramNames.ElementAt(i);
+                var newParameterString = paramNames.ElementAt(_model.Parameters.ElementAt(parameterIndex).Index);
+                var beginningSub = newContent.Substring(0, parameterStringIndex);
+                var replaceSub = newContent.Substring(parameterStringIndex).Replace(oldParameterString, newParameterString);
+
+                newContent = beginningSub + replaceSub;
+
+                parameterIndex++;
+                currentStringIndex = beginningSub.Length + newParameterString.Length;
             }
+
+            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private void AdjustSignatures()
@@ -183,7 +177,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References);
+                    AdjustReferences(reference.References.OrderByDescending(item => item.Selection.StartLine));
                     AdjustSignatures(reference);
                 }
             }
@@ -193,7 +187,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References);
+                AdjustReferences(interfaceImplentation.References.OrderByDescending(item => item.Selection.StartLine));
                 AdjustSignatures(interfaceImplentation);
             }
         }
@@ -224,7 +218,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var lineNum = paramList.GetSelection().LineCount;
 
             var parameterIndex = 0;
-
             var currentStringIndex = 0;
 
             for (var i = parameterIndex; i < _model.Parameters.Count; i++)

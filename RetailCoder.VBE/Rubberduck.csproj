@@ -309,6 +309,7 @@
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
     <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
+    <Compile Include="UI\FormContextMenu.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
+    <Compile Include="UI\ProjectExplorerContextMenu.cs" />
     <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

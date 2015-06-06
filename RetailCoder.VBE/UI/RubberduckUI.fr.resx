@@ -1026,4 +1026,37 @@ Do you want to continue?</value>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
     <value>z User Name</value>
   </data>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>z Re&amp;name</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_FindAllImplementations" xml:space="preserve">
+    <value>z Find &amp;All Implementations...</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_FindAllReferences" xml:space="preserve">
+    <value>z &amp;Find All References...</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Inspect" xml:space="preserve">
+    <value>z Inspe&amp;ct</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Navigate" xml:space="preserve">
+    <value>z Navi&amp;gate</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Rename" xml:space="preserve">
+    <value>z Rena&amp;me</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_RunAllTests" xml:space="preserve">
+    <value>z Run All &amp;Tests</value>
+  </data>
+  <data name="CodeExplorer_Inspect" xml:space="preserve">
+    <value>z &amp;Inspect</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>z Na&amp;vigate</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>z &amp;New</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>z R&amp;efresh</value>
+  </data>
 </root>

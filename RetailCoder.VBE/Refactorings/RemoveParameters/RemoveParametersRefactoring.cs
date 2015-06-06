@@ -6,6 +6,7 @@ using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -59,6 +60,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _model = new RemoveParametersModel(parseResult, selection);
             var target = _model.FindTarget(selection, new[] { DeclarationType.Parameter });
 
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
             RemoveParameters();
         }
@@ -67,7 +69,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
 
-            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
+            AdjustReferences(_model.TargetDeclaration.References.OrderByDescending(item => item.Selection.StartLine), _model.TargetDeclaration);
             AdjustSignatures();
         }
 
@@ -85,55 +87,59 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 catch { continue; }
 
                 if (paramList == null) { continue; }
-                var numParams = paramList.argCall().Count;  // handles optional variables
 
-                foreach (var param in _model.Parameters.Where(item => item.IsRemoved && item.Index < numParams).Select(item => item.Declaration))
-                {
-                    RemoveCallParameter(param, paramList, module);
-                }
+                RemoveCallParameter(paramList, module);
             }
         }
 
-        private void RemoveCallParameter(Declaration paramToRemove, VBAParser.ArgsCallContext paramList, CodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgsCallContext paramList, CodeModule module)
         {
             var paramNames = paramList.argCall().Select(arg => arg.GetText()).ToList();
-            var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == paramToRemove.Context.GetText());
-
-            if (paramIndex >= paramNames.Count) { return; }
-
             var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
 
-            for (var lineNum = paramList.Start.Line; lineNum < paramList.Start.Line + lineCount; lineNum++)
+            var newContent = module.Lines[paramList.Start.Line, lineCount].Replace(" _", "").RemoveExtraSpaces();
+            var currentStringIndex = 0;
+
+            foreach (
+                var param in
+                    _model.Parameters.Where(item => item.IsRemoved && item.Index < paramNames.Count)
+                        .Select(item => item.Declaration))
             {
-                var content = module.Lines[lineNum, 1];
+                var paramIndex = _model.Parameters.FindIndex(item => item.Declaration.Context.GetText() == param.Context.GetText()); 
+                if (paramIndex >= paramNames.Count) { return; }
 
                 do
                 {
-                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=") ? paramNames.Find(item => item.Contains(paramToRemove.IdentifierName + ":=")) : paramNames.ElementAt(paramIndex);
+                    var paramToRemoveName = paramNames.ElementAt(0).Contains(":=")
+                        ? paramNames.Find(item => item.Contains(param.IdentifierName + ":="))
+                        : paramNames.ElementAt(paramIndex);
 
-                    if (paramToRemoveName == null || !content.Contains(paramToRemoveName)) { continue; }
-
-                    var valueToRemove = paramToRemoveName != paramNames.Last() ?
-                                        paramToRemoveName + "," :
-                                        paramToRemoveName;
-
-                    content = content.Replace(valueToRemove, "");
-
-                    module.ReplaceLine(lineNum, content);
-                    if (paramToRemoveName == paramNames.Last())
+                    if (paramToRemoveName == null || !newContent.Contains(paramToRemoveName))
                     {
-                        for (var line = lineNum; line >= paramList.Start.Line; line--)
-                        {
-                            var lineContent = module.Lines[line, 1];
-                            if (lineContent.Contains(','))
-                            {
-                                module.ReplaceLine(line, lineContent.Remove(lineContent.LastIndexOf(','), 1));
-                                return;
-                            }
-                        }
+                        continue;
                     }
-                } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count && content.Contains(paramNames.ElementAt(paramIndex)));
+
+                    var valueToRemove = paramToRemoveName != paramNames.Last()
+                        ? paramToRemoveName + ","
+                        : paramToRemoveName;
+
+                    var parameterStringIndex = newContent.IndexOf(valueToRemove, currentStringIndex, StringComparison.Ordinal);
+                    if (parameterStringIndex <= -1) { continue; }
+
+                    newContent = newContent.Remove(parameterStringIndex, valueToRemove.Length);
+
+                    currentStringIndex = parameterStringIndex;
+
+                    if (paramToRemoveName == paramNames.Last() && newContent.LastIndexOf(',') != -1)
+                    {
+                        newContent = newContent.Remove(newContent.LastIndexOf(','), 1);
+                    }
+                } while (paramIndex >= _model.Parameters.Count - 1 && ++paramIndex < paramNames.Count &&
+                         newContent.Contains(paramNames.ElementAt(paramIndex)));
             }
+
+            module.ReplaceLine(paramList.Start.Line, newContent);
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
         }
 
         private string GetOldSignature(Declaration target)
@@ -255,7 +261,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References, reference);
+                    AdjustReferences(reference.References.OrderByDescending(item => item.Selection.StartLine), reference);
                     AdjustSignatures(reference);
                 }
             }
@@ -265,7 +271,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
+                AdjustReferences(interfaceImplentation.References.OrderByDescending(item => item.Selection.StartLine), interfaceImplentation);
                 AdjustSignatures(interfaceImplentation);
             }
         }

@@ -660,10 +660,10 @@ Warning: All customized settings will be lost.</value>
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find All Implementations...</value>
+    <value>Find &amp;All Implementations...</value>
   </data>
   <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Find all references...</value>
+    <value>&amp;Find All References...</value>
   </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
@@ -678,10 +678,10 @@ Warning: All customized settings will be lost.</value>
     <value>Rename</value>
   </data>
   <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Run all tests</value>
+    <value>Run All &amp;Tests</value>
   </data>
   <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
-    <value>Show Designer</value>
+    <value>&amp;Show Designer</value>
   </data>
   <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
     <value>Open Designer</value>
@@ -1028,5 +1028,38 @@ Do you want to continue?</value>
   </data>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Untracked files</value>
+  </data>
+  <data name="CodeExplorer_Inspect" xml:space="preserve">
+    <value>&amp;Inspect</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>Na&amp;vigate</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>R&amp;efresh</value>
+  </data>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>Re&amp;name</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_FindAllImplementations" xml:space="preserve">
+    <value>Find &amp;All Implementations...</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Find All References...</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Inspect" xml:space="preserve">
+    <value>Inspe&amp;ct</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Navigate" xml:space="preserve">
+    <value>Navi&amp;gate</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_Rename" xml:space="preserve">
+    <value>Rena&amp;me</value>
+  </data>
+  <data name="ProjectExplorerContextMenu_RunAllTests" xml:space="preserve">
+    <value>Run All &amp;Tests</value>
   </data>
 </root>

@@ -64,10 +64,10 @@ namespace Rubberduck.UI.CodeExplorer
             DisplayMemberNamesButton.Text = RubberduckUI.CodeExplorer_DisplayMemberNamesText;
             DisplaySignaturesButton.Text = RubberduckUI.CodeExplorer_DisplaySignaturesText;
 
-            AddButton.Text = RubberduckUI.New;
+            AddButton.Text = RubberduckUI.CodeExplorer_New;
             newToolStripMenuItem.Text = RubberduckUI.New;
 
-            RefreshContextButton.Text = RubberduckUI.Refresh;
+            RefreshContextButton.Text = RubberduckUI.CodeExplorer_Refresh;
             ShowDesignerContextButton.Text = RubberduckUI.CodeExplorer_ShowDesignerText;
             AddClassContextButton.Text = RubberduckUI.CodeExplorer_AddClassText;
             AddStdModuleContextButton.Text = RubberduckUI.CodeExplorer_AddStdModuleText;

@@ -128,9 +128,9 @@ namespace Rubberduck.UI
             if (_sourceControlApp == null)
             {
                 _sourceControlApp = new SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
-                                                            new ChangesControl(), new UnSyncedCommitsControl(),
-                                                            new SettingsControl(), new BranchesControl(),
-                                                            new CreateBranchForm(), new MergeForm());
+                                                                new ChangesControl(), new UnSyncedCommitsControl(),
+                                                                new SettingsControl(), new BranchesControl(),
+                                                                new CreateBranchForm(), new MergeForm());
             }
 
             _sourceControlApp.ShowWindow();
@@ -198,7 +198,7 @@ namespace Rubberduck.UI
 
             _disposed = true;
 
-            base.Dispose(disposing);
+            base.Dispose(true);
         }
     }
 }

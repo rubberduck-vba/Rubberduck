@@ -31,7 +31,6 @@ namespace Rubberduck.UI.Refactorings
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoveParametersDialog));
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
@@ -88,7 +87,7 @@ namespace Rubberduck.UI.Refactorings
             // RestoreButton
             // 
             this.RestoreButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.RestoreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RestoreButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RestoreButton.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.RestoreButton.Location = new System.Drawing.Point(421, 190);
             this.RestoreButton.Margin = new System.Windows.Forms.Padding(4);
@@ -161,7 +160,7 @@ namespace Rubberduck.UI.Refactorings
             // RemoveButton
             // 
             this.RemoveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.RemoveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RemoveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RemoveButton.Location = new System.Drawing.Point(421, 95);
             this.RemoveButton.Margin = new System.Windows.Forms.Padding(4);
             this.RemoveButton.Name = "RemoveButton";
@@ -182,7 +181,8 @@ namespace Rubberduck.UI.Refactorings
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MethodParametersGrid);
             this.Controls.Add(this.RemoveButton);
-            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
             this.Name = "RemoveParametersDialog";
             this.Text = "RemoveParametersDialog";
             this.flowLayoutPanel2.ResumeLayout(false);

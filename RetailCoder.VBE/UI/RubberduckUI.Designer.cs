@@ -349,7 +349,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find All Implementations....
+        ///   Looks up a localized string similar to Find &amp;All Implementations....
         /// </summary>
         internal static string CodeExplorer_FindAllImplementationsText {
             get {
@@ -358,7 +358,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find all references....
+        ///   Looks up a localized string similar to &amp;Find All References....
         /// </summary>
         internal static string CodeExplorer_FindAllReferencesText {
             get {
@@ -367,7 +367,43 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run all tests.
+        ///   Looks up a localized string similar to &amp;Inspect.
+        /// </summary>
+        internal static string CodeExplorer_Inspect {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Inspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Na&amp;vigate.
+        /// </summary>
+        internal static string CodeExplorer_Navigate {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Navigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;New.
+        /// </summary>
+        internal static string CodeExplorer_New {
+            get {
+                return ResourceManager.GetString("CodeExplorer_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to R&amp;efresh.
+        /// </summary>
+        internal static string CodeExplorer_Refresh {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run All &amp;Tests.
         /// </summary>
         internal static string CodeExplorer_RunAllTestsText {
             get {
@@ -376,7 +412,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Designer.
+        ///   Looks up a localized string similar to &amp;Show Designer.
         /// </summary>
         internal static string CodeExplorer_ShowDesignerText {
             get {
@@ -887,6 +923,15 @@ namespace Rubberduck.UI {
         internal static string Fix {
             get {
                 return ResourceManager.GetString("Fix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Re&amp;name.
+        /// </summary>
+        internal static string FormContextMenu_Rename {
+            get {
+                return ResourceManager.GetString("FormContextMenu_Rename", resourceCulture);
             }
         }
         
@@ -1517,6 +1562,60 @@ namespace Rubberduck.UI {
         internal static string Project {
             get {
                 return ResourceManager.GetString("Project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find &amp;All Implementations....
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_FindAllImplementations {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_FindAllImplementations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Find All References....
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_FindAllReferences {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_FindAllReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inspe&amp;ct.
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_Inspect {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_Inspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navi&amp;gate.
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_Navigate {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_Navigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rena&amp;me.
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_Rename {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run All &amp;Tests.
+        /// </summary>
+        internal static string ProjectExplorerContextMenu_RunAllTests {
+            get {
+                return ResourceManager.GetString("ProjectExplorerContextMenu_RunAllTests", resourceCulture);
             }
         }
         
