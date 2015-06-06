@@ -59,6 +59,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _model = new RemoveParametersModel(parseResult, selection);
             var target = _model.FindTarget(selection, new[] { DeclarationType.Parameter });
 
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
             RemoveParameters();
         }
