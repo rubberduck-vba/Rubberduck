@@ -1,8 +1,7 @@
 ﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
-using Rubberduck.UI.SourceControl;
 
-namespace Rubberduck.SourceControl
+namespace Rubberduck.UI.SourceControl
 {
     class App
     {

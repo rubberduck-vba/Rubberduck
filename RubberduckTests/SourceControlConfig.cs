@@ -21,13 +21,15 @@ namespace RubberduckTests
                 @"https://github.com/ckuhn203/SourceControlTest.git"
             );
 
-
-            var config = new SourceControlConfiguration();
-            config.Repositories = new List<Repository>() { repo };
+            var config = new SourceControlConfiguration(
+                "Chris McClellan",
+                "ckuhn203@gmail.com",
+                @"C:\users\christopher\documents\",
+                new List<Repository>() {repo}
+                );
 
             var service = new SourceControlConfigurationService();
             service.SaveConfiguration(config);
-
         }
 
         [TestMethod]

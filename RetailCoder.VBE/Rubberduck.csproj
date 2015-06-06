@@ -243,6 +243,7 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
+    <Compile Include="Settings\SourceControlConfigurationService.cs" />
     <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -292,7 +294,6 @@
     <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
     <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
-    <Compile Include="SourceControl\App.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
     <Compile Include="UI\CodeInspections\ICodeInspectionsWindow.cs" />
@@ -417,6 +418,7 @@
     <Compile Include="UI\Settings\GeneralSettingsControl.Designer.cs">
       <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

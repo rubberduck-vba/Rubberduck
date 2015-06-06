@@ -33,8 +33,8 @@ namespace Rubberduck.UI.SourceControl
         {
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.RepositorySettingsBox = new System.Windows.Forms.GroupBox();
-            this.AttributesFileButton = new System.Windows.Forms.Button();
-            this.IgnoreFileButton = new System.Windows.Forms.Button();
+            this.EditAttributeFileButton = new System.Windows.Forms.Button();
+            this.EditIgnoreFileButton = new System.Windows.Forms.Button();
             this.GlobalSettingsBox = new System.Windows.Forms.GroupBox();
             this.CancelGlobalSettingsButton = new System.Windows.Forms.Button();
             this.UpdateGlobalSettingsButton = new System.Windows.Forms.Button();
@@ -67,8 +67,11 @@ namespace Rubberduck.UI.SourceControl
             // 
             this.RepositorySettingsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RepositorySettingsBox.Controls.Add(this.AttributesFileButton);
-            this.RepositorySettingsBox.Controls.Add(this.IgnoreFileButton);
+            this.RepositorySettingsBox.Controls.Add(this.EditAttributeFileButton);
+            this.RepositorySettingsBox.Controls.Add(this.EditIgnoreFileButton);
+            this.RepositorySettingsBox.Location = new System.Drawing.Point(6, 212);
+            this.RepositorySettingsBox.Controls.Add(this.EditAttributeFileButton);
+            this.RepositorySettingsBox.Controls.Add(this.EditIgnoreFileButton);
             this.RepositorySettingsBox.Location = new System.Drawing.Point(8, 261);
             this.RepositorySettingsBox.Margin = new System.Windows.Forms.Padding(4);
             this.RepositorySettingsBox.Name = "RepositorySettingsBox";
@@ -78,25 +81,25 @@ namespace Rubberduck.UI.SourceControl
             this.RepositorySettingsBox.TabStop = false;
             this.RepositorySettingsBox.Text = "Repository Settings";
             // 
-            // AttributesFileButton
+            // EditAttributeFileButton
             // 
-            this.AttributesFileButton.Location = new System.Drawing.Point(140, 38);
-            this.AttributesFileButton.Margin = new System.Windows.Forms.Padding(4);
-            this.AttributesFileButton.Name = "AttributesFileButton";
-            this.AttributesFileButton.Size = new System.Drawing.Size(123, 28);
-            this.AttributesFileButton.TabIndex = 1;
-            this.AttributesFileButton.Text = "Attributes File";
-            this.AttributesFileButton.UseVisualStyleBackColor = true;
+            this.EditAttributeFileButton.Location = new System.Drawing.Point(140, 38);
+            this.EditAttributeFileButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditAttributeFileButton.Name = "AttributesFileButton";
+            this.EditAttributeFileButton.Size = new System.Drawing.Size(123, 28);
+            this.EditAttributeFileButton.TabIndex = 1;
+            this.EditAttributeFileButton.Text = "Attributes File";
+            this.EditAttributeFileButton.UseVisualStyleBackColor = true;
             // 
-            // IgnoreFileButton
+            // EditIgnoreFileButton
             // 
-            this.IgnoreFileButton.Location = new System.Drawing.Point(9, 38);
-            this.IgnoreFileButton.Margin = new System.Windows.Forms.Padding(4);
-            this.IgnoreFileButton.Name = "IgnoreFileButton";
-            this.IgnoreFileButton.Size = new System.Drawing.Size(123, 28);
-            this.IgnoreFileButton.TabIndex = 0;
-            this.IgnoreFileButton.Text = "Ignore File";
-            this.IgnoreFileButton.UseVisualStyleBackColor = true;
+            this.EditIgnoreFileButton.Location = new System.Drawing.Point(9, 38);
+            this.EditIgnoreFileButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditIgnoreFileButton.Name = "IgnoreFileButton";
+            this.EditIgnoreFileButton.Size = new System.Drawing.Size(123, 28);
+            this.EditIgnoreFileButton.TabIndex = 0;
+            this.EditIgnoreFileButton.Text = "Ignore File";
+            this.EditIgnoreFileButton.UseVisualStyleBackColor = true;
             // 
             // GlobalSettingsBox
             // 
@@ -129,6 +132,7 @@ namespace Rubberduck.UI.SourceControl
             this.CancelGlobalSettingsButton.TabIndex = 8;
             this.CancelGlobalSettingsButton.Text = "Cancel";
             this.CancelGlobalSettingsButton.UseVisualStyleBackColor = true;
+            this.CancelGlobalSettingsButton.Click += new System.EventHandler(this.CancelGlobalSettingsButton_Click);
             // 
             // UpdateGlobalSettingsButton
             // 
@@ -139,6 +143,7 @@ namespace Rubberduck.UI.SourceControl
             this.UpdateGlobalSettingsButton.TabIndex = 7;
             this.UpdateGlobalSettingsButton.Text = "Update";
             this.UpdateGlobalSettingsButton.UseVisualStyleBackColor = true;
+            this.UpdateGlobalSettingsButton.Click += new System.EventHandler(this.UpdateGlobalSettingsButton_Click);
             // 
             // BrowseDefaultRepositoryLocationButton
             // 
@@ -150,6 +155,7 @@ namespace Rubberduck.UI.SourceControl
             this.BrowseDefaultRepositoryLocationButton.TabIndex = 6;
             this.BrowseDefaultRepositoryLocationButton.Text = "...";
             this.BrowseDefaultRepositoryLocationButton.UseVisualStyleBackColor = true;
+            this.BrowseDefaultRepositoryLocationButton.Click += new System.EventHandler(this.BrowseDefaultRepositoryLocationButton_Click);
             // 
             // DefaultRepositoryLocationTextBox
             // 
@@ -232,8 +238,8 @@ namespace Rubberduck.UI.SourceControl
 
         private Panel SettingsPanel;
         private GroupBox RepositorySettingsBox;
-        private Button AttributesFileButton;
-        private Button IgnoreFileButton;
+        private Button EditAttributeFileButton;
+        private Button EditIgnoreFileButton;
         private GroupBox GlobalSettingsBox;
         private Button CancelGlobalSettingsButton;
         private Button UpdateGlobalSettingsButton;
