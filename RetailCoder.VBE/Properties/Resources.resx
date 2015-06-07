@@ -565,7 +565,7 @@
   <data name="VSObject_Properties_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\VSObject_Properties_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icon-github" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="icon_github" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon-github.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="VSObject_EnumItem_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -576,5 +576,11 @@
   </data>
   <data name="RemoveParameters_6781_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_return_180_left" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\arrow-return-180-left.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
