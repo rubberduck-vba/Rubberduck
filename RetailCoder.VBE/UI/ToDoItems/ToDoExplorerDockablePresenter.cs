@@ -66,22 +66,22 @@ namespace Rubberduck.UI.ToDoItems
 
         private async Task<IOrderedEnumerable<ToDoItem>> GetItems()
         {
-            await Task.Yield();
+            //await Task.Yield();
+
             var items = new ConcurrentBag<ToDoItem>();
             var projects = VBE.VBProjects.Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked);
-            Parallel.ForEach(projects,
-                project =>
+            foreach(var project in projects)
+            {
+                var modules = _parser.Parse(project, this).ComponentParseResults;
+                foreach (var module in modules)
                 {
-                    var modules = _parser.Parse(project, this).ComponentParseResults;
-                    foreach (var module in modules)
+                    var markers = module.Comments.SelectMany(GetToDoMarkers);
+                    foreach (var marker in markers)
                     {
-                        var markers = module.Comments.AsParallel().SelectMany(GetToDoMarkers);
-                        foreach (var marker in markers)
-                        {
-                            items.Add(marker);
-                        }
+                        items.Add(marker);
                     }
-                });
+                }
+            };
 
             var sortedItems = items.OrderBy(item => item.ProjectName)
                                     .ThenBy(item => item.ModuleName)
