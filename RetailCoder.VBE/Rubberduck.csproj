@@ -25,6 +25,7 @@
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -550,6 +551,7 @@
     <Compile Include="UnitTesting\AssertHandler.cs" />
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
+    <Compile Include="UnitTesting\ITestRunner.cs" />
     <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
     <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
@@ -557,6 +559,7 @@
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="UnitTesting\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -566,7 +569,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
       <Private>True</Private>
     </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">

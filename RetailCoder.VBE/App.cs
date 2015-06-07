@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
@@ -59,13 +60,15 @@ namespace Rubberduck
         {
             _config = _configService.LoadConfiguration();
 
+            var currentCulture = RubberduckUI.Culture;
             try
             {
                 RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
             }
-            catch (CultureNotFoundException)
+            catch (CultureNotFoundException exception)
             {
-                _config.UserSettings.LanguageSetting.Code = "en-US";
+                MessageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
 

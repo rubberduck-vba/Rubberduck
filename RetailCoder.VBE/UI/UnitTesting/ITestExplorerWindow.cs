@@ -11,8 +11,6 @@ namespace Rubberduck.UI.UnitTesting
         DataGridView GridView { get; }
         event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
         BindingList<TestExplorerItem> AllTests { get; set; }
-        string ClassId { get; }
-        string Caption { get; }
         event EventHandler<SelectedTestEventArgs> OnRunSelectedTestButtonClick;
         event EventHandler OnRunLastRunTestsButtonClick;
         event EventHandler OnRunNotRunTestsButtonClick;
