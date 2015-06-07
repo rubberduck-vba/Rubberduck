@@ -545,6 +545,18 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UnitTesting\TestMenu.cs" />
+    <Compile Include="UnitTesting\AssertClass.cs" />
+    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
+    <Compile Include="UnitTesting\AssertHandler.cs" />
+    <Compile Include="UnitTesting\IAssert.cs" />
+    <Compile Include="UnitTesting\ITestEngine.cs" />
+    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
+    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
+    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
+    <Compile Include="UnitTesting\TestEngine.cs" />
+    <Compile Include="UnitTesting\TestMethod.cs" />
+    <Compile Include="UnitTesting\TestOutcome.cs" />
+    <Compile Include="UnitTesting\TestResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -1031,10 +1043,6 @@
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
       <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
       <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
-      <Project>{83ED9BBF-5AD4-4EB2-B5F0-6EB97DFED9D0}</Project>
-      <Name>Rubberduck.UnitTesting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
