@@ -78,6 +78,16 @@ namespace Rubberduck
             {
                 _menu.Dispose();
             }
+            
+            if (_formContextMenu != null)
+            {
+                _formContextMenu.Dispose();
+            }
+
+            if (_projectExplorerContextMenu != null)
+            {
+                _projectExplorerContextMenu.Dispose();
+            }
 
             var displayToolbar = false;
             var toolbarCoords = new Point(-1, -1);
