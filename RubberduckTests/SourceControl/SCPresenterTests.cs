@@ -56,6 +56,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser = new Mock<IFolderBrowser>();
             _folderBrowserFactory = new Mock<IFolderBrowserFactory>();
             _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>())).Returns(_folderBrowser.Object);
+            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), false)).Returns(_folderBrowser.Object);
 
             _provider = new Mock<ISourceControlProvider>();
             _provider.Setup(git => git.InitVBAProject(It.IsAny<string>())).Returns(GetDummyRepo());
@@ -368,7 +369,7 @@ namespace RubberduckTests.SourceControl
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
-            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
@@ -381,6 +382,8 @@ namespace RubberduckTests.SourceControl
             _configService.Setup(c => c.LoadConfiguration())
                 .Returns(GetDummyConfig());
 
+            SetupValidVbProject();
+
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
@@ -389,7 +392,7 @@ namespace RubberduckTests.SourceControl
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
-            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
