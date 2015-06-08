@@ -2374,7 +2374,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open working folder.
+        ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         internal static string SourceControl_OpenWorkingFolderToolTip {
             get {
