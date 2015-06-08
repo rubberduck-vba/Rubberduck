@@ -45,7 +45,7 @@ namespace Rubberduck.UI.CodeExplorer
             AddStdModuleContextButton.Click += AddStdModuleButton_Click;
             AddFormContextButton.Click += AddFormButton_Click;
             AddTestModuleContextButton.Click += AddTestModuleButtonClick;
-            NavigateContextButton.Click += SolutionTreeClick;
+            NavigateContextButton.Click += NavigateContextButtonClick;
             RenameContextButton.Click += RenameContextButtonClick;
 
             RunAllTestsContextButton.Click += RunAllTestsContextButton_Click;
@@ -118,6 +118,15 @@ namespace Rubberduck.UI.CodeExplorer
         private void RenameContextButtonClick(object sender, EventArgs e)
         {
             var handler = Rename;
+            if (handler != null && SolutionTree.SelectedNode != null)
+            {
+                handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode));
+            }
+        }
+
+        private void NavigateContextButtonClick(object sender, EventArgs e)
+        {
+            var handler = NavigateTreeNode;
             if (handler != null && SolutionTree.SelectedNode != null)
             {
                 handler(this, new TreeNodeNavigateCodeEventArgs(SolutionTree.SelectedNode));

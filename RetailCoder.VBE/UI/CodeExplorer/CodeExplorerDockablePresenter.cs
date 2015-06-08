@@ -595,6 +595,7 @@ namespace Rubberduck.UI.CodeExplorer
         {
             _parser.ParseStarted -= _parser_ParseStarted;
             _parser.ParseCompleted -= _parser_ParseCompleted;
+
             base.Dispose();
         }
     }
