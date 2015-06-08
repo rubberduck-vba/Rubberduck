@@ -280,6 +280,7 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -384,6 +385,7 @@
     <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\FileBrowserDialogFactory.cs" />
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />

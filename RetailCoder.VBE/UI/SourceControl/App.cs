@@ -5,7 +5,7 @@ namespace Rubberduck.UI.SourceControl
 {
     class App
     {
-        private SourceControlPresenter _sourceControlPresenter;
+        private readonly SourceControlPresenter _sourceControlPresenter;
         private ISourceControlView _sourceControlView;
 
         internal App(
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.SourceControl
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
 
-            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, _sourceControlView, changesPresenter, branchesPresenter);
+            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, _sourceControlView, changesPresenter, branchesPresenter, new DialogFactory());
         }
 
         public void ShowWindow()
