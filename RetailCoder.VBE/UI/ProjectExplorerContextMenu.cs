@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI
@@ -65,12 +62,6 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnFindAllReferencesClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ContextMenuFindReferences(this, EventArgs.Empty);
-        }
-
-        public event EventHandler<NavigateCodeEventArgs> FindReferences;
-        private void ContextMenuFindReferences(object sender, EventArgs e)
-        {
             var progress = new ParsingProgressPresenter();
             var results = progress.Parse(_parser, _vbe.ActiveVBProject);
 
@@ -81,22 +72,22 @@ namespace Rubberduck.UI
                                                                && item.IdentifierName == clsName
                                                                && item.Project.Equals(_vbe.ActiveVBProject));
 
+            ContextMenuFindReferences(this, new NavigateCodeEventArgs(clsDeclaration));
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindReferences;
+        private void ContextMenuFindReferences(object sender, NavigateCodeEventArgs e)
+        {
             var handler = FindReferences;
             if (handler != null)
             {
-                handler(this, new NavigateCodeEventArgs(clsDeclaration));
+                handler(sender, e);
             }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnFindAllImplementationsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ContextMenuFindImplementations(this, EventArgs.Empty);
-        }
-
-        public event EventHandler<NavigateCodeEventArgs> FindImplementations;
-        private void ContextMenuFindImplementations(object sender, EventArgs e)
-        {
             var progress = new ParsingProgressPresenter();
             var results = progress.Parse(_parser, _vbe.ActiveVBProject);
 
@@ -107,10 +98,16 @@ namespace Rubberduck.UI
                                                                && item.IdentifierName == clsName
                                                                && item.Project.Equals(_vbe.ActiveVBProject));
 
+            ContextMenuFindImplementations(this, new NavigateCodeEventArgs(clsDeclaration));
+        }
+
+        public event EventHandler<NavigateCodeEventArgs> FindImplementations;
+        private void ContextMenuFindImplementations(object sender, NavigateCodeEventArgs e)
+        {
             var handler = FindImplementations;
             if (handler != null)
             {
-                handler(this, new NavigateCodeEventArgs(clsDeclaration));
+                handler(sender, e);
             }
         }
 
@@ -135,6 +132,7 @@ namespace Rubberduck.UI
             }
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnInspectClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             ContextMenuRunInspections(this, EventArgs.Empty);
@@ -146,7 +144,7 @@ namespace Rubberduck.UI
             var handler = RunInspections;
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
+                handler(sender, e);
             }
         }
 
@@ -162,7 +160,7 @@ namespace Rubberduck.UI
             var handler = RunTests;
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
+                handler(sender, e);
             }
         }
 
