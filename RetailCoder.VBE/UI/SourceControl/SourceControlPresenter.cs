@@ -116,12 +116,13 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
+                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
             }
             catch (SourceControlException ex)
             {
                 //todo: report failure to user and prompt to create or browse
-                _provider = new GitProvider(this.VBE.ActiveVBProject);
+                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject);
             }
 
             SetChildPresenterSourceControlProviders(_provider);
