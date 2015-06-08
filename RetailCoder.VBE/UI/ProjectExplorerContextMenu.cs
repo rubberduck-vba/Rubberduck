@@ -17,8 +17,6 @@ namespace Rubberduck.UI
         private readonly IRubberduckParser _parser;
 
         // ReSharper disable once NotAccessedField.Local
-        private CommandBarButton _navigate;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _findAllReferences;
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _findAllImplementations;
@@ -39,36 +37,27 @@ namespace Rubberduck.UI
         public void Initialize()
         {
             var beforeItem = _vbe.CommandBars["Project Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2578).Index;
-            _navigate = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
-            _navigate.BeginGroup = true;
-            _navigate.Caption = RubberduckUI.ProjectExplorerContextMenu_Navigate;
-            _navigate.Click += OnNavigateButtonClick;
 
-            _findAllReferences = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1) as CommandBarButton;
+            _findAllReferences = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
             _findAllReferences.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllReferences;
+            _findAllReferences.BeginGroup = true;
             _findAllReferences.Click += OnFindAllReferencesClick;
 
-            _findAllImplementations = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2) as CommandBarButton;
+            _findAllImplementations = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1) as CommandBarButton;
             _findAllImplementations.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllImplementations;
             _findAllImplementations.Click += OnFindAllImplementationsClick;
 
-            _rename = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3) as CommandBarButton;
+            _rename = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2) as CommandBarButton;
             _rename.Caption = RubberduckUI.ProjectExplorerContextMenu_Rename;
             _rename.Click += OnRenameClick;
 
-            _inspect = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4) as CommandBarButton;
+            _inspect = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3) as CommandBarButton;
             _inspect.Caption = RubberduckUI.ProjectExplorerContextMenu_Inspect;
             _inspect.Click += OnInspectClick;
 
-            _runAllTests = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 5) as CommandBarButton;
+            _runAllTests = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4) as CommandBarButton;
             _runAllTests.Caption = RubberduckUI.ProjectExplorerContextMenu_RunAllTests;
             _runAllTests.Click += OnRunAllTestsClick;
-        }
-
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnNavigateButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -128,13 +117,7 @@ namespace Rubberduck.UI
             {
                 return;
             }
-
-            if (_navigate != null)
-            {
-                _navigate.Click -= OnNavigateButtonClick;
-                _navigate.Delete();
-            }
-
+            
             if (_findAllReferences != null)
             {
                 _findAllReferences.Click -= OnFindAllReferencesClick;
