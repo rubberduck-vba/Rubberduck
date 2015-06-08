@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -25,6 +26,8 @@ namespace RubberduckTests.SourceControl
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
+        private Mock<ISourceControlProviderFactory> _providerFactory;
+        private Mock<ISourceControlProvider> _provider;
 
         [TestInitialize]
         public void InitializeMocks()
@@ -53,6 +56,15 @@ namespace RubberduckTests.SourceControl
             _folderBrowser = new Mock<IFolderBrowser>();
             _folderBrowserFactory = new Mock<IFolderBrowserFactory>();
             _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>())).Returns(_folderBrowser.Object);
+
+            _provider = new Mock<ISourceControlProvider>();
+            _provider.Setup(git => git.InitVBAProject(It.IsAny<string>())).Returns(GetDummyRepo());
+
+            _providerFactory = new Mock<ISourceControlProviderFactory>();
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))
+                .Returns(_provider.Object);
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+                .Returns(_provider.Object);
         }
 
         [TestMethod]
@@ -83,7 +95,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, changesPresenter, branchesPresenter,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             branchesView.Object.Current = "dev";
@@ -104,7 +116,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             _view.Raise(v => v.RefreshData += null, new EventArgs());
@@ -124,7 +136,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
                 _view.Raise(v => v.RefreshData += null, new EventArgs());
@@ -141,7 +153,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             SetupValidVbProject();
 
@@ -165,7 +177,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             presenter.RefreshChildren();
@@ -188,7 +200,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                                        _folderBrowserFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             presenter.RefreshChildren();
@@ -213,7 +225,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                            _folderBrowserFactory.Object);
+                                            _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             presenter.RefreshChildren();
@@ -236,7 +248,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                            _folderBrowserFactory.Object);
+                                            _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             presenter.RefreshChildren();
@@ -259,7 +271,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                                            _folderBrowserFactory.Object);
+                                            _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
             presenter.RefreshChildren();
@@ -267,6 +279,120 @@ namespace RubberduckTests.SourceControl
             //assert
             Assert.IsNotNull(_changesPresenter.Object.Provider);
             Assert.IsNotNull(_branchesPresenter.Object.Provider);
+        }
+
+        [TestMethod]
+        public void InitRepository_WhenUserCancels_RepoIsNotAddedToConfig()
+        {
+            //arrange
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository +=null, EventArgs.Empty);
+
+            //assert
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void InitRepository_WhenUserCancels_RepoIsNotCreated()
+        {
+            //arrange
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()),Times.Never);
+        }
+
+        [TestMethod]
+        public void InitRepository_WhenUserConfirms_RepoIsAddedToConfig()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void InitRepository_WhenUserConfirms_RepoIsInitalized()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void OpenWorkingDir_WhenUserCancels_RepoIsNotAddedToConfig()
+        {
+            //arrange
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void OpenWorkingDir_WhenUserConfirms_RepoIsAddedToConfig()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
         }
 
         private void SetupValidVbProject()
@@ -283,14 +409,19 @@ namespace RubberduckTests.SourceControl
                     {
                         Repositories = new List<Repository>() 
                         { 
-                            new Repository 
-                            (
-                                dummyRepoName,
-                                @"C:\Users\Christopher\Documents\SourceControlTest",
-                                @"https://github.com/ckuhn203/SourceControlTest.git"
-                            )
+                            (Repository)GetDummyRepo()
                         }
                     };
+        }
+
+        private static IRepository GetDummyRepo()
+        {
+            return new Repository
+                       (
+                           dummyRepoName,
+                           @"C:\Users\Christopher\Documents\SourceControlTest",
+                           @"https://github.com/ckuhn203/SourceControlTest.git"
+                       );
         }
     }
 }

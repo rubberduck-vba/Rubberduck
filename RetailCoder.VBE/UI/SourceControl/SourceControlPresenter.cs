@@ -12,6 +12,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
+        private readonly ISourceControlProviderFactory _providerFactory;
         private readonly ISourceControlView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private SourceControlConfiguration _config;
@@ -26,7 +27,8 @@ namespace Rubberduck.UI.SourceControl
                 ISourceControlView view, 
                 IChangesPresenter changesPresenter,
                 IBranchesPresenter branchesPresenter,
-                IFolderBrowserFactory folderBrowserFactory
+                IFolderBrowserFactory folderBrowserFactory,
+                ISourceControlProviderFactory providerFactory
             ) 
             : base(vbe, addin, view)
         {
@@ -37,6 +39,7 @@ namespace Rubberduck.UI.SourceControl
             
             _branchesPresenter = branchesPresenter;
             _folderBrowserFactory = folderBrowserFactory;
+            _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
 
             _view = view;
@@ -62,10 +65,10 @@ namespace Rubberduck.UI.SourceControl
 
                 var project = this.VBE.ActiveVBProject;
 
-                _provider = new GitProvider(project);
+                _provider = _providerFactory.CreateProvider(project);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
 
-                _provider = new GitProvider(project, repo);
+                _provider = _providerFactory.CreateProvider(project, repo);
 
                 AddRepoToConfig((Repository)repo);
 
@@ -84,7 +87,7 @@ namespace Rubberduck.UI.SourceControl
 
                 var project = this.VBE.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
-                _provider = new GitProvider(project, repo);
+                _provider = _providerFactory.CreateProvider(project, repo);
 
                 AddRepoToConfig(repo);
 

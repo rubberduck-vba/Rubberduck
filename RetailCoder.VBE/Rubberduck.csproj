@@ -428,6 +428,7 @@
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
+    <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
     <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
