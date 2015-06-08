@@ -931,7 +931,7 @@ Do you want to continue?</value>
     <value>Init New Repo from this Project</value>
   </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>Open working folder</value>
+    <value>Open Working Directory</value>
   </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
     <value>Refreshes pending changes</value>

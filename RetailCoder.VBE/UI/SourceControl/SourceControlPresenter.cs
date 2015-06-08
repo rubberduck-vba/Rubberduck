@@ -11,6 +11,8 @@ namespace Rubberduck.UI.SourceControl
     {
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
+        private readonly IFolderBrowserFactory _folderBrowserFactory;
+        private readonly ISourceControlProviderFactory _providerFactory;
         private readonly ISourceControlView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
         private SourceControlConfiguration _config;
@@ -24,7 +26,9 @@ namespace Rubberduck.UI.SourceControl
                 IConfigurationService<SourceControlConfiguration> configService,
                 ISourceControlView view, 
                 IChangesPresenter changesPresenter,
-                IBranchesPresenter branchesPresenter           
+                IBranchesPresenter branchesPresenter,
+                IFolderBrowserFactory folderBrowserFactory,
+                ISourceControlProviderFactory providerFactory
             ) 
             : base(vbe, addin, view)
         {
@@ -34,6 +38,8 @@ namespace Rubberduck.UI.SourceControl
             _changesPresenter = changesPresenter;
             
             _branchesPresenter = branchesPresenter;
+            _folderBrowserFactory = folderBrowserFactory;
+            _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
 
             _view = view;
@@ -50,46 +56,42 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnInitNewRepository(object sender, EventArgs e)
         {
-            using (var folderPicker = new FolderBrowserDialog())
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser((RubberduckUI.SourceControl_CreateNewRepo)))
             {
-                folderPicker.Description = RubberduckUI.SourceControl_CreateNewRepo;
-                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
-                folderPicker.ShowNewFolderButton = true;
-
-                if (folderPicker.ShowDialog() == DialogResult.OK)
+                if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
-                    var project = this.VBE.ActiveVBProject;
-
-                    _provider = new GitProvider(project);
-                    var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
-
-                    _provider = new GitProvider(project, repo);
-
-                    AddRepoToConfig((Repository)repo);
-
-                    SetChildPresenterSourceControlProviders(_provider);
+                    return;
                 }
+
+                var project = this.VBE.ActiveVBProject;
+
+                _provider = _providerFactory.CreateProvider(project);
+                var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
+
+                _provider = _providerFactory.CreateProvider(project, repo);
+
+                AddRepoToConfig((Repository)repo);
+
+                SetChildPresenterSourceControlProviders(_provider);
             }
         }
 
         private void OnOpenWorkingDirectory(object sender, EventArgs e)
         {
-            using (var folderPicker = new FolderBrowserDialog())
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
             {
-                folderPicker.Description = RubberduckUI.SourceControl_OpenWorkingDirectory;
-                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
-                folderPicker.ShowNewFolderButton = false;
-
-                if (folderPicker.ShowDialog() == DialogResult.OK)
+                if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
-                    var project = this.VBE.ActiveVBProject;
-                    var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
-                    _provider = new GitProvider(project, repo);
-
-                    AddRepoToConfig(repo);
-
-                    SetChildPresenterSourceControlProviders(_provider);
+                    return;
                 }
+
+                var project = this.VBE.ActiveVBProject;
+                var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
+                _provider = _providerFactory.CreateProvider(project, repo);
+
+                AddRepoToConfig(repo);
+
+                SetChildPresenterSourceControlProviders(_provider);
             }
         }
 
@@ -114,12 +116,13 @@ namespace Rubberduck.UI.SourceControl
 
             try
             {
-                _provider = new GitProvider(this.VBE.ActiveVBProject, _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
+                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name));
             }
             catch (SourceControlException ex)
             {
                 //todo: report failure to user and prompt to create or browse
-                _provider = new GitProvider(this.VBE.ActiveVBProject);
+                _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject);
             }
 
             SetChildPresenterSourceControlProviders(_provider);
