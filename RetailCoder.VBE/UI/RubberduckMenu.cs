@@ -130,6 +130,7 @@ namespace Rubberduck.UI
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
             _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
             _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
+            _projectExplorerContextMenu.RunTests += codePresenter_RunAllTests;
         }
 
         private SourceControl.App _sourceControlApp;
@@ -199,6 +200,16 @@ namespace Rubberduck.UI
             if (_codeInspectionsMenu != null)
             {
                 _codeInspectionsMenu.Dispose();
+            }
+
+            if (_projectExplorerContextMenu != null)
+            {
+                _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
+                _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
+                _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
+                _projectExplorerContextMenu.RunTests += codePresenter_RunAllTests;
+
+                _projectExplorerContextMenu.Dispose();
             }
 
             _about.Click -= OnAboutClick;

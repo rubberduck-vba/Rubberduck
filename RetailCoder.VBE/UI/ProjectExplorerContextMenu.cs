@@ -153,7 +153,17 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRunAllTestsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
+            ContextMenuRunTests(this, EventArgs.Empty);
+        }
 
+        public event EventHandler RunTests;
+        private void ContextMenuRunTests(object sender, EventArgs e)
+        {
+            var handler = RunTests;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         bool _disposed;
