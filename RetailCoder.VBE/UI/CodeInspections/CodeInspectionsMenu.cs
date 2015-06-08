@@ -1,5 +1,7 @@
-﻿using Microsoft.Office.Core;
+﻿using System.Windows.Forms.VisualStyles;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Properties;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeInspections
@@ -20,6 +22,13 @@ namespace Rubberduck.UI.CodeInspections
         public void Initialize(CommandBarPopup parentMenu)
         {
             _codeInspectionsButton = AddButton(parentMenu, RubberduckUI.RubberduckMenu_CodeInspections, false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
+        }
+
+        public void Initialize(CommandBarControls menu, int beforeIndex, string caption)
+        {
+            _codeInspectionsButton = menu.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeIndex) as CommandBarButton;
+            _codeInspectionsButton.Caption = caption;
+            _codeInspectionsButton.Click += OnCodeInspectionsButtonClick;
         }
 
         public void Inspect()

@@ -26,6 +26,8 @@ namespace Rubberduck.UI
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
+        private readonly IRubberduckParser _parser;
+        private readonly AddIn _addIn;
 
         //These need to stay in scope for their click events to fire. (32-bit only?)
         // ReSharper disable once NotAccessedField.Local
@@ -35,9 +37,13 @@ namespace Rubberduck.UI
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
+        private ProjectExplorerContextMenu _projectExplorerContextMenu;
+
         public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector)
             : base(vbe, addIn)
         {
+            _addIn = addIn;
+            _parser = parser;
             _configService = configService;
 
             var testExplorer = new TestExplorerWindow();
@@ -118,6 +124,10 @@ namespace Rubberduck.UI
             _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
             _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
             _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
+
+            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser);
+            _projectExplorerContextMenu.Initialize();
+            _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
         }
 
         private SourceControl.App _sourceControlApp;

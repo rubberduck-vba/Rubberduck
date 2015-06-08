@@ -4,9 +4,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI
@@ -60,6 +62,11 @@ namespace Rubberduck.UI
             _runAllTests.Click += OnRunAllTestsClick;
         }
 
+        private void OnInspectClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            ContextMenuRunInspections(this, EventArgs.Empty);
+        }
+
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnFindAllReferencesClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
@@ -98,10 +105,14 @@ namespace Rubberduck.UI
             }
         }
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnInspectClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        public event EventHandler RunInspections;
+        private void ContextMenuRunInspections(object sender, EventArgs e)
         {
-
+            var handler = RunInspections;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
