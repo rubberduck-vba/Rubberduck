@@ -128,6 +128,8 @@ namespace Rubberduck.UI
             _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser);
             _projectExplorerContextMenu.Initialize();
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
+            _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
+            _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
         }
 
         private SourceControl.App _sourceControlApp;

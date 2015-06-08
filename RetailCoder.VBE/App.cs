@@ -83,8 +83,6 @@ namespace Rubberduck
                 _formContextMenu.Dispose();
             }
 
-
-
             var displayToolbar = false;
             var toolbarCoords = new Point(-1, -1);
             if (_codeInspectionsToolbar != null)
