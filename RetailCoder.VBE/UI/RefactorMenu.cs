@@ -174,7 +174,7 @@ namespace Rubberduck.UI
             FindAllReferences();
         }
 
-        private void FindAllReferences()
+        public void FindAllReferences()
         {
             var selection = IDE.ActiveCodePane.GetSelection();
             var progress = new ParsingProgressPresenter();
@@ -247,7 +247,7 @@ namespace Rubberduck.UI
             FindAllImplementations();
         }
 
-        private void FindAllImplementations()
+        public void FindAllImplementations()
         {
             var selection = IDE.ActiveCodePane.GetSelection();
             var progress = new ParsingProgressPresenter();
@@ -442,7 +442,7 @@ namespace Rubberduck.UI
             RemoveParameter(selection);
         }
 
-        private void Rename()
+        public void Rename()
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);

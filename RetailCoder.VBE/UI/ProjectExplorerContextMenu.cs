@@ -1,8 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
 
@@ -65,7 +68,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnNavigateButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-
+            
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -89,13 +92,20 @@ namespace Rubberduck.UI
         private void Rename()
         {
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, _vbe.ActiveVBProject);
+            var results = progress.Parse(_parser, _vbe.ActiveVBProject);
+
+            var clsName = _vbe.SelectedVBComponent.Name;
+
+            var clsDeclaration =
+                results.Declarations.Items.FirstOrDefault(item => item.DeclarationType == DeclarationType.Class
+                                                               && item.IdentifierName == clsName
+                                                               && item.Project.Equals(_vbe.ActiveVBProject));
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(_vbe, view, result);
+                var factory = new RenamePresenterFactory(_vbe, view, results);
                 var refactoring = new RenameRefactoring(factory);
-                refactoring.Refactor();
+                refactoring.Refactor(clsDeclaration);
             }
         }
 
