@@ -15,15 +15,10 @@ namespace Rubberduck.UI
         private readonly VBE _vbe;
         private readonly IRubberduckParser _parser;
 
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _findAllReferences;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _findAllImplementations;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _rename;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _inspect;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _runAllTests;
         
         public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser)
@@ -37,46 +32,73 @@ namespace Rubberduck.UI
         {
             var beforeItem = _vbe.CommandBars["Project Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2578).Index;
 
-            _findAllReferences = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _findAllReferences = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem);
             _findAllReferences.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllReferences;
             _findAllReferences.BeginGroup = true;
-            _findAllReferences.Click += OnFindAllReferencesClick;
+            _findAllReferences.Click += FindAllReferences_Click;
 
-            _findAllImplementations = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1) as CommandBarButton;
+            _findAllImplementations = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1);
             _findAllImplementations.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllImplementations;
-            _findAllImplementations.Click += OnFindAllImplementationsClick;
+            _findAllImplementations.Click += FindAllImplementations_Click;
 
-            _rename = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2) as CommandBarButton;
+            _rename = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2);
             _rename.Caption = RubberduckUI.ProjectExplorerContextMenu_Rename;
-            _rename.Click += OnRenameClick;
+            _rename.Click += Rename_Click;
 
-            _inspect = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3) as CommandBarButton;
+            _inspect = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3);
             _inspect.Caption = RubberduckUI.ProjectExplorerContextMenu_Inspect;
-            _inspect.Click += OnInspectClick;
+            _inspect.Click += Inspect_Click;
 
-            _runAllTests = _vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4) as CommandBarButton;
+            _runAllTests = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4);
             _runAllTests.Caption = RubberduckUI.ProjectExplorerContextMenu_RunAllTests;
-            _runAllTests.Click += OnRunAllTestsClick;
+            _runAllTests.Click += RunAllTests_Click;
+        }
+
+        private Declaration FindSelectedDeclaration()
+        {
+            VBProjectParseResult result;
+            return FindSelectedDeclaration(out result);
+        }
+
+        private Declaration FindSelectedDeclaration(out VBProjectParseResult results)
+        {
+            var project = _vbe.ActiveVBProject;
+            if (project == null)
+            {
+                results = null;
+                return null;
+            }
+
+            var progress = new ParsingProgressPresenter();
+            results = progress.Parse(_parser, _vbe.ActiveVBProject);
+
+            var selection = _vbe.SelectedVBComponent;
+            if (selection != null)
+            {
+                var componentName = selection.Name;
+
+                return results.Declarations[componentName].SingleOrDefault(item =>
+                    (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
+                    && item.Project.Equals(project));
+            }
+
+            return results.Declarations[project.Name].SingleOrDefault(item =>
+                item.DeclarationType == DeclarationType.Project && item.Project.Equals(project));
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnFindAllReferencesClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void FindAllReferences_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var progress = new ParsingProgressPresenter();
-            var results = progress.Parse(_parser, _vbe.ActiveVBProject);
-
-            var clsName = _vbe.SelectedVBComponent.Name;
-
-            var clsDeclaration =
-                results.Declarations.Items.FirstOrDefault(item => item.DeclarationType == DeclarationType.Class
-                                                               && item.IdentifierName == clsName
-                                                               && item.Project.Equals(_vbe.ActiveVBProject));
-
-            ContextMenuFindReferences(this, new NavigateCodeEventArgs(clsDeclaration));
+            var declaration = FindSelectedDeclaration();
+            if (declaration == null)
+            {
+                return;
+            }
+            OnFindReferences(this, new NavigateCodeEventArgs(declaration));
         }
 
         public event EventHandler<NavigateCodeEventArgs> FindReferences;
-        private void ContextMenuFindReferences(object sender, NavigateCodeEventArgs e)
+        private void OnFindReferences(object sender, NavigateCodeEventArgs e)
         {
             var handler = FindReferences;
             if (handler != null)
@@ -86,23 +108,18 @@ namespace Rubberduck.UI
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnFindAllImplementationsClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void FindAllImplementations_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var progress = new ParsingProgressPresenter();
-            var results = progress.Parse(_parser, _vbe.ActiveVBProject);
-
-            var clsName = _vbe.SelectedVBComponent.Name;
-
-            var clsDeclaration =
-                results.Declarations.Items.FirstOrDefault(item => item.DeclarationType == DeclarationType.Class
-                                                               && item.IdentifierName == clsName
-                                                               && item.Project.Equals(_vbe.ActiveVBProject));
-
-            ContextMenuFindImplementations(this, new NavigateCodeEventArgs(clsDeclaration));
+            var declaration = FindSelectedDeclaration();
+            if (declaration == null)
+            {
+                return;
+            }
+            OnFindImplementations(this, new NavigateCodeEventArgs(declaration));
         }
 
         public event EventHandler<NavigateCodeEventArgs> FindImplementations;
-        private void ContextMenuFindImplementations(object sender, NavigateCodeEventArgs e)
+        private void OnFindImplementations(object sender, NavigateCodeEventArgs e)
         {
             var handler = FindImplementations;
             if (handler != null)
@@ -112,34 +129,31 @@ namespace Rubberduck.UI
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnRenameClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void Rename_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var progress = new ParsingProgressPresenter();
-            var results = progress.Parse(_parser, _vbe.ActiveVBProject);
-
-            var clsName = _vbe.SelectedVBComponent.Name;
-
-            var clsDeclaration =
-                results.Declarations.Items.FirstOrDefault(item => item.DeclarationType == DeclarationType.Class
-                                                               && item.IdentifierName == clsName
-                                                               && item.Project.Equals(_vbe.ActiveVBProject));
+            VBProjectParseResult results;
+            var declaration = FindSelectedDeclaration(out results);
+            if (declaration == null)
+            {
+                return;
+            }
 
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(_vbe, view, results);
                 var refactoring = new RenameRefactoring(factory);
-                refactoring.Refactor(clsDeclaration);
+                refactoring.Refactor(declaration);
             }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnInspectClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void Inspect_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ContextMenuRunInspections(this, EventArgs.Empty);
+            OnRunInspections(this, EventArgs.Empty);
         }
 
         public event EventHandler RunInspections;
-        private void ContextMenuRunInspections(object sender, EventArgs e)
+        private void OnRunInspections(object sender, EventArgs e)
         {
             var handler = RunInspections;
             if (handler != null)
@@ -149,15 +163,15 @@ namespace Rubberduck.UI
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnRunAllTestsClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        private void RunAllTests_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ContextMenuRunTests(this, EventArgs.Empty);
+            OnRunAllTests(this, EventArgs.Empty);
         }
 
-        public event EventHandler RunTests;
-        private void ContextMenuRunTests(object sender, EventArgs e)
+        public event EventHandler RunAllTests;
+        private void OnRunAllTests(object sender, EventArgs e)
         {
-            var handler = RunTests;
+            var handler = RunAllTests;
             if (handler != null)
             {
                 handler(sender, e);
@@ -174,31 +188,31 @@ namespace Rubberduck.UI
             
             if (_findAllReferences != null)
             {
-                _findAllReferences.Click -= OnFindAllReferencesClick;
+                _findAllReferences.Click -= FindAllReferences_Click;
                 _findAllReferences.Delete();
             }
 
             if (_findAllImplementations != null)
             {
-                _findAllImplementations.Click -= OnFindAllImplementationsClick;
+                _findAllImplementations.Click -= FindAllImplementations_Click;
                 _findAllImplementations.Delete();
             }
 
             if (_rename != null)
             {
-                _rename.Click -= OnRenameClick;
+                _rename.Click -= Rename_Click;
                 _rename.Delete();
             }
 
             if (_inspect != null)
             {
-                _inspect.Click -= OnInspectClick;
+                _inspect.Click -= Inspect_Click;
                 _inspect.Delete();
             }
 
             if (_runAllTests != null)
             {
-                _runAllTests.Click -= OnRunAllTestsClick;
+                _runAllTests.Click -= RunAllTests_Click;
                 _runAllTests.Delete();
             }
 

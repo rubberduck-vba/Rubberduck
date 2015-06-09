@@ -54,7 +54,7 @@ namespace Rubberduck.UI
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
-            codePresenter.RunAllTests += codePresenter_RunAllTests;
+            codePresenter.RunAllTests += CodePresenterRunAllAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
             codePresenter.Rename += codePresenter_Rename;
             codePresenter.FindAllReferences += codePresenter_FindAllReferences;
@@ -101,7 +101,7 @@ namespace Rubberduck.UI
             _codeInspectionsMenu.Inspect();
         }
 
-        private void codePresenter_RunAllTests(object sender, EventArgs e)
+        private void CodePresenterRunAllAllTests(object sender, EventArgs e)
         {
             _testMenu.RunAllTests();
         }
@@ -130,7 +130,7 @@ namespace Rubberduck.UI
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
             _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
             _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
-            _projectExplorerContextMenu.RunTests += codePresenter_RunAllTests;
+            _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
         }
 
         private SourceControl.App _sourceControlApp;
@@ -207,7 +207,7 @@ namespace Rubberduck.UI
                 _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
                 _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
                 _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
-                _projectExplorerContextMenu.RunTests += codePresenter_RunAllTests;
+                _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
 
                 _projectExplorerContextMenu.Dispose();
             }
