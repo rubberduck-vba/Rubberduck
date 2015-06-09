@@ -889,9 +889,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="About_Stargazers" xml:space="preserve">
     <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
-  <data name="Okay" xml:space="preserve">
-    <value>z Okay</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>z Source Control</value>
   </data>
@@ -922,8 +919,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="SourceControl_CommitSync" xml:space="preserve">
     <value>z Commit and Sync</value>
   </data>
-  <data name="SourceControl_CreateNewBranch" xml:space="preserve">
-    <value>z Enter Branch Name</value>
+  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
+    <value>z Rubberduck - Create Branch</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>z Branch:</value>
@@ -962,7 +959,7 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
     <value>z Merge</value>
   </data>
   <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>z Merge Branch</value>
+    <value>z Rubberduck - Merge</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
     <value>z New Branch</value>
@@ -1015,24 +1012,6 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>z Re&amp;name</value>
   </data>
-  <data name="ProjectExplorerContextMenu_FindAllImplementations" xml:space="preserve">
-    <value>z Find &amp;All Implementations...</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_FindAllReferences" xml:space="preserve">
-    <value>z &amp;Find All References...</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Inspect" xml:space="preserve">
-    <value>z Inspe&amp;ct</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Navigate" xml:space="preserve">
-    <value>z Navi&amp;gate</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Rename" xml:space="preserve">
-    <value>z Rena&amp;me</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_RunAllTests" xml:space="preserve">
-    <value>z Run All &amp;Tests</value>
-  </data>
   <data name="CodeExplorer_Inspect" xml:space="preserve">
     <value>z &amp;Inspect</value>
   </data>
@@ -1044,5 +1023,21 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
     <value>z R&amp;efresh</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>z Renaming to '{0}' clashes with '{1}' in the same scope.
+Are you sure you want to proceed with this rename?</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
+    <value>z Please specify branch name.</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
+    <value>z New Branch</value>
+  </data>
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
+    <value>Please select source and destination branches.</value>
+  </data>
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
+    <value>z Merge branches</value>
   </data>
 </root>

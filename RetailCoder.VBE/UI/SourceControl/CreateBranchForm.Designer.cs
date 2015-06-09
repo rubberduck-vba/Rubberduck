@@ -31,66 +31,112 @@ namespace Rubberduck.UI.SourceControl
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateBranchForm));
-            this.OkayButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
             this.UserInputBox = new System.Windows.Forms.TextBox();
+            this.CancelButton = new System.Windows.Forms.Button();
+            this.OkButton = new System.Windows.Forms.Button();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.InstructionsLabel = new System.Windows.Forms.Label();
+            this.TitleLabel = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // OkayButton
-            // 
-            this.OkayButton.AccessibleDescription = "Okay";
-            this.OkayButton.Enabled = false;
-            this.OkayButton.Image = global::Rubberduck.Properties.Resources.tick;
-            this.OkayButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.OkayButton.Location = new System.Drawing.Point(42, 56);
-            this.OkayButton.Name = "OkayButton";
-            this.OkayButton.Size = new System.Drawing.Size(79, 23);
-            this.OkayButton.TabIndex = 1;
-            this.OkayButton.Text = "OK";
-            this.OkayButton.UseVisualStyleBackColor = true;
-            this.OkayButton.Click += new System.EventHandler(this.Okay_Click);
-            // 
-            // CancelButton
-            // 
-            this.CancelButton.AccessibleDescription = "Cancel";
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.CancelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.CancelButton.Location = new System.Drawing.Point(154, 56);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(85, 23);
-            this.CancelButton.TabIndex = 2;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // UserInputBox
             // 
-            this.UserInputBox.Location = new System.Drawing.Point(5, 12);
+            this.UserInputBox.Location = new System.Drawing.Point(15, 88);
             this.UserInputBox.Name = "UserInputBox";
-            this.UserInputBox.Size = new System.Drawing.Size(267, 20);
+            this.UserInputBox.Size = new System.Drawing.Size(290, 20);
             this.UserInputBox.TabIndex = 0;
             this.UserInputBox.TextChanged += new System.EventHandler(this.UserInputBox_TextChanged);
             // 
+            // CancelButton
+            // 
+            this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelButton.Location = new System.Drawing.Point(231, 11);
+            this.CancelButton.Name = "CancelButton";
+            this.CancelButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelButton.TabIndex = 0;
+            this.CancelButton.Text = "Cancel";
+            this.CancelButton.UseVisualStyleBackColor = false;
+            // 
+            // OkButton
+            // 
+            this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.OkButton.Location = new System.Drawing.Point(150, 11);
+            this.OkButton.Name = "OkButton";
+            this.OkButton.Size = new System.Drawing.Size(75, 23);
+            this.OkButton.TabIndex = 1;
+            this.OkButton.Text = "Ok";
+            this.OkButton.UseVisualStyleBackColor = false;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.flowLayoutPanel2.Controls.Add(this.CancelButton);
+            this.flowLayoutPanel2.Controls.Add(this.OkButton);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 133);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(8, 8, 0, 8);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(317, 43);
+            this.flowLayoutPanel2.TabIndex = 12;
+            // 
+            // InstructionsLabel
+            // 
+            this.InstructionsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
+            this.InstructionsLabel.Name = "InstructionsLabel";
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Size = new System.Drawing.Size(298, 34);
+            this.InstructionsLabel.TabIndex = 6;
+            this.InstructionsLabel.Text = "Please specify branch name.";
+            // 
+            // TitleLabel
+            // 
+            this.TitleLabel.AutoSize = true;
+            this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TitleLabel.Location = new System.Drawing.Point(12, 9);
+            this.TitleLabel.Name = "TitleLabel";
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Size = new System.Drawing.Size(87, 19);
+            this.TitleLabel.TabIndex = 4;
+            this.TitleLabel.Text = "New branch";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.InstructionsLabel);
+            this.panel1.Controls.Add(this.TitleLabel);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(317, 71);
+            this.panel1.TabIndex = 13;
+            // 
             // CreateBranchForm
             // 
-            this.AcceptButton = this.OkayButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 111);
+            this.ClientSize = new System.Drawing.Size(317, 176);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.UserInputBox);
-            this.Controls.Add(this.CancelButton);
-            this.Controls.Add(this.OkayButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
+            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(300, 150);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(300, 150);
             this.Name = "CreateBranchForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Enter Branch Name";
+            this.Text = "Rubberduck - Create Branch";
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -98,8 +144,12 @@ namespace Rubberduck.UI.SourceControl
 
         #endregion
 
-        private Button OkayButton;
-        private Button CancelButton;
         private TextBox UserInputBox;
+        private Button CancelButton;
+        private Button OkButton;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Label InstructionsLabel;
+        private Label TitleLabel;
+        private Panel panel1;
     }
 }

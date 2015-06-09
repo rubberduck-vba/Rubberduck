@@ -33,24 +33,24 @@ namespace Rubberduck.UI
             var beforeItem = _vbe.CommandBars["Project Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2578).Index;
 
             _findAllReferences = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem);
-            _findAllReferences.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllReferences;
+            _findAllReferences.Caption = RubberduckUI.CodeExplorer_FindAllReferencesText;
             _findAllReferences.BeginGroup = true;
             _findAllReferences.Click += FindAllReferences_Click;
 
             _findAllImplementations = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1);
-            _findAllImplementations.Caption = RubberduckUI.ProjectExplorerContextMenu_FindAllImplementations;
+            _findAllImplementations.Caption = RubberduckUI.CodeExplorer_FindAllImplementationsText;
             _findAllImplementations.Click += FindAllImplementations_Click;
 
             _rename = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2);
-            _rename.Caption = RubberduckUI.ProjectExplorerContextMenu_Rename;
+            _rename.Caption = RubberduckUI.RefactorMenu_Rename;
             _rename.Click += Rename_Click;
 
             _inspect = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3);
-            _inspect.Caption = RubberduckUI.ProjectExplorerContextMenu_Inspect;
+            _inspect.Caption = RubberduckUI.Inspect;
             _inspect.Click += Inspect_Click;
 
             _runAllTests = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4);
-            _runAllTests.Caption = RubberduckUI.ProjectExplorerContextMenu_RunAllTests;
+            _runAllTests.Caption = RubberduckUI.CodeExplorer_RunAllTestsText;
             _runAllTests.Click += RunAllTests_Click;
         }
 
@@ -76,10 +76,17 @@ namespace Rubberduck.UI
             if (selection != null)
             {
                 var componentName = selection.Name;
+                var matches = results.Declarations[componentName].ToList();
+                if (matches.Count == 1)
+                {
+                    return matches.Single();
+                }
 
-                return results.Declarations[componentName].SingleOrDefault(item =>
+                var result = matches.SingleOrDefault(item =>
                     (item.DeclarationType == DeclarationType.Class || item.DeclarationType == DeclarationType.Module)
-                    && item.Project.Equals(project));
+                    && item.Project == project);
+
+                return result;
             }
 
             return results.Declarations[project.Name].SingleOrDefault(item =>

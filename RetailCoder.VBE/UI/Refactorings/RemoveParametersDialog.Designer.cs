@@ -98,7 +98,7 @@ namespace Rubberduck.UI.Refactorings
             | System.Windows.Forms.AnchorStyles.Right)));
             this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
             this.InstructionsLabel.Size = new System.Drawing.Size(383, 34);
             this.InstructionsLabel.TabIndex = 6;
             this.InstructionsLabel.Text = "Select a parameter and double-click it or use buttons to remove or restore it.";
@@ -109,7 +109,7 @@ namespace Rubberduck.UI.Refactorings
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(12, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
             this.TitleLabel.Size = new System.Drawing.Size(140, 19);
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "Remove parameters";
@@ -179,7 +179,9 @@ namespace Rubberduck.UI.Refactorings
             this.Controls.Add(this.RemoveButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "RemoveParametersDialog";
             this.Text = "RemoveParametersDialog";
             this.flowLayoutPanel2.ResumeLayout(false);

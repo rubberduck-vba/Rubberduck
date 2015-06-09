@@ -842,8 +842,8 @@ Warning: All customized settings will be lost.</value>
     <value>Reset settings to default configuration?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Renaming to '{0}' will cause a confliction with '{1}'.
-Do you want to continue?</value>
+    <value>Renaming to '{0}' clashes with '{1}' in the same scope.
+Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
@@ -948,9 +948,6 @@ Do you want to continue?</value>
   <data name="SourceControl_Changes" xml:space="preserve">
     <value>Changes</value>
   </data>
-  <data name="Okay" xml:space="preserve">
-    <value>Okay</value>
-  </data>
   <data name="SourceControl_Branches" xml:space="preserve">
     <value>Branches</value>
   </data>
@@ -969,8 +966,8 @@ Do you want to continue?</value>
   <data name="SourceControl_CommitSync" xml:space="preserve">
     <value>Commit and Sync</value>
   </data>
-  <data name="SourceControl_CreateNewBranch" xml:space="preserve">
-    <value>Enter Branch Name</value>
+  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
+    <value>Rubberduck - Create Branch</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
     <value>Branch:</value>
@@ -994,7 +991,7 @@ Do you want to continue?</value>
     <value>Merge</value>
   </data>
   <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>Merge Branch</value>
+    <value>Rubberduck - Merge</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
     <value>New Branch</value>
@@ -1044,22 +1041,16 @@ Do you want to continue?</value>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Re&amp;name</value>
   </data>
-  <data name="ProjectExplorerContextMenu_FindAllImplementations" xml:space="preserve">
-    <value>Find &amp;All Implementations...</value>
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
+    <value>Please specify branch name.</value>
   </data>
-  <data name="ProjectExplorerContextMenu_FindAllReferences" xml:space="preserve">
-    <value>&amp;Find All References...</value>
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
+    <value>New branch</value>
   </data>
-  <data name="ProjectExplorerContextMenu_Inspect" xml:space="preserve">
-    <value>Inspe&amp;ct</value>
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
+    <value>Please select source and destination branches.</value>
   </data>
-  <data name="ProjectExplorerContextMenu_Navigate" xml:space="preserve">
-    <value>Navi&amp;gate</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Rename" xml:space="preserve">
-    <value>Rena&amp;me</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_RunAllTests" xml:space="preserve">
-    <value>Run All &amp;Tests</value>
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
+    <value>Merge branches</value>
   </data>
 </root>

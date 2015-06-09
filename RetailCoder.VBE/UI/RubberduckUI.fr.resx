@@ -843,8 +843,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Réinitialiser les paramètres par défaut?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>z Renaming to '{0}' will cause a confliction with '{1}'.
-Do you want to continue?</value>
+    <value>Le nom '{0}' entre en collision avec '{1}', ayant la même portée. Continuer?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renommer {0}</value>
@@ -853,210 +852,201 @@ Do you want to continue?</value>
     <value>Suédois</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>z Code Explorer</value>
+    <value>Explorateur</value>
   </data>
   <data name="About_AllContributors" xml:space="preserve">
-    <value>z All contributors to our GitHub repository</value>
+    <value>Tous les contributeurs à notre dépôt GitHub</value>
   </data>
   <data name="About_Anyone" xml:space="preserve">
-    <value>z ...and anyone reading this!</value>
+    <value>...et vous qui lisez ceci!</value>
   </data>
   <data name="About_Attributions" xml:space="preserve">
-    <value>z Attributions</value>
+    <value>Attributions</value>
   </data>
   <data name="About_Blogs" xml:space="preserve">
-    <value>z Blogs:</value>
+    <value>Blogues:</value>
   </data>
   <data name="About_Caption" xml:space="preserve">
-    <value>z About Rubberduck</value>
+    <value>À propos de Rubberduck</value>
   </data>
   <data name="About_CodeReview" xml:space="preserve">
-    <value>z Code Review Stack Exchange</value>
+    <value>Code Review Stack Exchange</value>
   </data>
   <data name="About_Community" xml:space="preserve">
-    <value>z Community:</value>
+    <value>Communautés:</value>
   </data>
   <data name="About_Contributors" xml:space="preserve">
-    <value>z Contributors &amp; supporters:</value>
+    <value>Contributeurs &amp; supporters:</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>z © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>z Fugue icons by Yusuke Kamiyamane</value>
+    <value>Icônes Fugue par Yusuke Kamiyamane</value>
   </data>
   <data name="About_JetBrains" xml:space="preserve">
-    <value>z JetBrains ReSharper Community Team</value>
+    <value>L'équipe JetBrains ReSharper Community</value>
   </data>
   <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>z GitHub integration powered by LibGit2Sharp</value>
+    <value>Intégration GitHub alimentée par LibGit2Sharp</value>
   </data>
   <data name="About_ParsingCredit" xml:space="preserve">
-    <value>z Parsing powered by ANTLR</value>
+    <value>Analyse du code alimentée par ANTLR</value>
   </data>
   <data name="About_SpecialThanks" xml:space="preserve">
-    <value>z Special Thanks</value>
+    <value>Remerciements</value>
   </data>
   <data name="About_StackOverflow" xml:space="preserve">
-    <value>z Stack Overflow</value>
+    <value>Stack Overflow</value>
   </data>
   <data name="About_Stargazers" xml:space="preserve">
-    <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
-  </data>
-  <data name="Okay" xml:space="preserve">
-    <value>z Okay</value>
+    <value>Nos fans sur GitHub, Facebook et Twitter, pour les chaleureux encouragements!</value>
   </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
-    <value>z Source Control</value>
+    <value>Contrôle des sources</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>z Attributes File</value>
+    <value>Fichier d'attributs</value>
   </data>
   <data name="SourceControl_Branches" xml:space="preserve">
-    <value>z Branches</value>
+    <value>Branches</value>
   </data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
-    <value>z Cancel</value>
+    <value>Annuler</value>
   </data>
   <data name="SourceControl_Changes" xml:space="preserve">
-    <value>z Changes</value>
+    <value>Modifications</value>
   </data>
   <data name="SourceControl_Commit" xml:space="preserve">
-    <value>z Commit</value>
+    <value>Consigner</value>
   </data>
   <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
-    <value>z Go</value>
+    <value>Procéder</value>
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
-    <value>z Commit message:</value>
+    <value>Message consignation</value>
   </data>
   <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>z Commit and Push</value>
+    <value>Consigner et pousser</value>
   </data>
   <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>z Commit and Sync</value>
+    <value>Consigner et synchroniser</value>
   </data>
   <data name="SourceControl_CreateNewBranch" xml:space="preserve">
-    <value>z Enter Branch Name</value>
+    <value>Rubberduck - Nouvelle Branche</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
-    <value>z Branch:</value>
+    <value>Branche:</value>
   </data>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
-    <value>z Default Repository Location</value>
+    <value>Emplacement par défaut</value>
   </data>
   <data name="SourceControl_DestinationLabel" xml:space="preserve">
-    <value>z Destination</value>
+    <value>Destination</value>
   </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>z Email Address</value>
+    <value>Adresse courriel</value>
   </data>
   <data name="SourceControl_ExcludedChanges" xml:space="preserve">
-    <value>z Excluded changes</value>
+    <value>Modifications exclues</value>
   </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>z Fetch</value>
+    <value>Télécharger</value>
   </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
-    <value>z Global Settings</value>
+    <value>Paramètres globaux</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>z Ignore File</value>
+    <value>Ignorer le fichier</value>
   </data>
   <data name="SourceControl_IncludedChanges" xml:space="preserve">
-    <value>z Included changes</value>
+    <value>Modifications incluses</value>
   </data>
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
-    <value>z Incoming commits</value>
+    <value>Consignations</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>z Init New Repo from this Project</value>
+    <value>Initialiser un nouveau dépôt pour ce projet</value>
   </data>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
-    <value>z Merge</value>
+    <value>Fusionner</value>
   </data>
   <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>z Merge Branch</value>
+    <value>Rubberduck - Fusionner</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>z New Branch</value>
+    <value>Nouvelle branche</value>
   </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>z Open working folder</value>
+    <value>Ouvrir le dossier de travail</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
-    <value>z Outgoing commits</value>
+    <value>Consignations sortantes</value>
   </data>
   <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>z Published Branches</value>
+    <value>Branches publiées</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>z Pull</value>
+    <value>Tirer</value>
   </data>
   <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>z Push</value>
+    <value>Pousser</value>
   </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
-    <value>z Refreshes pending changes</value>
+    <value>Rafraîchit les modifications non consignées</value>
   </data>
   <data name="SourceControl_RespositorySettings" xml:space="preserve">
-    <value>z Repository Settings</value>
+    <value>Paramètres du dépôt</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
-    <value>z Settings</value>
+    <value>Paramètres</value>
   </data>
   <data name="SourceControl_SourceLabel" xml:space="preserve">
-    <value>z Source</value>
+    <value>Source</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
-    <value>z Sync</value>
+    <value>Synchroniser</value>
   </data>
   <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>z Unpublished Branches</value>
+    <value>Branches non publiées</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>z Unsynced commits</value>
+    <value>Consignations non synchronisées</value>
   </data>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
-    <value>z Untracked files</value>
+    <value>Fichiers non-suivis</value>
   </data>
   <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
-    <value>z Update</value>
+    <value>Mise à jour</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>z User Name</value>
+    <value>Utilisateur</value>
   </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>z Re&amp;name</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_FindAllImplementations" xml:space="preserve">
-    <value>z Find &amp;All Implementations...</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_FindAllReferences" xml:space="preserve">
-    <value>z &amp;Find All References...</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Inspect" xml:space="preserve">
-    <value>z Inspe&amp;ct</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Navigate" xml:space="preserve">
-    <value>z Navi&amp;gate</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_Rename" xml:space="preserve">
-    <value>z Rena&amp;me</value>
-  </data>
-  <data name="ProjectExplorerContextMenu_RunAllTests" xml:space="preserve">
-    <value>z Run All &amp;Tests</value>
+    <value>Re&amp;nommer</value>
   </data>
   <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>z &amp;Inspect</value>
+    <value>&amp;Inspecter</value>
   </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>z Na&amp;vigate</value>
+    <value>Na&amp;viguer</value>
   </data>
   <data name="CodeExplorer_New" xml:space="preserve">
-    <value>z &amp;New</value>
+    <value>&amp;Nouveau</value>
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>z R&amp;efresh</value>
+    <value>R&amp;afraîchir</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
+    <value>Veuillez spécifier un nom pour la nouvelle branche.</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
+    <value>Nouvelle branche</value>
+  </data>
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
+    <value>Veuillez sélectionner la source et la destination.</value>
+  </data>
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
+    <value>Fusionner les branches</value>
   </data>
 </root>

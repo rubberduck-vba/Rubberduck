@@ -14,14 +14,14 @@ namespace Rubberduck.UI.SourceControl
             Text = RubberduckUI.SourceControl_MergeFormCaption;
             SourceLabel.Text = RubberduckUI.SourceControl_SourceLabel;
             DestinationLabel.Text = RubberduckUI.SourceControl_DestinationLabel;
-            OkayButton.Text = RubberduckUI.Okay;
+            OkButton.Text = RubberduckUI.OK;
             CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
         public bool OkayButtonEnabled
         {
-            get { return this.OkayButton.Enabled; }
-            set { this.OkayButton.Enabled = value; }
+            get { return this.OkButton.Enabled; }
+            set { this.OkButton.Enabled = value; }
         }
 
         private BindingList<string> _source;

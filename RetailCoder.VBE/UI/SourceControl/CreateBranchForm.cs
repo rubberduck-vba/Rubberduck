@@ -9,8 +9,8 @@ namespace Rubberduck.UI.SourceControl
         {
             InitializeComponent();
 
-            Text = RubberduckUI.SourceControl_CreateNewBranch;
-            OkayButton.Text = RubberduckUI.OK_AllCaps;
+            Text = RubberduckUI.SourceControl_CreateNewBranchCaption;
+            OkButton.Text = RubberduckUI.OK_AllCaps;
             CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
@@ -22,8 +22,8 @@ namespace Rubberduck.UI.SourceControl
 
         public bool OkayButtonEnabled
         {
-            get { return this.OkayButton.Enabled; }
-            set { this.OkayButton.Enabled = value; }
+            get { return this.OkButton.Enabled; }
+            set { this.OkButton.Enabled = value; }
         }
 
         public event EventHandler<BranchCreateArgs> Confirm;
