@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.SourceControl;
 using Rubberduck.Settings;
+using System.IO;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private SourceControlConfiguration _config;
 
-        public ISourceControlProvider Provider{ get; set; }
+        public ISourceControlProvider Provider { get; set; }
 
         public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService, IFolderBrowserFactory folderBrowserFactory)
         {
@@ -63,29 +64,44 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnEditAttributesFile(object sender, EventArgs e)
         {
-            OpenFileInExternalEditor(".gitattributes");
+            OpenFileInExternalEditor(GitSettingsFile.Attributes);
         }
 
         private void OnEditIgnoreFile(object sender, EventArgs e)
         {
-            OpenFileInExternalEditor(".gitignore");
+            OpenFileInExternalEditor(GitSettingsFile.Ignore);
         }
 
-        private void OpenFileInExternalEditor(string fileName)
+        private void OpenFileInExternalEditor(GitSettingsFile fileType)
         {
             if (this.Provider == null)
             {
                 return;
             }
 
-            var repo = this.Provider.CurrentRepository;
-            var filePath = System.IO.Path.Combine(repo.LocalLocation, fileName);
-
-            //todo: if file doesn't exist, create it
-            if (System.IO.File.Exists(filePath))
+            var fileName = String.Empty;
+            var defaultContents = String.Empty;
+            switch (fileType)
             {
-                Process.Start(filePath);
+                case GitSettingsFile.Ignore:
+                    fileName = ".gitignore";
+                    defaultContents = DefaultSettings.GitIgnoreText();
+                    break;
+                case GitSettingsFile.Attributes:
+                    fileName = ".gitattributes";
+                    defaultContents = DefaultSettings.GitAttributesText();
+                    break;
             }
+
+            var repo = this.Provider.CurrentRepository;
+            var filePath = Path.Combine(repo.LocalLocation, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, defaultContents);
+            }
+
+            Process.Start(filePath);
         }
 
         private void OnCancel(object sender, EventArgs e)
