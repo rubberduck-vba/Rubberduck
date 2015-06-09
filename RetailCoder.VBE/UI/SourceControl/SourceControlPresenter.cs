@@ -76,6 +76,7 @@ namespace Rubberduck.UI.SourceControl
                 AddRepoToConfig((Repository)repo);
 
                 SetChildPresenterSourceControlProviders(_provider);
+                _view.Status = RubberduckUI.Online;
             }
         }
 
@@ -95,6 +96,7 @@ namespace Rubberduck.UI.SourceControl
                 AddRepoToConfig(repo);
 
                 SetChildPresenterSourceControlProviders(_provider);
+                _view.Status = RubberduckUI.Online;
             }
         }
 

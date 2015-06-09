@@ -424,13 +424,49 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
-            throw new NotImplementedException();
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual("Online", _view.Object.Status);
         }
 
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_StatusIsOnline()
         {
-            throw new NotImplementedException();
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual("Online", _view.Object.Status);
         }
 
         [TestMethod]

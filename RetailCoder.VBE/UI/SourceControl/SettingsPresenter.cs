@@ -81,6 +81,7 @@ namespace Rubberduck.UI.SourceControl
             var repo = this.Provider.CurrentRepository;
             var filePath = System.IO.Path.Combine(repo.LocalLocation, fileName);
 
+            //todo: if file doesn't exist, create it
             if (System.IO.File.Exists(filePath))
             {
                 Process.Start(filePath);
