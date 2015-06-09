@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {
@@ -15,6 +15,12 @@ namespace Rubberduck.Parsing
             _project = project;
             _parseResults = parseResults;
             _declarations = new Declarations();
+
+            var projectIdentifier = project.Name;
+            var memberName = new QualifiedMemberName(new QualifiedModuleName(project), projectIdentifier);
+            var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
+            _declarations.Add(projectDeclaration);
+
             foreach (var declaration in VbaStandardLib.Declarations)
             {
                 _declarations.Add(declaration);
@@ -38,42 +44,6 @@ namespace Rubberduck.Parsing
         }
 
         public void Resolve()
-        {
-            IdentifySymbols();
-            IdentifySymbolUsages();
-        }
-
-        /// <summary>
-        /// Locates all declared symbols (identifiers) in the project.
-        /// </summary>
-        /// <remarks>
-        /// This method walks the entire parse tree for each module.
-        /// </remarks>
-        private void IdentifySymbols()
-        {
-            foreach (var componentParseResult in _parseResults.Where(r => r.Component != null))
-            {
-                try
-                {
-                    var projectIdentifier = componentParseResult.QualifiedName.ProjectName;
-                    if (!_declarations.Items.Any(declaration => 
-                        !declaration.IsBuiltIn 
-                        && declaration.DeclarationType == DeclarationType.Project 
-                        && declaration.IdentifierName == projectIdentifier))
-                    { 
-                        var memberName = componentParseResult.QualifiedName.QualifyMemberName(projectIdentifier);
-                        var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
-                        _declarations.Add(projectDeclaration);
-                    }
-                }
-                catch (COMException)
-                {
-                    // something happened, couldn't access VBComponent for some reason
-                }
-            }
-        }
-
-        private void IdentifySymbolUsages()
         {
             foreach (var componentParseResult in _parseResults)
             {

@@ -5,11 +5,22 @@ namespace Rubberduck.VBEditor
 {
     public struct QualifiedModuleName
     {
+        public QualifiedModuleName(VBProject project)
+        {
+            _component = null;
+            _componentName = null;
+            _project = project;
+            _projectName = project.Name;
+            _projectHashCode = project.GetHashCode();
+            _contentHashCode = 0;
+        }
+
         public QualifiedModuleName(VBComponent component)
         {
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
-            _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
+            _project = component.Collection.Parent;
+            _projectName = component == null ? string.Empty : _project.Name;
             _projectHashCode = component == null ? 0 : component.Collection.Parent.GetHashCode();
 
             var module = _component.CodeModule;
@@ -28,6 +39,7 @@ namespace Rubberduck.VBEditor
             _projectName = projectName;
             _componentName = componentName;
             _component = null;
+            _project = null;
             _contentHashCode = componentName.GetHashCode();
             _projectHashCode = projectName.GetHashCode();
         }
@@ -39,7 +51,9 @@ namespace Rubberduck.VBEditor
 
         private readonly VBComponent _component;
         public VBComponent Component { get { return _component; } }
-        public VBProject Project { get { return _component == null ? null : _component.Collection.Parent; } }
+
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project ?? (_component == null ? null : _component.Collection.Parent); } }
 
         private readonly int _projectHashCode;
         public int ProjectHashCode { get { return _projectHashCode; } }
