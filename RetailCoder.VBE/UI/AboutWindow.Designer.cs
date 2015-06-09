@@ -68,22 +68,24 @@ namespace Rubberduck.UI
             this.SpecialThanksList.FormattingEnabled = true;
             this.SpecialThanksList.ItemHeight = 16;
             this.SpecialThanksList.Items.AddRange(new object[] {
-            RubberduckUI.About_Community,
-            RubberduckUI.About_CodeReview,
-            RubberduckUI.About_JetBrains,
-            RubberduckUI.About_StackOverflow,
+            "Community:",
+            "Code Review Stack Exchange",
+            "JetBrains ReSharper Community Team",
+            "Stack Overflow",
             "",
-            RubberduckUI.About_Blogs,
+            "Blogs:",
             "Michal Krzych (vba4all.com)",
             "Knjname developer blog (clockahead.blogspot.jp)",
             "",
-            RubberduckUI.About_Contributors,
+            "Contributors & supporters:",
             "Abraham Hosch",
             "Carlos J. Quintero (MZ-Tools articles & help with VBE API)",
             "@daFreeMan",
             "@Duga SE chat bot",
             "Francis Veilleux-Gaboury",
             "Frank Van Heeswijk",
+            "@Heslacher",
+            "Jeroen Vannevel dos Sànchez di Castello du Aragon de Pompidou",
             "@mjolka",
             "Philip Wales",
             "Rob Bovey",
@@ -92,9 +94,9 @@ namespace Rubberduck.UI
             "Simon Forsberg",
             "Stephen Bullen",
             "",
-            RubberduckUI.About_AllContributors,
-            RubberduckUI.About_Stargazers,
-            RubberduckUI.About_Anyone});
+            "All contributors to our GitHub repository",
+            "All our stargazers, likers & followers, for the warm fuzzies",
+            "...and anyone reading this!"});
             this.SpecialThanksList.Location = new System.Drawing.Point(249, 202);
             this.SpecialThanksList.Margin = new System.Windows.Forms.Padding(4);
             this.SpecialThanksList.Name = "SpecialThanksList";
@@ -225,9 +227,9 @@ namespace Rubberduck.UI
             this.AttributionsList.FormattingEnabled = true;
             this.AttributionsList.ItemHeight = 16;
             this.AttributionsList.Items.AddRange(new object[] {
-            RubberduckUI.About_ParsingCredit,
-            RubberduckUI.About_LibGit2SharpCredit,
-            RubberduckUI.About_FugueIconCredit});
+            global::Rubberduck.UI.RubberduckUI.About_ParsingCredit,
+            global::Rubberduck.UI.RubberduckUI.About_LibGit2SharpCredit,
+            global::Rubberduck.UI.RubberduckUI.About_FugueIconCredit});
             this.AttributionsList.Location = new System.Drawing.Point(249, 91);
             this.AttributionsList.Margin = new System.Windows.Forms.Padding(4);
             this.AttributionsList.Name = "AttributionsList";

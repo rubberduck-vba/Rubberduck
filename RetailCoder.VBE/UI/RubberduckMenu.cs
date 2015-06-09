@@ -204,10 +204,10 @@ namespace Rubberduck.UI
 
             if (_projectExplorerContextMenu != null)
             {
-                _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
-                _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
-                _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
-                _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
+                _projectExplorerContextMenu.RunInspections -= codePresenter_RunInspections;
+                _projectExplorerContextMenu.FindReferences -= codePresenter_FindAllReferences;
+                _projectExplorerContextMenu.FindImplementations -= codePresenter_FindAllImplementations;
+                _projectExplorerContextMenu.RunAllTests -= CodePresenterRunAllAllTests;
 
                 _projectExplorerContextMenu.Dispose();
             }

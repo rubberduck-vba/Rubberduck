@@ -30,12 +30,12 @@ namespace Rubberduck.UI.CodeExplorer
         bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed && !disposing)
             {
                 return;
             }
 
-            if (disposing && _window != null)
+            if (_window != null)
             {
                 _window.Dispose();
             }

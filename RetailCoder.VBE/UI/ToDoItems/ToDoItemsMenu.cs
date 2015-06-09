@@ -33,12 +33,12 @@ namespace Rubberduck.UI.ToDoItems
         bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed || !disposing)
             {
                 return;
             }
 
-            if (disposing && _userControl != null)
+            if (_userControl != null)
             {
                 var uc = (UserControl)_userControl;
                 uc.Dispose();
