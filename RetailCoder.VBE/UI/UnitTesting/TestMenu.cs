@@ -70,11 +70,6 @@ namespace Rubberduck.UI.UnitTesting
                 _view.Dispose();
             }
 
-            if (_presenter != null)
-            {
-                _presenter.Dispose();
-            }
-
             _menuControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
             _runAllTestsButton.Click -= OnRunAllTestsButtonClick;

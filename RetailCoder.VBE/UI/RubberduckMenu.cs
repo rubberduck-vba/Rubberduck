@@ -179,6 +179,11 @@ namespace Rubberduck.UI
                 return;
             }
 
+            if (_projectExplorerContextMenu != null)
+            {
+                _projectExplorerContextMenu.Dispose();
+            }
+
             if (_todoItemsMenu != null)
             {
                 _todoItemsMenu.Dispose();
@@ -193,23 +198,15 @@ namespace Rubberduck.UI
             {
                 _codeExplorerMenu.Dispose();
             }
+
             if (_testMenu != null)
             {
                 _testMenu.Dispose();
             }
+
             if (_codeInspectionsMenu != null)
             {
                 _codeInspectionsMenu.Dispose();
-            }
-
-            if (_projectExplorerContextMenu != null)
-            {
-                _projectExplorerContextMenu.RunInspections -= codePresenter_RunInspections;
-                _projectExplorerContextMenu.FindReferences -= codePresenter_FindAllReferences;
-                _projectExplorerContextMenu.FindImplementations -= codePresenter_FindAllImplementations;
-                _projectExplorerContextMenu.RunAllTests -= CodePresenterRunAllAllTests;
-
-                _projectExplorerContextMenu.Dispose();
             }
 
             _about.Click -= OnAboutClick;
