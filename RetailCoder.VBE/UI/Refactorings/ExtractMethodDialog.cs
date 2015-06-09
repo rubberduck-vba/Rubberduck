@@ -63,9 +63,8 @@ namespace Rubberduck.UI.Refactorings
             paramTypeColumn.HeaderText = RubberduckUI.Type;
             paramTypeColumn.ReadOnly = true;
 
-            var paramPassedByColumn = new DataGridViewComboBoxColumn();
+            var paramPassedByColumn = new DataGridViewTextBoxColumn();
             paramPassedByColumn.Name = "Passed";
-            paramPassedByColumn.DataSource = Enum.GetValues(typeof (ExtractedParameter.PassedBy));
             paramPassedByColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             paramPassedByColumn.HeaderText = RubberduckUI.Passed;
             paramPassedByColumn.DataPropertyName = "Passed";
