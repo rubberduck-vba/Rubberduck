@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,17 +10,24 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SettingsPresenter : IProviderPresenter
+    public interface ISettingsPresenter : IProviderPresenter
+    {
+        void RefreshView();
+    }
+
+    public class SettingsPresenter : ISettingsPresenter
     {
         private readonly ISettingsView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configurationService;
+        private readonly IFolderBrowserFactory _folderBrowserFactory;
         private SourceControlConfiguration _config;
 
         public ISourceControlProvider Provider{ get; set; }
 
-        public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService )
+        public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService, IFolderBrowserFactory folderBrowserFactory)
         {
             _configurationService = configService;
+            _folderBrowserFactory = folderBrowserFactory;
 
             _view = view;
 
@@ -55,12 +63,28 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnEditAttributesFile(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileInExternalEditor(".gitattributes");
         }
 
         private void OnEditIgnoreFile(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileInExternalEditor(".gitignore");
+        }
+
+        private void OpenFileInExternalEditor(string fileName)
+        {
+            if (this.Provider == null)
+            {
+                return;
+            }
+
+            var repo = this.Provider.CurrentRepository;
+            var filePath = System.IO.Path.Combine(repo.LocalLocation, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                Process.Start(filePath);
+            }
         }
 
         private void OnCancel(object sender, EventArgs e)
@@ -70,12 +94,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnBrowseDefaultRepositoryLocation(object sender, EventArgs e)
         {
-            using (var folderPicker = new FolderBrowserDialog())
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
             {
-                folderPicker.Description = "Default Repository Directory";
-                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
-                folderPicker.ShowNewFolderButton = true;
-
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
                     _view.DefaultRepositoryLocation = folderPicker.SelectedPath;

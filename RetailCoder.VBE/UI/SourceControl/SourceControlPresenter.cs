@@ -11,6 +11,7 @@ namespace Rubberduck.UI.SourceControl
     {
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
+        private readonly ISettingsPresenter _settingsPresenter;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly ISourceControlView _view;
@@ -27,6 +28,7 @@ namespace Rubberduck.UI.SourceControl
                 ISourceControlView view, 
                 IChangesPresenter changesPresenter,
                 IBranchesPresenter branchesPresenter,
+                ISettingsPresenter settingsPresenter,
                 IFolderBrowserFactory folderBrowserFactory,
                 ISourceControlProviderFactory providerFactory
             ) 
@@ -38,6 +40,7 @@ namespace Rubberduck.UI.SourceControl
             _changesPresenter = changesPresenter;
             
             _branchesPresenter = branchesPresenter;
+            _settingsPresenter = settingsPresenter;
             _folderBrowserFactory = folderBrowserFactory;
             _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
@@ -134,9 +137,12 @@ namespace Rubberduck.UI.SourceControl
         {
             _branchesPresenter.Provider = provider;
             _changesPresenter.Provider = provider;
+            _settingsPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();
+            // Purposely not refreshing settingsPresenter.
+            //  Settings it's provider doesn't affect it's view.
         }
 
         private bool ValidRepoExists()

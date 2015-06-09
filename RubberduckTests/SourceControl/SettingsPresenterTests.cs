@@ -5,6 +5,7 @@ using Rubberduck.UI.SourceControl;
 using Rubberduck.SourceControl;
 using Moq;
 using Rubberduck.Settings;
+using Rubberduck.UI;
 
 namespace RubberduckTests.SourceControl
 {
@@ -23,6 +24,9 @@ namespace RubberduckTests.SourceControl
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
         private SourceControlConfiguration _config;
 
+        private Mock<IFolderBrowserFactory> _folderBrowserFactory;
+        private Mock<IFolderBrowser> _folderBrowser;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -35,13 +39,18 @@ namespace RubberduckTests.SourceControl
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
             _configService.Setup(s => s.LoadConfiguration()).Returns(_config);
+
+            _folderBrowser = new Mock<IFolderBrowser>();
+            _folderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>())).Returns(_folderBrowser.Object);
+            _folderBrowserFactory.Setup(f => f.CreateFolderBrowser(It.IsAny<string>(), false)).Returns(_folderBrowser.Object);
         }
 
         [TestMethod]
         public void ViewIsPopulatedOnRefresh()
         {
             //arrange
-            var presenter = new SettingsPresenter(_view.Object, _configService.Object);
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
 
             //act
             presenter.RefreshView();
@@ -56,7 +65,7 @@ namespace RubberduckTests.SourceControl
         public void ConfigIsPopulatedFromViewOnSave()
         {
             //arrange
-            var presenter = new SettingsPresenter(_view.Object, _configService.Object);
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
 
             //simulate user input
             _view.Object.UserName = OtherName;
@@ -76,7 +85,7 @@ namespace RubberduckTests.SourceControl
         public void ConfigIsSavedOnSave()
         {
             //arrange
-            var presenter = new SettingsPresenter(_view.Object, _configService.Object);
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
 
             //act
             //simulate Update button click
@@ -90,7 +99,7 @@ namespace RubberduckTests.SourceControl
         public void ChangesToViewAreRevertedOnCancel()
         {
             //arrange
-            var presenter = new SettingsPresenter(_view.Object, _configService.Object);
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
 
             //simulate user input
             _view.Object.UserName = OtherName;
