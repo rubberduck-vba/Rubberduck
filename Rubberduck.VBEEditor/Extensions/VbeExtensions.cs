@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.Extensions
         public static void SetSelection(this VBE vbe, QualifiedSelection selection)
         {
             var project = vbe.VBProjects.Cast<VBProject>()
-                             .FirstOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
+                             .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
                                                && ReferenceEquals(p, selection.QualifiedName.Project));
 
             VBComponent component = null;
