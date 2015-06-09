@@ -5,6 +5,15 @@ namespace Rubberduck.VBEditor
 {
     public struct QualifiedModuleName
     {
+        public QualifiedModuleName(VBProject project)  
+        {
+            _component = null;
+            _componentName = null;
+            _projectName = project.Name;
+            _projectHashCode = project.GetHashCode();
+            _contentHashCode = 0;  
+       }
+
         public QualifiedModuleName(VBComponent component)
         {
             _component = component;
