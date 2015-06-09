@@ -23,8 +23,21 @@ namespace Rubberduck.UI.SourceControl
              _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
+            var settingsPresenter = new SettingsPresenter(settingsView, configService, new DialogFactory());
 
-            _sourceControlPresenter = new SourceControlPresenter(vbe, addIn, configService, _sourceControlView, changesPresenter, branchesPresenter, new DialogFactory(), new SourceControlProviderFactory());
+            _sourceControlPresenter = 
+                new SourceControlPresenter
+                (
+                    vbe, 
+                    addIn, 
+                    configService, 
+                    _sourceControlView, 
+                    changesPresenter, 
+                    branchesPresenter, 
+                    settingsPresenter, 
+                    new DialogFactory(), 
+                    new SourceControlProviderFactory()
+                );
         }
 
         public void ShowWindow()

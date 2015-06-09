@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.SourceControl;
 using Rubberduck.Settings;
+using System.IO;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SettingsPresenter : IProviderPresenter
+    public interface ISettingsPresenter : IProviderPresenter
+    {
+        void RefreshView();
+    }
+
+    public class SettingsPresenter : ISettingsPresenter
     {
         private readonly ISettingsView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configurationService;
+        private readonly IFolderBrowserFactory _folderBrowserFactory;
         private SourceControlConfiguration _config;
 
-        public ISourceControlProvider Provider{ get; set; }
+        public ISourceControlProvider Provider { get; set; }
 
-        public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService )
+        public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService, IFolderBrowserFactory folderBrowserFactory)
         {
             _configurationService = configService;
+            _folderBrowserFactory = folderBrowserFactory;
 
             _view = view;
 
@@ -55,12 +64,44 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnEditAttributesFile(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileInExternalEditor(GitSettingsFile.Attributes);
         }
 
         private void OnEditIgnoreFile(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileInExternalEditor(GitSettingsFile.Ignore);
+        }
+
+        private void OpenFileInExternalEditor(GitSettingsFile fileType)
+        {
+            if (this.Provider == null)
+            {
+                return;
+            }
+
+            var fileName = String.Empty;
+            var defaultContents = String.Empty;
+            switch (fileType)
+            {
+                case GitSettingsFile.Ignore:
+                    fileName = ".gitignore";
+                    defaultContents = DefaultSettings.GitIgnoreText();
+                    break;
+                case GitSettingsFile.Attributes:
+                    fileName = ".gitattributes";
+                    defaultContents = DefaultSettings.GitAttributesText();
+                    break;
+            }
+
+            var repo = this.Provider.CurrentRepository;
+            var filePath = Path.Combine(repo.LocalLocation, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, defaultContents);
+            }
+
+            Process.Start(filePath);
         }
 
         private void OnCancel(object sender, EventArgs e)
@@ -70,12 +111,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnBrowseDefaultRepositoryLocation(object sender, EventArgs e)
         {
-            using (var folderPicker = new FolderBrowserDialog())
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
             {
-                folderPicker.Description = "Default Repository Directory";
-                folderPicker.RootFolder = Environment.SpecialFolder.MyDocuments;
-                folderPicker.ShowNewFolderButton = true;
-
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
                     _view.DefaultRepositoryLocation = folderPicker.SelectedPath;

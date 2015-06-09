@@ -20,12 +20,18 @@ namespace RubberduckTests.SourceControl
         private Mock<AddIn> _addIn;
         private Mock<Window> _window;
         private object _toolWindow;
+
         private Mock<ISourceControlView> _view;
+
         private Mock<IChangesPresenter> _changesPresenter;
         private Mock<IBranchesPresenter> _branchesPresenter;
+        private Mock<ISettingsPresenter> _settingsPresenter;
+
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
+
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
+        
         private Mock<ISourceControlProviderFactory> _providerFactory;
         private Mock<ISourceControlProvider> _provider;
 
@@ -48,6 +54,7 @@ namespace RubberduckTests.SourceControl
             _view = new Mock<ISourceControlView>();
             _changesPresenter = new Mock<IChangesPresenter>();
             _branchesPresenter = new Mock<IBranchesPresenter>();
+            _settingsPresenter = new Mock<ISettingsPresenter>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
 
@@ -96,6 +103,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, changesPresenter, branchesPresenter,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -117,6 +125,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -137,6 +146,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object, 
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -154,6 +164,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             SetupValidVbProject();
@@ -178,6 +189,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -201,6 +213,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                                        _settingsPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -226,6 +239,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                            _settingsPresenter.Object,
                                             _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -249,6 +263,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                            _settingsPresenter.Object,
                                             _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -272,6 +287,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                             _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                            _settingsPresenter.Object,
                                             _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -290,6 +306,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -307,6 +324,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -328,6 +346,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -349,6 +368,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -366,6 +386,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -389,6 +410,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
                                 _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -396,6 +418,115 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
+        }
+
+
+        [TestMethod]
+        public void InitRepository_WhenUserConfirms_StatusIsOnline()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual("Online", _view.Object.Status);
+        }
+
+        [TestMethod]
+        public void OpenWorkingDir_WhenUserConfirms_StatusIsOnline()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual("Online", _view.Object.Status);
+        }
+
+        [TestMethod]
+        public void InitRepository_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            _settingsPresenter.SetupProperty(s => s.Provider);
+            _branchesPresenter.SetupProperty(b => b.Provider);
+            _changesPresenter.SetupProperty(c => c.Provider);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsNotNull(_settingsPresenter.Object.Provider, "_settingsPresenter.Provider was null");
+            Assert.IsNotNull(_branchesPresenter, "_branchesPresenter.Provider was null");
+            Assert.IsNotNull(_changesPresenter, "_changesPresenter.Provider was null");
+        }
+
+        [TestMethod]
+        public void OpenWorkingDir_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
+        {
+            //arrange
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            _settingsPresenter.SetupProperty(s => s.Provider);
+            _branchesPresenter.SetupProperty(b => b.Provider);
+            _changesPresenter.SetupProperty(c => c.Provider);
+
+            var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
+                                _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
+                                _settingsPresenter.Object,
+                                _folderBrowserFactory.Object, _providerFactory.Object);
+
+            //act
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsNotNull(_settingsPresenter.Object.Provider, "_settingsPresenter.Provider was null");
+            Assert.IsNotNull(_branchesPresenter, "_branchesPresenter.Provider was null");
+            Assert.IsNotNull(_changesPresenter, "_changesPresenter.Provider was null");
         }
 
         private void SetupValidVbProject()
