@@ -86,8 +86,6 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            if (_view.Local == null) { return; }
-
             _view.SelectedBranchChanged -= OnSelectedBranchChanged;
 
             _view.Local = this.Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name).ToList();
