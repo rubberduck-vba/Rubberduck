@@ -90,7 +90,7 @@ namespace Rubberduck.UI
             }
 
             return results.Declarations[project.Name].SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.Project && item.Project.Equals(project));
+                item.DeclarationType == DeclarationType.Project && item.Project == project);
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
