@@ -59,7 +59,7 @@ namespace Rubberduck.UI.SourceControl
             _config.UserName = _view.UserName;
             _config.DefaultRepositoryLocation = _view.DefaultRepositoryLocation;
 
-            _configurationService.SaveConfiguration(_config);
+            _configurationService.SaveConfiguration(_config, false);
         }
 
         private void OnEditAttributesFile(object sender, EventArgs e)

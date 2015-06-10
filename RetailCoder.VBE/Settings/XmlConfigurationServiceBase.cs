@@ -30,6 +30,21 @@ namespace Rubberduck.Settings
         /// Serializes the configuration object to an XML file.
         /// </summary>
         /// <param name="toSerialize">The Configuration Object to be serialized and saved.</param>
+        /// <param name="langChanged">Specifies whether to reload UI or not.</param>
+        public void SaveConfiguration(T toSerialize, bool langChanged)
+        {
+            SaveConfiguration(toSerialize);
+
+            if (langChanged)
+            {
+                OnSettingsChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Serializes the configuration object to an XML file.
+        /// </summary>
+        /// <param name="toSerialize">The Configuration Object to be serialized and saved.</param>
         public void SaveConfiguration(T toSerialize)
         {
             var folder = Path.GetDirectoryName(ConfigFile);
@@ -43,8 +58,6 @@ namespace Rubberduck.Settings
             {
                 serializer.Serialize(writer, toSerialize);
             }
-
-            OnSettingsChanged(EventArgs.Empty);
         }
 
         /// <summary>

@@ -103,7 +103,7 @@ namespace Rubberduck.UI.SourceControl
         private void AddRepoToConfig(Repository repo)
         {
             _config.Repositories.Add(repo);
-            _configService.SaveConfiguration(_config);
+            _configService.SaveConfiguration(_config, false);
         }
 
         private void OnRefreshChildren(object sender, EventArgs e)
