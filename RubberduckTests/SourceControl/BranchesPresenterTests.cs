@@ -117,11 +117,79 @@ namespace RubberduckTests.SourceControl
         public void CreateBranchViewIsShownOnCreateBranch()
         {
             //arrange
+            _view.SetupProperty(v => v.Local, new List<string>());
+
             //act
             _view.Raise(v => v.CreateBranch += null, new EventArgs());
 
             //Assert
             _createView.Verify(c => c.Show(), Times.Once());
+        }
+
+        [TestMethod]
+        public void CreateBranch_AndBranchExists()
+        {
+            //arrange
+            var branchName = "master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.OkButtonEnabled);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void CreateBranch_AndValidBranchName()
+        {
+            //arrange
+            var existingBranchName = "master";
+            var newBranchName = "bugBranch";
+            var branches = new List<string>() { existingBranchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, newBranchName);
+            _createView.SetupProperty(c => c.OkButtonEnabled);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsTrue(_createView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void CreateBranch_WithNameAsMultipleWords()
+        {
+            //arrange
+            var branchName = "my master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.OkButtonEnabled);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void CreateBranchViewIsNotShownWhenLocal_IsNull()
+        {
+            //arrange
+            //act
+            _view.Raise(v => v.CreateBranch += null, new EventArgs());
+
+            //Assert
+            _createView.Verify(c => c.Show(), Times.Never());
         }
 
         [TestMethod]
@@ -151,6 +219,19 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
+        public void CreateBranchViewIsNotShownWhenLocal_IsNull()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Local); //no default value, so v.Local is null
+
+            //act
+            _view.Raise(v => v.CreateBranch += null, new EventArgs());
+
+            //assert
+            _mergeView.Verify(m => m.Show(), Times.Never);
+        }
+
+        [TestMethod]
         public void CreateBranchUserInputIsClearedAfterSubmit()
         {
             //arrange
@@ -174,6 +255,19 @@ namespace RubberduckTests.SourceControl
 
             //assert
             _mergeView.Verify(m => m.Show(), Times.Once);
+        }
+
+        [TestMethod]
+        public void MergeViewIsNotShownWhenLocal_IsNull()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Local); //no default value, so v.Local is null
+
+            //act
+            _view.Raise(v => v.Merge += null, new EventArgs());
+
+            //assert
+            _mergeView.Verify(m => m.Show(), Times.Never);
         }
 
         [TestMethod]

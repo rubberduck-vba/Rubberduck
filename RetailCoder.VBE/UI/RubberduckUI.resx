@@ -1053,4 +1053,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Merge branches</value>
   </data>
+  <data name="SourceControl_NoRepoFound" xml:space="preserve">
+    <value>No repository found.</value>
+  </data>
 </root>
