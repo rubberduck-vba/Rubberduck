@@ -124,6 +124,13 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
+            if (this.Provider == null)
+            {
+                //MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
+                    //MessageBoxButtons.OK);
+                return;
+            }
+
             _createView.Show();
         }
 
@@ -148,8 +155,8 @@ namespace Rubberduck.UI.SourceControl
         {
             if (_view.Local == null)
             {
-                MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
-                    MessageBoxButtons.OK);
+                //MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
+                    //MessageBoxButtons.OK);
                 return;
             }
 

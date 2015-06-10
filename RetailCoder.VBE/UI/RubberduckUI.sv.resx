@@ -889,7 +889,7 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="About_Stargazers" xml:space="preserve">
     <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
   </data>
-  <data name="SourceControlPanel_Caption" xml:space="preserve">
+  <data name="SourceControl_Caption" xml:space="preserve">
     <value>z Source Control</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
@@ -1039,5 +1039,8 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>z Merge branches</value>
+  </data>
+  <data name="SourceControl_NoActiveRepo" xml:space="preserve">
+    <value>z No active repository selected.</value>
   </data>
 </root>
