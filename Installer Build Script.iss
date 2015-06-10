@@ -36,21 +36,12 @@ ArchitecturesInstallIn64BitMode=x64
 Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; We are taking everything from the Build directory and adding it to the installer.  This
-; might not be what we want to do.
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+; Install the correct bitness binaries.
 Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
-Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is64BitOfficeInstalled; AfterInstall: RegisterAddin
-
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
 Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
-Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; Check: Is32BitOfficeInstalled; AfterInstall: RegisterAddin
 
-[UninstallDelete]
-; Removing all application files (except for configuration).
-Name: "{app}\*.dll"; Type: filesandordirs
-Name: "{app}\*.xml"; Type: filesandordirs  
-Name: "{app}\*.pdb"; Type: filesandordirs
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
+Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: RegisterAddin
 
 [Run]
 ; http://stackoverflow.com/questions/5618337/how-to-register-a-net-dll-using-inno-setup
