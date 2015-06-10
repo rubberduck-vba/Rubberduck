@@ -144,6 +144,10 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
+                if (e.QualifiedName.Component == null)
+                {
+                    return;
+                }
                 e.QualifiedName.Component.CodeModule.CodePane.SetSelection(e.Selection);
             }
             catch (COMException)
