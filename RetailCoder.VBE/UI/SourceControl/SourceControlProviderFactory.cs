@@ -23,14 +23,7 @@ namespace Rubberduck.UI.SourceControl
 
         public ISourceControlProvider CreateProvider(VBProject project, IRepository repository)
         {
-            try
-            {
-                return new GitProvider(project, repository);
-            }
-            catch
-            {
-                return null;
-            }
+            return new GitProvider(project, repository);
         }
     }
 }
