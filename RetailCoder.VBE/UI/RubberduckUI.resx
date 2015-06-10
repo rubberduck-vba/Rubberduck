@@ -906,7 +906,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SourceControlPanel_Caption" xml:space="preserve">
+  <data name="SourceControl_Caption" xml:space="preserve">
     <value>Source Control</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
@@ -1052,5 +1052,8 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Merge branches</value>
+  </data>
+  <data name="SourceControl_NoActiveRepo" xml:space="preserve">
+    <value>No active repository selected.</value>
   </data>
 </root>

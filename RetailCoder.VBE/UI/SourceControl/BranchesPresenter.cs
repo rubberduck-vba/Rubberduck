@@ -146,6 +146,13 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnShowMerge(object sender, EventArgs e)
         {
+            if (_view.Local == null)
+            {
+                MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
+                    MessageBoxButtons.OK);
+                return;
+            }
+
             var localBranchNames = _view.Local.ToList();
             _mergeView.SourceSelectorData = localBranchNames;
             _mergeView.DestinationSelectorData = localBranchNames;
