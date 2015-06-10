@@ -130,14 +130,6 @@ namespace Rubberduck.UI.SourceControl
         private void OnCreateBranch(object sender, BranchCreateArgs e)
         {
             HideCreateBranchView();
-
-            if (this.Provider == null)
-            {
-                MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
-                    MessageBoxButtons.OK);
-                return;
-            }
-
             this.Provider.CreateBranch(e.BranchName);
             RefreshView();
         }
