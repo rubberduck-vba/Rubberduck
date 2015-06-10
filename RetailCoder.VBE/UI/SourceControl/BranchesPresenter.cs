@@ -124,6 +124,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
+            if (_view.Local == null) { return; }
             _createView.Show();
         }
 
@@ -146,6 +147,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnShowMerge(object sender, EventArgs e)
         {
+            if (_view.Local == null) { return; }
+
             var localBranchNames = _view.Local.ToList();
             _mergeView.SourceSelectorData = localBranchNames;
             _mergeView.DestinationSelectorData = localBranchNames;
