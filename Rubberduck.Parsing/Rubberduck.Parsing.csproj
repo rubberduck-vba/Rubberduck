@@ -65,8 +65,6 @@
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
-    <Compile Include="Symbols\IdentifierReferencesListener.cs" />
-    <Compile Include="Symbols\IdentifierResolver.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
