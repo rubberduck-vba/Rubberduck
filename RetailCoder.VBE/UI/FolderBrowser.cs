@@ -27,7 +27,7 @@ namespace Rubberduck.UI
         }
 
         public FolderBrowser(string description, bool showNewFolderButton)
-            :this(description, showNewFolderButton, Environment.SpecialFolder.MyDocuments)
+            :this(description, showNewFolderButton, Environment.SpecialFolder.MyComputer)
         { }
 
         public FolderBrowser(string description)
