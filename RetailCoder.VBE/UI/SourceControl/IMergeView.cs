@@ -7,7 +7,7 @@ namespace Rubberduck.UI.SourceControl
 
     public interface IMergeView
     {
-        bool OkButtonEnabled { get; set; }
+        bool OkayButtonEnabled { get; set; }
         IList<string> SourceSelectorData { get; set; }
         IList<string> DestinationSelectorData { get; set; }
         string SelectedSourceBranch { get; set; }

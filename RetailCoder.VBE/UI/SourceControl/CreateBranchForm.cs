@@ -11,9 +11,7 @@ namespace Rubberduck.UI.SourceControl
 
             Text = RubberduckUI.SourceControl_CreateNewBranchCaption;
             OkButton.Text = RubberduckUI.OK_AllCaps;
-            OkButton.Click += OkButton_Click;
             CancelButton.Text = RubberduckUI.CancelButtonText;
-            CancelButton.Click += CancelButton_Click;
         }
 
         public string UserInputText
@@ -22,14 +20,14 @@ namespace Rubberduck.UI.SourceControl
             set { this.UserInputBox.Text = value; }
         }
 
-        public bool OkButtonEnabled
+        public bool OkayButtonEnabled
         {
             get { return this.OkButton.Enabled; }
             set { this.OkButton.Enabled = value; }
         }
 
         public event EventHandler<BranchCreateArgs> Confirm;
-        private void OkButton_Click(object sender, EventArgs e)
+        private void Okay_Click(object sender, EventArgs e)
         {
             var handler = Confirm;
             if (handler != null)

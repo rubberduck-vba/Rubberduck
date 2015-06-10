@@ -15,12 +15,10 @@ namespace Rubberduck.UI.SourceControl
             SourceLabel.Text = RubberduckUI.SourceControl_SourceLabel;
             DestinationLabel.Text = RubberduckUI.SourceControl_DestinationLabel;
             OkButton.Text = RubberduckUI.OK;
-            OkButton.Click += OnConfirm;
             CancelButton.Text = RubberduckUI.CancelButtonText;
-            CancelButton.Click += OnCancel;
         }
 
-        public bool OkButtonEnabled
+        public bool OkayButtonEnabled
         {
             get { return this.OkButton.Enabled; }
             set { this.OkButton.Enabled = value; }

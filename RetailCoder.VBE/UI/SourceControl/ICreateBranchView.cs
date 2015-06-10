@@ -6,7 +6,7 @@ namespace Rubberduck.UI.SourceControl
     public interface ICreateBranchView
     {
         string UserInputText { get; set; }
-        bool OkButtonEnabled { get; set; }
+        bool OkayButtonEnabled { get; set; }
 
         event EventHandler<BranchCreateArgs> Confirm;
         event EventHandler<EventArgs> Cancel;
