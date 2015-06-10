@@ -217,7 +217,6 @@ namespace Rubberduck.UI
             menuBarControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
             _disposed = true;
-
             base.Dispose(true);
         }
     }

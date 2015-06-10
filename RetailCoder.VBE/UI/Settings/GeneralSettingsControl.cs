@@ -7,7 +7,8 @@ namespace Rubberduck.UI.Settings
 {
     public partial class GeneralSettingsControl : UserControl
     {
-        private IGeneralConfigService _configService;
+        private readonly IGeneralConfigService _configService;
+        private readonly DisplayLanguageSetting _currentLanguage;
 
         public GeneralSettingsControl()
         {
@@ -36,13 +37,14 @@ namespace Rubberduck.UI.Settings
         {
             File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck\\rubberduck.config"));
             var config = _configService.GetDefaultConfiguration();
-            _configService.SaveConfiguration(config);
+            _configService.SaveConfiguration(config, !Equals(_currentLanguage, config.UserSettings.LanguageSetting));
         }
 
         public GeneralSettingsControl(DisplayLanguageSetting displayLanguage, IGeneralConfigService configService)
             : this()
         {
             _configService = configService;
+            _currentLanguage = displayLanguage;
             LanguageList.SelectedItem = displayLanguage;
         }
 

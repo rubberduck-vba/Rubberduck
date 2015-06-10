@@ -165,10 +165,12 @@ namespace Rubberduck.UI.Settings
 
         private void SaveConfig()
         {
+            var langChanged = !Equals(_config.UserSettings.LanguageSetting, _generalSettingsView.SelectedLanguage);
+
             _config.UserSettings.LanguageSetting = _generalSettingsView.SelectedLanguage;
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
-            _configService.SaveConfiguration(_config);
+            _configService.SaveConfiguration(_config, langChanged);
         }
     }
 }
