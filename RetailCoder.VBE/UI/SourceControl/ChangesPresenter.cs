@@ -49,11 +49,6 @@ namespace Rubberduck.UI.SourceControl
 
         public void Refresh()
         {
-            if (this.Provider == null)
-            {
-                return;
-            }
-
             var fileStats = this.Provider.Status().ToList();
 
             _view.IncludedChanges = fileStats.Where(stat => stat.FileStatus.HasFlag(FileStatus.Modified)).ToList();
