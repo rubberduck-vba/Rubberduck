@@ -528,6 +528,11 @@ namespace Rubberduck.Parsing.Symbols
                 item.DeclarationType == DeclarationType.Class
                 || item.DeclarationType == DeclarationType.UserDefinedType);
 
+            if (type == null)
+            {
+                return null;
+            }
+
             members = _declarations.FindMembers(type);
             return members.SingleOrDefault(m => m.IdentifierName == name);
         }
