@@ -92,7 +92,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.Save += null, EventArgs.Empty);
 
             //assert
-            _configService.Verify(s => s.SaveConfiguration(_config, false));
+            _configService.Verify(s => s.SaveConfiguration(_config));
         }
 
         [TestMethod]
