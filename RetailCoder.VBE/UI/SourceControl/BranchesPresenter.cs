@@ -124,19 +124,20 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
-            if (this.Provider == null)
-            {
-                //MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
-                    //MessageBoxButtons.OK);
-                return;
-            }
-
             _createView.Show();
         }
 
         private void OnCreateBranch(object sender, BranchCreateArgs e)
         {
             HideCreateBranchView();
+
+            if (this.Provider == null)
+            {
+                MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
+                    MessageBoxButtons.OK);
+                return;
+            }
+
             this.Provider.CreateBranch(e.BranchName);
             RefreshView();
         }
@@ -155,8 +156,8 @@ namespace Rubberduck.UI.SourceControl
         {
             if (_view.Local == null)
             {
-                //MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
-                    //MessageBoxButtons.OK);
+                MessageBox.Show(RubberduckUI.SourceControl_NoActiveRepo, RubberduckUI.SourceControl_Caption,
+                    MessageBoxButtons.OK);
                 return;
             }
 
