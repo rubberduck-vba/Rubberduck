@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Settings
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
+        private TodoSettingPresenter _todoController;
         private TodoListSettingsUserControl _todoView;
 
         private GeneralSettingsControl _generalSettingsView;
@@ -77,10 +78,11 @@ namespace Rubberduck.UI.Settings
             splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _config, _configService);
+            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
             _todoView = new TodoListSettingsUserControl(markers);
+            _todoController = new TodoSettingPresenter(_todoView);
 
             ActivateControl(_generalSettingsView);
         }
@@ -163,12 +165,10 @@ namespace Rubberduck.UI.Settings
 
         private void SaveConfig()
         {
-            var langChanged = !_config.UserSettings.LanguageSetting.Equals(_generalSettingsView.SelectedLanguage);
-
             _config.UserSettings.LanguageSetting = _generalSettingsView.SelectedLanguage;
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
-            _configService.SaveConfiguration(_config, langChanged);
+            _configService.SaveConfiguration(_config);
         }
     }
 }

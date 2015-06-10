@@ -68,7 +68,7 @@ namespace Rubberduck
             {
                 MessageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
-                _configService.SaveConfiguration(_config, true);
+                _configService.SaveConfiguration(_config);
             }
 
             EnableCodeInspections(_config);
