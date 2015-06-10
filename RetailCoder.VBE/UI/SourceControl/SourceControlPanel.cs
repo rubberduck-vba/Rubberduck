@@ -47,7 +47,7 @@ namespace Rubberduck.UI.SourceControl
 
         public string Caption
         {
-            get { return RubberduckUI.SourceControlPanel_Caption; }
+            get { return RubberduckUI.SourceControl_Caption; }
         }
 
         public string Status 
