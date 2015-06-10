@@ -86,6 +86,8 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
+            if (_view.Local == null) { return; }
+
             _view.SelectedBranchChanged -= OnSelectedBranchChanged;
 
             if (_view.Local == null) { return; }

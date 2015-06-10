@@ -315,7 +315,6 @@ namespace Rubberduck.SourceControl
             }
             catch (LibGit2SharpException ex)
             {
-                // BUG: crashes RD, needs a to be handled somewhere
                 throw new SourceControlException("Branch creation failed.", ex);
             }
         }
