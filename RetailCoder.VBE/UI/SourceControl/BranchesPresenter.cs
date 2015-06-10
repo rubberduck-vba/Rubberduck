@@ -148,7 +148,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnCreateBranchTextChanged(object sender, EventArgs e)
         {
-            _createView.OkButtonEnabled = !string.IsNullOrEmpty(_createView.UserInputText) && 
+            _createView.IsValidName = !string.IsNullOrEmpty(_createView.UserInputText) && 
                                           !_view.Local.Contains(_createView.UserInputText);
         }
 
