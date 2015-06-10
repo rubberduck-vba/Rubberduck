@@ -2104,15 +2104,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Source Control.
-        /// </summary>
-        internal static string SourceControl_Caption {
-            get {
-                return ResourceManager.GetString("SourceControl_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Changes.
         /// </summary>
         internal static string SourceControl_Changes {
@@ -2347,15 +2338,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No active repository selected..
-        /// </summary>
-        internal static string SourceControl_NoActiveRepo {
-            get {
-                return ResourceManager.GetString("SourceControl_NoActiveRepo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open Working Directory.
         /// </summary>
         internal static string SourceControl_OpenWorkingDirectory {
@@ -2496,6 +2478,15 @@ namespace Rubberduck.UI {
         internal static string SourceControl_UserNameLabel {
             get {
                 return ResourceManager.GetString("SourceControl_UserNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control.
+        /// </summary>
+        internal static string SourceControlPanel_Caption {
+            get {
+                return ResourceManager.GetString("SourceControlPanel_Caption", resourceCulture);
             }
         }
         

@@ -902,7 +902,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="About_Stargazers" xml:space="preserve">
     <value>Nos fans sur GitHub, Facebook et Twitter, pour les chaleureux encouragements!</value>
   </data>
-  <data name="SourceControl_Caption" xml:space="preserve">
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Contrôle des sources</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
@@ -1048,8 +1048,5 @@ Attention: les valeurs personnalisées seront perdues.</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Fusionner les branches</value>
-  </data>
-  <data name="SourceControl_NoActiveRepo" xml:space="preserve">
-    <value>z No active repository selected.</value>
   </data>
 </root>
