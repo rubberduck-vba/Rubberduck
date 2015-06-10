@@ -111,7 +111,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnBrowseDefaultRepositoryLocation(object sender, EventArgs e)
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory", true, Environment.SpecialFolder.MyComputer))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser("Default Repository Directory"))
             {
                 if (folderPicker.ShowDialog() == DialogResult.OK)
                 {
