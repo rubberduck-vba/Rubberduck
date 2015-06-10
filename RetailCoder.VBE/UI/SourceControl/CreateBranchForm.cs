@@ -22,14 +22,10 @@ namespace Rubberduck.UI.SourceControl
             set { this.UserInputBox.Text = value; }
         }
 
-        public bool IsValidName
+        public bool OkButtonEnabled
         {
             get { return this.OkButton.Enabled; }
-            set
-            {
-                this.OkButton.Enabled = value;
-                this.InvalidNameValidationIcon.Visible = !value;
-            }
+            set { this.OkButton.Enabled = value; }
         }
 
         public event EventHandler<BranchCreateArgs> Confirm;
