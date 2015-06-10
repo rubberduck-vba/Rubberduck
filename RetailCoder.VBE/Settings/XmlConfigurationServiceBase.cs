@@ -30,12 +30,12 @@ namespace Rubberduck.Settings
         /// Serializes the configuration object to an XML file.
         /// </summary>
         /// <param name="toSerialize">The Configuration Object to be serialized and saved.</param>
-        /// <param name="langChanged">Specifies whether to reload UI or not.</param>
-        public void SaveConfiguration(T toSerialize, bool langChanged)
+        /// <param name="languageChanged">Specifies whether to reload UI or not.</param>
+        public void SaveConfiguration(T toSerialize, bool languageChanged)
         {
             SaveConfiguration(toSerialize);
 
-            if (langChanged)
+            if (languageChanged)
             {
                 OnSettingsChanged(EventArgs.Empty);
             }

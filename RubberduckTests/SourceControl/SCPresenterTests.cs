@@ -313,7 +313,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.InitializeNewRepository +=null, EventArgs.Empty);
 
             //assert
-            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>(), false), Times.Never);
         }
 
         [TestMethod]
@@ -353,7 +353,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
 
             //assert
-            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>(), false), Times.Once);
         }
 
         [TestMethod]
@@ -393,7 +393,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
 
             //assert
-            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>(), false), Times.Never);
         }
 
         [TestMethod]
@@ -417,7 +417,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
 
             //assert
-            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Once);
+            _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>(), false), Times.Once);
         }
 
 
