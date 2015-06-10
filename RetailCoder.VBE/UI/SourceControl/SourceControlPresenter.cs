@@ -59,7 +59,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnInitNewRepository(object sender, EventArgs e)
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser((RubberduckUI.SourceControl_CreateNewRepo)))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_CreateNewRepo, true, Environment.SpecialFolder.MyComputer))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
@@ -82,7 +82,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnOpenWorkingDirectory(object sender, EventArgs e)
         {
-            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false))
+            using (var folderPicker = _folderBrowserFactory.CreateFolderBrowser(RubberduckUI.SourceControl_OpenWorkingDirectory, false, Environment.SpecialFolder.MyComputer))
             {
                 if (folderPicker.ShowDialog() != DialogResult.OK)
                 {
