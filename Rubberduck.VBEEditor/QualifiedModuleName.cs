@@ -3,12 +3,16 @@ using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor
 {
+    /// <summary>
+    /// Represents a VBComponent or a VBProject.
+    /// </summary>
     public struct QualifiedModuleName
     {
         public QualifiedModuleName(VBProject project)  
         {
             _component = null;
             _componentName = null;
+            _project = project;
             _projectName = project.Name;
             _projectHashCode = project.GetHashCode();
             _contentHashCode = 0;  
@@ -16,6 +20,8 @@ namespace Rubberduck.VBEditor
 
         public QualifiedModuleName(VBComponent component)
         {
+            _project = null; // field is only assigned when the instance refers to a VBProject.
+
             _component = component;
             _componentName = component == null ? string.Empty : component.Name;
             _projectName = component == null ? string.Empty : component.Collection.Parent.Name;
@@ -34,6 +40,8 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public QualifiedModuleName(string projectName, string componentName)
         {
+            _project = null; // field is only assigned when the instance refers to a VBProject.
+
             _projectName = projectName;
             _componentName = componentName;
             _component = null;
@@ -48,7 +56,9 @@ namespace Rubberduck.VBEditor
 
         private readonly VBComponent _component;
         public VBComponent Component { get { return _component; } }
-        public VBProject Project { get { return _component == null ? null : _component.Collection.Parent; } }
+
+        private readonly VBProject _project;
+        public VBProject Project { get { return _project ?? (_component == null ? null : _component.Collection.Parent); } }
 
         private readonly int _projectHashCode;
         public int ProjectHashCode { get { return _projectHashCode; } }
