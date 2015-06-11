@@ -1049,6 +1049,21 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Fusionner les branches</value>
   </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>z Do Not Show</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>z Error</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>z Hint</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>z Suggestion</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>z Warning</value>
+  </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>z No repository found.</value>
   </data>

@@ -593,6 +593,51 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do Not Show.
+        /// </summary>
+        internal static string CodeInspectionSeverity_DoNotShow {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_DoNotShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string CodeInspectionSeverity_Error {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        internal static string CodeInspectionSeverity_Hint {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        internal static string CodeInspectionSeverity_Suggestion {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        internal static string CodeInspectionSeverity_Warning {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Component.
         /// </summary>
         internal static string Component {
