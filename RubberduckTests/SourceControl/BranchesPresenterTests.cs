@@ -145,7 +145,7 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranchViewAllowsBranchWithNonexistingName()
+        public void CreateBranchViewAllowsValidBranchName()
         {
             //arrange
             var existingBranchName = "master";
@@ -161,6 +161,24 @@ namespace RubberduckTests.SourceControl
 
             //Assert
             Assert.IsTrue(_createView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void CreateBranchViewBlocksNameWithWhitespace()
+        {
+            //arrange
+            var branchName = "my master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.OkButtonEnabled);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.OkButtonEnabled);
         }
 
         [TestMethod]
