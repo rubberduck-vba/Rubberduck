@@ -127,7 +127,7 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranchViewBlocksBranchWithExistingName()
+        public void CreateBranch_AndBranchExists()
         {
             //arrange
             var branchName = "master";
@@ -145,7 +145,7 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranchViewAllowsValidBranchName()
+        public void CreateBranch_AndValidBranchName()
         {
             //arrange
             var existingBranchName = "master";
@@ -164,7 +164,7 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranchViewBlocksNameWithWhitespace()
+        public void CreateBranch_WithNameAsMultipleWords()
         {
             //arrange
             var branchName = "my master";
