@@ -219,19 +219,6 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranchViewIsNotShownWhenLocal_IsNull()
-        {
-            //arrange
-            _view.SetupProperty(v => v.Local); //no default value, so v.Local is null
-
-            //act
-            _view.Raise(v => v.CreateBranch += null, new EventArgs());
-
-            //assert
-            _mergeView.Verify(m => m.Show(), Times.Never);
-        }
-
-        [TestMethod]
         public void CreateBranchUserInputIsClearedAfterSubmit()
         {
             //arrange
