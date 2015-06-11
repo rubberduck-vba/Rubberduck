@@ -91,7 +91,17 @@ namespace Rubberduck.UI.SourceControl
 
                 var project = this.VBE.ActiveVBProject;
                 var repo = new Repository(project.Name, folderPicker.SelectedPath, string.Empty);
-                _provider = _providerFactory.CreateProvider(project, repo);
+
+                try
+                {
+                    _provider = _providerFactory.CreateProvider(project, repo);
+                }
+                catch (SourceControlException)
+                {
+                    MessageBox.Show(RubberduckUI.SourceControl_NoRepoFound, RubberduckUI.SourceControlPanel_Caption,
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
                 AddRepoToConfig(repo);
 
