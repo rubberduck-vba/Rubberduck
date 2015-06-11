@@ -1053,4 +1053,19 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Merge branches</value>
   </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Do Not Show</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>

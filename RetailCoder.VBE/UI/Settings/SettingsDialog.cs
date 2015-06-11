@@ -140,14 +140,6 @@ namespace Rubberduck.UI.Settings
                 controlToActivate = new CodeInspectionSettingsControl(GetInspectionSettings(inspectionType), settingGridViewSort);
             }
 
-            if (e.Node.Parent.Text == CodeInspectionType.LanguageOpportunities.ToString())
-            {
-                TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
-                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
-                var settingGridViewSort = new GridViewSort<CodeInspectionSetting>(RubberduckUI.Name, true);
-                controlToActivate = new CodeInspectionSettingsControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList(), settingGridViewSort);
-            }
-
             ActivateControl(controlToActivate);
         }
 
