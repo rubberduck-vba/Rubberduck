@@ -1049,4 +1049,7 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Fusionner les branches</value>
   </data>
+  <data name="SourceControl_NoRepoFound" xml:space="preserve">
+    <value>z No repository found.</value>
+  </data>
 </root>

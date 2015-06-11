@@ -19,12 +19,12 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private readonly IList<IInspection> _inspections;
-        private readonly Inspector _inspector;
-        private readonly ParserErrorsPresenter _parserErrorsPresenter;
+        private IList<IInspection> _inspections;
+        private Inspector _inspector;
+        private ParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService = new ConfigurationLoader();
         private readonly ActiveCodePaneEditor _editor;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -35,17 +35,11 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _addIn = addIn;
-            _inspections = _configService.GetImplementedCodeInspections();
 
-            _parser = new RubberduckParser();
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
             _configService.SettingsChanged += _configService_SettingsChanged;
 
             _editor = new ActiveCodePaneEditor(vbe);
-
-            _inspector = new Inspector(_parser, _inspections);
 
             LoadConfig();
         }
@@ -71,8 +65,6 @@ namespace Rubberduck
                 _configService.SaveConfiguration(_config);
             }
 
-            EnableCodeInspections(_config);
-
             if (_menu != null)
             {
                 _menu.Dispose();
@@ -91,6 +83,31 @@ namespace Rubberduck
                 toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
             }
+
+            if (_inspector != null)
+            {
+                _inspector.Dispose();
+            }
+
+            if (_parserErrorsPresenter != null)
+            {
+                _parserErrorsPresenter.Dispose();
+            }
+
+            if (_parser != null)
+            {
+                _parser.ParseStarted -= _parser_ParseStarted;
+                _parser.ParserError -= _parser_ParserError;
+            }
+            _parser = new RubberduckParser();
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParserError += _parser_ParserError;
+
+            _inspections = _configService.GetImplementedCodeInspections();
+            _inspector = new Inspector(_parser, _inspections);
+            EnableCodeInspections(_config);
+
+            _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
             _menu.Initialize();
