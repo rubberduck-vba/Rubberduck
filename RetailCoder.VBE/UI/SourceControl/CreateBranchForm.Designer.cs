@@ -38,8 +38,10 @@ namespace Rubberduck.UI.SourceControl
             this.InstructionsLabel = new System.Windows.Forms.Label();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.InvalidNameValidationIcon = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // UserInputBox
@@ -125,11 +127,23 @@ namespace Rubberduck.UI.SourceControl
             this.panel1.Size = new System.Drawing.Size(423, 87);
             this.panel1.TabIndex = 13;
             // 
+            // InvalidNameValidationIcon
+            // 
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(397, 100);
+            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4);
+            this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
+            this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
+            this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.InvalidNameValidationIcon.TabIndex = 14;
+            this.InvalidNameValidationIcon.TabStop = false;
+            // 
             // CreateBranchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(423, 217);
+            this.Controls.Add(this.InvalidNameValidationIcon);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.UserInputBox);
@@ -145,6 +159,7 @@ namespace Rubberduck.UI.SourceControl
             this.flowLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,5 +174,6 @@ namespace Rubberduck.UI.SourceControl
         private Label InstructionsLabel;
         private Label TitleLabel;
         private Panel panel1;
+        private PictureBox InvalidNameValidationIcon;
     }
 }
