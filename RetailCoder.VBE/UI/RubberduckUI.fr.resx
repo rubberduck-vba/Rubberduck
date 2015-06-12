@@ -1067,4 +1067,13 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>z No repository found.</value>
   </data>
+  <data name="ToDoPriority_High" xml:space="preserve">
+    <value>z High</value>
+  </data>
+  <data name="ToDoPriority_Low" xml:space="preserve">
+    <value>z Low</value>
+  </data>
+  <data name="ToDoPriority_Medium" xml:space="preserve">
+    <value>z Medium</value>
+  </data>
 </root>

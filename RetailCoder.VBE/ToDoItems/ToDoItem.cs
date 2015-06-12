@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Nodes;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.ToDoItems
@@ -11,6 +12,8 @@ namespace Rubberduck.ToDoItems
     {
         private readonly TaskPriority _priority;
         public TaskPriority Priority{ get { return _priority; } }
+
+        public string PriorityLabel { get { return RubberduckUI.ResourceManager.GetString("ToDoPriority_" + Priority, RubberduckUI.Culture); } }
 
         private readonly string _description;
         public string Description { get { return _description; } }
