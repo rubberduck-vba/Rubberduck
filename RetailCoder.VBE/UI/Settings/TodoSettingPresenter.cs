@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -40,13 +42,18 @@ namespace Rubberduck.UI.Settings
 
         private void RemoveMarker(object sender, EventArgs e)
         {
-            _view.TodoMarkers.RemoveAt(_view.SelectedIndex);
+            var oldList = _view.TodoMarkers.ToList();
+            oldList.RemoveAt(_view.SelectedIndex);
+            _view.TodoMarkers = new BindingList<ToDoMarker>(oldList);
         }
 
         private void AddMarker(object sender, EventArgs e)
         {
+            var oldList = _view.TodoMarkers.ToList();
             var marker = new ToDoMarker(_view.ActiveMarkerText, _view.ActiveMarkerPriority);
-            _view.TodoMarkers.Add(marker);
+            oldList.Add(marker);
+
+            _view.TodoMarkers = new BindingList<ToDoMarker>(oldList);
 
             _view.SelectedIndex = _view.TodoMarkers.Count - 1;
         }
