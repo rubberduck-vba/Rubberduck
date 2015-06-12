@@ -2806,6 +2806,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        internal static string ToDoPriority_High {
+            get {
+                return ResourceManager.GetString("ToDoPriority_High", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        internal static string ToDoPriority_Low {
+            get {
+                return ResourceManager.GetString("ToDoPriority_Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        internal static string ToDoPriority_Medium {
+            get {
+                return ResourceManager.GetString("ToDoPriority_Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To-Do Explorer.
         /// </summary>
         internal static string TodoSettings_Caption {

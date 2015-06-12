@@ -48,7 +48,8 @@ namespace Rubberduck.UI.ToDoItems
             todoItemsGridView.CellDoubleClick += ToDoGridViewCellDoubleClicked;
             refreshButton.Click += RefreshButtonClicked;
 
-            todoItemsGridView.Columns["Priority"].HeaderText = RubberduckUI.Priority;
+            todoItemsGridView.Columns["Priority"].Visible = false;
+            todoItemsGridView.Columns["PriorityLabel"].HeaderText = RubberduckUI.Priority;
             todoItemsGridView.Columns["Description"].HeaderText = RubberduckUI.TodoExplorer_Description;
             todoItemsGridView.Columns["ProjectName"].HeaderText = RubberduckUI.ProjectName;
             todoItemsGridView.Columns["ModuleName"].HeaderText = RubberduckUI.ModuleName;

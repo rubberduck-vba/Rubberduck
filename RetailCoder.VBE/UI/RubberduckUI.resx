@@ -1071,4 +1071,13 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>No repository found.</value>
   </data>
+  <data name="ToDoPriority_High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="ToDoPriority_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="ToDoPriority_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
 </root>

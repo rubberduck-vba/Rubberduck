@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.Settings
 {
@@ -32,7 +34,15 @@ namespace Rubberduck.UI.Settings
         {
             this.tokenListBox.DataSource = new BindingList<ToDoMarker>(markers);
             this.tokenListBox.SelectedIndex = 0;
-            this.priorityComboBox.DataSource = Enum.GetValues(typeof(TodoPriority));
+            this.priorityComboBox.DataSource = TodoLabels();
+        }
+
+        private List<string> TodoLabels()
+        {
+            return (from object priority in Enum.GetValues(typeof(TaskPriority))
+                    select
+                    RubberduckUI.ResourceManager.GetString("ToDoPriority_" + priority, RubberduckUI.Culture))
+                    .ToList();
         }
 
         public int SelectedIndex
