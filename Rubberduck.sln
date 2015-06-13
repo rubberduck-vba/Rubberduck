@@ -25,12 +25,31 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Parsing", "Rubbe
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07952BD8-646C-4494-965C-E80F3CDE3485}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		libs\Interop.VisioViewer.dll = libs\Interop.VisioViewer.dll
+		libs\Microsoft.Office.Interop.Access.dll = libs\Microsoft.Office.Interop.Access.dll
+		libs\Microsoft.Office.Interop.Excel.dll = libs\Microsoft.Office.Interop.Excel.dll
+		libs\Microsoft.Office.Interop.Outlook.dll = libs\Microsoft.Office.Interop.Outlook.dll
+		libs\Microsoft.Office.Interop.PowerPoint.dll = libs\Microsoft.Office.Interop.PowerPoint.dll
+		libs\Microsoft.Office.Interop.Publisher.dll = libs\Microsoft.Office.Interop.Publisher.dll
+		libs\Microsoft.Office.Interop.Word.dll = libs\Microsoft.Office.Interop.Word.dll
+		libs\Microsoft.Vbe.Interop.dll = libs\Microsoft.Vbe.Interop.dll
+		libs\Office.dll = libs\Office.dll
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor", "Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj", "{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SourceControl", "Rubberduck.SourceControl\Rubberduck.SourceControl.csproj", "{0040E129-1AA2-459F-A59A-129FA4035E01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UnitTesting", "Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj", "{83ED9BBF-5AD4-4EB2-B5F0-6EB97DFED9D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{731DCD08-1CFF-4FC7-9C63-43B656B93FBE}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
