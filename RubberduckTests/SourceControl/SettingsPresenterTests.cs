@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.SourceControl;
@@ -114,6 +115,40 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(Name, _view.Object.UserName, "Name");
             Assert.AreEqual(Email, _view.Object.EmailAddress, "Email");
             Assert.AreEqual(RepoLocation, _view.Object.DefaultRepositoryLocation, "Default Repo Location");     
+        }
+
+        [TestMethod]
+        public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
+        {
+            //arrange
+            _view.Object.DefaultRepositoryLocation = RepoLocation;
+            _folderBrowser.Object.SelectedPath = OtherRepoLocation;
+            _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.OK);
+
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
+
+            //act
+            _view.Raise(v => v.BrowseDefaultRepositoryLocation +=null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual(_folderBrowser.Object.SelectedPath, _view.Object.DefaultRepositoryLocation);
+        }
+
+        [TestMethod]
+        public void OnBrowserDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
+        {
+            //arrange
+            _view.Object.DefaultRepositoryLocation = RepoLocation;
+            _folderBrowser.Object.SelectedPath = OtherRepoLocation;
+            _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var presenter = new SettingsPresenter(_view.Object, _configService.Object, _folderBrowserFactory.Object);
+
+            //act
+            _view.Raise(v => v.BrowseDefaultRepositoryLocation += null, EventArgs.Empty);
+
+            //assert
+            Assert.AreEqual(RepoLocation, _view.Object.DefaultRepositoryLocation);
         }
     }
 }
