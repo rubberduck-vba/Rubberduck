@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.UnitTesting;
 
-namespace RubberduckTests
+namespace RubberduckTests.UnitTesting
 {
     [TestClass]
     public class AssertTests
