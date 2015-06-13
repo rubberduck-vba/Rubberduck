@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
+    [ExcludeFromCodeCoverage]
     public partial class ChangesControl : UserControl, IChangesView
     {
         public ChangesControl()

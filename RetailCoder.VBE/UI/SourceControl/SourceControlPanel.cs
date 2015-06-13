@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
+    [ExcludeFromCodeCoverage]
     [SuppressMessage("ReSharper", "ArrangeThisQualifier")]
     public partial class SourceControlPanel : UserControl, ISourceControlView
     {
