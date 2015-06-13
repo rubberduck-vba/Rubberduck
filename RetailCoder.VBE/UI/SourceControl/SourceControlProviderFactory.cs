@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rubberduck.SourceControl;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.UI.SourceControl
 {

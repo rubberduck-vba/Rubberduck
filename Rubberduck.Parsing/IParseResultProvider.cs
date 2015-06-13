@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing

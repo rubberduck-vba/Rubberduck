@@ -1,4 +1,4 @@
-using Microsoft.Office.Interop.Access;
+using NetOffice.AccessApi;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

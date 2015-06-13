@@ -4,7 +4,7 @@
 //using System;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using Moq;
-//using Microsoft.Vbe.Interop;
+//using NetOffice.VBIDEApi;
 //using Rubberduck.SourceControl;
 //using System.Collections.Generic;
 //using System.IO;

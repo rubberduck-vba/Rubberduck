@@ -1,5 +1,6 @@
 ﻿using System.IO;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
 
 // todo: untangle this mess
 
@@ -39,7 +40,7 @@ namespace Rubberduck.VBEditor.Extensions
 
             if (ext == VBComponentExtensions.DocClassExtension)
             {
-                var component = components.Item(fileName);
+                var component = components[fileName];
                 if (component != null)
                 {
                     component.CodeModule.Clear();

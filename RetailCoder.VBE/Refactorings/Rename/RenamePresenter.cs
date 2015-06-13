@@ -7,7 +7,9 @@ using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -173,13 +175,13 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
                     {
-                        module.Parent.Properties.Item("_CodeName").Value = _view.NewName;
+                        module.Parent.Properties["_CodeName"].Value = _view.NewName;
                     }
                     else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
                     {
-                        var codeModule = (CodeModuleClass)module;
+                        var codeModule = module; // (CodeModuleClass)module;
                         codeModule.Parent.Name = _view.NewName;
-                        module.Parent.Properties.Item("Caption").Value = _view.NewName;
+                        module.Parent.Properties["Caption"].Value = _view.NewName;
                     }
                     else
                     {
@@ -244,9 +246,9 @@ namespace Rubberduck.Refactorings.Rename
                 foreach (var handler in _declarations.FindEventHandlers(_view.Target))
                 {
                     var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _view.NewName + '_');
-                    var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
+                    var module = handler.Project.VBComponents[handler.ComponentName].CodeModule;
 
-                    var content = module.Lines[handler.Selection.StartLine, 1];
+                    var content = module.Lines(handler.Selection.StartLine, 1);
                     var newContent = GetReplacementLine(content, handler.IdentifierName, newMemberName);
                     module.ReplaceLine(handler.Selection.StartLine, newContent);
                 }
@@ -276,9 +278,9 @@ namespace Rubberduck.Refactorings.Rename
                     try
                     {
                         var newMemberName = target.ComponentName + '_' + _view.NewName;
-                        var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
+                        var module = member.Project.VBComponents[member.ComponentName].CodeModule;
 
-                        var content = module.Lines[member.Selection.StartLine, 1];
+                        var content = module.Lines(member.Selection.StartLine, 1);
                         var newContent = GetReplacementLine(content, member.IdentifierName, newMemberName);
                         module.ReplaceLine(member.Selection.StartLine, newContent);
                         RenameUsages(member, target.ComponentName);
@@ -298,7 +300,7 @@ namespace Rubberduck.Refactorings.Rename
                 var module = grouping.Key.Component.CodeModule;
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
-                    var content = module.Lines[line.Key, 1];
+                    var content = module.Lines(line.Key, 1);
                     string newContent;
 
                     if (interfaceName == null)
@@ -327,7 +329,7 @@ namespace Rubberduck.Refactorings.Rename
                             continue;
                         }
 
-                        var content = module.Lines[method.Selection.StartLine, 1];
+                        var content = module.Lines(method.Selection.StartLine, 1);
                         var newContent = GetReplacementLine(content, oldMemberName, newMemberName);
                         module.ReplaceLine(method.Selection.StartLine, newContent);
                     }
@@ -350,7 +352,7 @@ namespace Rubberduck.Refactorings.Rename
                 return null;
             }
 
-            var content = module.Lines[_view.Target.Selection.StartLine, 1];
+            var content = module.Lines(_view.Target.Selection.StartLine, 1);
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {

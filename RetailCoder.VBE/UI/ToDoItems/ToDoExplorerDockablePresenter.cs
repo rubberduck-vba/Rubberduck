@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Settings;

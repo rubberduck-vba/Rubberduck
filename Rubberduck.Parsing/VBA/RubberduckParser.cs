@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using NLog;
 using Rubberduck.Logging;
 using Rubberduck.Parsing.Grammar;

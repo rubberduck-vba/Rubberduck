@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+
+using NetOffice;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.UI
 {
@@ -28,12 +31,12 @@ namespace Rubberduck.UI
             Window toolWindow;
             try
             {
-                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
+                toolWindow = _vbe.Windows.CreateToolWindowFixed(_addin, _DockableWindowHost.RegisteredProgId,
                     control.Caption, control.ClassId, ref userControlObject);
             }
             catch (COMException)
             {
-                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
+                toolWindow = _vbe.Windows.CreateToolWindowFixed(_addin, _DockableWindowHost.RegisteredProgId,
                     control.Caption, control.ClassId, ref userControlObject);
             }
             var userControlHost = (_DockableWindowHost)userControlObject;
@@ -90,7 +93,24 @@ namespace Rubberduck.UI
                 UserControl.Dispose();
             }
 
-            Marshal.ReleaseComObject(_window);
+            if (_window != null)
+            {
+                _window.Dispose();
+            }
+        }
+    }
+
+    public static class WindowExtensions
+    {
+        public static Window CreateToolWindowFixed(this Windows windows, AddIn addInInst, string progId, string caption, string guidPosition, ref object docObj)
+        {
+            ParameterModifier[] modifiers = Invoker.CreateParamModifiers(false, false, false, false, true);
+            object[] paramsArray = Invoker.ValidateParamsArray(addInInst, progId, caption, guidPosition, new DispatchWrapper(docObj));
+            // We may need to set paramsArray[4] to something else here.
+            object returnItem = windows.Invoker.MethodReturn(windows, "CreateToolWindow", paramsArray, modifiers);
+            docObj = paramsArray[4];  // we may need wrap this before we assign it to docObj.
+            var newObject = windows.Factory.CreateKnownObjectFromComProxy(windows, returnItem, Window.LateBindingApiWrapperType) as Window;
+            return newObject;
         }
     }
 }

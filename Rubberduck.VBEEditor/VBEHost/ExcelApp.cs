@@ -1,4 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using NetOffice.ExcelApi;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

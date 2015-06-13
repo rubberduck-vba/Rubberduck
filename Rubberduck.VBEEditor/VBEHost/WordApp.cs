@@ -1,4 +1,4 @@
-using Microsoft.Office.Interop.Word;
+using NetOffice.WordApi;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

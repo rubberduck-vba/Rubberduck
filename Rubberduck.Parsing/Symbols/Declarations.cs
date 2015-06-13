@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 

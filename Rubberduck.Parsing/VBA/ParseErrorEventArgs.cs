@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;

@@ -1,6 +1,8 @@
 ﻿using System;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 

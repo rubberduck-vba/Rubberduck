@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing;
 using Rubberduck.Reflection;
 

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using stdole;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+using CommandBarButtonClickEvent = NetOffice.OfficeApi.CommandBarButton_ClickEventHandler;
 
 namespace Rubberduck.UI
 {
@@ -17,6 +19,11 @@ namespace Rubberduck.UI
             static public IPictureDisp ImageToPictureDisp(Image image)
             {
                 return (IPictureDisp)GetIPictureDispFromPicture(image);
+            }
+
+            static public IPicture ImageToPicture(Image image)
+            {
+                return (IPicture)GetIPictureFromPicture(image);
             }
 
             static public Image PictureDispToImage(IPictureDisp pictureDisp)
@@ -38,7 +45,7 @@ namespace Rubberduck.UI
 
         private CommandBarButton AddButton(CommandBarPopup parentMenu, string caption)
         {
-            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, Temporary: true) as CommandBarButton;
+            var button = parentMenu.Controls.Add(MsoControlType.msoControlButton, null, null, null, true) as CommandBarButton;
             button.Caption = caption;
 
             return button;
@@ -48,7 +55,7 @@ namespace Rubberduck.UI
         {
             var button = AddButton(parentMenu, caption);
             button.BeginGroup = beginGroup;
-            button.Click += buttonClickHandler;
+            button.ClickEvent += buttonClickHandler;
 
             return button;
         }
@@ -84,8 +91,8 @@ namespace Rubberduck.UI
         public static void SetButtonImage(CommandBarButton button, Bitmap image, Bitmap mask)
         {
             button.FaceId = 0;
-            button.Picture = AxHostConverter.ImageToPictureDisp(image);
-            button.Mask = AxHostConverter.ImageToPictureDisp(mask);
+            button.Picture = (Picture)AxHostConverter.ImageToPicture(image);
+            button.Mask = (Picture)AxHostConverter.ImageToPicture(mask);
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
 

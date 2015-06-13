@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Extensibility;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.UI;
 
 namespace Rubberduck
@@ -32,7 +32,9 @@ namespace Rubberduck
         {
             try
             {
-                _app = new App((VBE)Application, (AddIn)AddInInst);
+                var vbe = new VBE(null, Application);
+                var addin = new AddIn(null, AddInInst);
+                _app = new App(vbe, addin);
             }
             catch (Exception exception)
             {

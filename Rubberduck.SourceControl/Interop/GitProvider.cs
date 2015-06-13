@@ -3,7 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.SourceControl.Interop
 {

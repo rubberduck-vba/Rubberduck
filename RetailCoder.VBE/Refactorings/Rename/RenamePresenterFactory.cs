@@ -1,4 +1,4 @@
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.Extensions;
 

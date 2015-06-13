@@ -2,8 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Documents;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+
+using NetOffice;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
@@ -192,7 +199,7 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
+            if (codeModule.FindFixed(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {
                 var selection = new Selection(startLine, startColumn, endLine, endColumn);
                 codeModule.CodePane.SetSelection(selection);
@@ -235,6 +242,25 @@ namespace Rubberduck.UI.UnitTesting
             Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
 
             _testEngine.TestComplete += TestComplete;
+        }
+    }
+
+    internal static class CodeModuleExtensions
+    {
+        internal static bool FindFixed(this CodeModule module, string target, ref int startLine, ref int startColumn, ref int endLine, ref int endColumn)
+        {
+            var modifiers = Invoker.CreateParamModifiers(false, true, true, true, true);
+            object[] paramsArray = Invoker.ValidateParamsArray(target, startLine, startColumn, endLine, endColumn);
+            object returnItem = module.Invoker.MethodReturn(module, "Find", paramsArray, modifiers);
+
+            // update values for return.  
+            // TODO We may not be able to do the cast as shown.
+            startLine = (int)paramsArray[1];
+            startColumn = (int)paramsArray[2];
+            endLine = (int)paramsArray[3];
+            endColumn = (int)paramsArray[4];
+
+            return Convert.ToBoolean(returnItem);
         }
     }
 }

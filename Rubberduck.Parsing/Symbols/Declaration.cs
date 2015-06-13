@@ -2,7 +2,7 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 

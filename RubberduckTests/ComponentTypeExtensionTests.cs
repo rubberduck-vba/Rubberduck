@@ -1,4 +1,4 @@
-﻿using Microsoft.Vbe.Interop;
+﻿using NetOffice.VBIDEApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 

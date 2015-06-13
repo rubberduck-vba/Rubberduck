@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.SourceControl
@@ -90,7 +90,7 @@ namespace Rubberduck.SourceControl
            //https://msdn.microsoft.com/en-us/library/system.io.path.getfilenamewithoutextension%28v=vs.110%29.aspx
             if (componentName != String.Empty)
             {
-                var component = this.Project.VBComponents.Item(componentName);
+                var component = this.Project.VBComponents[componentName];
                 this.Project.VBComponents.RemoveSafely(component);
                 this.Project.VBComponents.ImportSourceFile(filePath);
             }

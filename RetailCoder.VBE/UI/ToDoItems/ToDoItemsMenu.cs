@@ -1,7 +1,8 @@
 ﻿using System.Windows.Forms;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+
+using NetOffice.OfficeApi;
+using NetOffice.VBIDEApi;
+using CommandBarButtonClickEvent = NetOffice.OfficeApi.CommandBarButton_ClickEventHandler;
 
 
 namespace Rubberduck.UI.ToDoItems
@@ -44,7 +45,7 @@ namespace Rubberduck.UI.ToDoItems
                 uc.Dispose();
             }
 
-            _todoItemsButton.Click -= OnShowTaskListButtonClick;
+            _todoItemsButton.ClickEvent -= OnShowTaskListButtonClick;
 
             _disposed = true;
 

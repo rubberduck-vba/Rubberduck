@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -111,7 +113,7 @@ namespace Rubberduck.UI
             const int windowMenuId = 30009;
             var menuBarControls = IDE.CommandBars[1].Controls;
             var beforeIndex = FindMenuInsertionIndex(menuBarControls, windowMenuId);
-            _menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
+            _menu = menuBarControls.Add(MsoControlType.msoControlPopup, null, null, beforeIndex, true) as CommandBarPopup;
 
             _menu.Caption = RubberduckUI.RubberduckMenu;
 
@@ -209,9 +211,9 @@ namespace Rubberduck.UI
                 _codeInspectionsMenu.Dispose();
             }
 
-            _about.Click -= OnAboutClick;
-            _settings.Click -= OnOptionsClick;
-            _sourceControl.Click -= OnSourceControlClick;
+            _about.ClickEvent -= OnAboutClick;
+            _settings.ClickEvent -= OnOptionsClick;
+            _sourceControl.ClickEvent -= OnSourceControlClick;
 
             var menuBarControls = IDE.CommandBars[1].Controls;
             menuBarControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
