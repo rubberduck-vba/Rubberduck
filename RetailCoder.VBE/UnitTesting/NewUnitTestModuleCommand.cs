@@ -13,12 +13,20 @@ namespace Rubberduck.UnitTesting
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            var name = assembly.GetName().Name.Replace('.', '_');
+            var assemblyName = assembly.GetName();
+            var name = assemblyName.Name.Replace('.', '_');
+            var majorVersion = assemblyName.Version.Major;
+            var minorVersion = assemblyName.Version.Minor;
             var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
 
             var references = project.References.Cast<Reference>().ToList();
 
             var reference = references.SingleOrDefault(r => r.Name == name);
+            if (reference != null && reference.Major == majorVersion && reference.Minor == minorVersion)
+            {
+                return;
+            }
+
             if (reference != null)
             {
                 project.References.Remove(reference);
