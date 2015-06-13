@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.SourceControl
 {
+    [ExcludeFromCodeCoverage]
     public partial class SettingsControl : UserControl, ISettingsView
     {
         public SettingsControl()
