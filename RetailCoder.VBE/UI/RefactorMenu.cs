@@ -4,8 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -45,7 +47,7 @@ namespace Rubberduck.UI
 
         public void Initialize(CommandBarControls menuControls)
         {
-            _menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            _menu = menuControls.Add(MsoControlType.msoControlPopup, null, null, null, true) as CommandBarPopup;
             _menu.Caption = RubberduckUI.RubberduckMenu_Refactor;
 
             _extractMethodButton = AddButton(_menu, RubberduckUI.RefactorMenu_ExtractMethod, false, OnExtractMethodButtonClick);
@@ -72,7 +74,7 @@ namespace Rubberduck.UI
         private void InitializeRefactorContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _refactorCodePaneContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlPopup, Temporary: true, Before:beforeItem) as CommandBarPopup;
+            _refactorCodePaneContextMenu = IDE.CommandBars["Code Window"].Controls.Add(MsoControlType.msoControlPopup, null, null, beforeItem, true) as CommandBarPopup;
             _refactorCodePaneContextMenu.BeginGroup = true;
             _refactorCodePaneContextMenu.Caption = RubberduckUI.RubberduckMenu_Refactor;
 
@@ -109,28 +111,28 @@ namespace Rubberduck.UI
         private void InitializeFindReferencesContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _findAllReferencesContextMenu = IDE.CommandBars["Code Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem, true) as CommandBarButton;
             _findAllReferencesContextMenu.Caption = RubberduckUI.ContextMenu_FindAllReferences;
-            _findAllReferencesContextMenu.Click += FindAllReferencesContextMenu_Click;
+            _findAllReferencesContextMenu.ClickEvent += FindAllReferencesContextMenu_Click;
         }
 
         private CommandBarButton _findAllImplementationsContextMenu;
         private void InitializeFindImplementationsContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _findAllImplementationsContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _findAllImplementationsContextMenu = IDE.CommandBars["Code Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem, true) as CommandBarButton;
             _findAllImplementationsContextMenu.Caption = RubberduckUI.ContextMenu_GoToImplementation;
-            _findAllImplementationsContextMenu.Click += FindAllImplementationsContextMenu_Click;
+            _findAllImplementationsContextMenu.ClickEvent += FindAllImplementationsContextMenu_Click;
         }
 
         private CommandBarButton _findSymbolContextMenu;
         private void InitializeFindSymbolContextMenu()
         {
             var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
-            _findSymbolContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _findSymbolContextMenu = IDE.CommandBars["Code Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem, true) as CommandBarButton;
             SetButtonImage(_findSymbolContextMenu, Resources.FindSymbol_6263_32, Resources.FindSymbol_6263_32_Mask);
             _findSymbolContextMenu.Caption = RubberduckUI.ContextMenu_FindSymbol;
-            _findSymbolContextMenu.Click += FindSymbolContextMenuClick;
+            _findSymbolContextMenu.ClickEvent += FindSymbolContextMenuClick;
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -504,17 +506,17 @@ namespace Rubberduck.UI
                 return;
             }
 
-            _extractMethodButton.Click -= OnExtractMethodButtonClick;
-            _extractMethodContextButton.Click -= OnExtractMethodButtonClick;
-            _removeParametersButton.Click -= OnRemoveParameterButtonClick;
-            _removeParametersContextButton.Click -= OnRemoveParameterButtonClick;
-            _renameButton.Click -= OnRenameButtonClick;
-            _renameContextButton.Click -= OnRenameButtonClick;
-            _reorderParametersButton.Click -= OnReorderParametersButtonClick;
-            _reorderParametersContextButton.Click -= OnReorderParametersButtonClick;
-            _findAllReferencesContextMenu.Click -= FindAllReferencesContextMenu_Click;
-            _findAllImplementationsContextMenu.Click -= FindAllImplementationsContextMenu_Click;
-            _findSymbolContextMenu.Click -= FindSymbolContextMenuClick;
+            _extractMethodButton.ClickEvent -= OnExtractMethodButtonClick;
+            _extractMethodContextButton.ClickEvent -= OnExtractMethodButtonClick;
+            _removeParametersButton.ClickEvent -= OnRemoveParameterButtonClick;
+            _removeParametersContextButton.ClickEvent -= OnRemoveParameterButtonClick;
+            _renameButton.ClickEvent -= OnRenameButtonClick;
+            _renameContextButton.ClickEvent -= OnRenameButtonClick;
+            _reorderParametersButton.ClickEvent -= OnReorderParametersButtonClick;
+            _reorderParametersContextButton.ClickEvent -= OnReorderParametersButtonClick;
+            _findAllReferencesContextMenu.ClickEvent -= FindAllReferencesContextMenu_Click;
+            _findAllImplementationsContextMenu.ClickEvent -= FindAllImplementationsContextMenu_Click;
+            _findSymbolContextMenu.ClickEvent -= FindSymbolContextMenuClick;
 
             RemoveRefactorContextMenu();
 

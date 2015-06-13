@@ -1,4 +1,4 @@
-﻿using Microsoft.Office.Interop.PowerPoint;
+﻿using NetOffice.PowerPointApi;
 
 namespace Rubberduck.VBEditor.VBEHost
 {

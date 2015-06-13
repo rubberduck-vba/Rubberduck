@@ -1,4 +1,4 @@
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.Extensions
                 return string.Empty;
             }
 
-            return module.Lines[1, module.CountOfLines];
+            return module.Lines(1, module.CountOfLines);
         }
 
         /// <summary>

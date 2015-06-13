@@ -1,7 +1,7 @@
-﻿using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+﻿using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Properties;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -27,7 +27,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             _menuControls = menuControls;
 
-            _menu = menuControls.Add(MsoControlType.msoControlPopup, Temporary: true) as CommandBarPopup;
+            _menu = menuControls.Add(MsoControlType.msoControlPopup, null, null, null, true) as CommandBarPopup;
             _menu.Caption = RubberduckUI.RubberduckMenu_UnitTests;
 
             _windowsTestExplorerButton = AddButton(_menu, RubberduckUI.TestMenu_TextExplorer, false, OnTestExplorerButtonClick);
@@ -72,8 +72,8 @@ namespace Rubberduck.UI.UnitTesting
 
             _menuControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
-            _runAllTestsButton.Click -= OnRunAllTestsButtonClick;
-            _windowsTestExplorerButton.Click -= OnTestExplorerButtonClick;
+            _runAllTestsButton.ClickEvent -= OnRunAllTestsButtonClick;
+            _windowsTestExplorerButton.ClickEvent -= OnTestExplorerButtonClick;
 
             _disposed = true;
             base.Dispose(disposing);

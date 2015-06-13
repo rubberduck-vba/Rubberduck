@@ -1,6 +1,6 @@
-﻿using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+﻿using NetOffice.OfficeApi;
+using NetOffice.VBIDEApi;
+using CommandBarButtonClickEvent = NetOffice.OfficeApi.CommandBarButton_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.CodeInspections
                 _window.Dispose();
             }
 
-            _codeInspectionsButton.Click -= OnCodeInspectionsButtonClick;
+            _codeInspectionsButton.ClickEvent -= OnCodeInspectionsButtonClick;
 
             _disposed = true;
             base.Dispose(true);

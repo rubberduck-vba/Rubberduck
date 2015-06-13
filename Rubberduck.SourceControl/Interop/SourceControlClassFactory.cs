@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.SourceControl.Interop
 {

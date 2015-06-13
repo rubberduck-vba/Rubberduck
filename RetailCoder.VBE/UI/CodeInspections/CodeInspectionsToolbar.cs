@@ -5,8 +5,10 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
@@ -46,26 +48,26 @@ namespace Rubberduck.UI.CodeInspections
 
         public void Initialize()
         {
-            _toolbar = _vbe.CommandBars.Add(RubberduckUI.CodeInspections, Temporary: true);
-            _refreshButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _toolbar = _vbe.CommandBars.Add(RubberduckUI.CodeInspections, null, null, true);
+            _refreshButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, null, null, null, true);
             _refreshButton.TooltipText = RubberduckUI.CodeInspections_Run;
 
             var refreshIcon = Resources.Refresh;
             refreshIcon.MakeTransparent(Color.Magenta);
             Menu.SetButtonImage(_refreshButton, refreshIcon);
 
-            _statusButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _statusButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, null, null, null, true);
             _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
             _statusButton.FaceId = 463; // Resources.Warning doesn't look good here
             _statusButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
 
-            _quickFixButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _quickFixButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, null, null, null, true);
             _quickFixButton.Caption = RubberduckUI.Fix;
             _quickFixButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
             _quickFixButton.FaceId = 305; // Resources.applycodechanges_6548_321 doesn't look good here
             _quickFixButton.Enabled = false;
 
-            _navigatePreviousButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary:true);
+            _navigatePreviousButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, null, null, null, true);
             _navigatePreviousButton.BeginGroup = true;
             _navigatePreviousButton.Caption = RubberduckUI.Previous;
             _navigatePreviousButton.TooltipText = RubberduckUI.Previous;
@@ -73,17 +75,17 @@ namespace Rubberduck.UI.CodeInspections
             _navigatePreviousButton.FaceId = 41; // Resources.112_LeftArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigatePreviousButton.Enabled = false;
 
-            _navigateNextButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            _navigateNextButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, null, null, null, true);
             _navigateNextButton.Caption = RubberduckUI.Next;
             _navigateNextButton.TooltipText = RubberduckUI.Next;
             _navigateNextButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
             _navigateNextButton.FaceId = 39; // Resources.112_RightArrowLong_Blue_16x16_72 makes a gray Block when disabled
             _navigateNextButton.Enabled = false;
 
-            _refreshButton.Click += _refreshButton_Click;
-            _quickFixButton.Click += _quickFixButton_Click;
-            _navigatePreviousButton.Click += _navigatePreviousButton_Click;
-            _navigateNextButton.Click += _navigateNextButton_Click;
+            _refreshButton.ClickEvent += _refreshButton_Click;
+            _quickFixButton.ClickEvent += _quickFixButton_Click;
+            _navigatePreviousButton.ClickEvent += _navigatePreviousButton_Click;
+            _navigateNextButton.ClickEvent += _navigateNextButton_Click;
 
             _inspector.IssuesFound += OnIssuesFound;
             _inspector.Reset += OnReset;
@@ -256,10 +258,10 @@ namespace Rubberduck.UI.CodeInspections
         {
             if (!disposing) { return; }
 
-            _refreshButton.Click -= _refreshButton_Click;
-            _quickFixButton.Click -= _quickFixButton_Click;
-            _navigatePreviousButton.Click -= _navigatePreviousButton_Click;
-            _navigateNextButton.Click -= _navigateNextButton_Click;  
+            _refreshButton.ClickEvent -= _refreshButton_Click;
+            _quickFixButton.ClickEvent -= _quickFixButton_Click;
+            _navigatePreviousButton.ClickEvent -= _navigatePreviousButton_Click;
+            _navigateNextButton.ClickEvent -= _navigateNextButton_Click;  
 
             _toolbar.Delete();
         }

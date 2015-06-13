@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UnitTesting
@@ -71,7 +73,7 @@ namespace Rubberduck.UnitTesting
                 var hasOptionExplicit = false;
                 if (module.CodeModule.CountOfLines > 0 && module.CodeModule.CountOfDeclarationLines > 0)
                 {
-                    hasOptionExplicit = module.CodeModule.Lines[1, module.CodeModule.CountOfDeclarationLines].Contains("Option Explicit");
+                    hasOptionExplicit = module.CodeModule.Lines(1, module.CodeModule.CountOfDeclarationLines).Contains("Option Explicit");
                 }
 
                 var options = String.Concat(hasOptionExplicit ? String.Empty : "Option Explicit\n", "Option Private Module\n\n");

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
@@ -32,26 +34,26 @@ namespace Rubberduck.UI
         {
             var beforeItem = _vbe.CommandBars["Project Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2578).Index;
 
-            _findAllReferences = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem);
+            _findAllReferences = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem, true);
             _findAllReferences.Caption = RubberduckUI.CodeExplorer_FindAllReferencesText;
             _findAllReferences.BeginGroup = true;
-            _findAllReferences.Click += FindAllReferences_Click;
+            _findAllReferences.ClickEvent += FindAllReferences_Click;
 
-            _findAllImplementations = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 1);
+            _findAllImplementations = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem + 1, true);
             _findAllImplementations.Caption = RubberduckUI.CodeExplorer_FindAllImplementationsText;
-            _findAllImplementations.Click += FindAllImplementations_Click;
+            _findAllImplementations.ClickEvent += FindAllImplementations_Click;
 
-            _rename = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 2);
+            _rename = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem + 2, true);
             _rename.Caption = RubberduckUI.RefactorMenu_Rename;
-            _rename.Click += Rename_Click;
+            _rename.ClickEvent += Rename_Click;
 
-            _inspect = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 3);
+            _inspect = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem + 3, true);
             _inspect.Caption = RubberduckUI.Inspect;
-            _inspect.Click += Inspect_Click;
+            _inspect.ClickEvent += Inspect_Click;
 
-            _runAllTests = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem + 4);
+            _runAllTests = (CommandBarButton)_vbe.CommandBars["Project Window"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem + 4, true);
             _runAllTests.Caption = RubberduckUI.CodeExplorer_RunAllTestsText;
-            _runAllTests.Click += RunAllTests_Click;
+            _runAllTests.ClickEvent += RunAllTests_Click;
         }
 
         private Declaration FindSelectedDeclaration()
@@ -195,31 +197,31 @@ namespace Rubberduck.UI
             
             if (_findAllReferences != null)
             {
-                _findAllReferences.Click -= FindAllReferences_Click;
+                _findAllReferences.ClickEvent -= FindAllReferences_Click;
                 _findAllReferences.Delete();
             }
 
             if (_findAllImplementations != null)
             {
-                _findAllImplementations.Click -= FindAllImplementations_Click;
+                _findAllImplementations.ClickEvent -= FindAllImplementations_Click;
                 _findAllImplementations.Delete();
             }
 
             if (_rename != null)
             {
-                _rename.Click -= Rename_Click;
+                _rename.ClickEvent -= Rename_Click;
                 _rename.Delete();
             }
 
             if (_inspect != null)
             {
-                _inspect.Click -= Inspect_Click;
+                _inspect.ClickEvent -= Inspect_Click;
                 _inspect.Delete();
             }
 
             if (_runAllTests != null)
             {
-                _runAllTests.Click -= RunAllTests_Click;
+                _runAllTests.ClickEvent -= RunAllTests_Click;
                 _runAllTests.Delete();
             }
 

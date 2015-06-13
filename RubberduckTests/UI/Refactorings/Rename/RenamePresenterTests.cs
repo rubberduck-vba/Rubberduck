@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;

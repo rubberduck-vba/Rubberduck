@@ -1,5 +1,6 @@
 using System.IO;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
 
 namespace Rubberduck.VBEditor.Extensions
 {

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.SourceControl
 {

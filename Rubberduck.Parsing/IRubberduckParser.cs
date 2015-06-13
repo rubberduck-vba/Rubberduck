@@ -1,4 +1,4 @@
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
 
 namespace Rubberduck.Parsing
 {

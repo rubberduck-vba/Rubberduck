@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+
+using NetOffice.OfficeApi;
+using NetOffice.OfficeApi.Enums;
+using NetOffice.VBIDEApi;
 using Rubberduck.Parsing;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
@@ -25,10 +27,10 @@ namespace Rubberduck.UI
         public void Initialize()
         {
             var beforeItem = _vbe.CommandBars["MSForms Control"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2558).Index;
-            _rename = _vbe.CommandBars["MSForms Control"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _rename = _vbe.CommandBars["MSForms Control"].Controls.Add(MsoControlType.msoControlButton, null, null, beforeItem, true) as CommandBarButton;
             _rename.BeginGroup = true;
             _rename.Caption = RubberduckUI.FormContextMenu_Rename;
-            _rename.Click += OnRenameButtonClick;
+            _rename.ClickEvent += OnRenameButtonClick;
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -74,7 +76,7 @@ namespace Rubberduck.UI
 
             if (_rename != null)
             {
-                _rename.Click -= OnRenameButtonClick;
+                _rename.ClickEvent -= OnRenameButtonClick;
                 _rename.Delete();
             }
         }

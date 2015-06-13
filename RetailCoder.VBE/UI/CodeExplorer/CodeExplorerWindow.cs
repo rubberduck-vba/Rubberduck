@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 

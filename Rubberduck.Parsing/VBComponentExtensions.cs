@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.VBEditor;
@@ -22,7 +24,7 @@ namespace Rubberduck.Parsing
             {
                 return false;
             }
-            var moduleAttributes = MemberAttribute.GetAttributes(code.Lines[1, code.CountOfDeclarationLines].Split('\n'));
+            var moduleAttributes = MemberAttribute.GetAttributes(code.Lines(1, code.CountOfDeclarationLines).Split('\n'));
             return (moduleAttributes.Any(attribute => attribute.Name == name));
         }
 
@@ -44,7 +46,7 @@ namespace Rubberduck.Parsing
                     var startLine = module.get_ProcStartLine(name, kind);
                     var lineCount = module.get_ProcCountLines(name, kind);
 
-                    var body = module.Lines[startLine, lineCount].Split('\n');
+                    var body = module.Lines(startLine, lineCount).Split('\n');
 
                     Member member;
                     if (Member.TryParse(body, new QualifiedModuleName(module.Parent), out member))

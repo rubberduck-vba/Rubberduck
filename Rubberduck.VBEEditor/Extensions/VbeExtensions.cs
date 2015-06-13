@@ -1,5 +1,7 @@
 using System.Linq;
-using Microsoft.Vbe.Interop;
+using NetOffice.VBIDEApi;
+using NetOffice.VBIDEApi.Enums;
+
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.VBEditor.Extensions
@@ -57,8 +59,8 @@ namespace Rubberduck.VBEditor.Extensions
                         return new PowerPointApp();
                     case "Outlook":
                         return new OutlookApp();
-                    case "Publisher":
-                        return new PublisherApp();
+                    //case "Publisher":
+                    //    return new PublisherApp();
                 }
             }
 
