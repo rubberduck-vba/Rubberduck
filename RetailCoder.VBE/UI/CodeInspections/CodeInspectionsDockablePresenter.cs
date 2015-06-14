@@ -216,5 +216,24 @@ namespace Rubberduck.UI.CodeInspections
                 Control.Cursor = Cursors.Default;
             });
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+
+            _inspector.IssuesFound -= _inspector_IssuesFound;
+            _inspector.Reset -= _inspector_Reset;
+            _inspector.Parsing -= _inspector_Parsing;
+            _inspector.ParseCompleted -= _inspector_ParseCompleted;
+
+            Control.RefreshCodeInspections -= Control_RefreshCodeInspections;
+            Control.NavigateCodeIssue -= Control_NavigateCodeIssue;
+            Control.QuickFix -= Control_QuickFix;
+            Control.CopyResults -= Control_CopyResultsToClipboard;
+            Control.Cancel -= Control_Cancel;
+            Control.SortColumn -= SortColumn;
+
+            base.Dispose(true);
+        }
     }
 }
