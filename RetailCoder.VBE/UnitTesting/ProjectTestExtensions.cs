@@ -6,7 +6,8 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEHost;
+using System.Reflection;
+using System.IO;
 
 namespace Rubberduck.UnitTesting
 {
@@ -86,6 +87,28 @@ namespace Rubberduck.UnitTesting
                  && member.MemberVisibility == MemberVisibility.Public;
 
             return result;
+        }
+
+        public static void EnsureReferenceToAddInLibrary(this VBProject project)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var name = assembly.GetName().Name.Replace('.', '_');
+            var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
+
+            var references = project.References.Cast<Reference>().ToList();
+
+            var reference = references.SingleOrDefault(r => r.Name == name);
+            if (reference != null)
+            {
+                references.Remove(reference);
+                project.References.Remove(reference);
+            }
+
+            if (references.All(r => r.FullPath != referencePath))
+            {
+                project.References.AddFromFile(referencePath);
+            }
         }
     }
 }

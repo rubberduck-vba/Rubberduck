@@ -84,6 +84,9 @@ namespace Rubberduck.UnitTesting
 
         public void Run(IEnumerable<TestMethod> tests, VBProject project)
         {
+            //todo: move this to the "UI" layer. This code doesn't have to run for COM clients.
+            //  COM clients will have to either already have a good reference, or be late bound.
+            //  This is problematic for late bound code, because now we've *forced* them into early binding.
             project.EnsureReferenceToAddInLibrary();
 
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
