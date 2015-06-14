@@ -52,10 +52,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
                               .Where(d => d.DeclarationType == DeclarationType.Parameter
                                        && d.ComponentName == method.ComponentName
                                        && d.Project.Equals(method.Project)
-                                       && method.Context.Start.Line <= d.Selection.StartLine
-                                       && method.Context.Stop.Line >= d.Selection.EndLine
-                                       && !(method.Context.Start.Column > d.Selection.StartColumn && method.Context.Start.Line == d.Selection.StartLine)
-                                       && !(method.Context.Stop.Column < d.Selection.EndColumn && method.Context.Stop.Line == d.Selection.EndLine))
+                                       && method.Context.GetSelection().Contains(
+                                                         new Selection(d.Selection.StartLine,
+                                                                       d.Selection.StartColumn,
+                                                                       d.Selection.EndLine,
+                                                                       d.Selection.EndColumn)))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
         }
