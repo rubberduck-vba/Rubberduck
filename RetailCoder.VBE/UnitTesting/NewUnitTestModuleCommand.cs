@@ -24,7 +24,8 @@ namespace Rubberduck.UnitTesting
                 project.References.Remove(reference);
             }
 
-            if (references.All(r => r.FullPath != referencePath))
+            if (references.All(r =>
+                r.FullPath != referencePath))
             {
                 project.References.AddFromFile(referencePath);
             }
