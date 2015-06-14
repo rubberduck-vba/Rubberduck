@@ -21,6 +21,7 @@ namespace Rubberduck.UnitTesting
             var reference = references.SingleOrDefault(r => r.Name == name);
             if (reference != null)
             {
+                references.Remove(reference);
                 project.References.Remove(reference);
             }
 
