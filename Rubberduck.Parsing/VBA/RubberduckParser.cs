@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.VBA
             OnResolveProgress(e.Component);
         }
 
-        private IParseTree Parse(string code, out ITokenStream outStream)
+        public IParseTree Parse(string code, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
