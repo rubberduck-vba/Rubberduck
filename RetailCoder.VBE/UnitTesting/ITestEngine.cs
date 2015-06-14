@@ -17,7 +17,7 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestModuleEventArgs> ModuleCleanup;
         event EventHandler<TestModuleEventArgs> MethodInitialize;
         event EventHandler<TestModuleEventArgs> MethodCleanup;
-        void Run(IEnumerable<TestMethod> tests, VBE vbe);
+        void Run(IEnumerable<TestMethod> tests, VBProject vbe);
 
         event EventHandler<TestCompletedEventArgs> TestComplete;
     }

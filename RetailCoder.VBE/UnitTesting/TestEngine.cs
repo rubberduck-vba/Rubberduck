@@ -82,9 +82,9 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public void Run(IEnumerable<TestMethod> tests, VBE vbe)
+        public void Run(IEnumerable<TestMethod> tests, VBProject project)
         {
-            vbe.ActiveVBProject.EnsureReferenceToAddInLibrary();
+            project.EnsureReferenceToAddInLibrary();
 
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any()) return;

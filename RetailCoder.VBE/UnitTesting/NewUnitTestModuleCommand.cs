@@ -21,11 +21,11 @@ namespace Rubberduck.UnitTesting
             var reference = references.SingleOrDefault(r => r.Name == name);
             if (reference != null)
             {
+                references.Remove(reference);
                 project.References.Remove(reference);
             }
 
-            if (references.All(r =>
-                r.FullPath != referencePath))
+            if (references.All(r => r.FullPath != referencePath))
             {
                 project.References.AddFromFile(referencePath);
             }

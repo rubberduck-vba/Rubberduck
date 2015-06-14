@@ -108,7 +108,7 @@ namespace Rubberduck.UI.UnitTesting
             Control.ClearResults(); 
             Control.SetPlayList(tests);
             Control.ClearProgress();
-            _testEngine.Run(tests, VBE);
+            _testEngine.Run(tests, VBE.ActiveVBProject);
         }
 
         private void TestComplete(object sender, TestCompletedEventArgs e)
