@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
@@ -81,8 +82,10 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public void Run(IEnumerable<TestMethod> tests)
+        public void Run(IEnumerable<TestMethod> tests, VBE vbe)
         {
+            vbe.ActiveVBProject.EnsureReferenceToAddInLibrary();
+
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any()) return;
 

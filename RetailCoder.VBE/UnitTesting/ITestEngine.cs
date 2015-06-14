@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
@@ -16,7 +17,7 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestModuleEventArgs> ModuleCleanup;
         event EventHandler<TestModuleEventArgs> MethodInitialize;
         event EventHandler<TestModuleEventArgs> MethodCleanup;
-        void Run(IEnumerable<TestMethod> tests);
+        void Run(IEnumerable<TestMethod> tests, VBE vbe);
 
         event EventHandler<TestCompletedEventArgs> TestComplete;
     }
