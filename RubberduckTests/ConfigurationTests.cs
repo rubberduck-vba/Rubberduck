@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Settings;
 
 namespace RubberduckTests
@@ -36,6 +37,15 @@ namespace RubberduckTests
             var config = configService.GetDefaultCodeInspections();
 
             Assert.IsNotNull(config);
+        }
+
+        [TestMethod]
+        public void ToStringIsAsExpected()
+        {
+            var expected = "FixMe:";
+            var marker = new ToDoMarker(expected, TodoPriority.High);
+
+            Assert.AreEqual(expected, marker.ToString());
         }
     }
 }
