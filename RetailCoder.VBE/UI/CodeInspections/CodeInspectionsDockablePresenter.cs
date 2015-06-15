@@ -187,9 +187,8 @@ namespace Rubberduck.UI.CodeInspections
             {
                 Control.SetIssuesStatus(_issues, true);
                 Control.EnableRefresh();
+                Control.Cursor = Cursors.Default;
             }
-
-            Control.Cursor = Cursors.Default;
         }
 
         private async Task RefreshAsync(CancellationToken token)

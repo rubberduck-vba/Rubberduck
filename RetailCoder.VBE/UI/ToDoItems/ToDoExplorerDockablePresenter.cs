@@ -47,9 +47,10 @@ namespace Rubberduck.UI.ToDoItems
                 Cursor.Current = Cursors.WaitCursor;
                 Control.TodoItems = await GetItems();
             }
-            catch { }
-
-            Cursor.Current = Cursors.Default;
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
