@@ -51,8 +51,8 @@ namespace Rubberduck.UI.ToDoItems
             }
             finally
             {
-            Cursor.Current = Cursors.Default;
-        }
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
