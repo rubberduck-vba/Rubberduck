@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.SourceControl
@@ -119,11 +120,12 @@ namespace Rubberduck.SourceControl
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
             var selection = Project.VBE.ActiveCodePane.GetSelection();
+            var name = selection.QualifiedName.Component.Name;
 
             Project.RemoveAllComponents();
             Project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            Project.VBE.SetSelection(selection);
+            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
         }
     }
 }
