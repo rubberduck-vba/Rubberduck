@@ -43,16 +43,9 @@ namespace RubberduckTests.SourceControl
         [TestInitialize]
         public void InitializeMocks()
         {
-            _window = new Mock<Window>();
-            _window.SetupProperty(w => w.Visible, false);
-            _window.SetupGet(w => w.LinkedWindows).Returns((LinkedWindows)null);
-            _window.SetupProperty(w => w.Height);
-            _window.SetupProperty(w => w.Width);
-
+            _window = Mocks.MockFactory.CreateWindowMock();
             _windows = new MockWindowsCollection(_window.Object);
-
-            _vbe = new Mock<VBE>();
-            _vbe.Setup(v => v.Windows).Returns(_windows);
+            _vbe = Mocks.MockFactory.CreateVbeMock(_windows);
 
             _addIn = new Mock<AddIn>();
 
