@@ -49,10 +49,10 @@ namespace Rubberduck.UI.ToDoItems
                 Cursor.Current = Cursors.WaitCursor;
                 _view.TodoItems = await GetItems();
             }
-            //wtf? why are we catching everything without even so much as leaving a comment as to why?
-            catch { }
-
-            Cursor.Current = Cursors.Default;
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void RefreshToDoList(object sender, EventArgs e)

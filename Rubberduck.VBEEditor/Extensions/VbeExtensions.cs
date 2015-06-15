@@ -6,17 +6,17 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class VbeExtensions
     {
-        public static void SetSelection(this VBE vbe, QualifiedSelection selection)
+        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name)
         {
             var project = vbe.VBProjects.Cast<VBProject>()
                              .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
-                                               && ReferenceEquals(p, selection.QualifiedName.Project));
+                                               && ReferenceEquals(p, vbProject));
 
             VBComponent component = null;
             if (project != null)
             {
                 component = project.VBComponents.Cast<VBComponent>()
-                                   .SingleOrDefault(c => c.Name == selection.QualifiedName.Component.Name);
+                    .SingleOrDefault(c => c.Name == name);
             }
 
             if (component == null)
@@ -24,7 +24,7 @@ namespace Rubberduck.VBEditor.Extensions
                 return;
             }
 
-            component.CodeModule.CodePane.SetSelection(selection.Selection);
+            component.CodeModule.CodePane.SetSelection(selection);
         }
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)

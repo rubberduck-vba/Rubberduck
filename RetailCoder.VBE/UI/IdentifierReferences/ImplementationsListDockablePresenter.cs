@@ -26,7 +26,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateImplementation(VBE vbe, Declaration implementation)
         {
-            vbe.SetSelection(new QualifiedSelection(implementation.QualifiedName.QualifiedModuleName, implementation.Selection));
+            vbe.SetSelection(implementation.QualifiedName.QualifiedModuleName.Project, implementation.Selection, implementation.QualifiedName.QualifiedModuleName.Component.Name);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
