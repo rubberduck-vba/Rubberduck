@@ -1067,4 +1067,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ToDoPriority_Medium" xml:space="preserve">
     <value>z Medium</value>
   </data>
+  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
+    <value>z Successfully Merged {0} into {1}</value>
+  </data>
 </root>

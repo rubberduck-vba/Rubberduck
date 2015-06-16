@@ -169,7 +169,7 @@ namespace Rubberduck.UI.SourceControl
                 this.Provider.Merge(source, destination);
                 _view.Current = this.Provider.CurrentBranch.Name;
 
-                _mergeView.StatusText = string.Format("Successfully Merged {0} into {1}", source, destination);
+                _mergeView.StatusText = string.Format(RubberduckUI.SourceControl_SuccessfulMerge, source, destination);
                 _mergeView.Status = MergeStatus.Success;
 
                 _mergeView.Hide();
