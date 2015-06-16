@@ -17,12 +17,13 @@ namespace Rubberduck.UI.SourceControl
                     ISettingsView settingsView,
                     IBranchesView branchesView, 
                     ICreateBranchView createBranchView,
+                    IDeleteBranchView deleteBranchView,
                     IMergeView mergeView
                 )
         {
              _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
             var changesPresenter = new ChangesPresenter(changesView);
-            var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, mergeView);
+            var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, deleteBranchView, mergeView);
             var settingsPresenter = new SettingsPresenter(settingsView, configService, new DialogFactory());
 
             _sourceControlPresenter = 

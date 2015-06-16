@@ -14,6 +14,8 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
 
             Text = RubberduckUI.SourceControl_MergeFormCaption;
+            TitleLabel.Text = RubberduckUI.SourceControl_MergeFormTitle;
+            InstructionsLabel.Text = RubberduckUI.SourceControl_MergeFormInstructions;
             SourceLabel.Text = RubberduckUI.SourceControl_SourceLabel;
             DestinationLabel.Text = RubberduckUI.SourceControl_DestinationLabel;
             OkButton.Text = RubberduckUI.OK;

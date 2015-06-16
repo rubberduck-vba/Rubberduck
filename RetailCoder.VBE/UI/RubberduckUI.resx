@@ -1083,4 +1083,13 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>Successfully Merged {0} into {1}</value>
   </data>
+  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
+    <value>Rubberduck - Delete Branch</value>
+  </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
+    <value>Please specify branch name.</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
+    <value>Delete branch</value>
+  </data>
 </root>

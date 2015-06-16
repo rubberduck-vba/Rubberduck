@@ -397,7 +397,8 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                if (_repo.Branches.Any(b => b.FriendlyName == branch && !b.IsRemote))
+                if (_repo.Branches.Any(b => 
+                    b.FriendlyName == branch && !b.IsRemote))
                 {
                     _repo.Branches.Remove(branch);
                 }

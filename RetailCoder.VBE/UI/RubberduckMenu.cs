@@ -143,7 +143,8 @@ namespace Rubberduck.UI
                 _sourceControlApp = new SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
                                                                 new ChangesControl(), new UnSyncedCommitsControl(),
                                                                 new SettingsControl(), new BranchesControl(),
-                                                                new CreateBranchForm(), new MergeForm());
+                                                                new CreateBranchForm(), new DeleteBranchForm(),
+                                                                new MergeForm());
             }
 
             _sourceControlApp.ShowWindow();

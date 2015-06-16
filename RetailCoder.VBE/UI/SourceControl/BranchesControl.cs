@@ -85,6 +85,12 @@ namespace Rubberduck.UI.SourceControl
             RaiseGenericEvent(CreateBranch, e);
         }
 
+        public event EventHandler<EventArgs> DeleteBranch;
+        public void OnDeleteBranch(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(DeleteBranch, e);
+        }
+
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)
         {
             if (handler != null)
