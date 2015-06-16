@@ -3,7 +3,7 @@ build:
   verbosity: normal
 notifications:
 - provider: Webhook
-  url: http://stats.zomis.net:8081/hooks/appveyor
+  url: http://stats.zomis.net:8081/hooks/appveyor?roomId=14929
   headers:
     X-Duga-Event: duga42
   on_build_success: true
