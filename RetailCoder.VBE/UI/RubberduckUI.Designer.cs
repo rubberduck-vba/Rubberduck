@@ -2257,6 +2257,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active branch cannot be deleted..
+        /// </summary>
+        internal static string SourceControl_DeleteActiveBranch {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteActiveBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Delete Branch.
+        /// </summary>
+        internal static string SourceControl_DeleteBranchCaption {
+            get {
+                return ResourceManager.GetString("SourceControl_DeleteBranchCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Destination.
         /// </summary>
         internal static string SourceControl_DestinationLabel {

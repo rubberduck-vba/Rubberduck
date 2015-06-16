@@ -133,12 +133,19 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnDeleteViewCancel(object sender, EventArgs e)
         {
-            _deleteView.Close();
+            _deleteView.Hide();
         }
 
         private void OnDeleteBranch(object sender, BranchDeleteArgs e)
         {
+            _deleteView.Hide();
+            if (e.BranchName == _view.Current)
+            {
+                MessageBox.Show(RubberduckUI.SourceControl_DeleteActiveBranch, RubberduckUI.SourceControl_DeleteBranchCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             Provider.DeleteBranch(e.BranchName);
+            RefreshView();
         }
 
         private void HideCreateBranchView()

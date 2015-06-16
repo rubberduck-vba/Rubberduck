@@ -1070,4 +1070,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>z Successfully Merged {0} into {1}</value>
   </data>
+  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
+    <value>z Rubberduck - Delete Branch</value>
+  </data>
+  <data name="SourceControl_DeleteActiveBranch" xml:space="preserve">
+    <value>z Active branch cannot be deleted.</value>
+  </data>
 </root>

@@ -17,6 +17,12 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
 
             Branches = new List<string>();
+
+            Text = RubberduckUI.SourceControl_DeleteBranchCaption;
+            OkButton.Text = RubberduckUI.OK_AllCaps;
+            OkButton.Click += OkButton_Click;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+            CancelButton.Click += CancelButton_Click;
         }
 
         public bool OkButtonEnabled
@@ -43,6 +49,7 @@ namespace Rubberduck.UI.SourceControl
             var handler = Confirm;
             if (handler != null)
             {
+                var v = new BranchDeleteArgs(this.BranchList.SelectedItem.ToString());
                 handler(this, new BranchDeleteArgs(this.BranchList.SelectedItem.ToString()));
             }
         }
