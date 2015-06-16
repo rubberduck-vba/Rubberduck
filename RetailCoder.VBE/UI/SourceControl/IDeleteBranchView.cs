@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -11,6 +8,7 @@ namespace Rubberduck.UI.SourceControl
         bool OkButtonEnabled { get; set; }
         IList<string> Branches { get; set; }
 
+        event EventHandler<BranchDeleteArgs> SelectionChanged;
         event EventHandler<BranchDeleteArgs> Confirm;
         event EventHandler<EventArgs> Cancel;
 

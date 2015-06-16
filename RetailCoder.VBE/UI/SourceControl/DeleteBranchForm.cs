@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
@@ -22,9 +16,21 @@ namespace Rubberduck.UI.SourceControl
             TitleLabel.Text = RubberduckUI.SourceControl_DeleteBranchTitleLable;
             InstructionsLabel.Text = RubberduckUI.SourceControl_DeleteBranchInstructionsLabel;
             OkButton.Text = RubberduckUI.OK_AllCaps;
+
             OkButton.Click += OkButton_Click;
             CancelButton.Text = RubberduckUI.CancelButtonText;
             CancelButton.Click += CancelButton_Click;
+            BranchList.SelectedValueChanged += BranchList_SelectedValueChanged;
+        }
+
+        public event EventHandler<BranchDeleteArgs> SelectionChanged;
+        private void BranchList_SelectedValueChanged(object sender, EventArgs e)
+        {
+            var handler = SelectionChanged;
+            if (handler != null)
+            {
+                handler(this, new BranchDeleteArgs(this.BranchList.SelectedItem.ToString()));
+            }
         }
 
         public bool OkButtonEnabled
@@ -51,7 +57,6 @@ namespace Rubberduck.UI.SourceControl
             var handler = Confirm;
             if (handler != null)
             {
-                var v = new BranchDeleteArgs(this.BranchList.SelectedItem.ToString());
                 handler(this, new BranchDeleteArgs(this.BranchList.SelectedItem.ToString()));
             }
         }

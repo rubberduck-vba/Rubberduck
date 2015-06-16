@@ -118,7 +118,7 @@ namespace RubberduckTests.SourceControl
             var branchesView = new Mock<IBranchesView>();
             branchesView.SetupProperty(b => b.Current, "master");
        
-            var branchesPresenter = new BranchesPresenter(branchesView.Object, new Mock<ICreateBranchView>().Object, new Mock<IMergeView>().Object);
+            var branchesPresenter = new BranchesPresenter(branchesView.Object, new Mock<ICreateBranchView>().Object, new Mock<IDeleteBranchView>().Object, new Mock<IMergeView>().Object);
 
             var provider = new Mock<ISourceControlProvider>();
             provider.Setup(git => git.Checkout(It.IsAny<string>()));

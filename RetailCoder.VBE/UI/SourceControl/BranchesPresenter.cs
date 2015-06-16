@@ -60,6 +60,7 @@ namespace Rubberduck.UI.SourceControl
 
             _deleteView.Confirm += OnDeleteBranch;
             _deleteView.Cancel += OnDeleteViewCancel;
+            _deleteView.SelectionChanged += OnDeleteViewSelectionChanged;
 
             _mergeView.Confirm += OnMerge;
             _mergeView.Cancel += OnCancelMerge;
@@ -90,6 +91,7 @@ namespace Rubberduck.UI.SourceControl
         {
             _createView.Close();
             _mergeView.Close();
+            _deleteView.Close();
         }
 
         public void RefreshView()
@@ -136,14 +138,14 @@ namespace Rubberduck.UI.SourceControl
             _deleteView.Hide();
         }
 
+        private void OnDeleteViewSelectionChanged(object sender, BranchDeleteArgs e)
+        {
+            _deleteView.OkButtonEnabled = e.BranchName != _view.Current;
+        }
+
         private void OnDeleteBranch(object sender, BranchDeleteArgs e)
         {
             _deleteView.Hide();
-            if (e.BranchName == _view.Current)
-            {
-                MessageBox.Show(RubberduckUI.SourceControl_DeleteActiveBranch, RubberduckUI.SourceControl_DeleteBranchCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
             Provider.DeleteBranch(e.BranchName);
             RefreshView();
         }
