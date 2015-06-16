@@ -90,5 +90,30 @@ namespace RubberduckTests.Mocks
         //    project.SetupGet(p => p.VBComponents).Returns(components.Object);
         //    return projects;
         //}
+
+        internal static Mock<Reference> CreateMockReference(string name, string filePath)
+        {
+            var reference = new Mock<Reference>();
+            reference.SetupGet(r => r.Name).Returns(name);
+            reference.SetupGet(r => r.FullPath).Returns(filePath);
+
+            return reference;
+        }
+
+        internal static Mock<References> CreateReferencesMock(List<Reference> referenceList)
+        {
+            var references = new Mock<References>();
+            references.Setup(r => r.GetEnumerator()).Returns(referenceList.GetEnumerator());
+            references.As<IEnumerable>().Setup(r => r.GetEnumerator()).Returns(referenceList.GetEnumerator());
+            return references;
+        }
+
+        internal static Mock<VBProject> CreateProjectMock(string name, Mock<References> references)
+        {
+            var project = new Mock<VBProject>();
+            project.SetupProperty(p => p.Name, name);
+            project.SetupGet(p => p.References).Returns(references.Object);
+            return project;
+        }
     }
 }
