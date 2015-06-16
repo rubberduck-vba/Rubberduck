@@ -127,7 +127,8 @@ namespace Rubberduck.UI.SourceControl
         private void OnShowDeleteBranchView(object sender, EventArgs e)
         {
             if (_view.Local == null) { return; }
-            _deleteBranch.Show();
+            _deleteView.Branches = _view.Local;
+            _deleteView.Show();
         }
 
         private void OnDeleteViewCancel(object sender, EventArgs e)

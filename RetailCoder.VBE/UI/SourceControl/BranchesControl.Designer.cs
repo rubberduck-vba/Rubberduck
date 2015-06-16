@@ -32,6 +32,7 @@ namespace Rubberduck.UI.SourceControl
         private void InitializeComponent()
         {
             this.BranchesPanel = new System.Windows.Forms.Panel();
+            this.DeleteBranchButton = new System.Windows.Forms.Button();
             this.PublishedBranchesBox = new System.Windows.Forms.GroupBox();
             this.PublishedBranchesList = new System.Windows.Forms.ListBox();
             this.MergeBranchButton = new System.Windows.Forms.Button();
@@ -40,7 +41,6 @@ namespace Rubberduck.UI.SourceControl
             this.CurrentBranchSelector = new System.Windows.Forms.ComboBox();
             this.CurrentBranch = new System.Windows.Forms.Label();
             this.NewBranchButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.BranchesPanel.SuspendLayout();
             this.PublishedBranchesBox.SuspendLayout();
             this.UnpublishedBranchesBox.SuspendLayout();
@@ -49,7 +49,7 @@ namespace Rubberduck.UI.SourceControl
             // BranchesPanel
             // 
             this.BranchesPanel.AutoScroll = true;
-            this.BranchesPanel.Controls.Add(this.button1);
+            this.BranchesPanel.Controls.Add(this.DeleteBranchButton);
             this.BranchesPanel.Controls.Add(this.PublishedBranchesBox);
             this.BranchesPanel.Controls.Add(this.MergeBranchButton);
             this.BranchesPanel.Controls.Add(this.UnpublishedBranchesBox);
@@ -63,6 +63,21 @@ namespace Rubberduck.UI.SourceControl
             this.BranchesPanel.Padding = new System.Windows.Forms.Padding(4);
             this.BranchesPanel.Size = new System.Drawing.Size(463, 565);
             this.BranchesPanel.TabIndex = 1;
+            // 
+            // DeleteBranchButton
+            // 
+            this.DeleteBranchButton.AutoSize = true;
+            this.DeleteBranchButton.Image = global::Rubberduck.Properties.Resources.cross_script;
+            this.DeleteBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.DeleteBranchButton.Location = new System.Drawing.Point(206, 47);
+            this.DeleteBranchButton.Margin = new System.Windows.Forms.Padding(4);
+            this.DeleteBranchButton.Name = "DeleteBranchButton";
+            this.DeleteBranchButton.Size = new System.Drawing.Size(124, 33);
+            this.DeleteBranchButton.TabIndex = 17;
+            this.DeleteBranchButton.Text = "Delete Branch";
+            this.DeleteBranchButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.DeleteBranchButton.UseVisualStyleBackColor = true;
+            this.DeleteBranchButton.Click += new System.EventHandler(this.OnDeleteBranch);
             // 
             // PublishedBranchesBox
             // 
@@ -168,20 +183,6 @@ namespace Rubberduck.UI.SourceControl
             this.NewBranchButton.UseVisualStyleBackColor = true;
             this.NewBranchButton.Click += new System.EventHandler(this.OnCreateBranch);
             // 
-            // button1
-            // 
-            this.button1.AutoSize = true;
-            this.button1.Image = global::Rubberduck.Properties.Resources.cross_script;
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.Location = new System.Drawing.Point(206, 47);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 33);
-            this.button1.TabIndex = 17;
-            this.button1.Text = "Delete Branch";
-            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // BranchesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -209,6 +210,6 @@ namespace Rubberduck.UI.SourceControl
         private ComboBox CurrentBranchSelector;
         private Label CurrentBranch;
         private Button NewBranchButton;
-        private Button button1;
+        private Button DeleteBranchButton;
     }
 }

@@ -9,6 +9,7 @@ namespace Rubberduck.UI.SourceControl
     public interface IDeleteBranchView
     {
         bool OkButtonEnabled { get; set; }
+        IList<string> Branches { get; set; }
 
         event EventHandler<BranchDeleteArgs> Confirm;
         event EventHandler<EventArgs> Cancel;
