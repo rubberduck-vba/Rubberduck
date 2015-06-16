@@ -16,6 +16,7 @@ namespace Rubberduck.UI.SourceControl
     {
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
+        private readonly IDeleteBranchView _deleteView;
         private readonly IMergeView _mergeView;
 
         public ISourceControlProvider Provider { get; set; }
@@ -26,10 +27,11 @@ namespace Rubberduck.UI.SourceControl
             (            
                 IBranchesView view,
                 ICreateBranchView createView,
+                IDeleteBranchView deleteView,
                 IMergeView mergeView,
                 ISourceControlProvider provider
             )
-            :this(view, createView, mergeView)
+            :this(view, createView, deleteView, mergeView)
         {
             this.Provider = provider;
         }
@@ -38,20 +40,26 @@ namespace Rubberduck.UI.SourceControl
             (
                 IBranchesView view,
                 ICreateBranchView createView,
+                IDeleteBranchView deleteView,
                 IMergeView mergeView
             )
         {
             _view = view;
             _createView = createView;
+            _deleteView = deleteView;
             _mergeView = mergeView;
 
             _view.CreateBranch += OnShowCreateBranchView;
+            _view.DeleteBranch += OnShowDeleteBranchView;
             _view.Merge += OnShowMerge;
             _view.SelectedBranchChanged += OnSelectedBranchChanged;
 
             _createView.Confirm += OnCreateBranch;
             _createView.Cancel += OnCreateViewCancel;
             _createView.UserInputTextChanged += OnCreateBranchTextChanged;
+
+            _deleteView.Confirm += OnDeleteBranch;
+            _deleteView.Cancel += OnDeleteViewCancel;
 
             _mergeView.Confirm += OnMerge;
             _mergeView.Cancel += OnCancelMerge;
@@ -114,6 +122,22 @@ namespace Rubberduck.UI.SourceControl
         private IEnumerable<IBranch> RemoteBranches()
         {
             return this.Provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
+        }
+
+        private void OnShowDeleteBranchView(object sender, EventArgs e)
+        {
+            if (_view.Local == null) { return; }
+            _deleteBranch.Show();
+        }
+
+        private void OnDeleteViewCancel(object sender, EventArgs e)
+        {
+            _deleteView.Close();
+        }
+
+        private void OnDeleteBranch(object sender, BranchDeleteArgs e)
+        {
+            Provider.DeleteBranch(e.BranchName);
         }
 
         private void HideCreateBranchView()

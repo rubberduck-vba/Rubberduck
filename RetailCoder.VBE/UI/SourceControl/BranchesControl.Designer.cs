@@ -40,6 +40,7 @@ namespace Rubberduck.UI.SourceControl
             this.CurrentBranchSelector = new System.Windows.Forms.ComboBox();
             this.CurrentBranch = new System.Windows.Forms.Label();
             this.NewBranchButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.BranchesPanel.SuspendLayout();
             this.PublishedBranchesBox.SuspendLayout();
             this.UnpublishedBranchesBox.SuspendLayout();
@@ -48,6 +49,7 @@ namespace Rubberduck.UI.SourceControl
             // BranchesPanel
             // 
             this.BranchesPanel.AutoScroll = true;
+            this.BranchesPanel.Controls.Add(this.button1);
             this.BranchesPanel.Controls.Add(this.PublishedBranchesBox);
             this.BranchesPanel.Controls.Add(this.MergeBranchButton);
             this.BranchesPanel.Controls.Add(this.UnpublishedBranchesBox);
@@ -59,7 +61,7 @@ namespace Rubberduck.UI.SourceControl
             this.BranchesPanel.Margin = new System.Windows.Forms.Padding(4);
             this.BranchesPanel.Name = "BranchesPanel";
             this.BranchesPanel.Padding = new System.Windows.Forms.Padding(4);
-            this.BranchesPanel.Size = new System.Drawing.Size(321, 565);
+            this.BranchesPanel.Size = new System.Drawing.Size(463, 565);
             this.BranchesPanel.TabIndex = 1;
             // 
             // PublishedBranchesBox
@@ -71,7 +73,7 @@ namespace Rubberduck.UI.SourceControl
             this.PublishedBranchesBox.Margin = new System.Windows.Forms.Padding(4);
             this.PublishedBranchesBox.Name = "PublishedBranchesBox";
             this.PublishedBranchesBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
-            this.PublishedBranchesBox.Size = new System.Drawing.Size(301, 174);
+            this.PublishedBranchesBox.Size = new System.Drawing.Size(443, 174);
             this.PublishedBranchesBox.TabIndex = 15;
             this.PublishedBranchesBox.TabStop = false;
             this.PublishedBranchesBox.Text = "Published Branches";
@@ -84,7 +86,7 @@ namespace Rubberduck.UI.SourceControl
             this.PublishedBranchesList.Location = new System.Drawing.Point(8, 22);
             this.PublishedBranchesList.Margin = new System.Windows.Forms.Padding(4);
             this.PublishedBranchesList.Name = "PublishedBranchesList";
-            this.PublishedBranchesList.Size = new System.Drawing.Size(285, 145);
+            this.PublishedBranchesList.Size = new System.Drawing.Size(427, 145);
             this.PublishedBranchesList.TabIndex = 1;
             // 
             // MergeBranchButton
@@ -93,7 +95,7 @@ namespace Rubberduck.UI.SourceControl
             this.MergeBranchButton.AutoSize = true;
             this.MergeBranchButton.Image = global::Rubberduck.Properties.Resources.arrow_merge_090;
             this.MergeBranchButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.MergeBranchButton.Location = new System.Drawing.Point(196, 47);
+            this.MergeBranchButton.Location = new System.Drawing.Point(338, 47);
             this.MergeBranchButton.Margin = new System.Windows.Forms.Padding(4);
             this.MergeBranchButton.Name = "MergeBranchButton";
             this.MergeBranchButton.Size = new System.Drawing.Size(123, 33);
@@ -112,7 +114,7 @@ namespace Rubberduck.UI.SourceControl
             this.UnpublishedBranchesBox.Margin = new System.Windows.Forms.Padding(4);
             this.UnpublishedBranchesBox.Name = "UnpublishedBranchesBox";
             this.UnpublishedBranchesBox.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
-            this.UnpublishedBranchesBox.Size = new System.Drawing.Size(301, 174);
+            this.UnpublishedBranchesBox.Size = new System.Drawing.Size(443, 174);
             this.UnpublishedBranchesBox.TabIndex = 16;
             this.UnpublishedBranchesBox.TabStop = false;
             this.UnpublishedBranchesBox.Text = "Unpublished Branches";
@@ -125,7 +127,7 @@ namespace Rubberduck.UI.SourceControl
             this.UnpublishedBranchesList.Location = new System.Drawing.Point(8, 22);
             this.UnpublishedBranchesList.Margin = new System.Windows.Forms.Padding(4);
             this.UnpublishedBranchesList.Name = "UnpublishedBranchesList";
-            this.UnpublishedBranchesList.Size = new System.Drawing.Size(285, 145);
+            this.UnpublishedBranchesList.Size = new System.Drawing.Size(427, 145);
             this.UnpublishedBranchesList.TabIndex = 0;
             // 
             // CurrentBranchSelector
@@ -137,7 +139,7 @@ namespace Rubberduck.UI.SourceControl
             this.CurrentBranchSelector.Location = new System.Drawing.Point(75, 14);
             this.CurrentBranchSelector.Margin = new System.Windows.Forms.Padding(4);
             this.CurrentBranchSelector.Name = "CurrentBranchSelector";
-            this.CurrentBranchSelector.Size = new System.Drawing.Size(237, 24);
+            this.CurrentBranchSelector.Size = new System.Drawing.Size(379, 24);
             this.CurrentBranchSelector.TabIndex = 12;
             this.CurrentBranchSelector.SelectedIndexChanged += new System.EventHandler(this.OnSelectedBranchChanged);
             // 
@@ -166,6 +168,20 @@ namespace Rubberduck.UI.SourceControl
             this.NewBranchButton.UseVisualStyleBackColor = true;
             this.NewBranchButton.Click += new System.EventHandler(this.OnCreateBranch);
             // 
+            // button1
+            // 
+            this.button1.AutoSize = true;
+            this.button1.Image = global::Rubberduck.Properties.Resources.cross_script;
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.Location = new System.Drawing.Point(206, 47);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(124, 33);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "Delete Branch";
+            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // BranchesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -173,7 +189,7 @@ namespace Rubberduck.UI.SourceControl
             this.Controls.Add(this.BranchesPanel);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "BranchesControl";
-            this.Size = new System.Drawing.Size(321, 565);
+            this.Size = new System.Drawing.Size(463, 565);
             this.BranchesPanel.ResumeLayout(false);
             this.BranchesPanel.PerformLayout();
             this.PublishedBranchesBox.ResumeLayout(false);
@@ -193,5 +209,6 @@ namespace Rubberduck.UI.SourceControl
         private ComboBox CurrentBranchSelector;
         private Label CurrentBranch;
         private Button NewBranchButton;
+        private Button button1;
     }
 }
