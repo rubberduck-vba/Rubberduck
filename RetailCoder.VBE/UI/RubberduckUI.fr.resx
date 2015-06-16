@@ -1085,4 +1085,10 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="SourceControl_DeleteActiveBranch" xml:space="preserve">
     <value>z Active branch cannot be deleted.</value>
   </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
+    <value>z Please specify branch name.</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
+    <value>z Delete branch</value>
+  </data>
 </root>

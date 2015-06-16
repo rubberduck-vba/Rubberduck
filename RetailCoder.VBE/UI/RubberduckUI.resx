@@ -1089,4 +1089,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SourceControl_DeleteActiveBranch" xml:space="preserve">
     <value>Active branch cannot be deleted.</value>
   </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
+    <value>Please specify branch name.</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
+    <value>Delete branch</value>
+  </data>
 </root>

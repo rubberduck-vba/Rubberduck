@@ -19,6 +19,8 @@ namespace Rubberduck.UI.SourceControl
             Branches = new List<string>();
 
             Text = RubberduckUI.SourceControl_DeleteBranchCaption;
+            TitleLabel.Text = RubberduckUI.SourceControl_DeleteBranchTitleLable;
+            InstructionsLabel.Text = RubberduckUI.SourceControl_DeleteBranchInstructionsLabel;
             OkButton.Text = RubberduckUI.OK_AllCaps;
             OkButton.Click += OkButton_Click;
             CancelButton.Text = RubberduckUI.CancelButtonText;
