@@ -105,10 +105,20 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            Control.ClearResults(); 
-            Control.SetPlayList(tests);
+            Control.ClearResults();
+
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList(); //bypasses multiple enumeration
+            Control.SetPlayList(testMethods);
+
             Control.ClearProgress();
-            _testEngine.Run(tests, VBE.ActiveVBProject);
+
+            var projects = testMethods.Select(t => t.QualifiedMemberName.QualifiedModuleName.Project).Distinct();
+            foreach (var project in projects)
+            {
+                project.EnsureReferenceToAddInLibrary();
+            }
+            
+            _testEngine.Run(testMethods);
         }
 
         private void TestComplete(object sender, TestCompletedEventArgs e)

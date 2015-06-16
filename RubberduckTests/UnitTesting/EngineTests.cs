@@ -154,7 +154,7 @@ namespace RubberduckTests.UnitTesting
             var tests = _engine.AllTests.Keys;
 
             //act
-            _engine.Run(tests, _project.Object);
+            _engine.Run(tests);
 
             Assert.IsTrue(_wasEventRaised, "Module Intialize was not run.");
             Assert.AreEqual(1, _eventCount, "Module Intialzie expected to be run once.");
@@ -167,7 +167,7 @@ namespace RubberduckTests.UnitTesting
             _engine.ModuleCleanup += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Module Cleanup was not run.");
@@ -182,7 +182,7 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodInitialize += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Method Intialize was not run.");
@@ -197,7 +197,7 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodCleanup += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Method Initialize was not run.");
@@ -212,7 +212,7 @@ namespace RubberduckTests.UnitTesting
             _engine.TestComplete += EngineOnTestComplete;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "TestComplete event was not raised.");
@@ -226,7 +226,7 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodInitialize += CatchEvent;
 
             //act
-            _engine.Run(new List<TestMethod>(), _project.Object);
+            _engine.Run(new List<TestMethod>());
 
             //assert
             Assert.IsFalse(_wasEventRaised, "No methods should run when passed an empty list of tests.");
@@ -254,7 +254,7 @@ namespace RubberduckTests.UnitTesting
             project.SetupGet(p => p.References).Returns(references.Object);
 
             //act
-            _engine.Run(_engine.AllTests.Keys, project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             references.Verify(r => r.Remove(It.Is<Reference>(arg => arg == oldRubberduckRef.Object)));
@@ -281,7 +281,7 @@ namespace RubberduckTests.UnitTesting
             project.SetupGet(p => p.References).Returns(references.Object);
 
             //act
-            _engine.Run(_engine.AllTests.Keys, project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             references.Verify(r => r.AddFromFile(It.IsAny<string>()));
