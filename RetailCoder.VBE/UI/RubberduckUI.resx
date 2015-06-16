@@ -458,11 +458,12 @@ Warning: All customized settings will be lost.</value>
   <data name="CodeInspections" xml:space="preserve">
     <value>Code Inspections</value>
   </data>
-  <data name="CodeInspections_InspectingIssues" xml:space="preserve">
-    <value>{0} ({1} issue{2})</value>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} issue)</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
-    <value>{0} issue{1}</value>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} issue</value>
+    <comment>{0}=number</comment>
   </data>
   <data name="CodeInspections_Run" xml:space="preserve">
     <value>Run code inspections</value>
@@ -821,9 +822,10 @@ Warning: All customized settings will be lost.</value>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>To-Do Explorer</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Inspections - {0}
-{1} {2} found.</value>
+{1} issues found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Method '{0}' implements '{1}.{2}'. Rename the interface member?</value>
@@ -1091,5 +1093,27 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
     <value>Delete branch</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} issues)</value>
+    <comment>{0}=status; {1}=number</comment>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck Code Inspections - {0}
+{1} issue found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} issues</value>
+    <comment>{0}=number</comment>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
   </data>
 </root>

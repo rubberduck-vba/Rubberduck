@@ -180,9 +180,9 @@ namespace Rubberduck.UI
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
 
-            var declarations = result.Declarations.Items.Where(item => item.DeclarationType != DeclarationType.ModuleOption
-                && item.ComponentName == selection.QualifiedName.ComponentName)
-                .ToList();
+            var declarations = result.Declarations.Items
+                                     .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
+                                     .ToList();
 
             var target = declarations.SingleOrDefault(item =>
                 IsSelectedDeclaration(selection, item)
@@ -368,12 +368,10 @@ namespace Rubberduck.UI
 
         private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
         {
-            var isSameProject = declaration.Project == selection.QualifiedName.Project;
-            var isSameModule = isSameProject && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName;
-
             return declaration.References.Any(r =>
-                isSameModule &&
-                r.Selection.ContainsFirstCharacter(selection.Selection));
+                r.QualifiedModuleName.Project == selection.QualifiedName.Project 
+                && r.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
+                && r.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)

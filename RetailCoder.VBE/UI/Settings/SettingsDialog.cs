@@ -45,6 +45,9 @@ namespace Rubberduck.UI.Settings
             this.Text = RubberduckUI.Settings_Caption;
             InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
+
+            OkButton.Text = RubberduckUI.OK_AllCaps;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -81,8 +84,9 @@ namespace Rubberduck.UI.Settings
             _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
-            _todoView = new TodoListSettingsUserControl(markers);
-            _todoController = new TodoSettingPresenter(_todoView);
+            var gridViewSort = new GridViewSort<ToDoMarker>("Priority", true);
+            _todoView = new TodoListSettingsUserControl(markers, gridViewSort);
+            _todoController = new TodoSettingPresenter(_todoView, new AddMarkerForm());
 
             ActivateControl(_generalSettingsView);
         }

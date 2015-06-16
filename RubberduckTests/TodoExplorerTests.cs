@@ -38,7 +38,6 @@ namespace RubberduckTests
             _markers = _loader.GetDefaultTodoMarkers();
 
             _gridViewSorter = new GridViewSort<ToDoItem>("Priority", false);
-
         }
 
         [TestMethod]
@@ -62,7 +61,7 @@ End Sub";
 
             var projectList = new List<VBProject>() {project.Object};
 
-            var projects = RdMockFacotry.CreateProjectsMock(projectList, project.Object);
+            var projects = RdMockFacotry.CreateProjectsMock(projectList);
             project.SetupGet(p => p.VBComponents).Returns(components.Object);
 
             _vbe = RdMockFacotry.CreateVbeMock(_windows, projects.Object);

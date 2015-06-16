@@ -177,7 +177,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Mocks\MockFactory.cs" />
-    <Compile Include="Mocks\MockTodoSettingsView.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />

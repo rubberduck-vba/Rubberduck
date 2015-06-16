@@ -358,10 +358,11 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (tolkar...)</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
-    <value>Gummianka Inspektioner - {0}
-{1} problem{2} hittades{2}.
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problems hittades.
 </value>
+    <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Hem</value>
@@ -463,8 +464,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementationer av '{0}'</value>
   </data>
-  <data name="CodeInspections_InspectingIssues" xml:space="preserve">
-    <value>{0} ({1} problem{2})</value>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} problems)</value>
   </data>
   <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Navigera till föregående problem</value>
@@ -814,8 +815,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>Problem med läsbarhet och underhållning</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
-    <value>{0} problem{1}</value>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} problems</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Rad</value>
@@ -839,244 +840,263 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
     <value>Återställ standardinställningarna?</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>z Code Explorer</value>
+    <value>Kodutforskare</value>
   </data>
   <data name="About_AllContributors" xml:space="preserve">
-    <value>z All contributors to our GitHub repository</value>
+    <value>Alla bidrag till vårt GitHub repository</value>
   </data>
   <data name="About_Anyone" xml:space="preserve">
-    <value>z ...and anyone reading this!</value>
+    <value>...och alla som läser detta!</value>
   </data>
   <data name="About_Attributions" xml:space="preserve">
-    <value>z Attributions</value>
+    <value>Attributioner</value>
   </data>
   <data name="About_Blogs" xml:space="preserve">
-    <value>z Blogs:</value>
+    <value>Bloggar:</value>
   </data>
   <data name="About_Caption" xml:space="preserve">
-    <value>z About Rubberduck</value>
+    <value>Om Rubberduck</value>
   </data>
   <data name="About_CodeReview" xml:space="preserve">
-    <value>z Code Review Stack Exchange</value>
+    <value>Code Review Stack Exchange</value>
   </data>
   <data name="About_Community" xml:space="preserve">
-    <value>z Community:</value>
+    <value>Gemenskap:</value>
   </data>
   <data name="About_Contributors" xml:space="preserve">
-    <value>z Contributors &amp; supporters:</value>
+    <value>Bidragare &amp; supportrar:</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>z © Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="About_FugueIconCredit" xml:space="preserve">
-    <value>z Fugue icons by Yusuke Kamiyamane</value>
+    <value>Fuga ikoner av Yusuke Kamiyamane</value>
   </data>
   <data name="About_JetBrains" xml:space="preserve">
-    <value>z JetBrains ReSharper Community Team</value>
+    <value>JetBrains ReSharper Community Team</value>
   </data>
   <data name="About_LibGit2SharpCredit" xml:space="preserve">
-    <value>z GitHub integration powered by LibGit2Sharp</value>
+    <value>GitHub integration driven av LibGit2Sharp</value>
   </data>
   <data name="About_ParsingCredit" xml:space="preserve">
-    <value>z Parsing powered by ANTLR</value>
+    <value>Tolkare gjord av ANTLR</value>
   </data>
   <data name="About_SpecialThanks" xml:space="preserve">
-    <value>z Special Thanks</value>
+    <value>Särskilt tack</value>
   </data>
   <data name="About_StackOverflow" xml:space="preserve">
-    <value>z Stack Overflow</value>
+    <value>Stack Overflow</value>
   </data>
   <data name="About_Stargazers" xml:space="preserve">
-    <value>z All our stargazers, likers &amp; followers, for the warm fuzzies</value>
+    <value>Alla som stjärnmärkt, gillat &amp; och följt oss, för den varma känslan det ger oss</value>
   </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
-    <value>z Source Control</value>
+    <value>Källkontroll</value>
   </data>
   <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>z Attributes File</value>
+    <value>Attributfil</value>
   </data>
   <data name="SourceControl_Branches" xml:space="preserve">
-    <value>z Branches</value>
+    <value>Grenar</value>
   </data>
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
-    <value>z Cancel</value>
+    <value>Avbryt</value>
   </data>
   <data name="SourceControl_Changes" xml:space="preserve">
-    <value>z Changes</value>
+    <value>Ändringar</value>
   </data>
   <data name="SourceControl_Commit" xml:space="preserve">
-    <value>z Commit</value>
+    <value>Commita</value>
   </data>
   <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
-    <value>z Go</value>
+    <value>OK</value>
   </data>
   <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
-    <value>z Commit message:</value>
+    <value>Commit meddelande:</value>
   </data>
   <data name="SourceControl_CommitPush" xml:space="preserve">
-    <value>z Commit and Push</value>
+    <value>Commita och Pusha</value>
   </data>
   <data name="SourceControl_CommitSync" xml:space="preserve">
-    <value>z Commit and Sync</value>
+    <value>Commita och Synkronisera</value>
   </data>
   <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
-    <value>z Rubberduck - Create Branch</value>
+    <value>Rubberduck - Skapa Gren</value>
   </data>
   <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
-    <value>z Branch:</value>
+    <value>Grenar:</value>
   </data>
   <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
-    <value>z Default Repository Location</value>
+    <value>Standardplats för Repository</value>
   </data>
   <data name="SourceControl_DestinationLabel" xml:space="preserve">
-    <value>z Destination</value>
+    <value>Destination</value>
   </data>
   <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>z Email Address</value>
+    <value>E-post Adress</value>
   </data>
   <data name="SourceControl_ExcludedChanges" xml:space="preserve">
-    <value>z Excluded changes</value>
+    <value>Exkluderade ändringar</value>
   </data>
   <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>z Fetch</value>
+    <value>Hämta</value>
   </data>
   <data name="SourceControl_GlobalSettings" xml:space="preserve">
-    <value>z Global Settings</value>
+    <value>Globala Inställningar</value>
   </data>
   <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>z Ignore File</value>
+    <value>Ignorera Fil</value>
   </data>
   <data name="SourceControl_IncludedChanges" xml:space="preserve">
-    <value>z Included changes</value>
+    <value>Inkluderade ändringar</value>
   </data>
   <data name="SourceControl_IncomingCommits" xml:space="preserve">
-    <value>z Incoming commits</value>
+    <value>Inkommande commits</value>
   </data>
   <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
-    <value>z Init New Repo from this Project</value>
+    <value>Initiera nytt Repo från detta Projekt</value>
   </data>
   <data name="SourceControl_MergeBranch" xml:space="preserve">
-    <value>z Merge</value>
+    <value>Mergea</value>
   </data>
   <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>z Rubberduck - Merge</value>
+    <value>Rubberduck - Merge</value>
   </data>
   <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>z New Branch</value>
+    <value>Ny Gren</value>
   </data>
   <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
-    <value>z Open working folder</value>
+    <value>Öppna arbetskatalog</value>
   </data>
   <data name="SourceControl_OutgoingCommits" xml:space="preserve">
-    <value>z Outgoing commits</value>
+    <value>Utgående commits</value>
   </data>
   <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>z Published Branches</value>
+    <value>Publicerade Grenar</value>
   </data>
   <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>z Pull</value>
+    <value>Pull</value>
   </data>
   <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>z Push</value>
+    <value>Push</value>
   </data>
   <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
-    <value>z Refreshes pending changes</value>
+    <value>Uppdaterar oavslutade ändringar</value>
   </data>
   <data name="SourceControl_RespositorySettings" xml:space="preserve">
-    <value>z Repository Settings</value>
+    <value>Repository Inställningar</value>
   </data>
   <data name="SourceControl_Settings" xml:space="preserve">
-    <value>z Settings</value>
+    <value>Inställningar</value>
   </data>
   <data name="SourceControl_SourceLabel" xml:space="preserve">
-    <value>z Source</value>
+    <value>Källa</value>
   </data>
   <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
-    <value>z Sync</value>
+    <value>Synkronisera</value>
   </data>
   <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>z Unpublished Branches</value>
+    <value>Opublicerade Grenar</value>
   </data>
   <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>z Unsynced commits</value>
+    <value>Osynkroniserade commits</value>
   </data>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
-    <value>z Untracked files</value>
+    <value>Ej spårade filer</value>
   </data>
   <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
-    <value>z Update</value>
+    <value>Uppdatera</value>
   </data>
   <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>z User Name</value>
+    <value>Användarnamn</value>
   </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>z Re&amp;name</value>
+    <value>Byt &amp;namn</value>
   </data>
   <data name="CodeExplorer_Inspect" xml:space="preserve">
-    <value>z &amp;Inspect</value>
+    <value>&amp;Inspektera</value>
   </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>z Na&amp;vigate</value>
+    <value>Na&amp;vigera</value>
   </data>
   <data name="CodeExplorer_New" xml:space="preserve">
-    <value>z &amp;New</value>
+    <value>&amp;Ny</value>
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>z R&amp;efresh</value>
+    <value>Uppdat&amp;era</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>z Renaming to '{0}' clashes with '{1}' in the same scope.
-Are you sure you want to proceed with this rename?</value>
+    <value>Namnbyte till '{0}' krockar med '{1}' i samma utrymme.
+Är du säker på att du vill fortsätta med denna namnbytning?</value>
   </data>
   <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
-    <value>z Please specify branch name.</value>
+    <value>Vänligen specifiera grennamn.</value>
   </data>
   <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
-    <value>z New Branch</value>
+    <value>Ny Gren</value>
   </data>
   <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
-    <value>Please select source and destination branches.</value>
+    <value>Vänligen välj käll- och destinationsgren.</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
-    <value>z Merge branches</value>
+    <value>Mergea grenar</value>
   </data>
   <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>z Do Not Show</value>
+    <value>Visa Inte</value>
   </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>z Error</value>
+    <value>Fel</value>
   </data>
   <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>z Hint</value>
+    <value>Tips</value>
   </data>
   <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>z Suggestion</value>
+    <value>Förslag</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>z Warning</value>
+    <value>Varning</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
-    <value>z No repository found.</value>
+    <value>Inget repository hittat.</value>
   </data>
   <data name="ToDoPriority_High" xml:space="preserve">
-    <value>z High</value>
+    <value>Hög</value>
   </data>
   <data name="ToDoPriority_Low" xml:space="preserve">
-    <value>z Low</value>
+    <value>Låg</value>
   </data>
   <data name="ToDoPriority_Medium" xml:space="preserve">
-    <value>z Medium</value>
+    <value>Medel</value>
   </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
-    <value>z Successfully Merged {0} into {1}</value>
+    <value>Lyckades slå ihop {0} in i {1}</value>
   </data>
   <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
-    <value>z Rubberduck - Delete Branch</value>
+    <value>Rubberduck - Ta bort gren</value>
   </data>
   <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
-    <value>z Please specify branch name.</value>
+    <value>Vänligen ange grennamn.</value>
   </data>
   <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
-    <value>z Delete branch</value>
+    <value>Ta bort gren</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} problem)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problem hittades.</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} problem</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>z Text:</value>
+  </data>
+  <data name="TodoSettings_Priority" xml:space="preserve">
+    <value>z Priority</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>z Text</value>
   </data>
 </root>

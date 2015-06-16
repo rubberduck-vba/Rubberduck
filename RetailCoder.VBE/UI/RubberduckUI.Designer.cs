@@ -493,11 +493,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} ({1} issue{2}).
+        ///   Looks up a localized string similar to {0} ({1} issues).
         /// </summary>
-        internal static string CodeInspections_InspectingIssues {
+        internal static string CodeInspections_InspectingIssues_Plural {
             get {
-                return ResourceManager.GetString("CodeInspections_InspectingIssues", resourceCulture);
+                return ResourceManager.GetString("CodeInspections_InspectingIssues_Plural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1} issue).
+        /// </summary>
+        internal static string CodeInspections_InspectingIssues_Singular {
+            get {
+                return ResourceManager.GetString("CodeInspections_InspectingIssues_Singular", resourceCulture);
             }
         }
         
@@ -511,21 +520,40 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} issue{1}.
+        ///   Looks up a localized string similar to {0} issues.
         /// </summary>
-        internal static string CodeInspections_NumberOfIssues {
+        internal static string CodeInspections_NumberOfIssues_Plural {
             get {
-                return ResourceManager.GetString("CodeInspections_NumberOfIssues", resourceCulture);
+                return ResourceManager.GetString("CodeInspections_NumberOfIssues_Plural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} issue.
+        /// </summary>
+        internal static string CodeInspections_NumberOfIssues_Singular {
+            get {
+                return ResourceManager.GetString("CodeInspections_NumberOfIssues_Singular", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
-        ///{1} {2} found..
+        ///{1} issues found..
         /// </summary>
-        internal static string CodeInspections_NumberOfIssuesFound {
+        internal static string CodeInspections_NumberOfIssuesFound_Plural {
             get {
-                return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound", resourceCulture);
+                return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound_Plural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Code Inspections - {0}
+        ///{1} issue found..
+        /// </summary>
+        internal static string CodeInspections_NumberOfIssuesFound_Singular {
+            get {
+                return ResourceManager.GetString("CodeInspections_NumberOfIssuesFound_Singular", resourceCulture);
             }
         }
         
@@ -2878,11 +2906,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Priority.
+        /// </summary>
+        internal static string TodoSettings_Priority {
+            get {
+                return ResourceManager.GetString("TodoSettings_Priority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Priority:.
         /// </summary>
         internal static string TodoSettings_PriorityLabel {
             get {
                 return ResourceManager.GetString("TodoSettings_PriorityLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        internal static string TodoSettings_Text {
+            get {
+                return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text:.
+        /// </summary>
+        internal static string TodoSettings_TextLabel {
+            get {
+                return ResourceManager.GetString("TodoSettings_TextLabel", resourceCulture);
             }
         }
         

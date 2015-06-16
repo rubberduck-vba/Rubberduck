@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Microsoft.Office.Interop.Excel;
 using Rubberduck.Inspections;
 using Rubberduck.UI;
 

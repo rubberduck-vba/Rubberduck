@@ -55,7 +55,7 @@ namespace Rubberduck.UI.CodeInspections
             Menu.SetButtonImage(_refreshButton, refreshIcon);
 
             _statusButton = (CommandBarButton)_toolbar.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
-            _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
+            _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues_Plural, 0);
             _statusButton.FaceId = 463; // Resources.Warning doesn't look good here
             _statusButton.Style = MsoButtonStyle.msoButtonIconAndCaption;
 
@@ -200,7 +200,10 @@ namespace Rubberduck.UI.CodeInspections
         private void OnIssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
             _issueCount = _issueCount + e.Issues.Count;
-            _statusButton.Caption = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, _issueCount, (_issueCount == 1 ? string.Empty : "s"));
+            var resource = _issueCount == 1
+                ? RubberduckUI.CodeInspections_NumberOfIssues_Singular
+                : RubberduckUI.CodeInspections_NumberOfIssues_Plural;
+            _statusButton.Caption = string.Format(resource, _issueCount);
         }
 
         private async void RefreshAsync(CancellationToken token)
