@@ -354,9 +354,9 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (analyse...)</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Inspections Rubberduck - {0}
-{1} problème{2} trouvé{2}.
+{1} problèmes trouvés.
 </value>
   </data>
   <data name="Home" xml:space="preserve">
@@ -459,8 +459,8 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implémentations de '{0}'</value>
   </data>
-  <data name="CodeInspections_InspectingIssues" xml:space="preserve">
-    <value>{0} ({1} problème{2})</value>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} problème)</value>
   </data>
   <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Naviguer au problème précédent</value>
@@ -795,8 +795,9 @@ Attention: les valeurs personnalisées seront perdues.</value>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Naviguer au prochain problème</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
-    <value>{0} problème{1}</value>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} problème</value>
+    <comment>{0}=number</comment>
   </data>
   <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
     <value>Appliquer une solution</value>
@@ -1050,45 +1051,58 @@ Attention: les valeurs personnalisées seront perdues.</value>
     <value>Fusionner les branches</value>
   </data>
   <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>z Do Not Show</value>
+    <value>Ne pas afficher</value>
   </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>z Error</value>
+    <value>Erreur</value>
   </data>
   <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>z Hint</value>
+    <value>Astuce</value>
   </data>
   <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>z Suggestion</value>
+    <value>Suggestion</value>
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>z Warning</value>
+    <value>Avertissement</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
-    <value>z No repository found.</value>
+    <value>Dépôt introuvable.</value>
   </data>
   <data name="ToDoPriority_High" xml:space="preserve">
-    <value>z High</value>
+    <value>Haute</value>
   </data>
   <data name="ToDoPriority_Low" xml:space="preserve">
-    <value>z Low</value>
+    <value>Basse</value>
   </data>
   <data name="ToDoPriority_Medium" xml:space="preserve">
-    <value>z Medium</value>
+    <value>Moyenne</value>
   </data>
   <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
-    <value>z Successfully Merged {0} into {1}</value>
+    <value>La branche {0} a été fusionnée dans {1} avec succès.</value>
   </data>
   <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
-    <value>z Rubberduck - Delete Branch</value>
+    <value>Rubberduck - Supprimer branche</value>
   </data>
   <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
-    <value>z Rubberduck - Create Branch</value>
+    <value>Rubberduck - Créer branche</value>
   </data>
   <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
-    <value>z Please specify branch name.</value>
+    <value>Veuillez spécifier le nom de la branche.</value>
   </data>
   <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
-    <value>z Delete branch</value>
+    <value>Supprimer branche</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} problèmes)</value>
+    <comment>{0}=status; {1}=number</comment>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Inspections Rubberduck - {0}
+{1} problème trouvé.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} problèmes</value>
+    <comment>{0}=number</comment>
   </data>
 </root>
