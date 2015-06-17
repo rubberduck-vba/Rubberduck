@@ -31,118 +31,73 @@ namespace Rubberduck.UI.Settings
         /// </summary>
         private void InitializeComponent()
         {
-            this.tokenListBox = new System.Windows.Forms.ListBox();
-            this.tokenTextBox = new System.Windows.Forms.TextBox();
-            this.priorityComboBox = new System.Windows.Forms.ComboBox();
-            this.priorityLabel = new System.Windows.Forms.Label();
-            this.tokenLabel = new System.Windows.Forms.Label();
-            this.addButton = new System.Windows.Forms.Button();
-            this.saveChangesButton = new System.Windows.Forms.Button();
-            this.removeButton = new System.Windows.Forms.Button();
-            this.tokenListLabel = new System.Windows.Forms.Label();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.AddButton = new System.Windows.Forms.ToolStripButton();
+            this.RemoveButton = new System.Windows.Forms.ToolStripButton();
+            this.TodoMarkersGridView = new System.Windows.Forms.DataGridView();
+            this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TodoMarkersGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // tokenListBox
+            // toolStrip1
             // 
-            this.tokenListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.tokenListBox.FormattingEnabled = true;
-            this.tokenListBox.Location = new System.Drawing.Point(12, 26);
-            this.tokenListBox.Name = "tokenListBox";
-            this.tokenListBox.Size = new System.Drawing.Size(134, 238);
-            this.tokenListBox.TabIndex = 0;
-            this.tokenListBox.SelectedIndexChanged += new System.EventHandler(this.tokenListBox_SelectedIndexChanged);
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddButton,
+            this.RemoveButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.toolStrip1.Size = new System.Drawing.Size(419, 27);
+            this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Text = "toolStrip1";
             // 
-            // tokenTextBox
+            // AddButton
             // 
-            this.tokenTextBox.Location = new System.Drawing.Point(152, 100);
-            this.tokenTextBox.Name = "tokenTextBox";
-            this.tokenTextBox.Size = new System.Drawing.Size(152, 20);
-            this.tokenTextBox.TabIndex = 1;
-            this.tokenTextBox.TextChanged += new System.EventHandler(this.tokenTextBox_TextChanged);
+            this.AddButton.Image = global::Rubberduck.Properties.Resources.plus_circle;
+            this.AddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.AddButton.Name = "AddButton";
+            this.AddButton.Size = new System.Drawing.Size(61, 24);
+            this.AddButton.Text = "Add";
+            this.AddButton.ToolTipText = "Add todo marker";
+            this.AddButton.Click += new System.EventHandler(this.addButton_Click);
             // 
-            // priorityComboBox
+            // RemoveButton
             // 
-            this.priorityComboBox.FormattingEnabled = true;
-            this.priorityComboBox.Location = new System.Drawing.Point(152, 42);
-            this.priorityComboBox.Name = "priorityComboBox";
-            this.priorityComboBox.Size = new System.Drawing.Size(152, 21);
-            this.priorityComboBox.TabIndex = 2;
-            this.priorityComboBox.SelectedIndexChanged += new System.EventHandler(this.priorityComboBox_SelectedIndexChanged);
+            this.RemoveButton.Image = global::Rubberduck.Properties.Resources.minus_circle;
+            this.RemoveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RemoveButton.Margin = new System.Windows.Forms.Padding(5, 1, 0, 2);
+            this.RemoveButton.Name = "RemoveButton";
+            this.RemoveButton.Size = new System.Drawing.Size(87, 24);
+            this.RemoveButton.Text = "Remove";
+            this.RemoveButton.ToolTipText = "Remove todo marker";
+            this.RemoveButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
-            // priorityLabel
+            // TodoMarkersGridView
             // 
-            this.priorityLabel.AutoSize = true;
-            this.priorityLabel.Location = new System.Drawing.Point(149, 25);
-            this.priorityLabel.Name = "priorityLabel";
-            this.priorityLabel.Size = new System.Drawing.Size(41, 13);
-            this.priorityLabel.TabIndex = 3;
-            this.priorityLabel.Text = "Priority:";
-            // 
-            // tokenLabel
-            // 
-            this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(149, 83);
-            this.tokenLabel.Name = "tokenLabel";
-            this.tokenLabel.Size = new System.Drawing.Size(68, 13);
-            this.tokenLabel.TabIndex = 4;
-            this.tokenLabel.Text = "Token Text: ";
-            // 
-            // addButton
-            // 
-            this.addButton.Location = new System.Drawing.Point(152, 145);
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(152, 31);
-            this.addButton.TabIndex = 5;
-            this.addButton.Text = "Add";
-            this.addButton.UseVisualStyleBackColor = true;
-            this.addButton.Click += new System.EventHandler(this.addButton_Click);
-            // 
-            // saveChangesButton
-            // 
-            this.saveChangesButton.Location = new System.Drawing.Point(152, 189);
-            this.saveChangesButton.Name = "saveChangesButton";
-            this.saveChangesButton.Size = new System.Drawing.Size(152, 31);
-            this.saveChangesButton.TabIndex = 6;
-            this.saveChangesButton.Text = "Change";
-            this.saveChangesButton.UseVisualStyleBackColor = true;
-            this.saveChangesButton.Click += new System.EventHandler(this.saveChangesButton_Click);
-            // 
-            // removeButton
-            // 
-            this.removeButton.Location = new System.Drawing.Point(152, 235);
-            this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(152, 31);
-            this.removeButton.TabIndex = 7;
-            this.removeButton.Text = "Remove";
-            this.removeButton.UseVisualStyleBackColor = true;
-            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
-            // 
-            // tokenListLabel
-            // 
-            this.tokenListLabel.AutoSize = true;
-            this.tokenListLabel.Location = new System.Drawing.Point(12, 4);
-            this.tokenListLabel.Name = "tokenListLabel";
-            this.tokenListLabel.Size = new System.Drawing.Size(60, 13);
-            this.tokenListLabel.TabIndex = 8;
-            this.tokenListLabel.Text = "Token List:";
+            this.TodoMarkersGridView.AllowUserToAddRows = false;
+            this.TodoMarkersGridView.AllowUserToDeleteRows = false;
+            this.TodoMarkersGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TodoMarkersGridView.Location = new System.Drawing.Point(0, 28);
+            this.TodoMarkersGridView.Name = "TodoMarkersGridView";
+            this.TodoMarkersGridView.RowTemplate.Height = 24;
+            this.TodoMarkersGridView.Size = new System.Drawing.Size(419, 331);
+            this.TodoMarkersGridView.TabIndex = 1;
             // 
             // TodoListSettingsUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tokenListLabel);
-            this.Controls.Add(this.removeButton);
-            this.Controls.Add(this.saveChangesButton);
-            this.Controls.Add(this.addButton);
-            this.Controls.Add(this.tokenLabel);
-            this.Controls.Add(this.priorityLabel);
-            this.Controls.Add(this.priorityComboBox);
-            this.Controls.Add(this.tokenTextBox);
-            this.Controls.Add(this.tokenListBox);
-            this.MinimumSize = new System.Drawing.Size(314, 294);
+            this.Controls.Add(this.TodoMarkersGridView);
+            this.Controls.Add(this.toolStrip1);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(419, 362);
             this.Name = "TodoListSettingsUserControl";
-            this.Size = new System.Drawing.Size(314, 294);
+            this.Size = new System.Drawing.Size(419, 362);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TodoMarkersGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -150,14 +105,10 @@ namespace Rubberduck.UI.Settings
 
         #endregion
 
-        private ListBox tokenListBox;
-        private TextBox tokenTextBox;
-        private ComboBox priorityComboBox;
-        private Label priorityLabel;
-        private Label tokenLabel;
-        private Button addButton;
-        private Button saveChangesButton;
-        private Button removeButton;
-        private Label tokenListLabel;
+        private ToolStrip toolStrip1;
+        private DataGridView TodoMarkersGridView;
+        private ToolStripButton AddButton;
+        private ToolStripButton RemoveButton;
+
     }
 }

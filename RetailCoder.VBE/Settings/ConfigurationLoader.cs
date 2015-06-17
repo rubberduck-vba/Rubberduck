@@ -113,7 +113,7 @@ namespace Rubberduck.Settings
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
             var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Normal);
+            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
             var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
 
             return new[] { note, todo, bug };

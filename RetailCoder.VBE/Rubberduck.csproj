@@ -283,6 +283,13 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\Settings\AddMarkerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -591,6 +598,9 @@
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
+    <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>

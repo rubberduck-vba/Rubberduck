@@ -8,35 +8,36 @@ namespace Rubberduck.UI.Settings
     public class TodoSettingPresenter
     {
         private readonly ITodoSettingsView _view;
+        private readonly IAddTodoMarkerView _addTodoMarkerView;
 
         public ToDoMarker ActiveMarker
         {
             get { return _view.TodoMarkers[_view.SelectedIndex]; }
         }
 
-        public TodoSettingPresenter(ITodoSettingsView view)
+        public TodoSettingPresenter(ITodoSettingsView view, IAddTodoMarkerView addTodoMarkerView)
         {
             _view = view;
+            _addTodoMarkerView = addTodoMarkerView;
 
-            if (_view.TodoMarkers != null)
-            {
-                _view.ActiveMarkerText = _view.TodoMarkers[0].Text;
-                _view.ActiveMarkerPriority = _view.TodoMarkers[0].Priority;
-            }
-
-            _view.SelectionChanged += SelectionChanged;
-            _view.TextChanged += TextChanged;
             _view.AddMarker += AddMarker;
             _view.RemoveMarker += RemoveMarker;
-            _view.SaveMarker += SaveMarker;
-            _view.PriorityChanged += PriorityChanged;
+            _view.PriorityChanged += SaveMarker;
+
+            _addTodoMarkerView.AddMarker += ConfirmAddMarker;
+            _addTodoMarkerView.Cancel += CancelAddMarker;
+            _addTodoMarkerView.TextChanged += AddMarkerTextChanged;
+        }
+
+        ~TodoSettingPresenter()
+        {
+            _addTodoMarkerView.Close();
         }
 
         private void SaveMarker(object sender, EventArgs e)
         {
             //todo: add test; How? I can't click the save button. Code smell here.
             var index = _view.SelectedIndex;
-            _view.TodoMarkers[index].Text = _view.ActiveMarkerText;
             _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
         }
 
@@ -49,31 +50,34 @@ namespace Rubberduck.UI.Settings
 
         private void AddMarker(object sender, EventArgs e)
         {
-            var oldList = _view.TodoMarkers.ToList();
-            var marker = new ToDoMarker(_view.ActiveMarkerText, _view.ActiveMarkerPriority);
-            oldList.Add(marker);
-
-            _view.TodoMarkers = new BindingList<ToDoMarker>(oldList);
-
-            _view.SelectedIndex = _view.TodoMarkers.Count - 1;
+            _addTodoMarkerView.TodoMarkers = _view.TodoMarkers.ToList();
+            _addTodoMarkerView.Show();
         }
 
-        private void TextChanged(object sender, EventArgs e)
+        private void AddMarkerTextChanged(object sender, EventArgs e)
         {
-            _view.SaveEnabled = true;
+            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => t.Text != _addTodoMarkerView.MarkerText.ToUpper()) && 
+                                               _addTodoMarkerView.MarkerText != string.Empty;
         }
 
-        private void PriorityChanged(object sender, EventArgs e)
+        private void ConfirmAddMarker(object sender, EventArgs e)
         {
-            _view.SaveEnabled = true;
+            _addTodoMarkerView.TodoMarkers.Add(new ToDoMarker(_addTodoMarkerView.MarkerText,
+                _addTodoMarkerView.MarkerPriority));
+            _view.TodoMarkers = new BindingList<ToDoMarker>(_addTodoMarkerView.TodoMarkers);
+            HideAddMarkerForm();
         }
 
-        private void SelectionChanged(object sender, EventArgs e)
+        private void CancelAddMarker(object sender, EventArgs e)
         {
-            _view.ActiveMarkerPriority = this.ActiveMarker.Priority;
-            _view.ActiveMarkerText = this.ActiveMarker.Text;
+            HideAddMarkerForm();
+        }
 
-            _view.SaveEnabled = false;
+        private void HideAddMarkerForm()
+        {
+            _addTodoMarkerView.Hide();
+            _addTodoMarkerView.MarkerText = string.Empty;
+            _addTodoMarkerView.MarkerPriority = default(TodoPriority);
         }
 
         public void SetActiveItem(int index)

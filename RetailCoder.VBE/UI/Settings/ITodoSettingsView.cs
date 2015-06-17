@@ -27,11 +27,6 @@ namespace Rubberduck.UI.Settings
         int SelectedIndex { get; set; }
 
         /// <summary>
-        /// Boolean value representing the enables/disabled state of the UI element the user needs to interact with to save the currently active marker.
-        /// </summary>
-        bool SaveEnabled { get; set; }
-
-        /// <summary>
         /// Request to remove the marker at the SelectedIndex.
         /// </summary>
         event EventHandler RemoveMarker;
@@ -40,21 +35,6 @@ namespace Rubberduck.UI.Settings
         /// Request to add the currently active marker to BindingList{TodoMarker}.
         /// </summary>
         event EventHandler AddMarker;
-
-        /// <summary>
-        /// Request to save changes made to the currently active marker back to the marker at the SelectedIndex.
-        /// </summary>
-        event EventHandler SaveMarker;
-
-        /// <summary>
-        /// Raised whenever SelectedIndex is changed.
-        /// </summary>
-        event EventHandler SelectionChanged;
-
-        /// <summary>
-        /// Raised whenever ActiveMarkerText is changed.
-        /// </summary>
-        event EventHandler TextChanged;
 
         /// <summary>
         /// Raised whenver ActiveMarkerPriority is changed.

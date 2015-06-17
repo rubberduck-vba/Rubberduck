@@ -1,11 +1,13 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
     public enum TodoPriority
     {
         Low, 
-        Normal,
+        Medium,
         High
     }
 
@@ -24,6 +26,23 @@ namespace Rubberduck.Settings
 
         [XmlAttribute]
         public TodoPriority Priority { get; set; }
+
+        [XmlIgnore]
+        public string PriorityLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("ToDoPriority_" + Priority, RubberduckUI.Culture); }
+            set
+            {
+                foreach (var priority in Enum.GetValues(typeof(TodoPriority)))
+                {
+                    if (value == RubberduckUI.ResourceManager.GetString("ToDoPriority_" + priority, RubberduckUI.Culture))
+                    {
+                        Priority = (TodoPriority)priority;
+                        return;
+                    }
+                }
+            }
+        }
 
         /// <summary>   Default constructor is required for serialization. DO NOT USE. </summary>
         public ToDoMarker()
