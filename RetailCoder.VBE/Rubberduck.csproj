@@ -289,7 +289,6 @@
     <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\AddMarkerFormPresenter.cs" />
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />

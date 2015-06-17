@@ -26,6 +26,7 @@ namespace Rubberduck.UI.Settings
 
             _addTodoMarkerView.AddMarker += ConfirmAddMarker;
             _addTodoMarkerView.Cancel += CancelAddMarker;
+            _addTodoMarkerView.TextChanged += AddMarkerTextChanged;
         }
 
         ~TodoSettingPresenter()
@@ -51,6 +52,12 @@ namespace Rubberduck.UI.Settings
         {
             _addTodoMarkerView.TodoMarkers = _view.TodoMarkers.ToList();
             _addTodoMarkerView.Show();
+        }
+
+        private void AddMarkerTextChanged(object sender, EventArgs e)
+        {
+            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => t.Text != _addTodoMarkerView.MarkerText.ToUpper()) && 
+                                               _addTodoMarkerView.MarkerText != string.Empty;
         }
 
         private void ConfirmAddMarker(object sender, EventArgs e)

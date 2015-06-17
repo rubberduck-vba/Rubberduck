@@ -17,7 +17,12 @@ namespace Rubberduck.UI.Settings
         }
 
         public List<ToDoMarker> TodoMarkers { get; set; }
-        public string MarkerText { get; set; }
+
+        public string MarkerText
+        {
+            get { return TodoMarkerTextBox.Text; }
+            set { TodoMarkerTextBox.Text = value; }
+        }
 
         private bool _isValidMarker = false;
         public bool IsValidMarker
