@@ -73,10 +73,5 @@ namespace Rubberduck.UI.Settings
             _addTodoMarkerView.MarkerText = string.Empty;
             _addTodoMarkerView.MarkerPriority = default(TodoPriority);
         }
-
-        public void SetActiveItem(int index)
-        {
-            _view.SelectedIndex = index;
-        }
     }
 }

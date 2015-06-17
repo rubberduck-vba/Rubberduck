@@ -57,12 +57,9 @@ namespace RubberduckTests
             var markers = GetTestMarkers();
 
             var view = new TodoListSettingsUserControl(markers);
-            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
-
-            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
-            controller.SetActiveItem(1);
+            view.SelectedIndex = 1;
 
             Assert.AreEqual(1, view.SelectedIndex);
 
@@ -79,11 +76,9 @@ namespace RubberduckTests
             };
 
             var view = new TodoListSettingsUserControl(markers);
-            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
-            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
-            controller.SetActiveItem(2);
+            view.SelectedIndex = 2;
 
             Assert.AreEqual(TodoPriority.High, view.ActiveMarkerPriority);
         }
@@ -98,13 +93,23 @@ namespace RubberduckTests
             };
 
             var view = new TodoListSettingsUserControl(markers);
-            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
-            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
-            controller.SetActiveItem(1);
+            view.SelectedIndex = 1;
 
             Assert.AreEqual("Note:", view.ActiveMarkerText);
+        }
+
+        [TestMethod]
+        public void MarkerChangeSavedOnPriorityChanged()
+        {
+            var markers = GetTestMarkers();
+
+            var view = new TodoListSettingsUserControl(markers);
+
+            view.ActiveMarkerPriority = TodoPriority.High;
+
+            Assert.AreEqual(view.ActiveMarkerPriority, view.TodoMarkers[0].Priority);
         }
     }
 }

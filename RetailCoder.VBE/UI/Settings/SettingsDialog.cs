@@ -81,7 +81,8 @@ namespace Rubberduck.UI.Settings
             _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
-            _todoView = new TodoListSettingsUserControl(markers);
+            var gridViewSort = new GridViewSort<ToDoMarker>("Priority", true);
+            _todoView = new TodoListSettingsUserControl(markers, gridViewSort);
             _todoController = new TodoSettingPresenter(_todoView, new AddMarkerForm());
 
             ActivateControl(_generalSettingsView);
