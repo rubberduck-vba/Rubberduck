@@ -57,6 +57,12 @@ namespace Rubberduck.UI.Settings
             set { this.saveChangesButton.Enabled = value; }
         }
 
+        public bool AddEnabled
+        {
+            get { return addButton.Enabled; }
+            set { addButton.Enabled = value; }
+        }
+
         public TodoPriority ActiveMarkerPriority
         {
             get { return (TodoPriority)this.priorityComboBox.SelectedIndex; }

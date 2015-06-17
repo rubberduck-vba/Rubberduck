@@ -32,6 +32,11 @@ namespace Rubberduck.UI.Settings
         bool SaveEnabled { get; set; }
 
         /// <summary>
+        /// Boolean value representing the enables/disabled state of the UI element the user needs to interact with to add a new marker.
+        /// </summary>
+        bool AddEnabled { get; set; }
+
+        /// <summary>
         /// Request to remove the marker at the SelectedIndex.
         /// </summary>
         event EventHandler RemoveMarker;

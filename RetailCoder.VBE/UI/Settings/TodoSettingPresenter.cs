@@ -60,7 +60,10 @@ namespace Rubberduck.UI.Settings
 
         private void TextChanged(object sender, EventArgs e)
         {
-            _view.SaveEnabled = true;
+            var markerExists = _view.TodoMarkers.Where((t, i) => i != _view.SelectedIndex && t.Text == _view.ActiveMarkerText).Any();
+
+            _view.SaveEnabled = !markerExists;
+            _view.AddEnabled = !markerExists;
         }
 
         private void PriorityChanged(object sender, EventArgs e)
