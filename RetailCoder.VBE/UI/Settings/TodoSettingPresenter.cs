@@ -18,25 +18,15 @@ namespace Rubberduck.UI.Settings
         {
             _view = view;
 
-            if (_view.TodoMarkers != null)
-            {
-                _view.ActiveMarkerText = _view.TodoMarkers[0].Text;
-                _view.ActiveMarkerPriority = _view.TodoMarkers[0].Priority;
-            }
-
-            _view.SelectionChanged += SelectionChanged;
-            _view.TextChanged += TextChanged;
             _view.AddMarker += AddMarker;
             _view.RemoveMarker += RemoveMarker;
-            _view.SaveMarker += SaveMarker;
-            _view.PriorityChanged += PriorityChanged;
+            _view.PriorityChanged += SaveMarker;
         }
 
         private void SaveMarker(object sender, EventArgs e)
         {
             //todo: add test; How? I can't click the save button. Code smell here.
             var index = _view.SelectedIndex;
-            _view.TodoMarkers[index].Text = _view.ActiveMarkerText;
             _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
         }
 
@@ -56,30 +46,6 @@ namespace Rubberduck.UI.Settings
             _view.TodoMarkers = new BindingList<ToDoMarker>(oldList);
 
             _view.SelectedIndex = _view.TodoMarkers.Count - 1;
-        }
-
-        private void UpdateButtonsClickability()
-        {
-            _view.SaveEnabled = _view.ActiveMarkerText != ActiveMarker.Text || _view.ActiveMarkerPriority != ActiveMarker.Priority;
-            _view.AddEnabled = _view.TodoMarkers.All(t => t.Text != _view.ActiveMarkerText);
-        }
-
-        private void TextChanged(object sender, EventArgs e)
-        {
-            UpdateButtonsClickability();
-        }
-
-        private void PriorityChanged(object sender, EventArgs e)
-        {
-            UpdateButtonsClickability();
-        }
-
-        private void SelectionChanged(object sender, EventArgs e)
-        {
-            _view.ActiveMarkerPriority = this.ActiveMarker.Priority;
-            _view.ActiveMarkerText = this.ActiveMarker.Text;
-
-            _view.SaveEnabled = false;
         }
 
         public void SetActiveItem(int index)

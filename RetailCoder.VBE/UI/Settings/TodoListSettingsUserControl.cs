@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Settings;
@@ -14,35 +15,46 @@ namespace Rubberduck.UI.Settings
         public TodoListSettingsUserControl()
         {
             InitializeComponent();
-
-            InitControl();
-        }
-
-        private void InitControl()
-        {
-            AddEnabled = false;
-            SaveEnabled = false;
-
-            tokenListLabel.Text = RubberduckUI.TodoSettings_TokenListLabel;
-            priorityLabel.Text = RubberduckUI.TodoSettings_PriorityLabel;
-            tokenLabel.Text = RubberduckUI.TodoSettings_TokenLabel;
-
-            addButton.Text = RubberduckUI.Add;
-            saveChangesButton.Text = RubberduckUI.Change;
-            removeButton.Text = RubberduckUI.Remove;
         }
 
         public TodoListSettingsUserControl(IList<ToDoMarker> markers)
             : this()
         {
-            this.tokenListBox.DataSource = new BindingList<ToDoMarker>(markers);
-            this.tokenListBox.SelectedIndex = 0;
-            this.priorityComboBox.DataSource = TodoLabels();
+            InitTodoMarkersGridView(markers);
+        }
+
+        private void InitTodoMarkersGridView(IList<ToDoMarker> markers)
+        {
+            TodoMarkersGridView.AutoGenerateColumns = false;
+            TodoMarkersGridView.Columns.Clear();
+            TodoMarkersGridView.DataSource = new BindingList<ToDoMarker>(markers);
+            TodoMarkersGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Lavender;
+            TodoMarkersGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            TodoMarkersGridView.CellValueChanged += SelectedPriorityChanged;
+
+            var markerTextColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "Text",
+                DataPropertyName = "Text",
+                HeaderText = "Text",
+                ReadOnly = true
+            };
+
+            var markerPriorityColumn = new DataGridViewComboBoxColumn
+            {
+                Name = "Priority",
+                DataSource = TodoLabels(),
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                HeaderText = "Priority",
+                DataPropertyName = "PriorityLabel",
+            };
+
+            TodoMarkersGridView.Columns.AddRange(markerTextColumn, markerPriorityColumn);
         }
 
         private List<string> TodoLabels()
         {
-            return (from object priority in Enum.GetValues(typeof(TaskPriority))
+            return (from object priority in Enum.GetValues(typeof(TodoPriority))
                     select
                     RubberduckUI.ResourceManager.GetString("ToDoPriority_" + priority, RubberduckUI.Culture))
                     .ToList();
@@ -50,60 +62,30 @@ namespace Rubberduck.UI.Settings
 
         public int SelectedIndex
         {
-            get { return this.tokenListBox.SelectedIndex; }
-            set { this.tokenListBox.SelectedIndex = value; }
-        }
-
-        public bool SaveEnabled
-        {
-            get { return this.saveChangesButton.Enabled; }
-            set { this.saveChangesButton.Enabled = value; }
-        }
-
-        public bool AddEnabled
-        {
-            get { return addButton.Enabled; }
-            set { addButton.Enabled = value; }
+            get { return TodoMarkersGridView.SelectedRows[0].Index; }
+            set { TodoMarkersGridView.Rows[value].Selected = true; }
         }
 
         public TodoPriority ActiveMarkerPriority
         {
-            get { return (TodoPriority)this.priorityComboBox.SelectedIndex; }
-            set { this.priorityComboBox.SelectedIndex = (int)value; }
+            get { return TodoMarkers[SelectedIndex].Priority; }
+            set { TodoMarkersGridView.SelectedRows[0].Cells[1].Value = (int)value; }
         }
 
         public string ActiveMarkerText 
         {
-            get { return this.tokenTextBox.Text; }
-            set { this.tokenTextBox.Text = value; }
+            get { return TodoMarkers[SelectedIndex].Text; }
+            set { TodoMarkersGridView.SelectedRows[0].Cells[0].Value = value; }
         }
 
         public BindingList<ToDoMarker> TodoMarkers
         {
-            get { return (BindingList<ToDoMarker>)this.tokenListBox.DataSource; }
-            set { this.tokenListBox.DataSource = value; }
-        }
-
-        public event EventHandler SelectionChanged;
-        private void tokenListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RaiseEvent(this, e, SelectionChanged);
-        }
-
-        public event EventHandler SaveMarker;
-        private void saveChangesButton_Click(object sender, EventArgs e)
-        {
-            RaiseEvent(this, e, SaveMarker);
-        }
-
-        public event EventHandler TextChanged;
-        private void tokenTextBox_TextChanged(object sender, EventArgs e)
-        {
-            RaiseEvent(this, e, TextChanged);
+            get { return (BindingList<ToDoMarker>)TodoMarkersGridView.DataSource; }
+            set { TodoMarkersGridView.DataSource = value; }
         }
 
         public event EventHandler PriorityChanged;
-        private void priorityComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void SelectedPriorityChanged(object sender, DataGridViewCellEventArgs e)
         {
             RaiseEvent(this, e, PriorityChanged);
         }
