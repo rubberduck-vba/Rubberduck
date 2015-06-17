@@ -358,10 +358,11 @@
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (tolkar...)</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound" xml:space="preserve">
-    <value>Gummianka Inspektioner - {0}
-{1} problem{2} hittades{2}.
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problems hittades.
 </value>
+    <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Hem</value>
@@ -463,8 +464,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementationer av '{0}'</value>
   </data>
-  <data name="CodeInspections_InspectingIssues" xml:space="preserve">
-    <value>{0} ({1} problem{2})</value>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} problems)</value>
   </data>
   <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
     <value>Navigera till föregående problem</value>
@@ -814,8 +815,8 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>Problem med läsbarhet och underhållning</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues" xml:space="preserve">
-    <value>{0} problem{1}</value>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} problems</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Rad</value>
@@ -1078,5 +1079,16 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
     <value>z Delete branch</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} problem)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problem hittades.</value>
+    <comment>is "hittades" correct for singular?</comment>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} problem</value>
   </data>
 </root>
