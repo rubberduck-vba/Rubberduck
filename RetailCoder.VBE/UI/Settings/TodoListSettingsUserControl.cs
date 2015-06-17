@@ -21,6 +21,7 @@ namespace Rubberduck.UI.Settings
             : this()
         {
             InitTodoMarkersGridView(markers);
+            SelectedIndex = 0;
         }
 
         private void InitTodoMarkersGridView(IList<ToDoMarker> markers)

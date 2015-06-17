@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests
 {
@@ -12,10 +11,12 @@ namespace RubberduckTests
     {
         private static List<ToDoMarker> GetTestMarkers()
         {
-            var markers = new List<ToDoMarker>();
-            markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
-            markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
-            markers.Add(new ToDoMarker("Bug:", TodoPriority.High));
+            var markers = new List<ToDoMarker>
+            {
+                new ToDoMarker("Todo:", TodoPriority.Medium),
+                new ToDoMarker("Note:", TodoPriority.Low),
+                new ToDoMarker("Bug:", TodoPriority.High)
+            };
             return markers;
         }
 
@@ -23,10 +24,11 @@ namespace RubberduckTests
         public void ConstructorWorks()
         {
             //arrange
-            Mock<ITodoSettingsView> view = new Mock<ITodoSettingsView>();
+            var view = new Mock<ITodoSettingsView>();
+            var addTodoMarkerView = new Mock<IAddTodoMarkerView>();
 
             //act
-            var controller = new TodoSettingPresenter(view.Object);
+            var controller = new TodoSettingPresenter(view.Object, addTodoMarkerView.Object);
 
             //assert
             Assert.IsNotNull(controller);
@@ -36,17 +38,16 @@ namespace RubberduckTests
         public void ViewTextIsNotNullOrEmptyAfterControllerConstruction()
         {
             //arrange
-            var markers = new List<ToDoMarker>();
-            markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
+            var markers = new List<ToDoMarker> {new ToDoMarker("Todo:", TodoPriority.Medium)};
 
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var view = new TodoListSettingsUserControl(markers);
+            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
             
             //act
-            var controller = new TodoSettingPresenter(view);
+            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //assert
             Assert.AreEqual("Todo:", view.ActiveMarkerText);
-
         }
 
         [TestMethod]
@@ -55,9 +56,10 @@ namespace RubberduckTests
             //arrange
             var markers = GetTestMarkers();
 
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
+            var view = new TodoListSettingsUserControl(markers);
+            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
 
-            var controller = new TodoSettingPresenter(view);
+            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
             controller.SetActiveItem(1);
@@ -67,31 +69,18 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void SetActiveItemChangesActiveMarker()
-        {
-            //arrange
-            var markers = GetTestMarkers();
-
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-
-            var controller = new TodoSettingPresenter(view);
-
-            //act
-            controller.SetActiveItem(1);
-
-            Assert.AreEqual(markers[1], controller.ActiveMarker);
-        }
-
-        [TestMethod]
         public void ViewPriorityMatchesAfterSelectionChange()
         {
-            var markers = new List<ToDoMarker>();
-            markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
-            markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
-            markers.Add(new ToDoMarker("Bug:", TodoPriority.High));
+            var markers = new List<ToDoMarker>
+            {
+                new ToDoMarker("Todo:", TodoPriority.Medium),
+                new ToDoMarker("Note:", TodoPriority.Low),
+                new ToDoMarker("Bug:", TodoPriority.High)
+            };
 
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingPresenter(view);
+            var view = new TodoListSettingsUserControl(markers);
+            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
+            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
             controller.SetActiveItem(2);
@@ -102,57 +91,20 @@ namespace RubberduckTests
         [TestMethod]
         public void ViewTextMatchesAfterSelectionChange()
         {
-            var markers = new List<ToDoMarker>();
-            markers.Add(new ToDoMarker("Todo:", TodoPriority.Normal));
-            markers.Add(new ToDoMarker("Note:", TodoPriority.Low));
+            var markers = new List<ToDoMarker>
+            {
+                new ToDoMarker("Todo:", TodoPriority.Medium),
+                new ToDoMarker("Note:", TodoPriority.Low)
+            };
 
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingPresenter(view);
+            var view = new TodoListSettingsUserControl(markers);
+            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
+            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //act
             controller.SetActiveItem(1);
 
             Assert.AreEqual("Note:", view.ActiveMarkerText);
         }
-
-        [TestMethod]
-        public void SaveEnabledAfterTextChange()
-        {
-            var markers = GetTestMarkers();
-
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingPresenter(view);
-
-            view.ActiveMarkerText = "SomeNewText";
-
-            Assert.IsTrue(view.SaveEnabled);
-        }
-
-        [TestMethod]
-        public void SaveEnabledAfterPriorityChange()
-        {
-            var markers = GetTestMarkers();
-
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingPresenter(view);
-
-            view.ActiveMarkerPriority = TodoPriority.High;
-
-            Assert.IsTrue(view.SaveEnabled);
-        }
-
-        [TestMethod]
-        public void SaveDisabledAfterSelectionChange()
-        {
-            var markers = GetTestMarkers();
-
-            ITodoSettingsView view = new MockTodoSettingsView(markers);
-            var controller = new TodoSettingPresenter(view);
-
-            view.SelectedIndex = 2;
-
-            Assert.IsFalse(view.SaveEnabled);
-        }
-
     }
 }

@@ -10,11 +10,6 @@ namespace Rubberduck.UI.Settings
         private readonly ITodoSettingsView _view;
         private readonly IAddTodoMarkerView _addTodoMarkerView;
 
-        public ToDoMarker ActiveMarker
-        {
-            get { return _view.TodoMarkers[_view.SelectedIndex]; }
-        }
-
         public TodoSettingPresenter(ITodoSettingsView view, IAddTodoMarkerView addTodoMarkerView)
         {
             _view = view;
@@ -22,7 +17,7 @@ namespace Rubberduck.UI.Settings
 
             _view.AddMarker += AddMarker;
             _view.RemoveMarker += RemoveMarker;
-            _view.PriorityChanged += SaveMarker;
+            _view.PriorityChanged += PriorityChanged;
 
             _addTodoMarkerView.AddMarker += ConfirmAddMarker;
             _addTodoMarkerView.Cancel += CancelAddMarker;
@@ -34,9 +29,8 @@ namespace Rubberduck.UI.Settings
             _addTodoMarkerView.Close();
         }
 
-        private void SaveMarker(object sender, EventArgs e)
+        private void PriorityChanged(object sender, EventArgs e)
         {
-            //todo: add test; How? I can't click the save button. Code smell here.
             var index = _view.SelectedIndex;
             _view.TodoMarkers[index].Priority = _view.ActiveMarkerPriority;
         }
