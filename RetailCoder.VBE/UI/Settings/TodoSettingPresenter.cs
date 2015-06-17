@@ -58,17 +58,20 @@ namespace Rubberduck.UI.Settings
             _view.SelectedIndex = _view.TodoMarkers.Count - 1;
         }
 
+        private void UpdateButtonsClickability()
+        {
+            _view.SaveEnabled = _view.ActiveMarkerText != ActiveMarker.Text || _view.ActiveMarkerPriority != ActiveMarker.Priority;
+            _view.AddEnabled = _view.TodoMarkers.All(t => t.Text != _view.ActiveMarkerText);
+        }
+
         private void TextChanged(object sender, EventArgs e)
         {
-            var markerExists = _view.TodoMarkers.Where((t, i) => i != _view.SelectedIndex && t.Text == _view.ActiveMarkerText).Any();
-
-            _view.SaveEnabled = !markerExists;
-            _view.AddEnabled = !markerExists;
+            UpdateButtonsClickability();
         }
 
         private void PriorityChanged(object sender, EventArgs e)
         {
-            _view.SaveEnabled = true;
+            UpdateButtonsClickability();
         }
 
         private void SelectionChanged(object sender, EventArgs e)

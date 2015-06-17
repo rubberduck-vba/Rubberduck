@@ -9,6 +9,7 @@ namespace RubberduckTests.Mocks
     class MockTodoSettingsView : ITodoSettingsView
     {
         public bool SaveEnabled { get; set; }
+        public bool AddEnabled { get; set; }
 
         private TodoPriority activeMarkerPriority;
         public TodoPriority ActiveMarkerPriority

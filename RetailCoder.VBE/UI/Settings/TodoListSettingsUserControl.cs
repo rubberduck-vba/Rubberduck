@@ -20,6 +20,9 @@ namespace Rubberduck.UI.Settings
 
         private void InitControl()
         {
+            AddEnabled = false;
+            SaveEnabled = false;
+
             tokenListLabel.Text = RubberduckUI.TodoSettings_TokenListLabel;
             priorityLabel.Text = RubberduckUI.TodoSettings_PriorityLabel;
             tokenLabel.Text = RubberduckUI.TodoSettings_TokenLabel;
