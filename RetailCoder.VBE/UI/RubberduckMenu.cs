@@ -29,12 +29,8 @@ namespace Rubberduck.UI
         private readonly IRubberduckParser _parser;
         private readonly AddIn _addIn;
 
-        //These need to stay in scope for their click events to fire. (32-bit only?)
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _about;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _settings;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;

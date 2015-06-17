@@ -100,7 +100,10 @@ namespace Rubberduck.UI.CodeInspections
         private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
             var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var text = string.Format(RubberduckUI.CodeInspections_NumberOfIssuesFound, DateTime.Now, _results.Count, (_results.Count != 1 ? "s" : string.Empty)) + results;
+            var resource = _results.Count == 1
+                ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
+                : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
 
             Clipboard.SetText(text);
         }
