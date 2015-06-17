@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Settings;
 
@@ -11,9 +12,12 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
 
+            IsValidMarker = false;
+
             OkButton.Click += OKButtonClick;
             CancelButton.Click += CancelButtonClick;
             TodoMarkerTextBox.TextChanged += MarkerTextChanged;
+            TodoMarkerPriorityComboBox.DataSource = TodoLabels();
         }
 
         public List<ToDoMarker> TodoMarkers { get; set; }
@@ -24,7 +28,7 @@ namespace Rubberduck.UI.Settings
             set { TodoMarkerTextBox.Text = value; }
         }
 
-        private bool _isValidMarker = false;
+        private bool _isValidMarker;
         public bool IsValidMarker
         {
             get { return _isValidMarker; }
@@ -33,7 +37,32 @@ namespace Rubberduck.UI.Settings
                 _isValidMarker = value;
 
                 InvalidNameValidationIcon.Visible = !_isValidMarker;
-                OkButton.Enabled = !_isValidMarker;
+                OkButton.Enabled = _isValidMarker;
+            }
+        }
+
+        private List<string> TodoLabels()
+        {
+            return (from object priority in Enum.GetValues(typeof(TodoPriority))
+                    select
+                    RubberduckUI.ResourceManager.GetString("ToDoPriority_" + priority, RubberduckUI.Culture))
+                    .ToList();
+        }
+
+        public TodoPriority MarkerPriority
+        {
+            get
+            {
+                return Enum.GetValues(typeof (TodoPriority))
+                    .Cast<TodoPriority>()
+                    .FirstOrDefault(
+                        p =>
+                            Equals(TodoMarkerPriorityComboBox.SelectedItem, RubberduckUI.ResourceManager.GetString("ToDoPriority_" + p, RubberduckUI.Culture)));
+            }
+            set
+            {
+                TodoMarkerPriorityComboBox.SelectedItem = RubberduckUI.ResourceManager.GetString("ToDoPriority_" + value, RubberduckUI.Culture);
+
             }
         }
 

@@ -17,6 +17,11 @@ namespace Rubberduck.UI.Settings
         string MarkerText { get; set; }
 
         /// <summary>
+        /// Current priority of new marker.
+        /// </summary>
+        TodoPriority MarkerPriority { get; set; }
+
+        /// <summary>
         /// Sets UI display based on validity of marker.
         /// </summary>
         bool IsValidMarker { get; set; }

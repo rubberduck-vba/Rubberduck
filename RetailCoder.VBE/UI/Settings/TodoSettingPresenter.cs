@@ -62,13 +62,20 @@ namespace Rubberduck.UI.Settings
 
         private void ConfirmAddMarker(object sender, EventArgs e)
         {
-            _addTodoMarkerView.Hide();
+            HideAddMarkerForm();
             _view.TodoMarkers = new BindingList<ToDoMarker>(_addTodoMarkerView.TodoMarkers);
         }
 
         private void CancelAddMarker(object sender, EventArgs e)
         {
+            HideAddMarkerForm();
+        }
+
+        private void HideAddMarkerForm()
+        {
             _addTodoMarkerView.Hide();
+            _addTodoMarkerView.MarkerText = string.Empty;
+            _addTodoMarkerView.MarkerPriority = default(TodoPriority);
         }
 
         public void SetActiveItem(int index)
