@@ -35,11 +35,6 @@ namespace Rubberduck.UI.Settings
         /// Request to add the currently active marker to BindingList{TodoMarker}.
         /// </summary>
         event EventHandler AddMarker;
-        
-        /// <summary>
-        /// Raised whenever ActiveMarkerText is changed.
-        /// </summary>
-        event EventHandler TextChanged;
 
         /// <summary>
         /// Raised whenver ActiveMarkerPriority is changed.

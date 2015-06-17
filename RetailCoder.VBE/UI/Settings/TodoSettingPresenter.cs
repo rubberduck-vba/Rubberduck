@@ -8,19 +8,29 @@ namespace Rubberduck.UI.Settings
     public class TodoSettingPresenter
     {
         private readonly ITodoSettingsView _view;
+        private readonly IAddTodoMarkerView _addTodoMarkerView;
 
         public ToDoMarker ActiveMarker
         {
             get { return _view.TodoMarkers[_view.SelectedIndex]; }
         }
 
-        public TodoSettingPresenter(ITodoSettingsView view)
+        public TodoSettingPresenter(ITodoSettingsView view, IAddTodoMarkerView addTodoMarkerView)
         {
             _view = view;
+            _addTodoMarkerView = addTodoMarkerView;
 
             _view.AddMarker += AddMarker;
             _view.RemoveMarker += RemoveMarker;
             _view.PriorityChanged += SaveMarker;
+
+            _addTodoMarkerView.AddMarker += ConfirmAddMarker;
+            _addTodoMarkerView.Cancel += CancelAddMarker;
+        }
+
+        ~TodoSettingPresenter()
+        {
+            _addTodoMarkerView.Close();
         }
 
         private void SaveMarker(object sender, EventArgs e)
@@ -39,13 +49,19 @@ namespace Rubberduck.UI.Settings
 
         private void AddMarker(object sender, EventArgs e)
         {
-            var oldList = _view.TodoMarkers.ToList();
-            var marker = new ToDoMarker(_view.ActiveMarkerText, _view.ActiveMarkerPriority);
-            oldList.Add(marker);
+            _addTodoMarkerView.TodoMarkers = _view.TodoMarkers.ToList();
+            _addTodoMarkerView.Show();
+        }
 
-            _view.TodoMarkers = new BindingList<ToDoMarker>(oldList);
+        private void ConfirmAddMarker(object sender, EventArgs e)
+        {
+            _addTodoMarkerView.Hide();
+            _view.TodoMarkers = new BindingList<ToDoMarker>(_addTodoMarkerView.TodoMarkers);
+        }
 
-            _view.SelectedIndex = _view.TodoMarkers.Count - 1;
+        private void CancelAddMarker(object sender, EventArgs e)
+        {
+            _addTodoMarkerView.Hide();
         }
 
         public void SetActiveItem(int index)

@@ -82,7 +82,7 @@ namespace Rubberduck.UI.Settings
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
             _todoView = new TodoListSettingsUserControl(markers);
-            _todoController = new TodoSettingPresenter(_todoView);
+            _todoController = new TodoSettingPresenter(_todoView, new AddMarkerForm());
 
             ActivateControl(_generalSettingsView);
         }
