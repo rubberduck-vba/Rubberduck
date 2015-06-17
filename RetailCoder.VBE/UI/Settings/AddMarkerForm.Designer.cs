@@ -61,18 +61,18 @@
             this.TodoMarkerTextBoxLabel.AutoSize = true;
             this.TodoMarkerTextBoxLabel.Location = new System.Drawing.Point(12, 9);
             this.TodoMarkerTextBoxLabel.Name = "TodoMarkerTextBoxLabel";
-            this.TodoMarkerTextBoxLabel.Size = new System.Drawing.Size(35, 17);
+            this.TodoMarkerTextBoxLabel.Size = new System.Drawing.Size(39, 17);
             this.TodoMarkerTextBoxLabel.TabIndex = 2;
-            this.TodoMarkerTextBoxLabel.Text = "Text";
+            this.TodoMarkerTextBoxLabel.Text = "Text:";
             // 
             // TodoMarkerPriorityComboBoxLabel
             // 
             this.TodoMarkerPriorityComboBoxLabel.AutoSize = true;
             this.TodoMarkerPriorityComboBoxLabel.Location = new System.Drawing.Point(12, 68);
             this.TodoMarkerPriorityComboBoxLabel.Name = "TodoMarkerPriorityComboBoxLabel";
-            this.TodoMarkerPriorityComboBoxLabel.Size = new System.Drawing.Size(52, 17);
+            this.TodoMarkerPriorityComboBoxLabel.Size = new System.Drawing.Size(56, 17);
             this.TodoMarkerPriorityComboBoxLabel.TabIndex = 3;
-            this.TodoMarkerPriorityComboBoxLabel.Text = "Priority";
+            this.TodoMarkerPriorityComboBoxLabel.Text = "Priority:";
             // 
             // flowLayoutPanel2
             // 
@@ -125,8 +125,10 @@
             // 
             // AddMarkerForm
             // 
+            this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(380, 203);
             this.Controls.Add(this.InvalidNameValidationIcon);
             this.Controls.Add(this.flowLayoutPanel2);
@@ -134,9 +136,14 @@
             this.Controls.Add(this.TodoMarkerTextBoxLabel);
             this.Controls.Add(this.TodoMarkerTextBox);
             this.Controls.Add(this.TodoMarkerPriorityComboBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "AddMarkerForm";
+            this.ShowInTaskbar = false;
             this.Text = "AddMarkerForm";
+            this.TopMost = true;
             this.flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.InvalidNameValidationIcon)).EndInit();
             this.ResumeLayout(false);
