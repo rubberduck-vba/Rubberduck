@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +18,7 @@ namespace RubberduckTests.SourceControl
         private List<IBranch> _branches;
         private BranchesPresenter _presenter;
         private Mock<ICreateBranchView> _createView;
+        private Mock<IDeleteBranchView> _deleteView;
         private Mock<IMergeView> _mergeView;
 
         [TestInitialize]
@@ -25,6 +27,7 @@ namespace RubberduckTests.SourceControl
             _provider = new Mock<ISourceControlProvider>();
             _view = new Mock<IBranchesView>();
             _createView = new Mock<ICreateBranchView>();
+            _deleteView = new Mock<IDeleteBranchView>();
             _mergeView = new Mock<IMergeView>();
 
             _intialBranch = new Branch("master", "refs/Heads/master", false, true);
@@ -42,7 +45,7 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.Branches).Returns(_branches);
             _provider.SetupGet(git => git.CurrentBranch).Returns(_intialBranch);
 
-            _presenter = new BranchesPresenter(_view.Object, _createView.Object, _mergeView.Object, _provider.Object);
+            _presenter = new BranchesPresenter(_view.Object, _createView.Object, _deleteView.Object, _mergeView.Object, _provider.Object);
         }
 
         [TestMethod]
@@ -111,6 +114,118 @@ namespace RubberduckTests.SourceControl
 
             //assert
             CollectionAssert.DoesNotContain(_view.Object.Published.ToList(), "HEAD");
+        }
+
+        [TestMethod]
+        public void DeleteBranchViewIsShownOnDeleteBranch()
+        {
+            //arrange
+            _view.SetupProperty(v => v.Local, new List<string>());
+
+            //act
+            _view.Raise(v => v.DeleteBranch += null, new EventArgs());
+
+            //Assert
+            _deleteView.Verify(d => d.Show(), Times.Once());
+        }
+
+        [TestMethod]
+        public void DeleteBranch_AndBranchIsActive_OkButtonDisabled()
+        {
+            //arrange
+            var branchName = "master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _view.SetupProperty(v => v.Current, branchName);
+            _deleteView.SetupProperty(d => d.OkButtonEnabled);
+
+            //act
+            _deleteView.Raise(d => d.SelectionChanged += null, new BranchDeleteArgs(branchName));
+
+            //Assert
+            Assert.IsFalse(_deleteView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void DeleteBranch_AndBranchIsNotActive_OkButtonEnabled()
+        {
+            //arrange
+            var firstBranchName = "master";
+            var secondBranchName = "bugBranch";
+            var branches = new List<string>() { firstBranchName, secondBranchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _view.SetupProperty(v => v.Current, firstBranchName);
+            _deleteView.SetupProperty(d => d.OkButtonEnabled);
+
+            //act
+            _deleteView.Raise(d => d.SelectionChanged += null, new BranchDeleteArgs(secondBranchName));
+
+            //Assert
+            Assert.IsTrue(_deleteView.Object.OkButtonEnabled);
+        }
+
+        [TestMethod]
+        public void DeleteBranch_IshiddenAfterSubmit()
+        {
+            //arrange
+            var firstBranchName = "master";
+            var secondBranchName = "bugBranch";
+            var branches = new List<string>() { firstBranchName, secondBranchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _view.SetupProperty(v => v.Current, firstBranchName);
+            _deleteView.SetupProperty(d => d.OkButtonEnabled);
+
+            //act
+            _deleteView.Raise(d => d.Confirm += null, new BranchDeleteArgs(secondBranchName));
+
+            //assert
+            _deleteView.Verify(c => c.Hide(), Times.Once);
+        }
+
+        [TestMethod]
+        public void DeleteBranch_IshiddenAfterCancel()
+        {
+            //arrange
+            var firstBranchName = "master";
+            var secondBranchName = "bugBranch";
+            var branches = new List<string>() { firstBranchName, secondBranchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _view.SetupProperty(v => v.Current, firstBranchName);
+            _deleteView.SetupProperty(d => d.OkButtonEnabled);
+
+            //act
+            _deleteView.Raise(d => d.Cancel += null, new EventArgs());
+
+            //assert
+            _deleteView.Verify(c => c.Hide(), Times.Once);
+        }
+
+        [TestMethod]
+        public void DeleteBranch_AndBranchIsNotActive_BranchIsRemoved()
+        {
+            //arrange
+            var firstBranchName = "master";
+            var secondBranchName = "bugBranch";
+            var branches = new List<string>() { firstBranchName, secondBranchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _provider.SetupGet(p => p.Branches).Returns(
+                new List<IBranch>()
+                {
+                    new Branch(firstBranchName, "ref/Heads/" + firstBranchName, false, true),
+                    new Branch(secondBranchName, "ref/Heads/" + secondBranchName, false, false)
+                });
+            _provider.Setup(p => p.DeleteBranch(It.IsAny<string>()));
+
+            //act
+            _deleteView.Raise(d => d.Confirm += null, new BranchDeleteArgs(secondBranchName));
+
+            //Assert
+            _provider.Verify(p => p.DeleteBranch(secondBranchName));
         }
 
         [TestMethod]

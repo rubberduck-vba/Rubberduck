@@ -13,5 +13,6 @@ namespace Rubberduck.UI.SourceControl
         event EventHandler<EventArgs> SelectedBranchChanged;
         event EventHandler<EventArgs> Merge;
         event EventHandler<EventArgs> CreateBranch;
+        event EventHandler<EventArgs> DeleteBranch;
     }
 }

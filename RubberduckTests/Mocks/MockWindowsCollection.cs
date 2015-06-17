@@ -9,8 +9,15 @@ namespace RubberduckTests.Mocks
     /// <summary>
     /// Fake Windows collection to get around Moq's inability to deal with ref params.
     /// </summary>
+    /// <remarks>
+    /// The <see cref="Window"/> passed into MockWindowCollection's ctor will be returned from <see cref="CreateToolWindow"/>.
+    /// </remarks>
     class MockWindowsCollection : Windows
     {
+        /// <param name="window">
+        /// Expects a window created by <see cref="MockFactory.CreateWindowMock"/>.
+        /// This argument will be returned from <see cref="CreateToolWindow"/>.
+        /// </param>
         internal MockWindowsCollection(Window window)
         {
             _window = window;

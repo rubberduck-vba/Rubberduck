@@ -12,6 +12,8 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
 
             Text = RubberduckUI.SourceControl_CreateNewBranchCaption;
+            TitleLabel.Text = RubberduckUI.SourceControl_CreateNewBranchTitle;
+            InstructionsLabel.Text = RubberduckUI.SourceControl_CreateNewBranchInstructions;
             OkButton.Text = RubberduckUI.OK_AllCaps;
             OkButton.Click += OkButton_Click;
             CancelButton.Text = RubberduckUI.CancelButtonText;

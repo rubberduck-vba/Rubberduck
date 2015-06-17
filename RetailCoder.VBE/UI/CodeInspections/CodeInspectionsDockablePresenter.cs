@@ -198,6 +198,11 @@ namespace Rubberduck.UI.CodeInspections
                 var projectParseResult = await _inspector.Parse(VBE.ActiveVBProject, this);
                 _results = await _inspector.FindIssuesAsync(projectParseResult, token);
             }
+            catch (TaskCanceledException)
+            {
+                // If FindIssuesAsync is canceled, we can leave the old results or 
+                // create a new List. Let's leave the old ones for now.
+            }
             catch (COMException)
             {
                 // burp
