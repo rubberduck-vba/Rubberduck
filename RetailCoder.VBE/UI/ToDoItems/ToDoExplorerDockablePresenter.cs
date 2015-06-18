@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,6 +34,7 @@ namespace Rubberduck.UI.ToDoItems
             _view = window;
             _view.NavigateToDoItem += NavigateToDoItem;
             _view.RefreshToDoItems += RefreshToDoList;
+            _view.RemoveToDoMarker += RemoveMarker;
             _view.SortColumn += SortColumn;
         }
 
@@ -57,6 +59,23 @@ namespace Rubberduck.UI.ToDoItems
 
         private void RefreshToDoList(object sender, EventArgs e)
         {
+            Refresh();
+        }
+
+        private void RemoveMarker(object sender, EventArgs e)
+        {
+            var selectedIndex = _view.GridView.SelectedRows[0].Index;
+            var dataSource = ((BindingList<ToDoItem>)_view.GridView.DataSource).ToList();
+            var selectedItem = dataSource[selectedIndex];
+
+            var module = selectedItem.GetSelection().QualifiedName.Component.CodeModule;
+
+            var oldContent = module.Lines[selectedItem.LineNumber, 1];
+            var newContent =
+                oldContent.Remove(selectedItem.GetSelection().Selection.StartColumn - 1);
+
+            module.ReplaceLine(selectedItem.LineNumber, newContent);
+
             Refresh();
         }
 
