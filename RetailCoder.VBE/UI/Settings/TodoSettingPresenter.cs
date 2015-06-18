@@ -50,8 +50,8 @@ namespace Rubberduck.UI.Settings
 
         private void AddMarkerTextChanged(object sender, EventArgs e)
         {
-            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => t.Text != _addTodoMarkerView.MarkerText.ToUpper()) && 
-                                               _addTodoMarkerView.MarkerText != string.Empty;
+            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => t.Text.Equals(_addTodoMarkerView.MarkerText, StringComparison.CurrentCultureIgnoreCase) && 
+                                               _addTodoMarkerView.MarkerText != string.Empty);
         }
 
         private void ConfirmAddMarker(object sender, EventArgs e)

@@ -44,7 +44,6 @@ namespace RubberduckTests
             var markers = new List<ToDoMarker> {new ToDoMarker("Todo:", TodoPriority.Medium)};
 
             var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
-            var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
 
             //assert
             Assert.AreEqual("Todo:", view.ActiveMarkerText);
@@ -127,6 +126,46 @@ namespace RubberduckTests
             view.Raise(v => v.RemoveMarker += null, EventArgs.Empty);
 
             Assert.AreEqual(2, view.Object.TodoMarkers.Count);
+        }
+
+        [TestMethod]
+        public void AddReallyDoesDisplayAddMarkerWindow()
+        {
+            var markers = GetTestMarkers();
+
+            var addView = new Mock<IAddTodoMarkerView>();
+
+            var view = new Mock<ITodoSettingsView>();
+            view.SetupProperty(v => v.TodoMarkers, new BindingList<ToDoMarker>(markers));
+
+            // Shut up R#, I need that to process the event
+            // ReSharper disable once UnusedVariable
+            var presenter = new TodoSettingPresenter(view.Object, addView.Object);
+
+            view.Raise(v => v.AddMarker += null, EventArgs.Empty);
+
+            addView.Verify(a => a.Show(), Times.Once());
+        }
+
+        [TestMethod]
+        public void AddReallyDoesBlockExistingNames()
+        {
+            var markers = GetTestMarkers();
+
+            var addView = new Mock<IAddTodoMarkerView>();
+            addView.SetupProperty(a => a.MarkerText, "TODO:");
+            addView.SetupProperty(a => a.IsValidMarker);
+
+            var view = new Mock<ITodoSettingsView>();
+            view.SetupProperty(v => v.TodoMarkers, new BindingList<ToDoMarker>(markers));
+
+            // Shut up R#, I need that to process the event
+            // ReSharper disable once UnusedVariable
+            var presenter = new TodoSettingPresenter(view.Object, addView.Object);
+
+            addView.Raise(a => a.TextChanged += null, EventArgs.Empty);
+
+            Assert.AreEqual(false, addView.Object.IsValidMarker);
         }
     }
 }
