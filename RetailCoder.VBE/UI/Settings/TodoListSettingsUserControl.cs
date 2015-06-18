@@ -23,6 +23,9 @@ namespace Rubberduck.UI.Settings
         public TodoListSettingsUserControl(IList<ToDoMarker> markers, GridViewSort<ToDoMarker> gridViewSort)
             : this()
         {
+            AddButton.Text = RubberduckUI.Add;
+            RemoveButton.Text = RubberduckUI.Remove;
+
             _gridViewSort = gridViewSort;
 
             InitTodoMarkersGridView(markers);
@@ -43,7 +46,7 @@ namespace Rubberduck.UI.Settings
             {
                 Name = "Text",
                 DataPropertyName = "Text",
-                HeaderText = "Text",
+                HeaderText = RubberduckUI.TodoSettings_Text,
                 ReadOnly = true
             };
 
@@ -52,7 +55,7 @@ namespace Rubberduck.UI.Settings
                 Name = "Priority",
                 DataSource = TodoLabels(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                HeaderText = "Priority",
+                HeaderText = RubberduckUI.TodoSettings_Priority,
                 DataPropertyName = "PriorityLabel",
             };
 

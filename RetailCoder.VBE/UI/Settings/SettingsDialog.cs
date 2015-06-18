@@ -45,6 +45,9 @@ namespace Rubberduck.UI.Settings
             this.Text = RubberduckUI.Settings_Caption;
             InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
+
+            OkButton.Text = RubberduckUI.OK_AllCaps;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

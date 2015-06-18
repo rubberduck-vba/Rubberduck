@@ -15,6 +15,11 @@ namespace Rubberduck.UI.Settings
 
             IsValidMarker = false;
 
+            OkButton.Text = RubberduckUI.OK_AllCaps;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+            TodoMarkerTextBoxLabel.Text = RubberduckUI.TodoSettings_TextLabel;
+            TodoMarkerPriorityComboBoxLabel.Text = RubberduckUI.TodoSettings_PriorityLabel;
+
             OkButton.Click += OKButtonClick;
             CancelButton.Click += CancelButtonClick;
             TodoMarkerTextBox.TextChanged += MarkerTextChanged;
