@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    public enum TodoPriority
-    {
-        Low, 
-        Medium,
-        High
-    }
-
     public interface IToDoMarker
     {
         TodoPriority Priority { get; set; }
@@ -61,6 +55,20 @@ namespace Rubberduck.Settings
         public override string ToString()
         {
             return this.Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (ToDoMarker)obj;
+
+            // no need to check PriorityLabel as it soley relies on Priority - if one is wrong, the other has to be too
+            return Text == other.Text &&
+                   Priority == other.Priority;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

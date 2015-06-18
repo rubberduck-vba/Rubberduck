@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.Settings
 {
@@ -50,7 +51,7 @@ namespace Rubberduck.UI.Settings
 
         private void AddMarkerTextChanged(object sender, EventArgs e)
         {
-            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => t.Text.Equals(_addTodoMarkerView.MarkerText, StringComparison.CurrentCultureIgnoreCase) && 
+            _addTodoMarkerView.IsValidMarker = _view.TodoMarkers.All(t => !t.Text.Equals(_addTodoMarkerView.MarkerText, StringComparison.CurrentCultureIgnoreCase) && 
                                                _addTodoMarkerView.MarkerText != string.Empty);
         }
 

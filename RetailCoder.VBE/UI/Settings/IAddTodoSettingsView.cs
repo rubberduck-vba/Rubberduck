@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.Settings
 {

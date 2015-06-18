@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace RubberduckTests
 {

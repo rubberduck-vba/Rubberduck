@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.Settings
 {

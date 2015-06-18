@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings

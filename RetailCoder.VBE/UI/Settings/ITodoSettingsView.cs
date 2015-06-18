@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.Settings
 {

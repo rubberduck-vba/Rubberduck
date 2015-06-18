@@ -10,8 +10,8 @@ namespace Rubberduck.ToDoItems
     /// </summary>
     public class ToDoItem
     {
-        private readonly TaskPriority _priority;
-        public TaskPriority Priority{ get { return _priority; } }
+        private readonly TodoPriority _priority;
+        public TodoPriority Priority { get { return _priority; } }
 
         public string PriorityLabel { get { return RubberduckUI.ResourceManager.GetString("ToDoPriority_" + Priority, RubberduckUI.Culture); } }
 
@@ -30,12 +30,12 @@ namespace Rubberduck.ToDoItems
         private readonly QualifiedSelection _selection;
         public QualifiedSelection GetSelection() { return _selection; }
 
-        public ToDoItem(TaskPriority priority, CommentNode comment)
+        public ToDoItem(TodoPriority priority, CommentNode comment)
             : this(priority, comment.CommentText, comment.QualifiedSelection)
         {
         }
 
-        public ToDoItem(TaskPriority priority, string description, QualifiedSelection qualifiedSelection)
+        public ToDoItem(TodoPriority priority, string description, QualifiedSelection qualifiedSelection)
         {
             _priority = priority;
             _description = description;
