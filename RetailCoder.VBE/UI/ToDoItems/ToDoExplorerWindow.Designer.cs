@@ -36,11 +36,11 @@ namespace Rubberduck.UI.ToDoItems
             this.todoItemsGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.RemoveMarkerButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.configureButton = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.RemoveMarkerButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.ToDoItems
             this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.todoItemsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.todoItemsGridView.Location = new System.Drawing.Point(0, 0);
-            this.todoItemsGridView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.todoItemsGridView.Margin = new System.Windows.Forms.Padding(4);
             this.todoItemsGridView.Name = "todoItemsGridView";
             this.todoItemsGridView.ReadOnly = true;
             this.todoItemsGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -89,10 +89,28 @@ namespace Rubberduck.UI.ToDoItems
             this.refreshButton.Size = new System.Drawing.Size(24, 24);
             this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClicked);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // RemoveMarkerButton
+            // 
+            this.RemoveMarkerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RemoveMarkerButton.Image = global::Rubberduck.Properties.Resources.cross_script;
+            this.RemoveMarkerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RemoveMarkerButton.Name = "RemoveMarkerButton";
+            this.RemoveMarkerButton.Size = new System.Drawing.Size(24, 24);
+            this.RemoveMarkerButton.Text = "Remove";
+            this.RemoveMarkerButton.ToolTipText = "Remove comment";
+            this.RemoveMarkerButton.Visible = false;
+            this.RemoveMarkerButton.Click += new System.EventHandler(this.RemoveButtonClicked);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator1.Visible = false;
             // 
             // configureButton
             // 
@@ -108,26 +126,10 @@ namespace Rubberduck.UI.ToDoItems
             this.panel1.Controls.Add(this.todoItemsGridView);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 27);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(425, 257);
             this.panel1.TabIndex = 3;
-            // 
-            // RemoveMarkerButton
-            // 
-            this.RemoveMarkerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.RemoveMarkerButton.Image = global::Rubberduck.Properties.Resources.cross_script;
-            this.RemoveMarkerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.RemoveMarkerButton.Name = "RemoveMarkerButton";
-            this.RemoveMarkerButton.Size = new System.Drawing.Size(24, 24);
-            this.RemoveMarkerButton.Text = "Remove";
-            this.RemoveMarkerButton.ToolTipText = "Remove comment";
-            this.RemoveMarkerButton.Click += new System.EventHandler(this.RemoveButtonClicked);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // ToDoExplorerWindow
             // 
@@ -135,7 +137,7 @@ namespace Rubberduck.UI.ToDoItems
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ToDoExplorerWindow";
             this.Size = new System.Drawing.Size(425, 284);
             ((System.ComponentModel.ISupportInitialize)(this.todoItemsGridView)).EndInit();

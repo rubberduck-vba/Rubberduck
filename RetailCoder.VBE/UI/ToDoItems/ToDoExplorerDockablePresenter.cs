@@ -103,12 +103,12 @@ namespace Rubberduck.UI.ToDoItems
                         items.Add(marker);
                     }
                 }
-            };
+            }
 
-            var sortedItems = items.OrderBy(item => item.ProjectName)
-                                    .ThenBy(item => item.ModuleName)
-                                    .ThenByDescending(item => item.Priority)
-                                    .ThenBy(item => item.LineNumber);
+            var sortedItems = items.OrderByDescending(item => item.Priority)
+                                   .ThenBy(item => item.ProjectName)
+                                   .ThenBy(item => item.ModuleName)
+                                   .ThenBy(item => item.LineNumber);
 
             return sortedItems;
         }
@@ -134,8 +134,11 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            var component = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
-                                    .First(c => c.Name == e.SelectedItem.ModuleName);
+            var firstOrDefault = projects.FirstOrDefault();
+            if (firstOrDefault == null) { return; }
+
+            var component = firstOrDefault.VBComponents.Cast<VBComponent>()
+                .First(c => c.Name == e.SelectedItem.ModuleName);
 
             if (component == null)
             {
