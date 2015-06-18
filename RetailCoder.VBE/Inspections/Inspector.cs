@@ -6,21 +6,47 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
+using Rubberduck.Settings;
 
 namespace Rubberduck.Inspections
 {
     public class Inspector : IInspector, IDisposable
     {
         private readonly IRubberduckParser _parser;
+        private readonly IGeneralConfigService _configService;
         private readonly IList<IInspection> _inspections;
 
-        public Inspector(IRubberduckParser parser, IEnumerable<IInspection> inspections)
+        public Inspector(IRubberduckParser parser, IGeneralConfigService configService)
         {
             _parser = parser;
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParseCompleted += _parser_ParseCompleted;
 
-            _inspections = inspections.ToList();
+            _configService = configService;
+            _inspections = configService.GetImplementedCodeInspections();
+            configService.SettingsChanged += ConfigServiceSettingsChanged;
+            UpdateInspectionSeverity();
+        }
+
+        private void ConfigServiceSettingsChanged(object sender, EventArgs e)
+        {
+            UpdateInspectionSeverity();
+        }
+
+        private void UpdateInspectionSeverity()
+        {
+            var config = _configService.LoadConfiguration();
+
+            foreach (var inspection in _inspections)
+            {
+                foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
+                {
+                    if (inspection.Description == setting.Description)
+                    {
+                        inspection.Severity = setting.Severity;
+                    }
+                }
+            }
         }
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
@@ -139,6 +165,11 @@ namespace Rubberduck.Inspections
             if (!disposing) { return; }
             _parser.ParseStarted -= _parser_ParseStarted;
             _parser.ParseCompleted -= _parser_ParseCompleted;
+
+            if (_configService != null)
+            {
+                _configService.SettingsChanged -= ConfigServiceSettingsChanged;
+            }
         }
     }
 }
