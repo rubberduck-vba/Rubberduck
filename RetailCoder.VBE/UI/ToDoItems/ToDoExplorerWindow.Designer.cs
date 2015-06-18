@@ -31,7 +31,7 @@ namespace Rubberduck.UI.ToDoItems
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToDoExplorerWindow));
             this.todoItemsGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -51,8 +51,8 @@ namespace Rubberduck.UI.ToDoItems
             this.todoItemsGridView.AllowUserToAddRows = false;
             this.todoItemsGridView.AllowUserToDeleteRows = false;
             this.todoItemsGridView.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
-            this.todoItemsGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lavender;
+            this.todoItemsGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.todoItemsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.todoItemsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.todoItemsGridView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -103,14 +103,12 @@ namespace Rubberduck.UI.ToDoItems
             this.RemoveMarkerButton.Size = new System.Drawing.Size(24, 24);
             this.RemoveMarkerButton.Text = "Remove";
             this.RemoveMarkerButton.ToolTipText = "Remove comment";
-            this.RemoveMarkerButton.Visible = false;
             this.RemoveMarkerButton.Click += new System.EventHandler(this.RemoveButtonClicked);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
-            this.toolStripSeparator1.Visible = false;
             // 
             // configureButton
             // 
