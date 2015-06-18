@@ -186,7 +186,6 @@
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTests.cs" />
-    <Compile Include="TodoExplorerTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="CodeInspectionTests.cs" />
     <Compile Include="TodoControllerTests.cs" />

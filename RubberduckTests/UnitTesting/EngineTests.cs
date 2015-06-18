@@ -15,8 +15,6 @@ namespace RubberduckTests.UnitTesting
     {
         private TestEngine _engine;
         private Mock<IHostApplication> _hostAppMock;
-        private Mock<VBProject> _project;
-        private Mock<References> _references;
         private readonly QualifiedModuleName _moduleName = new QualifiedModuleName("VBAProject", "TestModule1");
 
         private TestMethod _successfulMethod;
@@ -36,15 +34,6 @@ namespace RubberduckTests.UnitTesting
             _engine = new TestEngine();
             _hostAppMock = new Mock<IHostApplication>();
 
-            _references = new Mock<References>();
-            _references.Setup(r => r.GetEnumerator()).Returns(ReferenceList());
-            _references.As<IEnumerable>().Setup(r => r.GetEnumerator()).Returns(ReferenceList);
-            _references.Setup(r => r.AddFromFile(It.IsAny<string>()));
-
-            _project = new Mock<VBProject>();
-            _project.SetupProperty(p => p.Name, "VBAProject");
-            _project.SetupGet(p => p.References).Returns(_references.Object);
-
             _successfulMethod = new TestMethod(new QualifiedMemberName(_moduleName, "TestMethod1"), _hostAppMock.Object);
             _failedMethod = new TestMethod(new QualifiedMemberName(_moduleName, "TestMethod2"), _hostAppMock.Object);
             _inconclusiveMethod = new TestMethod(new QualifiedMemberName(_moduleName, "TestMethod3"), _hostAppMock.Object);
@@ -59,30 +48,6 @@ namespace RubberduckTests.UnitTesting
             };
 
             _engine.AllTests = tests;
-        }
-
-        private static IEnumerator<Reference> ReferenceList()
-        {
-            yield return
-                CreateMockReference("VBA", @"C:\Program Files\Common Files\Microsoft Shared\VBA\VBA7.1\VBE7.DLL").Object;
-
-            yield return
-                CreateMockReference("Excel", @"C:\Program Files\Microsoft Office 15\Root\Office15\EXCEL.EXE").Object;
-
-            yield return 
-                CreateMockReference("stdole", @"C:\Windows\System32\stdole2.tlb").Object;
-
-            yield return
-                CreateMockReference("Office", @"C:\Program Files\Common Files\Microsoft Shared\Office15\MSO.DLL").Object;
-        }
-
-        private static Mock<Reference> CreateMockReference(string name, string filePath)
-        {
-            var reference = new Mock<Reference>();
-            reference.SetupGet(r => r.Name).Returns(name);
-            reference.SetupGet(r => r.FullPath).Returns(filePath);
-            
-            return reference;
         }
 
         [TestMethod]
@@ -154,7 +119,7 @@ namespace RubberduckTests.UnitTesting
             var tests = _engine.AllTests.Keys;
 
             //act
-            _engine.Run(tests, _project.Object);
+            _engine.Run(tests);
 
             Assert.IsTrue(_wasEventRaised, "Module Intialize was not run.");
             Assert.AreEqual(1, _eventCount, "Module Intialzie expected to be run once.");
@@ -167,7 +132,7 @@ namespace RubberduckTests.UnitTesting
             _engine.ModuleCleanup += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Module Cleanup was not run.");
@@ -182,7 +147,7 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodInitialize += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Method Intialize was not run.");
@@ -197,7 +162,7 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodCleanup += CatchEvent;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "Method Initialize was not run.");
@@ -212,7 +177,7 @@ namespace RubberduckTests.UnitTesting
             _engine.TestComplete += EngineOnTestComplete;
 
             //act
-            _engine.Run(_engine.AllTests.Keys, _project.Object);
+            _engine.Run(_engine.AllTests.Keys);
 
             //assert
             Assert.IsTrue(_wasEventRaised, "TestComplete event was not raised.");
@@ -226,65 +191,10 @@ namespace RubberduckTests.UnitTesting
             _engine.MethodInitialize += CatchEvent;
 
             //act
-            _engine.Run(new List<TestMethod>(), _project.Object);
+            _engine.Run(new List<TestMethod>());
 
             //assert
             Assert.IsFalse(_wasEventRaised, "No methods should run when passed an empty list of tests.");
-        }
-
-        //todo: move this to the "UI" layer. This code doesn't have to run for COM clients.
-        //  COM clients will have to either already have a good reference, or be late bound.
-        //  This is problematic for late bound code, because now we've *forced* them into early binding.
-        [TestMethod]
-        public void TestEngine_AfterRun_OldRubberduckReferenceIsRemoved()
-        {
-            var vbaRef = CreateMockReference("VBA", @"C:\Path\To\VBA.DLL");
-            var rubberduckPath = @"C:\Path\To\Rubberduck.dll";
-            var oldRubberduckRef = CreateMockReference("Rubberduck", rubberduckPath);
-
-            var refrenceList = new List<Reference>() {vbaRef.Object, oldRubberduckRef.Object};
-
-            var references = new Mock<References>();
-            references.Setup(r => r.GetEnumerator()).Returns(refrenceList.GetEnumerator());
-            references.As<IEnumerable>().Setup(r => r.GetEnumerator()).Returns(refrenceList.GetEnumerator());
-            references.Setup(r => r.AddFromFile(It.IsAny<string>()));
-
-            var project = new Mock<VBProject>();
-            project.SetupProperty(p => p.Name, "VBAProject");
-            project.SetupGet(p => p.References).Returns(references.Object);
-
-            //act
-            _engine.Run(_engine.AllTests.Keys, project.Object);
-
-            //assert
-            references.Verify(r => r.Remove(It.Is<Reference>(arg => arg == oldRubberduckRef.Object)));
-        }
-
-        //todo: move this to the "UI" layer. This code doesn't have to run for COM clients.
-        //  COM clients will have to either already have a good reference, or be late bound.
-        //  This is problematic for late bound code, because now we've *forced* them into early binding.
-        [TestMethod]
-        public void TestEngine_AfterRun_NewRubberduckReferenceExists()
-        {
-            var vbaRef = CreateMockReference("VBA", @"C:\Path\To\VBA.DLL");
-            var rubberduckPath = @"C:\Path\To\Rubberduck.dll";
-            var oldRubberduckRef = CreateMockReference("Rubberduck", rubberduckPath);
-
-            var refrenceList = new List<Reference>() { vbaRef.Object, oldRubberduckRef.Object };
-
-            var references = new Mock<References>();
-            references.Setup(r => r.GetEnumerator()).Returns(refrenceList.GetEnumerator());
-            references.As<IEnumerable>().Setup(r => r.GetEnumerator()).Returns(refrenceList.GetEnumerator());
-
-            var project = new Mock<VBProject>();
-            project.SetupProperty(p => p.Name, "VBAProject");
-            project.SetupGet(p => p.References).Returns(references.Object);
-
-            //act
-            _engine.Run(_engine.AllTests.Keys, project.Object);
-
-            //assert
-            references.Verify(r => r.AddFromFile(It.IsAny<string>()));
         }
 
         private void EngineOnTestComplete(object sender, TestCompletedEventArgs testCompletedEventArgs)

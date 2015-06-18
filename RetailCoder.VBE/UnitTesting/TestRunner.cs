@@ -64,7 +64,7 @@ namespace Rubberduck.UnitTesting
         public string RunAllTests(VBE vbe, string outputFilePath = null)
         {
             LoadAllTests(vbe);
-            _engine.Run(_engine.AllTests.Keys, vbe.ActiveVBProject);
+            _engine.Run(_engine.AllTests.Keys);
 
             var results = OutputToString();
 
