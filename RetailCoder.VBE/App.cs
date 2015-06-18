@@ -30,6 +30,8 @@ namespace Rubberduck
         private RubberduckMenu _menu;
         private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
+        private bool displayToolbar = false;
+        private Point toolbarCoords = new Point(-1, -1);
 
         public App(VBE vbe, AddIn addIn)
         {
@@ -42,11 +44,19 @@ namespace Rubberduck
             _editor = new ActiveCodePaneEditor(vbe);
 
             LoadConfig();
+
+            CleanUp();
+
+            Setup();
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
             LoadConfig();
+
+            CleanUp();
+
+            Setup();
         }
 
         private void LoadConfig()
@@ -64,48 +74,15 @@ namespace Rubberduck
                 _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
+        }
 
-            if (_menu != null)
-            {
-                _menu.Dispose();
-            }
-            
-            if (_formContextMenu != null)
-            {
-                _formContextMenu.Dispose();
-            }
-
-            var displayToolbar = false;
-            var toolbarCoords = new Point(-1, -1);
-            if (_codeInspectionsToolbar != null)
-            {
-                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
-                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
-                _codeInspectionsToolbar.Dispose();
-            }
-
-            if (_inspector != null)
-            {
-                _inspector.Dispose();
-            }
-
-            if (_parserErrorsPresenter != null)
-            {
-                _parserErrorsPresenter.Dispose();
-            }
-
-            if (_parser != null)
-            {
-                _parser.ParseStarted -= _parser_ParseStarted;
-                _parser.ParserError -= _parser_ParserError;
-            }
+        private void Setup()
+        {
             _parser = new RubberduckParser();
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
-            _inspections = _configService.GetImplementedCodeInspections();
-            _inspector = new Inspector(_parser, _inspections);
-            EnableCodeInspections(_config);
+            _inspector = new Inspector(_parser, _configService);
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
@@ -136,20 +113,6 @@ namespace Rubberduck
             _parserErrorsPresenter.Show();
         }
 
-        private void EnableCodeInspections(Configuration config)
-        {
-            foreach (var inspection in _inspections)
-            {           
-                foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
-                {
-                    if (inspection.Description == setting.Description)
-                    {
-                        inspection.Severity = setting.Severity;
-                    }
-                } 
-            }
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -159,6 +122,11 @@ namespace Rubberduck
         {
             if (!disposing) { return; }
 
+            CleanUp();
+        }
+
+        private void CleanUp()
+        {
             if (_menu != null)
             {
                 _menu.Dispose();
@@ -171,6 +139,8 @@ namespace Rubberduck
 
             if (_codeInspectionsToolbar != null)
             {
+                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
+                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
             }
 
@@ -182,6 +152,12 @@ namespace Rubberduck
             if (_parserErrorsPresenter != null)
             {
                 _parserErrorsPresenter.Dispose();
+            }
+
+            if (_parser != null)
+            {
+                _parser.ParseStarted -= _parser_ParseStarted;
+                _parser.ParserError -= _parser_ParserError;
             }
         }
     }
