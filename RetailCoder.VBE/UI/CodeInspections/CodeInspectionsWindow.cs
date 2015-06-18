@@ -89,7 +89,9 @@ namespace Rubberduck.UI.CodeInspections
         {
             _issueCount = issueCount;
 
-            RefreshButton.Image = completed
+            RefreshButton.Enabled = completed;  // remove this when uncommenting below lines
+
+            /*RefreshButton.Image = completed
                 ? Resources.arrow_circle_double
                 : Resources.cross_circle;
 
@@ -102,7 +104,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 RefreshButton.Click -= CancelButton_Click;
                 RefreshButton.Click += RefreshButtonClicked;
-            }
+            }*/
 
 
             if (issueCount == 0)
