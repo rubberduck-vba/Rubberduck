@@ -235,5 +235,47 @@ namespace RubberduckTests
 
             Assert.IsTrue(view.Object.TodoMarkers.Contains(new ToDoMarker(newMarkerText, newMarkerPriority)));
         }
+
+        [TestMethod]
+        public void AddMarkerHidesOnAdd()
+        {
+            var markers = GetTestMarkers();
+
+            var addView = new Mock<IAddTodoMarkerView>();
+            addView.SetupProperty(a => a.MarkerPriority, TodoPriority.Low);
+            addView.SetupProperty(a => a.MarkerText, "new marker");
+            addView.SetupProperty(a => a.TodoMarkers, markers);
+
+            var view = new Mock<ITodoSettingsView>();
+            view.SetupProperty(v => v.TodoMarkers, new BindingList<ToDoMarker>(markers));
+
+            // Shut up R#, I need that to process the event
+            // ReSharper disable once UnusedVariable
+            var presenter = new TodoSettingPresenter(view.Object, addView.Object);
+
+            addView.Raise(v => v.AddMarker += null, EventArgs.Empty);
+
+            addView.Verify(a => a.Hide(), Times.Once());
+        }
+
+        [TestMethod]
+        public void AddMarkerHidesOnCancel()
+        {
+            var markers = GetTestMarkers();
+
+            var addView = new Mock<IAddTodoMarkerView>();
+            addView.SetupProperty(a => a.MarkerPriority, TodoPriority.Low);
+            addView.SetupProperty(a => a.MarkerText, "new marker");
+
+            var view = new Mock<ITodoSettingsView>();
+
+            // Shut up R#, I need that to process the event
+            // ReSharper disable once UnusedVariable
+            var presenter = new TodoSettingPresenter(view.Object, addView.Object);
+
+            addView.Raise(v => v.Cancel += null, EventArgs.Empty);
+
+            addView.Verify(a => a.Hide(), Times.Once());
+        }
     }
 }
