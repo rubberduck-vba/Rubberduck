@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Rubberduck.SourceControl")]
 [assembly: AssemblyDescription("Rubberduck Source Control 1.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Rubberduck")]
 [assembly: AssemblyProduct("Rubberduck.SourceControl")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
