@@ -14,7 +14,6 @@ namespace Rubberduck.UI.Settings
         private GridViewSort<ToDoMarker> _gridViewSort;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
-        /// <param name="markers"></param>
         public TodoListSettingsUserControl()
         {
             InitializeComponent();
@@ -79,7 +78,13 @@ namespace Rubberduck.UI.Settings
         public int SelectedIndex
         {
             get { return TodoMarkersGridView.SelectedRows[0].Index; }
-            set { TodoMarkersGridView.Rows[value].Selected = true; }
+            set
+            {
+                if (TodoMarkersGridView.Rows.Count > 0)
+                {
+                    TodoMarkersGridView.Rows[value].Selected = true;
+                }
+            }
         }
 
         public TodoPriority ActiveMarkerPriority
@@ -125,7 +130,7 @@ namespace Rubberduck.UI.Settings
         {
             if (handler != null)
             {
-                handler(this, e);
+                handler(sender, e);
             }
         }
     }
