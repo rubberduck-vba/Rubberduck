@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Settings;
@@ -108,6 +109,25 @@ namespace RubberduckTests
             view.ActiveMarkerPriority = TodoPriority.High;
 
             Assert.AreEqual(view.ActiveMarkerPriority, view.TodoMarkers[0].Priority);
+        }
+
+        [TestMethod]
+        public void RemoveReallyDoesRemoveSelectedItem()
+        {
+            var markers = GetTestMarkers();
+
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
+            view.RemoveMarker += RemoveParam;
+            view.SelectedIndex = 2;
+
+            RemoveParam(null, EventArgs.Empty);
+
+            Assert.AreEqual(2, view.TodoMarkers.Count);
+        }
+
+        private void RemoveParam(object sender, EventArgs e)
+        {
+            
         }
     }
 }
