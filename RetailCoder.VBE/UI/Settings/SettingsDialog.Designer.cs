@@ -31,7 +31,6 @@ namespace Rubberduck.UI.Settings
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(_SettingsDialog));
             this.panel2 = new System.Windows.Forms.Panel();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.InstructionsLabel = new System.Windows.Forms.Label();
@@ -39,6 +38,7 @@ namespace Rubberduck.UI.Settings
             this.CancelButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ResetButton = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -80,6 +80,7 @@ namespace Rubberduck.UI.Settings
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.flowLayoutPanel2.Controls.Add(this.ResetButton);
             this.flowLayoutPanel2.Controls.Add(this.CancelButton);
             this.flowLayoutPanel2.Controls.Add(this.OkButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -94,7 +95,7 @@ namespace Rubberduck.UI.Settings
             // 
             this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(631, 11);
+            this.CancelButton.Location = new System.Drawing.Point(550, 11);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 0;
@@ -105,7 +106,7 @@ namespace Rubberduck.UI.Settings
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(550, 11);
+            this.OkButton.Location = new System.Drawing.Point(469, 11);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(75, 23);
             this.OkButton.TabIndex = 1;
@@ -128,6 +129,17 @@ namespace Rubberduck.UI.Settings
             this.splitContainer1.SplitterWidth = 1;
             this.splitContainer1.TabIndex = 16;
             // 
+            // ResetButton
+            // 
+            this.ResetButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.ResetButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.ResetButton.Location = new System.Drawing.Point(631, 11);
+            this.ResetButton.Name = "ResetButton";
+            this.ResetButton.Size = new System.Drawing.Size(75, 23);
+            this.ResetButton.TabIndex = 1;
+            this.ResetButton.Text = "Reset";
+            this.ResetButton.UseVisualStyleBackColor = false;
+            // 
             // _SettingsDialog
             // 
             this.AcceptButton = this.OkButton;
@@ -138,7 +150,7 @@ namespace Rubberduck.UI.Settings
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.panel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
+            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "_SettingsDialog";
@@ -163,6 +175,7 @@ namespace Rubberduck.UI.Settings
         private Button CancelButton;
         private Button OkButton;
         private SplitContainer splitContainer1;
+        private Button ResetButton;
 
 
 
