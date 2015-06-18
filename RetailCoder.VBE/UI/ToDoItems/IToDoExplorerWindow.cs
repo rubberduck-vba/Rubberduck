@@ -10,6 +10,7 @@ namespace Rubberduck.UI.ToDoItems
         DataGridView GridView { get; }
         event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;
         event EventHandler RefreshToDoItems;
+        event EventHandler RemoveToDoMarker;
         event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
         IEnumerable<ToDoItem> TodoItems { get; set; }
     }

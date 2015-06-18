@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,6 +34,7 @@ namespace Rubberduck.UI.ToDoItems
             _view = window;
             _view.NavigateToDoItem += NavigateToDoItem;
             _view.RefreshToDoItems += RefreshToDoList;
+            _view.RemoveToDoMarker += RemoveMarker;
             _view.SortColumn += SortColumn;
         }
 
@@ -60,6 +62,23 @@ namespace Rubberduck.UI.ToDoItems
             Refresh();
         }
 
+        private void RemoveMarker(object sender, EventArgs e)
+        {
+            var selectedIndex = _view.GridView.SelectedRows[0].Index;
+            var dataSource = ((BindingList<ToDoItem>)_view.GridView.DataSource).ToList();
+            var selectedItem = dataSource[selectedIndex];
+
+            var module = selectedItem.GetSelection().QualifiedName.Component.CodeModule;
+
+            var oldContent = module.Lines[selectedItem.LineNumber, 1];
+            var newContent =
+                oldContent.Remove(selectedItem.GetSelection().Selection.StartColumn - 1);
+
+            module.ReplaceLine(selectedItem.LineNumber, newContent);
+
+            Refresh();
+        }
+
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
             var columnName = _view.GridView.Columns[e.ColumnIndex].Name;
@@ -84,12 +103,12 @@ namespace Rubberduck.UI.ToDoItems
                         items.Add(marker);
                     }
                 }
-            };
+            }
 
-            var sortedItems = items.OrderBy(item => item.ProjectName)
-                                    .ThenBy(item => item.ModuleName)
-                                    .ThenByDescending(item => item.Priority)
-                                    .ThenBy(item => item.LineNumber);
+            var sortedItems = items.OrderByDescending(item => item.Priority)
+                                   .ThenBy(item => item.ProjectName)
+                                   .ThenBy(item => item.ModuleName)
+                                   .ThenBy(item => item.LineNumber);
 
             return sortedItems;
         }
@@ -115,8 +134,11 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            var component = projects.FirstOrDefault().VBComponents.Cast<VBComponent>()
-                                    .First(c => c.Name == e.SelectedItem.ModuleName);
+            var firstOrDefault = projects.FirstOrDefault();
+            if (firstOrDefault == null) { return; }
+
+            var component = firstOrDefault.VBComponents.Cast<VBComponent>()
+                .First(c => c.Name == e.SelectedItem.ModuleName);
 
             if (component == null)
             {

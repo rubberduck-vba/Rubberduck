@@ -87,6 +87,16 @@ namespace Rubberduck.UI.ToDoItems
             } 
         }
 
+        public event EventHandler RemoveToDoMarker;
+        private void RemoveButtonClicked(object sender, EventArgs e)
+        {
+            var handler = RemoveToDoMarker;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
         public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
         private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
         {
