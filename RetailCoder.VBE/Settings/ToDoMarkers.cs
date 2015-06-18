@@ -68,7 +68,7 @@ namespace Rubberduck.Settings
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Text.GetHashCode();
         }
     }
 }

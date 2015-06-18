@@ -216,9 +216,13 @@ namespace RubberduckTests
         {
             var markers = GetTestMarkers();
 
+            var newMarkerText = "Hi, guys:";
+            var newMarkerPriority = TodoPriority.High;
+
             var addView = new Mock<IAddTodoMarkerView>();
-            addView.SetupProperty(a => a.MarkerText, "Hi, guys:");
-            addView.SetupProperty(a => a.MarkerPriority, TodoPriority.High);
+            addView.SetupProperty(a => a.MarkerText, newMarkerText);
+            addView.SetupProperty(a => a.MarkerPriority, newMarkerPriority);
+            addView.SetupProperty(a => a.TodoMarkers, markers);
 
             var view = new Mock<ITodoSettingsView>();
             view.SetupProperty(v => v.TodoMarkers, new BindingList<ToDoMarker>(markers));
@@ -229,7 +233,7 @@ namespace RubberduckTests
 
             addView.Raise(a => a.AddMarker += null, EventArgs.Empty);
 
-            Assert.IsTrue(view.Object.TodoMarkers.Contains(new ToDoMarker(addView.Object.MarkerText, addView.Object.MarkerPriority)));
+            Assert.IsTrue(view.Object.TodoMarkers.Contains(new ToDoMarker(newMarkerText, newMarkerPriority)));
         }
     }
 }
