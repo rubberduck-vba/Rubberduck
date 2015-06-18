@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Settings;
@@ -116,18 +117,16 @@ namespace RubberduckTests
         {
             var markers = GetTestMarkers();
 
-            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
-            view.RemoveMarker += RemoveParam;
-            view.SelectedIndex = 2;
+            var view = new Mock<ITodoSettingsView>();
+            view.SetupProperty(v => v.TodoMarkers, new BindingList<ToDoMarker>(markers));
 
-            RemoveParam(null, EventArgs.Empty);
+            // Shut up R#, I need that to process the event
+            // ReSharper disable once UnusedVariable
+            var presenter = new TodoSettingPresenter(view.Object, new Mock<IAddTodoMarkerView>().Object);
 
-            Assert.AreEqual(2, view.TodoMarkers.Count);
-        }
+            view.Raise(v => v.RemoveMarker += null, EventArgs.Empty);
 
-        private void RemoveParam(object sender, EventArgs e)
-        {
-            
+            Assert.AreEqual(2, view.Object.TodoMarkers.Count);
         }
     }
 }
