@@ -28,24 +28,18 @@ namespace Rubberduck.Inspections
             var codeModule = QualifiedSelection.QualifiedName.Component.CodeModule;
             var codeLine = codeModule.Lines[QualifiedSelection.Selection.StartLine, QualifiedSelection.Selection.LineCount];
 
-            var context = (Context is VBAParser.VariableSubStmtContext ||
-                           Context is VBAParser.ConstSubStmtContext ||
-                           Context is VBAParser.ArgContext)
-                          ? Context
-                          : Context.Parent;
-
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(context as VBAParser.VariableSubStmtContext, out originalInstruction);
+            var fix = DeclareExplicitVariant(Context.Parent as VBAParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(context as VBAParser.ConstSubStmtContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ConstSubStmtContext, out originalInstruction);
             }
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(context as VBAParser.ArgContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ArgContext, out originalInstruction);
             }
             
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);
