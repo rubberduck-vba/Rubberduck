@@ -124,50 +124,17 @@
   <data name="ExtractInterface_6778_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\ExtractInterface_6778_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Class_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="folder_horizontal_open" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder-horizontal-open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ImplementInterface_5540_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\ImplementInterface_5540_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Constant_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Field_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_EnumItem_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Method_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_ValueTypePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueTypePrivate.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Structure_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Module_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Collapse_large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Collapse_large.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="github_alt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\github-alt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Method_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_branch_090" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-branch-090.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -178,12 +145,6 @@
   <data name="question_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\question-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_ValueType" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueType.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Method_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="tick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -193,29 +154,8 @@
   <data name="exclamation_diamond" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\exclamation-diamond.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Event_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="facebook_circle_256" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\facebook-circle-256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Event_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Enum" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Enum.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Constant" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Module" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Module_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Enum_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Enum_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="git" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\git.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -223,35 +163,14 @@
   <data name="ListsofTests_8643_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ListsofTests_8643_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_ValueType_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueType_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="RemoveParameters_6781_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\RemoveParameters_6781_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="minus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\minus-circle1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Structure" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Constant_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Class_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddClass_5561_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flask_arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flask--arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -262,35 +181,11 @@
   <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_EnumItem_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="application_resize" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-resize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\TestMethod.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="TestManager_8590_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Mask\TestManager_8590_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSFolder_closed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSFolder_closed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_EnumItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Event" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Field_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Field_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ExtractMethod_6786_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\ExtractMethod_6786_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -298,44 +193,14 @@
   <data name="Step_RunTest_8814_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Step-RunTest_8814_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Enum_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Enum_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Class_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="arrow_circle_double" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-circle-double.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Method_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Class_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Structure_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Enum_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Enum_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Field_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DisplayName_13394_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\DisplayName_13394_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddForm_369_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddForm_369_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ReorderParameters_6780_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\ReorderParameters_6780_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSProject_reference" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSProject_reference.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="github_circle_black_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\github_circle_black-128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -346,12 +211,6 @@
   <data name="FindSymbol_6263_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Mask\FindSymbol_6263_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Type_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Type_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="folder_horizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder-horizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -361,20 +220,8 @@
   <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Structure_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddModule_368_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_ValueType_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueType_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\plus-circle1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Event_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RD_AboutWindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RD-AboutWindow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -382,17 +229,11 @@
   <data name="arrow_split" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-split.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Module_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Refresh.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="light_bulb_code" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Field_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\gear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -403,59 +244,17 @@
   <data name="flask_exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flask--exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Event_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="flask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flask.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="navigation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\navigation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Method" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Type_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DisplayFullSignature_13393_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\DisplayFullSignature_13393_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Type_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSProject_form" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSProject_form.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Structure_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Structure_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Structure_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="arrow_270" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-270.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Class_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Constant_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Constant_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Constant_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Constant_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Rubberduck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Rubberduck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_EnumPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumPrivate.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_EnumItem_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AllLoadedTests_8644_24_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -466,26 +265,14 @@
   <data name="creative_commons" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\creative-commons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Event_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Event_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="information_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\information-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_step" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-step.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Module1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="GenerateMethod_476_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\PNG\GenerateMethod_476_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Type_Shortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type_Shortcut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Type" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Type.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flask_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flask-empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -493,26 +280,8 @@
   <data name="arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_EnumItem_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Library" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Library.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Module_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="applycodechanges_6548_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\applycodechanges_6548_321.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Module_Private" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Module_Private.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_ValueType_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueType_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddModule_368_321" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\AddModule_368_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ReorderParameters_6780_32_Mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -526,29 +295,14 @@
   <data name="control_000_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\control-000-small.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSObject_Field" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Field.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="TestManager_8590_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\TestManager_8590_32.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Method_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Method_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Class" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Class.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_ValueType_Friend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_ValueType_Friend.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="navigation_180" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\navigation-180.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="drive_download" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\drive-download.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Enum_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Enum_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AllLoadedTests_8644_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Microsoft\AllLoadedTests_8644_24.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -559,17 +313,8 @@
   <data name="google_circle_512" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\google-circle-512.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VSProject_form1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSProject_form.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_Properties_Protected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_Properties_Protected.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="icon_github" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon-github.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VSObject_EnumItem_Sealed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Microsoft\VSObject_EnumItem_Sealed.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -582,5 +327,32 @@
   </data>
   <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddClass_5561_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddClass_5561_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddEvent_5539_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddEvent_5539_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddForm_369_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddForm_369_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddMethod_5562_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddMethod_5562_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddModule_368_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddModule_368_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddProperty_5538_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddProperty_5538_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AddVariable_5541_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\AddVariable_5541_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DisplayFullSignature_13393_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\DisplayFullSignature_13393_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DisplayName_13394_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Microsoft\PNG\DisplayName_13394_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
