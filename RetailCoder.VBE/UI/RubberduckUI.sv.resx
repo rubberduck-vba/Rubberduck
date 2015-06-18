@@ -1090,4 +1090,13 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
   <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
     <value>{0} problem</value>
   </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>z Text:</value>
+  </data>
+  <data name="TodoSettings_Priority" xml:space="preserve">
+    <value>z Priority</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>z Text</value>
+  </data>
 </root>

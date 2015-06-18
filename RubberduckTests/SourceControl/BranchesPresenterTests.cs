@@ -250,13 +250,13 @@ namespace RubberduckTests.SourceControl
 
             _view.SetupProperty(v => v.Local, branches);
             _createView.SetupProperty(c => c.UserInputText, branchName);
-            _createView.SetupProperty(c => c.OkButtonEnabled);
+            _createView.SetupProperty(c => c.IsValidBranchName);
 
             //act
             _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
 
             //Assert
-            Assert.IsFalse(_createView.Object.OkButtonEnabled);
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
         [TestMethod]
@@ -269,13 +269,13 @@ namespace RubberduckTests.SourceControl
 
             _view.SetupProperty(v => v.Local, branches);
             _createView.SetupProperty(c => c.UserInputText, newBranchName);
-            _createView.SetupProperty(c => c.OkButtonEnabled);
+            _createView.SetupProperty(c => c.IsValidBranchName);
 
             //act
             _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
 
             //Assert
-            Assert.IsTrue(_createView.Object.OkButtonEnabled);
+            Assert.IsTrue(_createView.Object.IsValidBranchName);
         }
 
         [TestMethod]
@@ -287,13 +287,13 @@ namespace RubberduckTests.SourceControl
 
             _view.SetupProperty(v => v.Local, branches);
             _createView.SetupProperty(c => c.UserInputText, branchName);
-            _createView.SetupProperty(c => c.OkButtonEnabled);
+            _createView.SetupProperty(c => c.IsValidBranchName);
 
             //act
             _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
 
             //Assert
-            Assert.IsFalse(_createView.Object.OkButtonEnabled);
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
         }
 
         [TestMethod]

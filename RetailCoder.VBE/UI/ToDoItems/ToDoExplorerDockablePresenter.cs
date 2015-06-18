@@ -98,7 +98,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             return _markers.Where(marker => comment.Comment.ToLowerInvariant()
                                                    .Contains(marker.Text.ToLowerInvariant()))
-                           .Select(marker => new ToDoItem((TaskPriority)marker.Priority, comment));
+                           .Select(marker => new ToDoItem(marker.Priority, comment));
         }
 
         private void NavigateToDoItem(object sender, ToDoItemClickEventArgs e)
