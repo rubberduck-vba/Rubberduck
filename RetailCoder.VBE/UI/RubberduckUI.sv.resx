@@ -1091,12 +1091,12 @@ Varning: Alla anpassade inställningar kommer att försvinna.</value>
     <value>{0} problem</value>
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>z Text:</value>
+    <value>Text:</value>
   </data>
   <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>z Priority</value>
+    <value>Prioritet</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
-    <value>z Text</value>
+    <value>Text</value>
   </data>
 </root>
