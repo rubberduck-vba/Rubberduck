@@ -13,6 +13,7 @@ namespace Rubberduck.UI.Settings
         private GridViewSort<ToDoMarker> _gridViewSort;
 
         /// <summary>   Parameterless Constructor is to enable design view only. DO NOT USE. </summary>
+        /// <param name="markers"></param>
         public TodoListSettingsUserControl()
         {
             InitializeComponent();

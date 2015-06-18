@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Settings;
+using Rubberduck.UI;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests
@@ -40,11 +41,8 @@ namespace RubberduckTests
             //arrange
             var markers = new List<ToDoMarker> {new ToDoMarker("Todo:", TodoPriority.Medium)};
 
-            var view = new TodoListSettingsUserControl(markers);
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
             var addTodoMarkerView = new Mock<IAddTodoMarkerView>().Object;
-            
-            //act
-            var controller = new TodoSettingPresenter(view, addTodoMarkerView);
 
             //assert
             Assert.AreEqual("Todo:", view.ActiveMarkerText);
@@ -56,7 +54,7 @@ namespace RubberduckTests
             //arrange
             var markers = GetTestMarkers();
 
-            var view = new TodoListSettingsUserControl(markers);
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
 
             //act
             view.SelectedIndex = 1;
@@ -75,7 +73,7 @@ namespace RubberduckTests
                 new ToDoMarker("Bug:", TodoPriority.High)
             };
 
-            var view = new TodoListSettingsUserControl(markers);
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
 
             //act
             view.SelectedIndex = 2;
@@ -92,7 +90,7 @@ namespace RubberduckTests
                 new ToDoMarker("Note:", TodoPriority.Low)
             };
 
-            var view = new TodoListSettingsUserControl(markers);
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
 
             //act
             view.SelectedIndex = 1;
@@ -105,7 +103,7 @@ namespace RubberduckTests
         {
             var markers = GetTestMarkers();
 
-            var view = new TodoListSettingsUserControl(markers);
+            var view = new TodoListSettingsUserControl(markers, new Mock<GridViewSort<ToDoMarker>>("", false).Object);
 
             view.ActiveMarkerPriority = TodoPriority.High;
 
