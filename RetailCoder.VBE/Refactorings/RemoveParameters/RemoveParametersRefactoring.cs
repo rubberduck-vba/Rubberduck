@@ -139,7 +139,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
 
         private string GetOldSignature(Declaration target)
@@ -322,7 +325,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var lineNum = paramList.GetSelection().LineCount;
 
             module.ReplaceLine(paramList.Start.Line, signature);
-            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
     }
 }
