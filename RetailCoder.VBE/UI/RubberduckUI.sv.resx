@@ -434,13 +434,13 @@
     <value>Tolkar projektkomponenter...</value>
   </data>
   <data name="PromptLoadDefaultConfig" xml:space="preserve">
-    <value>z {0}
+    <value>{0}
 {1}
 
 {2}
 
 Vill du återställa standardinställningarna?
-Varning: Alla anpassade inställningar kommer att försvinna.    Your old file will be saved in '{3}'</value>
+Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil kommer att bli sparad i '{3}'</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Löser '{0}'...</value>
