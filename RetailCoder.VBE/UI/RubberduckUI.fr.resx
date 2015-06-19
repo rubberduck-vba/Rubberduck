@@ -429,13 +429,13 @@
     <value>Analyse des componsantes du projet...</value>
   </data>
   <data name="PromptLoadDefaultConfig" xml:space="preserve">
-    <value>{0}
+    <value>z {0}
 {1}
 
 {2}
 
 Restaurer les configurations par défaut?
-Attention: les valeurs personnalisées seront perdues.</value>
+Attention: les valeurs personnalisées seront perdues.    Your old file will be saved in '{3}'</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Résolution de '{0}'...</value>

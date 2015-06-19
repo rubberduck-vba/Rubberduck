@@ -1645,7 +1645,7 @@ namespace Rubberduck.UI {
         ///{2}
         ///
         ///Would you like to restore default configuration?
-        ///Warning: All customized settings will be lost..
+        ///Warning: All customized settings will be lost.  Your old file will be saved in &apos;{3}&apos;.
         /// </summary>
         internal static string PromptLoadDefaultConfig {
             get {
