@@ -70,16 +70,11 @@ namespace Rubberduck.Settings
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
         {
             var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
-            var result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+            MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
-            if (result == DialogResult.Yes)
-            {
-                var config = GetDefaultConfiguration();
-                SaveConfiguration(config);
-                return config;
-            }
-
-            throw ex;
+            var config = GetDefaultConfiguration();
+            SaveConfiguration(config);
+            return config;
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
