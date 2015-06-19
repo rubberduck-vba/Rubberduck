@@ -140,7 +140,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
+
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
 
         private void AdjustSignatures()
@@ -239,7 +243,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
 
         private string GetOldSignature(Declaration target)
