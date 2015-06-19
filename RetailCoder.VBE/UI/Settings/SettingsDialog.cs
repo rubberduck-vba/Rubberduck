@@ -36,13 +36,37 @@ namespace Rubberduck.UI.Settings
 
             OkButton.Click += OkButton_Click;
             CancelButton.Click += CancelButton_Click;
+            ResetButton.Click += ResetButton_Click;
 
             InitWindow();
+        }
+
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirmReset == DialogResult.No)
+            {
+                return;
+            }
+
+            ResetSettings();
+        }
+
+        private void ResetSettings()
+        {
+            var currentLanguage = _config.UserSettings.LanguageSetting;
+
+            System.IO.File.Delete(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck\\rubberduck.config"));
+            var config = _configService.GetDefaultConfiguration();
+            _configService.SaveConfiguration(config, !currentLanguage.Equals(config.UserSettings.LanguageSetting));
         }
 
         private void InitWindow()
         {
             this.Text = RubberduckUI.Settings_Caption;
+            OkButton.Text = RubberduckUI.OK;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+            ResetButton.Text = RubberduckUI.Settings_ResetSettings;
             InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
             TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
 
