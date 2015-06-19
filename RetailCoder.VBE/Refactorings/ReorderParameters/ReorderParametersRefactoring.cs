@@ -37,7 +37,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            AdjustReferences(_model.TargetDeclaration.References.OrderByDescending(item => item.Selection.StartLine));
+            AdjustReferences(_model.TargetDeclaration.References);
             AdjustSignatures();
         }
 
@@ -181,7 +181,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References.OrderByDescending(item => item.Selection.StartLine));
+                    AdjustReferences(reference.References);
                     AdjustSignatures(reference);
                 }
             }
@@ -191,7 +191,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References.OrderByDescending(item => item.Selection.StartLine));
+                AdjustReferences(interfaceImplentation.References);
                 AdjustSignatures(interfaceImplentation);
             }
         }

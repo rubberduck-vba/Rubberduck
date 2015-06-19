@@ -69,7 +69,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
 
-            AdjustReferences(_model.TargetDeclaration.References.OrderByDescending(item => item.Selection.StartLine), _model.TargetDeclaration);
+            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
         }
 
@@ -264,7 +264,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References.OrderByDescending(item => item.Selection.StartLine), reference);
+                    AdjustReferences(reference.References, reference);
                     AdjustSignatures(reference);
                 }
             }
@@ -274,7 +274,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References.OrderByDescending(item => item.Selection.StartLine), interfaceImplentation);
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
                 AdjustSignatures(interfaceImplentation);
             }
         }
