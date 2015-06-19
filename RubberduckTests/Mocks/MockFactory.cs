@@ -99,7 +99,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Creates a new <see cref="Mock{VBComponets}"/> that can be iterated over as an <see cref="IEnumerable"/>.
+        /// Creates a new <see cref="Mock{VBComponents}"/> that can be iterated over as an <see cref="IEnumerable"/>.
         /// </summary>
         /// <param name="componentList">The collection to be iterated over.</param>
         /// <returns></returns>
@@ -113,7 +113,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Creates a new <see cref="Mock{VBComponets}"/> that can be iterated over as an <see cref="IEnumerable"/>.
+        /// Creates a new <see cref="Mock{VBComponents}"/> that can be iterated over as an <see cref="IEnumerable"/>.
         /// </summary>
         /// <param name="componentList">The collection to be iterated over.</param>
         /// <param name="project">The <see cref="VBComponents.Parent"/> property.</param>
@@ -156,6 +156,55 @@ namespace RubberduckTests.Mocks
             projects.As<IEnumerable>().Setup(p => p.GetEnumerator()).Returns(projectList.GetEnumerator());
 
             return projects;
+        }
+
+        //internal static Mock<VBProjects> CreateProjectsMock(List<VBProject> projectList, VBProject project, VBComponents components)
+        //{
+        //    CreateProjectsMock(projectList, project);
+        //    project.SetupGet(p => p.VBComponents).Returns(components.Object);
+        //    return projects;
+        //}
+
+        /// <summary>
+        /// Creates a new <see cref="Mock{Reference}"/>.
+        /// </summary>
+        /// <param name="name">The see<see cref="Reference.Name"/>.</param>
+        /// <param name="filePath">The <see cref="Reference.FullPath"/> filepath.</param>
+        /// <returns></returns>
+        internal static Mock<Reference> CreateMockReference(string name, string filePath)
+        {
+            var reference = new Mock<Reference>();
+            reference.SetupGet(r => r.Name).Returns(name);
+            reference.SetupGet(r => r.FullPath).Returns(filePath);
+
+            return reference;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Mock{References}"/> collection that can be iterated over as an <see cref="IEnumerable"/>.
+        /// </summary>
+        /// <param name="referenceList">The collection to be iterated over.</param>
+        /// <returns></returns>
+        internal static Mock<References> CreateReferencesMock(List<Reference> referenceList)
+        {
+            var references = new Mock<References>();
+            references.Setup(r => r.GetEnumerator()).Returns(referenceList.GetEnumerator());
+            references.As<IEnumerable>().Setup(r => r.GetEnumerator()).Returns(referenceList.GetEnumerator());
+            return references;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Mock{Project}"/> that is set up with a <see cref="References"/> collection.
+        /// </summary>
+        /// <param name="name">The <see cref="VBProject"/> <see cref="VBProject.Name"/>.</param>
+        /// <param name="references">The <see cref="References"/> collection.</param>
+        /// <returns></returns>
+        internal static Mock<VBProject> CreateProjectMock(string name, Mock<References> references)
+        {
+            var project = new Mock<VBProject>();
+            project.SetupProperty(p => p.Name, name);
+            project.SetupGet(p => p.References).Returns(references.Object);
+            return project;
         }
     }
 }

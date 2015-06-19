@@ -1,14 +1,10 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
+using Rubberduck.ToDoItems;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    public enum TodoPriority
-    {
-        Low, 
-        Normal,
-        High
-    }
-
     public interface IToDoMarker
     {
         TodoPriority Priority { get; set; }
@@ -24,6 +20,23 @@ namespace Rubberduck.Settings
 
         [XmlAttribute]
         public TodoPriority Priority { get; set; }
+
+        [XmlIgnore]
+        public string PriorityLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("ToDoPriority_" + Priority, RubberduckUI.Culture); }
+            set
+            {
+                foreach (var priority in Enum.GetValues(typeof(TodoPriority)))
+                {
+                    if (value == RubberduckUI.ResourceManager.GetString("ToDoPriority_" + priority, RubberduckUI.Culture))
+                    {
+                        Priority = (TodoPriority)priority;
+                        return;
+                    }
+                }
+            }
+        }
 
         /// <summary>   Default constructor is required for serialization. DO NOT USE. </summary>
         public ToDoMarker()
@@ -42,6 +55,20 @@ namespace Rubberduck.Settings
         public override string ToString()
         {
             return this.Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (ToDoMarker)obj;
+
+            // no need to check PriorityLabel as it soley relies on Priority - if one is wrong, the other has to be too
+            return Text == other.Text &&
+                   Priority == other.Priority;
+        }
+
+        public override int GetHashCode()
+        {
+            return Text.GetHashCode();
         }
     }
 }

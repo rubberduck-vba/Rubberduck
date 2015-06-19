@@ -1107,4 +1107,13 @@ Are you sure you want to proceed with this rename?</value>
     <value>{0} issues</value>
     <comment>{0}=number</comment>
   </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
 </root>

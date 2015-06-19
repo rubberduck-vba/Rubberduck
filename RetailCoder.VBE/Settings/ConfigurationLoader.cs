@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
@@ -69,7 +70,7 @@ namespace Rubberduck.Settings
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
         {
             var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
-            var result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
             if (result == DialogResult.Yes)
             {
@@ -113,7 +114,7 @@ namespace Rubberduck.Settings
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
             var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Normal);
+            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
             var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
 
             return new[] { note, todo, bug };

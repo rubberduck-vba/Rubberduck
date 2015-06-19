@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Settings
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(15, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TitleLabel.Size = new System.Drawing.Size(118, 19);
             this.TitleLabel.TabIndex = 2;
             this.TitleLabel.Text = "General Settings";
@@ -72,7 +72,7 @@ namespace Rubberduck.UI.Settings
             this.InstructionsLabel.AutoSize = true;
             this.InstructionsLabel.Location = new System.Drawing.Point(12, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.InstructionsLabel.Size = new System.Drawing.Size(269, 21);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Changes will be applied after Rubberduck is reloaded.";
@@ -125,18 +125,18 @@ namespace Rubberduck.UI.Settings
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.White;
             this.splitContainer1.Panel1MinSize = 100;
             this.splitContainer1.Size = new System.Drawing.Size(717, 296);
-            this.splitContainer1.SplitterDistance = 256;
+            this.splitContainer1.SplitterDistance = 255;
             this.splitContainer1.SplitterWidth = 1;
             this.splitContainer1.TabIndex = 16;
             // 
             // ResetButton
             // 
             this.ResetButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ResetButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.ResetButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ResetButton.Location = new System.Drawing.Point(631, 11);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(75, 23);
-            this.ResetButton.TabIndex = 1;
+            this.ResetButton.TabIndex = 0;
             this.ResetButton.Text = "Reset";
             this.ResetButton.UseVisualStyleBackColor = false;
             // 
@@ -145,6 +145,7 @@ namespace Rubberduck.UI.Settings
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(717, 407);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.flowLayoutPanel2);
