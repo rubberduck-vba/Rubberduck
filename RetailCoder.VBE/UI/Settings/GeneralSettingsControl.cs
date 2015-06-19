@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
@@ -32,10 +33,14 @@ namespace Rubberduck.UI.Settings
 
         private void LoadLanguageList()
         {
-            LanguageList.Items.Add(new DisplayLanguageSetting("en-US"));
-            LanguageList.Items.Add(new DisplayLanguageSetting("fr-CA"));
-            LanguageList.Items.Add(new DisplayLanguageSetting("sv-SV"));
+            var settings = new[]
+            {
+                new DisplayLanguageSetting("en-US"),
+                new DisplayLanguageSetting("fr-CA"),
+                new DisplayLanguageSetting("sv-SV")
+            };
 
+            LanguageList.Items.AddRange(settings.Where(item => item.Exists).ToArray());
             LanguageList.DisplayMember = "Name";
         }
     }
