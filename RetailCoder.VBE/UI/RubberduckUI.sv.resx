@@ -440,7 +440,7 @@
 {2}
 
 Vill du återställa standardinställningarna?
-Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil kommer att bli sparad i '{3}'</value>
+Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil kommer att bli sparad i '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Löser '{0}'...</value>
