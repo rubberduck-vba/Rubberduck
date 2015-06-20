@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly Declarations _declarations;
         public Declarations Declarations { get { return _declarations; } }
 
-        public Declaration TargetDeclaration { get; set; }
+        public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
             
         public ReorderParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
@@ -86,15 +86,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             foreach (var declaration in targets)
             {
-                var declarationSelection = new Selection(declaration.Context.Start.Line,
-                                                         declaration.Context.Start.Column,
-                                                         declaration.Context.Stop.Line,
-                                                         declaration.Context.Stop.Column);
+                var activeSelection = new Selection(declaration.Context.Start.Line,
+                                                    declaration.Context.Start.Column,
+                                                    declaration.Context.Stop.Line,
+                                                    declaration.Context.Stop.Column);
 
-                if (currentSelection.Contains(declarationSelection) && declarationSelection.Contains(selection.Selection))
+                if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
                 {
                     target = declaration;
-                    currentSelection = declarationSelection;
+                    currentSelection = activeSelection;
                 }
 
                 foreach (var reference in declaration.References)
@@ -109,15 +109,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
                     if (paramList == null) { continue; }
 
-                    var referenceSelection = new Selection(paramList.Start.Line,
-                                                           paramList.Start.Column,
-                                                           paramList.Stop.Line,
-                                                           paramList.Stop.Column + paramList.Stop.Text.Length + 1);
+                    activeSelection = new Selection(paramList.Start.Line,
+                                                    paramList.Start.Column,
+                                                    paramList.Stop.Line,
+                                                    paramList.Stop.Column + paramList.Stop.Text.Length + 1);
 
-                    if (currentSelection.Contains(declarationSelection) && referenceSelection.Contains(selection.Selection))
+                    if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
                     {
                         target = reference.Declaration;
-                        currentSelection = referenceSelection;
+                        currentSelection = activeSelection;
                     }
                 }
             }
