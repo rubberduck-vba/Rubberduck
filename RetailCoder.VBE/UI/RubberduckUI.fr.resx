@@ -435,7 +435,7 @@
 {2}
 
 Restaurer les configurations par défaut?
-Attention: les valeurs personnalisées seront perdues.</value>
+Attention: les valeurs personnalisées seront perdues.    Le fichier original sera enregistré sous '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Résolution de '{0}'...</value>

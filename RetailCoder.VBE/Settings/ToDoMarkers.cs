@@ -59,7 +59,9 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var other = (ToDoMarker)obj;
+            var other = obj as ToDoMarker;
+
+            if (other == null) { return false; }
 
             // no need to check PriorityLabel as it soley relies on Priority - if one is wrong, the other has to be too
             return Text == other.Text &&

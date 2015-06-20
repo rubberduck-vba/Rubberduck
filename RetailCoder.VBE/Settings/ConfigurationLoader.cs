@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
 using Rubberduck.ToDoItems;
@@ -69,8 +70,20 @@ namespace Rubberduck.Settings
 
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
         {
-            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
+            var folder = Path.GetDirectoryName(ConfigFile);
+            var newFilePath = folder + "\\rubberduck.config." + DateTime.UtcNow.ToString().Replace('/', '.').Replace(':', '.') + ".bak";
+
+            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile, newFilePath);
             MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+            using (var fs = File.Create(@newFilePath))
+            {
+                using (var reader = new StreamReader(folder + "\\rubberduck.config"))
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    writer.Write(reader.ReadToEnd());
+                }
+            }
 
             var config = GetDefaultConfiguration();
             SaveConfiguration(config);

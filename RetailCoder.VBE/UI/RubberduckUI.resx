@@ -431,7 +431,7 @@
 {2}
 
 Would you like to restore default configuration?
-Warning: All customized settings will be lost.</value>
+Warning: All customized settings will be lost.  Your old file will be saved in '{3}'.</value>
   </data>
   <data name="ResolutionProgress" xml:space="preserve">
     <value>Resolving '{0}'...</value>
