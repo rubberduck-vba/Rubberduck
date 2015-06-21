@@ -46,8 +46,8 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var other = (DisplayLanguageSetting) obj;
-            return Code.Equals(other.Code);
+            var other = obj as DisplayLanguageSetting;
+            return other != null && Code.Equals(other.Code);
         }
 
         public override int GetHashCode()
