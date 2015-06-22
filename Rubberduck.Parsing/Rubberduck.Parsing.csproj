@@ -97,6 +97,10 @@
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AntlrTokens Include="Grammar\VBA.tokens">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </AntlrTokens>
     <AntlrTokens Include="Grammar\VBALexer.tokens">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
