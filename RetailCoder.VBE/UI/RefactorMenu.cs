@@ -179,6 +179,10 @@ namespace Rubberduck.UI
             var selection = IDE.ActiveCodePane.GetSelection();
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
+            if (result == null)
+            {
+                return; // bug/todo: something's definitely wrong, exception thrown in resolver code
+            }
 
             var declarations = result.Declarations.Items
                                      .Where(item => item.DeclarationType != DeclarationType.ModuleOption)

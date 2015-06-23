@@ -33,7 +33,8 @@ namespace Rubberduck.Parsing.Symbols
             _moduleTypes = new HashSet<DeclarationType>(new[]
             {
                 DeclarationType.Module, 
-                DeclarationType.Class
+                DeclarationType.Class,
+                DeclarationType.Project
             });
 
             _memberTypes = new HashSet<DeclarationType>(new[]
@@ -154,7 +155,8 @@ namespace Rubberduck.Parsing.Symbols
                     {
                         // object variable is a built-in Collection class instance
                         qualifier = _declarations.Items.Single(item => item.IsBuiltIn
-                            && item.IdentifierName == collectionContext.GetText());
+                            && item.IdentifierName == collectionContext.GetText()
+                            && item.DeclarationType == DeclarationType.Class);
                         reference = CreateReference(baseTypeContext, qualifier);
                     }
                 }
@@ -206,7 +208,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return _declarations[identifier.GetText()].SingleOrDefault(item =>
                     item.ProjectName == libraryName
-                    && item.DeclarationType == DeclarationType.Class);
+                    && _moduleTypes.Contains(item.DeclarationType));
             }
 
             return null;
@@ -244,13 +246,15 @@ namespace Rubberduck.Parsing.Symbols
             // look in current project first.
             var result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
                 _moduleTypes.Contains(item.DeclarationType)
-                && item.ProjectName == _currentScope.ProjectName);
+                && item.ProjectName == _currentScope.ProjectName
+                && _moduleTypes.Contains(item.DeclarationType));
 
             if (result == null)
             {
-                // look in all projects (including VbaStdLib library.
+                // look in all projects (including VbaStdLib library).
                 result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType));
+                    _moduleTypes.Contains(item.DeclarationType)
+                    && _moduleTypes.Contains(item.DeclarationType));
             }
 
             return result;
@@ -300,6 +304,17 @@ namespace Rubberduck.Parsing.Symbols
 
             if (callee == null)
             {
+                // calls inside With block can still refer to identifiers in _currentScope
+                localScope = _currentScope;
+                identifierName = callSiteContext.GetText();
+                callee = FindLocalScopeDeclaration(identifierName, localScope)
+                         ?? FindModuleScopeDeclaration(identifierName, localScope)
+                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType)
+                         ?? FindProjectScopeDeclaration(identifierName);
+            }
+
+            if (callee == null)
+            {
                 return null;
             }
 
@@ -320,8 +335,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-
-            _isResolving = true;
 
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
@@ -360,8 +373,6 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            _isResolving = true;
-
             var identifierContext = context.ambiguousIdentifier();
             var fieldCall = context.dictionaryCallStmt();
             // todo: understand WTF [baseType] is doing in that grammar rule...
@@ -375,8 +386,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-
-            _isResolving = true;
 
             if (localScope == null)
             {
@@ -403,8 +412,6 @@ namespace Rubberduck.Parsing.Symbols
                     return null;
                 }
 
-                //var memberReference = CreateReference(member.Context, member);
-                //member.AddReference(memberReference);
                 parent = member;
             }
 
@@ -417,24 +424,24 @@ namespace Rubberduck.Parsing.Symbols
             return Resolve(fieldCall, parent, hasExplicitLetStatement, isAssignmentTarget);
         }
 
-        private void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
+        private Declaration Resolve(VBAParser.ICS_B_ProcedureCallContext context)
         {
             if (context == null)
             {
-                return;
+                return null;
             }
-
-            _isResolving = true;
 
             var identifierContext = context.certainIdentifier();
             var callee = Resolve(identifierContext, _currentScope);
             if (callee == null)
             {
-                return;
+                return null;
             }
 
             var reference = CreateReference(identifierContext, callee);
             callee.AddReference(reference);
+
+            return callee;
         }
 
         private Declaration Resolve(VBAParser.ImplicitCallStmt_InStmtContext callSiteContext, Declaration localScope, ContextAccessorType accessorType, bool hasExplicitLetStatement = false, bool isAssignmentTarget = false)
@@ -471,7 +478,8 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var parent = _declarations[identifierName].SingleOrDefault(item =>
-                item.ParentScope == localScope.Scope);
+                item.ParentScope == localScope.Scope
+                && !_moduleTypes.Contains(item.DeclarationType));
             return parent;
         }
 
@@ -490,7 +498,8 @@ namespace Rubberduck.Parsing.Symbols
 
             return _declarations[identifierName].SingleOrDefault(item =>
                 item.ParentScope == localScope.ParentScope
-                && !item.DeclarationType.HasFlag(DeclarationType.Member));
+                && !item.DeclarationType.HasFlag(DeclarationType.Member)
+                && !_moduleTypes.Contains(item.DeclarationType));
         }
 
         /// <summary>
@@ -529,8 +538,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             // assume unqualified variable call, i.e. unique declaration.
             return _declarations[identifierName].SingleOrDefault(item =>
-                item.Accessibility == Accessibility.Public
-                || item.Accessibility == Accessibility.Global);
+                (item.Accessibility == Accessibility.Public
+                || item.Accessibility == Accessibility.Global
+                || item.DeclarationType == DeclarationType.Module));
         }
 
         /// <summary>
@@ -551,29 +561,13 @@ namespace Rubberduck.Parsing.Symbols
 
         #region IVBAListener overrides
 
-        // avoid re-resolving identifiers
-        private bool _isResolving;
-
         public override void EnterICS_B_ProcedureCall(VBAParser.ICS_B_ProcedureCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
             Resolve(context);
-            _isResolving = false;
         }
 
         public override void EnterICS_B_MemberProcedureCall(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
-            _isResolving = true;
-            
             var parentScope = Resolve(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
             var parentType = ResolveType(parentScope);
 
@@ -600,47 +594,25 @@ namespace Rubberduck.Parsing.Symbols
             
             var fieldCall = context.dictionaryCallStmt();
             Resolve(fieldCall, member);
-
-            _isResolving = false;
         }
 
         public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
             Resolve(context, _currentScope);
         }
 
         public override void EnterICS_S_ProcedureOrArrayCall(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
             Resolve(context, _currentScope);
         }
 
         public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
             Resolve(context, _currentScope);
         }
 
         public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)
         {
-            if (_isResolving)
-            {
-                return;
-            }
-
             Resolve(context, _currentScope);
         }
 
@@ -674,7 +646,7 @@ namespace Rubberduck.Parsing.Symbols
                 var collection = baseType.COLLECTION();
                 if (collection != null)
                 {
-                    type = _declarations[collection.GetText()].SingleOrDefault(item => item.IsBuiltIn);
+                    type = _declarations[collection.GetText()].SingleOrDefault(item => item.IsBuiltIn && item.DeclarationType == DeclarationType.Class);
                     reference = CreateReference(baseType, type);
                 }
             }
@@ -695,6 +667,7 @@ namespace Rubberduck.Parsing.Symbols
             var identifiers = context.ambiguousIdentifier();
             var identifier = Resolve(identifiers[0], _currentScope, ContextAccessorType.AssignValue);
             
+            // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
             identifier.AddReference(reference);
 
@@ -702,6 +675,91 @@ namespace Rubberduck.Parsing.Symbols
             {
                 identifier.AddReference(CreateReference(identifiers[1], identifier));
             }
+        }
+
+        public override void EnterForEachStmt(VBAParser.ForEachStmtContext context)
+        {
+            var identifiers = context.ambiguousIdentifier();
+            var identifier = Resolve(identifiers[0], _currentScope);
+
+            // each iteration counts as an assignment
+            var reference = CreateReference(identifiers[0], identifier, true);
+            identifier.AddReference(reference);
+
+            if (identifiers.Count > 1)
+            {
+                identifier.AddReference(CreateReference(identifiers[1], identifier));
+            }
+        }
+
+        public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterRaiseEventStmt(VBAParser.RaiseEventStmtContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterResumeStmt(VBAParser.ResumeStmtContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterFileNumber(VBAParser.FileNumberContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            if (identifierContext == null)
+            {
+                return;
+            }
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterArgDefaultValue(VBAParser.ArgDefaultValueContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            if (identifierContext == null)
+            {
+                return;
+            }
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterFieldLength(VBAParser.FieldLengthContext context)
+        {
+            var identifierContext = context.ambiguousIdentifier();
+            if (identifierContext == null)
+            {
+                return;
+            }
+            var identifier = Resolve(identifierContext, _currentScope);
+            identifier.AddReference(CreateReference(identifierContext, identifier));
+        }
+
+        public override void EnterVsAssign(VBAParser.VsAssignContext context)
+        {
+            // named parameter reference must be scoped to called procedure
+            var callee = FindParentCall(context);
+            Resolve(context.implicitCallStmt_InStmt(), callee);
+        }
+
+        private Declaration FindParentCall(VBAParser.VsAssignContext context)
+        {
+            var calleeContext = context.Parent.Parent.Parent;
+            return Resolve(calleeContext as VBAParser.ICS_B_ProcedureCallContext)
+                   ?? Resolve(calleeContext as VBAParser.ICS_S_VariableOrProcedureCallContext, _currentScope)
+                   ?? Resolve(calleeContext as VBAParser.ICS_S_ProcedureOrArrayCallContext, _currentScope)
+                   ?? Resolve(calleeContext as VBAParser.ICS_S_MembersCallContext, _currentScope);
         }
 
         #endregion
