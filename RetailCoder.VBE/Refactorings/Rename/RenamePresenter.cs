@@ -148,7 +148,23 @@ namespace Rubberduck.Refactorings.Rename
 
             // must rename usages first; if target is a module or a project,
             // then renaming the declaration first would invalidate the parse results.
-            RenameUsages(_view.Target);
+
+            if (_view.Target.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                // properties can have more than 1 member.
+                var members = _declarations[_view.Target.IdentifierName]
+                    .Where(item => item.Project == _view.Target.Project
+                        && item.ComponentName == _view.Target.ComponentName
+                        && item.DeclarationType.HasFlag(DeclarationType.Property));
+                foreach (var member in members)
+                {
+                    RenameUsages(member);
+                }
+            }
+            else
+            {
+                RenameUsages(_view.Target);
+            }
 
             if (ModuleDeclarationTypes.Contains(_view.Target.DeclarationType))
             {
@@ -228,9 +244,22 @@ namespace Rubberduck.Refactorings.Rename
                 module.ReplaceLine(argList.Start.Line, newContent);
                 module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
             }
-            else
+            else if (!_view.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
                 module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+            }
+            else
+            {
+                var members = _declarations[_view.Target.IdentifierName]
+                    .Where(item => item.Project == _view.Target.Project 
+                        && item.ComponentName == _view.Target.ComponentName
+                        && item.DeclarationType.HasFlag(DeclarationType.Property));
+
+                foreach (var member in members)
+                {
+                    newContent = GetReplacementLine(module, member, _view.NewName);
+                    module.ReplaceLine(member.Selection.StartLine, newContent);
+                }
             }
         }
 
@@ -354,23 +383,23 @@ namespace Rubberduck.Refactorings.Rename
 
         private string GetReplacementLine(CodeModule module, Declaration target, string newName)
         {
-            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == _view.Target.QualifiedName.QualifiedModuleName);
+            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
             if (targetModule == null)
             {
                 return null;
             }
 
-            var content = module.Lines[_view.Target.Selection.StartLine, 1];
+            var content = module.Lines[target.Selection.StartLine, 1];
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {
-                var argContext = (VBAParser.ArgContext)_view.Target.Context;
+                var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = targetModule.GetRewriter();
                 rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _view.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
-                var context = (ParserRuleContext) _view.Target.Context.Parent.Parent;
+                var context = (ParserRuleContext) target.Context.Parent.Parent;
                 var firstTokenIndex = context.Start.TokenIndex;
                 var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
 

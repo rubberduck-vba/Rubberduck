@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections
         {
             var enumerable = classes as IList<Declaration> ?? classes.ToList();
             var result = !ProcedureTypes.Contains(declaration.DeclarationType)
-                || declaration.References.Any()
+                || declaration.References.Any(r => !r.IsAssignment)
                 || handlers.Contains(declaration)
                 || IsPublicModuleMember(modules, declaration)
                 || IsClassLifeCycleHandler(enumerable, declaration)

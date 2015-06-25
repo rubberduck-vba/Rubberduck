@@ -50,7 +50,18 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddReference(IdentifierReference reference)
         {
-            if (!_references.Select(r => r.Context).Contains(reference.Context))
+            if (reference.Declaration.Context == reference.Context)
+            {
+                return;
+            }
+
+            if (reference.Context.Parent != _context 
+                && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
+                && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName 
+                    && r.Selection.StartLine == reference.Selection.StartLine
+                    && r.Selection.EndLine == reference.Selection.EndLine
+                    && r.Selection.StartColumn == reference.Selection.StartColumn
+                    && r.Selection.EndColumn == reference.Selection.EndColumn))
             {
                 _references.Add(reference);
             }
