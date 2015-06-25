@@ -736,7 +736,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterForNextStmt(VBAParser.ForNextStmtContext context)
         {
             var identifiers = context.ambiguousIdentifier();
-            var identifier = Resolve(identifiers[0], _currentScope, ContextAccessorType.AssignValue);
+            var identifier = Resolve(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
             
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
@@ -751,7 +751,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterForEachStmt(VBAParser.ForEachStmtContext context)
         {
             var identifiers = context.ambiguousIdentifier();
-            var identifier = Resolve(identifiers[0], _currentScope);
+            var identifier = Resolve(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
 
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
