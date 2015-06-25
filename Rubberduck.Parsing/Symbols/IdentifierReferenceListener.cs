@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -24,6 +23,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly HashSet<DeclarationType> _memberTypes;
 
         private readonly Stack<Declaration> _withBlockQualifiers;
+        private readonly HashSet<RuleContext> _alreadyResolved;
 
         public IdentifierReferenceListener(QualifiedModuleName qualifiedModuleName, Declarations declarations)
         {
@@ -47,7 +47,8 @@ namespace Rubberduck.Parsing.Symbols
             });
 
             _withBlockQualifiers = new Stack<Declaration>();
-
+            _alreadyResolved = new HashSet<RuleContext>();
+            
             SetCurrentScope();
         }
 
@@ -62,6 +63,8 @@ namespace Rubberduck.Parsing.Symbols
                 _moduleTypes.Contains(item.DeclarationType)
                 && item.Project == _qualifiedModuleName.Project
                 && item.ComponentName == _qualifiedModuleName.ComponentName);
+
+            _alreadyResolved.Clear();
         }
 
         /// <summary>
@@ -299,7 +302,7 @@ namespace Rubberduck.Parsing.Symbols
             var identifierName = callSiteContext.GetText();
             var callee = FindLocalScopeDeclaration(identifierName, localScope)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType)
+                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindProjectScopeDeclaration(identifierName);
 
             if (callee == null)
@@ -309,7 +312,7 @@ namespace Rubberduck.Parsing.Symbols
                 identifierName = callSiteContext.GetText();
                 callee = FindLocalScopeDeclaration(identifierName, localScope)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType)
+                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindProjectScopeDeclaration(identifierName);
             }
 
@@ -320,6 +323,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var reference = CreateReference(callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
             callee.AddReference(reference);
+            _alreadyResolved.Add(callSiteContext.Parent);
 
             if (fieldCall != null)
             {
@@ -362,6 +366,7 @@ namespace Rubberduck.Parsing.Symbols
             var identifierContext = fieldCall.ambiguousIdentifier();
             var reference = CreateReference(identifierContext, result, isAssignmentTarget, hasExplicitLetStatement);
             result.AddReference(reference);
+            _alreadyResolved.Add(fieldCall);
 
             return result;
         }
@@ -399,6 +404,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var parentReference = CreateReference(parent.Context, parent);
                 parent.AddReference(parentReference);
+                _alreadyResolved.Add(parent.Context);
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -440,6 +446,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var reference = CreateReference(identifierContext, callee);
             callee.AddReference(reference);
+            _alreadyResolved.Add(context);
 
             return callee;
         }
@@ -508,7 +515,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="identifierName">The name of the identifier to find.</param>
         /// <param name="localScope">The scope considered local.</param>
         /// <param name="accessorType">Disambiguates <see cref="DeclarationType.PropertyLet"/> and <see cref="DeclarationType.PropertySet"/> accessors.</param>
-        private Declaration FindModuleScopeProcedure(string identifierName, Declaration localScope, ContextAccessorType accessorType)
+        private Declaration FindModuleScopeProcedure(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool isAssignmentTarget = false)
         {
             if (localScope == null)
             {
@@ -516,17 +523,46 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var result = _declarations[identifierName].Where(item =>
-                item.ParentScope == localScope.ParentScope
-                && (item.DeclarationType == DeclarationType.Function
-                 || item.DeclarationType == DeclarationType.Procedure
-                 || (accessorType == ContextAccessorType.GetValueOrReference && item.DeclarationType == DeclarationType.PropertyGet)
-                 || ((accessorType == ContextAccessorType.AssignValue && item.DeclarationType.HasFlag(DeclarationType.PropertyLet) 
-                    && (localScope.DeclarationType == item.DeclarationType) || localScope.ParentScope != item.ParentScope)
-                  || (accessorType == ContextAccessorType.AssignReference && item.DeclarationType.HasFlag(DeclarationType.PropertySet)
-                    && localScope.DeclarationType == item.DeclarationType) || localScope.ParentScope != item.ParentScope)))
+                IsProcedure(item) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget))
                   .ToList();
 
             return result.SingleOrDefault();
+        }
+
+        private bool IsProcedure(Declaration item)
+        {
+            return item.DeclarationType == DeclarationType.Procedure
+                   || item.DeclarationType == DeclarationType.Function;
+        }
+
+        private bool IsPropertyAccessor(Declaration item, ContextAccessorType accessorType, Declaration localScope, bool isAssignmentTarget = false)
+        {
+            var isProperty = item.DeclarationType.HasFlag(DeclarationType.Property);
+            if (!isProperty)
+            {
+                return false;
+            }
+
+            if (item.Equals(localScope) && item.DeclarationType == DeclarationType.PropertyGet)
+            {
+                // we're resolving the getter's return value assignment
+                return true;
+            }
+            if(item.Equals(localScope))
+            {
+                // getter can't reference setter.. right?
+                return false;
+            }
+
+            return (accessorType == ContextAccessorType.AssignValue &&
+                    item.DeclarationType == DeclarationType.PropertyLet)
+                   ||
+                   (accessorType == ContextAccessorType.AssignReference &&
+                    item.DeclarationType == DeclarationType.PropertySet)
+                   ||
+                   (accessorType == ContextAccessorType.GetValueOrReference &&
+                    item.DeclarationType == DeclarationType.PropertyGet &&
+                    !isAssignmentTarget);
         }
 
         /// <summary>
@@ -543,31 +579,17 @@ namespace Rubberduck.Parsing.Symbols
                 || item.DeclarationType == DeclarationType.Module));
         }
 
-        /// <summary>
-        /// Finds a global (project) scope declaration for a qualified call.
-        /// </summary>
-        /// <param name="identifierName"></param>
-        /// <param name="moduleName"></param>
-        /// <returns></returns>
-        private Declaration FindProjectScopeDeclaration(string identifierName, string moduleName)
-        {
-            return _declarations[identifierName].SingleOrDefault(item =>
-                item.ComponentName == moduleName &&
-                (item.Accessibility == Accessibility.Public
-                || item.Accessibility == Accessibility.Global));
-        }
-
         #endregion
 
         #region IVBAListener overrides
 
-        public override void EnterICS_B_ProcedureCall(VBAParser.ICS_B_ProcedureCallContext context)
-        {
-            Resolve(context);
-        }
-
         public override void EnterICS_B_MemberProcedureCall(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
             var parentScope = Resolve(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
             var parentType = ResolveType(parentScope);
 
@@ -590,6 +612,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var reference = CreateReference(identifierContext, member);
                 member.AddReference(reference);
+                _alreadyResolved.Add(context);
             }
             
             var fieldCall = context.dictionaryCallStmt();
@@ -598,22 +621,70 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            Resolve(context, _currentScope);
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
+            try
+            {
+                Resolve(context, _currentScope);
+            }
+            catch (InvalidOperationException)
+            {
+                // more than a single match was found.
+            }
         }
 
         public override void EnterICS_S_ProcedureOrArrayCall(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
         {
-            Resolve(context, _currentScope);
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
+            try
+            {
+                Resolve(context, _currentScope);
+            }
+            catch (InvalidOperationException)
+            {
+                // more than a single match was found.
+            }
         }
 
         public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
         {
-            Resolve(context, _currentScope);
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
+            try
+            {
+                Resolve(context, _currentScope);
+            }
+            catch (InvalidOperationException)
+            {
+                // more than a single match was found.
+            }
         }
 
         public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)
         {
-            Resolve(context, _currentScope);
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
+            try
+            {
+                Resolve(context, _currentScope);
+            }
+            catch (InvalidOperationException)
+            {
+                // more than a single match was found.
+            }
         }
 
         public override void EnterLetStmt(VBAParser.LetStmtContext context)
