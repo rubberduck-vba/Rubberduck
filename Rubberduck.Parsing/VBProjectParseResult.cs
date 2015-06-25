@@ -49,9 +49,16 @@ namespace Rubberduck.Parsing
             {
                 OnProgress(componentParseResult);
 
-                var listener = new IdentifierReferenceListener(componentParseResult.QualifiedName, _declarations);
-                var walker = new ParseTreeWalker();
-                walker.Walk(listener, componentParseResult.ParseTree);
+                try
+                {
+                    var listener = new IdentifierReferenceListener(componentParseResult.QualifiedName, _declarations);
+                    var walker = new ParseTreeWalker();
+                    walker.Walk(listener, componentParseResult.ParseTree);
+                }
+                catch (InvalidOperationException)
+                {
+                    // could not resolve all identifier references in this module.
+                }
             }
         }
 
