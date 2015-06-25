@@ -173,6 +173,7 @@ namespace Rubberduck.Parsing.Symbols
             if (qualifier != null)
             {
                 qualifier.AddReference(reference);
+                _alreadyResolved.Add(reference.Context);
             }
             _withBlockQualifiers.Push(qualifier); // note: pushes null if unresolved
         }
@@ -601,7 +602,8 @@ namespace Rubberduck.Parsing.Symbols
             if (_withBlockQualifiers.Any())
             {
                 parentType = _withBlockQualifiers.Peek();
-                parentScope = Resolve(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference);
+                parentScope = Resolve(context.implicitCallStmt_InStmt(), parentType, ContextAccessorType.GetValueOrReference)
+                            ?? Resolve(context.ambiguousIdentifier(), parentType);
                 parentType = ResolveType(parentScope);
             }
             if (parentType == null)
