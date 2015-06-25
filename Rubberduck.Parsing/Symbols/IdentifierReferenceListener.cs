@@ -583,6 +583,11 @@ namespace Rubberduck.Parsing.Symbols
 
         #region IVBAListener overrides
 
+        public override void EnterICS_B_ProcedureCall(VBAParser.ICS_B_ProcedureCallContext context)
+        {
+            Resolve(context.certainIdentifier(), _currentScope);
+        }
+
         public override void EnterICS_B_MemberProcedureCall(VBAParser.ICS_B_MemberProcedureCallContext context)
         {
             if (_alreadyResolved.Contains(context))

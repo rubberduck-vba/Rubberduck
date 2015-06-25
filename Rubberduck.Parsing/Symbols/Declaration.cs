@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             if (reference.Context.Parent != _context 
-                && !_references.Select(r => r.Context).Contains(reference.Context)
+                && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
                 && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName 
                     && r.Selection.StartLine == reference.Selection.StartLine
                     && r.Selection.EndLine == reference.Selection.EndLine
