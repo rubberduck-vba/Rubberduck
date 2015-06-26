@@ -49,6 +49,7 @@ namespace Rubberduck.Parsing.Symbols
                 DeclarationType.PropertySet
             });
 
+            SetCurrentScope();
         }
 
         private Declaration _currentScope;
@@ -196,15 +197,13 @@ namespace Rubberduck.Parsing.Symbols
             // look in current project first.
             var result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
                 _moduleTypes.Contains(item.DeclarationType)
-                && item.ProjectName == _currentScope.ProjectName
-                && _moduleTypes.Contains(item.DeclarationType));
+                && item.ProjectName == _currentScope.ProjectName);
 
             if (result == null)
             {
                 // look in all projects (including VbaStdLib library).
                 result = _declarations[parent.AsTypeName].SingleOrDefault(item =>
-                    _moduleTypes.Contains(item.DeclarationType)
-                    && _moduleTypes.Contains(item.DeclarationType));
+                    _moduleTypes.Contains(item.DeclarationType));
             }
 
             return result;

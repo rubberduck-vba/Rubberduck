@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
@@ -45,6 +46,23 @@ namespace Rubberduck.Parsing
 
         public void Resolve()
         {
+            // make a first pass to identify all interface implementations - resolver needs this to disembiguate members.
+            foreach (var componentParseResult in _parseResults)
+            {
+                try
+                {
+                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+                    var listener = new InterfaceImplementationListener(resolver);
+                    var walker = new ParseTreeWalker();
+                    walker.Walk(listener, componentParseResult.ParseTree);
+                }
+                catch (WalkerCancelledException)
+                {
+                    // exception is purposely thrown when walker exits the module's declarations section.
+                }
+            }
+
+            // second pass; resolve all identifier usages
             foreach (var componentParseResult in _parseResults)
             {
                 OnProgress(componentParseResult);
