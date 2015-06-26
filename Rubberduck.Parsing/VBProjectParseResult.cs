@@ -51,7 +51,8 @@ namespace Rubberduck.Parsing
 
                 try
                 {
-                    var listener = new IdentifierReferenceListener(componentParseResult.QualifiedName, _declarations);
+                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+                    var listener = new IdentifierReferenceListener(resolver);
                     var walker = new ParseTreeWalker();
                     walker.Walk(listener, componentParseResult.ParseTree);
                 }
