@@ -410,8 +410,29 @@ namespace Rubberduck.Parsing.Symbols
             return callee;
         }
 
+        private void ResolveIdentifier(VBAParser.AmbiguousIdentifierContext context)
+        {
+            if (context == null)
+            {
+                return;
+            }
+
+            var identifier = ResolveInternal(context, _currentScope);
+            if (identifier == null)
+            {
+                return;
+            }
+
+            identifier.AddReference(CreateReference(context, identifier));
+        }
+
         public void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
         {
+            if (_alreadyResolved.Contains(context))
+            {
+                return;
+            }
+
             ResolveInternal(context);
         }
 
@@ -454,58 +475,27 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            try
-            {
-                ResolveInternal(context, _currentScope);
-            }
-            catch (InvalidOperationException)
-            {
-                // bug: more than a single match was found.
-            }
+            TryResolve(context);
         }
 
         public void Resolve(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
         {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            try
-            {
-                ResolveInternal(context, _currentScope);
-            }
-            catch (InvalidOperationException)
-            {
-                // bug: more than a single match was found.
-            }
+            TryResolve(context);
         }
 
         public void Resolve(VBAParser.ICS_S_MembersCallContext context)
         {
-            if (_alreadyResolved.Contains(context))
-            {
-                return;
-            }
-
-            try
-            {
-                ResolveInternal(context, _currentScope);
-            }
-            catch (InvalidOperationException)
-            {
-                // bug: more than a single match was found.
-            }
+            TryResolve(context);
         }
 
         public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
         {
-            if (_alreadyResolved.Contains(context))
+            TryResolve(context);
+        }
+
+        private void TryResolve<TContext>(TContext context) where TContext : ParserRuleContext
+        {
+            if (context == null || _alreadyResolved.Contains(context))
             {
                 return;
             }
@@ -598,56 +588,32 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.ResumeStmtContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.FileNumberContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            if (identifierContext == null)
-            {
-                return;
-            }
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.ArgDefaultValueContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            if (identifierContext == null)
-            {
-                return;
-            }
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.FieldLengthContext context)
         {
-            var identifierContext = context.ambiguousIdentifier();
-            if (identifierContext == null)
-            {
-                return;
-            }
-            var identifier = ResolveInternal(identifierContext, _currentScope);
-            identifier.AddReference(CreateReference(identifierContext, identifier));
+            ResolveIdentifier(context.ambiguousIdentifier());
         }
 
         public void Resolve(VBAParser.VsAssignContext context)
@@ -706,6 +672,15 @@ namespace Rubberduck.Parsing.Symbols
             return result.SingleOrDefault();
         }
 
+        private Declaration FindProjectScopeDeclaration(string identifierName)
+        {
+            // assume unqualified variable call, i.e. unique declaration.
+            return _declarations[identifierName].SingleOrDefault(item =>
+                (item.Accessibility == Accessibility.Public
+                 || item.Accessibility == Accessibility.Global
+                 || _moduleTypes.Contains(item.DeclarationType)));
+        }
+
         private bool IsProcedure(Declaration item)
         {
             return item.DeclarationType == DeclarationType.Procedure
@@ -740,15 +715,6 @@ namespace Rubberduck.Parsing.Symbols
                    (accessorType == ContextAccessorType.GetValueOrReference &&
                     item.DeclarationType == DeclarationType.PropertyGet &&
                     !isAssignmentTarget);
-        }
-
-        private Declaration FindProjectScopeDeclaration(string identifierName)
-        {
-            // assume unqualified variable call, i.e. unique declaration.
-            return _declarations[identifierName].SingleOrDefault(item =>
-                (item.Accessibility == Accessibility.Public
-                 || item.Accessibility == Accessibility.Global
-                 || item.DeclarationType == DeclarationType.Module));
         }
     }
 }
