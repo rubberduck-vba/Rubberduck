@@ -19,8 +19,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Declarations _declarations;
         private readonly QualifiedModuleName _qualifiedModuleName;
 
-        private readonly HashSet<DeclarationType> _moduleTypes;
-        private readonly HashSet<DeclarationType> _memberTypes;
+        private readonly IReadOnlyList<DeclarationType> _moduleTypes;
+        private readonly IReadOnlyList<DeclarationType> _memberTypes;
 
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
@@ -33,14 +33,14 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockQualifiers = new Stack<Declaration>();
             _alreadyResolved = new HashSet<RuleContext>();
 
-            _moduleTypes = new HashSet<DeclarationType>(new[]
+            _moduleTypes = new List<DeclarationType>(new[]
             {
                 DeclarationType.Module, 
                 DeclarationType.Class,
                 DeclarationType.Project
             });
 
-            _memberTypes = new HashSet<DeclarationType>(new[]
+            _memberTypes = new List<DeclarationType>(new[]
             {
                 DeclarationType.Function, 
                 DeclarationType.Procedure, 
@@ -665,11 +665,8 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
-            var result = _declarations[identifierName].Where(item =>
-                IsProcedure(item) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget))
-                .ToList();
-
-            return result.SingleOrDefault();
+            return _declarations[identifierName].SingleOrDefault(item =>
+                IsProcedure(item) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget));
         }
 
         private Declaration FindProjectScopeDeclaration(string identifierName)
