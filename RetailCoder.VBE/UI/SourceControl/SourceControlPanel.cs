@@ -13,7 +13,7 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
-        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnSyncedCommitsView commitsView, ISettingsView settingsView)
+        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnsyncedCommitsView commitsView, ISettingsView settingsView)
             :this()
         {
             ((Control)branchesView).Dock = DockStyle.Fill;
