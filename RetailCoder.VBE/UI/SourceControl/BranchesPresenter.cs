@@ -6,20 +6,17 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IBranchesPresenter : IProviderPresenter
+    public interface IBranchesPresenter : IProviderPresenter, IRefreshable
     {
-        void RefreshView();
         event EventHandler<EventArgs> BranchChanged;
     }
 
-    public class BranchesPresenter : IBranchesPresenter
+    public class BranchesPresenter : ProviderPresenterBase, IBranchesPresenter
     {
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
         private readonly IDeleteBranchView _deleteView;
         private readonly IMergeView _mergeView;
-
-        public ISourceControlProvider Provider { get; set; }
 
         public event EventHandler<EventArgs> BranchChanged;
 
@@ -78,7 +75,10 @@ namespace Rubberduck.UI.SourceControl
             catch (SourceControlException ex)
             {
                 //todo: find a better way of displaying these errors
+                //todo: remove messagebox
                 MessageBox.Show(ex.InnerException.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                RaiseActionFailedEvent(ex);
             }
 
             if (BranchChanged != null)
@@ -146,7 +146,16 @@ namespace Rubberduck.UI.SourceControl
         private void OnDeleteBranch(object sender, BranchDeleteArgs e)
         {
             _deleteView.Hide();
-            Provider.DeleteBranch(e.BranchName);
+
+            try
+            {
+                Provider.DeleteBranch(e.BranchName);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
+
             RefreshView();
         }
 
@@ -165,7 +174,16 @@ namespace Rubberduck.UI.SourceControl
         private void OnCreateBranch(object sender, BranchCreateArgs e)
         {
             HideCreateBranchView();
-            this.Provider.CreateBranch(e.BranchName);
+
+            try
+            {
+                this.Provider.CreateBranch(e.BranchName);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }            
+            
             RefreshView();
         }
 
@@ -212,6 +230,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 _mergeView.Status = MergeStatus.Failure;
                 _mergeView.StatusText = ex.Message + ": " + ex.InnerException.Message;
+                //todo: raise action failed event?
             }
         }
 
