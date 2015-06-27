@@ -182,6 +182,7 @@
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />
     <Compile Include="SourceControl\SCPresenterTests.cs" />
     <Compile Include="SourceControl\SettingsPresenterTests.cs" />
+    <Compile Include="SourceControl\UnsyncedCommitsPresenterTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTests.cs" />

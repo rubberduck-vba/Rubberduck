@@ -409,7 +409,7 @@
     <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\IUnsyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\MergeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -451,6 +451,7 @@
     <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
       <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />

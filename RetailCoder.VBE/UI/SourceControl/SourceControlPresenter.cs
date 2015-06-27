@@ -12,6 +12,8 @@ namespace Rubberduck.UI.SourceControl
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
         private readonly ISettingsPresenter _settingsPresenter;
+        private readonly IUnsyncedCommitsPresenter _unsyncedPresenter;
+
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly ISourceControlView _view;
@@ -21,17 +23,7 @@ namespace Rubberduck.UI.SourceControl
         private ISourceControlProvider _provider;
 
         public SourceControlPresenter
-            (
-                VBE vbe, 
-                AddIn addin, 
-                IConfigurationService<SourceControlConfiguration> configService,
-                ISourceControlView view, 
-                IChangesPresenter changesPresenter,
-                IBranchesPresenter branchesPresenter,
-                ISettingsPresenter settingsPresenter,
-                IFolderBrowserFactory folderBrowserFactory,
-                ISourceControlProviderFactory providerFactory
-            ) 
+            (VBE vbe, AddIn addin, IConfigurationService<SourceControlConfiguration> configService, ISourceControlView view, IChangesPresenter changesPresenter, IBranchesPresenter branchesPresenter, ISettingsPresenter settingsPresenter, IUnsyncedCommitsPresenter unsyncedPresenter, IFolderBrowserFactory folderBrowserFactory, ISourceControlProviderFactory providerFactory) 
             : base(vbe, addin, view)
         {
             _configService = configService;
@@ -41,6 +33,8 @@ namespace Rubberduck.UI.SourceControl
             
             _branchesPresenter = branchesPresenter;
             _settingsPresenter = settingsPresenter;
+            _unsyncedPresenter = unsyncedPresenter;
+
             _folderBrowserFactory = folderBrowserFactory;
             _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
@@ -150,6 +144,7 @@ namespace Rubberduck.UI.SourceControl
             _branchesPresenter.Provider = provider;
             _changesPresenter.Provider = provider;
             _settingsPresenter.Provider = provider;
+            _unsyncedPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
             _changesPresenter.Refresh();

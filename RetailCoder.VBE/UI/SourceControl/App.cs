@@ -13,7 +13,7 @@ namespace Rubberduck.UI.SourceControl
                     AddIn addIn, 
                     IConfigurationService<SourceControlConfiguration> configService, 
                     IChangesView changesView, 
-                    IUnSyncedCommitsView unsyncedCommitsView, 
+                    IUnsyncedCommitsView unsyncedCommitsView, 
                     ISettingsView settingsView,
                     IBranchesView branchesView, 
                     ICreateBranchView createBranchView,
@@ -25,6 +25,7 @@ namespace Rubberduck.UI.SourceControl
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, deleteBranchView, mergeView);
             var settingsPresenter = new SettingsPresenter(settingsView, configService, new DialogFactory());
+            var unsyncedPresenter = new UnsyncedCommitsPresenter(unsyncedCommitsView);
 
             _sourceControlPresenter = 
                 new SourceControlPresenter
@@ -36,6 +37,7 @@ namespace Rubberduck.UI.SourceControl
                     changesPresenter, 
                     branchesPresenter, 
                     settingsPresenter, 
+                    unsyncedPresenter,
                     new DialogFactory(), 
                     new SourceControlProviderFactory()
                 );
