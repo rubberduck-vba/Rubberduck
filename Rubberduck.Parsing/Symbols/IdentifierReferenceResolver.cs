@@ -265,7 +265,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // localScope is a UDT
                 var udt = ResolveType(localScope);
-                callee = _declarations[identifierName].SingleOrDefault(item => item.Context.Parent == udt.Context);
+                callee = _declarations[identifierName].SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
             }
             else
             {
@@ -373,8 +373,11 @@ namespace Rubberduck.Parsing.Symbols
             if (parent != null)
             {
                 var parentReference = CreateReference(parent.Context, parent);
-                parent.AddReference(parentReference);
-                _alreadyResolved.Add(parentReference.Context);
+                if (parentReference != null)
+                {
+                    parent.AddReference(parentReference);
+                    _alreadyResolved.Add(parentReference.Context);
+                }
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -522,7 +525,7 @@ namespace Rubberduck.Parsing.Symbols
             var parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
                       ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
 
-            if (parent != null)
+            if (parent != null && parent.Context != null)
             {
                 var identifierContext = ((dynamic)parent.Context).ambiguousIdentifier() as VBAParser.AmbiguousIdentifierContext;
 
