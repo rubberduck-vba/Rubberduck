@@ -84,12 +84,18 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterICS_S_VariableOrProcedureCall(VBAParser.ICS_S_VariableOrProcedureCallContext context)
         {
-            _resolver.Resolve(context);
+            if (context.Parent.GetType() != typeof (VBAParser.ICS_S_MemberCallContext))
+            {
+                _resolver.Resolve(context);
+            }
         }
 
         public override void EnterICS_S_ProcedureOrArrayCall(VBAParser.ICS_S_ProcedureOrArrayCallContext context)
         {
-            _resolver.Resolve(context);
+            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
+            {
+                _resolver.Resolve(context);
+            }
         }
 
         public override void EnterICS_S_MembersCall(VBAParser.ICS_S_MembersCallContext context)
@@ -99,7 +105,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterICS_S_DictionaryCall(VBAParser.ICS_S_DictionaryCallContext context)
         {
-            _resolver.Resolve(context);
+            if (context.Parent.GetType() != typeof(VBAParser.ICS_S_MemberCallContext))
+            {
+                _resolver.Resolve(context);
+            }
         }
 
         public override void EnterLetStmt(VBAParser.LetStmtContext context)

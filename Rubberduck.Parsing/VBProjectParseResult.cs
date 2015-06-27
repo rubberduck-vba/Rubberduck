@@ -47,20 +47,20 @@ namespace Rubberduck.Parsing
         public void Resolve()
         {
             // make a first pass to identify all interface implementations - resolver needs this to disembiguate members.
-            foreach (var componentParseResult in _parseResults)
-            {
-                try
-                {
-                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
-                    var listener = new InterfaceImplementationListener(resolver);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, componentParseResult.ParseTree);
-                }
-                catch (WalkerCancelledException)
-                {
-                    // exception is purposely thrown when walker exits the module's declarations section.
-                }
-            }
+            //foreach (var componentParseResult in _parseResults)
+            //{
+            //    try
+            //    {
+            //        var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+            //        var listener = new InterfaceImplementationListener(resolver);
+            //        var walker = new ParseTreeWalker();
+            //        walker.Walk(listener, componentParseResult.ParseTree);
+            //    }
+            //    catch (WalkerCancelledException)
+            //    {
+            //        // exception is purposely thrown when walker exits the module's declarations section.
+            //    }
+            //}
 
             // second pass; resolve all identifier usages
             foreach (var componentParseResult in _parseResults)
