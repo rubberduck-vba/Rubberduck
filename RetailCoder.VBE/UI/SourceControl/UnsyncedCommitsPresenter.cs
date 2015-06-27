@@ -7,10 +7,8 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IUnsyncedCommitsPresenter
+    public interface IUnsyncedCommitsPresenter : IProviderPresenter, IRefreshable
     {
-        ISourceControlProvider Provider { get; set; }
-        void Refresh();
     }
 
     public class UnsyncedCommitsPresenter : IUnsyncedCommitsPresenter
@@ -51,7 +49,7 @@ namespace Rubberduck.UI.SourceControl
             Provider.Push();
         }
 
-        public void Refresh()
+        public void RefreshView()
         {
             if (this.Provider != null)
             {

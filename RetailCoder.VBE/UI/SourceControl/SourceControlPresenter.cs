@@ -48,7 +48,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void _branchesPresenter_BranchChanged(object sender, EventArgs e)
         {
-            _changesPresenter.Refresh();
+            _changesPresenter.RefreshView();
         }
 
         private void OnInitNewRepository(object sender, EventArgs e)
@@ -147,7 +147,7 @@ namespace Rubberduck.UI.SourceControl
             _unsyncedPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
-            _changesPresenter.Refresh();
+            _changesPresenter.RefreshView();
             // Purposely not refreshing settingsPresenter.
             //  Settings it's provider doesn't affect it's view.
         }

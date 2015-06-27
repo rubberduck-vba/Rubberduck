@@ -93,7 +93,7 @@ namespace RubberduckTests.SourceControl
         private void VerifyOffline()
         {
             Assert.AreEqual("Offline", _view.Object.Status);
-            _changesPresenter.Verify(c => c.Refresh(), Times.Never);
+            _changesPresenter.Verify(c => c.RefreshView(), Times.Never);
             _branchesPresenter.Verify(b => b.RefreshView(), Times.Never);
         }
 
@@ -178,7 +178,7 @@ namespace RubberduckTests.SourceControl
                 _view.Raise(v => v.RefreshData += null, new EventArgs());
 
             //assert
-            _changesPresenter.Verify(c => c.Refresh(), Times.Once);
+            _changesPresenter.Verify(c => c.RefreshView(), Times.Once);
         }
 
         [TestMethod]

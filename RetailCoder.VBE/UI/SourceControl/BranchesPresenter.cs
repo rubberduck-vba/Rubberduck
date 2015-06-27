@@ -6,9 +6,8 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IBranchesPresenter : IProviderPresenter
+    public interface IBranchesPresenter : IProviderPresenter, IRefreshable
     {
-        void RefreshView();
         event EventHandler<EventArgs> BranchChanged;
     }
 

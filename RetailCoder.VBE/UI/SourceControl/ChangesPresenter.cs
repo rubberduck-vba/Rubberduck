@@ -5,9 +5,8 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IChangesPresenter : IProviderPresenter
+    public interface IChangesPresenter : IProviderPresenter, IRefreshable
     {
-        void Refresh();
         void Commit();
     }
 
@@ -47,7 +46,7 @@ namespace Rubberduck.UI.SourceControl
             return !string.IsNullOrEmpty(_view.CommitMessage) && _view.CommitAction != CommitAction.Unset;
         }
 
-        public void Refresh()
+        public void RefreshView()
         {
             var fileStats = this.Provider.Status().ToList();
 
@@ -86,7 +85,7 @@ namespace Rubberduck.UI.SourceControl
         {
             Commit();
             _view.CommitMessage = string.Empty;
-            Refresh();
+            RefreshView();
         }
     }
 }

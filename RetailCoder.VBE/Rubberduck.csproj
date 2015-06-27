@@ -407,9 +407,10 @@
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
     <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\IUnsyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\MergeForm.cs">
       <SubType>Form</SubType>
     </Compile>

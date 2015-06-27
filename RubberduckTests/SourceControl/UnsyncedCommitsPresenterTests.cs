@@ -44,7 +44,7 @@ namespace RubberduckTests.SourceControl
             //Arrange
 
             //Act
-            _presenter.Refresh();
+            _presenter.RefreshView();
 
             //Assert
             Assert.AreEqual(_initialBranch.Name, _view.Object.CurrentBranch);
@@ -56,7 +56,7 @@ namespace RubberduckTests.SourceControl
             //Arrange
 
             //Act
-            _presenter.Refresh();
+            _presenter.RefreshView();
 
             //Assert
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), _view.Object.IncomingCommits.ToList());
@@ -68,7 +68,7 @@ namespace RubberduckTests.SourceControl
             //Arrange
 
             //Act
-            _presenter.Refresh();
+            _presenter.RefreshView();
 
             //Assert
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedLocalCommits.ToList(), _view.Object.OutgoingCommits.ToList());
