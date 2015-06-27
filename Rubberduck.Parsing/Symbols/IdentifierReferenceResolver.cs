@@ -513,7 +513,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ICS_S_MembersCallContext context)
         {
-            if (context == null)
+            if (context == null || _alreadyResolved.Contains(context))
             {
                 return;
             }
@@ -559,6 +559,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             ResolveInternal(fieldCall, parent);
+            _alreadyResolved.Add(context);
         }
 
         public void Resolve(VBAParser.ICS_S_DictionaryCallContext context)
@@ -790,10 +791,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsProcedure(Declaration item, Declaration localScope)
         {
-            return (item.DeclarationType == DeclarationType.Procedure
-                   || item.DeclarationType == DeclarationType.Function)
-                   && (_moduleTypes.Contains(localScope.DeclarationType)
-                    && item.ParentScope == localScope.Scope);
+            var isProcedure = item.DeclarationType == DeclarationType.Procedure
+                              || item.DeclarationType == DeclarationType.Function;
+            var isSameModule = item.Project == localScope.Project
+                               && item.ComponentName == localScope.ComponentName;
+            return isProcedure && isSameModule;
         }
 
         private bool IsPropertyAccessor(Declaration item, ContextAccessorType accessorType, Declaration localScope, bool isAssignmentTarget = false)
