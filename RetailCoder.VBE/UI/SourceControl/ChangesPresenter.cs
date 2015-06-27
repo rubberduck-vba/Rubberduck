@@ -10,11 +10,9 @@ namespace Rubberduck.UI.SourceControl
         void Commit();
     }
 
-    public class ChangesPresenter : IChangesPresenter
+    public class ChangesPresenter : ProviderPresenterBase, IChangesPresenter
     {
         private readonly IChangesView _view;
-
-        public ISourceControlProvider Provider { get; set; }
 
         public ChangesPresenter(IChangesView view)
         {
@@ -66,18 +64,25 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            this.Provider.Stage(changes);
-            this.Provider.Commit(_view.CommitMessage);
-
-            if (_view.CommitAction == CommitAction.CommitAndSync)
+            try
             {
-                this.Provider.Pull();
-                this.Provider.Push();
+                this.Provider.Stage(changes);
+                this.Provider.Commit(_view.CommitMessage);
+
+                if (_view.CommitAction == CommitAction.CommitAndSync)
+                {
+                    this.Provider.Pull();
+                    this.Provider.Push();
+                }
+
+                if (_view.CommitAction == CommitAction.CommitAndPush)
+                {
+                    this.Provider.Push();
+                }
             }
-
-            if (_view.CommitAction == CommitAction.CommitAndPush)
+            catch(SourceControlException ex)
             {
-                this.Provider.Push();
+                RaiseActionFailedEvent(ex);
             }
         }
 

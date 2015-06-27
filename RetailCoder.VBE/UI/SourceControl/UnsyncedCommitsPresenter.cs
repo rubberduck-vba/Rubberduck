@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -11,11 +7,9 @@ namespace Rubberduck.UI.SourceControl
     {
     }
 
-    public class UnsyncedCommitsPresenter : IUnsyncedCommitsPresenter
+    public class UnsyncedCommitsPresenter : ProviderPresenterBase, IUnsyncedCommitsPresenter
     {
         private readonly IUnsyncedCommitsView _view;
-
-        public ISourceControlProvider Provider { get; set; }
 
         public UnsyncedCommitsPresenter(IUnsyncedCommitsView view)
         {
@@ -29,24 +23,53 @@ namespace Rubberduck.UI.SourceControl
 
         void OnPush(object sender, EventArgs e)
         {
-            Provider.Push();
+            try
+            {
+                Provider.Push();
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
         }
 
         void OnPull(object sender, EventArgs e)
         {
-            Provider.Pull();
+            try
+            {
+                Provider.Pull();
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
         }
 
         void OnFetch(object sender, EventArgs e)
         {
-            Provider.Fetch();
+            try
+            {
+                Provider.Fetch();
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
+            
             _view.IncomingCommits = Provider.UnsyncedRemoteCommits;
         }
 
         void OnSync(object sender, EventArgs e)
         {
-            Provider.Pull();
-            Provider.Push();
+            try
+            {
+                Provider.Pull();
+                Provider.Push();
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
         }
 
         public void RefreshView()

@@ -290,6 +290,7 @@
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -406,7 +407,7 @@
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
-    <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
     <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
