@@ -43,8 +43,17 @@ namespace Rubberduck.UI.SourceControl
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.SettingsTab = new System.Windows.Forms.TabPage();
+            this.MainContainer = new System.Windows.Forms.SplitContainer();
+            this.ActionFailedMessage = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.DismissMessageButton = new System.Windows.Forms.Button();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).BeginInit();
+            this.MainContainer.Panel1.SuspendLayout();
+            this.MainContainer.Panel2.SuspendLayout();
+            this.MainContainer.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SourceControlToolbar
@@ -116,7 +125,7 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlTabs.Controls.Add(this.UnsyncedCommitsTab);
             this.SourceControlTabs.Controls.Add(this.SettingsTab);
             this.SourceControlTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SourceControlTabs.Location = new System.Drawing.Point(0, 25);
+            this.SourceControlTabs.Location = new System.Drawing.Point(0, 0);
             this.SourceControlTabs.Name = "SourceControlTabs";
             this.SourceControlTabs.SelectedIndex = 0;
             this.SourceControlTabs.Size = new System.Drawing.Size(383, 449);
@@ -162,11 +171,58 @@ namespace Rubberduck.UI.SourceControl
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;
             // 
+            // MainContainer
+            // 
+            this.MainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainContainer.Location = new System.Drawing.Point(0, 25);
+            this.MainContainer.Name = "MainContainer";
+            this.MainContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // MainContainer.Panel1
+            // 
+            this.MainContainer.Panel1.Controls.Add(this.panel1);
+            this.MainContainer.Panel1Collapsed = true;
+            // 
+            // MainContainer.Panel2
+            // 
+            this.MainContainer.Panel2.Controls.Add(this.SourceControlTabs);
+            this.MainContainer.Size = new System.Drawing.Size(383, 449);
+            this.MainContainer.SplitterDistance = 118;
+            this.MainContainer.TabIndex = 2;
+            // 
+            // ActionFailedMessage
+            // 
+            this.ActionFailedMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.ActionFailedMessage.Location = new System.Drawing.Point(3, 0);
+            this.ActionFailedMessage.Name = "ActionFailedMessage";
+            this.ActionFailedMessage.Size = new System.Drawing.Size(376, 88);
+            this.ActionFailedMessage.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.DismissMessageButton);
+            this.panel1.Controls.Add(this.ActionFailedMessage);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(383, 118);
+            this.panel1.TabIndex = 0;
+            // 
+            // DismissMessageButton
+            // 
+            this.DismissMessageButton.Location = new System.Drawing.Point(0, 91);
+            this.DismissMessageButton.Name = "DismissMessageButton";
+            this.DismissMessageButton.Size = new System.Drawing.Size(379, 24);
+            this.DismissMessageButton.TabIndex = 1;
+            this.DismissMessageButton.Text = "Dismiss";
+            this.DismissMessageButton.UseVisualStyleBackColor = true;
+            this.DismissMessageButton.Click += new System.EventHandler(this.DismissMessageButton_Click);
+            // 
             // SourceControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.SourceControlTabs);
+            this.Controls.Add(this.MainContainer);
             this.Controls.Add(this.SourceControlToolbar);
             this.MinimumSize = new System.Drawing.Size(255, 255);
             this.Name = "SourceControlPanel";
@@ -174,6 +230,11 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlToolbar.ResumeLayout(false);
             this.SourceControlToolbar.PerformLayout();
             this.SourceControlTabs.ResumeLayout(false);
+            this.MainContainer.Panel1.ResumeLayout(false);
+            this.MainContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).EndInit();
+            this.MainContainer.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,5 +253,9 @@ namespace Rubberduck.UI.SourceControl
         private ToolStripLabel StatusMessage;
         private ToolStripButton OpenWorkingFolderButton;
         private ToolStripButton InitRepoButton;
+        private SplitContainer MainContainer;
+        private Label ActionFailedMessage;
+        private Panel panel1;
+        private Button DismissMessageButton;
     }
 }

@@ -569,5 +569,72 @@ namespace RubberduckTests.SourceControl
             //assert
             _provider.Verify(git => git.Checkout(It.IsAny<string>()),Times.Never);
         }
+
+        [TestMethod]
+        public void OnBranchChange_WhenCheckoutFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Checkout(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            _view.SetupProperty(v => v.Current, "master");
+
+            //act
+            _view.Raise(v => v.SelectedBranchChanged += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void OnDeleteBranch_WhenDeleteFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            var branchName = "dev";
+            _provider.Setup(p => p.DeleteBranch(It.Is<string>(b => b == branchName)))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _deleteView.Raise(v => v.Confirm += null, new BranchDeleteArgs(branchName));
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void OnCreateBranch_WhenCreateFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            var branchName = "dev";
+            _provider.Setup(p => p.CreateBranch(It.Is<string>(b => b == branchName)))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _createView.Raise(v => v.Confirm += null, new BranchCreateArgs(branchName));
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
     }
 }

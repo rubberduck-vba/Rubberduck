@@ -30,10 +30,16 @@ namespace Rubberduck.UI.SourceControl
             _config = _configService.LoadConfiguration();
 
             _changesPresenter = changesPresenter;
+            _changesPresenter.ActionFailed += OnActionFailed;
             
             _branchesPresenter = branchesPresenter;
+            _branchesPresenter.ActionFailed += OnActionFailed;
+
             _settingsPresenter = settingsPresenter;
+            _settingsPresenter.ActionFailed += OnActionFailed;
+
             _unsyncedPresenter = unsyncedPresenter;
+            _unsyncedPresenter.ActionFailed += OnActionFailed;
 
             _folderBrowserFactory = folderBrowserFactory;
             _providerFactory = providerFactory;
@@ -44,6 +50,17 @@ namespace Rubberduck.UI.SourceControl
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+            _view.DismissMessage += OnDismissMessage;
+        }
+
+        private void OnDismissMessage(object sender, EventArgs eventArgs)
+        {
+            _view.FailedActionMessageVisible = false;
+        }
+
+        private void OnActionFailed(object sender, ActionFailedEventArgs e)
+        {
+            ShowActionFailedMessage(e.Title, e.Message);
         }
 
         private void _branchesPresenter_BranchChanged(object sender, EventArgs e)
@@ -90,10 +107,9 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _provider = _providerFactory.CreateProvider(project, repo);
                 }
-                catch (SourceControlException)
+                catch (SourceControlException ex)
                 {
-                    MessageBox.Show(RubberduckUI.SourceControl_NoRepoFound, RubberduckUI.SourceControlPanel_Caption,
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ShowActionFailedMessage(ex.Message, ex.InnerException.Message);
                     return;
                 }
 
@@ -137,6 +153,12 @@ namespace Rubberduck.UI.SourceControl
             SetChildPresenterSourceControlProviders(_provider);
 
             _view.Status = RubberduckUI.Online;
+        }
+
+        private void ShowActionFailedMessage(string title, string message)
+        {
+            _view.FailedActionMessageVisible = true;
+            _view.FailedActionMessage = string.Format("{0}{1}{2}", title, Environment.NewLine, message);
         }
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)

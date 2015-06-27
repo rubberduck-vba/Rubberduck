@@ -74,10 +74,6 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //todo: find a better way of displaying these errors
-                //todo: remove messagebox
-                MessageBox.Show(ex.InnerException.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
-
                 RaiseActionFailedEvent(ex);
             }
 
@@ -129,6 +125,7 @@ namespace Rubberduck.UI.SourceControl
         private void OnShowDeleteBranchView(object sender, EventArgs e)
         {
             if (_view.Local == null) { return; }
+
             _deleteView.Branches = _view.Local;
             _deleteView.Show();
         }
