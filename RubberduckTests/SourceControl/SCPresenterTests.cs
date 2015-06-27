@@ -31,7 +31,8 @@ namespace RubberduckTests.SourceControl
         private Mock<IChangesPresenter> _changesPresenter;
         private Mock<IBranchesPresenter> _branchesPresenter;
         private Mock<ISettingsPresenter> _settingsPresenter;
-
+        private Mock<IUnsyncedCommitsPresenter> _unsyncedPresenter;
+        
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
@@ -53,6 +54,7 @@ namespace RubberduckTests.SourceControl
             _changesPresenter = new Mock<IChangesPresenter>();
             _branchesPresenter = new Mock<IBranchesPresenter>();
             _settingsPresenter = new Mock<ISettingsPresenter>();
+            _unsyncedPresenter = new Mock<IUnsyncedCommitsPresenter>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
 
@@ -77,7 +79,7 @@ namespace RubberduckTests.SourceControl
         {
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
-                _settingsPresenter.Object,
+                _settingsPresenter.Object, _unsyncedPresenter.Object,
                 _folderBrowserFactory.Object, _providerFactory.Object);
             return presenter;
         }
@@ -98,8 +100,9 @@ namespace RubberduckTests.SourceControl
         private void VerifyChildPresentersHaveProviders()
         {
             Assert.IsNotNull(_settingsPresenter.Object.Provider, "_settingsPresenter.Provider was null");
-            Assert.IsNotNull(_branchesPresenter, "_branchesPresenter.Provider was null");
-            Assert.IsNotNull(_changesPresenter, "_changesPresenter.Provider was null");
+            Assert.IsNotNull(_branchesPresenter.Object.Provider, "_branchesPresenter.Provider was null");
+            Assert.IsNotNull(_changesPresenter.Object.Provider, "_changesPresenter.Provider was null");
+            Assert.IsNotNull(_unsyncedPresenter.Object.Provider, "_unsyncedPresenter.Object.Provider was null");
         }
 
         [TestMethod]
@@ -131,7 +134,7 @@ namespace RubberduckTests.SourceControl
             //purposely createing a new presenter with specific child presenters
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, changesPresenter, branchesPresenter,
-                                                        _settingsPresenter.Object,
+                                                        _settingsPresenter.Object, _unsyncedPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object);
 
             //act
@@ -284,6 +287,7 @@ namespace RubberduckTests.SourceControl
             _changesPresenter.SetupProperty(c => c.Provider);
             _branchesPresenter.SetupProperty(b => b.Provider);
             _settingsPresenter.SetupProperty(s => s.Provider);
+            _unsyncedPresenter.SetupProperty(s => s.Provider);
 
             var presenter = CreatePresenter();
 
@@ -456,6 +460,7 @@ namespace RubberduckTests.SourceControl
             _settingsPresenter.SetupProperty(s => s.Provider);
             _branchesPresenter.SetupProperty(b => b.Provider);
             _changesPresenter.SetupProperty(c => c.Provider);
+            _unsyncedPresenter.SetupProperty(u => u.Provider);
 
             var presenter = CreatePresenter();
 
@@ -481,6 +486,7 @@ namespace RubberduckTests.SourceControl
             _settingsPresenter.SetupProperty(s => s.Provider);
             _branchesPresenter.SetupProperty(b => b.Provider);
             _changesPresenter.SetupProperty(c => c.Provider);
+            _unsyncedPresenter.SetupProperty(u => u.Provider);
 
             var presenter = CreatePresenter();
 
