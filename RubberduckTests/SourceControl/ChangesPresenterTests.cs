@@ -111,7 +111,7 @@ namespace RubberduckTests.SourceControl
 
             var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
             //act
-            presenter.Refresh();
+            presenter.RefreshView();
 
             //Assert
             Assert.AreEqual(2, _viewMock.Object.IncludedChanges.Count, "Incorrect Included Changes");
@@ -184,7 +184,7 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(_viewMock.Object.ExcludedChanges.Any(), "No changes found prior to refresh. Issue with Test code.");
 
             //act
-            presenter.Refresh();
+            presenter.RefreshView();
 
             //
             Assert.IsFalse(_viewMock.Object.ExcludedChanges.Any());
