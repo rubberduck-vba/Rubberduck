@@ -168,6 +168,8 @@ namespace Rubberduck.UI.SourceControl
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
             if (_view.Local == null) { return; }
+
+            OnCreateBranchTextChanged(this, EventArgs.Empty);
             _createView.Show();
         }
 
@@ -195,8 +197,8 @@ namespace Rubberduck.UI.SourceControl
         private void OnCreateBranchTextChanged(object sender, EventArgs e)
         {
             _createView.IsValidBranchName = !string.IsNullOrEmpty(_createView.UserInputText) &&
-                                          !_view.Local.Contains(_createView.UserInputText) &&
-                                          !_createView.UserInputText.Any(char.IsWhiteSpace);
+                                            !_view.Local.Contains(_createView.UserInputText) &&
+                                            !_createView.UserInputText.Any(char.IsWhiteSpace);
         }
 
         private void OnShowMerge(object sender, EventArgs e)
