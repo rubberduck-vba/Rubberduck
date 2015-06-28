@@ -730,8 +730,9 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            if (localScope.DeclarationType == DeclarationType.Function ||
-                localScope.DeclarationType == DeclarationType.PropertyGet)
+            if (localScope.IdentifierName == identifierName 
+                && (localScope.DeclarationType == DeclarationType.Function 
+                || localScope.DeclarationType == DeclarationType.PropertyGet))
             {
                 return FindFunctionOrPropertyGetter(identifierName, localScope);
             }
