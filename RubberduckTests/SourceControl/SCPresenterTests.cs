@@ -497,6 +497,139 @@ namespace RubberduckTests.SourceControl
             VerifyChildPresentersHaveProviders();
         }
 
+        [TestMethod]
+        public void BranchesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
+        {
+            //arrange
+            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
+            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+
+            var presenter = CreatePresenter();
+
+            const string expectedTitle = "Some Action Failed.";
+            const string expectedMessage = "Details about failure.";
+
+            //act
+            _branchesPresenter.Raise(b => b.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
+
+            //assert
+            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+
+            var expected = expectedTitle + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+        }
+
+        [TestMethod]
+        public void ChangesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
+        {
+            //arrange
+            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
+            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+
+            var presenter = CreatePresenter();
+
+            const string expectedTitle = "Some Action Failed.";
+            const string expectedMessage = "Details about failure.";
+
+            //act
+            _changesPresenter.Raise(c => c.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
+
+            //assert
+            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+
+            var expected = expectedTitle + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+        }
+
+        [TestMethod]
+        public void SettingsPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
+        {
+            //arrange
+            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
+            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+
+            var presenter = CreatePresenter();
+
+            const string expectedTitle = "Some Action Failed.";
+            const string expectedMessage = "Details about failure.";
+
+            //act
+            _settingsPresenter.Raise(s => s.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
+
+            //assert
+            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+
+            var expected = expectedTitle + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
+        {
+            //arrange
+            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
+            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+
+            var presenter = CreatePresenter();
+
+            const string expectedTitle = "Some Action Failed.";
+            const string expectedMessage = "Details about failure.";
+
+            //act
+           _unsyncedPresenter.Raise(u => u.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
+
+            //assert
+            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+
+            var expected = expectedTitle + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+        }
+
+        [TestMethod]
+        public void OpenWorkingDir_WhenProviderCreationFails_MessageIsShown()
+        {
+            //arrange
+            const string expectedTitle = "Some Action Failed.";
+            const string expectedMessage = "Details about failure.";
+
+            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
+            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+
+            _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
+            _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
+
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+                .Throws(new SourceControlException(expectedTitle,
+                    new LibGit2Sharp.LibGit2SharpException(expectedMessage))
+                    );
+
+            SetupValidVbProject();
+
+            var presenter = CreatePresenter();
+            //act
+            _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+
+            var expected = expectedTitle + Environment.NewLine + expectedMessage;
+            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+        }
+
+        [TestMethod]
+        public void ActionFailed_DismissingHidesMessage()
+        {
+            //arrange
+            _view.SetupProperty(v => v.FailedActionMessageVisible, true);
+            var presenter = CreatePresenter();
+
+            //act
+            _view.Raise(v => v.DismissMessage += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsFalse(_view.Object.FailedActionMessageVisible);
+        }
+
         private const string DummyRepoName = "SourceControlTest";
 
         private SourceControlConfiguration GetDummyConfig()

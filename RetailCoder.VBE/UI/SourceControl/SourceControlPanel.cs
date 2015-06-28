@@ -57,6 +57,18 @@ namespace Rubberduck.UI.SourceControl
             set { this.StatusMessage.Text = value; }
         }
 
+        public string FailedActionMessage
+        {
+            get { return this.ActionFailedMessage.Text; }
+            set { this.ActionFailedMessage.Text = value; }
+        }
+
+        public bool FailedActionMessageVisible
+        {
+            get { return !this.MainContainer.Panel1Collapsed; }
+            set { this.MainContainer.Panel1Collapsed = !value; }
+        }
+
         public event EventHandler<EventArgs> RefreshData;
         private void RefreshButton_Click(object sender, EventArgs e)
         {
@@ -73,6 +85,12 @@ namespace Rubberduck.UI.SourceControl
         private void InitRepoButton_Click(object sender, EventArgs e)
         {
             RaiseGenericEvent(InitializeNewRepository, e);
+        }
+
+        public event EventHandler<EventArgs> DismissMessage;
+        private void DismissMessageButton_Click(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(DismissMessage, e);
         }
 
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)

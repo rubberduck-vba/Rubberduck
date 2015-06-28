@@ -166,7 +166,6 @@ blockStmt : lineLabel
 	| goToStmt
 	| ifThenElseStmt
 	| implementsStmt
-	| implicitCallStmt_InBlock
 	| inputStmt
 	| killStmt
 	| letStmt
@@ -208,6 +207,7 @@ blockStmt : lineLabel
 	| widthStmt
 	| withStmt
 	| writeStmt
+	| implicitCallStmt_InBlock
 ;
 
 

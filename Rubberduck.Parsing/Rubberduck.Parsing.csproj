@@ -66,7 +66,9 @@
     <Compile Include="Grammar\VBAVisitor.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IRubberduckParser.cs" />
+    <Compile Include="Symbols\InterfaceImplementationListener.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
     <Compile Include="Symbols\SyntaxErrorException.cs" />
     <Compile Include="Logging\LoggingConfigurator.cs" />
     <Compile Include="Nodes\CommentNode.cs" />
@@ -97,14 +99,6 @@
     <Compile Include="VBProjectParseResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AntlrTokens Include="Grammar\VBA.tokens">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </AntlrTokens>
-    <AntlrTokens Include="Grammar\VBALexer.tokens">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </AntlrTokens>
     <None Include="packages.config" />
     <None Include="Grammar\VBA.g4">
       <Generator>MSBuild:Compile</Generator>

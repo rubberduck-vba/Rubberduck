@@ -130,5 +130,89 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Pull());
             _provider.Verify(git => git.Push());
         }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenFetchFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Fetch(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _view.Raise(v => v.Fetch += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenPushFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Push())
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _view.Raise(v => v.Push += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenPullFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Pull())
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _view.Raise(v => v.Pull += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenSyncFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _provider.Setup(p => p.Pull())
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.",
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            _view.Raise(v => v.Sync += null, EventArgs.Empty);
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
     }
 }

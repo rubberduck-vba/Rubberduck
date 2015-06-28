@@ -189,5 +189,31 @@ namespace RubberduckTests.SourceControl
             //
             Assert.IsFalse(_viewMock.Object.ExcludedChanges.Any());
         }
+
+        [TestMethod]
+        public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
+        {
+            //arrange
+            var wasRaised = false;
+
+            _providerMock.Setup(p => p.Commit(It.IsAny<string>()))
+                .Throws(
+                    new SourceControlException("A source control exception was thrown.", 
+                        new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
+                    );
+
+            _viewMock.SetupProperty(v => v.IncludedChanges);
+            _viewMock.Object.IncludedChanges = new List<IFileStatusEntry>() { new FileStatusEntry(@"C:\path\to\module.bas", FileStatus.Modified) };
+
+            var presenter = new ChangesPresenter(_viewMock.Object, _providerMock.Object);
+
+            presenter.ActionFailed += (sender, args) => wasRaised = true;
+
+            //act
+            presenter.Commit();
+
+            //assert
+            Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
+        }
     }
 }
