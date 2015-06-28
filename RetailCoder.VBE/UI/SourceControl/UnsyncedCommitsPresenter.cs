@@ -23,6 +23,11 @@ namespace Rubberduck.UI.SourceControl
 
         void OnPush(object sender, EventArgs e)
         {
+            if (Provider == null)
+            {
+                return;
+            }
+
             try
             {
                 Provider.Push();
@@ -35,6 +40,11 @@ namespace Rubberduck.UI.SourceControl
 
         void OnPull(object sender, EventArgs e)
         {
+            if (Provider == null)
+            {
+                return;
+            }
+
             try
             {
                 Provider.Pull();
@@ -47,6 +57,11 @@ namespace Rubberduck.UI.SourceControl
 
         void OnFetch(object sender, EventArgs e)
         {
+            if (Provider == null)
+            {
+                return;
+            }
+
             try
             {
                 Provider.Fetch();
@@ -61,6 +76,11 @@ namespace Rubberduck.UI.SourceControl
 
         void OnSync(object sender, EventArgs e)
         {
+            if (Provider == null)
+            {
+                return;
+            }
+
             try
             {
                 Provider.Pull();
