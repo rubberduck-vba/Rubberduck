@@ -1,9 +1,3 @@
-version: 1.3.{build}-{branch}
+version: 1.4.{build}-{branch}
 build:
   verbosity: normal
-notifications:
-- provider: Webhook
-  url: http://stats.zomis.net/hooks/appveyor?roomId=14929
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: true
