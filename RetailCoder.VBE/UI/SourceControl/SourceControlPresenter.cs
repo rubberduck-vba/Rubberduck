@@ -170,6 +170,7 @@ namespace Rubberduck.UI.SourceControl
 
             _branchesPresenter.RefreshView();
             _changesPresenter.RefreshView();
+            _unsyncedPresenter.RefreshView();
             // Purposely not refreshing settingsPresenter.
             //  Settings it's provider doesn't affect it's view.
         }
