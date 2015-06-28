@@ -158,9 +158,23 @@ namespace Rubberduck.Parsing.Symbols
             // note: inter-project references won't work, but we can qualify VbaStandardLib types:
             if (libraryName == _qualifiedModuleName.ProjectName || libraryName == "VBA")
             {
-                return _declarations[identifier.GetText()].SingleOrDefault(item =>
-                    item.ProjectName == libraryName
-                    && (_moduleTypes.Contains(item.DeclarationType)) || item.DeclarationType == DeclarationType.UserDefinedType);
+                var matches = _declarations[identifier.GetText()];
+                try
+                {
+                    return matches.SingleOrDefault(item =>
+                        item.ProjectName == libraryName
+                        && (item.Accessibility == Accessibility.Public
+                            || item.Accessibility == Accessibility.Global
+                            || item.Accessibility == Accessibility.Friend
+                            || item.Accessibility == Accessibility.Implicit)
+                        && (_moduleTypes.Contains(item.DeclarationType))
+                        || (item.DeclarationType == DeclarationType.UserDefinedType
+                            && item.ComponentName == _currentScope.ComponentName));
+                }
+                catch (InvalidOperationException)
+                {
+                    return null;
+                }
             }
 
             return null;
@@ -240,12 +254,15 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var identifierName = callSiteContext.GetText();
-            Declaration callee;
+            Declaration callee = null;
             if (localScope.DeclarationType == DeclarationType.Variable)
             {
-                // localScope is a UDT
+                // localScope is probably a UDT
                 var udt = ResolveType(localScope);
-                callee = _declarations[identifierName].SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
+                if (udt != null)
+                {
+                    callee = _declarations[identifierName].SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
+                }
             }
             else
             {
@@ -689,7 +706,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             // named parameter reference must be scoped to called procedure
             var callee = FindParentCall(context);
-            ResolveInternal(context.implicitCallStmt_InStmt(), callee);
+            ResolveInternal(context.implicitCallStmt_InStmt(), callee, ContextAccessorType.GetValueOrReference);
         }
 
         private Declaration FindParentCall(VBAParser.VsAssignContext context)
@@ -738,11 +755,18 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var matches = _declarations[identifierName];
-            var parent = matches.SingleOrDefault(item =>
-                item.ParentScope == localScope.Scope
-                && !_moduleTypes.Contains(item.DeclarationType));
 
-            return parent;
+            try
+            {
+                return matches.SingleOrDefault(item =>
+                    item.ParentScope == localScope.Scope
+                    && localScope.Context.GetSelection().Contains(item.Selection)
+                    && !_moduleTypes.Contains(item.DeclarationType));
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         private Declaration FindModuleScopeDeclaration(string identifierName, Declaration localScope = null)
@@ -753,10 +777,17 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var matches = _declarations[identifierName];
-            return matches.SingleOrDefault(item =>
-                item.ParentScope == localScope.ParentScope
-                && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                && !_moduleTypes.Contains(item.DeclarationType));
+            try
+            {
+                return matches.SingleOrDefault(item =>
+                    item.ParentScope == localScope.ParentScope
+                    && !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && !_moduleTypes.Contains(item.DeclarationType));
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         private Declaration FindModuleScopeProcedure(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool isAssignmentTarget = false)
@@ -774,7 +805,7 @@ namespace Rubberduck.Parsing.Symbols
                     && item.ComponentName == localScope.ComponentName 
                     && (IsProcedure(item, localScope) || IsPropertyAccessor(item, accessorType, localScope, isAssignmentTarget)));
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return null;
             }
@@ -782,12 +813,19 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration FindProjectScopeDeclaration(string identifierName)
         {
-            // assume unqualified variable call, i.e. unique declaration.
-            return _declarations[identifierName].SingleOrDefault(item => 
-                !item.DeclarationType.HasFlag(DeclarationType.Member)
-                && (item.Accessibility == Accessibility.Public
-                 || item.Accessibility == Accessibility.Global
-                 || _moduleTypes.Contains(item.DeclarationType) /* because static classes are accessed just like modules */));
+            var matches = _declarations[identifierName];
+            try
+            {
+                return matches.SingleOrDefault(item => 
+                    !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && (item.Accessibility == Accessibility.Public
+                        || item.Accessibility == Accessibility.Global
+                        || _moduleTypes.Contains(item.DeclarationType) /* because static classes are accessed just like modules */));
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         private bool IsProcedure(Declaration item, Declaration localScope)
