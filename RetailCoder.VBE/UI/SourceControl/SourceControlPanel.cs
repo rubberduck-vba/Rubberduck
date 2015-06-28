@@ -13,18 +13,22 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
         }
 
-        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnsyncedCommitsView commitsView, ISettingsView settingsView)
+        public SourceControlPanel(IBranchesView branchesView, IChangesView changesView, IUnsyncedCommitsView commitsView, ISettingsView settingsView, IFailedMessageView failedActionView)
             :this()
         {
+            SecondaryPanelVisible = false;
+
             ((Control)branchesView).Dock = DockStyle.Fill;
             ((Control)changesView).Dock = DockStyle.Fill;
             ((Control)commitsView).Dock = DockStyle.Fill;
             ((Control)settingsView).Dock = DockStyle.Fill;
+            ((Control)failedActionView).Dock = DockStyle.Fill;
 
             this.BranchesTab.Controls.Add((Control)branchesView);
             this.ChangesTab.Controls.Add((Control)changesView);
             this.UnsyncedCommitsTab.Controls.Add((Control)commitsView);
             this.SettingsTab.Controls.Add((Control)settingsView);
+            this.MainContainer.Panel1.Controls.Add((Control)failedActionView);
 
             SetText();
         }
@@ -57,17 +61,13 @@ namespace Rubberduck.UI.SourceControl
             set { this.StatusMessage.Text = value; }
         }
 
-        public string FailedActionMessage
-        {
-            get { return this.ActionFailedMessage.Text; }
-            set { this.ActionFailedMessage.Text = value; }
-        }
-
-        public bool FailedActionMessageVisible
+        public bool SecondaryPanelVisible
         {
             get { return !this.MainContainer.Panel1Collapsed; }
             set { this.MainContainer.Panel1Collapsed = !value; }
         }
+
+        public ISecondarySourceControlPanel SecondaryPanel { get; set; }
 
         public event EventHandler<EventArgs> RefreshData;
         private void RefreshButton_Click(object sender, EventArgs e)
@@ -85,12 +85,6 @@ namespace Rubberduck.UI.SourceControl
         private void InitRepoButton_Click(object sender, EventArgs e)
         {
             RaiseGenericEvent(InitializeNewRepository, e);
-        }
-
-        public event EventHandler<EventArgs> DismissMessage;
-        private void DismissMessageButton_Click(object sender, EventArgs e)
-        {
-            RaiseGenericEvent(DismissMessage, e);
         }
 
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)

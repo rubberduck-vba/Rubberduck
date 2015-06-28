@@ -402,6 +402,12 @@
     <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
       <DependentUpon>DeleteBranchForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
@@ -658,6 +664,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
       <DependentUpon>DeleteBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
       <DependentUpon>MergeForm.cs</DependentUpon>

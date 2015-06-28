@@ -21,9 +21,10 @@ namespace Rubberduck.UI.SourceControl
         private SourceControlConfiguration _config;
 
         private ISourceControlProvider _provider;
+        private IFailedMessageView _failedMessageView;
 
         public SourceControlPresenter
-            (VBE vbe, AddIn addin, IConfigurationService<SourceControlConfiguration> configService, ISourceControlView view, IChangesPresenter changesPresenter, IBranchesPresenter branchesPresenter, ISettingsPresenter settingsPresenter, IUnsyncedCommitsPresenter unsyncedPresenter, IFolderBrowserFactory folderBrowserFactory, ISourceControlProviderFactory providerFactory) 
+            (VBE vbe, AddIn addin, IConfigurationService<SourceControlConfiguration> configService, ISourceControlView view, IChangesPresenter changesPresenter, IBranchesPresenter branchesPresenter, ISettingsPresenter settingsPresenter, IUnsyncedCommitsPresenter unsyncedPresenter, IFolderBrowserFactory folderBrowserFactory, ISourceControlProviderFactory providerFactory, IFailedMessageView failedMessageView) 
             : base(vbe, addin, view)
         {
             _configService = configService;
@@ -45,22 +46,25 @@ namespace Rubberduck.UI.SourceControl
             _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
 
+            _failedMessageView = failedMessageView;
+
             _view = view;
+            _view.SecondaryPanel = _failedMessageView;
+            _failedMessageView.DismissSecondaryPanel += DismissSecondaryPanel;
 
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
-            _view.DismissMessage += OnDismissMessage;
         }
 
-        private void OnDismissMessage(object sender, EventArgs eventArgs)
+        void DismissSecondaryPanel(object sender, EventArgs e)
         {
-            _view.FailedActionMessageVisible = false;
+            _view.SecondaryPanelVisible = false;
         }
 
         private void OnActionFailed(object sender, ActionFailedEventArgs e)
         {
-            ShowActionFailedMessage(e.Title, e.Message);
+            ShowSecondaryPanel(e.Title, e.Message);
         }
 
         private void _branchesPresenter_BranchChanged(object sender, EventArgs e)
@@ -109,7 +113,7 @@ namespace Rubberduck.UI.SourceControl
                 }
                 catch (SourceControlException ex)
                 {
-                    ShowActionFailedMessage(ex.Message, ex.InnerException.Message);
+                    ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
                     return;
                 }
 
@@ -155,10 +159,16 @@ namespace Rubberduck.UI.SourceControl
             _view.Status = RubberduckUI.Online;
         }
 
-        private void ShowActionFailedMessage(string title, string message)
+        private void ShowSecondaryPanel(string title, string message)
         {
-            _view.FailedActionMessageVisible = true;
-            _view.FailedActionMessage = string.Format("{0}{1}{2}", title, Environment.NewLine, message);
+            var actionFailedView = _view.SecondaryPanel as IFailedMessageView;
+            if (actionFailedView != null)
+            {
+                _view.SecondaryPanelVisible = true;
+                actionFailedView.Message = string.Format("{0}{1}{2}", title, Environment.NewLine, message);
+            }
+            //_view.FailedActionMessageVisible = true;
+            //_view.FailedActionMessage = string.Format("{0}{1}{2}", title, Environment.NewLine, message);
         }
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
