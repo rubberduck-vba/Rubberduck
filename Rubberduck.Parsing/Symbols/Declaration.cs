@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddReference(IdentifierReference reference)
         {
-            if (reference.Declaration.Context == reference.Context)
+            if (reference == null || reference.Declaration.Context == reference.Context)
             {
                 return;
             }
