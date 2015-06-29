@@ -31,6 +31,9 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 Provider.Push();
+
+                _view.IncomingCommits = Provider.UnsyncedRemoteCommits;
+                _view.OutgoingCommits = Provider.UnsyncedLocalCommits;
             }
             catch (SourceControlException ex)
             {
@@ -57,6 +60,11 @@ namespace Rubberduck.UI.SourceControl
 
         void OnFetch(object sender, EventArgs e)
         {
+            FetchCommits();
+        }
+
+        private void FetchCommits()
+        {
             if (Provider == null)
             {
                 return;
@@ -70,8 +78,9 @@ namespace Rubberduck.UI.SourceControl
             {
                 RaiseActionFailedEvent(ex);
             }
-            
+
             _view.IncomingCommits = Provider.UnsyncedRemoteCommits;
+            _view.OutgoingCommits = Provider.UnsyncedLocalCommits;
         }
 
         void OnSync(object sender, EventArgs e)
@@ -94,11 +103,10 @@ namespace Rubberduck.UI.SourceControl
 
         public void RefreshView()
         {
-            if (this.Provider != null)
+            if (Provider != null)
             {
-                _view.CurrentBranch = this.Provider.CurrentBranch.Name;
-                _view.IncomingCommits = this.Provider.UnsyncedRemoteCommits;
-                _view.OutgoingCommits = this.Provider.UnsyncedLocalCommits;
+                _view.CurrentBranch = Provider.CurrentBranch.Name;
+                FetchCommits();
             }
         }
     }

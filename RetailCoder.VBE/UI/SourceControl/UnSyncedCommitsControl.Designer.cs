@@ -63,7 +63,7 @@ namespace Rubberduck.UI.SourceControl
             this.UnsyncedCommitsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UnsyncedCommitsPanel.Location = new System.Drawing.Point(0, 0);
             this.UnsyncedCommitsPanel.Name = "UnsyncedCommitsPanel";
-            this.UnsyncedCommitsPanel.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.UnsyncedCommitsPanel.Padding = new System.Windows.Forms.Padding(3);
             this.UnsyncedCommitsPanel.Size = new System.Drawing.Size(240, 482);
             this.UnsyncedCommitsPanel.TabIndex = 1;
             // 
@@ -145,7 +145,7 @@ namespace Rubberduck.UI.SourceControl
             this.OutgoingCommitsBox.Controls.Add(this.OutgoingCommitsGrid);
             this.OutgoingCommitsBox.Location = new System.Drawing.Point(9, 269);
             this.OutgoingCommitsBox.Name = "OutgoingCommitsBox";
-            this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.OutgoingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
             this.OutgoingCommitsBox.Size = new System.Drawing.Size(225, 162);
             this.OutgoingCommitsBox.TabIndex = 16;
             this.OutgoingCommitsBox.TabStop = false;
@@ -160,6 +160,7 @@ namespace Rubberduck.UI.SourceControl
             this.OutgoingCommitsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.OutgoingCommitsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.OutgoingCommitsGrid.BackgroundColor = System.Drawing.Color.White;
             this.OutgoingCommitsGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.OutgoingCommitsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -178,7 +179,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncomingCommitsBox.Controls.Add(this.IncomingCommitsGrid);
             this.IncomingCommitsBox.Location = new System.Drawing.Point(9, 101);
             this.IncomingCommitsBox.Name = "IncomingCommitsBox";
-            this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.IncomingCommitsBox.Padding = new System.Windows.Forms.Padding(6);
             this.IncomingCommitsBox.Size = new System.Drawing.Size(225, 162);
             this.IncomingCommitsBox.TabIndex = 15;
             this.IncomingCommitsBox.TabStop = false;
@@ -193,6 +194,7 @@ namespace Rubberduck.UI.SourceControl
             this.IncomingCommitsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.IncomingCommitsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.IncomingCommitsGrid.BackgroundColor = System.Drawing.Color.White;
             this.IncomingCommitsGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.IncomingCommitsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;

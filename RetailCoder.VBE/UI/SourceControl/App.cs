@@ -21,7 +21,9 @@ namespace Rubberduck.UI.SourceControl
                     IMergeView mergeView
                 )
         {
-             _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView);
+            var failedActionView = new FailedActionControl();
+       
+             _sourceControlView = new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView, failedActionView);
             var changesPresenter = new ChangesPresenter(changesView);
             var branchesPresenter = new BranchesPresenter(branchesView, createBranchView, deleteBranchView, mergeView);
             var settingsPresenter = new SettingsPresenter(settingsView, configService, new DialogFactory());
@@ -39,7 +41,9 @@ namespace Rubberduck.UI.SourceControl
                     settingsPresenter, 
                     unsyncedPresenter,
                     new DialogFactory(), 
-                    new SourceControlProviderFactory()
+                    new SourceControlProviderFactory(),
+                    failedActionView,
+                    new LoginControl()
                 );
         }
 
