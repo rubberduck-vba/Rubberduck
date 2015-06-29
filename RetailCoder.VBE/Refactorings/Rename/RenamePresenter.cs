@@ -251,7 +251,7 @@ namespace Rubberduck.Refactorings.Rename
             else
             {
                 var members = _declarations[_view.Target.IdentifierName]
-                    .Where(item => item.Project == _view.Target.Project
+                    .Where(item => item.Project == _view.Target.Project 
                         && item.ComponentName == _view.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
@@ -372,13 +372,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private string GetReplacementLine(string content, string newName, Selection selection)
         {
-            // until we figure out how to replace actual tokens,
-            // this is going to have to be done the ugly way...
-
-            // todo: come back after the identifier references are fixed
             var contentWithoutOldName = content.Remove(selection.StartColumn - 1, selection.EndColumn - selection.StartColumn);
             return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
-            //return Regex.Replace(content, "\\b" + target + "\\b", newName);
         }
 
         private string GetReplacementLine(CodeModule module, Declaration target, string newName)
@@ -412,8 +407,8 @@ namespace Rubberduck.Refactorings.Rename
                 var functionStmtContext = context as VBAParser.FunctionStmtContext;
                 if (functionStmtContext != null)
                 {
-                    lastTokenIndex = functionStmtContext.asTypeClause() != null
-                        ? functionStmtContext.asTypeClause().Stop.TokenIndex
+                    lastTokenIndex = functionStmtContext.asTypeClause() != null 
+                        ? functionStmtContext.asTypeClause().Stop.TokenIndex 
                         : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
                 }
 
@@ -475,7 +470,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             target = _declarations.Items
                 .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
+                .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
                                       || IsSelectedReference(selection, item));
 
             PromptIfTargetImplementsInterface(ref target);
