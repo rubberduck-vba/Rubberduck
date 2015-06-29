@@ -44,9 +44,9 @@ namespace Rubberduck.UI.SourceControl
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.SettingsTab = new System.Windows.Forms.TabPage();
             this.MainContainer = new System.Windows.Forms.SplitContainer();
-            this.ActionFailedMessage = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.DismissMessageButton = new System.Windows.Forms.Button();
+            this.ActionFailedMessage = new System.Windows.Forms.Label();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).BeginInit();
@@ -174,6 +174,7 @@ namespace Rubberduck.UI.SourceControl
             // MainContainer
             // 
             this.MainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainContainer.IsSplitterFixed = true;
             this.MainContainer.Location = new System.Drawing.Point(0, 25);
             this.MainContainer.Name = "MainContainer";
             this.MainContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -190,14 +191,6 @@ namespace Rubberduck.UI.SourceControl
             this.MainContainer.SplitterDistance = 118;
             this.MainContainer.TabIndex = 2;
             // 
-            // ActionFailedMessage
-            // 
-            this.ActionFailedMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.ActionFailedMessage.Location = new System.Drawing.Point(3, 0);
-            this.ActionFailedMessage.Name = "ActionFailedMessage";
-            this.ActionFailedMessage.Size = new System.Drawing.Size(376, 88);
-            this.ActionFailedMessage.TabIndex = 0;
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.DismissMessageButton);
@@ -210,13 +203,24 @@ namespace Rubberduck.UI.SourceControl
             // 
             // DismissMessageButton
             // 
-            this.DismissMessageButton.Location = new System.Drawing.Point(0, 91);
+            this.DismissMessageButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.DismissMessageButton.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.DismissMessageButton.Location = new System.Drawing.Point(0, 94);
             this.DismissMessageButton.Name = "DismissMessageButton";
-            this.DismissMessageButton.Size = new System.Drawing.Size(379, 24);
+            this.DismissMessageButton.Size = new System.Drawing.Size(383, 24);
             this.DismissMessageButton.TabIndex = 1;
             this.DismissMessageButton.Text = "Dismiss";
             this.DismissMessageButton.UseVisualStyleBackColor = true;
             this.DismissMessageButton.Click += new System.EventHandler(this.DismissMessageButton_Click);
+            // 
+            // ActionFailedMessage
+            // 
+            this.ActionFailedMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.ActionFailedMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ActionFailedMessage.Location = new System.Drawing.Point(0, 0);
+            this.ActionFailedMessage.Name = "ActionFailedMessage";
+            this.ActionFailedMessage.Size = new System.Drawing.Size(383, 118);
+            this.ActionFailedMessage.TabIndex = 0;
             // 
             // SourceControlPanel
             // 
