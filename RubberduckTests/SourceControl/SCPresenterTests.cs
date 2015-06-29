@@ -32,14 +32,17 @@ namespace RubberduckTests.SourceControl
         private Mock<IBranchesPresenter> _branchesPresenter;
         private Mock<ISettingsPresenter> _settingsPresenter;
         private Mock<IUnsyncedCommitsPresenter> _unsyncedPresenter;
-        
+
         private Mock<IConfigurationService<SourceControlConfiguration>> _configService;
 
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
-        
+
         private Mock<ISourceControlProviderFactory> _providerFactory;
         private Mock<ISourceControlProvider> _provider;
+
+        private Mock<IFailedMessageView> _failedActionView;
+        private Mock<ILoginView> _loginView;
 
         [TestInitialize]
         public void InitializeMocks()
@@ -55,6 +58,9 @@ namespace RubberduckTests.SourceControl
             _branchesPresenter = new Mock<IBranchesPresenter>();
             _settingsPresenter = new Mock<ISettingsPresenter>();
             _unsyncedPresenter = new Mock<IUnsyncedCommitsPresenter>();
+
+            _failedActionView = new Mock<IFailedMessageView>();
+            _loginView = new Mock<ILoginView>();
 
             _configService = new Mock<IConfigurationService<SourceControlConfiguration>>();
 
@@ -80,7 +86,8 @@ namespace RubberduckTests.SourceControl
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
                 _settingsPresenter.Object, _unsyncedPresenter.Object,
-                _folderBrowserFactory.Object, _providerFactory.Object);
+                _folderBrowserFactory.Object, _providerFactory.Object,
+                _failedActionView.Object, _loginView.Object);
             return presenter;
         }
 
@@ -120,7 +127,7 @@ namespace RubberduckTests.SourceControl
 
             var branchesView = new Mock<IBranchesView>();
             branchesView.SetupProperty(b => b.Current, "master");
-       
+
             var branchesPresenter = new BranchesPresenter(branchesView.Object, new Mock<ICreateBranchView>().Object, new Mock<IDeleteBranchView>().Object, new Mock<IMergeView>().Object);
 
             var provider = new Mock<ISourceControlProvider>();
@@ -135,7 +142,8 @@ namespace RubberduckTests.SourceControl
             var presenter = new SourceControlPresenter(_vbe.Object, _addIn.Object, _configService.Object,
                                                         _view.Object, changesPresenter, branchesPresenter,
                                                         _settingsPresenter.Object, _unsyncedPresenter.Object,
-                                                        _folderBrowserFactory.Object, _providerFactory.Object);
+                                                        _folderBrowserFactory.Object, _providerFactory.Object,
+                                                        _failedActionView.Object, _loginView.Object);
 
             //act
             branchesView.Object.Current = "dev";
@@ -175,7 +183,7 @@ namespace RubberduckTests.SourceControl
             var presenter = CreatePresenter();
 
             //act
-                _view.Raise(v => v.RefreshData += null, new EventArgs());
+            _view.Raise(v => v.RefreshData += null, new EventArgs());
 
             //assert
             _changesPresenter.Verify(c => c.RefreshView(), Times.Once);
@@ -307,7 +315,7 @@ namespace RubberduckTests.SourceControl
             var presenter = CreatePresenter();
 
             //act
-            _view.Raise(v => v.InitializeNewRepository +=null, EventArgs.Empty);
+            _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
 
             //assert
             _configService.Verify(c => c.SaveConfiguration(It.IsAny<SourceControlConfiguration>()), Times.Never);
@@ -325,7 +333,7 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.InitializeNewRepository += null, EventArgs.Empty);
 
             //assert
-            _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()),Times.Never);
+            _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Never);
         }
 
         [TestMethod]
@@ -501,8 +509,11 @@ namespace RubberduckTests.SourceControl
         public void BranchesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
-            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
-            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
 
             var presenter = CreatePresenter();
 
@@ -513,18 +524,21 @@ namespace RubberduckTests.SourceControl
             _branchesPresenter.Raise(b => b.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
 
             //assert
-            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+            Assert.IsTrue(_view.Object.SecondaryPanelVisible);
 
             var expected = expectedTitle + Environment.NewLine + expectedMessage;
-            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+            Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
         [TestMethod]
         public void ChangesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
-            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
-            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
 
             var presenter = CreatePresenter();
 
@@ -535,18 +549,21 @@ namespace RubberduckTests.SourceControl
             _changesPresenter.Raise(c => c.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
 
             //assert
-            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+            Assert.IsTrue(_view.Object.SecondaryPanelVisible);
 
             var expected = expectedTitle + Environment.NewLine + expectedMessage;
-            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+            Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
         [TestMethod]
         public void SettingsPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
-            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
-            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
 
             var presenter = CreatePresenter();
 
@@ -557,18 +574,21 @@ namespace RubberduckTests.SourceControl
             _settingsPresenter.Raise(s => s.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
 
             //assert
-            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+            Assert.IsTrue(_view.Object.SecondaryPanelVisible);
 
             var expected = expectedTitle + Environment.NewLine + expectedMessage;
-            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+            Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
         [TestMethod]
         public void UnsyncedPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
             //arrange
-            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
-            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
 
             var presenter = CreatePresenter();
 
@@ -576,13 +596,13 @@ namespace RubberduckTests.SourceControl
             const string expectedMessage = "Details about failure.";
 
             //act
-           _unsyncedPresenter.Raise(u => u.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
+            _unsyncedPresenter.Raise(u => u.ActionFailed += null, new ActionFailedEventArgs(expectedTitle, expectedMessage));
 
             //assert
-            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+            Assert.IsTrue(_view.Object.SecondaryPanelVisible);
 
             var expected = expectedTitle + Environment.NewLine + expectedMessage;
-            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+            Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
         [TestMethod]
@@ -592,8 +612,12 @@ namespace RubberduckTests.SourceControl
             const string expectedTitle = "Some Action Failed.";
             const string expectedMessage = "Details about failure.";
 
-            _view.SetupProperty(v => v.FailedActionMessageVisible, false);
-            _view.SetupProperty(v => v.FailedActionMessage, String.Empty);
+            //arrange
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
 
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
@@ -610,24 +634,71 @@ namespace RubberduckTests.SourceControl
             _view.Raise(v => v.OpenWorkingDirectory += null, EventArgs.Empty);
 
             //assert
-            Assert.IsTrue(_view.Object.FailedActionMessageVisible);
+            Assert.IsTrue(_view.Object.SecondaryPanelVisible);
 
             var expected = expectedTitle + Environment.NewLine + expectedMessage;
-            Assert.AreEqual(expected, _view.Object.FailedActionMessage);
+            Assert.AreEqual(expected, _failedActionView.Object.Message);
         }
 
         [TestMethod]
         public void ActionFailed_DismissingHidesMessage()
         {
             //arrange
-            _view.SetupProperty(v => v.FailedActionMessageVisible, true);
+            _view.SetupProperty(v => v.SecondaryPanelVisible, true);
+
             var presenter = CreatePresenter();
 
             //act
-            _view.Raise(v => v.DismissMessage += null, EventArgs.Empty);
+            _failedActionView.Raise(v => v.DismissSecondaryPanel += null, EventArgs.Empty);
 
             //assert
-            Assert.IsFalse(_view.Object.FailedActionMessageVisible);
+            Assert.IsFalse(_view.Object.SecondaryPanelVisible);
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_WhenNotAuthorized_LoginIsShown()
+        {
+            //arrange
+            _failedActionView.SetupProperty(v => v.Message, String.Empty);
+
+            _view.SetupProperty(v => v.SecondaryPanelVisible, false);
+            _view.SetupProperty(v => v.SecondaryPanel);
+            _view.Object.SecondaryPanel = _failedActionView.Object;
+
+            var presenter = CreatePresenter();
+
+            const string outerMessage = "Push Failed.";
+            const string innerMessage = "Request failed with status code: 401";
+
+            //act
+            _unsyncedPresenter.Raise(u => u.ActionFailed += null, new ActionFailedEventArgs(outerMessage, innerMessage));
+
+            //assert
+            Assert.IsInstanceOfType(_view.Object.SecondaryPanel, typeof(ILoginView));
+        }
+
+        [TestMethod]
+        public void UnsyncedPresenter_AfterLogin_NewPresenterIsCreatedWithCredentials()
+        {
+            //arrange
+            const string username = "username";
+            const string password = "password";
+
+            _loginView.SetupProperty(v => v.Username, username);
+            _loginView.SetupProperty(v => v.Password, password);
+
+            _configService.Setup(c => c.LoadConfiguration())
+                .Returns(GetDummyConfig());
+
+            SetupValidVbProject();
+
+            var presenter = CreatePresenter();
+
+            //act
+            _loginView.Raise(v => v.Confirm += null, EventArgs.Empty);
+
+            //assert
+            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
         private const string DummyRepoName = "SourceControlTest";

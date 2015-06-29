@@ -64,6 +64,8 @@ namespace Rubberduck.SourceControl
                 Username = credentials.Username,
                 Password = credentials.Password
             };
+
+            _credentialsHandler = (url, user, cred) => _credentials;
         }
 
         ~GitProvider()
