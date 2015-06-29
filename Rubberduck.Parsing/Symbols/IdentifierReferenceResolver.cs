@@ -266,10 +266,10 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                callee = FindLocalScopeDeclaration(identifierName, localScope)
-                         ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                         ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindProjectScopeDeclaration(identifierName);
+                    callee = FindLocalScopeDeclaration(identifierName, localScope)
+                                ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
+                                ?? FindModuleScopeDeclaration(identifierName, localScope)
+                                ?? FindProjectScopeDeclaration(identifierName);
             }
 
             if (callee == null)
@@ -373,6 +373,8 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
                       ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget);
+
+                parent = ResolveType(parent);
             }
 
             if (parent != null)
@@ -453,24 +455,6 @@ namespace Rubberduck.Parsing.Symbols
             return callee;
         }
 
-        private void ResolveIdentifier(VBAParser.AmbiguousIdentifierContext context)
-        {
-            if (context == null)
-            {
-                return;
-            }
-
-            var identifier = ResolveInternal(context, _currentScope);
-            if (identifier == null)
-            {
-                return;
-            }
-
-            var reference = CreateReference(context, identifier);
-            identifier.AddReference(reference);
-            _alreadyResolved.Add(reference.Context);
-        }
-
         public void Resolve(VBAParser.ICS_B_ProcedureCallContext context)
         {
             if (_alreadyResolved.Contains(context))
@@ -544,6 +528,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), _currentScope)
                           ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), _currentScope);
+                parent = ResolveType(parent);
             }
 
             if (parent != null && parent.Context != null)
@@ -674,32 +659,32 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ImplementsStmtContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.RaiseEventStmtContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.ResumeStmtContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.FileNumberContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.ArgDefaultValueContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.FieldLengthContext context)
         {
-            ResolveIdentifier(context.ambiguousIdentifier());
+            ResolveInternal(context.ambiguousIdentifier(), _currentScope);
         }
 
         public void Resolve(VBAParser.VsAssignContext context)
@@ -782,12 +767,20 @@ namespace Rubberduck.Parsing.Symbols
                 return matches.SingleOrDefault(item =>
                     item.ParentScope == localScope.ParentScope
                     && !item.DeclarationType.HasFlag(DeclarationType.Member)
-                    && !_moduleTypes.Contains(item.DeclarationType));
+                    && !_moduleTypes.Contains(item.DeclarationType)
+                    && (item.DeclarationType != DeclarationType.Event || IsLocalEvent(item, localScope)));
             }
             catch (InvalidOperationException)
             {
                 return null;
             }
+        }
+
+        private bool IsLocalEvent(Declaration item, Declaration localScope)
+        {
+            return item.DeclarationType == DeclarationType.Event
+                   && localScope.Project == _currentScope.Project
+                   && localScope.ComponentName == _currentScope.ComponentName;
         }
 
         private Declaration FindModuleScopeProcedure(string identifierName, Declaration localScope, ContextAccessorType accessorType, bool isAssignmentTarget = false)
@@ -818,6 +811,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return matches.SingleOrDefault(item => 
                     !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && item.DeclarationType != DeclarationType.Event // events can't be called outside the class they're declared in
                     && (item.Accessibility == Accessibility.Public
                         || item.Accessibility == Accessibility.Global
                         || _moduleTypes.Contains(item.DeclarationType) /* because static classes are accessed just like modules */));
