@@ -163,6 +163,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
+                    AdjustReferences(setter.References);
                 }
 
                 var letter = _model.Declarations.Items.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
@@ -172,6 +173,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
+                    AdjustReferences(letter.References);
                 }
             }
 

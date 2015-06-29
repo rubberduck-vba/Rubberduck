@@ -268,7 +268,7 @@ namespace Rubberduck.Refactorings.Rename
             try
             {
                 var form = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = ((dynamic) form.Parent.Designer).Controls(_view.Target.IdentifierName);
+                var control = ((dynamic)form.Parent.Designer).Controls(_view.Target.IdentifierName);
 
                 foreach (var handler in _declarations.FindEventHandlers(_view.Target))
                 {
@@ -394,7 +394,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
-                var context = (ParserRuleContext) target.Context.Parent.Parent;
+                var context = (ParserRuleContext)target.Context.Parent.Parent;
                 var firstTokenIndex = context.Start.TokenIndex;
                 var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
 
@@ -535,3 +535,4 @@ namespace Rubberduck.Refactorings.Rename
         }
     }
 }
+
