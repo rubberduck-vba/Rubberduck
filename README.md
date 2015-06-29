@@ -8,6 +8,8 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 
 [**Rubberduck Wiki**](https://github.com/retailcoder/Rubberduck/wiki)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/next?svg=true)](https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/next)
+
 ---
 
 #Contributing

@@ -64,6 +64,8 @@ namespace Rubberduck.SourceControl
                 Username = credentials.Username,
                 Password = credentials.Password
             };
+
+            _credentialsHandler = (url, user, cred) => _credentials;
         }
 
         ~GitProvider()
@@ -397,7 +399,8 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                if (_repo.Branches.Any(b => b.FriendlyName == branch && !b.IsRemote))
+                if (_repo.Branches.Any(b => 
+                    b.FriendlyName == branch && !b.IsRemote))
                 {
                     _repo.Branches.Remove(branch);
                 }

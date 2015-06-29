@@ -65,7 +65,7 @@ namespace Rubberduck.UI.CodeInspections
             NextButton.Text = RubberduckUI.Next;
             PreviousButton.Text = RubberduckUI.Previous;
 
-            StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, 0, "s");
+            StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues_Plural, 0);
 
             RefreshButton.ToolTipText = RubberduckUI.CodeInspections_RefreshToolTip;
             QuickFixButton.ToolTipText = RubberduckUI.CodeInspections_QuickFixToolTip;
@@ -89,7 +89,9 @@ namespace Rubberduck.UI.CodeInspections
         {
             _issueCount = issueCount;
 
-            RefreshButton.Image = completed
+            RefreshButton.Enabled = completed;  // remove this when uncommenting below lines
+
+            /*RefreshButton.Image = completed
                 ? Resources.arrow_circle_double
                 : Resources.cross_circle;
 
@@ -102,7 +104,7 @@ namespace Rubberduck.UI.CodeInspections
             {
                 RefreshButton.Click -= CancelButton_Click;
                 RefreshButton.Click += RefreshButtonClicked;
-            }
+            }*/
 
 
             if (issueCount == 0)
@@ -123,13 +125,16 @@ namespace Rubberduck.UI.CodeInspections
                 if (completed)
                 {
                     StatusLabel.Image = Resources.exclamation_diamond;
-                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues, issueCount, (issueCount != 1 ? "s" : string.Empty));
+                    var resource = issueCount == 1
+                        ? RubberduckUI.CodeInspections_NumberOfIssues_Singular
+                        : RubberduckUI.CodeInspections_NumberOfIssues_Plural;
+                    StatusLabel.Text = string.Format(resource, issueCount);
                     QuickFixButton.Enabled = QuickFixButton.HasDropDownItems;
                 }
                 else
                 {
                     StatusLabel.Image = Resources.hourglass;
-                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_InspectingIssues, RubberduckUI.CodeInspections_Inspecting, issueCount, (issueCount != 1 ? "s" : string.Empty));
+                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_InspectingIssues_Singular, RubberduckUI.CodeInspections_Inspecting, issueCount, (issueCount != 1 ? "s" : string.Empty));
                 }
             }
         }

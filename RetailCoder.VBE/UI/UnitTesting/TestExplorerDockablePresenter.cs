@@ -13,11 +13,11 @@ namespace Rubberduck.UI.UnitTesting
 {
     public class TestExplorerDockablePresenter : DockablePresenterBase
     {
-        private ITestExplorerWindow Control { get { return UserControl as ITestExplorerWindow; } }
-        private GridViewSort<TestExplorerItem> _gridViewSort;
+        private readonly GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
+        private readonly ITestExplorerWindow _view;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, IDockableUserControl control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
@@ -28,18 +28,19 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.MethodInitialize += TestEngineMethodInitialize;
             _testEngine.MethodCleanup += TestEngineMethodCleanup;
 
-            Control.SortColumn += SortColumn;
+            _view = control; 
+            _view.SortColumn += SortColumn;
 
             RegisterTestExplorerEvents();
         }
 
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
+            var columnName = _view.GridView.Columns[e.ColumnIndex].Name;
 
             // type "Image" doesn't implement "IComparable", so we need to sort by the outcome instead
             if (columnName == RubberduckUI.Result) { columnName = RubberduckUI.Outcome; }
-            Control.AllTests = new BindingList<TestExplorerItem>(_gridViewSort.Sort(Control.AllTests.AsEnumerable(), columnName).ToList());
+            _view.AllTests = new BindingList<TestExplorerItem>(_gridViewSort.Sort(_view.AllTests.AsEnumerable(), columnName).ToList());
         }
 
 
@@ -70,7 +71,7 @@ namespace Rubberduck.UI.UnitTesting
         private void Synchronize()
         {
             FindAllTests();
-            Control.Refresh(_testEngine.AllTests);
+            _view.Refresh(_testEngine.AllTests);
         }
 
         public override void Show()
@@ -105,15 +106,25 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            Control.ClearResults(); 
-            Control.SetPlayList(tests);
-            Control.ClearProgress();
-            _testEngine.Run(tests);
+            _view.ClearResults();
+
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList(); //bypasses multiple enumeration
+            _view.SetPlayList(testMethods);
+
+            _view.ClearProgress();
+
+            var projects = testMethods.Select(t => t.QualifiedMemberName.QualifiedModuleName.Project).Distinct();
+            foreach (var project in projects)
+            {
+                project.EnsureReferenceToAddInLibrary();
+            }
+            
+            _testEngine.Run(testMethods);
         }
 
         private void TestComplete(object sender, TestCompletedEventArgs e)
         {
-            Control.WriteResult(e.Test, e.Result);
+            _view.WriteResult(e.Test, e.Result);
         }
 
         private void OnExplorerRefreshListButtonClick(object sender, EventArgs e)
@@ -219,20 +230,20 @@ namespace Rubberduck.UI.UnitTesting
 
         private void RegisterTestExplorerEvents()
         {
-            Control.OnRefreshListButtonClick += OnExplorerRefreshListButtonClick;
+            _view.OnRefreshListButtonClick += OnExplorerRefreshListButtonClick;
 
-            Control.OnRunAllTestsButtonClick += OnExplorerRunAllTestsButtonClick;
-            Control.OnRunFailedTestsButtonClick += OnExplorerRunFailedTestsButtonClick;
-            Control.OnRunLastRunTestsButtonClick += OnExplorerRunLastRunTestsButtonClick;
-            Control.OnRunNotRunTestsButtonClick += OnExplorerRunNotRunTestsButtonClick;
-            Control.OnRunPassedTestsButtonClick += OnExplorerRunPassedTestsButtonClick;
-            Control.OnRunSelectedTestButtonClick += OnExplorerRunSelectedTestButtonClick;
+            _view.OnRunAllTestsButtonClick += OnExplorerRunAllTestsButtonClick;
+            _view.OnRunFailedTestsButtonClick += OnExplorerRunFailedTestsButtonClick;
+            _view.OnRunLastRunTestsButtonClick += OnExplorerRunLastRunTestsButtonClick;
+            _view.OnRunNotRunTestsButtonClick += OnExplorerRunNotRunTestsButtonClick;
+            _view.OnRunPassedTestsButtonClick += OnExplorerRunPassedTestsButtonClick;
+            _view.OnRunSelectedTestButtonClick += OnExplorerRunSelectedTestButtonClick;
 
-            Control.OnGoToSelectedTest += OnExplorerGoToSelectedTest;
+            _view.OnGoToSelectedTest += OnExplorerGoToSelectedTest;
 
-            Control.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
-            Control.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
-            Control.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
+            _view.OnAddExpectedErrorTestMethodButtonClick += OnExplorerAddExpectedErrorTestMethodButtonClick;
+            _view.OnAddTestMethodButtonClick += OnExplorerAddTestMethodButtonClick;
+            _view.OnAddTestModuleButtonClick += OnExplorerAddTestModuleButtonClick;
 
             _testEngine.TestComplete += TestComplete;
         }

@@ -100,7 +100,10 @@ namespace Rubberduck.UI.CodeInspections
         private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
             var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var text = string.Format(RubberduckUI.CodeInspections_NumberOfIssuesFound, DateTime.Now, _results.Count, (_results.Count != 1 ? "s" : string.Empty)) + results;
+            var resource = _results.Count == 1
+                ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
+                : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
 
             Clipboard.SetText(text);
         }
@@ -112,8 +115,8 @@ namespace Rubberduck.UI.CodeInspections
                 "{0}: {1} - {2}.{3}, line {4}",
                 result.Severity,
                 result.Name,
-                module.Project.Name,
-                module.Component.Name,
+                module.ProjectName,
+                module.ComponentName,
                 result.QualifiedSelection.Selection.StartLine);
         }
 
@@ -187,9 +190,8 @@ namespace Rubberduck.UI.CodeInspections
             {
                 Control.SetIssuesStatus(_issues, true);
                 Control.EnableRefresh();
+                Control.Cursor = Cursors.Default;
             }
-
-            Control.Cursor = Cursors.Default;
         }
 
         private async Task RefreshAsync(CancellationToken token)
@@ -198,6 +200,11 @@ namespace Rubberduck.UI.CodeInspections
             {
                 var projectParseResult = await _inspector.Parse(VBE.ActiveVBProject, this);
                 _results = await _inspector.FindIssuesAsync(projectParseResult, token);
+            }
+            catch (TaskCanceledException)
+            {
+                // If FindIssuesAsync is canceled, we can leave the old results or 
+                // create a new List. Let's leave the old ones for now.
             }
             catch (COMException)
             {
@@ -215,6 +222,25 @@ namespace Rubberduck.UI.CodeInspections
                 Control.EnableRefresh();
                 Control.Cursor = Cursors.Default;
             });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing) { return; }
+
+            _inspector.IssuesFound -= _inspector_IssuesFound;
+            _inspector.Reset -= _inspector_Reset;
+            _inspector.Parsing -= _inspector_Parsing;
+            _inspector.ParseCompleted -= _inspector_ParseCompleted;
+
+            Control.RefreshCodeInspections -= Control_RefreshCodeInspections;
+            Control.NavigateCodeIssue -= Control_NavigateCodeIssue;
+            Control.QuickFix -= Control_QuickFix;
+            Control.CopyResults -= Control_CopyResultsToClipboard;
+            Control.Cancel -= Control_Cancel;
+            Control.SortColumn -= SortColumn;
+
+            base.Dispose(true);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting

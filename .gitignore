@@ -166,3 +166,4 @@ $RECYCLE.BIN/
 # Workbook for debugging
 *.xlsm
 Installers/
+*.xlsx

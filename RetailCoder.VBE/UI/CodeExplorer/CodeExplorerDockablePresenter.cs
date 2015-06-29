@@ -241,7 +241,7 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = e.Declaration;
             if (declaration != null)
             {
-                VBE.SetSelection(declaration.QualifiedSelection);
+                VBE.SetSelection(declaration.QualifiedName.QualifiedModuleName.Project, declaration.Selection, declaration.QualifiedName.QualifiedModuleName.Component.Name);
             }
         }
 

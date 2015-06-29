@@ -29,12 +29,8 @@ namespace Rubberduck.UI
         private readonly IRubberduckParser _parser;
         private readonly AddIn _addIn;
 
-        //These need to stay in scope for their click events to fire. (32-bit only?)
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _about;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _settings;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
@@ -143,7 +139,8 @@ namespace Rubberduck.UI
                 _sourceControlApp = new SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
                                                                 new ChangesControl(), new UnSyncedCommitsControl(),
                                                                 new SettingsControl(), new BranchesControl(),
-                                                                new CreateBranchForm(), new MergeForm());
+                                                                new CreateBranchForm(), new DeleteBranchForm(),
+                                                                new MergeForm());
             }
 
             _sourceControlApp.ShowWindow();
@@ -217,7 +214,6 @@ namespace Rubberduck.UI
             menuBarControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
 
             _disposed = true;
-
             base.Dispose(true);
         }
     }

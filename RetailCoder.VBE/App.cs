@@ -19,40 +19,44 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private readonly IList<IInspection> _inspections;
-        private readonly Inspector _inspector;
-        private readonly ParserErrorsPresenter _parserErrorsPresenter;
+        private IList<IInspection> _inspections;
+        private Inspector _inspector;
+        private ParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService = new ConfigurationLoader();
         private readonly ActiveCodePaneEditor _editor;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
 
         private Configuration _config;
         private RubberduckMenu _menu;
         private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
+        private bool displayToolbar = false;
+        private Point toolbarCoords = new Point(-1, -1);
 
         public App(VBE vbe, AddIn addIn)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _inspections = _configService.GetImplementedCodeInspections();
 
-            _parser = new RubberduckParser();
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParserError += _parser_ParserError;
             _configService.SettingsChanged += _configService_SettingsChanged;
 
             _editor = new ActiveCodePaneEditor(vbe);
 
-            _inspector = new Inspector(_parser, _inspections);
-
             LoadConfig();
+
+            CleanUp();
+
+            Setup();
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
             LoadConfig();
+
+            CleanUp();
+
+            Setup();
         }
 
         private void LoadConfig()
@@ -70,27 +74,17 @@ namespace Rubberduck
                 _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
+        }
 
-            EnableCodeInspections(_config);
+        private void Setup()
+        {
+            _parser = new RubberduckParser();
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParserError += _parser_ParserError;
 
-            if (_menu != null)
-            {
-                _menu.Dispose();
-            }
-            
-            if (_formContextMenu != null)
-            {
-                _formContextMenu.Dispose();
-            }
+            _inspector = new Inspector(_parser, _configService);
 
-            var displayToolbar = false;
-            var toolbarCoords = new Point(-1, -1);
-            if (_codeInspectionsToolbar != null)
-            {
-                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
-                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
-                _codeInspectionsToolbar.Dispose();
-            }
+            _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
             _menu.Initialize();
@@ -119,20 +113,6 @@ namespace Rubberduck
             _parserErrorsPresenter.Show();
         }
 
-        private void EnableCodeInspections(Configuration config)
-        {
-            foreach (var inspection in _inspections)
-            {           
-                foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
-                {
-                    if (inspection.Description == setting.Description)
-                    {
-                        inspection.Severity = setting.Severity;
-                    }
-                } 
-            }
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -142,6 +122,11 @@ namespace Rubberduck
         {
             if (!disposing) { return; }
 
+            CleanUp();
+        }
+
+        private void CleanUp()
+        {
             if (_menu != null)
             {
                 _menu.Dispose();
@@ -154,6 +139,8 @@ namespace Rubberduck
 
             if (_codeInspectionsToolbar != null)
             {
+                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
+                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
             }
 
@@ -165,6 +152,12 @@ namespace Rubberduck
             if (_parserErrorsPresenter != null)
             {
                 _parserErrorsPresenter.Dispose();
+            }
+
+            if (_parser != null)
+            {
+                _parser.ParseStarted -= _parser_ParseStarted;
+                _parser.ParserError -= _parser_ParserError;
             }
         }
     }

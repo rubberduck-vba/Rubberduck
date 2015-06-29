@@ -48,8 +48,8 @@ namespace Rubberduck.UI
 
             if (control != null)
             {
-            control.Dock = DockStyle.Fill;
-            Controls.Add(control);
+                control.Dock = DockStyle.Fill;
+                Controls.Add(control);
             }
             AdjustSize();
         }

@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.ToDoItems
 {
-    public enum TaskPriority
+    public enum TodoPriority
     {
         Low,
         Medium,

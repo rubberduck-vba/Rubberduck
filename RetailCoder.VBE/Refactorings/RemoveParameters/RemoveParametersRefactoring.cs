@@ -69,7 +69,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
 
-            AdjustReferences(_model.TargetDeclaration.References.OrderByDescending(item => item.Selection.StartLine), _model.TargetDeclaration);
+            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
         }
 
@@ -139,7 +139,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             module.ReplaceLine(paramList.Start.Line, newContent);
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineCount; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
 
         private string GetOldSignature(Declaration target)
@@ -261,7 +264,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References.OrderByDescending(item => item.Selection.StartLine), reference);
+                    AdjustReferences(reference.References, reference);
                     AdjustSignatures(reference);
                 }
             }
@@ -271,7 +274,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                                                                item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References.OrderByDescending(item => item.Selection.StartLine), interfaceImplentation);
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
                 AdjustSignatures(interfaceImplentation);
             }
         }
@@ -322,7 +325,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var lineNum = paramList.GetSelection().LineCount;
 
             module.ReplaceLine(paramList.Start.Line, signature);
-            module.DeleteLines(paramList.Start.Line + 1, lineNum - 1);
+            for (var line = paramList.Start.Line + 1; line < paramList.Start.Line + lineNum; line++)
+            {
+                module.ReplaceLine(line, "");
+            }
         }
     }
 }

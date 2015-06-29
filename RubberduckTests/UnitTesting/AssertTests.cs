@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.UnitTesting;
 
-namespace RubberduckTests
+namespace RubberduckTests.UnitTesting
 {
     [TestClass]
     public class AssertTests
@@ -27,7 +27,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsTrue(true);
             
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsTrue(false);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsFalse(false);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsFalse(true);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace RubberduckTests
             var obj2 = obj1;
             assert.AreSame(obj1, obj2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -76,7 +76,34 @@ namespace RubberduckTests
             var obj2 = new object();
             assert.AreSame(obj1, obj2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreSameShouldSucceedWithTwoNullReferences()
+        {
+            var assert = new AssertClass();
+            assert.AreSame(null, null);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreSameShouldFailWithActualNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreSame(new object(), null);
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreSameShouldFailWithExpectedNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreSame(null, new object());
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -87,7 +114,25 @@ namespace RubberduckTests
             var obj2 = new object();
             assert.AreNotSame(obj1, obj2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreNotSameShouldSuccedWithOneNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreNotSame(new object(), null);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreNotSameShouldFailWithBothNullReferences()
+        {
+            var assert = new AssertClass();
+            assert.AreNotSame(null, null);
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -98,7 +143,7 @@ namespace RubberduckTests
             var obj2 = obj1;
             assert.AreNotSame(obj1, obj2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -107,7 +152,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(1, 1);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -116,7 +161,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(1, 2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -125,7 +170,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreNotEqual(1, 2);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -134,7 +179,19 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreNotEqual(1, 1);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
+        }
+
+        [TestMethod]
+        public void AreNotEqualShouldBeInconclusiveWithDifferentTypes()
+        {
+            int obj1 = 10;
+            double obj2 = 10;
+
+            var assert = new AssertClass();
+            assert.AreNotEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -143,7 +200,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsNothing(null);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -152,7 +209,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsNothing(new object());
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -161,7 +218,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsNotNothing(null);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -170,7 +227,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.IsNotNothing(new object());
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -179,7 +236,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.Fail();
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Failed);
+            Assert.AreEqual(TestOutcome.Failed, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -188,7 +245,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.Inconclusive();
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Inconclusive);
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
         }
 
         private void AssertHandler_OnAssertCompleted(object sender, AssertCompletedEventArgs e)
@@ -202,7 +259,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(null, null);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -211,7 +268,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(null, string.Empty);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Succeeded);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -220,7 +277,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(42, null);
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Inconclusive);
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
         }
 
         [TestMethod]
@@ -229,7 +286,7 @@ namespace RubberduckTests
             var assert = new AssertClass();
             assert.AreEqual(42, "42");
 
-            Assert.AreEqual(_args.Result.Outcome, TestOutcome.Inconclusive);
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Result.Outcome);
         }
     }
 }

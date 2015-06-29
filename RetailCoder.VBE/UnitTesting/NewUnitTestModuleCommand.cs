@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
 
@@ -9,27 +7,6 @@ namespace Rubberduck.UnitTesting
 {
     public static class NewUnitTestModuleCommand
     {
-        public static void EnsureReferenceToAddInLibrary(this VBProject project)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            var name = assembly.GetName().Name.Replace('.', '_');
-            var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
-
-            var references = project.References.Cast<Reference>().ToList();
-
-            var reference = references.SingleOrDefault(r => r.Name == name);
-            if (reference != null)
-            {
-                project.References.Remove(reference);
-            }
-
-            if (references.All(r => r.FullPath != referencePath))
-            {
-                project.References.AddFromFile(referencePath);
-            }
-        }
-
         private static readonly string TestModuleEmptyTemplate = String.Concat(
                  "'@TestModule\n"
                 , "'' uncomment for late-binding:\n"
@@ -81,6 +58,7 @@ namespace Rubberduck.UnitTesting
             }
             catch (Exception exception)
             {
+                //can we please comment when we swallow every possible exception?
             }
         }
 

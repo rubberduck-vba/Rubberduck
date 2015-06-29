@@ -6,19 +6,17 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface IBranchesPresenter : IProviderPresenter
+    public interface IBranchesPresenter : IProviderPresenter, IRefreshable
     {
-        void RefreshView();
         event EventHandler<EventArgs> BranchChanged;
     }
 
-    public class BranchesPresenter : IBranchesPresenter
+    public class BranchesPresenter : ProviderPresenterBase, IBranchesPresenter
     {
         private readonly IBranchesView _view;
         private readonly ICreateBranchView _createView;
+        private readonly IDeleteBranchView _deleteView;
         private readonly IMergeView _mergeView;
-
-        public ISourceControlProvider Provider { get; set; }
 
         public event EventHandler<EventArgs> BranchChanged;
 
@@ -26,10 +24,11 @@ namespace Rubberduck.UI.SourceControl
             (            
                 IBranchesView view,
                 ICreateBranchView createView,
+                IDeleteBranchView deleteView,
                 IMergeView mergeView,
                 ISourceControlProvider provider
             )
-            :this(view, createView, mergeView)
+            :this(view, createView, deleteView, mergeView)
         {
             this.Provider = provider;
         }
@@ -38,20 +37,27 @@ namespace Rubberduck.UI.SourceControl
             (
                 IBranchesView view,
                 ICreateBranchView createView,
+                IDeleteBranchView deleteView,
                 IMergeView mergeView
             )
         {
             _view = view;
             _createView = createView;
+            _deleteView = deleteView;
             _mergeView = mergeView;
 
             _view.CreateBranch += OnShowCreateBranchView;
+            _view.DeleteBranch += OnShowDeleteBranchView;
             _view.Merge += OnShowMerge;
             _view.SelectedBranchChanged += OnSelectedBranchChanged;
 
             _createView.Confirm += OnCreateBranch;
             _createView.Cancel += OnCreateViewCancel;
             _createView.UserInputTextChanged += OnCreateBranchTextChanged;
+
+            _deleteView.Confirm += OnDeleteBranch;
+            _deleteView.Cancel += OnDeleteViewCancel;
+            _deleteView.SelectionChanged += OnDeleteViewSelectionChanged;
 
             _mergeView.Confirm += OnMerge;
             _mergeView.Cancel += OnCancelMerge;
@@ -68,8 +74,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                //todo: find a better way of displaying these errors
-                MessageBox.Show(ex.InnerException.Message, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                RaiseActionFailedEvent(ex);
             }
 
             if (BranchChanged != null)
@@ -82,6 +87,7 @@ namespace Rubberduck.UI.SourceControl
         {
             _createView.Close();
             _mergeView.Close();
+            _deleteView.Close();
         }
 
         public void RefreshView()
@@ -116,6 +122,40 @@ namespace Rubberduck.UI.SourceControl
             return this.Provider.Branches.Where(b => b.IsRemote && !b.Name.Contains("/HEAD"));
         }
 
+        private void OnShowDeleteBranchView(object sender, EventArgs e)
+        {
+            if (_view.Local == null) { return; }
+
+            _deleteView.Branches = _view.Local;
+            _deleteView.Show();
+        }
+
+        private void OnDeleteViewCancel(object sender, EventArgs e)
+        {
+            _deleteView.Hide();
+        }
+
+        private void OnDeleteViewSelectionChanged(object sender, BranchDeleteArgs e)
+        {
+            _deleteView.OkButtonEnabled = e.BranchName != _view.Current;
+        }
+
+        private void OnDeleteBranch(object sender, BranchDeleteArgs e)
+        {
+            _deleteView.Hide();
+
+            try
+            {
+                Provider.DeleteBranch(e.BranchName);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }
+
+            RefreshView();
+        }
+
         private void HideCreateBranchView()
         {
             _createView.UserInputText = string.Empty;
@@ -125,13 +165,24 @@ namespace Rubberduck.UI.SourceControl
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
             if (_view.Local == null) { return; }
+
+            OnCreateBranchTextChanged(this, EventArgs.Empty);
             _createView.Show();
         }
 
         private void OnCreateBranch(object sender, BranchCreateArgs e)
         {
             HideCreateBranchView();
-            this.Provider.CreateBranch(e.BranchName);
+
+            try
+            {
+                this.Provider.CreateBranch(e.BranchName);
+            }
+            catch (SourceControlException ex)
+            {
+                RaiseActionFailedEvent(ex);
+            }            
+            
             RefreshView();
         }
 
@@ -142,9 +193,9 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnCreateBranchTextChanged(object sender, EventArgs e)
         {
-            _createView.OkButtonEnabled = !string.IsNullOrEmpty(_createView.UserInputText) &&
-                                          !_view.Local.Contains(_createView.UserInputText) &&
-                                          !_createView.UserInputText.Any(char.IsWhiteSpace);
+            _createView.IsValidBranchName = !string.IsNullOrEmpty(_createView.UserInputText) &&
+                                            !_view.Local.Contains(_createView.UserInputText) &&
+                                            !_createView.UserInputText.Any(char.IsWhiteSpace);
         }
 
         private void OnShowMerge(object sender, EventArgs e)
@@ -169,7 +220,7 @@ namespace Rubberduck.UI.SourceControl
                 this.Provider.Merge(source, destination);
                 _view.Current = this.Provider.CurrentBranch.Name;
 
-                _mergeView.StatusText = string.Format("Successfully Merged {0} into {1}", source, destination);
+                _mergeView.StatusText = string.Format(RubberduckUI.SourceControl_SuccessfulMerge, source, destination);
                 _mergeView.Status = MergeStatus.Success;
 
                 _mergeView.Hide();
@@ -178,6 +229,7 @@ namespace Rubberduck.UI.SourceControl
             {
                 _mergeView.Status = MergeStatus.Failure;
                 _mergeView.StatusText = ex.Message + ": " + ex.InnerException.Message;
+                //todo: raise action failed event?
             }
         }
 

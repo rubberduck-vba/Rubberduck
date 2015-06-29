@@ -73,14 +73,22 @@ namespace Rubberduck.UI.Settings
             codeInspectionsGrid.Columns.Add(nameColumn);
 
             var severityColumn = new DataGridViewComboBoxColumn();
-            severityColumn.Name = "Severity";
-            severityColumn.DataPropertyName = "Severity";
-            severityColumn.DataSource = Enum.GetValues(typeof(CodeInspectionSeverity));
+            severityColumn.Name = "SeverityLabel";
+            severityColumn.DataPropertyName = "SeverityLabel";
+            severityColumn.DataSource = SettingsLabels();
             severityColumn.HeaderText = RubberduckUI.Severity;
             severityColumn.DefaultCellStyle.Font = codeInspectionsGrid.Font;
             codeInspectionsGrid.Columns.Add(severityColumn);
 
             codeInspectionsGrid.DataSource = AllInspections;
+        }
+
+        private List<string> SettingsLabels()
+        {
+            return (from object severity in Enum.GetValues(typeof (CodeInspectionSeverity))
+                    select
+                    RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, RubberduckUI.Culture))
+                    .ToList();
         }
 
         private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)

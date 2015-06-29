@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
+    [ExcludeFromCodeCoverage]
     public partial class CreateBranchForm : Form, ICreateBranchView
     {
         public CreateBranchForm()
@@ -10,6 +12,8 @@ namespace Rubberduck.UI.SourceControl
             InitializeComponent();
 
             Text = RubberduckUI.SourceControl_CreateNewBranchCaption;
+            TitleLabel.Text = RubberduckUI.SourceControl_CreateNewBranchTitle;
+            InstructionsLabel.Text = RubberduckUI.SourceControl_CreateNewBranchInstructions;
             OkButton.Text = RubberduckUI.OK_AllCaps;
             OkButton.Click += OkButton_Click;
             CancelButton.Text = RubberduckUI.CancelButtonText;
@@ -22,10 +26,14 @@ namespace Rubberduck.UI.SourceControl
             set { this.UserInputBox.Text = value; }
         }
 
-        public bool OkButtonEnabled
+        public bool IsValidBranchName
         {
             get { return this.OkButton.Enabled; }
-            set { this.OkButton.Enabled = value; }
+            set
+            {
+                this.OkButton.Enabled = value;
+                this.InvalidNameValidationIcon.Visible = !value;
+            }
         }
 
         public event EventHandler<BranchCreateArgs> Confirm;

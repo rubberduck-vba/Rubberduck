@@ -43,8 +43,12 @@ namespace Rubberduck.UI.SourceControl
             this.BranchesTab = new System.Windows.Forms.TabPage();
             this.UnsyncedCommitsTab = new System.Windows.Forms.TabPage();
             this.SettingsTab = new System.Windows.Forms.TabPage();
+            this.MainContainer = new System.Windows.Forms.SplitContainer();
             this.SourceControlToolbar.SuspendLayout();
             this.SourceControlTabs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).BeginInit();
+            this.MainContainer.Panel2.SuspendLayout();
+            this.MainContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // SourceControlToolbar
@@ -116,10 +120,10 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlTabs.Controls.Add(this.UnsyncedCommitsTab);
             this.SourceControlTabs.Controls.Add(this.SettingsTab);
             this.SourceControlTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SourceControlTabs.Location = new System.Drawing.Point(0, 25);
+            this.SourceControlTabs.Location = new System.Drawing.Point(0, 0);
             this.SourceControlTabs.Name = "SourceControlTabs";
             this.SourceControlTabs.SelectedIndex = 0;
-            this.SourceControlTabs.Size = new System.Drawing.Size(383, 449);
+            this.SourceControlTabs.Size = new System.Drawing.Size(383, 327);
             this.SourceControlTabs.TabIndex = 1;
             // 
             // ChangesTab
@@ -128,7 +132,7 @@ namespace Rubberduck.UI.SourceControl
             this.ChangesTab.Location = new System.Drawing.Point(4, 22);
             this.ChangesTab.Name = "ChangesTab";
             this.ChangesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ChangesTab.Size = new System.Drawing.Size(375, 423);
+            this.ChangesTab.Size = new System.Drawing.Size(375, 301);
             this.ChangesTab.TabIndex = 0;
             this.ChangesTab.Text = "Changes";
             // 
@@ -162,11 +166,26 @@ namespace Rubberduck.UI.SourceControl
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;
             // 
+            // MainContainer
+            // 
+            this.MainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainContainer.IsSplitterFixed = true;
+            this.MainContainer.Location = new System.Drawing.Point(0, 25);
+            this.MainContainer.Name = "MainContainer";
+            this.MainContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // MainContainer.Panel2
+            // 
+            this.MainContainer.Panel2.Controls.Add(this.SourceControlTabs);
+            this.MainContainer.Size = new System.Drawing.Size(383, 449);
+            this.MainContainer.SplitterDistance = 118;
+            this.MainContainer.TabIndex = 2;
+            // 
             // SourceControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.SourceControlTabs);
+            this.Controls.Add(this.MainContainer);
             this.Controls.Add(this.SourceControlToolbar);
             this.MinimumSize = new System.Drawing.Size(255, 255);
             this.Name = "SourceControlPanel";
@@ -174,6 +193,9 @@ namespace Rubberduck.UI.SourceControl
             this.SourceControlToolbar.ResumeLayout(false);
             this.SourceControlToolbar.PerformLayout();
             this.SourceControlTabs.ResumeLayout(false);
+            this.MainContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).EndInit();
+            this.MainContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,5 +214,6 @@ namespace Rubberduck.UI.SourceControl
         private ToolStripLabel StatusMessage;
         private ToolStripButton OpenWorkingFolderButton;
         private ToolStripButton InitRepoButton;
+        private SplitContainer MainContainer;
     }
 }

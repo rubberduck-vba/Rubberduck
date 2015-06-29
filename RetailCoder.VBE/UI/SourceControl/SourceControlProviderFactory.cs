@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Vbe.Interop;
 using Rubberduck.SourceControl;
-using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.SourceControl
 {
@@ -12,6 +7,7 @@ namespace Rubberduck.UI.SourceControl
     {
         ISourceControlProvider CreateProvider(VBProject project);
         ISourceControlProvider CreateProvider(VBProject project, IRepository repository);
+        ISourceControlProvider CreateProvider(VBProject isAny, IRepository repository, SecureCredentials secureCredentials);
     }
 
     public class SourceControlProviderFactory : ISourceControlProviderFactory
@@ -23,14 +19,12 @@ namespace Rubberduck.UI.SourceControl
 
         public ISourceControlProvider CreateProvider(VBProject project, IRepository repository)
         {
-            try
-            {
-                return new GitProvider(project, repository);
-            }
-            catch (SourceControlException e)
-            {
-                throw;
-            }
+            return new GitProvider(project, repository);
+        }
+
+        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, SecureCredentials creds)
+        {
+            return new GitProvider(project, repository, creds);
         }
     }
 }

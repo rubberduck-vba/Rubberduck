@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>480c0557</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -203,13 +205,15 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Access, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Access\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Access.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -218,15 +222,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
@@ -282,6 +283,14 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\Settings\AddMarkerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
     <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -387,11 +396,31 @@
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
+    <Compile Include="UI\SourceControl\DeleteBranchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
+      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\IBranchesView.cs" />
     <Compile Include="UI\SourceControl\IChangesView.cs" />
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
+    <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
-    <Compile Include="UI\SourceControl\IProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\LoginControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
     <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
@@ -436,6 +465,7 @@
     <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
       <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
@@ -458,7 +488,7 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="ToDoItems\TaskPriority.cs" />
+    <Compile Include="ToDoItems\TodoPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -565,55 +595,6 @@
     <Compile Include="UnitTesting\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <Private>True</Private>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Excel">
-      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>6</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.PowerPoint">
-      <Guid>{91493440-5A91-11CF-8700-00AA0060263B}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>9</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Word">
-      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>8</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>True</Private>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -632,6 +613,9 @@
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
+    <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -683,6 +667,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
       <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
+      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
+      <DependentUpon>LoginControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
       <DependentUpon>MergeForm.cs</DependentUpon>
@@ -1070,6 +1063,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
@@ -1080,6 +1074,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

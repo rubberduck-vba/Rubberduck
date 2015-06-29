@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
@@ -68,17 +70,24 @@ namespace Rubberduck.Settings
 
         protected override Configuration HandleInvalidOperationException(InvalidOperationException ex)
         {
-            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile);
-            var result = MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var folder = Path.GetDirectoryName(ConfigFile);
+            var newFilePath = folder + "\\rubberduck.config." + DateTime.UtcNow.ToString().Replace('/', '.').Replace(':', '.') + ".bak";
 
-            if (result == DialogResult.Yes)
+            var message = string.Format(RubberduckUI.PromptLoadDefaultConfig, ex.Message, ex.InnerException.Message, ConfigFile, newFilePath);
+            MessageBox.Show(message, RubberduckUI.LoadConfigError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+            using (var fs = File.Create(@newFilePath))
             {
-                var config = GetDefaultConfiguration();
-                SaveConfiguration(config);
-                return config;
+                using (var reader = new StreamReader(folder + "\\rubberduck.config"))
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    writer.Write(reader.ReadToEnd());
+                }
             }
 
-            throw ex;
+            var config = GetDefaultConfiguration();
+            SaveConfiguration(config);
+            return config;
         }
 
         private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
@@ -113,7 +122,7 @@ namespace Rubberduck.Settings
         public ToDoMarker[] GetDefaultTodoMarkers()
         {
             var note = new ToDoMarker(RubberduckUI.ToDoMarkerNote, TodoPriority.Low);
-            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Normal);
+            var todo = new ToDoMarker(RubberduckUI.ToDoMarkerToDo, TodoPriority.Medium);
             var bug = new ToDoMarker(RubberduckUI.ToDoMarkerBug, TodoPriority.High);
 
             return new[] { note, todo, bug };

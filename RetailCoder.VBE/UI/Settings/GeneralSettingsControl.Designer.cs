@@ -35,7 +35,6 @@ namespace Rubberduck.UI.Settings
             this.TitleLabel = new System.Windows.Forms.Label();
             this.LanguageLabel = new System.Windows.Forms.Label();
             this.LanguageList = new System.Windows.Forms.ComboBox();
-            this.resetSettings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -79,24 +78,11 @@ namespace Rubberduck.UI.Settings
             this.LanguageList.Size = new System.Drawing.Size(156, 21);
             this.LanguageList.TabIndex = 7;
             // 
-            // resetSettings
-            // 
-            this.resetSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.resetSettings.ForeColor = System.Drawing.Color.Black;
-            this.resetSettings.Location = new System.Drawing.Point(17, 243);
-            this.resetSettings.Margin = new System.Windows.Forms.Padding(2);
-            this.resetSettings.Name = "resetSettings";
-            this.resetSettings.Size = new System.Drawing.Size(90, 34);
-            this.resetSettings.TabIndex = 8;
-            this.resetSettings.Text = "Reset";
-            this.resetSettings.UseVisualStyleBackColor = false;
-            // 
             // GeneralSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.resetSettings);
             this.Controls.Add(this.LanguageList);
             this.Controls.Add(this.LanguageLabel);
             this.Controls.Add(this.TitleLabel);
@@ -116,6 +102,5 @@ namespace Rubberduck.UI.Settings
         private Label TitleLabel;
         private Label LanguageLabel;
         private ComboBox LanguageList;
-        private Button resetSettings;
     }
 }

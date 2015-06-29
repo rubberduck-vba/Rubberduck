@@ -1,29 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Rubberduck.SourceControl;
-using Rubberduck.Settings;
 using System.IO;
+using System.Windows.Forms;
+using Rubberduck.Settings;
+using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public interface ISettingsPresenter : IProviderPresenter
+    public interface ISettingsPresenter : IProviderPresenter, IRefreshable
     {
-        void RefreshView();
     }
 
-    public class SettingsPresenter : ISettingsPresenter
+    public class SettingsPresenter : ProviderPresenterBase, ISettingsPresenter
     {
         private readonly ISettingsView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configurationService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private SourceControlConfiguration _config;
-
-        public ISourceControlProvider Provider { get; set; }
 
         public SettingsPresenter(ISettingsView view, IConfigurationService<SourceControlConfiguration> configService, IFolderBrowserFactory folderBrowserFactory)
         {

@@ -52,6 +52,7 @@
 *   - added support for numbered lines (amended lineLabel rule).
 *   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
 *   - implemented a fileNumber rule to locate identifier usages in file numbers.
+*   - added support for anonymous declarations in With blocks (With New Something)
 *
 *======================================================================================
 *
@@ -165,7 +166,6 @@ blockStmt : lineLabel
 	| goToStmt
 	| ifThenElseStmt
 	| implementsStmt
-	| implicitCallStmt_InBlock
 	| inputStmt
 	| killStmt
 	| letStmt
@@ -207,6 +207,7 @@ blockStmt : lineLabel
 	| widthStmt
 	| withStmt
 	| writeStmt
+	| implicitCallStmt_InBlock
 ;
 
 
@@ -532,7 +533,7 @@ whileWendStmt :
 widthStmt : WIDTH WS valueStmt WS? ',' WS? valueStmt;
 
 withStmt : 
-	WITH WS implicitCallStmt_InStmt NEWLINE+ 
+	WITH WS (implicitCallStmt_InStmt | (NEW WS type)) NEWLINE+ 
 	(block NEWLINE+)? 
 	END_WITH
 ;
@@ -558,16 +559,16 @@ eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifi
 
 
 implicitCallStmt_InBlock :
-	iCS_B_ProcedureCall
-	| iCS_B_MemberProcedureCall
+	iCS_B_MemberProcedureCall 
+	| iCS_B_ProcedureCall
 ;
+
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
 
 // parantheses are forbidden in case of args
 // variables cannot be called in blocks
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
 iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
-
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls

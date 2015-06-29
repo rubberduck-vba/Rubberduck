@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -46,13 +45,38 @@ namespace Rubberduck.Parsing
 
         public void Resolve()
         {
+            // make a first pass to identify all interface implementations - resolver needs this to disembiguate members.
+            //foreach (var componentParseResult in _parseResults)
+            //{
+            //    try
+            //    {
+            //        var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+            //        var listener = new InterfaceImplementationListener(resolver);
+            //        var walker = new ParseTreeWalker();
+            //        walker.Walk(listener, componentParseResult.ParseTree);
+            //    }
+            //    catch (WalkerCancelledException)
+            //    {
+            //        // exception is purposely thrown when walker exits the module's declarations section.
+            //    }
+            //}
+
+            // second pass; resolve all identifier usages
             foreach (var componentParseResult in _parseResults)
             {
                 OnProgress(componentParseResult);
 
-                var listener = new IdentifierReferenceListener(componentParseResult, _declarations);
-                var walker = new ParseTreeWalker();
-                walker.Walk(listener, componentParseResult.ParseTree);
+                try
+                {
+                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+                    var listener = new IdentifierReferenceListener(resolver);
+                    var walker = new ParseTreeWalker();
+                    walker.Walk(listener, componentParseResult.ParseTree);
+                }
+                catch (InvalidOperationException)
+                {
+                    // could not resolve all identifier references in this module.
+                }
             }
         }
 

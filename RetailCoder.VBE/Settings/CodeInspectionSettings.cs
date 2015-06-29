@@ -1,5 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 using Rubberduck.Inspections;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -31,6 +33,23 @@ namespace Rubberduck.Settings
 
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
+
+        [XmlIgnore]
+        public string SeverityLabel
+        {
+            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, RubberduckUI.Culture); }
+            set
+            {
+                foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
+                {
+                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, RubberduckUI.Culture))
+                    {
+                        Severity = (CodeInspectionSeverity)severity;
+                        return;
+                    }
+                }
+            }
+        }
 
         [XmlAttribute]
         public CodeInspectionType InspectionType { get; set; }

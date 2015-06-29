@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.VBA
             OnResolveProgress(e.Component);
         }
 
-        private IParseTree Parse(string code, out ITokenStream outStream)
+        public IParseTree Parse(string code, out ITokenStream outStream)
         {
             var input = new AntlrInputStream(code);
             var lexer = new VBALexer(input);
@@ -199,7 +199,7 @@ namespace Rubberduck.Parsing.VBA
                     if (!continuing)
                     {
                         commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
-                        var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length);
+                        var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length + 1);
 
                         var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();

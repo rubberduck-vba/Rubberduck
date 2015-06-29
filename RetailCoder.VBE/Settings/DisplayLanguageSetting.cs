@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Globalization;
+using System.Xml.Serialization;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
@@ -17,18 +19,35 @@ namespace Rubberduck.Settings
         public DisplayLanguageSetting(string code)
         {
             Code = code;
-            _name = RubberduckUI.ResourceManager.GetString("Language_" + Code.Substring(0, 2).ToUpper(), RubberduckUI.Culture);
+
+            CultureInfo culture;
+            try
+            {
+                culture = CultureInfo.GetCultureInfo(code);
+                _exists = true;
+            }
+            catch (CultureNotFoundException)
+            {
+                culture = RubberduckUI.Culture;
+                _exists = false;
+            }
+
+            _name = RubberduckUI.ResourceManager.GetString("Language_" + Code.Substring(0, 2).ToUpper(), culture);
         }
 
         private readonly string _name;
+        private readonly bool _exists;
 
         [XmlIgnore]
         public string Name { get { return _name; } }
 
+        [XmlIgnore]
+        public bool Exists { get { return _exists; } }
+
         public override bool Equals(object obj)
         {
-            var other = (DisplayLanguageSetting) obj;
-            return Code.Equals(other.Code);
+            var other = obj as DisplayLanguageSetting;
+            return other != null && Code.Equals(other.Code);
         }
 
         public override int GetHashCode()

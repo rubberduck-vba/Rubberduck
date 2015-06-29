@@ -2,9 +2,9 @@
 {
     public interface ICommit
     {
-        string Id { get; }
-        string Author { get; }
         string Message { get; }
+        string Author { get; }
+        string Id { get; }
     }
 
     public class Commit : ICommit

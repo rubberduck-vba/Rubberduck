@@ -8,25 +8,24 @@ namespace Rubberduck.UI
         private bool _sortedAscending;
         private string _columnName;
 
-        public GridViewSort(string ColumnName, bool SortedAscending)
+        public GridViewSort(string columnName, bool sortedAscending)
         {
-            _columnName = ColumnName;
-            _sortedAscending = SortedAscending;
+            _columnName = columnName;
+            _sortedAscending = sortedAscending;
         }
 
-        public IEnumerable<T> Sort(IEnumerable<T> Items, string ColumnName)
+        public IEnumerable<T> Sort(IEnumerable<T> items, string columnName)
         {
-            if (ColumnName == _columnName && _sortedAscending)
+            if (columnName == _columnName && _sortedAscending)
             {
                 _sortedAscending = false;
-                var test = Items.Select(x => x.GetType().GetProperty(ColumnName).GetValue(x));
-                return Items.OrderByDescending(x => x.GetType().GetProperty(ColumnName).GetValue(x));
+                return items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
             else
             {
-                _columnName = ColumnName;
+                _columnName = columnName;
                 _sortedAscending = true;
-                return Items.OrderBy(x => x.GetType().GetProperty(ColumnName).GetValue(x));
+                return items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
         }
     }

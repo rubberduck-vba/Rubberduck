@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.SourceControl
 {
+    [ExcludeFromCodeCoverage]
     public partial class BranchesControl : UserControl, IBranchesView
     {
         public BranchesControl()
@@ -81,6 +83,12 @@ namespace Rubberduck.UI.SourceControl
         public void OnCreateBranch(object sender, EventArgs e)
         {
             RaiseGenericEvent(CreateBranch, e);
+        }
+
+        public event EventHandler<EventArgs> DeleteBranch;
+        public void OnDeleteBranch(object sender, EventArgs e)
+        {
+            RaiseGenericEvent(DeleteBranch, e);
         }
 
         private void RaiseGenericEvent(EventHandler<EventArgs> handler, EventArgs e)

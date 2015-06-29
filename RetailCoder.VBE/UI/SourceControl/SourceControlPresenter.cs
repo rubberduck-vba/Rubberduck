@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
@@ -12,49 +13,93 @@ namespace Rubberduck.UI.SourceControl
         private readonly IChangesPresenter _changesPresenter;
         private readonly IBranchesPresenter _branchesPresenter;
         private readonly ISettingsPresenter _settingsPresenter;
+        private readonly IUnsyncedCommitsPresenter _unsyncedPresenter;
+
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly ISourceControlView _view;
         private readonly IConfigurationService<SourceControlConfiguration> _configService;
-        private SourceControlConfiguration _config;
+        private readonly SourceControlConfiguration _config;
 
         private ISourceControlProvider _provider;
+        private readonly IFailedMessageView _failedMessageView;
+        private readonly ILoginView _loginView;
 
         public SourceControlPresenter
-            (
-                VBE vbe, 
-                AddIn addin, 
-                IConfigurationService<SourceControlConfiguration> configService,
-                ISourceControlView view, 
-                IChangesPresenter changesPresenter,
-                IBranchesPresenter branchesPresenter,
-                ISettingsPresenter settingsPresenter,
-                IFolderBrowserFactory folderBrowserFactory,
-                ISourceControlProviderFactory providerFactory
-            ) 
+            (VBE vbe, AddIn addin, IConfigurationService<SourceControlConfiguration> configService, ISourceControlView view, IChangesPresenter changesPresenter, IBranchesPresenter branchesPresenter, ISettingsPresenter settingsPresenter, IUnsyncedCommitsPresenter unsyncedPresenter, IFolderBrowserFactory folderBrowserFactory, ISourceControlProviderFactory providerFactory, IFailedMessageView failedMessageView, ILoginView loginView)
             : base(vbe, addin, view)
         {
             _configService = configService;
             _config = _configService.LoadConfiguration();
 
             _changesPresenter = changesPresenter;
-            
+            _changesPresenter.ActionFailed += OnActionFailed;
+
             _branchesPresenter = branchesPresenter;
+            _branchesPresenter.ActionFailed += OnActionFailed;
+
             _settingsPresenter = settingsPresenter;
+            _settingsPresenter.ActionFailed += OnActionFailed;
+
+            _unsyncedPresenter = unsyncedPresenter;
+            _unsyncedPresenter.ActionFailed += OnActionFailed;
+
             _folderBrowserFactory = folderBrowserFactory;
             _providerFactory = providerFactory;
             _branchesPresenter.BranchChanged += _branchesPresenter_BranchChanged;
 
+            _loginView = loginView;
+            _loginView.Confirm += _loginView_Confirm;
+
+            _failedMessageView = failedMessageView;
+            _failedMessageView.DismissSecondaryPanel += DismissSecondaryPanel;
+
             _view = view;
+            _view.SecondaryPanel = _failedMessageView;
 
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
         }
 
+        private void _loginView_Confirm(object sender, EventArgs e)
+        {
+            var pwd = new SecureString();
+            foreach (var c in _loginView.Password.ToCharArray())
+            {
+                pwd.AppendChar(c);
+            }
+
+            pwd.MakeReadOnly();
+
+           var creds = new SecureCredentials(_loginView.Username, pwd);
+
+           _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
+                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name),
+                    creds);
+
+            SetChildPresenterSourceControlProviders(_provider);
+        }
+
+        private void DismissSecondaryPanel(object sender, EventArgs e)
+        {
+            _view.SecondaryPanelVisible = false;
+
+            var panel = _view.SecondaryPanel as ILoginView;
+            if (panel != null)
+            {
+                panel.Password = string.Empty;
+            }
+        }
+
+        private void OnActionFailed(object sender, ActionFailedEventArgs e)
+        {
+            ShowSecondaryPanel(e.Title, e.Message);
+        }
+
         private void _branchesPresenter_BranchChanged(object sender, EventArgs e)
         {
-            _changesPresenter.Refresh();
+            _changesPresenter.RefreshView();
         }
 
         private void OnInitNewRepository(object sender, EventArgs e)
@@ -96,10 +141,9 @@ namespace Rubberduck.UI.SourceControl
                 {
                     _provider = _providerFactory.CreateProvider(project, repo);
                 }
-                catch (SourceControlException)
+                catch (SourceControlException ex)
                 {
-                    MessageBox.Show(RubberduckUI.SourceControl_NoRepoFound, RubberduckUI.SourceControlPanel_Caption,
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ShowSecondaryPanel(ex.Message, ex.InnerException.Message);
                     return;
                 }
 
@@ -145,14 +189,41 @@ namespace Rubberduck.UI.SourceControl
             _view.Status = RubberduckUI.Online;
         }
 
+        private void ShowSecondaryPanel(string title, string message)
+        {
+            //this comes out of LibGit2Sharp it would be difficult to check this a different way
+            const string unauthorizedMessage = "Request failed with status code: 401";
+
+            if (message == unauthorizedMessage)
+            {
+                _failedMessageView.DismissSecondaryPanel -= DismissSecondaryPanel;
+                _loginView.DismissSecondaryPanel += DismissSecondaryPanel;
+
+                _view.SecondaryPanel = _loginView;
+            }
+            else
+            {
+                _loginView.DismissSecondaryPanel -= DismissSecondaryPanel;
+                _failedMessageView.DismissSecondaryPanel += DismissSecondaryPanel;
+
+                _failedMessageView.Message = string.Format("{0}{1}{2}", title, Environment.NewLine, message);
+
+                _view.SecondaryPanel = _failedMessageView;
+            }
+
+            _view.SecondaryPanelVisible = true;
+        }
+
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
         {
             _branchesPresenter.Provider = provider;
             _changesPresenter.Provider = provider;
             _settingsPresenter.Provider = provider;
+            _unsyncedPresenter.Provider = provider;
 
             _branchesPresenter.RefreshView();
-            _changesPresenter.Refresh();
+            _changesPresenter.RefreshView();
+            _unsyncedPresenter.RefreshView();
             // Purposely not refreshing settingsPresenter.
             //  Settings it's provider doesn't affect it's view.
         }
