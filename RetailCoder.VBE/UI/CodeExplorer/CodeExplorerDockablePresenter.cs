@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -22,7 +22,63 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, view)
         {
             _parser = parser;
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParseCompleted += _parser_ParseCompleted;
             RegisterControlEvents();
+        }
+
+        private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        {
+            if (sender == this)
+            {
+                _parseResults = e.ParseResults;
+                Control.Invoke((MethodInvoker)delegate
+                {
+                    Control.SolutionTree.Nodes.Clear();
+                    foreach (var result in _parseResults)
+                    {
+                        var node = new TreeNode(result.Project.Name);
+                        node.ImageKey = "Hourglass";
+                        node.SelectedImageKey = node.ImageKey;
+
+                        AddProjectNodes(result, node);
+                        Control.SolutionTree.Nodes.Add(node);
+                    }
+                });
+            }
+            else
+            {
+                _parseResults = e.ParseResults;
+            }
+
+            Control.Invoke((MethodInvoker)delegate
+            {
+                Control.EnableRefresh();
+            });
+        }
+
+        private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
+        {
+            Control.Invoke((MethodInvoker)delegate
+            {
+                Control.EnableRefresh(false);
+            });
+
+            if (sender == this)
+            {
+                Control.Invoke((MethodInvoker) delegate
+                {
+                    Control.SolutionTree.Nodes.Clear();
+                    foreach (var name in e.ProjectNames)
+                    {
+                        var node = new TreeNode(string.Format(RubberduckUI.CodeExplorerDockablePresenter_ParseStarted, name));
+                        node.ImageKey = "Hourglass";
+                        node.SelectedImageKey = node.ImageKey;
+
+                        Control.SolutionTree.Nodes.Add(node);
+                    }
+                });
+            }
         }
 
         public override void Show()
@@ -50,6 +106,7 @@ namespace Rubberduck.UI.CodeExplorer
             Control.SelectionChanged += SelectionChanged;
             Control.Rename += RenameSelection;
             Control.FindAllReferences += FindAllReferencesForSelection;
+            Control.FindAllImplementations += FindAllImplementationsForSelection;
         }
 
         public event EventHandler<NavigateCodeEventArgs> FindAllReferences;
@@ -62,10 +119,20 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
+        public event EventHandler<NavigateCodeEventArgs> FindAllImplementations;
+        private void FindAllImplementationsForSelection(object sender, NavigateCodeEventArgs e)
+        {
+            var handler = FindAllImplementations;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
+
         public event EventHandler<TreeNodeNavigateCodeEventArgs> Rename;
         private void RenameSelection(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            if (e.Node == null || e.Selection.Equals(default(Selection)) && e.QualifiedName == default(QualifiedModuleName))
+            if (e.Node == null || e.Node.Tag == null)
             {
                 return;
             }
@@ -174,7 +241,7 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = e.Declaration;
             if (declaration != null)
             {
-                VBE.SetSelection(new QualifiedSelection(declaration.QualifiedName.QualifiedModuleName, declaration.Selection));
+                VBE.SetSelection(declaration.QualifiedName.QualifiedModuleName.Project, declaration.Selection, declaration.QualifiedName.QualifiedModuleName.Component.Name);
             }
         }
 
@@ -183,52 +250,34 @@ namespace Rubberduck.UI.CodeExplorer
             Task.Run(() => RefreshExplorerTreeView());
         }
 
-        private async void RefreshExplorerTreeView()
+        private void RefreshExplorerTreeView()
         {
             Control.Invoke((MethodInvoker) delegate
             {
                 Control.SolutionTree.Nodes.Clear();
                 Control.ShowDesignerButton.Enabled = false;
             });
-            
-            var projects = VBE.VBProjects.Cast<VBProject>();
-            foreach (var vbProject in projects)
-            {
-                var project = vbProject;
-                await Task.Run(() =>
-                {
-                    var node = new TreeNode(project.Name + " (parsing...)");
-                    node.ImageKey = "Hourglass";
-                    node.SelectedImageKey = node.ImageKey;
 
-                    Control.Invoke((MethodInvoker)delegate
-                    {
-                        Control.SolutionTree.Nodes.Add(node);
-                        Control.SolutionTree.Refresh();
-                        AddProjectNodes(project, node);
-                    });
-                });
-            }
+            _parser.Parse(VBE, this);
         }
 
-        private void AddProjectNodes(VBProject project, TreeNode root)
+        private void AddProjectNodes(VBProjectParseResult parseResult, TreeNode root)
         {
-            Control.Invoke((MethodInvoker)async delegate
+            var project = parseResult.Project;
+            if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
-                {
                     root.ImageKey = "Locked";
-                }
-                else
-                {
-                    var nodes = (await CreateModuleNodesAsync(project)).ToArray();
-                    AddProjectFolders(project, root, nodes);
-                    root.ImageKey = "ClosedFolder";
-                    root.Expand();
-                }
+            }
+            else
+            {
+                var nodes = CreateModuleNodes(parseResult);
+                AddProjectFolders(project, root, nodes.ToArray());
+                root.ImageKey = "ClosedFolder";
+                root.Expand();
+            }
 
-                root.Text = project.Name;
-            });
+            root.Tag = parseResult.Declarations[project.Name].SingleOrDefault(d => d.DeclarationType == DeclarationType.Project);
+            root.Text = project.Name;
         }
 
         private static readonly IDictionary<vbext_ComponentType, string> ComponentTypeIcons =
@@ -240,6 +289,8 @@ namespace Rubberduck.UI.CodeExplorer
                 { vbext_ComponentType.vbext_ct_ActiveXDesigner, "ClassModule"},
                 { vbext_ComponentType.vbext_ct_MSForm, "Form"}
             };
+
+        private IEnumerable<VBProjectParseResult> _parseResults;
 
         private void AddProjectFolders(VBProject project, TreeNode root, TreeNode[] components)
         {
@@ -297,10 +348,9 @@ namespace Rubberduck.UI.CodeExplorer
             }
         }
 
-        private async Task<IEnumerable<TreeNode>> CreateModuleNodesAsync(VBProject project)
+        private IEnumerable<TreeNode> CreateModuleNodes(VBProjectParseResult parseResult)
         {
             var result = new List<TreeNode>();
-            var parseResult = _parser.Parse(project);
             foreach (var componentParseResult in parseResult.ComponentParseResults)
             {
                 var component = componentParseResult.Component;
@@ -538,6 +588,14 @@ namespace Rubberduck.UI.CodeExplorer
             }
 
             return result;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _parser.ParseStarted -= _parser_ParseStarted;
+            _parser.ParseCompleted -= _parser_ParseCompleted;
+
+            base.Dispose();
         }
     }
 }

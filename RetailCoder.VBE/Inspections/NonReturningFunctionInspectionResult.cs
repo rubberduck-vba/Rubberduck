@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -21,18 +19,18 @@ namespace Rubberduck.Inspections
 
         private new VBAParser.FunctionStmtContext Context { get { return base.Context as VBAParser.FunctionStmtContext; } }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            var result = new Dictionary<string, Action<VBE>>();
+            var result = new Dictionary<string, Action>();
             if (!_isInterfaceImplementation) // changing procedure type would break interface implementation
             {
-                result.Add("Convert function to procedure", ConvertFunctionToProcedure);
+                result.Add(RubberduckUI.Inspections_ConvertFunctionToProcedure, ConvertFunctionToProcedure);
             }
 
             return result;
         }
 
-        private void ConvertFunctionToProcedure(VBE vbe)
+        private void ConvertFunctionToProcedure()
         {
             var visibility = Context.visibility() == null ? string.Empty : Context.visibility().GetText() + ' ';
             var name = ' ' + Context.ambiguousIdentifier().GetText();

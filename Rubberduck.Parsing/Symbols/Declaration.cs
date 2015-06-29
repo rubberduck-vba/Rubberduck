@@ -1,37 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class ValuedDeclaration : Declaration
-    {
-        /// <summary>
-        /// Creates a new valued built-in declaration.
-        /// </summary>
-        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
-            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value)
-            : this(qualifiedName, parentScope, asTypeName, accessibility, declarationType, value, null, Selection.Home, true)
-        {
-        }
-
-        public ValuedDeclaration(QualifiedMemberName qualifiedName, string parentScope,
-            string asTypeName, Accessibility accessibility, DeclarationType declarationType, string value, 
-            ParserRuleContext context, Selection selection, bool isBuiltIn = false)
-            :base(qualifiedName, parentScope, asTypeName, true, false, accessibility, declarationType, context, selection, isBuiltIn)
-        {
-            _value = value;
-        }
-
-        private readonly string _value;
-        /// <summary>
-        /// Gets a string representing the declared value.
-        /// </summary>
-        public string Value { get { return _value; } }
-    }
-
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
@@ -74,7 +50,21 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddReference(IdentifierReference reference)
         {
-            _references.Add(reference);
+            if (reference == null || reference.Declaration.Context == reference.Context)
+            {
+                return;
+            }
+
+            if (reference.Context.Parent != _context 
+                && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
+                && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName 
+                    && r.Selection.StartLine == reference.Selection.StartLine
+                    && r.Selection.EndLine == reference.Selection.EndLine
+                    && r.Selection.StartColumn == reference.Selection.StartColumn
+                    && r.Selection.EndColumn == reference.Selection.EndColumn))
+            {
+                _references.Add(reference);
+            }
         }
 
         private readonly Selection _selection;
@@ -85,6 +75,8 @@ namespace Rubberduck.Parsing.Symbols
         /// Returns <c>default(Selection)</c> for module identifiers.
         /// </remarks>
         public Selection Selection { get { return _selection; } }
+
+        public QualifiedSelection QualifiedSelection { get { return new QualifiedSelection(_qualifiedName.QualifiedModuleName, _selection); } }
 
         /// <summary>
         /// Gets a reference to the VBProject the declaration is made in.

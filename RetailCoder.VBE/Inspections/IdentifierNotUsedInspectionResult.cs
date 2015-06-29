@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Parsing;
+using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -16,16 +14,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Remove unused declaration", RemoveUnusedDeclaration}
+                    {RubberduckUI.Inspections_RemoveUnusedDeclaration, RemoveUnusedDeclaration}
                 };
         }
 
-        protected virtual void RemoveUnusedDeclaration(VBE vbe)
+        protected virtual void RemoveUnusedDeclaration()
         {
             var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;

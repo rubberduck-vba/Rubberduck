@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -13,7 +12,9 @@
     <AssemblyName>Rubberduck</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>580a495d</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>480c0557</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,9 +24,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>false</RegisterForComInterop>
+    <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -203,39 +205,60 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Access, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Access\14.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Access.dll</HintPath>
+      <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.1\lib\net45\NLog.dll</HintPath>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\VbProjectExtensions.cs" />
+    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
+    <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
+    <Compile Include="Refactorings\RemoveParameters\RemoveParametersRefactoring.cs" />
+    <Compile Include="Refactorings\ReorderParameters\IReorderParametersView.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
+    <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
+    <Compile Include="Settings\DisplayLanguageSetting.cs" />
+    <Compile Include="Settings\SourceControlConfiguration.cs" />
+    <Compile Include="Settings\SourceControlConfigurationService.cs" />
+    <Compile Include="Settings\XmlConfigurationServiceBase.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspectionResult.cs" />
     <Compile Include="Inspections\ICodeInspectionResult.cs" />
+    <Compile Include="Inspections\IInspectionModel.cs" />
     <Compile Include="Inspections\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionResult.cs" />
     <Compile Include="Inspections\Inspector.cs" />
+    <Compile Include="Inspections\MultilineParameterInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspection.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Inspections\ObsoleteCallStatementInspection.cs" />
@@ -259,101 +282,196 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
-    <Compile Include="Interop\Branches.cs" />
-    <Compile Include="Interop\FileStatusEntries.cs" />
-    <Compile Include="Interop\GitProvider.cs" />
-    <Compile Include="Interop\ISourceControlProvider.cs" />
-    <Compile Include="Interop\SourceControlClassFactory.cs" />
-    <Compile Include="Logging\LoggingConfigurator.cs" />
-    <Compile Include="SourceControl\FileStatus.cs" />
-    <Compile Include="SourceControl\FileStatusEntry.cs" />
-    <Compile Include="SourceControl\IRepository.cs" />
-    <Compile Include="SourceControl\Repository.cs" />
+    <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\Settings\AddMarkerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Settings\AddMarkerForm.Designer.cs">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
+    <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
+    <Compile Include="UI\SourceControl\App.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenterFactory.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
+    <Compile Include="Refactorings\IRefactoring.cs" />
+    <Compile Include="Refactorings\IRefactoringPresenterFactory.cs" />
+    <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
+    <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="UI\CodeExplorer\TreeNodeNavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeExplorer\TreeViewDisplayStyle.cs" />
+    <Compile Include="UI\CodeInspections\ICodeInspectionsWindow.cs" />
+    <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
+      <DependentUpon>FindSymbolControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FindSymbol\FindSymbolDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FindSymbol\FindSymbolDialog.Designer.cs">
+      <DependentUpon>FindSymbolDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
+    <Compile Include="UI\FindSymbol\SearchResult.cs" />
+    <Compile Include="UI\FindSymbol\SearchResultIconCache.cs" />
+    <Compile Include="UI\FormContextMenu.cs" />
+    <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
-    <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.cs">
+    <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
+    <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />
+    <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
+    <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
+    <Compile Include="UI\ProjectExplorerContextMenu.cs" />
+    <Compile Include="UI\SimpleListControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\IdentifierReferences\IdentifierReferencesListControl.Designer.cs">
-      <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
+    <Compile Include="UI\SimpleListControl.Designer.cs">
+      <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedDeclarationUsage.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractedParameter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
+    <Compile Include="UI\ProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.Designer.cs">
+    <Compile Include="UI\ProgressDialog.Designer.cs">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ParsingProgressPresenter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParametersDialog.Designer.cs">
+      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ValueChangedEventArgs.cs" />
-    <Compile Include="UI\Refactorings\Rename\IRenameView.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
-      <DependentUpon>RenameDialog.cs</DependentUpon>
+    <Compile Include="UI\Refactorings\ReorderParametersDialog.Designer.cs">
+      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\Rename\RenamePresenter.cs" />
+    <Compile Include="UI\RubberduckUI.fr.Designer.cs">
+      <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="UI\RubberduckUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\BranchesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\BranchesControl.Designer.cs">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\BranchesPresenter.cs" />
+    <Compile Include="UI\SourceControl\ChangesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\ChangesControl.Designer.cs">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\ChangesPresenter.cs" />
+    <Compile Include="UI\SourceControl\CreateBranchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\CreateBranchForm.Designer.cs">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\FileBrowserDialogFactory.cs" />
+    <Compile Include="UI\SourceControl\DeleteBranchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\DeleteBranchForm.Designer.cs">
+      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\FailedActionControl.Designer.cs">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\IBranchesView.cs" />
+    <Compile Include="UI\SourceControl\IChangesView.cs" />
+    <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
+    <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
+    <Compile Include="UI\SourceControl\IMergeView.cs" />
+    <Compile Include="UI\SourceControl\LoginControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
+    <Compile Include="UI\SourceControl\IRefreshableView.cs" />
+    <Compile Include="UI\SourceControl\ISettingsView.cs" />
+    <Compile Include="UI\SourceControl\ISourceControlView.cs" />
+    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\MergeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\MergeForm.Designer.cs">
+      <DependentUpon>MergeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Refactorings\Rename\IRenameView.cs" />
+    <Compile Include="UI\Refactorings\RenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\RenameDialog.Designer.cs">
+      <DependentUpon>RenameDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
     <Compile Include="UI\Settings\GeneralSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Settings\GeneralSettingsControl.Designer.cs">
       <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
+    <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
-    <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="VBA\Nodes\ProcedureNode.cs" />
-    <Compile Include="VBA\Nodes\INode.cs" />
-    <Compile Include="VBA\Nodes\Node.cs" />
-    <Compile Include="VBA\RubberduckParser.cs" />
-    <Compile Include="Config\IConfigurationService.cs" />
-    <Compile Include="Extensions\CodeModuleExtensions.cs" />
-    <Compile Include="Extensions\VBComponentsExtensions.cs" />
-    <Compile Include="SourceControl\GitProvider.cs" />
-    <Compile Include="SourceControl\ISourceControlProvider.cs" />
-    <Compile Include="SourceControl\SourceControlException.cs" />
-    <Compile Include="SourceControl\SourceControlProviderBase.cs" />
+    <Compile Include="Settings\IConfigurationService.cs" />
     <Compile Include="UI\Settings\ITodoSettingsView.cs" />
-    <Compile Include="UI\SourceControl\GitView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\GitView.Designer.cs">
-      <DependentUpon>GitView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VBA\WalkerCancelledException.cs" />
-    <Compile Include="VBEHost\AccessApp.cs" />
-    <Compile Include="Config\ConfigurationLoader.cs" />
-    <Compile Include="Config\UserSettings.cs" />
-    <Compile Include="Config\CodeInspectionSettings.cs" />
-    <Compile Include="VBEHost\ExcelApp.cs" />
-    <Compile Include="Extensions\CodeModuleSelection.cs" />
-    <Compile Include="VBEHost\OutlookApp.cs" />
-    <Compile Include="Extensions\VbeExtensions.cs" />
-    <Compile Include="VBEHost\HostApplicationBase.cs" />
-    <Compile Include="VBEHost\IHostApplication.cs" />
-    <Compile Include="Inspections\InspectionNames.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionNames.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Settings\ConfigurationLoader.cs" />
+    <Compile Include="Settings\UserSettings.cs" />
+    <Compile Include="Settings\CodeInspectionSettings.cs" />
     <Compile Include="Inspections\CodeInspectionResultBase.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
@@ -370,10 +488,7 @@
     <Compile Include="Inspections\OptionExplicitInspectionResult.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Inspections\VariableTypeNotDeclaredInspectionResult.cs" />
-    <Compile Include="VBEHost\PowerPointApp.cs" />
-    <Compile Include="VBEHost\PublisherApp.cs" />
-    <Compile Include="VBA\VBComponentExtensions.cs" />
-    <Compile Include="ToDoItems\TaskPriority.cs" />
+    <Compile Include="ToDoItems\TodoPriority.cs" />
     <Compile Include="UI\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -402,26 +517,16 @@
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\CodeInspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockablePresenterBase.cs" />
-    <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Config\ToDoListSettings.cs" />
-    <Compile Include="Config\ToDoMarkers.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\ToDoListSettings.cs" />
+    <Compile Include="Settings\ToDoMarkers.cs" />
     <Compile Include="UI\IDockableUserControl.cs" />
     <Compile Include="UI\Menu.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Reflection\Attributes.cs" />
-    <Compile Include="Extensions\CodePaneExtensions.cs" />
-    <Compile Include="Reflection\Member.cs" />
-    <Compile Include="UI\NativeWindowMethods.cs" />
-    <Compile Include="UI\Settings\CodeInspectionControl.cs">
+    <Compile Include="UI\Settings\CodeInspectionSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Settings\CodeInspectionControl.Designer.cs">
-      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    <Compile Include="UI\Settings\CodeInspectionSettingsControl.Designer.cs">
+      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\ConfigurationTreeView.cs">
       <SubType>UserControl</SubType>
@@ -444,16 +549,11 @@
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\WindowExtensions.cs" />
+    <Compile Include="UI\UnitTesting\ITestExplorerWindow.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
-    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
-    <Compile Include="UnitTesting\TestOutcome.cs" />
-    <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="UI\SubClassingWindowEventArgs.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
-    <Compile Include="VBA\StringExtensions.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemsMenu.cs" />
@@ -469,13 +569,6 @@
     <Compile Include="UI\DockableWindowHost.Designer.cs">
       <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
-    <Compile Include="UnitTesting\AssertClass.cs" />
-    <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\IAssert.cs" />
-    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
-    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UI\RefactorMenu.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
@@ -486,78 +579,22 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UnitTesting\TestMenu.cs" />
-    <Compile Include="VBEHost\WordApp.cs" />
+    <Compile Include="UnitTesting\AssertClass.cs" />
+    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
+    <Compile Include="UnitTesting\AssertHandler.cs" />
+    <Compile Include="UnitTesting\IAssert.cs" />
+    <Compile Include="UnitTesting\ITestEngine.cs" />
+    <Compile Include="UnitTesting\ITestRunner.cs" />
+    <Compile Include="UnitTesting\NewTestMethodCommand.cs" />
+    <Compile Include="UnitTesting\NewUnitTestModuleCommand.cs" />
+    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
+    <Compile Include="UnitTesting\TestEngine.cs" />
+    <Compile Include="UnitTesting\TestMethod.cs" />
+    <Compile Include="UnitTesting\TestOutcome.cs" />
+    <Compile Include="UnitTesting\TestResult.cs" />
+    <Compile Include="UnitTesting\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Excel">
-      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>6</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Outlook">
-      <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>9</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.PowerPoint">
-      <Guid>{91493440-5A91-11CF-8700-00AA0060263B}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>9</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Word">
-      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>8</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Inspections\InspectionNames.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -572,21 +609,43 @@
     <EmbeddedResource Include="UI\CodeInspections\CodeInspectionsWindow.resx">
       <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\IdentifierReferences\IdentifierReferencesListControl.resx">
-      <DependentUpon>IdentifierReferencesListControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
+      <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.resx">
+    <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
+    <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
+      <DependentUpon>AddMarkerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SimpleListControl.resx">
+      <DependentUpon>SimpleListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ProgressDialog.resx">
+      <DependentUpon>ProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\RemoveParametersDialog.resx">
+      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ReorderParametersDialog.resx">
+      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\CodeInspectionControl.resx">
-      <DependentUpon>CodeInspectionControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
+      <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\ConfigurationTreeView.resx">
       <DependentUpon>ConfigurationTreeView.cs</DependentUpon>
@@ -600,11 +659,35 @@
     <EmbeddedResource Include="UI\Settings\TodoListSettingsUserControl.resx">
       <DependentUpon>TodoListSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\GitView.resx">
-      <DependentUpon>GitView.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SourceControl\BranchesControl.resx">
+      <DependentUpon>BranchesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\ChangesControl.resx">
+      <DependentUpon>ChangesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\CreateBranchForm.resx">
+      <DependentUpon>CreateBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\DeleteBranchForm.resx">
+      <DependentUpon>DeleteBranchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
+      <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
+      <DependentUpon>MergeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
@@ -615,7 +698,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\rubberduck.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\minus-circle.png" />
@@ -643,9 +725,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
-    <Folder Include="Refactoring\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\rubberduck.config" />
     <None Include="Resources\rubberduck_adsize.png" />
   </ItemGroup>
   <ItemGroup>
@@ -653,6 +735,132 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Rubberduck.png" />
+    <None Include="Resources\hourglass.png" />
+    <None Include="Resources\arrow-090.png" />
+    <None Include="Resources\arrow-270.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddClass_5561_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddEvent_5539_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddForm_369_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddMethod_5562_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddModule_368_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddProperty_5538_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AddVariable_5541_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\AllLoadedTests_8644_24.png" />
+    <Resource Include="Resources\Microsoft\PNG\DisplayFullSignature_13393_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\DisplayName_13394_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\document.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExportTestRunResults_8602_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExtractInterface_6778_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ExtractMethod_6786_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\FindSymbol_6263_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\GenerateMethod_476_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\GroupBy_284_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ImplementInterface_5540_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\NewConstant_6861_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\NewEvent_6856_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\Options.png" />
+    <Resource Include="Resources\Microsoft\PNG\Play.png" />
+    <Resource Include="Resources\Microsoft\PNG\PromoteLocal_6784_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\recursion_6229_24.png" />
+    <Resource Include="Resources\Microsoft\PNG\Refresh.png" />
+    <Resource Include="Resources\Microsoft\PNG\RemoveParameters_6781_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\ReorderParameters_6780_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\Services.png" />
+    <Resource Include="Resources\Microsoft\PNG\Task.png" />
+    <Resource Include="Resources\Microsoft\PNG\TestManager_8590_32.png" />
+    <Resource Include="Resources\Microsoft\PNG\TestMethod.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed_hidden.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_closed_virtual.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open_hidden.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSFolder_open_virtual.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Assembly.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Class_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Constant_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumItem_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_EnumPrivate.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Enum_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Event_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Field_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Library.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Method_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Module_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Properties_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Structure_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Private.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_Type_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueTypePrivate.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Friend.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Protected.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Sealed.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Shortcut.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
+    <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
+    <None Include="Resources\arrow1.png" />
+    <None Include="Resources\Ducky.ico" />
+    <None Include="Resources\arrow-return-180-left.png" />
+    <None Include="Resources\cross-script.png" />
+    <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
+    <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
+    <None Include="Resources\Microsoft\Mask\RemoveParameters_6781_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\ReorderParameters_6780_32.bmp" />
+    <Content Include="Resources\Microsoft\Mask\TestManager_8590_32.bmp" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
@@ -682,7 +890,7 @@
     <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
     <None Include="Resources\cross-circle.png" />
     <None Include="Resources\exclamation-diamond.png" />
-    <None Include="Resources\arrow.png" />
+    <Resource Include="Resources\arrow.png" />
     <None Include="Resources\document-copy.png" />
     <None Include="Resources\information-white.png" />
     <None Include="Resources\exclamation-white.png" />
@@ -714,126 +922,139 @@
     <None Include="Resources\github_circle_black-128.png" />
     <None Include="Resources\facebook-circle-256.png" />
     <None Include="Resources\google-circle-512.png" />
-    <Content Include="Resources\Microsoft\AddClass_5561_32.bmp" />
-    <Content Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
-    <Content Include="Resources\Microsoft\AddForm_369_32.bmp" />
-    <Content Include="Resources\Microsoft\AddMethod_5562_32.bmp" />
-    <Content Include="Resources\Microsoft\AddModule_368_32.bmp" />
-    <Content Include="Resources\Microsoft\AddProperty_5538_32.bmp" />
-    <Content Include="Resources\Microsoft\AddVariable_5541_32.bmp" />
-    <Content Include="Resources\Microsoft\AllLoadedTests_8644_24.bmp" />
-    <Content Include="Resources\Microsoft\DisplayFullSignature_13393_32.bmp" />
-    <Content Include="Resources\Microsoft\DisplayName_13394_32.bmp" />
-    <Content Include="Resources\Microsoft\document.bmp" />
-    <Content Include="Resources\Microsoft\ExportTestRunResults_8602_32.bmp" />
-    <Content Include="Resources\Microsoft\ExtractInterface_6778_32.bmp" />
-    <Content Include="Resources\Microsoft\ExtractMethod_6786_32.bmp" />
-    <Content Include="Resources\Microsoft\FindSymbol_6263_32.bmp" />
-    <Content Include="Resources\Microsoft\GenerateMethod_476_32.bmp" />
-    <Content Include="Resources\Microsoft\GroupBy_284_32.bmp" />
-    <Content Include="Resources\Microsoft\ImplementInterface_5540_32.bmp" />
-    <Content Include="Resources\Microsoft\NewConstant_6861_32.bmp" />
-    <Content Include="Resources\Microsoft\NewEvent_6856_32.bmp" />
-    <Content Include="Resources\Microsoft\Options.bmp" />
-    <Content Include="Resources\Microsoft\Play.bmp" />
-    <Content Include="Resources\Microsoft\PromoteLocal_6784_32.bmp" />
-    <Content Include="Resources\Microsoft\recursion_6229_24.bmp" />
-    <Content Include="Resources\Microsoft\Refresh.bmp" />
-    <Content Include="Resources\Microsoft\RemoveParameters_6781_32.bmp" />
-    <Content Include="Resources\Microsoft\ReorderParameters_6780_32.bmp" />
-    <Content Include="Resources\Microsoft\RunCheckedTest_10484_32.bmp" />
-    <Content Include="Resources\Microsoft\Services.bmp" />
-    <Content Include="Resources\Microsoft\Task.bmp" />
-    <Content Include="Resources\Microsoft\TestManager_8590_32.bmp" />
-    <Content Include="Resources\Microsoft\TestMethod.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed_hidden.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_closed_virtual.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open_hidden.bmp" />
-    <Content Include="Resources\Microsoft\VSFolder_open_virtual.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Assembly.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Class_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Constant_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_EnumPrivate.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Enum_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Event_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Field_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Library.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Method_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Module_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Properties_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Structure_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Private.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_Type_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueTypePrivate.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Friend.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Protected.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Sealed.bmp" />
-    <Content Include="Resources\Microsoft\VSObject_ValueType_Shortcut.bmp" />
-    <Content Include="Resources\Microsoft\VSProject_form.bmp" />
-    <Content Include="Resources\Microsoft\VSProject_reference.bmp" />
+    <Resource Include="Resources\Microsoft\AddClass_5561_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddForm_369_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddMethod_5562_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddModule_368_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddProperty_5538_32.bmp" />
+    <Resource Include="Resources\Microsoft\AddVariable_5541_32.bmp" />
+    <Resource Include="Resources\Microsoft\AllLoadedTests_8644_24.bmp" />
+    <Resource Include="Resources\Microsoft\DisplayFullSignature_13393_32.bmp" />
+    <Resource Include="Resources\Microsoft\DisplayName_13394_32.bmp" />
+    <Resource Include="Resources\Microsoft\document.bmp" />
+    <Resource Include="Resources\Microsoft\ExportTestRunResults_8602_32.bmp" />
+    <Resource Include="Resources\Microsoft\ExtractInterface_6778_32.bmp" />
+    <Resource Include="Resources\Microsoft\ExtractMethod_6786_32.bmp" />
+    <Resource Include="Resources\Microsoft\FindSymbol_6263_32.bmp" />
+    <Resource Include="Resources\Microsoft\GenerateMethod_476_32.bmp" />
+    <Resource Include="Resources\Microsoft\GroupBy_284_32.bmp" />
+    <Resource Include="Resources\Microsoft\ImplementInterface_5540_32.bmp" />
+    <Resource Include="Resources\Microsoft\NewConstant_6861_32.bmp" />
+    <Resource Include="Resources\Microsoft\NewEvent_6856_32.bmp" />
+    <Resource Include="Resources\Microsoft\Options.bmp" />
+    <Resource Include="Resources\Microsoft\Play.bmp" />
+    <Resource Include="Resources\Microsoft\PromoteLocal_6784_32.bmp" />
+    <Resource Include="Resources\Microsoft\recursion_6229_24.bmp" />
+    <Resource Include="Resources\Microsoft\Refresh.bmp" />
+    <Resource Include="Resources\Microsoft\RemoveParameters_6781_32.bmp" />
+    <Resource Include="Resources\Microsoft\ReorderParameters_6780_32.bmp" />
+    <Resource Include="Resources\Microsoft\Services.bmp" />
+    <Resource Include="Resources\Microsoft\Task.bmp" />
+    <Resource Include="Resources\Microsoft\TestManager_8590_32.bmp" />
+    <Resource Include="Resources\Microsoft\TestMethod.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed_hidden.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_closed_virtual.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open_hidden.bmp" />
+    <Resource Include="Resources\Microsoft\VSFolder_open_virtual.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Assembly.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Class_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Constant_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumItem_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_EnumPrivate.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Enum_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Event_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Field_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Library.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Method_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Module_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Properties_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Structure_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Private.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_Type_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueTypePrivate.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Friend.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Protected.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Sealed.bmp" />
+    <Resource Include="Resources\Microsoft\VSObject_ValueType_Shortcut.bmp" />
+    <Resource Include="Resources\Microsoft\VSProject_form.bmp" />
+    <Resource Include="Resources\Microsoft\VSProject_reference.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
+      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Name>Rubberduck.SourceControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -842,7 +1063,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
@@ -853,6 +1074,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Parsing;
+using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -16,16 +14,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Remove usage (breaks code)", RemoveUsage}
+                    {RubberduckUI.Inspections_RemoveUsageBreaksCode, RemoveUsage}
                 };
         }
 
-        private void RemoveUsage(VBE vbe)
+        private void RemoveUsage()
         {
             var module = QualifiedName.Component.CodeModule;
             var selection = QualifiedSelection.Selection;
@@ -37,7 +35,7 @@ namespace Rubberduck.Inspections
             var originalInstruction = Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var newInstruction = "TODO";
+            var newInstruction = RubberduckUI.Inspections_UnassignedVariableToDo;
             var newCodeLines = string.IsNullOrEmpty(newInstruction)
                 ? string.Empty
                 : originalCodeLines.Replace(originalInstruction, newInstruction);

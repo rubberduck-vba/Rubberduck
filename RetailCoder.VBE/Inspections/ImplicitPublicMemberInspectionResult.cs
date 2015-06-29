@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -16,15 +14,15 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
-                { "Specify Public access modifier explicitly",  SpecifyPublicModifier}
+                {RubberduckUI.Inspections_SpecifyPublicModifierExplicitly,  SpecifyPublicModifier}
             };
         }
 
-        private void SpecifyPublicModifier(VBE vbe)
+        private void SpecifyPublicModifier()
         {
             var oldContent = Context.GetText();
             var newContent = Tokens.Public + ' ' + oldContent;

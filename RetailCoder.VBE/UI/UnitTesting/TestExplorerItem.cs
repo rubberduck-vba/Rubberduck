@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using Rubberduck.Parsing;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
@@ -26,7 +25,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public Image Result { get { return _result.Icon(); } }
-        public QualifiedMemberName QualifiedMemberName { get { return _test.QualifiedMemberName; } }
+        public string QualifiedMemberName { get { return _test.QualifiedMemberName.ToString(); } }
         public string ProjectName { get { return _test.QualifiedMemberName.QualifiedModuleName.Project.Name; } }
         public string ModuleName { get { return _test.QualifiedMemberName.QualifiedModuleName.Component.Name; } }
         public string MethodName { get { return _test.QualifiedMemberName.MemberName; } }

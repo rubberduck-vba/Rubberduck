@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {

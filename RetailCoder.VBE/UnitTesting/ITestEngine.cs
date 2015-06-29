@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubberduck.Parsing;
+using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestModuleEventArgs> MethodCleanup;
         void Run(IEnumerable<TestMethod> tests);
 
-        event EventHandler<TestCompleteEventArgs> TestComplete;
+        event EventHandler<TestCompletedEventArgs> TestComplete;
     }
 
     public class TestModuleEventArgs : EventArgs
@@ -44,12 +45,12 @@ namespace Rubberduck.UnitTesting
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
     }
 
-    public class TestCompleteEventArgs : EventArgs
+    public class TestCompletedEventArgs : EventArgs
     {
         public TestResult Result { get; private set; }
         public TestMethod Test { get; private set; }
 
-        public TestCompleteEventArgs(TestMethod test, TestResult result)
+        public TestCompletedEventArgs(TestMethod test, TestResult result)
         {
             Test = test;
             Result = result;

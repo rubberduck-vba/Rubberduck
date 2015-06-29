@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -29,14 +29,14 @@ namespace Rubberduck.UI.Settings
             {
                 var rootNode = new TreeNode("Rubberduck") {ImageKey = "Ducky", SelectedImageKey = "Ducky"};
             
-                var navNode = new TreeNode("Navigation") {ImageKey = "Navigation", SelectedImageKey = "Navigation"};
-                var todoNode = navNode.Nodes.Add("To-Do Explorer");
+                var navNode = new TreeNode(RubberduckUI.Navigation) {ImageKey = "Navigation", SelectedImageKey = "Navigation"};
+                var todoNode = navNode.Nodes.Add(RubberduckUI.TodoSettings_Caption);
                 rootNode.Nodes.Add(navNode);
 
-                var codeinspectionNode = new TreeNode("Code Inspections") { ImageKey = "CodeInspections", SelectedImageKey = "CodeInspections"};
-                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.CodeQualityIssues.ToString()));
-                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.LanguageOpportunities.ToString()));
-                codeinspectionNode.Nodes.Add(new TreeNode(CodeInspectionType.MaintainabilityAndReadabilityIssues.ToString()));
+                var codeinspectionNode = new TreeNode(RubberduckUI.CodeInspections) { ImageKey = "CodeInspections", SelectedImageKey = "CodeInspections"};
+                codeinspectionNode.Nodes.Add(new TreeNode(RubberduckUI.CodeInspectionSettings_CodeQualityIssues) { Name = CodeInspectionType.CodeQualityIssues.ToString() });
+                codeinspectionNode.Nodes.Add(new TreeNode(RubberduckUI.CodeInspectionSettings_LanguageOpportunities) { Name = CodeInspectionType.LanguageOpportunities.ToString() });
+                codeinspectionNode.Nodes.Add(new TreeNode(RubberduckUI.CodeInspectionSettings_MaintainabilityAndReadabilityIssues) { Name = CodeInspectionType.MaintainabilityAndReadabilityIssues.ToString() });
                 rootNode.Nodes.Add(codeinspectionNode);
 
                 settingsTreeView.Nodes.Add(rootNode);

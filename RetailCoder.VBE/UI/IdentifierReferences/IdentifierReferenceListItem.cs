@@ -1,5 +1,5 @@
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.IdentifierReferences
 {

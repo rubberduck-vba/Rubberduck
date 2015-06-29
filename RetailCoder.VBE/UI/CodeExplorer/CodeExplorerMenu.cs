@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeExplorerButton = AddButton(parentMenu, "&Code Explorer", true, new CommandBarButtonClickEvent(OnCodeExplorerButtonClick), 3039);
+            _codeExplorerButton = AddButton(parentMenu, RubberduckUI.RubberduckMenu_CodeExplorer, true, new CommandBarButtonClickEvent(OnCodeExplorerButtonClick), 3039);
         }
 
         private void OnCodeExplorerButtonClick(CommandBarButton button, ref bool cancelDefault)
@@ -27,20 +27,22 @@ namespace Rubberduck.UI.CodeExplorer
             _presenter.Show();
         }
 
-        bool disposed = false;
+        bool _disposed;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed && !disposing)
             {
                 return;
             }
 
-            if (disposing && _window != null)
+            if (_window != null)
             {
                 _window.Dispose();
             }
 
-            disposed = true;
+            _codeExplorerButton.Click -= OnCodeExplorerButtonClick;
+
+            _disposed = true;
             base.Dispose(disposing);
         }
     }
