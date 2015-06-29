@@ -1,5 +1,15 @@
 ![Rubberduck](http://i.stack.imgur.com/taIMg.png)
 
+| Branch     | Build Status |
+|------------|--------------|
+| **master** | [![master branch build status][masterBuildStatus]][masterBuild] |
+| **next**   | [![next branch build status][nextBuildStatus]][nextBuild] |
+
+[nextBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/next
+[nextBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/next?svg=true
+[masterBuild]:https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/master
+[masterBuildStatus]:https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/master?svg=true
+
 Rubberduck is a COM Add-In for the VBA IDE that makes VBA development even more enjoyable, by extending the Visual Basic Editor (VBE) with menus, toolbars and toolwindows that enable things we didn't even think were possible when we first started this project.
 
 If you're learning VBA, Rubberduck can help you avoid a few common beginner mistakes, and can probably show you a trick or two - even if you're only ever writing *macros*. If you're a more advanced programmer, you will appreciate the richness of [Rubberduck's feature set](https://github.com/retailcoder/Rubberduck/wiki/Features).
@@ -7,8 +17,6 @@ If you're learning VBA, Rubberduck can help you avoid a few common beginner mist
 [**Follow us on Twitter!**](https://twitter.com/rubberduckvba)
 
 [**Rubberduck Wiki**](https://github.com/retailcoder/Rubberduck/wiki)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/bfwl1pwu9eeqd11o/branch/next?svg=true)](https://ci.appveyor.com/project/ckuhn203/rubberduck-3v9qv/branch/next)
 
 ---
 
