@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
+﻿using System.Windows.Forms;
 using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.RemoveParameters
