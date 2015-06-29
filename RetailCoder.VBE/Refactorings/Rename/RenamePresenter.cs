@@ -64,8 +64,6 @@ namespace Rubberduck.Refactorings.Rename
 
             foreach (var reference in _view.Target.References)
             {
-                var test = _declarations.Items.FirstOrDefault(item => item.IdentifierName == "Main");
-
                 var potentialDeclarations = _declarations.Items.Where(item => !item.IsBuiltIn
                                                          && item.Project.Equals(reference.Declaration.Project)
                                                          && ((item.Context != null
@@ -75,10 +73,7 @@ namespace Rubberduck.Refactorings.Rename
                                                          && item.Selection.EndLine >= reference.Selection.EndLine))
                                                          && item.QualifiedName.QualifiedModuleName.ComponentName == reference.QualifiedModuleName.ComponentName);
 
-                var currentStartLine = 0;
-                var currentEndLine = int.MaxValue;
-                var currentStartColumn = 0;
-                var currentEndColumn = int.MaxValue;
+                var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
                 Declaration target = null;
                 foreach (var item in potentialDeclarations)
@@ -88,22 +83,12 @@ namespace Rubberduck.Refactorings.Rename
                     var startColumn = item.Context == null ? item.Selection.StartColumn : item.Context.Start.Column;
                     var endColumn = item.Context == null ? item.Selection.EndColumn : item.Context.Stop.Column;
 
-                    if (currentStartLine <= item.Selection.StartLine && currentEndLine >= item.Selection.EndLine)
-                    {
-                        if (!(startLine == reference.Selection.StartLine &&
-                              (startColumn > reference.Selection.StartColumn ||
-                               currentStartColumn > startColumn) ||
-                              endLine == reference.Selection.EndLine &&
-                              (endColumn < reference.Selection.EndColumn ||
-                               currentEndColumn < endColumn)))
-                        {
-                            currentStartLine = item.Selection.StartLine;
-                            currentEndLine = item.Selection.EndLine;
-                            currentStartColumn = item.Selection.StartColumn;
-                            currentEndColumn = item.Selection.EndColumn;
+                    var selection = new Selection(startLine, startColumn, endLine, endColumn);
 
-                            target = item;
-                        }
+                    if (currentSelection.Contains(selection))
+                    {
+                        currentSelection = selection;
+                        target = item;
                     }
                 }
 
@@ -454,15 +439,6 @@ namespace Rubberduck.Refactorings.Rename
             }
             return GetReplacementLine(content, newName, target.Selection);
         }
-
-        private static readonly DeclarationType[] ProcedureDeclarationTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
 
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
         {
