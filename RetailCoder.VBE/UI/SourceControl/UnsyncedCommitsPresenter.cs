@@ -31,6 +31,9 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 Provider.Push();
+
+                _view.IncomingCommits = Provider.UnsyncedRemoteCommits;
+                _view.OutgoingCommits = Provider.UnsyncedLocalCommits;
             }
             catch (SourceControlException ex)
             {

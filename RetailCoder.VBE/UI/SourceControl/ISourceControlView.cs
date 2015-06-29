@@ -26,9 +26,29 @@ namespace Rubberduck.UI.SourceControl
         string Message { get; set; }
     }
 
-    public interface ILoginView : ICredentials<SecureString>, ISecondarySourceControlPanel
+    public interface ILoginView : ICredentials<string>, ISecondarySourceControlPanel
     {
         event EventHandler Confirm;
         event EventHandler Cancel;
+    }
+
+    public interface ISecondaryPanelFactory
+    {
+        ILoginView CreateLogin();
+        IFailedMessageView CreateFailedMessage();
+    }
+
+    public class SecondaryPanelFactory : ISecondaryPanelFactory
+    {
+
+        public ILoginView CreateLogin()
+        {
+            return new LoginControl();
+        }
+
+        public IFailedMessageView CreateFailedMessage()
+        {
+            return new FailedActionControl();
+        }
     }
 }

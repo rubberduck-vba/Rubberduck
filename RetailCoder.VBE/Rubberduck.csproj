@@ -413,6 +413,12 @@
     <Compile Include="UI\SourceControl\ICreateBranchView.cs" />
     <Compile Include="UI\SourceControl\IDeleteBranchView.cs" />
     <Compile Include="UI\SourceControl\IMergeView.cs" />
+    <Compile Include="UI\SourceControl\LoginControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\LoginControl.Designer.cs">
+      <DependentUpon>LoginControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SourceControl\ProviderPresenter.cs" />
     <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
@@ -667,6 +673,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\FailedActionControl.resx">
       <DependentUpon>FailedActionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\LoginControl.resx">
+      <DependentUpon>LoginControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\MergeForm.resx">
       <DependentUpon>MergeForm.cs</DependentUpon>

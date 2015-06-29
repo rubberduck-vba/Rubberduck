@@ -22,12 +22,14 @@ namespace Rubberduck.UI.SourceControl
             ((Control)changesView).Dock = DockStyle.Fill;
             ((Control)commitsView).Dock = DockStyle.Fill;
             ((Control)settingsView).Dock = DockStyle.Fill;
+
             ((Control)failedActionView).Dock = DockStyle.Fill;
 
             this.BranchesTab.Controls.Add((Control)branchesView);
             this.ChangesTab.Controls.Add((Control)changesView);
             this.UnsyncedCommitsTab.Controls.Add((Control)commitsView);
             this.SettingsTab.Controls.Add((Control)settingsView);
+
             this.MainContainer.Panel1.Controls.Add((Control)failedActionView);
 
             SetText();
@@ -67,7 +69,21 @@ namespace Rubberduck.UI.SourceControl
             set { this.MainContainer.Panel1Collapsed = !value; }
         }
 
-        public ISecondarySourceControlPanel SecondaryPanel { get; set; }
+        public ISecondarySourceControlPanel SecondaryPanel
+        {
+            get
+            {
+                return (ISecondarySourceControlPanel)this.MainContainer.Panel1.Controls[0];
+            }
+
+            set
+            {
+                this.MainContainer.Panel1.Controls.Clear();
+
+                ((Control)value).Dock = DockStyle.Fill;
+                this.MainContainer.Panel1.Controls.Add((Control)value);
+            }
+        }
 
         public event EventHandler<EventArgs> RefreshData;
         private void RefreshButton_Click(object sender, EventArgs e)

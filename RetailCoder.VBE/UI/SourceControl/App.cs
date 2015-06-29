@@ -42,7 +42,8 @@ namespace Rubberduck.UI.SourceControl
                     unsyncedPresenter,
                     new DialogFactory(), 
                     new SourceControlProviderFactory(),
-                    failedActionView
+                    failedActionView,
+                    new LoginControl()
                 );
         }
 
