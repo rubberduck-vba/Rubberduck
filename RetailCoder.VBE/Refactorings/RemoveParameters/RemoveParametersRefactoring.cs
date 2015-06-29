@@ -249,12 +249,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (setter != null)
                 {
                     AdjustSignatures(setter);
+                    AdjustReferences(setter.References, setter);
                 }
 
                 var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     AdjustSignatures(letter);
+                    AdjustReferences(letter.References, letter);
                 }
             }
 
