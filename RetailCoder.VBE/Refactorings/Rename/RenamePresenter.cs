@@ -276,7 +276,7 @@ namespace Rubberduck.Refactorings.Rename
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
 
                     var content = module.Lines[handler.Selection.StartLine, 1];
-                    var newContent = GetReplacementLine(content, handler.IdentifierName, newMemberName, handler.Selection);
+                    var newContent = GetReplacementLine(content, newMemberName, handler.Selection);
                     module.ReplaceLine(handler.Selection.StartLine, newContent);
                 }
 
@@ -308,7 +308,7 @@ namespace Rubberduck.Refactorings.Rename
                         var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
 
                         var content = module.Lines[member.Selection.StartLine, 1];
-                        var newContent = GetReplacementLine(content, member.IdentifierName, newMemberName, member.Selection);
+                        var newContent = GetReplacementLine(content, newMemberName, member.Selection);
                         module.ReplaceLine(member.Selection.StartLine, newContent);
                         RenameUsages(member, target.ComponentName);
                     }
@@ -334,12 +334,12 @@ namespace Rubberduck.Refactorings.Rename
 
                         if (interfaceName == null)
                         {
-                            newContent = GetReplacementLine(content, target.IdentifierName, _view.NewName,
+                            newContent = GetReplacementLine(content, _view.NewName,
                                 reference.Selection);
                         }
                         else
                         {
-                            newContent = GetReplacementLine(content, target.IdentifierName,
+                            newContent = GetReplacementLine(content,
                                 interfaceName + "_" + _view.NewName,
                                 reference.Selection);
                         }
@@ -363,22 +363,17 @@ namespace Rubberduck.Refactorings.Rename
                         }
 
                         var content = module.Lines[method.Selection.StartLine, 1];
-                        var newContent = GetReplacementLine(content, oldMemberName, newMemberName, member.Selection);
+                        var newContent = GetReplacementLine(content, newMemberName, member.Selection);
                         module.ReplaceLine(method.Selection.StartLine, newContent);
                     }
                 }
             }
         }
 
-        private string GetReplacementLine(string content, string target, string newName, Selection selection)
+        private string GetReplacementLine(string content, string newName, Selection selection)
         {
-            // until we figure out how to replace actual tokens,
-            // this is going to have to be done the ugly way...
-
-            // todo: come back after the identifier references are fixed
-            //var contentWithoutOldName = content.Remove(selection.StartColumn - 1, selection.EndColumn - selection.StartColumn);
-            //return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
-            return Regex.Replace(content, "\\b" + target + "\\b", newName);
+            var contentWithoutOldName = content.Remove(selection.StartColumn - 1, selection.EndColumn - selection.StartColumn);
+            return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
         }
 
         private string GetReplacementLine(CodeModule module, Declaration target, string newName)
@@ -459,7 +454,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
             }
-            return GetReplacementLine(content, target.IdentifierName, newName, target.Selection);
+            return GetReplacementLine(content, newName, target.Selection);
         }
 
         private static readonly DeclarationType[] ProcedureDeclarationTypes =
