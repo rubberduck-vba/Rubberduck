@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
                                               || _model.Target.ParentScope.Contains(item.ParentScope))
-                                              && _model.NewName == item.IdentifierName);
+                                              && _view.NewName == item.IdentifierName);
 
             if (values.Any())
             {
