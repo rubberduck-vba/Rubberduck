@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Ninject;
+using Ninject.Parameters;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -136,7 +138,11 @@ namespace Rubberduck.UI
         {
             if (_sourceControlPresenter == null)
             {
-                _sourceControlPresenter = new SourceControlPresenter(this.IDE, this.AddIn);
+                var kernel = new StandardKernel(new SourceControlBindings());
+                var vbeArg = new ConstructorArgument("vbe", this.IDE);
+                var addinArg = new ConstructorArgument("addin", this.AddIn);
+
+                _sourceControlPresenter = kernel.Get<SourceControlPresenter>(vbeArg, addinArg);
             }
 
             _sourceControlPresenter.Show();

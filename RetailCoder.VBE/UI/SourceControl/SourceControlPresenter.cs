@@ -25,48 +25,6 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
-        public SourceControlPresenter(VBE vbe, AddIn addin)
-            : this(
-                vbe, addin,
-                new SourceControlConfigurationService(),
-                new ChangesControl(),
-                new UnSyncedCommitsControl(),
-                new SettingsControl(),
-                new BranchesControl(),
-                new CreateBranchForm(),
-                new DeleteBranchForm(),
-                new MergeForm(),
-                new FailedActionControl()
-            )
-        { }
-
-        public SourceControlPresenter(
-            VBE vbe,
-            AddIn addin,
-            IConfigurationService<SourceControlConfiguration> configService,
-            IChangesView changesView,
-            IUnsyncedCommitsView unsyncedCommitsView,
-            ISettingsView settingsView,
-            IBranchesView branchesView,
-            ICreateBranchView createBranchView,
-            IDeleteBranchView deleteBranchView,
-            IMergeView mergeView,
-            IFailedMessageView failedMessageView
-            )
-            : this(
-                vbe, addin, configService,
-                new SourceControlPanel(branchesView, changesView, unsyncedCommitsView, settingsView, failedMessageView),
-                new ChangesPresenter(changesView),
-                new BranchesPresenter(branchesView, createBranchView, deleteBranchView, mergeView),
-                new SettingsPresenter(settingsView, configService, new DialogFactory()),
-                new UnsyncedCommitsPresenter(unsyncedCommitsView),
-                new DialogFactory(),
-                new SourceControlProviderFactory(),
-                failedMessageView,
-                new LoginControl()
-            )
-        { }
-
         public SourceControlPresenter(
             VBE vbe, AddIn addin, 
             IConfigurationService<SourceControlConfiguration> configService, 
