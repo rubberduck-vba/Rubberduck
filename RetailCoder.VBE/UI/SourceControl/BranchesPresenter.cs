@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -164,6 +165,8 @@ namespace Rubberduck.UI.SourceControl
         private void OnShowCreateBranchView(object sender, EventArgs e)
         {
             if (_view.Local == null) { return; }
+
+            OnCreateBranchTextChanged(this, EventArgs.Empty);
             _createView.Show();
         }
 
@@ -192,7 +195,7 @@ namespace Rubberduck.UI.SourceControl
         {
             // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
             var isValidName = !string.IsNullOrEmpty(_createView.UserInputText) &&
-                              !_view.Local.Contains(_createView.UserInputText) &&
+                                          !_view.Local.Contains(_createView.UserInputText) &&
                               !_createView.UserInputText.Any(char.IsWhiteSpace) &&
                               !_createView.UserInputText.Contains("..") &&
                               !_createView.UserInputText.Contains("~") &&

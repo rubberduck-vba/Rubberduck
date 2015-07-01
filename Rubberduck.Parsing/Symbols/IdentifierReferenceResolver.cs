@@ -321,6 +321,11 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var parentType = ResolveType(parent);
+            if (parentType == null)
+            {
+                return null;
+            }
+
             var members = _declarations.FindMembers(parentType);
             var fieldName = fieldCall.ambiguousIdentifier().GetText();
 
@@ -805,15 +810,22 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration FindProjectScopeDeclaration(string identifierName)
         {
-            var matches = _declarations[identifierName];
+            var matches = _declarations[identifierName].ToList();
             try
             {
-                return matches.SingleOrDefault(item => 
+                return matches.SingleOrDefault(item => !item.IsBuiltIn &&
                     !item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event // events can't be called outside the class they're declared in
                     && (item.Accessibility == Accessibility.Public
                         || item.Accessibility == Accessibility.Global
-                        || _moduleTypes.Contains(item.DeclarationType) /* because static classes are accessed just like modules */));
+                        || _moduleTypes.Contains(item.DeclarationType)))
+                // todo: refactor
+                ?? matches.SingleOrDefault(item => item.IsBuiltIn &&
+                    !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && item.DeclarationType != DeclarationType.Event 
+                    && (item.Accessibility == Accessibility.Public
+                        || item.Accessibility == Accessibility.Global
+                        || _moduleTypes.Contains(item.DeclarationType)));
             }
             catch (InvalidOperationException)
             {

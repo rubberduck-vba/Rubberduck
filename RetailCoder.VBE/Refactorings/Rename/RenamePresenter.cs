@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -268,9 +266,9 @@ namespace Rubberduck.Refactorings.Rename
             try
             {
                 var form = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = ((dynamic) form.Parent.Designer).Controls(_view.Target.IdentifierName);
+                var control = ((dynamic)form.Parent.Designer).Controls(_view.Target.IdentifierName);
 
-                foreach (var handler in _declarations.FindEventHandlers(_view.Target))
+                foreach (var handler in _declarations.FindEventHandlers(_view.Target).OrderByDescending(h => h.Selection.StartColumn))
                 {
                     var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _view.NewName + '_');
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
@@ -300,7 +298,7 @@ namespace Rubberduck.Refactorings.Rename
                 var implementations = _declarations.FindInterfaceImplementationMembers()
                     .Where(m => m.IdentifierName == target.ComponentName + '_' + target.IdentifierName);
 
-                foreach (var member in implementations)
+                foreach (var member in implementations.OrderByDescending(m => m.Selection.StartColumn))
                 {
                     try
                     {
@@ -327,7 +325,7 @@ namespace Rubberduck.Refactorings.Rename
                 var module = grouping.Key.Component.CodeModule;
                 foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
                 {
-                    foreach (var reference in line)
+                    foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
                     {
                         var content = module.Lines[line.Key, 1];
                         string newContent;
@@ -351,7 +349,7 @@ namespace Rubberduck.Refactorings.Rename
                 // renaming interface
                 if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                 {
-                    var members = _declarations.FindMembers(target);
+                    var members = _declarations.FindMembers(target).OrderByDescending(m => m.Selection.StartColumn);
                     foreach (var member in members)
                     {
                         var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
@@ -394,7 +392,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
-                var context = (ParserRuleContext) target.Context.Parent.Parent;
+                var context = (ParserRuleContext)target.Context.Parent.Parent;
                 var firstTokenIndex = context.Start.TokenIndex;
                 var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
 
@@ -535,3 +533,4 @@ namespace Rubberduck.Refactorings.Rename
         }
     }
 }
+
