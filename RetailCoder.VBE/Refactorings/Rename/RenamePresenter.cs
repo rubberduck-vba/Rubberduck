@@ -22,28 +22,31 @@ namespace Rubberduck.Refactorings.Rename
         public RenamePresenter(IRenameView view, RenameModel model)
         {
             _view = view;
-            _view.OkButtonClicked += OnOkButtonClicked;
+            _view.OkButtonClicked += OnViewOkButtonClicked;
 
             _model = model;
         }
 
-        public void Show()
+        public RenameModel Show()
         {
             if (_model.Target != null)
             {
                 _view.Target = _model.Target;
                 _view.ShowDialog();
             }
+
+            return _model;
         }
 
-        public void Show(Declaration target)
+        public RenameModel Show(Declaration target)
         {
             _model.PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
             _view.ShowDialog();
+            return _model;
         }
 
-        private Declaration AmbiguousId()
+/*        private Declaration AmbiguousId()
         {
             var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
                                               || _model.Target.ParentScope.Contains(item.ParentScope))
@@ -100,62 +103,27 @@ namespace Rubberduck.Refactorings.Rename
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
-            {
-                DeclarationType.Class,
-                DeclarationType.Module
-            };
-
-        private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            var ambiguousId = AmbiguousId();
-            if (ambiguousId != null)
-            {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _view.NewName,
-                    ambiguousId.IdentifierName);
-                var rename = MessageBox.Show(message, RubberduckUI.RenameDialog_Caption,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            DeclarationType.Class,
+            DeclarationType.Module
+        };*/
 
-                if (rename == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            // must rename usages first; if target is a module or a project,
-            // then renaming the declaration first would invalidate the parse results.
-
-            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
+        public event EventHandler<string> OkButtonClicked;
+        protected virtual void OnOkButtonClicked(string e)
+        {
+            var handler = OkButtonClicked;
+            if (handler != null)
             {
-                // properties can have more than 1 member.
-                var members = _model.Declarations[_model.Target.IdentifierName]
-                    .Where(item => item.Project == _model.Target.Project
-                        && item.ComponentName == _model.Target.ComponentName
-                        && item.DeclarationType.HasFlag(DeclarationType.Property));
-                foreach (var member in members)
-                {
-                    RenameUsages(member);
-                }
-            }
-            else
-            {
-                RenameUsages(_model.Target);
-            }
-
-            if (ModuleDeclarationTypes.Contains(_model.Target.DeclarationType))
-            {
-                RenameModule();
-            }
-            else if (_model.Target.DeclarationType == DeclarationType.Project)
-            {
-                RenameProject();
-            }
-            else
-            {
-                RenameDeclaration();
+                handler(this, e);
             }
         }
 
-        private void RenameModule()
+        private void OnViewOkButtonClicked(object sender, EventArgs e)
+        {
+            OnOkButtonClicked(_view.NewName);
+        }
+
+        /*private void RenameModule()
         {
             try
             {
@@ -430,7 +398,7 @@ namespace Rubberduck.Refactorings.Rename
                 return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
             }
             return GetReplacementLine(content, newName, target.Selection);
-        }
+        }*/
     }
 }
 
