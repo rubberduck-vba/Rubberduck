@@ -16,45 +16,40 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenamePresenter
     {
-        private readonly VBE _vbe;
         private readonly IRenameView _view;
-        private readonly Declarations _declarations;
-        private readonly QualifiedSelection _selection;
-        private readonly VBProjectParseResult _parseResult;
+        private readonly RenameModel _model;
 
-        public RenamePresenter(VBE vbe, IRenameView view, VBProjectParseResult parseResult, QualifiedSelection selection)
+        public RenamePresenter(IRenameView view, RenameModel model)
         {
-            _vbe = vbe;
             _view = view;
-            _view.OkButtonClicked += OnOkButtonClicked;
+            _view.OkButtonClicked += OnViewOkButtonClicked;
 
-            _parseResult = parseResult;
-            _declarations = parseResult.Declarations;
-            _selection = selection;
+            _model = model;
         }
 
-        public void Show()
+        public RenameModel Show()
         {
-            Declaration target;
-            AcquireTarget(out target, _selection);
-            if (target != null)
+            if (_model.Target != null)
             {
-                _view.Target = target;
+                _view.Target = _model.Target;
                 _view.ShowDialog();
             }
+
+            return _model;
         }
 
-        public void Show(Declaration target)
+        public RenameModel Show(Declaration target)
         {
-            PromptIfTargetImplementsInterface(ref target);
+            _model.PromptIfTargetImplementsInterface(ref target);
             _view.Target = target;
             _view.ShowDialog();
+            return _model;
         }
 
-        private Declaration AmbiguousId()
+/*        private Declaration AmbiguousId()
         {
-            var values = _declarations.Items.Where(item => (item.Scope.Contains(_view.Target.Scope)
-                                              || _view.Target.ParentScope.Contains(item.ParentScope))
+            var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
+                                              || _model.Target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
             if (values.Any())
@@ -62,11 +57,9 @@ namespace Rubberduck.Refactorings.Rename
                 return values.FirstOrDefault();
             }
 
-            foreach (var reference in _view.Target.References)
+            foreach (var reference in _model.Target.References)
             {
-                var test = _declarations.Items.FirstOrDefault(item => item.IdentifierName == "Main");
-
-                var potentialDeclarations = _declarations.Items.Where(item => !item.IsBuiltIn
+                var potentialDeclarations = _model.Declarations.Items.Where(item => !item.IsBuiltIn
                                                          && item.Project.Equals(reference.Declaration.Project)
                                                          && ((item.Context != null
                                                          && item.Context.Start.Line <= reference.Selection.StartLine
@@ -75,10 +68,7 @@ namespace Rubberduck.Refactorings.Rename
                                                          && item.Selection.EndLine >= reference.Selection.EndLine))
                                                          && item.QualifiedName.QualifiedModuleName.ComponentName == reference.QualifiedModuleName.ComponentName);
 
-                var currentStartLine = 0;
-                var currentEndLine = int.MaxValue;
-                var currentStartColumn = 0;
-                var currentEndColumn = int.MaxValue;
+                var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
                 Declaration target = null;
                 foreach (var item in potentialDeclarations)
@@ -88,28 +78,18 @@ namespace Rubberduck.Refactorings.Rename
                     var startColumn = item.Context == null ? item.Selection.StartColumn : item.Context.Start.Column;
                     var endColumn = item.Context == null ? item.Selection.EndColumn : item.Context.Stop.Column;
 
-                    if (currentStartLine <= item.Selection.StartLine && currentEndLine >= item.Selection.EndLine)
-                    {
-                        if (!(startLine == reference.Selection.StartLine &&
-                              (startColumn > reference.Selection.StartColumn ||
-                               currentStartColumn > startColumn) ||
-                              endLine == reference.Selection.EndLine &&
-                              (endColumn < reference.Selection.EndColumn ||
-                               currentEndColumn < endColumn)))
-                        {
-                            currentStartLine = item.Selection.StartLine;
-                            currentEndLine = item.Selection.EndLine;
-                            currentStartColumn = item.Selection.StartColumn;
-                            currentEndColumn = item.Selection.EndColumn;
+                    var selection = new Selection(startLine, startColumn, endLine, endColumn);
 
-                            target = item;
-                        }
+                    if (currentSelection.Contains(selection))
+                    {
+                        currentSelection = selection;
+                        target = item;
                     }
                 }
 
                 if (target == null) { continue; }
 
-                values = _declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
+                values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
                                               && _view.NewName == item.IdentifierName);
 
@@ -123,66 +103,31 @@ namespace Rubberduck.Refactorings.Rename
         }
 
         private static readonly DeclarationType[] ModuleDeclarationTypes =
-            {
-                DeclarationType.Class,
-                DeclarationType.Module
-            };
-
-        private void OnOkButtonClicked(object sender, EventArgs e)
         {
-            var ambiguousId = AmbiguousId();
-            if (ambiguousId != null)
-            {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _view.NewName,
-                    ambiguousId.IdentifierName);
-                var rename = MessageBox.Show(message, RubberduckUI.RenameDialog_Caption,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            DeclarationType.Class,
+            DeclarationType.Module
+        };*/
 
-                if (rename == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            // must rename usages first; if target is a module or a project,
-            // then renaming the declaration first would invalidate the parse results.
-
-            if (_view.Target.DeclarationType.HasFlag(DeclarationType.Property))
+        public event EventHandler<string> OkButtonClicked;
+        protected virtual void OnOkButtonClicked(string e)
+        {
+            var handler = OkButtonClicked;
+            if (handler != null)
             {
-                // properties can have more than 1 member.
-                var members = _declarations[_view.Target.IdentifierName]
-                    .Where(item => item.Project == _view.Target.Project
-                        && item.ComponentName == _view.Target.ComponentName
-                        && item.DeclarationType.HasFlag(DeclarationType.Property));
-                foreach (var member in members)
-                {
-                    RenameUsages(member);
-                }
-            }
-            else
-            {
-                RenameUsages(_view.Target);
-            }
-
-            if (ModuleDeclarationTypes.Contains(_view.Target.DeclarationType))
-            {
-                RenameModule();
-            }
-            else if (_view.Target.DeclarationType == DeclarationType.Project)
-            {
-                RenameProject();
-            }
-            else
-            {
-                RenameDeclaration();
+                handler(this, e);
             }
         }
 
-        private void RenameModule()
+        private void OnViewOkButtonClicked(object sender, EventArgs e)
+        {
+            OnOkButtonClicked(_view.NewName);
+        }
+
+        /*private void RenameModule()
         {
             try
             {
-                var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 if (module != null)
                 {
                     if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
@@ -211,7 +156,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var project = _vbe.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _view.Target.IdentifierName);
+                var project = _model.VBE.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _model.Target.IdentifierName);
                 if (project != null)
                 {
                     project.Name = _view.NewName;
@@ -225,32 +170,32 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RenameDeclaration()
         {
-            if (_view.Target.DeclarationType == DeclarationType.Control)
+            if (_model.Target.DeclarationType == DeclarationType.Control)
             {
                 RenameControl();
                 return;
             }
 
-            var module = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var newContent = GetReplacementLine(module, _view.Target, _view.NewName);
+            var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var newContent = GetReplacementLine(module, _model.Target, _view.NewName);
 
-            if (_view.Target.DeclarationType == DeclarationType.Parameter)
+            if (_model.Target.DeclarationType == DeclarationType.Parameter)
             {
-                var argList = (VBAParser.ArgListContext)_view.Target.Context.Parent;
+                var argList = (VBAParser.ArgListContext)_model.Target.Context.Parent;
                 var lineNum = argList.GetSelection().LineCount;
 
                 module.ReplaceLine(argList.Start.Line, newContent);
                 module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
             }
-            else if (!_view.Target.DeclarationType.HasFlag(DeclarationType.Property))
+            else if (!_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                module.ReplaceLine(_view.Target.Selection.StartLine, newContent);
+                module.ReplaceLine(_model.Target.Selection.StartLine, newContent);
             }
             else
             {
-                var members = _declarations[_view.Target.IdentifierName]
-                    .Where(item => item.Project == _view.Target.Project 
-                        && item.ComponentName == _view.Target.ComponentName
+                var members = _model.Declarations[_model.Target.IdentifierName]
+                    .Where(item => item.Project == _model.Target.Project
+                        && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
                 foreach (var member in members)
@@ -265,10 +210,10 @@ namespace Rubberduck.Refactorings.Rename
         {
             try
             {
-                var form = _view.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = ((dynamic)form.Parent.Designer).Controls(_view.Target.IdentifierName);
+                var form = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var control = ((dynamic)form.Parent.Designer).Controls(_model.Target.IdentifierName);
 
-                foreach (var handler in _declarations.FindEventHandlers(_view.Target).OrderByDescending(h => h.Selection.StartColumn))
+                foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
                 {
                     var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _view.NewName + '_');
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
@@ -293,9 +238,9 @@ namespace Rubberduck.Refactorings.Rename
             // todo: refactor
 
             // rename interface member
-            if (_declarations.FindInterfaceMembers().Contains(target))
+            if (_model.Declarations.FindInterfaceMembers().Contains(target))
             {
-                var implementations = _declarations.FindInterfaceImplementationMembers()
+                var implementations = _model.Declarations.FindInterfaceImplementationMembers()
                     .Where(m => m.IdentifierName == target.ComponentName + '_' + target.IdentifierName);
 
                 foreach (var member in implementations.OrderByDescending(m => m.Selection.StartColumn))
@@ -349,12 +294,12 @@ namespace Rubberduck.Refactorings.Rename
                 // renaming interface
                 if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
                 {
-                    var members = _declarations.FindMembers(target).OrderByDescending(m => m.Selection.StartColumn);
+                    var members = _model.Declarations.FindMembers(target).OrderByDescending(m => m.Selection.StartColumn);
                     foreach (var member in members)
                     {
                         var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
                         var newMemberName = _view.NewName + '_' + member.IdentifierName;
-                        var method = _declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
+                        var method = _model.Declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
                         if (method == null)
                         {
                             continue;
@@ -376,7 +321,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private string GetReplacementLine(CodeModule module, Declaration target, string newName)
         {
-            var targetModule = _parseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
+            var targetModule = _model.ParseResult.ComponentParseResults.SingleOrDefault(m => m.QualifiedName == target.QualifiedName.QualifiedModuleName);
             if (targetModule == null)
             {
                 return null;
@@ -453,84 +398,7 @@ namespace Rubberduck.Refactorings.Rename
                 return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
             }
             return GetReplacementLine(content, newName, target.Selection);
-        }
-
-        private static readonly DeclarationType[] ProcedureDeclarationTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
-        private void AcquireTarget(out Declaration target, QualifiedSelection selection)
-        {
-            target = _declarations.Items
-                .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item) 
-                                      || IsSelectedReference(selection, item));
-
-            PromptIfTargetImplementsInterface(ref target);
-
-            /*if (target == null)
-            {
-                return;
-
-                // rename the containing procedure:
-                _view.Target = _declarations.Items.SingleOrDefault(
-                    item => !item.IsBuiltIn 
-                            && ProcedureDeclarationTypes.Contains(item.DeclarationType)
-                            && item.Context.GetSelection().Contains(selection.Selection));
-            }
-
-            if (target == null)
-            {
-                return;
-                // rename the containing module:
-                _view.Target = _declarations.Items.SingleOrDefault(item => 
-                    !item.IsBuiltIn
-                    && ModuleDeclarationTypes.Contains(item.DeclarationType)
-                    && item.QualifiedName.QualifiedModuleName == selection.QualifiedName);
-            }*/
-        }
-
-        private void PromptIfTargetImplementsInterface(ref Declaration target)
-        {
-            var declaration = target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (target == null || interfaceImplementation == null)
-            {
-                return;
-            }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                target = null;
-                return;
-            }
-
-            target = interfaceMember;
-        }
-
-        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName.Project == selection.QualifiedName.Project
-                && r.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
-                && r.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedName.QualifiedModuleName.Project == selection.QualifiedName.Project
-                   && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
-                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
-        }
+        }*/
     }
 }
 
