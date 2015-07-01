@@ -210,6 +210,10 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -291,7 +295,6 @@
     </Compile>
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
-    <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -451,6 +454,7 @@
       <DependentUpon>GeneralSettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\SettingsPresenter.cs" />
+    <Compile Include="UI\SourceControl\SourceControlBindings.cs" />
     <Compile Include="UI\SourceControl\SourceControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

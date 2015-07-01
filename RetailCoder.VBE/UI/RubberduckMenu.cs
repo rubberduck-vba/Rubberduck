@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Ninject;
+using Ninject.Parameters;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -129,21 +131,21 @@ namespace Rubberduck.UI
             _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
         }
 
-        private SourceControl.App _sourceControlApp;
+        private SourceControlPresenter _sourceControlPresenter;
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (_sourceControlApp == null)
+            if (_sourceControlPresenter == null)
             {
-                _sourceControlApp = new SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
-                                                                new ChangesControl(), new UnSyncedCommitsControl(),
-                                                                new SettingsControl(), new BranchesControl(),
-                                                                new CreateBranchForm(), new DeleteBranchForm(),
-                                                                new MergeForm());
+                var kernel = new StandardKernel(new SourceControlBindings());
+                var vbeArg = new ConstructorArgument("vbe", this.IDE);
+                var addinArg = new ConstructorArgument("addin", this.AddIn);
+
+                _sourceControlPresenter = kernel.Get<SourceControlPresenter>(vbeArg, addinArg);
             }
 
-            _sourceControlApp.ShowWindow();
+            _sourceControlPresenter.Show();
         }
 
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.

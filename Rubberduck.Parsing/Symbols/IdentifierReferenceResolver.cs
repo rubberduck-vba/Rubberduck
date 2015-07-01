@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -806,15 +805,22 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration FindProjectScopeDeclaration(string identifierName)
         {
-            var matches = _declarations[identifierName];
+            var matches = _declarations[identifierName].ToList();
             try
             {
-                return matches.SingleOrDefault(item => 
+                return matches.SingleOrDefault(item => !item.IsBuiltIn &&
                     !item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event // events can't be called outside the class they're declared in
                     && (item.Accessibility == Accessibility.Public
                         || item.Accessibility == Accessibility.Global
-                        || _moduleTypes.Contains(item.DeclarationType) /* because static classes are accessed just like modules */));
+                        || _moduleTypes.Contains(item.DeclarationType)))
+                // todo: refactor
+                ?? matches.SingleOrDefault(item => item.IsBuiltIn &&
+                    !item.DeclarationType.HasFlag(DeclarationType.Member)
+                    && item.DeclarationType != DeclarationType.Event 
+                    && (item.Accessibility == Accessibility.Public
+                        || item.Accessibility == Accessibility.Global
+                        || _moduleTypes.Contains(item.DeclarationType)));
             }
             catch (InvalidOperationException)
             {
