@@ -16,8 +16,12 @@ namespace Rubberduck.Refactorings.Rename
         private readonly Declarations _declarations;
         public Declarations Declarations { get { return _declarations; } }
 
-        private readonly Declaration _target;
-        public Declaration Target { get { return _target; } }
+        private Declaration _target;
+        public Declaration Target
+        {
+            get { return _target; }
+            set { _target = value; }
+        }
 
         private readonly QualifiedSelection _selection;
         public QualifiedSelection Selection { get { return _selection; } }

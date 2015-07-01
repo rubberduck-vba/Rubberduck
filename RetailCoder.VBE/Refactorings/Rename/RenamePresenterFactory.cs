@@ -6,20 +6,20 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenamePresenterFactory : IRefactoringPresenterFactory<RenamePresenter>
     {
+        private readonly VBE _vbe;
         private readonly IRenameView _view;
-        private readonly RenameModel _model;
+        private readonly VBProjectParseResult _parseResult;
 
         public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult)
         {
+            _vbe = vbe;
             _view = view;
-
-            _model = new RenameModel(vbe, parseResult, vbe.ActiveCodePane.GetSelection());
-
+            _parseResult = parseResult;
         }
 
         public RenamePresenter Create()
         {
-            return new RenamePresenter(_view, _model);
+            return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, _vbe.ActiveCodePane.GetSelection()));
         }
     }
 }
