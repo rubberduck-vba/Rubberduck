@@ -321,6 +321,11 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var parentType = ResolveType(parent);
+            if (parentType == null)
+            {
+                return null;
+            }
+
             var members = _declarations.FindMembers(parentType);
             var fieldName = fieldCall.ambiguousIdentifier().GetText();
 
