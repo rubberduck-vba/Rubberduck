@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
@@ -191,9 +190,35 @@ namespace Rubberduck.UI.SourceControl
 
         private void OnCreateBranchTextChanged(object sender, EventArgs e)
         {
-            _createView.IsValidBranchName = !string.IsNullOrEmpty(_createView.UserInputText) &&
-                                          !_view.Local.Contains(_createView.UserInputText) &&
-                                          !_createView.UserInputText.Any(char.IsWhiteSpace);
+            // Rules taken from https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+            var isValidName = !string.IsNullOrEmpty(_createView.UserInputText) &&
+                              !_view.Local.Contains(_createView.UserInputText) &&
+                              !_createView.UserInputText.Any(char.IsWhiteSpace) &&
+                              !_createView.UserInputText.Contains("..") &&
+                              !_createView.UserInputText.Contains("~") &&
+                              !_createView.UserInputText.Contains("^") &&
+                              !_createView.UserInputText.Contains(":") &&
+                              !_createView.UserInputText.Contains("?") &&
+                              !_createView.UserInputText.Contains("*") &&
+                              !_createView.UserInputText.Contains("[") &&
+                              !_createView.UserInputText.Contains("//") &&
+                              _createView.UserInputText.FirstOrDefault() != '/' &&
+                              _createView.UserInputText.LastOrDefault() != '/' &&
+                              _createView.UserInputText.LastOrDefault() != '.' &&
+                              _createView.UserInputText != "@" &&
+                              !_createView.UserInputText.Contains("@{") &&
+                              !_createView.UserInputText.Contains("\\");
+
+            if (isValidName)    // don't evaluate if value is already false
+            {
+                foreach (var section in _createView.UserInputText.Split('/'))
+                {
+                    isValidName = section.FirstOrDefault() != '.' &&
+                                  !section.EndsWith(".lock");
+                }
+            }
+
+            _createView.IsValidBranchName = isValidName;
         }
 
         private void OnShowMerge(object sender, EventArgs e)

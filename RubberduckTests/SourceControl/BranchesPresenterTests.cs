@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -263,7 +262,7 @@ namespace RubberduckTests.SourceControl
         public void CreateBranch_AndValidBranchName()
         {
             //arrange
-            var existingBranchName = "master";
+            var existingBranchName = "master.test/test@";
             var newBranchName = "bugBranch";
             var branches = new List<string>() { existingBranchName };
 
@@ -279,10 +278,298 @@ namespace RubberduckTests.SourceControl
         }
 
         [TestMethod]
-        public void CreateBranch_WithNameAsMultipleWords()
+        public void CreateBranch_NameContainsSpace()
         {
             //arrange
             var branchName = "my master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsTwoConsecutiveDots()
+        {
+            //arrange
+            var branchName = "my..master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsTilde()
+        {
+            //arrange
+            var branchName = "my~master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsCaret()
+        {
+            //arrange
+            var branchName = "my^master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsColon()
+        {
+            //arrange
+            var branchName = "my:master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsQuestionMark()
+        {
+            //arrange
+            var branchName = "my?master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsAsteriks()
+        {
+            //arrange
+            var branchName = "my*master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsOpenBrace()
+        {
+            //arrange
+            var branchName = "my[master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsTwoConsecutiveSlashes()
+        {
+            //arrange
+            var branchName = "my//master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameStartsWithSlash()
+        {
+            //arrange
+            var branchName = "/myMaster";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameEndsWithSlash()
+        {
+            //arrange
+            var branchName = "myMaster/";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameEndsWithDot()
+        {
+            //arrange
+            var branchName = "myMaster.";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameIsAmpersand()
+        {
+            //arrange
+            var branchName = "@";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsConsecutiveAmpersandOpenBrace()
+        {
+            //arrange
+            var branchName = "my@{master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsBackslash()
+        {
+            //arrange
+            var branchName = "my\\master";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsSlashSectionStartingWithDot()
+        {
+            //arrange
+            var branchName = "myMaster/.test";
+            var branches = new List<string>() { branchName };
+
+            _view.SetupProperty(v => v.Local, branches);
+            _createView.SetupProperty(c => c.UserInputText, branchName);
+            _createView.SetupProperty(c => c.IsValidBranchName);
+
+            //act
+            _createView.Raise(c => c.UserInputTextChanged += null, new EventArgs());
+
+            //Assert
+            Assert.IsFalse(_createView.Object.IsValidBranchName);
+        }
+
+        [TestMethod]
+        public void CreateBranch_NameContainsSlashSectionEndingWithDotlock()
+        {
+            //arrange
+            var branchName = "myMaster/test.lock";
             var branches = new List<string>() { branchName };
 
             _view.SetupProperty(v => v.Local, branches);
