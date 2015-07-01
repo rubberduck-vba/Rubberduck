@@ -108,19 +108,9 @@ namespace Rubberduck.Refactorings.Rename
             DeclarationType.Module
         };*/
 
-        public event EventHandler<string> OkButtonClicked;
-        protected virtual void OnOkButtonClicked(string e)
-        {
-            var handler = OkButtonClicked;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
         private void OnViewOkButtonClicked(object sender, EventArgs e)
         {
-            OnOkButtonClicked(_view.NewName);
+            _model.NewName = _view.NewName;
         }
 
         /*private void RenameModule()

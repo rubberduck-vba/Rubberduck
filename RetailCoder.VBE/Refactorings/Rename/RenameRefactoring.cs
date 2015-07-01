@@ -18,7 +18,6 @@ namespace Rubberduck.Refactorings.Rename
     {
         private readonly IRefactoringPresenterFactory<RenamePresenter> _factory;
         private RenameModel _model;
-        private string _newName;
 
         public RenameRefactoring(IRefactoringPresenterFactory<RenamePresenter> factory)
         {
@@ -28,8 +27,12 @@ namespace Rubberduck.Refactorings.Rename
         public void Refactor()
         {
             var presenter = _factory.Create();
-            presenter.OkButtonClicked += OkButtonClicked;
-            _model = presenter.Show(); //todo: move presenter's renaming logic into this IRefactoring class
+            _model = presenter.Show();
+
+            if (_model.Declarations != null)
+            {
+                Rename();
+            }
         }
 
         public void Refactor(QualifiedSelection target)
@@ -41,15 +44,15 @@ namespace Rubberduck.Refactorings.Rename
         public void Refactor(Declaration target)
         {
             var presenter = _factory.Create();
-            presenter.OkButtonClicked += OkButtonClicked;
             _model = presenter.Show(target);
+            Rename();
         }
 
         private Declaration AmbiguousId()
         {
             var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
                                               || _model.Target.ParentScope.Contains(item.ParentScope))
-                                              && _newName == item.IdentifierName);
+                                              && _model.NewName == item.IdentifierName);
 
             if (values.Any())
             {
@@ -90,7 +93,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
-                                              && _newName == item.IdentifierName);
+                                              && _model.NewName == item.IdentifierName);
 
                 if (values.Any())
                 {
@@ -107,12 +110,12 @@ namespace Rubberduck.Refactorings.Rename
             DeclarationType.Module
         };
 
-        private void OkButtonClicked(object sender, string e)
+        private void Rename()
         {
             var ambiguousId = AmbiguousId();
             if (ambiguousId != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _newName,
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
                     ambiguousId.IdentifierName);
                 var rename = MessageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -166,17 +169,17 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     if (module.Parent.Type == vbext_ComponentType.vbext_ct_Document)
                     {
-                        module.Parent.Properties.Item("_CodeName").Value = _newName;
+                        module.Parent.Properties.Item("_CodeName").Value = _model.NewName;
                     }
                     else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
                     {
                         var codeModule = (CodeModuleClass)module;
-                        codeModule.Parent.Name = _newName;
-                        module.Parent.Properties.Item("Caption").Value = _newName;
+                        codeModule.Parent.Name = _model.NewName;
+                        module.Parent.Properties.Item("Caption").Value = _model.NewName;
                     }
                     else
                     {
-                        module.Name = _newName;
+                        module.Name = _model.NewName;
                     }
                 }
             }
@@ -193,7 +196,7 @@ namespace Rubberduck.Refactorings.Rename
                 var project = _model.VBE.VBProjects.Cast<VBProject>().FirstOrDefault(p => p.Name == _model.Target.IdentifierName);
                 if (project != null)
                 {
-                    project.Name = _newName;
+                    project.Name = _model.NewName;
                 }
             }
             catch (COMException)
@@ -211,7 +214,7 @@ namespace Rubberduck.Refactorings.Rename
             }
 
             var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var newContent = GetReplacementLine(module, _model.Target, _newName);
+            var newContent = GetReplacementLine(module, _model.Target, _model.NewName);
 
             if (_model.Target.DeclarationType == DeclarationType.Parameter)
             {
@@ -234,7 +237,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 foreach (var member in members)
                 {
-                    newContent = GetReplacementLine(module, member, _newName);
+                    newContent = GetReplacementLine(module, member, _model.NewName);
                     module.ReplaceLine(member.Selection.StartLine, newContent);
                 }
             }
@@ -249,7 +252,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
                 {
-                    var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _newName + '_');
+                    var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
                     var module = handler.Project.VBComponents.Item(handler.ComponentName).CodeModule;
 
                     var content = module.Lines[handler.Selection.StartLine, 1];
@@ -257,7 +260,7 @@ namespace Rubberduck.Refactorings.Rename
                     module.ReplaceLine(handler.Selection.StartLine, newContent);
                 }
 
-                control.Name = _newName;
+                control.Name = _model.NewName;
             }
             catch (RuntimeBinderException)
             {
@@ -281,7 +284,7 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     try
                     {
-                        var newMemberName = target.ComponentName + '_' + _newName;
+                        var newMemberName = target.ComponentName + '_' + _model.NewName;
                         var module = member.Project.VBComponents.Item(member.ComponentName).CodeModule;
 
                         var content = module.Lines[member.Selection.StartLine, 1];
@@ -311,13 +314,13 @@ namespace Rubberduck.Refactorings.Rename
 
                         if (interfaceName == null)
                         {
-                            newContent = GetReplacementLine(content, _newName,
+                            newContent = GetReplacementLine(content, _model.NewName,
                                 reference.Selection);
                         }
                         else
                         {
                             newContent = GetReplacementLine(content,
-                                interfaceName + "_" + _newName,
+                                interfaceName + "_" + _model.NewName,
                                 reference.Selection);
                         }
 
@@ -332,7 +335,7 @@ namespace Rubberduck.Refactorings.Rename
                     foreach (var member in members)
                     {
                         var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
-                        var newMemberName = _newName + '_' + member.IdentifierName;
+                        var newMemberName = _model.NewName + '_' + member.IdentifierName;
                         var method = _model.Declarations[oldMemberName].SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
                         if (method == null)
                         {
@@ -367,7 +370,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = targetModule.GetRewriter();
-                rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _newName);
+                rewriter.Replace(argContext.ambiguousIdentifier().Start.TokenIndex, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.

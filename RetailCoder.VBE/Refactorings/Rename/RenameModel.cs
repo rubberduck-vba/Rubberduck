@@ -25,6 +25,8 @@ namespace Rubberduck.Refactorings.Rename
         private readonly VBProjectParseResult _parseResult;
         public VBProjectParseResult ParseResult { get { return _parseResult; } }
 
+        public string NewName { get; set; }
+
         public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _vbe = vbe;
