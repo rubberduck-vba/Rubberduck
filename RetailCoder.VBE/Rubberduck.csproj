@@ -291,7 +291,6 @@
     </Compile>
     <Compile Include="UI\Settings\IAddTodoSettingsView.cs" />
     <Compile Include="UI\SourceControl\ActionFailedEventArgs.cs" />
-    <Compile Include="UI\SourceControl\App.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

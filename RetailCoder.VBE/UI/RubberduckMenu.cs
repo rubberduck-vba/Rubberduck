@@ -129,21 +129,17 @@ namespace Rubberduck.UI
             _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
         }
 
-        private SourceControl.App _sourceControlApp;
+        private SourceControlPresenter _sourceControlPresenter;
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (_sourceControlApp == null)
+            if (_sourceControlPresenter == null)
             {
-                _sourceControlApp = new SourceControl.App(this.IDE, this.AddIn, new SourceControlConfigurationService(), 
-                                                                new ChangesControl(), new UnSyncedCommitsControl(),
-                                                                new SettingsControl(), new BranchesControl(),
-                                                                new CreateBranchForm(), new DeleteBranchForm(),
-                                                                new MergeForm());
+                _sourceControlPresenter = new SourceControlPresenter(this.IDE, this.AddIn);
             }
 
-            _sourceControlApp.ShowWindow();
+            _sourceControlPresenter.Show();
         }
 
         //I'm not the one with the bad name, MS is. Signature must match delegate definition.
