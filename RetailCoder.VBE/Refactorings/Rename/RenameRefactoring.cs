@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Antlr4.Runtime;
@@ -52,7 +51,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
                                               || _model.Target.ParentScope.Contains(item.ParentScope))
-                                              && _model.NewName == item.IdentifierName);
+                                              && _model.NewName == item.IdentifierName).ToList();
 
             if (values.Any())
             {
@@ -93,7 +92,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
                                               || target.ParentScope.Contains(item.ParentScope))
-                                              && _model.NewName == item.IdentifierName);
+                                              && _model.NewName == item.IdentifierName).ToList();
 
                 if (values.Any())
                 {
