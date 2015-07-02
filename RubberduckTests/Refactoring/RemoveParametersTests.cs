@@ -37,7 +37,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo()
+@"Private Sub Foo( )
 End Sub";
 
             //Arrange
