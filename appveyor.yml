@@ -1,3 +1,5 @@
 version: 1.4.{build}-{branch}
 build:
   verbosity: normal
+
+configuration: Release
