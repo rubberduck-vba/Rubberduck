@@ -13,10 +13,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
-        private readonly IRefactoringPresenterFactory<RemoveParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(IRefactoringPresenterFactory<RemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
             _factory = factory;
         }

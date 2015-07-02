@@ -3,7 +3,12 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParametersPresenter
+    public interface IRemoveParametersPresenter
+    {
+        RemoveParametersModel Show();
+    }
+
+    public class RemoveParametersPresenter : IRemoveParametersPresenter
     {
         private readonly IRemoveParametersView _view;
         private readonly RemoveParametersModel _model;
