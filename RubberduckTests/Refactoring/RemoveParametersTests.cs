@@ -27,7 +27,7 @@ namespace RubberduckTests.Refactoring
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveOnlyParam()
+        public void RemoveParamatersRefactoring_RemoveBothParams()
         {
             //Input
             const string inputCode =
@@ -62,7 +62,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveBothParams()
+        public void RemoveParamatersRefactoring_RemoveOnlyParam()
         {
             //Input
             const string inputCode =
