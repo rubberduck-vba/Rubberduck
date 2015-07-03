@@ -53,6 +53,9 @@
 *   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
 *   - implemented a fileNumber rule to locate identifier usages in file numbers.
 *   - added support for anonymous declarations in With blocks (With New Something)
+*   - blockStmt rules being sorted alphabetically was wrong. moved implicit call statement last.
+*   - '!' in dictionary call statement rule gets picked up as a type hint; changed member call
+*     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
 *
 *======================================================================================
 *

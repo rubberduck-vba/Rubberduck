@@ -60,14 +60,15 @@ namespace Rubberduck.Refactorings.Rename
 
             foreach (var reference in _model.Target.References)
             {
+                var targetReference = reference;
                 var potentialDeclarations = _model.Declarations.Items.Where(item => !item.IsBuiltIn
-                                                         && item.Project.Equals(reference.Declaration.Project)
+                                                         && item.Project.Equals(targetReference.Declaration.Project)
                                                          && ((item.Context != null
-                                                         && item.Context.Start.Line <= reference.Selection.StartLine
-                                                         && item.Context.Stop.Line >= reference.Selection.EndLine)
-                                                         || (item.Selection.StartLine <= reference.Selection.StartLine
-                                                         && item.Selection.EndLine >= reference.Selection.EndLine))
-                                                         && item.QualifiedName.QualifiedModuleName.ComponentName == reference.QualifiedModuleName.ComponentName);
+                                                         && item.Context.Start.Line <= targetReference.Selection.StartLine
+                                                         && item.Context.Stop.Line >= targetReference.Selection.EndLine)
+                                                         || (item.Selection.StartLine <= targetReference.Selection.StartLine
+                                                         && item.Selection.EndLine >= targetReference.Selection.EndLine))
+                                                         && item.QualifiedName.QualifiedModuleName.ComponentName == targetReference.QualifiedModuleName.ComponentName);
 
                 var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
 
