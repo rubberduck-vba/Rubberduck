@@ -64,7 +64,6 @@ namespace Rubberduck.UI.Refactorings
         }
 
         private Declaration _target;
-
         public Declaration Target
         {
             get { return _target; }

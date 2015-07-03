@@ -19,8 +19,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public RenamePresenter Create()
         {
-            var selection = _vbe.ActiveCodePane.GetSelection();
-            return new RenamePresenter(_vbe, _view, _parseResult, selection);
+            return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, _vbe.ActiveCodePane.GetSelection()));
         }
     }
 }

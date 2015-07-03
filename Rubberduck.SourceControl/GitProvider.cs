@@ -197,7 +197,11 @@ namespace Rubberduck.SourceControl
             try
             {
                 var remote = _repo.Network.Remotes[remoteName];
-                _repo.Network.Fetch(remote);
+
+                if (remote != null)
+                {
+                    _repo.Network.Fetch(remote);
+                }
 
                 RequeryUnsyncedCommits();
             }
