@@ -547,6 +547,15 @@ namespace Rubberduck.Parsing.Symbols
             var chainedCalls = context.iCS_S_MemberCall();
             foreach (var memberCall in chainedCalls)
             {
+                var notationToken = memberCall.children[0];
+                if (notationToken.GetText() == "!")
+                {
+                    // we can't handle this syntax yet.
+                    // we need to know what the parent's default property is..
+                    // ...and whether it has a parameterized getter taking in a string.
+                    return;
+                }
+
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
                           ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
 
