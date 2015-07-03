@@ -26,6 +26,21 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
+        /// Creates a mock <see cref="Window"/> with it's <see cref="Window.Caption"/> propery set up.
+        /// </summary>
+        /// <param name="caption">The value to return from <see cref="Window.Caption"/>.</param>
+        /// <returns>
+        /// A <see cref="Mock{Window}"/>that has all the properties needed for <see cref="Rubberduck.UI.DockablePresenterBase"/> pre-setup.
+        /// </returns>
+        internal static Mock<Window> CreateWindowMock(string caption)
+        {
+            var window = CreateWindowMock();
+            window.SetupGet(w => w.Caption).Returns(caption);
+
+            return window;
+        }
+
+        /// <summary>
         /// Creates a new <see cref="Mock{VBE}"/> that returns the <see cref="Windows"/> collection argument out of the Windows property.
         /// </summary>
         /// <param name="windows">
@@ -157,13 +172,6 @@ namespace RubberduckTests.Mocks
 
             return projects;
         }
-
-        //internal static Mock<VBProjects> CreateProjectsMock(List<VBProject> projectList, VBProject project, VBComponents components)
-        //{
-        //    CreateProjectsMock(projectList, project);
-        //    project.SetupGet(p => p.VBComponents).Returns(components.Object);
-        //    return projects;
-        //}
 
         /// <summary>
         /// Creates a new <see cref="Mock{Reference}"/>.

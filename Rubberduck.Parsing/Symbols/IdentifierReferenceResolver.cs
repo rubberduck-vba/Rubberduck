@@ -82,8 +82,8 @@ namespace Rubberduck.Parsing.Symbols
             if (context.NEW() == null)
             {
                 // with block is using an identifier declared elsewhere.
-                qualifier = ResolveType(context.implicitCallStmt_InStmt());
-                reference = CreateReference(context.implicitCallStmt_InStmt(), qualifier);
+                var callee = ResolveInternal(context.implicitCallStmt_InStmt(), _currentScope, ContextAccessorType.GetValueOrReference);
+                qualifier = ResolveType(callee);
             }
             else
             {
@@ -106,11 +106,10 @@ namespace Rubberduck.Parsing.Symbols
                 else
                 {
                     qualifier = ResolveType(typeContext.complexType());
-                    reference = CreateReference(typeContext.complexType(), qualifier);
                 }
             }
 
-            if (qualifier != null)
+            if (qualifier != null && reference != null)
             {
                 qualifier.AddReference(reference);
                 _alreadyResolved.Add(reference.Context);
@@ -179,28 +178,6 @@ namespace Rubberduck.Parsing.Symbols
             return null;
         }
 
-        private Declaration ResolveType(VBAParser.ImplicitCallStmt_InStmtContext context, Declaration localScope = null)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            if (localScope == null)
-            {
-                localScope = _currentScope;
-            }
-
-            var dictionaryCall = context.iCS_S_DictionaryCall();
-
-            var type = ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope)
-                       ?? ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope)
-                       ?? ResolveInternal(context.iCS_S_MembersCall(), ContextAccessorType.GetValueOrReference)
-                       ?? ResolveInternal(dictionaryCall, localScope, ContextAccessorType.GetValueOrReference, dictionaryCall == null ? null : dictionaryCall.dictionaryCallStmt());
-
-            return ResolveType(type);
-        }
-
         private Declaration ResolveType(Declaration parent)
         {
             if (parent == null || parent.AsTypeName == null)
@@ -258,7 +235,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // localScope is probably a UDT
                 var udt = ResolveType(localScope);
-                if (udt != null)
+                if (udt != null && udt.DeclarationType == DeclarationType.UserDefinedType)
                 {
                     callee = _declarations[identifierName].SingleOrDefault(item => item.Context != null && item.Context.Parent == udt.Context);
                 }
@@ -321,6 +298,11 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var parentType = ResolveType(parent);
+            if (parentType == null)
+            {
+                return null;
+            }
+
             var members = _declarations.FindMembers(parentType);
             var fieldName = fieldCall.ambiguousIdentifier().GetText();
 
@@ -374,16 +356,6 @@ namespace Rubberduck.Parsing.Symbols
                       ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget);
 
                 parent = ResolveType(parent);
-            }
-
-            if (parent != null)
-            {
-                var parentReference = CreateReference(parent.Context, parent);
-                if (parentReference != null)
-                {
-                    parent.AddReference(parentReference);
-                    _alreadyResolved.Add(parentReference.Context);
-                }
             }
 
             var chainedCalls = context.iCS_S_MemberCall();
@@ -542,6 +514,15 @@ namespace Rubberduck.Parsing.Symbols
             var chainedCalls = context.iCS_S_MemberCall();
             foreach (var memberCall in chainedCalls)
             {
+                var notationToken = memberCall.children[0];
+                if (notationToken.GetText() == "!")
+                {
+                    // the memberCall is a shorthand reference to the type's default member.
+                    // since the reference isn't explicit, we don't need to care for it.
+                    // (and we couldn't handle it if we wanted to, since we aren't parsing member attributes)
+                    return;
+                }
+
                 var member = ResolveInternal(memberCall.iCS_S_ProcedureOrArrayCall(), parent)
                           ?? ResolveInternal(memberCall.iCS_S_VariableOrProcedureCall(), parent);
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
@@ -11,6 +12,7 @@ namespace Rubberduck.Parsing.Symbols
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
+    [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,

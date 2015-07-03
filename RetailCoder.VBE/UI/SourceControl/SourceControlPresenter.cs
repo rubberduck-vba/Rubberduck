@@ -25,8 +25,19 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
-        public SourceControlPresenter
-            (VBE vbe, AddIn addin, IConfigurationService<SourceControlConfiguration> configService, ISourceControlView view, IChangesPresenter changesPresenter, IBranchesPresenter branchesPresenter, ISettingsPresenter settingsPresenter, IUnsyncedCommitsPresenter unsyncedPresenter, IFolderBrowserFactory folderBrowserFactory, ISourceControlProviderFactory providerFactory, IFailedMessageView failedMessageView, ILoginView loginView)
+        public SourceControlPresenter(
+            VBE vbe, AddIn addin, 
+            IConfigurationService<SourceControlConfiguration> configService, 
+            ISourceControlView view, 
+            IChangesPresenter changesPresenter, 
+            IBranchesPresenter branchesPresenter, 
+            ISettingsPresenter settingsPresenter, 
+            IUnsyncedCommitsPresenter unsyncedPresenter, 
+            IFolderBrowserFactory folderBrowserFactory, 
+            ISourceControlProviderFactory providerFactory, 
+            IFailedMessageView failedMessageView, 
+            ILoginView loginView
+            )
             : base(vbe, addin, view)
         {
             _configService = configService;
@@ -60,6 +71,12 @@ namespace Rubberduck.UI.SourceControl
             _view.RefreshData += OnRefreshChildren;
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
+        }
+
+        public override void Show()
+        {
+            RefreshChildren();
+            base.Show();
         }
 
         private void _loginView_Confirm(object sender, EventArgs e)
