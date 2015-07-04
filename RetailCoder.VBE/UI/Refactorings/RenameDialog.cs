@@ -15,6 +15,7 @@ namespace Rubberduck.UI.Refactorings
             InitializeCaptions();
 
             OkButton.Click += OkButtonClick;
+            CancelButton.Click += CancelButtonClick;
             Shown += RenameDialog_Shown;
             NewNameBox.TextChanged += NewNameBox_TextChanged;
         }
@@ -45,15 +46,22 @@ namespace Rubberduck.UI.Refactorings
             OnOkButtonClicked();
         }
 
-        public event EventHandler CancelButtonClicked;
+        private void CancelButtonClick(object sender, EventArgs e)
+        {
+            OnCancelButtonClicked();
+        }
 
+        public event EventHandler CancelButtonClicked;
         public void OnCancelButtonClicked()
         {
-            Hide();
+            var handler = CancelButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler OkButtonClicked;
-
         public void OnOkButtonClicked()
         {
             var handler = OkButtonClicked;

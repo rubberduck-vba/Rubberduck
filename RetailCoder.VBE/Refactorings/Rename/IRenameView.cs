@@ -7,5 +7,7 @@ namespace Rubberduck.Refactorings.Rename
     {
         Declaration Target { get; set; }
         string NewName { get; set; }
+
+        void Hide();
     }
 }

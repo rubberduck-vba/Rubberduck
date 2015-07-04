@@ -6,12 +6,13 @@ namespace Rubberduck.Refactorings.Rename
     public class RenamePresenter
     {
         private readonly IRenameView _view;
-        private readonly RenameModel _model;
+        private RenameModel _model;
 
         public RenamePresenter(IRenameView view, RenameModel model)
         {
             _view = view;
             _view.OkButtonClicked += OnViewOkButtonClicked;
+            _view.CancelButtonClicked += OnViewCancelButtonClicked;
 
             _model = model;
         }
@@ -39,6 +40,12 @@ namespace Rubberduck.Refactorings.Rename
         private void OnViewOkButtonClicked(object sender, EventArgs e)
         {
             _model.NewName = _view.NewName;
+        }
+
+        private void OnViewCancelButtonClicked(object sender, EventArgs e)
+        {
+            _model = null;
+            _view.Hide();
         }
     }
 }

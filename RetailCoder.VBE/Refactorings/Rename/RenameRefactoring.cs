@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.Rename
             var presenter = _factory.Create();
             _model = presenter.Show();
 
-            if (_model.Declarations != null)
+            if (_model != null && _model.Declarations != null)
             {
                 Rename();
             }
@@ -44,7 +44,11 @@ namespace Rubberduck.Refactorings.Rename
         {
             var presenter = _factory.Create();
             _model = presenter.Show(target);
-            Rename();
+
+            if (_model != null && _model.Declarations != null)
+            {
+                Rename();
+            }
         }
 
         private Declaration AmbiguousId()
