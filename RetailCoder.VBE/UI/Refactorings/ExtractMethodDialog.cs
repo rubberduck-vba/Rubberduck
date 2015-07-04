@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Refactorings
         {
             Text = RubberduckUI.ExtractMethod_Caption;
             OkButton.Text = RubberduckUI.OK;
-            CancelButton.Text = RubberduckUI.CancelButtonText;
+            CancelDialogButton.Text = RubberduckUI.CancelButtonText;
 
             TitleLabel.Text = RubberduckUI.ExtractMethod_TitleText;
             InstructionsLabel.Text = RubberduckUI.ExtractMethod_InstructionsText;
@@ -150,18 +150,6 @@ namespace Rubberduck.UI.Refactorings
             }
 
             handler(this, args ?? EventArgs.Empty);
-        }
-
-        public event EventHandler CancelButtonClicked;
-        public void OnCancelButtonClicked(object sender, EventArgs e)
-        {
-            OnViewEvent(CancelButtonClicked);
-        }
-
-        public event EventHandler OkButtonClicked;
-        public void OnOkButtonClicked(object sender, EventArgs e)
-        {
-            OnViewEvent(OkButtonClicked);
         }
 
         private string _preview;
