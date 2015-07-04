@@ -75,9 +75,6 @@ namespace Rubberduck.UI.Refactorings
 
         private void RegisterViewEvents()
         {
-            OkButton.Click += OkButtonOnClick;
-            CancelButton.Click += CancelButton_Click;
-
             SetReturnValueCheck.CheckedChanged += SetReturnValueCheck_CheckedChanged;
             MethodNameBox.TextChanged += MethodNameBox_TextChanged;
             MethodAccessibilityCombo.SelectedIndexChanged += MethodAccessibilityCombo_SelectedIndexChanged;
@@ -156,27 +153,15 @@ namespace Rubberduck.UI.Refactorings
         }
 
         public event EventHandler CancelButtonClicked;
-        
-        public void OnCancelButtonClicked()
+        public void OnCancelButtonClicked(object sender, EventArgs e)
         {
             OnViewEvent(CancelButtonClicked);
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            OnCancelButtonClicked();
-        }
-
         public event EventHandler OkButtonClicked;
-
-        public void OnOkButtonClicked()
+        public void OnOkButtonClicked(object sender, EventArgs e)
         {
             OnViewEvent(OkButtonClicked);
-        }
-
-        private void OkButtonOnClick(object sender, EventArgs e)
-        {
-            OnOkButtonClicked();
         }
 
         private string _preview;

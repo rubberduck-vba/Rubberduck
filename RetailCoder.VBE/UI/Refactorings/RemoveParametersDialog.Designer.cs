@@ -68,6 +68,7 @@ namespace Rubberduck.UI.Refactorings
             this.CancelButton.TabIndex = 0;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = false;
+            this.CancelButton.Click += new System.EventHandler(this.OnCancelButtonClicked);
             // 
             // OkButton
             // 
@@ -79,7 +80,7 @@ namespace Rubberduck.UI.Refactorings
             this.OkButton.TabIndex = 1;
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
-            this.OkButton.Click += new System.EventHandler(this.OkButtonClick);
+            this.OkButton.Click += new System.EventHandler(this.OnOkButtonClicked);
             // 
             // panel1
             // 

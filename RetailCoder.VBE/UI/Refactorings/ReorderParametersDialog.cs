@@ -129,20 +129,19 @@ namespace Rubberduck.UI.Refactorings
             MethodParametersGrid.Columns.Add(column);
             _selectedItem = Parameters[0];
         }
-
-        private void OkButtonClick(object sender, EventArgs e)
-        {
-            OnOkButtonClicked();
-        }
-
+        
         public event EventHandler CancelButtonClicked;
-        public void OnCancelButtonClicked()
+        public void OnCancelButtonClicked(object sender, EventArgs e)
         {
-            Hide();
+            var handler = CancelButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler OkButtonClicked;
-        public void OnOkButtonClicked()
+        public void OnOkButtonClicked(object sender, EventArgs e)
         {
             var handler = OkButtonClicked;
             if (handler != null)

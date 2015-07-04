@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.Rename
@@ -6,25 +6,27 @@ namespace Rubberduck.Refactorings.Rename
     public class RenamePresenter
     {
         private readonly IRenameView _view;
-        private RenameModel _model;
+        private readonly RenameModel _model;
 
         public RenamePresenter(IRenameView view, RenameModel model)
         {
             _view = view;
-            _view.OkButtonClicked += OnViewOkButtonClicked;
-            _view.CancelButtonClicked += OnViewCancelButtonClicked;
 
             _model = model;
         }
 
         public RenameModel Show()
         {
-            if (_model.Target != null)
+            if (_model.Target == null) { return null; }
+
+            _view.Target = _model.Target;
+
+            if (_view.ShowDialog() != DialogResult.OK)
             {
-                _view.Target = _model.Target;
-                _view.ShowDialog();
+                return null;
             }
 
+            _model.NewName = _view.NewName;
             return _model;
         }
 
@@ -33,19 +35,14 @@ namespace Rubberduck.Refactorings.Rename
             _model.PromptIfTargetImplementsInterface(ref target);
             _model.Target = target;
             _view.Target = target;
-            _view.ShowDialog();
-            return _model;
-        }
 
-        private void OnViewOkButtonClicked(object sender, EventArgs e)
-        {
+            if (_view.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
             _model.NewName = _view.NewName;
-        }
-
-        private void OnViewCancelButtonClicked(object sender, EventArgs e)
-        {
-            _model = null;
-            _view.Hide();
+            return _model;
         }
     }
 }
