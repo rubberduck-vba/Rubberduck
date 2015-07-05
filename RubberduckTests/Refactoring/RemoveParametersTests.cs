@@ -29,7 +29,7 @@ namespace RubberduckTests.Refactoring
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveBothParams()
+        public void RemoveParametersRefactoring_RemoveBothParams()
         {
             //Input
             const string inputCode =
@@ -64,7 +64,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveOnlyParam()
+        public void RemoveParametersRefactoring_RemoveOnlyParam()
         {
             //Input
             const string inputCode =
@@ -99,7 +99,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveFirstParam()
+        public void RemoveParametersRefactoring_RemoveFirstParam()
         {
             //Input
             const string inputCode =
@@ -134,7 +134,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveSecondParam()
+        public void RemoveParametersRefactoring_RemoveSecondParam()
         {
             //Input
             const string inputCode =
@@ -169,7 +169,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveFromFunction()
+        public void RemoveParametersRefactoring_RemoveFromFunction()
         {
             //Input
             const string inputCode =
@@ -204,7 +204,7 @@ End Function"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveFromGetter()
+        public void RemoveParametersRefactoring_RemoveFromGetter()
         {
             //Input
             const string inputCode =
@@ -240,7 +240,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
         //bug: We shouldn't allow the only param in a setter to be removed, it will break the VBA code.
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveFromSetter()
+        public void RemoveParametersRefactoring_RemoveFromSetter()
         {
             //Input
             const string inputCode =
@@ -276,7 +276,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
         //note: removing other params from setters is fine (In fact, we may want to create an inspection for this).
         [TestMethod]
-        public void RemoveParamatersRefactoring_RemoveSecondParamFromSetter()
+        public void RemoveParametersRefactoring_RemoveSecondParamFromSetter()
         {
             //Input
             const string inputCode =
@@ -311,7 +311,7 @@ End Property"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
-        public void RemoveParamatersRefactoring_ClientReferencesAreUpdated()
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated()
         {
             //Input
             const string inputCode =
