@@ -93,5 +93,11 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
         }
+
+        public bool IsSelectedReference(QualifiedSelection selection)
+        {
+            return QualifiedModuleName == selection.QualifiedName &&
+                   Selection.ContainsFirstCharacter(selection.Selection);
+        }
     }
 }

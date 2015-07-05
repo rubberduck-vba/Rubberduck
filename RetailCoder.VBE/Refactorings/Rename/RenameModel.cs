@@ -45,8 +45,8 @@ namespace Rubberduck.Refactorings.Rename
         {
             target = _declarations.Items
                 .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                      || IsSelectedReference(selection, item));
+                .FirstOrDefault(item => item.IsSelectedDeclaration(selection)
+                                      || item.References.Any(r => r.IsSelectedReference(selection)));
 
             PromptIfTargetImplementsInterface(ref target);
         }
@@ -71,21 +71,6 @@ namespace Rubberduck.Refactorings.Rename
             }
 
             target = interfaceMember;
-        }
-
-        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName.Project == selection.QualifiedName.Project
-                && r.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
-                && r.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedName.QualifiedModuleName.Project == selection.QualifiedName.Project
-                   && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
-                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
     }
 }
