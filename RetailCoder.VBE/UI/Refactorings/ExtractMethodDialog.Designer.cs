@@ -31,9 +31,8 @@ namespace Rubberduck.UI.Refactorings
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtractMethodDialog));
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelDialogButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.TitleLabel = new System.Windows.Forms.Label();
@@ -61,34 +60,37 @@ namespace Rubberduck.UI.Refactorings
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.flowLayoutPanel2.Controls.Add(this.CancelButton);
+            this.flowLayoutPanel2.Controls.Add(this.CancelDialogButton);
             this.flowLayoutPanel2.Controls.Add(this.OkButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 438);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 539);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(8, 8, 0, 8);
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(576, 43);
+            this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(768, 53);
             this.flowLayoutPanel2.TabIndex = 1;
             // 
-            // CancelButton
+            // CancelDialogButton
             // 
-            this.CancelButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(490, 11);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 0;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = false;
+            this.CancelDialogButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.CancelDialogButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelDialogButton.Location = new System.Drawing.Point(653, 14);
+            this.CancelDialogButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CancelDialogButton.Name = "CancelDialogButton";
+            this.CancelDialogButton.Size = new System.Drawing.Size(100, 28);
+            this.CancelDialogButton.TabIndex = 0;
+            this.CancelDialogButton.Text = "Cancel";
+            this.CancelDialogButton.UseVisualStyleBackColor = false;
             // 
             // OkButton
             // 
             this.OkButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OkButton.Location = new System.Drawing.Point(409, 11);
+            this.OkButton.Location = new System.Drawing.Point(545, 14);
+            this.OkButton.Margin = new System.Windows.Forms.Padding(4);
             this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(75, 23);
+            this.OkButton.Size = new System.Drawing.Size(100, 28);
             this.OkButton.TabIndex = 1;
             this.OkButton.Text = "Ok";
             this.OkButton.UseVisualStyleBackColor = false;
@@ -100,28 +102,31 @@ namespace Rubberduck.UI.Refactorings
             this.panel2.Controls.Add(this.InstructionsLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(576, 68);
+            this.panel2.Size = new System.Drawing.Size(768, 84);
             this.panel2.TabIndex = 13;
             // 
             // TitleLabel
             // 
             this.TitleLabel.AutoSize = true;
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TitleLabel.Location = new System.Drawing.Point(15, 9);
+            this.TitleLabel.Location = new System.Drawing.Point(20, 11);
+            this.TitleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
-            this.TitleLabel.Size = new System.Drawing.Size(107, 19);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TitleLabel.Size = new System.Drawing.Size(128, 22);
             this.TitleLabel.TabIndex = 2;
             this.TitleLabel.Text = "Extract Method";
             // 
             // InstructionsLabel
             // 
             this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(12, 30);
+            this.InstructionsLabel.Location = new System.Drawing.Point(16, 37);
+            this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(452, 21);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(5);
+            this.InstructionsLabel.Size = new System.Drawing.Size(609, 27);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
     "her options.";
@@ -140,17 +145,19 @@ namespace Rubberduck.UI.Refactorings
             this.panel1.Controls.Add(this.ReturnLabel);
             this.panel1.Controls.Add(this.MethodNameBox);
             this.panel1.Controls.Add(this.NameLabel);
-            this.panel1.Location = new System.Drawing.Point(0, 71);
+            this.panel1.Location = new System.Drawing.Point(0, 87);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(576, 372);
+            this.panel1.Size = new System.Drawing.Size(768, 458);
             this.panel1.TabIndex = 14;
             // 
             // SetReturnValueCheck
             // 
             this.SetReturnValueCheck.AutoSize = true;
-            this.SetReturnValueCheck.Location = new System.Drawing.Point(255, 37);
+            this.SetReturnValueCheck.Location = new System.Drawing.Point(340, 46);
+            this.SetReturnValueCheck.Margin = new System.Windows.Forms.Padding(4);
             this.SetReturnValueCheck.Name = "SetReturnValueCheck";
-            this.SetReturnValueCheck.Size = new System.Drawing.Size(42, 17);
+            this.SetReturnValueCheck.Size = new System.Drawing.Size(51, 21);
             this.SetReturnValueCheck.TabIndex = 11;
             this.SetReturnValueCheck.Text = "Set";
             this.SetReturnValueCheck.UseVisualStyleBackColor = true;
@@ -158,7 +165,8 @@ namespace Rubberduck.UI.Refactorings
             // InvalidNameValidationIcon
             // 
             this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
-            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(557, 3);
+            this.InvalidNameValidationIcon.Location = new System.Drawing.Point(743, 4);
+            this.InvalidNameValidationIcon.Margin = new System.Windows.Forms.Padding(4);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
             this.InvalidNameValidationIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -171,21 +179,23 @@ namespace Rubberduck.UI.Refactorings
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PreviewBox.BackColor = System.Drawing.Color.White;
             this.PreviewBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PreviewBox.Location = new System.Drawing.Point(18, 206);
+            this.PreviewBox.Location = new System.Drawing.Point(24, 254);
+            this.PreviewBox.Margin = new System.Windows.Forms.Padding(4);
             this.PreviewBox.Multiline = true;
             this.PreviewBox.Name = "PreviewBox";
             this.PreviewBox.ReadOnly = true;
             this.PreviewBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.PreviewBox.Size = new System.Drawing.Size(546, 148);
+            this.PreviewBox.Size = new System.Drawing.Size(727, 181);
             this.PreviewBox.TabIndex = 9;
             this.PreviewBox.WordWrap = false;
             // 
             // PreviewLabel
             // 
             this.PreviewLabel.AutoSize = true;
-            this.PreviewLabel.Location = new System.Drawing.Point(15, 190);
+            this.PreviewLabel.Location = new System.Drawing.Point(20, 234);
+            this.PreviewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.PreviewLabel.Name = "PreviewLabel";
-            this.PreviewLabel.Size = new System.Drawing.Size(48, 13);
+            this.PreviewLabel.Size = new System.Drawing.Size(61, 17);
             this.PreviewLabel.TabIndex = 8;
             this.PreviewLabel.Text = "Preview:";
             // 
@@ -195,81 +205,91 @@ namespace Rubberduck.UI.Refactorings
             this.MethodParametersGrid.AllowUserToDeleteRows = false;
             this.MethodParametersGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.MethodParametersGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MethodParametersGrid.Location = new System.Drawing.Point(18, 82);
-            this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(8, 3, 8, 3);
+            this.MethodParametersGrid.Location = new System.Drawing.Point(24, 101);
+            this.MethodParametersGrid.Margin = new System.Windows.Forms.Padding(11, 4, 11, 4);
             this.MethodParametersGrid.Name = "MethodParametersGrid";
-            this.MethodParametersGrid.Size = new System.Drawing.Size(546, 97);
+            this.MethodParametersGrid.Size = new System.Drawing.Size(728, 119);
             this.MethodParametersGrid.TabIndex = 7;
             // 
             // ParametersLabel
             // 
             this.ParametersLabel.AutoSize = true;
-            this.ParametersLabel.Location = new System.Drawing.Point(15, 66);
+            this.ParametersLabel.Location = new System.Drawing.Point(20, 81);
+            this.ParametersLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ParametersLabel.Name = "ParametersLabel";
-            this.ParametersLabel.Size = new System.Drawing.Size(63, 13);
+            this.ParametersLabel.Size = new System.Drawing.Size(85, 17);
             this.ParametersLabel.TabIndex = 6;
             this.ParametersLabel.Text = "Parameters:";
             // 
             // MethodAccessibilityCombo
             // 
             this.MethodAccessibilityCombo.FormattingEnabled = true;
-            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(410, 34);
+            this.MethodAccessibilityCombo.Location = new System.Drawing.Point(547, 42);
+            this.MethodAccessibilityCombo.Margin = new System.Windows.Forms.Padding(4);
             this.MethodAccessibilityCombo.Name = "MethodAccessibilityCombo";
-            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(155, 21);
+            this.MethodAccessibilityCombo.Size = new System.Drawing.Size(205, 24);
             this.MethodAccessibilityCombo.TabIndex = 5;
             // 
             // AccessibilityLabel
             // 
             this.AccessibilityLabel.AutoSize = true;
-            this.AccessibilityLabel.Location = new System.Drawing.Point(336, 37);
+            this.AccessibilityLabel.Location = new System.Drawing.Point(448, 46);
+            this.AccessibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AccessibilityLabel.Name = "AccessibilityLabel";
-            this.AccessibilityLabel.Size = new System.Drawing.Size(67, 13);
+            this.AccessibilityLabel.Size = new System.Drawing.Size(88, 17);
             this.AccessibilityLabel.TabIndex = 4;
             this.AccessibilityLabel.Text = "Accessibility:";
             // 
             // MethodReturnValueCombo
             // 
             this.MethodReturnValueCombo.FormattingEnabled = true;
-            this.MethodReturnValueCombo.Location = new System.Drawing.Point(63, 34);
+            this.MethodReturnValueCombo.Location = new System.Drawing.Point(84, 42);
+            this.MethodReturnValueCombo.Margin = new System.Windows.Forms.Padding(4);
             this.MethodReturnValueCombo.Name = "MethodReturnValueCombo";
-            this.MethodReturnValueCombo.Size = new System.Drawing.Size(185, 21);
+            this.MethodReturnValueCombo.Size = new System.Drawing.Size(245, 24);
             this.MethodReturnValueCombo.TabIndex = 3;
             // 
             // ReturnLabel
             // 
             this.ReturnLabel.AutoSize = true;
-            this.ReturnLabel.Location = new System.Drawing.Point(15, 37);
+            this.ReturnLabel.Location = new System.Drawing.Point(20, 46);
+            this.ReturnLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReturnLabel.Name = "ReturnLabel";
-            this.ReturnLabel.Size = new System.Drawing.Size(42, 13);
+            this.ReturnLabel.Size = new System.Drawing.Size(55, 17);
             this.ReturnLabel.TabIndex = 2;
             this.ReturnLabel.Text = "Return:";
             // 
             // MethodNameBox
             // 
-            this.MethodNameBox.Location = new System.Drawing.Point(63, 7);
+            this.MethodNameBox.Location = new System.Drawing.Point(84, 9);
+            this.MethodNameBox.Margin = new System.Windows.Forms.Padding(4);
             this.MethodNameBox.Name = "MethodNameBox";
-            this.MethodNameBox.Size = new System.Drawing.Size(501, 20);
+            this.MethodNameBox.Size = new System.Drawing.Size(667, 22);
             this.MethodNameBox.TabIndex = 1;
             // 
             // NameLabel
             // 
             this.NameLabel.AutoSize = true;
-            this.NameLabel.Location = new System.Drawing.Point(15, 10);
+            this.NameLabel.Location = new System.Drawing.Point(20, 12);
+            this.NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NameLabel.Name = "NameLabel";
-            this.NameLabel.Size = new System.Drawing.Size(38, 13);
+            this.NameLabel.Size = new System.Drawing.Size(49, 17);
             this.NameLabel.TabIndex = 0;
             this.NameLabel.Text = "Name:";
             // 
             // ExtractMethodDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.OkButton;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 481);
+            this.CancelButton = this.CancelDialogButton;
+            this.ClientSize = new System.Drawing.Size(768, 592);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.flowLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = (System.Drawing.Icon)RubberduckUI.Ducky;
+            this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ExtractMethodDialog";
@@ -289,7 +309,7 @@ namespace Rubberduck.UI.Refactorings
         #endregion
 
         private FlowLayoutPanel flowLayoutPanel2;
-        private Button CancelButton;
+        private Button CancelDialogButton;
         private Button OkButton;
         private Panel panel2;
         private Label TitleLabel;

@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Refactorings
         private void InitializeCaptions()
         {
             OkButton.Text = RubberduckUI.OK;
-            CancelButton.Text = RubberduckUI.CancelButtonText;
+            CancelDialogButton.Text = RubberduckUI.CancelButtonText;
             Text = RubberduckUI.ReorderParamsDialog_Caption;
             TitleLabel.Text = RubberduckUI.ReorderParamsDialog_TitleText;
             InstructionsLabel.Text = RubberduckUI.ReorderParamsDialog_InstructionsLabelText;
@@ -128,27 +128,6 @@ namespace Rubberduck.UI.Refactorings
 
             MethodParametersGrid.Columns.Add(column);
             _selectedItem = Parameters[0];
-        }
-
-        private void OkButtonClick(object sender, EventArgs e)
-        {
-            OnOkButtonClicked();
-        }
-
-        public event EventHandler CancelButtonClicked;
-        public void OnCancelButtonClicked()
-        {
-            Hide();
-        }
-
-        public event EventHandler OkButtonClicked;
-        public void OnOkButtonClicked()
-        {
-            var handler = OkButtonClicked;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
         }
 
         private void MoveUpButtonClicked(object sender, EventArgs e)

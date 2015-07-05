@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms.VisualStyles;
 using Microsoft.Vbe.Interop;
 using Moq;
 
@@ -81,14 +83,16 @@ namespace RubberduckTests.Mocks
         /// <returns></returns>
         internal static Mock<CodeModule> CreateCodeModuleMock(string code)
         {
-            var lineCount = code.Split(new [] { Environment.NewLine }, StringSplitOptions.None).Length;
+            var lines = code.Split(new [] { Environment.NewLine }, StringSplitOptions.None);
 
             var codeModule = new Mock<CodeModule>();
-            codeModule.SetupGet(c => c.CountOfLines).Returns(lineCount);
+            codeModule.SetupGet(c => c.CountOfLines).Returns(lines.Length);
 
             // ReSharper disable once UseIndexedProperty
             // No R#, the indexed property breaks the expression. I tried that first.
-            codeModule.SetupGet(c => c.get_Lines(1, lineCount)).Returns(code);
+            codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
+                .Returns((int start, int count) => String.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
+            
             return codeModule;
         }
 
