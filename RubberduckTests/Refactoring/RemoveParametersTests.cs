@@ -1,33 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests
+    public class RemoveParametersTests : RefactoringTestBase
     {
-        private Mock<VBProject> _project;
-        private Mock<VBComponent> _component;
-        private Mock<CodeModule> _module;
-
-        [TestCleanup]
-        private void CleanUp()
-        {
-            _project = null;
-            _component = null;
-            _module = null;
-        }
-
         [TestMethod]
         public void RemoveParamatersRefactoring_RemoveBothParams()
         {
@@ -44,7 +27,7 @@ End Sub";
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -60,7 +43,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -79,7 +62,7 @@ End Sub";
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -95,7 +78,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -114,7 +97,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -130,7 +113,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -149,7 +132,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -165,7 +148,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -184,7 +167,7 @@ End Function"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -200,7 +183,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -219,7 +202,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -235,7 +218,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         //bug: We shouldn't allow the only param in a setter to be removed, it will break the VBA code.
@@ -255,7 +238,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -271,7 +254,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         //note: removing other params from setters is fine (In fact, we may want to create an inspection for this).
@@ -291,7 +274,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -307,7 +290,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -336,7 +319,7 @@ End Sub
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -352,13 +335,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
-        }
-
-        #region setup
-        private QualifiedSelection GetQualifiedSelection(Selection selection)
-        {
-            return new QualifiedSelection(new QualifiedModuleName(_component.Object), selection);
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         private static Mock<IRefactoringPresenterFactory<IRemoveParametersPresenter>> SetupFactory(RemoveParametersModel model)
@@ -370,29 +347,5 @@ End Sub
             factory.Setup(f => f.Create()).Returns(presenter.Object);
             return factory;
         }
-
-        private void SetupProject(string inputCode)
-        {
-            var window = MockFactory.CreateWindowMock(string.Empty);
-            var windows = new Mocks.MockWindowsCollection(window.Object);
-
-            var vbe = MockFactory.CreateVbeMock(windows);
-
-            var codePane = MockFactory.CreateCodePaneMock(vbe, window);
-
-            _module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
-           
-            _project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
-
-            _component = MockFactory.CreateComponentMock("Module1", _module.Object, vbext_ComponentType.vbext_ct_StdModule);
-
-            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() {_component.Object});
-            components.SetupGet(c => c.Parent).Returns(_project.Object);
-
-            _project.SetupGet(p => p.VBComponents).Returns(components.Object);
-            _component.SetupGet(c => c.Collection).Returns(components.Object);
-        }
-
-        #endregion
     }
 }

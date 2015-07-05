@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
@@ -9,25 +6,12 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class ReorderParametersTests
+    public class ReorderParametersTests : RefactoringTestBase
     {
-        private Mock<VBProject> _project;
-        private Mock<VBComponent> _component;
-        private Mock<CodeModule> _module;
-
-        [TestCleanup]
-        private void CleanUp()
-        {
-            _project = null;
-            _component = null;
-            _module = null;
-        }
-
         [TestMethod]
         public void ReorderParams_SwapPositions()
         {
@@ -44,7 +28,7 @@ End Sub";
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -59,7 +43,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -78,7 +62,7 @@ End Sub";
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -100,7 +84,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         [TestMethod]
@@ -129,7 +113,7 @@ End Sub
 
             //Arrange
             SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(_project.Object);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -144,7 +128,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, _module.Object.Lines());
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
         private static Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>> SetupFactory(ReorderParametersModel model)
@@ -155,33 +139,6 @@ End Sub
             var factory = new Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>>();
             factory.Setup(f => f.Create()).Returns(presenter.Object);
             return factory;
-        }
-
-        private QualifiedSelection GetQualifiedSelection(Selection selection)
-        {
-            return new QualifiedSelection(new QualifiedModuleName(_component.Object), selection);
-        }
-
-        private void SetupProject(string inputCode)
-        {
-            var window = MockFactory.CreateWindowMock(string.Empty);
-            var windows = new Mocks.MockWindowsCollection(window.Object);
-
-            var vbe = MockFactory.CreateVbeMock(windows);
-
-            var codePane = MockFactory.CreateCodePaneMock(vbe, window);
-
-            _module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
-
-            _project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
-
-            _component = MockFactory.CreateComponentMock("Module1", _module.Object, vbext_ComponentType.vbext_ct_StdModule);
-
-            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() { _component.Object });
-            components.SetupGet(c => c.Parent).Returns(_project.Object);
-
-            _project.SetupGet(p => p.VBComponents).Returns(components.Object);
-            _component.SetupGet(c => c.Collection).Returns(components.Object);
         }
     }
 }
