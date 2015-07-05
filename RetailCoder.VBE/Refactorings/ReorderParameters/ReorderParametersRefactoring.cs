@@ -13,12 +13,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    class ReorderParametersRefactoring : IRefactoring
+    public class ReorderParametersRefactoring : IRefactoring
     {
-        private readonly IRefactoringPresenterFactory<ReorderParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private ReorderParametersModel _model;
 
-        public ReorderParametersRefactoring(IRefactoringPresenterFactory<ReorderParametersPresenter> factory)
+        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory)
         {
             _factory = factory;
         }

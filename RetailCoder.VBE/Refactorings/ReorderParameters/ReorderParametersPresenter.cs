@@ -3,7 +3,12 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersPresenter
+    public interface IReorderParametersPresenter
+    {
+        ReorderParametersModel Show();
+    }
+
+    public class ReorderParametersPresenter : IReorderParametersPresenter
     {
         private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;

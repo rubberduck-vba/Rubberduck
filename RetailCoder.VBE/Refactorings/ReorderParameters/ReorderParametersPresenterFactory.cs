@@ -3,7 +3,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersPresenterFactory : IRefactoringPresenterFactory<ReorderParametersPresenter>
+    public class ReorderParametersPresenterFactory : IRefactoringPresenterFactory<IReorderParametersPresenter>
     {
         private readonly IActiveCodePaneEditor _editor;
         private readonly IReorderParametersView _view;
@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _parseResult = parseResult;
         }
 
-        public ReorderParametersPresenter Create()
+        public IReorderParametersPresenter Create()
         {
             var selection = _editor.GetSelection();
             if (selection == null)
