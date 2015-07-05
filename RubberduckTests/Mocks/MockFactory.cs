@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
 using Microsoft.Vbe.Interop;
 using Moq;
 
@@ -55,6 +54,12 @@ namespace RubberduckTests.Mocks
             var vbe = new Mock<VBE>();
             vbe.Setup(v => v.Windows).Returns(windows);
 
+            //setting up a main window lets the native window functions fun
+            var mainWindow = new Mock<Window>();
+            mainWindow.Setup(w => w.HWnd).Returns(0);
+
+            vbe.SetupGet(v => v.MainWindow).Returns(mainWindow.Object);
+
             return vbe;
         }
 
@@ -76,8 +81,23 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Creates a new <see cref="Mock{CodeModule}"/> with <see cref="CodeModule.get_Lines"/> and <see cref="CodeModule.CountOfLines"/> 
-        /// setup to appropriately mimic getting code out of the <see cref="CodeModule"/>.
+        /// Creates a "selectable" <see cref="Mock{CodePane}"/>.
+        /// </summary>
+        /// <param name="vbe">Returned back from the <see cref="CodePane.VBE"/> property.</param>
+        /// <param name="window">Returned back from the <see cref="CodePane.Window"/> property.</param>
+        /// <returns></returns>
+        internal static Mock<CodePane> CreateCodePaneMock(Mock<VBE> vbe, Mock<Window> window)
+        {
+            var codePane = new Mock<CodePane>();
+            codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            codePane.Setup(p => p.Show());
+            codePane.SetupGet(p => p.VBE).Returns(vbe.Object);
+            codePane.SetupGet(p => p.Window).Returns(window.Object);
+            return codePane;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Mock{CodeModule}"/> setup to appropriately mimic getting and modifying code contained in the <see cref="CodeModule"/>.
         /// </summary>
         /// <param name="code">A block of VBA code.</param>
         /// <returns></returns>
@@ -91,8 +111,25 @@ namespace RubberduckTests.Mocks
             // ReSharper disable once UseIndexedProperty
             // No R#, the indexed property breaks the expression. I tried that first.
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns((int start, int count) => String.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
-            
+                .Returns<int, int>((start, count) => String.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
+
+            codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
+                .Callback<int, string>((index, str) => lines[index - 1] = str);
+                
+            return codeModule;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Mock{CodeModule}"/> setup to appropriately mimic getting and modifying code contained in the <see cref="CodeModule"/>.
+        /// </summary>
+        /// <param name="code">A block of VBA code.</param>
+        /// <param name="codePane">Returned back from the <see cref="CodeModule.CodePane"/> property.</param>
+        /// <returns></returns>
+        internal static Mock<CodeModule> CreateCodeModuleMock(string code, CodePane codePane)
+        {
+            var codeModule = CreateCodeModuleMock(code);
+            codeModule.SetupGet(m => m.CodePane).Returns(codePane);
+
             return codeModule;
         }
 

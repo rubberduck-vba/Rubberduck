@@ -9,6 +9,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
 {
@@ -372,47 +373,24 @@ End Sub
 
         private void SetupProject(string inputCode)
         {
-            var window = Mocks.MockFactory.CreateWindowMock(string.Empty);
+            var window = MockFactory.CreateWindowMock(string.Empty);
             var windows = new Mocks.MockWindowsCollection(window.Object);
 
-            var mainWindow = new Mock<Window>();
-            mainWindow.Setup(w => w.HWnd).Returns(0);
+            var vbe = MockFactory.CreateVbeMock(windows);
 
-            var vbe = Mocks.MockFactory.CreateVbeMock(windows);
-            vbe.SetupGet(v => v.MainWindow).Returns(mainWindow.Object);
+            var codePane = MockFactory.CreateCodePaneMock(vbe, window);
 
-            var codePane = new Mock<CodePane>();
-            codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
-            codePane.Setup(p => p.Show());
-            codePane.SetupGet(p => p.VBE).Returns(vbe.Object);
-            codePane.SetupGet(p => p.Window).Returns(window.Object);
-
-            _module = Mocks.MockFactory.CreateCodeModuleMock(inputCode);
-            _module.SetupGet(m => m.CodePane).Returns(codePane.Object);
+            _module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
            
-            _module.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
-                .Callback<int, string>((i, s) => ReplaceModuleLine(_module, i, s));
+            _project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
 
-            _project = Mocks.MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
+            _component = MockFactory.CreateComponentMock("Module1", _module.Object, vbext_ComponentType.vbext_ct_StdModule);
 
-            _component = Mocks.MockFactory.CreateComponentMock("Module1", _module.Object, vbext_ComponentType.vbext_ct_StdModule);
-
-            var components = Mocks.MockFactory.CreateComponentsMock(new List<VBComponent>() {_component.Object});
+            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() {_component.Object});
             components.SetupGet(c => c.Parent).Returns(_project.Object);
 
             _project.SetupGet(p => p.VBComponents).Returns(components.Object);
             _component.SetupGet(c => c.Collection).Returns(components.Object);
-        }
-
-        private static void ReplaceModuleLine(Mock<CodeModule> module, int lineNumber, string newLine)
-        {
-            var lines = module.Object.Lines().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-            lines[lineNumber - 1] = newLine;
-
-            var newCode = String.Join(Environment.NewLine, lines);
-
-            module.SetupGet(c => c.get_Lines(1, lines.Length)).Returns(newCode);
         }
 
         #endregion
