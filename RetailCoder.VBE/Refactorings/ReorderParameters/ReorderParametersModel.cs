@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void AcquireTaget(QualifiedSelection selection)
         {
-            TargetDeclaration = FindTarget(selection, ValidDeclarationTypes);
+            TargetDeclaration = Declarations.FindSelection(selection, ValidDeclarationTypes);
             TargetDeclaration = PromptIfTargetImplementsInterface();
             TargetDeclaration = GetGetter();
         }
@@ -63,67 +63,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
             DeclarationType.PropertySet
         };
 
-        private Declaration FindTarget(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
-        {
-            var target = Declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => IsSelectedDeclaration(selection, item)
-                                     || IsSelectedReference(selection, item));
-
-            if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
-            {
-                return target;
-            }
-
-            target = null;
-
-            var targets = Declarations.Items
-                .Where(item => !item.IsBuiltIn
-                            && item.ComponentName == selection.QualifiedName.ComponentName
-                            && validDeclarationTypes.Contains(item.DeclarationType));
-
-            var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
-
-            foreach (var declaration in targets)
-            {
-                var activeSelection = new Selection(declaration.Context.Start.Line,
-                                                    declaration.Context.Start.Column,
-                                                    declaration.Context.Stop.Line,
-                                                    declaration.Context.Stop.Column);
-
-                if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
-                {
-                    target = declaration;
-                    currentSelection = activeSelection;
-                }
-
-                foreach (var reference in declaration.References)
-                {
-                    var proc = (dynamic)reference.Context.Parent;
-                    VBAParser.ArgsCallContext paramList;
-
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
-                    catch { continue; }
-
-                    if (paramList == null) { continue; }
-
-                    activeSelection = new Selection(paramList.Start.Line,
-                                                    paramList.Start.Column,
-                                                    paramList.Stop.Line,
-                                                    paramList.Stop.Column + paramList.Stop.Text.Length + 1);
-
-                    if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
-                    {
-                        target = reference.Declaration;
-                        currentSelection = activeSelection;
-                    }
-                }
-            }
-            return target;
-        }
-
         private Declaration PromptIfTargetImplementsInterface()
         {
             var declaration = TargetDeclaration;
@@ -138,19 +77,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return confirm == DialogResult.No ? null : interfaceMember;
-        }
-
-        private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName == selection.QualifiedName &&
-                r.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.QualifiedName.QualifiedModuleName == selection.QualifiedName
-                   && (declaration.Selection.ContainsFirstCharacter(selection.Selection));
         }
 
         private Declaration GetGetter()

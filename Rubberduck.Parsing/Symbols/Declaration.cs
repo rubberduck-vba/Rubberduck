@@ -183,6 +183,12 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public bool IsSelectedDeclaration(QualifiedSelection selection)
+        {
+            return QualifiedName.QualifiedModuleName == selection.QualifiedName &&
+                   Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
         private readonly bool _isSelfAssigned;
         /// <summary>
         /// Gets a value indicating whether the declaration is a joined assignment (e.g. "As New xxxxx")

@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public void QuickFix(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(parseResult, selection);
-            var target = _model.FindTarget(selection, new[] { DeclarationType.Parameter });
+            var target = _model.Declarations.FindSelection(selection, new[] { DeclarationType.Parameter });
 
             // ReSharper disable once PossibleUnintendedReferenceComparison
             _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
