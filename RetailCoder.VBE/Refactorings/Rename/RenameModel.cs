@@ -45,8 +45,8 @@ namespace Rubberduck.Refactorings.Rename
         {
             target = _declarations.Items
                 .Where(item => !item.IsBuiltIn && item.DeclarationType != DeclarationType.ModuleOption)
-                .FirstOrDefault(item => item.IsSelectedDeclaration(selection)
-                                      || item.References.Any(r => r.IsSelectedReference(selection)));
+                .FirstOrDefault(item => item.IsSelected(selection)
+                                      || item.References.Any(r => r.IsSelected(selection)));
 
             PromptIfTargetImplementsInterface(ref target);
         }

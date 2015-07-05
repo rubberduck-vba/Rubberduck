@@ -240,8 +240,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             var target = Items
                 .Where(item => !item.IsBuiltIn)
-                .FirstOrDefault(item => item.IsSelectedDeclaration(selection)
-                                     || item.References.Any(r => r.IsSelectedReference(selection)));
+                .FirstOrDefault(item => item.IsSelected(selection)
+                                     || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
             {

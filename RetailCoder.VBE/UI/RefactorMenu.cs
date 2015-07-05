@@ -189,8 +189,8 @@ namespace Rubberduck.UI
                                      .ToList();
 
             var target = declarations.SingleOrDefault(item =>
-                item.IsSelectedDeclaration(selection)
-                || item.References.Any(r => r.IsSelectedReference(selection)));
+                item.IsSelected(selection)
+                || item.References.Any(r => r.IsSelected(selection)));
 
             if (target != null)
             {
@@ -369,23 +369,6 @@ namespace Rubberduck.UI
             return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }
-
-        /*private bool IsSelectedReference(QualifiedSelection selection, Declaration declaration)
-        {
-            return declaration.References.Any(r =>
-                r.QualifiedModuleName.Project == selection.QualifiedName.Project 
-                && r.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName
-                && r.Selection.ContainsFirstCharacter(selection.Selection));
-        }
-
-        private bool IsSelectedDeclaration(QualifiedSelection selection, Declaration declaration)
-        {
-            var isSameProject = declaration.Project == selection.QualifiedName.Project;
-            var isSameModule = isSameProject && declaration.QualifiedName.QualifiedModuleName.ComponentName == selection.QualifiedName.ComponentName;
-
-            // bug: QualifiedModuleName.Equals doesn't return expected value.
-            return isSameModule && declaration.Selection.ContainsFirstCharacter(selection.Selection);
-        }*/
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)

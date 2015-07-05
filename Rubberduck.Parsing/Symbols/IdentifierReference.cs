@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public bool IsSelectedReference(QualifiedSelection selection)
+        public bool IsSelected(QualifiedSelection selection)
         {
             return QualifiedModuleName == selection.QualifiedName &&
                    Selection.ContainsFirstCharacter(selection.Selection);
