@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -166,6 +167,51 @@ End Sub"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, _module.Object.Lines());
         }
 
+        [TestMethod]
+        public void RemoveParamatersRefactoring_ClientReferencesAreUpdated()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub Bar()
+    Foo 10, ""Hello""
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(ByVal arg1 As Integer )
+End Sub
+
+Private Sub Bar()
+ Foo 10 
+End Sub
+"; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
         #region setup
         private QualifiedSelection GetQualifiedSelection(Selection selection)
         {
@@ -201,6 +247,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
 
             _module = Mocks.MockFactory.CreateCodeModuleMock(inputCode);
             _module.SetupGet(m => m.CodePane).Returns(codePane.Object);
+           
             _module.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((i, s) => ReplaceModuleLine(_module, i, s));
 
@@ -217,7 +264,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
 
         private static void ReplaceModuleLine(Mock<CodeModule> module, int lineNumber, string newLine)
         {
-            var lines = module.Object.Lines().Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            var lines = module.Object.Lines().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             lines[lineNumber - 1] = newLine;
 
@@ -225,6 +272,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
 
             module.SetupGet(c => c.get_Lines(1, lines.Length)).Returns(newCode);
         }
+
         #endregion
     }
 }
