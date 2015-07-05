@@ -21,6 +21,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IReadOnlyList<DeclarationType> _moduleTypes;
         private readonly IReadOnlyList<DeclarationType> _memberTypes;
+        private readonly IReadOnlyList<DeclarationType> _returningMemberTypes;
+
+        private readonly IReadOnlyList<Accessibility> _projectScopePublicModifiers; 
 
         private readonly Stack<Declaration> _withBlockQualifiers;
         private readonly HashSet<RuleContext> _alreadyResolved;
@@ -37,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 DeclarationType.Module, 
                 DeclarationType.Class,
-                DeclarationType.Project
+                DeclarationType.Project,
             });
 
             _memberTypes = new List<DeclarationType>(new[]
@@ -46,7 +49,21 @@ namespace Rubberduck.Parsing.Symbols
                 DeclarationType.Procedure, 
                 DeclarationType.PropertyGet, 
                 DeclarationType.PropertyLet, 
-                DeclarationType.PropertySet
+                DeclarationType.PropertySet,
+            });
+
+            _returningMemberTypes = new List<DeclarationType>(new[]
+            {
+                DeclarationType.Function,
+                DeclarationType.PropertyGet, 
+            });
+
+            _projectScopePublicModifiers = new List<Accessibility>(new[]
+            {
+                Accessibility.Public, 
+                Accessibility.Global, 
+                Accessibility.Friend, 
+                Accessibility.Implicit, 
             });
 
             SetCurrentScope();
@@ -161,10 +178,7 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return matches.SingleOrDefault(item =>
                         item.ProjectName == libraryName
-                        && (item.Accessibility == Accessibility.Public
-                            || item.Accessibility == Accessibility.Global
-                            || item.Accessibility == Accessibility.Friend
-                            || item.Accessibility == Accessibility.Implicit)
+                        && _projectScopePublicModifiers.Contains(item.Accessibility)
                         && (_moduleTypes.Contains(item.DeclarationType))
                         || (item.DeclarationType == DeclarationType.UserDefinedType
                             && item.ComponentName == _currentScope.ComponentName));
@@ -229,6 +243,7 @@ namespace Rubberduck.Parsing.Symbols
                 localScope = _currentScope;
             }
 
+            var parentContext = callSiteContext.Parent;
             var identifierName = callSiteContext.GetText();
             Declaration callee = null;
             if (localScope.DeclarationType == DeclarationType.Variable)
@@ -242,10 +257,10 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                    callee = FindLocalScopeDeclaration(identifierName, localScope)
-                                ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
-                                ?? FindModuleScopeDeclaration(identifierName, localScope)
-                                ?? FindProjectScopeDeclaration(identifierName);
+                callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
+                            ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
+                            ?? FindModuleScopeDeclaration(identifierName, localScope)
+                            ?? FindProjectScopeDeclaration(identifierName);
             }
 
             if (callee == null)
@@ -253,7 +268,7 @@ namespace Rubberduck.Parsing.Symbols
                 // calls inside With block can still refer to identifiers in _currentScope
                 localScope = _currentScope;
                 identifierName = callSiteContext.GetText();
-                callee = FindLocalScopeDeclaration(identifierName, localScope)
+                callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                          ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
                          ?? FindProjectScopeDeclaration(identifierName);
@@ -692,14 +707,12 @@ namespace Rubberduck.Parsing.Symbols
 
             var matches = _declarations[identifierName];
             var parent = matches.SingleOrDefault(item =>
-                item.Scope == localScope.Scope
-                && (item.DeclarationType == DeclarationType.Function
-                    || item.DeclarationType == DeclarationType.PropertyGet));
+                item.Scope == localScope.Scope);
 
             return parent;
         }
 
-        private Declaration FindLocalScopeDeclaration(string identifierName, Declaration localScope = null)
+        private Declaration FindLocalScopeDeclaration(string identifierName, Declaration localScope = null, RuleContext parentContext = null, bool isAssignmentTarget= false)
         {
             if (localScope == null)
             {
@@ -712,21 +725,30 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            if (localScope.IdentifierName == identifierName 
-                && (localScope.DeclarationType == DeclarationType.Function 
-                || localScope.DeclarationType == DeclarationType.PropertyGet))
-            {
-                return FindFunctionOrPropertyGetter(identifierName, localScope);
-            }
-
             var matches = _declarations[identifierName];
 
             try
             {
-                return matches.SingleOrDefault(item =>
+                var results = matches.Where(item =>
                     item.ParentScope == localScope.Scope
                     && localScope.Context.GetSelection().Contains(item.Selection)
-                    && !_moduleTypes.Contains(item.DeclarationType));
+                    && !_moduleTypes.Contains(item.DeclarationType))
+                    .ToList();
+
+                if (results.Count > 1 && isAssignmentTarget
+                    && _returningMemberTypes.Contains(localScope.DeclarationType)
+                    && localScope.IdentifierName == identifierName
+                    && parentContext is VBAParser.ICS_S_VariableOrProcedureCallContext)
+                {
+                    // if we have multiple matches and we're in a returning member,
+                    // in an in-statement variable or procedure call context that's
+                    // the target of an assignment, then we have to assume we're looking
+                    // at the assignment of the member's return value:
+                    return FindFunctionOrPropertyGetter(identifierName, localScope);
+                }
+
+                // if we're not returning a function/getter value, then there can be only one:
+                return results.SingleOrDefault();
             }
             catch (InvalidOperationException)
             {

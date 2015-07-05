@@ -183,6 +183,7 @@
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
+    <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />
     <Compile Include="SourceControl\BranchesPresenterTests.cs" />
     <Compile Include="SourceControl\SCPresenterTests.cs" />
