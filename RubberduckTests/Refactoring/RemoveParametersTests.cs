@@ -168,6 +168,148 @@ End Sub"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
+        public void RemoveParamatersRefactoring_RemoveFromFunction()
+        {
+            //Input
+            const string inputCode =
+@"Private Function Foo(ByVal arg1 As Integer, ByVal arg2 As String) As Boolean
+End Function";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer ) As Boolean
+End Function"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParamatersRefactoring_RemoveFromGetter()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Get Foo(ByVal arg1 As Integer) As Boolean
+End Property";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Get Foo() As Boolean
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters.ForEach(p => p.IsRemoved = true);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        //bug: We shouldn't allow the only param in a setter to be removed, it will break the VBA code.
+        [TestMethod]
+        public void RemoveParamatersRefactoring_RemoveFromSetter()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Set Foo(ByVal arg1 As Integer) 
+End Property";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Set Foo()
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters.ForEach(p => p.IsRemoved = true);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        //note: removing other params from setters is fine (In fact, we may want to create an inspection for this).
+        [TestMethod]
+        public void RemoveParamatersRefactoring_RemoveSecondParamFromSetter()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+End Property";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Set Foo(ByVal arg1 As Integer )
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParamatersRefactoring_ClientReferencesAreUpdated()
         {
             //Input
