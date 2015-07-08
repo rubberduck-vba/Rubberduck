@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -44,6 +43,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var index = 0;
             Parameters = GetParameters(TargetDeclaration).Select(arg => new Parameter(arg, index++)).ToList();
+
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                Parameters.RemoveAt(Parameters.Count - 1);
+            }
         }
 
         private IEnumerable<Declaration> GetParameters(Declaration method)
