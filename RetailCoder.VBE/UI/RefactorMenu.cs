@@ -461,7 +461,7 @@ namespace Rubberduck.UI
             using (var view = new ReorderParametersDialog())
             {
                 var factory = new ReorderParametersPresenterFactory(_editor, view, result);
-                var refactoring = new ReorderParametersRefactoring(factory);
+                var refactoring = new ReorderParametersRefactoring(factory, new RubberduckMessageBox());
                 refactoring.Refactor(selection);
             }
         }

@@ -447,34 +447,34 @@ End Sub
         {
             //Input
             const string inputCode =
-@"Sub ParamArrayTest(ByVal Hihi As String, ParamArray Hoho())
+@"Sub Foo(ByVal arg1 As String, ParamArray arg2())
 End Sub
 
-Public Sub Haha(ByVal test1x As Integer, _
-                ByVal test2x As Integer, _
-                ByVal test3x As Integer, _
-                ByVal test4x As Integer, _
-                ByVal test5x As Integer, _
-                ByVal test6x As Integer)
-               
-    ParamArrayTest ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+Public Sub Goo(ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+    Foo ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Expectation
             const string expectedCode =
-@"Sub ParamArrayTest(ByVal Hihi As String )
+@"Sub Foo(ByVal arg1 As String )
 End Sub
 
-Public Sub Haha(ByVal test1x As Integer, _
-                ByVal test2x As Integer, _
-                ByVal test3x As Integer, _
-                ByVal test4x As Integer, _
-                ByVal test5x As Integer, _
-                ByVal test6x As Integer)
-               
- ParamArrayTest ""test""      
+Public Sub Goo(ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+ Foo ""test""      
 End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
 
@@ -500,7 +500,7 @@ End Sub
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveLastParamFromSetter()
+        public void RemoveParametersRefactoring_RemoveLastParamFromSetter_NotAllowed()
         {
             //Input
             const string inputCode =
@@ -521,7 +521,7 @@ End Property";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveLastParamFromLetter()
+        public void RemoveParametersRefactoring_RemoveLastParamFromLetter_NotAllowed()
         {
             //Input
             const string inputCode =

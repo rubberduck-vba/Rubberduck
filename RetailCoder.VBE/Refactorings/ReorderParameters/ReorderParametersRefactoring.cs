@@ -17,10 +17,12 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private ReorderParametersModel _model;
+        private readonly IMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory)
+        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
         {
             _factory = factory;
+            _messageBox = messageBox;
         }
 
         public void Refactor()
@@ -67,7 +69,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 {
                     if (!_model.Parameters.ElementAt(index).IsOptional)
                     {
-                        MessageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        _messageBox.Show(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return false;
                     }
                 }
@@ -76,7 +78,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
             if (indexOfParamArray >= 0 && indexOfParamArray != _model.Parameters.Count - 1)
             {
-                MessageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
             }
             return true;
