@@ -167,6 +167,51 @@ End Sub"; //note: The IDE strips out the extra whitespace
         }
 
         [TestMethod]
+        public void RemoveParametersRefactoring_RemoveNamedParam()
+        {
+            //Input
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo arg2:=""test44"", arg3:=6.1, arg1:=3
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String )
+End Sub
+
+Public Sub Goo()
+ Foo arg2:=""test44"",  arg1:=3
+End Sub
+"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[2].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
         public void RemoveParametersRefactoring_RemoveLastFromFunction()
         {
             //Input

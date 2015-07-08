@@ -19,6 +19,7 @@ namespace RubberduckTests.Refactoring
         private Mock<VBProject> _project;
         private Mock<VBComponent> _component;
         private Mock<CodeModule> _module;
+        private List<Mock<CodeModule>> _modules;
 
         [TestCleanup]
         private void CleanUp()
@@ -148,6 +149,58 @@ End Sub
         }
 
         [TestMethod]
+        public void ReorderParametersRefactoring_ReorderNamedParams()
+        {
+            //Input
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo arg2:=""test44"", arg3:=6.1, arg1:=3
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg3 As Double, ByVal arg2 As String)
+End Sub
+
+Public Sub Goo()
+ Foo arg2:=""test44"", arg1:=3, arg3:=6.1
+End Sub
+";
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to reorder
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection);
+            var reorderedParams = new List<Parameter>()
+            {
+                model.Parameters[0],
+                model.Parameters[2],
+                model.Parameters[1]
+            };
+
+            model.Parameters = reorderedParams;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
         public void ReorderParametersRefactoring_ReorderGetter()
         {
             //Input
@@ -167,7 +220,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -209,7 +262,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -250,7 +303,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -272,7 +325,7 @@ End Property";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveLastParamFromSetter_NotAllowed()
+        public void ReorderParametersRefactoring_ReorderLastParamFromSetter_NotAllowed()
         {
             //Input
             const string inputCode =
@@ -293,7 +346,7 @@ End Property";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveLastParamFromLetter_NotAllowed()
+        public void ReorderParametersRefactoring_ReorderLastParamFromLetter_NotAllowed()
         {
             //Input
             const string inputCode =
@@ -314,7 +367,7 @@ End Property";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_SignatureOnMultipleLines()
+        public void ReorderParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
             const string inputCode =
@@ -337,7 +390,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Params to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -360,7 +413,7 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_CallOnMultipleLines()
+        public void ReorderParametersRefactoring_CallOnMultipleLines()
         {
             //Input
             const string inputCode =
@@ -389,7 +442,7 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
 
 End Sub
-";   // note: IDE removes excess spaces
+";
 
             //Arrange
             SetupProject(inputCode);
@@ -397,7 +450,7 @@ End Sub
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Params to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -420,7 +473,7 @@ End Sub
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
+        public void ReorderParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
         {
             //Input
             const string inputCode =
@@ -461,7 +514,7 @@ End Sub
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -581,7 +634,7 @@ End Sub
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
+        public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndSetter()
         {
             //Input
             const string inputCode =
@@ -606,7 +659,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Param(s) to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -628,7 +681,7 @@ End Property";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
+        public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndLetter()
         {
             //Input
             const string inputCode =
@@ -653,7 +706,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            //Specify Param(s) to remove
+            //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection);
             var reorderedParams = new List<Parameter>()
             {
@@ -700,6 +753,30 @@ End Property";
             var codePane = MockFactory.CreateCodePaneMock(vbe, window);
 
             _module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
+
+            _project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
+
+            _component = MockFactory.CreateComponentMock("Module1", _module.Object, vbext_ComponentType.vbext_ct_StdModule);
+
+            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() { _component.Object });
+            components.SetupGet(c => c.Parent).Returns(_project.Object);
+
+            _project.SetupGet(p => p.VBComponents).Returns(components.Object);
+            _component.SetupGet(c => c.Collection).Returns(components.Object);
+        }
+
+        private void SetupProject(params string[] inputCode)
+        {
+            var window = MockFactory.CreateWindowMock(string.Empty);
+            var windows = new Mocks.MockWindowsCollection(window.Object);
+
+            var vbe = MockFactory.CreateVbeMock(windows);
+
+            foreach (var input in inputCode)
+            {
+                var codePane = MockFactory.CreateCodePaneMock(vbe, window);
+                _modules.Add(MockFactory.CreateCodeModuleMock(input, codePane.Object));
+            }
 
             _project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
 
