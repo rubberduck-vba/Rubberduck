@@ -103,10 +103,10 @@ namespace RubberduckTests.Mocks
         /// <returns></returns>
         internal static Mock<CodeModule> CreateCodeModuleMock(string code)
         {
-            var lines = code.Split(new [] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = code.Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<CodeModule>();
-            codeModule.SetupGet(c => c.CountOfLines).Returns(lines.Length);
+            codeModule.SetupGet(c => c.CountOfLines).Returns(lines.Count);
 
             // ReSharper disable once UseIndexedProperty
             // No R#, the indexed property breaks the expression. I tried that first.
@@ -115,6 +115,12 @@ namespace RubberduckTests.Mocks
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((index, str) => lines[index - 1] = str);
+
+            codeModule.Setup(m => m.DeleteLines(It.IsAny<int>(), It.IsAny<int>()))
+                .Callback<int, int>((index, count) => lines.RemoveRange(index - 1, count));
+
+            codeModule.Setup(m => m.InsertLines(It.IsAny<int>(), It.IsAny<string>()))
+                .Callback<int, string>((index, newLine) => lines.Insert(index - 1, newLine));
                 
             return codeModule;
         }
