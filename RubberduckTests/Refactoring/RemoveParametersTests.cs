@@ -12,7 +12,7 @@ using MockFactory = RubberduckTests.Mocks.MockFactory;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests
+    public class RemoveParametersTests : RefactoringTestBase
     {
         private Mock<VBProject> _project;
         private Mock<VBComponent> _component;

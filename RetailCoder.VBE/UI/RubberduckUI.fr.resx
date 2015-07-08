@@ -1106,12 +1106,12 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <comment>{0}=number</comment>
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>z Text:</value>
+    <value>Texte:</value>
   </data>
   <data name="TodoSettings_Priority" xml:space="preserve">
-    <value>z Priority</value>
+    <value>Priorité</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
-    <value>z Text</value>
+    <value>Texte</value>
   </data>
 </root>
