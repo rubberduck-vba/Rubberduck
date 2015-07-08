@@ -51,6 +51,12 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var index = 0;
             Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpaces(), index++)).ToList();
+
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                Parameters.Remove(Parameters.Last());
+            }
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =

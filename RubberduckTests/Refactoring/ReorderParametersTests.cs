@@ -131,6 +131,89 @@ End Sub
             Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
+        [TestMethod]
+        public void ReorderParametersRefactoring_ReorderGetter()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Get Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) As Boolean
+End Property";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Get Foo(ByVal arg2 As String, ByVal arg3 As Date, ByVal arg1 As Integer) As Boolean
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection);
+            var reorderedParams = new List<Parameter>()
+            {
+                model.Parameters[1],
+                model.Parameters[2],
+                model.Parameters[0]
+            };
+
+            model.Parameters = reorderedParams;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
+        }
+
+/*        [TestMethod]
+        public void ReorderParametersRefactoring_ReorderLetter()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) As Boolean
+End Property";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Let Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3 As Date) As Boolean
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection);
+            var reorderedParams = new List<Parameter>()
+            {
+                model.Parameters[1],
+                model.Parameters[0]
+            };
+
+            model.Parameters = reorderedParams;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
+        }*/
+
         private static Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>> SetupFactory(ReorderParametersModel model)
         {
             var presenter = new Mock<IReorderParametersPresenter>();
