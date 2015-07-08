@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections
 
         private void PassParameterByValue()
         {
-            var parameter = Context.GetText();
+            var parameter = Context.Parent.GetText();
             var newContent = string.Concat(Tokens.ByVal, " ", parameter.Replace(Tokens.ByRef, string.Empty).Trim());
             var selection = QualifiedSelection.Selection;
 
