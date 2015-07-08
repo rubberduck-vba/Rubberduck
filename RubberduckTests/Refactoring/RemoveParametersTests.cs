@@ -538,7 +538,7 @@ End Property";
             var model = new RemoveParametersModel(parseResult, qualifiedSelection);
 
             // Assert
-            Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
+            Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
         }
 
         [TestMethod]
