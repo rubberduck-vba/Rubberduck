@@ -623,6 +623,141 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, _module.Object.Lines());
         }
 
+        [TestMethod]
+        public void RemoveParametersRefactoring_SignatureContainsOptionalParam()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo( Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+ Foo 
+End Sub";
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[0].IsRemoved  = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_SignatureOnMultipleLines()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+
+
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_CallOnMultipleLines()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
+End Sub
+
+Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
+
+    Foo arg1, _
+        arg2, _
+        arg3
+
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo( ByVal arg2 As String, ByVal arg3 As Date)
+End Sub
+
+Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
+
+ Foo  arg2, arg3
+
+
+
+End Sub
+";   // note: IDE removes excess spaces
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(_project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, _module.Object.Lines());
+        }
+
         #region setup
         private QualifiedSelection GetQualifiedSelection(Selection selection)
         {
