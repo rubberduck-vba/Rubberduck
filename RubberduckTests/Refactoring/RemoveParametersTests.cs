@@ -221,19 +221,18 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
-        //bug: We shouldn't allow the only param in a setter to be removed, it will break the VBA code.
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFromSetter()
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer) 
+@"Private Property Set Foo(ByVal arg1 As Integer)
 End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo()
+@"Private Property Set Foo(ByVal arg1 As Integer)
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
@@ -257,20 +256,23 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
+        // todo: write a test that confirms that Property Set and Property Let members have 1 less parameter than what the signature actually says.
+        //       ...or re-implement the code so that such a test isn't needed to document this surprising behavior.
+
         //note: removing other params from setters is fine (In fact, we may want to create an inspection for this).
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveSecondParamFromSetter()
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo(ByVal arg1 As Integer )
-End Property"; //note: The IDE strips out the extra whitespace
+@"Private Property Set Foo( ByVal arg2 As String)
+End Property"; //note: The IDE strips out the extra whitespace // bug: the refactoring should be removing that extra whitespace.
 
             //Arrange
             SetupProject(inputCode);
@@ -280,7 +282,7 @@ End Property"; //note: The IDE strips out the extra whitespace
 
             //Specify Param(s) to remove
             var model = new RemoveParametersModel(parseResult, qualifiedSelection);
-            model.Parameters[1].IsRemoved = true;
+            model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);

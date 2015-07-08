@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
             {
-                Parameters.RemoveAt(Parameters.Count - 1);
+                Parameters.Remove(Parameters.Last());
             }
         }
 
