@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -238,19 +236,18 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, _module.Object.Lines());
         }
 
-        //bug: We shouldn't allow the only param in a setter to be removed, it will break the VBA code.
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFromSetter()
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer) 
+@"Private Property Set Foo(ByVal arg1 As Integer)
 End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Expectation
             const string expectedCode =
-@"Private Property Set Foo()
+@"Private Property Set Foo(ByVal arg1 As Integer)
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
