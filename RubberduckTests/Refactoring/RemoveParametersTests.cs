@@ -1128,6 +1128,7 @@ End Sub";
             catch (ArgumentException e)
             {
                 Assert.AreEqual("Invalid declaration type", e.Message);
+                return;
             }
 
             Assert.IsTrue(false);
