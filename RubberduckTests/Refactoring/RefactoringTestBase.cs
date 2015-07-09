@@ -10,48 +10,89 @@ namespace RubberduckTests.Refactoring
 {
     public abstract class RefactoringTestBase
     {
-        protected Mock<VBProject> Project;
-        protected Mock<VBComponent> Component;
-        protected Mock<CodeModule> Module;
-        protected Mock<VBE> IDE;
+        private readonly Mock<VBE> _ide;
+        private readonly Mock<Window> _window;
 
-        [TestCleanup]
-        public void CleanUp()
+        protected RefactoringTestBase()
         {
-            Project = null;
-            Component = null;
-            Module = null;
+            _window = MockFactory.CreateWindowMock(string.Empty);
+            var windows = new MockWindowsCollection(_window.Object);
+
+            _ide = MockFactory.CreateVbeMock(windows);
+            AttachParentIDE(_window);
         }
 
         protected QualifiedSelection GetQualifiedSelection(Selection selection)
         {
-            return new QualifiedSelection(new QualifiedModuleName(Component.Object), selection);
+            return GetQualifiedSelection(selection, _ide.Object.ActiveVBProject.VBComponents.Item(0));
         }
 
-        protected void SetupProject(string inputCode)
+        protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)
         {
-            var window = MockFactory.CreateWindowMock(string.Empty);
-            var windows = new MockWindowsCollection(window.Object);
+            return new QualifiedSelection(new QualifiedModuleName(component), selection);
+        }
 
-            IDE = MockFactory.CreateVbeMock(windows);
+        protected Mock<VBProject> SetupMockProject(string inputCode, string moduleName = null, vbext_ComponentType? componentType = null)
+        {
+            if (componentType == null)
+            {
+                componentType = vbext_ComponentType.vbext_ct_StdModule;
+            }
 
-            var codePane = MockFactory.CreateCodePaneMock(IDE, window);
+            if (moduleName == null)
+            {
+                moduleName = "Module1";
+            }
 
-            IDE.SetupGet(vbe => vbe.ActiveCodePane).Returns(codePane.Object);
+            var codePane = MockFactory.CreateCodePaneMock(_ide, _window);
+            var module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
+            var project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
+            var component = MockFactory.CreateComponentMock(moduleName, module.Object, componentType.Value);
+            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() { component.Object });
 
-            Module = MockFactory.CreateCodeModuleMock(inputCode, codePane.Object);
+            _ide.Setup(m => m.ActiveCodePane).Returns(codePane.Object);
+            codePane.Setup(m => m.CodeModule).Returns(module.Object);
+            project.Setup(m => m.VBComponents).Returns(components.Object);
+            components.Setup(m => m.Parent).Returns(project.Object);
+            component.Setup(m => m.Collection).Returns(components.Object);
 
-            codePane.SetupGet(p => p.CodeModule).Returns(Module.Object);
+            AttachParentIDE(module);
+            AttachParentIDE(codePane);
+            AttachParentIDE(project);
+            AttachParentIDE(components);
+            AttachParentIDE(component);
 
-            Project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
+            return project;
+        }
 
-            Component = MockFactory.CreateComponentMock("Module1", Module.Object, vbext_ComponentType.vbext_ct_StdModule);
+        private void AttachParentIDE(Mock<Window> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
+        }
 
-            var components = MockFactory.CreateComponentsMock(new List<VBComponent>() { Component.Object });
-            components.SetupGet(c => c.Parent).Returns(Project.Object);
+        private void AttachParentIDE(Mock<CodeModule> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
+        }
 
-            Project.SetupGet(p => p.VBComponents).Returns(components.Object);
-            Component.SetupGet(c => c.Collection).Returns(components.Object);
+        private void AttachParentIDE(Mock<CodePane> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
+        }
+
+        private void AttachParentIDE(Mock<VBProject> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
+        }
+
+        private void AttachParentIDE(Mock<VBComponents> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
+        }
+
+        private void AttachParentIDE(Mock<VBComponent> mock)
+        {
+            mock.Setup(m => m.VBE).Returns(_ide.Object);
         }
     }
 }

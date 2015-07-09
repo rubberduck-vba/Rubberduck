@@ -35,13 +35,14 @@ End Function
 
 ";
 
-            SetupProject(inputCode);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
 
             var qualifiedSelection = GetQualifiedSelection(new Selection(4,1,4,20));
 
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var parseResult = new RubberduckParser().Parse(project.Object);
             
-            var editor = new ActiveCodePaneEditor(IDE.Object);
+            var editor = new ActiveCodePaneEditor(module.VBE);
 
             var model = new ExtractMethodModel(editor, parseResult.Declarations, qualifiedSelection);
             model.Method.Accessibility = Accessibility.Private;
@@ -56,7 +57,7 @@ End Function
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         private static Mock<IRefactoringPresenterFactory<IExtractMethodPresenter>> SetupFactory(ExtractMethodModel model)

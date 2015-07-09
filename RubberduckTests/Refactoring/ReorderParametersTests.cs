@@ -27,8 +27,9 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -43,7 +44,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -61,8 +62,9 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -84,7 +86,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -112,8 +114,9 @@ End Sub
 ";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -128,7 +131,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         private static Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>> SetupFactory(ReorderParametersModel model)
