@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -25,7 +26,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return null;
             }
 
-            var model = new ReorderParametersModel(_parseResult, selection.Value);
+            var model = new ReorderParametersModel(_parseResult, selection.Value, new RubberduckMessageBox());
             return new ReorderParametersPresenter(_view, model);
         }
     }
