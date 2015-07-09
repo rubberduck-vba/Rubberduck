@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI;
 
@@ -12,50 +14,100 @@ namespace RubberduckTests.Mocks
     /// <remarks>
     /// The <see cref="Window"/> passed into MockWindowCollection's ctor will be returned from <see cref="CreateToolWindow"/>.
     /// </remarks>
-    class MockWindowsCollection : Windows
+    class MockWindowsCollection : Windows, ICollection<Window>
     {
-        /// <param name="window">
-        /// Expects a window created by <see cref="MockFactory.CreateWindowMock"/>.
-        /// This argument will be returned from <see cref="CreateToolWindow"/>.
-        /// </param>
-        internal MockWindowsCollection(Window window)
+        internal MockWindowsCollection()
+            :this(new List<Window>{MockFactory.CreateWindowMock().Object})
+        { }
+
+        internal MockWindowsCollection(IList<Window> windows)
         {
-            _window = window;
+            _windows = windows;
         }
 
-        private readonly Window _window;
+        private readonly IList<Window> _windows;
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         [SuppressMessage("ReSharper", "RedundantAssignment")]
         public Window CreateToolWindow(AddIn AddInInst, string ProgId, string Caption, string GuidPosition, ref object DocObj)
         {
             DocObj = new _DockableWindowHost(); 
-            return _window;
+            var result = MockFactory.CreateWindowMock(Caption);
+            result.Setup(m => m.VBE).Returns(VBE);
+            result.Setup(m => m.Collection).Returns(this);
+
+            return result.Object;
+        }
+
+        public Window CreateWindow(string caption)
+        {
+            var result = MockFactory.CreateWindowMock(caption);
+            result.Setup(m => m.VBE).Returns(VBE);
+            result.Setup(m => m.Collection).Returns(this);
+
+            return result.Object;
+        }
+
+        public void Add(Window window)
+        {
+            _windows.Add(window);
+        }
+
+        public bool Remove(Window window)
+        {
+            return _windows.Remove(window);
+        }
+
+        public void Clear()
+        {
+            _windows.Clear();
         }
 
         public int Count
         {
-            get { throw new NotImplementedException(); }
+            get { return _windows.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _windows.IsReadOnly; }
+        }
+
+        public bool Contains(Window window)
+        {
+            return _windows.Contains(window);
+        }
+
+        public void CopyTo(Window[] array, int arrayIndex)
+        {
+            _windows.CopyTo(array, arrayIndex);
+        }
+
+        IEnumerator<Window> IEnumerable<Window>.GetEnumerator()
+        {
+            return _windows.GetEnumerator();
         }
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _windows.GetEnumerator();
         }
 
         public Window Item(object index)
         {
-            throw new NotImplementedException();
+            if (index is ValueType)
+            {
+                return _windows[(int) index];
+            }
+
+            return _windows.FirstOrDefault(window => window.Caption == index.ToString());
         }
 
         public Application Parent
         {
-            get { throw new NotImplementedException(); }
+            get { return VBE; }
         }
 
-        public VBE VBE
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public VBE VBE { get; set; }
     }
 }

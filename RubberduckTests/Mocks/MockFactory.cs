@@ -41,6 +41,11 @@ namespace RubberduckTests.Mocks
             return window;
         }
 
+        internal static Mock<VBE> CreateVbeMock()
+        {
+            return CreateVbeMock(new MockWindowsCollection());
+        }
+
         /// <summary>
         /// Creates a new <see cref="Mock{VBE}"/> that returns the <see cref="Windows"/> collection argument out of the Windows property.
         /// </summary>
@@ -49,9 +54,10 @@ namespace RubberduckTests.Mocks
         /// Other objects implementing the<see cref="Windows"/> interface could cause issues.
         /// </param>
         /// <returns></returns>
-        internal static Mock<VBE> CreateVbeMock(Windows windows)
+        internal static Mock<VBE> CreateVbeMock(MockWindowsCollection windows)
         {
             var vbe = new Mock<VBE>();
+            windows.VBE = vbe.Object;
             vbe.Setup(v => v.Windows).Returns(windows);
 
             //setting up a main window lets the native window functions fun
@@ -72,7 +78,7 @@ namespace RubberduckTests.Mocks
         /// </param>
         /// <param name="projects"><see cref="VBProjects"/> collecction.</param>
         /// <returns></returns>
-        internal static Mock<VBE> CreateVbeMock(Windows windows, VBProjects projects)
+        internal static Mock<VBE> CreateVbeMock(MockWindowsCollection windows, VBProjects projects)
         {
             var vbe = CreateVbeMock(windows);
             vbe.SetupGet(v => v.VBProjects).Returns(projects);
@@ -84,15 +90,24 @@ namespace RubberduckTests.Mocks
         /// Creates a "selectable" <see cref="Mock{CodePane}"/>.
         /// </summary>
         /// <param name="vbe">Returned back from the <see cref="CodePane.VBE"/> property.</param>
-        /// <param name="window">Returned back from the <see cref="CodePane.Window"/> property.</param>
+        /// <param name="name">The caption of the window object that will be created for this code pane.</param>
         /// <returns></returns>
-        internal static Mock<CodePane> CreateCodePaneMock(Mock<VBE> vbe, Mock<Window> window)
+        internal static Mock<CodePane> CreateCodePaneMock(Mock<VBE> vbe, string name)
         {
+            var windows = vbe.Object.Windows as MockWindowsCollection;
+            if (windows == null)
+            {
+                return null;
+            }
+
             var codePane = new Mock<CodePane>();
+            var window = windows.CreateWindow(name);
+            windows.Add(window);
+
             codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
             codePane.Setup(p => p.Show());
             codePane.SetupGet(p => p.VBE).Returns(vbe.Object);
-            codePane.SetupGet(p => p.Window).Returns(window.Object);
+            codePane.SetupGet(p => p.Window).Returns(window);
             return codePane;
         }
 
@@ -131,10 +146,11 @@ namespace RubberduckTests.Mocks
         /// <param name="code">A block of VBA code.</param>
         /// <param name="codePane">Returned back from the <see cref="CodeModule.CodePane"/> property.</param>
         /// <returns></returns>
-        internal static Mock<CodeModule> CreateCodeModuleMock(string code, CodePane codePane)
+        internal static Mock<CodeModule> CreateCodeModuleMock(string code, Mock<CodePane> codePane, Mock<VBE> vbe)
         {
             var codeModule = CreateCodeModuleMock(code);
-            codeModule.SetupGet(m => m.CodePane).Returns(codePane);
+            codeModule.SetupGet(m => m.CodePane).Returns(codePane.Object);
+            codeModule.SetupGet(m => m.VBE).Returns(vbe.Object);
 
             return codeModule;
         }
@@ -151,12 +167,13 @@ namespace RubberduckTests.Mocks
         /// vbext_ct_ActiveXDesigner is invalid for the VBE.
         /// </param>
         /// <returns></returns>
-        internal static Mock<VBComponent> CreateComponentMock(string name, CodeModule codeModule, vbext_ComponentType componentType)
+        internal static Mock<VBComponent> CreateComponentMock(string name, CodeModule codeModule, vbext_ComponentType componentType, Mock<VBE> vbe)
         {
             var component = new Mock<VBComponent>();
-            component.SetupProperty(c => c.Name, name);
-            component.SetupGet(c => c.CodeModule).Returns(codeModule);
-            component.SetupGet(c => c.Type).Returns(componentType);
+            component.SetupProperty(m => m.Name, name);
+            component.SetupGet(m => m.CodeModule).Returns(codeModule);
+            component.SetupGet(m => m.Type).Returns(componentType);
+            component.SetupGet(m => m.VBE).Returns(vbe.Object);
             return component;
         }
 
@@ -165,7 +182,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="componentList">The collection to be iterated over.</param>
         /// <returns></returns>
-        internal static Mock<VBComponents> CreateComponentsMock(List<VBComponent> componentList)
+        internal static Mock<VBComponents> CreateComponentsMock(IEnumerable<VBComponent> componentList)
         {
             var components = new Mock<VBComponents>();
             components.Setup(c => c.GetEnumerator()).Returns(componentList.GetEnumerator());
@@ -180,10 +197,15 @@ namespace RubberduckTests.Mocks
         /// <param name="componentList">The collection to be iterated over.</param>
         /// <param name="project">The <see cref="VBComponents.Parent"/> property.</param>
         /// <returns></returns>
-        internal static Mock<VBComponents> CreateComponentsMock(List<VBComponent> componentList, VBProject project)
+        internal static Mock<VBComponents> CreateComponentsMock(ICollection<Mock<VBComponent>> componentList, VBProject project)
         {
-            var components = CreateComponentsMock(componentList);
-            components.SetupGet(c => c.Parent).Returns(project);
+            var items = componentList.Select(item => item.Object);
+            var components = CreateComponentsMock(items);
+
+            foreach (var mock in componentList)
+            {
+                mock.SetupGet(m => m.Collection).Returns(components.Object);
+            }
 
             return components;
         }
