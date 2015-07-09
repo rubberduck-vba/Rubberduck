@@ -19,7 +19,7 @@ namespace RubberduckTests.SourceControl
     public class ScPresenterTests
     {
         private Mock<VBE> _vbe;
-        private Windows _windows;
+        private MockWindowsCollection _windows;
         private Mock<AddIn> _addIn;
         private Mock<Window> _window;
 #pragma warning disable 169
@@ -48,7 +48,7 @@ namespace RubberduckTests.SourceControl
         public void InitializeMocks()
         {
             _window = Mocks.MockFactory.CreateWindowMock();
-            _windows = new MockWindowsCollection(_window.Object);
+            _windows = new MockWindowsCollection(new List<Window> { _window.Object });
             _vbe = Mocks.MockFactory.CreateVbeMock(_windows);
 
             _addIn = new Mock<AddIn>();

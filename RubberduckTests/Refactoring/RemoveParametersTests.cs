@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.Extensions;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests : RefactoringTestBase
+    public class RemoveParametersTests : VbeTestBase
     {
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()
@@ -26,8 +26,9 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -43,7 +44,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -61,8 +62,9 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -78,7 +80,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -96,8 +98,9 @@ End Sub";
 End Sub"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -113,7 +116,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -131,8 +134,9 @@ End Sub";
 End Sub"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -148,7 +152,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -176,8 +180,9 @@ End Sub
 "; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -193,7 +198,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -211,8 +216,9 @@ End Function";
 End Function"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -228,7 +234,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -246,8 +252,9 @@ End Function";
 End Function"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -263,7 +270,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -291,8 +298,9 @@ End Sub
 "; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -308,7 +316,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -326,8 +334,9 @@ End Property";
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -343,7 +352,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -361,8 +370,9 @@ End Property";
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -377,7 +387,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.QuickFix(parseResult, qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -395,8 +405,9 @@ End Property";
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -412,7 +423,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -440,8 +451,9 @@ End Sub
 "; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -457,7 +469,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -485,8 +497,9 @@ End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there's a space after "Foo 10 "
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -502,7 +515,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -542,8 +555,10 @@ End Sub
 "; //note: The IDE strips out the extra whitespace, you can't see it but there are several spaces after " ParamArrayTest ""test""      "
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -559,7 +574,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -572,8 +587,8 @@ End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -593,8 +608,8 @@ End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -625,8 +640,9 @@ Private Property Set Foo( ByVal arg2 As String)
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -642,7 +658,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -666,8 +682,9 @@ Private Property Let Foo( ByVal arg2 As String)
 End Property"; //note: The IDE strips out the extra whitespace
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule; 
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -683,7 +700,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -709,8 +726,9 @@ Private Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -726,7 +744,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -748,8 +766,9 @@ End Sub";
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -765,7 +784,7 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -787,8 +806,9 @@ End Sub";
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -804,7 +824,7 @@ End Sub";   // note: IDE removes excess spaces
             refactoring.Refactor(model.TargetDeclaration);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -840,8 +860,9 @@ End Sub
 ";   // note: IDE removes excess spaces
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -857,7 +878,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         #region setup
