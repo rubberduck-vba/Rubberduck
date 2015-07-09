@@ -473,7 +473,7 @@ namespace Rubberduck.UI
 
             using (var view = new RemoveParametersDialog())
             {
-                var factory = new RemoveParametersPresenterFactory(_editor, view, result);
+                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new RubberduckMessageBox());
                 var refactoring = new RemoveParametersRefactoring(factory);
                 refactoring.Refactor(selection);
             }
