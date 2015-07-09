@@ -9,13 +9,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly IActiveCodePaneEditor _editor;
         private readonly IReorderParametersView _view;
         private readonly VBProjectParseResult _parseResult;
+        private readonly IMessageBox _messageBox;
 
         public ReorderParametersPresenterFactory(IActiveCodePaneEditor editor, IReorderParametersView view,
-            VBProjectParseResult parseResult)
+            VBProjectParseResult parseResult, IMessageBox messageBox)
         {
             _editor = editor;
             _view = view;
             _parseResult = parseResult;
+            _messageBox = messageBox;
         }
 
         public IReorderParametersPresenter Create()
@@ -26,8 +28,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return null;
             }
 
-            var model = new ReorderParametersModel(_parseResult, selection.Value, new RubberduckMessageBox());
-            return new ReorderParametersPresenter(_view, model);
+            var model = new ReorderParametersModel(_parseResult, selection.Value, _messageBox);
+            return new ReorderParametersPresenter(_view, model, _messageBox);
         }
     }
 }

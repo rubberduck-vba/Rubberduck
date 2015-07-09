@@ -1256,13 +1256,7 @@ End Sub";   // note: IDE removes excess spaces
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1274,6 +1268,179 @@ End Sub";   // note: IDE removes excess spaces
             //Assert
             Assert.AreEqual(expectedCode1, module1.Lines());
             Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+
+
+        [TestMethod]
+        public void Presenter_Accept_ReturnsModelWithParametersChanged()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            model.Parameters.Reverse();
+
+            var view = new Mock<IReorderParametersView>();
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+            view.Setup(v => v.Parameters).Returns(model.Parameters);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object,
+                parseResult, null);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
+        }
+
+        [TestMethod]
+        public void Presenter_Reject_ReturnsNull()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+
+            var view = new Mock<IReorderParametersView>();
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
+            view.Setup(v => v.Parameters).Returns(model.Parameters);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object,
+                parseResult, null);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(null, presenter.Show());
+        }
+        
+        [TestMethod]
+        public void Presenter_NoParams()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
+            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
+                parseResult, messageBox.Object);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(null, presenter.Show());
+        }
+
+        [TestMethod]
+        public void Presenter_OneParam()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer)
+End Sub";
+            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
+                parseResult, messageBox.Object);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(null, presenter.Show());
+        }
+
+        [TestMethod]
+        public void Presenter_TargetIsNull()
+        {
+            //Input
+            const string inputCode =
+@"
+Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
+                parseResult, null);
+
+            var presenter = factory.Create();
+
+            Assert.AreEqual(null, presenter.Show());
+        }
+
+        [TestMethod]
+        public void Factory_SelectionIsNull()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
+                parseResult, null);
+
+            Assert.AreEqual(null, factory.Create());
         }
 
         #region setup

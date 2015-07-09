@@ -12,11 +12,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;
+        private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model)
+        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;
+            _messageBox = messageBox;
         }
 
         public ReorderParametersModel Show()
@@ -26,7 +28,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             if (_model.Parameters.Count < 2)
             {
                 var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _model.TargetDeclaration.IdentifierName);
-                MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return null;
             }
 
