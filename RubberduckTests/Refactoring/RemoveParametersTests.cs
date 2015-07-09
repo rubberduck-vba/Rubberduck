@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -1057,7 +1059,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
+        public void RemoveParametersRefactoring_LastParamRemoved_RejectPrompt()
         {
             //Input
             const string inputCode1 =
@@ -1091,6 +1093,42 @@ End Sub";
             //Specify Params to remove
             var model = new RemoveParametersModel(parseResult, qualifiedSelection, messageBox.Object);
             Assert.AreEqual(null, model.TargetDeclaration);
+        }
+
+        [TestMethod]
+        public void RemoveParams_RefactorDeclaration_FailsInvalidTarget()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //set up model
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
+
+            var factory = SetupFactory(model);
+
+            //act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+
+            //assert
+            try
+            {
+                refactoring.Refactor(
+                    model.Declarations.Items.FirstOrDefault(
+                        i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.Class));
+            }
+            catch (ArgumentException e)
+            {
+                Assert.AreEqual("Invalid declaration type", e.Message);
+            }
         }
 
         #region setup

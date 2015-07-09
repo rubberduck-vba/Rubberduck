@@ -775,6 +775,89 @@ End Sub
         }
 
         [TestMethod]
+        public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultiplelines()
+        {
+            //Input
+            const string inputCode =
+@"Sub Foo(ByVal arg1 As String, ByVal arg2 As Date, ParamArray arg3())
+End Sub
+
+Public Sub Goo(ByVal arg As Date, _
+               ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+    Foo ""test"", _
+        arg, _
+        test1x, _
+        test2x, _
+        test3x, _
+        test4x, _
+        test5x, _
+        test6x
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Sub Foo(ByVal arg2 As Date, ByVal arg1 As String, ParamArray arg3())
+End Sub
+
+Public Sub Goo(ByVal arg As Date, _
+               ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+ Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+
+
+
+
+
+
+
+End Sub
+";
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to reorder
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
+            var reorderedParams = new List<Parameter>()
+            {
+                model.Parameters[1],
+                model.Parameters[0]
+            };
+
+            model.Parameters = reorderedParams;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object, messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
         public void ReorderParams_MoveOptionalParamBeforeNonOptionalParamFails()
         {
             //Input

@@ -122,14 +122,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
                 if (parameterStringIndex <= -1) { continue; }
 
-                if (_model.Parameters.ElementAt(parameterIndex).Index >= paramNames.Count)
-                {
-                    newContent = newContent.Insert(parameterStringIndex, " , ");
-                    i--;
-                    parameterIndex++;
-                    continue;
-                }
-
                 var oldParameterString = paramNames.ElementAt(i);
                 var newParameterString = paramNames.ElementAt(_model.Parameters.ElementAt(parameterIndex).Index);
                 var beginningSub = newContent.Substring(0, parameterStringIndex);
