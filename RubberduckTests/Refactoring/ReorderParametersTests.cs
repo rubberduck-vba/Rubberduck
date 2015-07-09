@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.Extensions;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class ReorderParametersTests : RefactoringTestBase
+    public class ReorderParametersTests : VbeTestBase
     {
         [TestMethod]
         public void ReorderParams_SwapPositions()

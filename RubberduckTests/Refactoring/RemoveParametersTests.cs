@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.Extensions;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests : RefactoringTestBase
+    public class RemoveParametersTests : VbeTestBase
     {
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()

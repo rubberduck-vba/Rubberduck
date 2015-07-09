@@ -183,7 +183,7 @@
   <ItemGroup>
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
-    <Compile Include="Refactoring\RefactoringTestBase.cs" />
+    <Compile Include="VbeTestBase.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />

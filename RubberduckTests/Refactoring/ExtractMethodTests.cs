@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.Extensions;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class ExtractMethodTests : RefactoringTestBase
+    public class ExtractMethodTests : VbeTestBase
     {
         [TestMethod]
         public void ExtractMethod_PrivateFunction()

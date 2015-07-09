@@ -6,9 +6,9 @@ using Moq;
 using Rubberduck.VBEditor;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
-namespace RubberduckTests.Refactoring
+namespace RubberduckTests
 {
-    public abstract class RefactoringTestBase
+    public abstract class VbeTestBase
     {
         private Mock<VBE> _ide;
         private ICollection<VBProject> _projects;
