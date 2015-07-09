@@ -346,7 +346,40 @@ End Property"; //note: The IDE strips out the extra whitespace
             Assert.AreEqual(expectedCode, Module.Object.Lines());
         }
 
-        //note: removing other params from setters is fine (In fact, we may want to create an inspection for this).
+        [TestMethod]
+        public void RemoveParametersRefactoring_QuickFix()
+        {
+            //Input
+            const string inputCode =
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+End Property";
+            var selection = new Selection(1, 38, 1, 38); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Property Set Foo( ByVal arg2 As String)
+End Property"; //note: The IDE strips out the extra whitespace
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.QuickFix(parseResult, qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
+        }
+
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveFirstParamFromSetter()
         {
@@ -730,6 +763,45 @@ End Sub";   // note: IDE removes excess spaces
             //Act
             var refactoring = new RemoveParametersRefactoring(factory.Object);
             refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, Module.Object.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_PassTargetIn()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String, _
+                  ByVal arg3 As Date)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo(                  ByVal arg2 As String,                  ByVal arg3 As Date)
+
+
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            SetupProject(inputCode);
+            var parseResult = new RubberduckParser().Parse(Project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[0].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(model.TargetDeclaration);
 
             //Assert
             Assert.AreEqual(expectedCode, Module.Object.Lines());
