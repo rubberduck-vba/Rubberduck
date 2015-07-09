@@ -42,7 +42,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             Parameters.Clear();
 
             var index = 0;
-            Parameters = GetParameters(TargetDeclaration).Select(arg => new Parameter(arg, index++)).ToList();
+            Parameters = GetParameters().Select(arg => new Parameter(arg, index++)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -51,17 +51,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private IEnumerable<Declaration> GetParameters(Declaration method)
+        private IEnumerable<Declaration> GetParameters()
         {
+            var targetSelection = new Selection(TargetDeclaration.Context.Start.Line,
+                TargetDeclaration.Context.Start.Column,
+                TargetDeclaration.Context.Stop.Line,
+                TargetDeclaration.Context.Stop.Column);
+
             return Declarations.Items
                               .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == method.ComponentName
-                                       && d.Project.Equals(method.Project)
-                                       && method.Context.GetSelection().Contains(
-                                                         new Selection(d.Selection.StartLine,
-                                                                       d.Selection.StartColumn,
-                                                                       d.Selection.EndLine,
-                                                                       d.Selection.EndColumn)))
+                                       && d.ComponentName == TargetDeclaration.ComponentName
+                                       && d.Project.Equals(TargetDeclaration.Project)
+                                       && targetSelection.Contains(d.Selection))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
         }

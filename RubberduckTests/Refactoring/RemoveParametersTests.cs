@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -843,7 +845,7 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+            var selection = new Selection(1, 16, 1, 16); //startLine, startCol, endLine, endCol
 
             //Expectation
             const string expectedCode =
@@ -879,6 +881,116 @@ End Sub
 
             //Assert
             Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_LastInterfaceParamRemoved()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Public Sub DoSomething(ByVal a As Integer )
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer )
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "IClass1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() {component1, component2});
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_LastEventParamRemoved()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
+
+            const string inputCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Public Event Foo(ByVal arg1 As Integer )";
+
+            const string expectedCode2 =
+@"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByVal arg1 As Integer )
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "Class2",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component1, component2 });
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
         }
 
         #region setup
