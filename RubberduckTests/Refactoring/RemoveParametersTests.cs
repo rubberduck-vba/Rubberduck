@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
@@ -35,7 +37,7 @@ End Sub";
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -71,7 +73,7 @@ End Sub";
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -107,7 +109,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -143,7 +145,7 @@ End Sub"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -189,7 +191,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -225,7 +227,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -261,7 +263,7 @@ End Function"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -307,7 +309,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -343,7 +345,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -379,7 +381,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -414,7 +416,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -460,7 +462,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -506,7 +508,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -565,7 +567,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -594,7 +596,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
@@ -615,7 +617,7 @@ End Property";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
@@ -649,7 +651,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -691,7 +693,7 @@ End Property"; //note: The IDE strips out the extra whitespace
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -735,7 +737,7 @@ End Sub";
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved  = true;
 
             //SetupFactory
@@ -775,7 +777,7 @@ End Sub";   // note: IDE removes excess spaces
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -815,7 +817,7 @@ End Sub";   // note: IDE removes excess spaces
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -869,7 +871,7 @@ End Sub
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -923,7 +925,7 @@ End Sub";   // note: IDE removes excess spaces
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -978,7 +980,7 @@ End Sub";   // note: IDE removes excess spaces
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection);
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -991,6 +993,104 @@ End Sub";   // note: IDE removes excess spaces
             //Assert
             Assert.AreEqual(expectedCode1, module1.Lines());
             Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParametersRefactoring_LastInterfaceParamsRemoved_AcceptPrompt()
+        {
+            //Input
+            const string inputCode1 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+            const string inputCode2 =
+@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+
+            var selection = new Selection(3, 23, 3, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer )
+End Sub";   // note: IDE removes excess spaces
+
+            const string expectedCode2 =
+@"Public Sub DoSomething(ByVal a As Integer )
+End Sub";
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "IClass1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component1, component2 });
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(
+                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                .Returns(DialogResult.Yes);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, messageBox.Object);
+            model.Parameters[1].IsRemoved = true;
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
+        {
+            //Input
+            const string inputCode1 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+            const string inputCode2 =
+@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+
+            var selection = new Selection(3, 23, 3, 27); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "IClass1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component1, component2 });
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(
+                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                .Returns(DialogResult.No);
+
+            //Specify Params to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, messageBox.Object);
+            Assert.AreEqual(null, model.TargetDeclaration);
         }
 
         #region setup

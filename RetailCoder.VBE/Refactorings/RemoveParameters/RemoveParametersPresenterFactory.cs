@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -25,7 +26,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return null;
             }
 
-            var model = new RemoveParametersModel(_parseResult, selection.Value);
+            var model = new RemoveParametersModel(_parseResult, selection.Value, new RubberduckMessageBox());
             return new RemoveParametersPresenter(_view, model);
         }
     }

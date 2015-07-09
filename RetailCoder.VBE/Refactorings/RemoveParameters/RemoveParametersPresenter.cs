@@ -21,6 +21,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersModel Show()
         {
+            if (_model.TargetDeclaration == null) { return null; }
+
             if (_model.Parameters.Count == 0)
             {
                 var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _model.TargetDeclaration.IdentifierName);

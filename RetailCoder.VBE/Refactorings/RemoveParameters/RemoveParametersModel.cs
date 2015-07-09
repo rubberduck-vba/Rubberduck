@@ -19,10 +19,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
-        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
+        private readonly IMessageBox _messageBox;
+
+        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
+            _messageBox = messageBox;
 
             AcquireTarget(selection);
 
@@ -39,6 +42,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void LoadParameters()
         {
+            if (TargetDeclaration == null) { return; }
+
             Parameters.Clear();
 
             var index = 0;
@@ -89,12 +94,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return confirm == DialogResult.No ? null : interfaceMember;
         }
 
         private Declaration GetGetter()
         {
+            if (TargetDeclaration == null) { return null; }
+
             if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                 TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
