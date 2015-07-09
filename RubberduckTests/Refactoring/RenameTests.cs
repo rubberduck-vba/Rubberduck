@@ -6,11 +6,12 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RenameTests : RefactoringTestBase
+    public class RenameTests : VbeTestBase
     {
         [TestMethod]
         public void RenameRefactoring_RenameSub()
@@ -27,13 +28,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -43,7 +46,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -63,13 +66,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "val2" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -79,7 +84,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -97,13 +102,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "arg2" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -113,7 +120,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -141,13 +148,15 @@ End Sub
 ";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Hoo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -157,7 +166,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -179,13 +188,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "val2" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -195,7 +206,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -215,13 +226,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "arg2" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -231,7 +244,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -255,13 +268,15 @@ Private Property Set Goo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -271,7 +286,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -295,13 +310,15 @@ Private Property Let Goo(ByVal arg1 As String)
 End Property";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -311,7 +328,7 @@ End Property";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -331,13 +348,15 @@ End Function";
 End Function";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -347,7 +366,7 @@ End Function";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -379,13 +398,15 @@ End Sub
 ";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Hoo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -395,7 +416,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
@@ -413,13 +434,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            SetupProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(Project.Object);
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
             //Specify Params to remove
-            var model = new RenameModel(IDE.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -429,7 +452,7 @@ End Sub";
             refactoring.Refactor(model.Target);
 
             //Assert
-            Assert.AreEqual(expectedCode, Module.Object.Lines());
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         #region setup
