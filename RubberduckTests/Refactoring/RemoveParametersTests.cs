@@ -1129,6 +1129,64 @@ End Sub";
             {
                 Assert.AreEqual("Invalid declaration type", e.Message);
             }
+
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
+        public void RemoveParams_PresenterIsNull()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
+
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
+                parseResult, null);
+
+            //act
+            var refactoring = new RemoveParametersRefactoring(factory);
+            refactoring.Refactor();
+
+            Assert.AreEqual(inputCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RemoveParams_ModelIsNull()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Param(s) to remove
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, null);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RemoveParametersRefactoring(factory.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(inputCode, module.Lines());
         }
 
         [TestMethod]

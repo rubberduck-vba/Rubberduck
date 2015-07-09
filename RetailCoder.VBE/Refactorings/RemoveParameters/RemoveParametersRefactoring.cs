@@ -6,6 +6,7 @@ using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 
@@ -57,7 +58,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void QuickFix(VBProjectParseResult parseResult, QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(parseResult, selection, null);
+            _model = new RemoveParametersModel(parseResult, selection, new RubberduckMessageBox());
             var target = _model.Declarations.FindSelection(selection, new[] { DeclarationType.Parameter });
 
             // ReSharper disable once PossibleUnintendedReferenceComparison
@@ -67,7 +68,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveParameters()
         {
-            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null."); }
+            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null"); }
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
