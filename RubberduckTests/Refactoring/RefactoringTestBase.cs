@@ -1,25 +1,48 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.VBEditor;
-using RubberduckTests.Mocks;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
 {
     public abstract class RefactoringTestBase
     {
-        private readonly Mock<VBE> _ide;
+        private Mock<VBE> _ide;
+        private ICollection<VBProject> _projects;
 
-        protected RefactoringTestBase()
+        [TestInitialize]
+        public void Initialize()
         {
             _ide = MockFactory.CreateVbeMock();
+            _ide.SetupProperty(m => m.ActiveCodePane);
+            _ide.SetupProperty(m => m.ActiveVBProject);
+            _ide.SetupGet(m => m.SelectedVBComponent).Returns(() => _ide.Object.ActiveCodePane.CodeModule.Parent);
+            _ide.SetupGet(m => m.ActiveWindow).Returns(() => _ide.Object.ActiveCodePane.Window);
+
+            _projects = new List<VBProject>();
+            var projects = MockFactory.CreateProjectsMock(_projects);
+            projects.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(i => _projects.ElementAt(i));
+
+            _ide.SetupGet(m => m.VBProjects).Returns(() => projects.Object);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _ide = null;
         }
 
         protected QualifiedSelection GetQualifiedSelection(Selection selection)
         {
-            return GetQualifiedSelection(selection, _ide.Object.ActiveVBProject.VBComponents.Item(0));
+            if (_ide.Object.ActiveCodePane == null)
+            {
+                _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
+                _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
+            }
+            return GetQualifiedSelection(selection, _ide.Object.ActiveCodePane.CodeModule.Parent);
         }
 
         protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)
@@ -27,7 +50,7 @@ namespace RubberduckTests.Refactoring
             return new QualifiedSelection(new QualifiedModuleName(component), selection);
         }
 
-        protected Mock<VBProject> SetupMockProject(string inputCode, string moduleName = null, vbext_ComponentType? componentType = null)
+        protected Mock<VBProject> SetupMockProject(string inputCode, string projectName = null, string moduleName = null, vbext_ComponentType? componentType = null)
         {
             if (componentType == null)
             {
@@ -36,32 +59,40 @@ namespace RubberduckTests.Refactoring
 
             if (moduleName == null)
             {
-                moduleName = "Module1";
+                moduleName = componentType == vbext_ComponentType.vbext_ct_StdModule 
+                    ? "Module1" 
+                    : componentType == vbext_ComponentType.vbext_ct_ClassModule
+                        ? "Class1"
+                        : componentType == vbext_ComponentType.vbext_ct_MSForm
+                            ? "Form1"
+                            : "Document1";
             }
 
-            var project = MockFactory.CreateProjectMock("VBAProject", vbext_ProjectProtection.vbext_pp_none);
+            if (projectName == null)
+            {
+                projectName = "VBAProject";
+            }
+
             var component = CreateMockComponent(inputCode, moduleName, componentType.Value);
-            var components = SetupMockComponents(new List<Mock<VBComponent>> {component}, project.Object);
+            var components = new List<Mock<VBComponent>> {component};
 
-            _ide.SetupGet(m => m.ActiveCodePane).Returns(component.Object.CodeModule.CodePane);
-            _ide.SetupSet(vbe => vbe.ActiveCodePane = It.IsAny<CodePane>()); // todo: verify that this works as expected
-            
-            _ide.SetupGet(m => m.ActiveVBProject).Returns(project.Object);
-            _ide.SetupSet(vbe => vbe.ActiveVBProject = It.IsAny<VBProject>()); // todo: verify that this works as expected
-
-            _ide.SetupGet(m => m.ActiveWindow).Returns(_ide.Object.ActiveCodePane.Window);
-
-            project.SetupGet(m => m.VBComponents).Returns(components.Object);
-            components.Setup(m => m.Item(0)).Returns(component.Object);
-            components.SetupGet(m => m.Parent).Returns(project.Object);
-            component.SetupGet(m => m.Collection).Returns(components.Object);
-
-            project.SetupGet(m => m.VBE).Returns(_ide.Object);
-
+            var project = CreateMockProject(projectName, vbext_ProjectProtection.vbext_pp_none, components);
             return project;
         }
 
-        public Mock<VBComponent> CreateMockComponent(string content, string name, vbext_ComponentType type)
+        protected Mock<VBProject> CreateMockProject(string name, vbext_ProjectProtection protection, ICollection<Mock<VBComponent>> components)
+        {
+            var project = MockFactory.CreateProjectMock(name, protection);
+            var projectComponents = SetupMockComponents(components, project.Object);
+
+            project.SetupGet(m => m.VBE).Returns(_ide.Object);
+            project.SetupGet(m => m.VBComponents).Returns(projectComponents.Object);
+
+            _projects.Add(project.Object);
+            return project;
+        }
+
+        protected Mock<VBComponent> CreateMockComponent(string content, string name, vbext_ComponentType type)
         {
             var module = SetupMockCodeModule(content, name);
             var component = MockFactory.CreateComponentMock(name, module.Object, type, _ide);
@@ -70,11 +101,14 @@ namespace RubberduckTests.Refactoring
             return component;
         }
 
+
         private Mock<VBComponents> SetupMockComponents(ICollection<Mock<VBComponent>> items, VBProject project)
         {
             var components = MockFactory.CreateComponentsMock(items, project);
             components.SetupGet(m => m.Parent).Returns(project);
             components.SetupGet(m => m.VBE).Returns(_ide.Object);
+            components.Setup(m => m.Item(It.IsAny<int>())).Returns((int index) => items.ElementAt(index).Object);
+            components.Setup(m => m.Item(It.IsAny<string>())).Returns((string name) => items.Single(e => e.Name == name).Object);
 
             return components;
         }

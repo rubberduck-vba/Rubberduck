@@ -233,7 +233,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="projectList">The collection to be iterated over.</param>
         /// <returns></returns>
-        internal static Mock<VBProjects> CreateProjectsMock(List<VBProject> projectList)
+        internal static Mock<VBProjects> CreateProjectsMock(ICollection<VBProject> projectList)
         {
             var projects = new Mock<VBProjects>();
             projects.Setup(p => p.GetEnumerator()).Returns(projectList.GetEnumerator());
