@@ -51,8 +51,10 @@ namespace RubberduckTests.Refactoring
             var components = MockFactory.CreateComponentsMock(new List<VBComponent>() { component.Object });
 
             _ide.Setup(m => m.ActiveCodePane).Returns(codePane.Object);
+            _ide.Setup(m => m.ActiveVBProject).Returns(project.Object);
             codePane.Setup(m => m.CodeModule).Returns(module.Object);
             project.Setup(m => m.VBComponents).Returns(components.Object);
+            components.Setup(m => m.Item(0)).Returns(component.Object);
             components.Setup(m => m.Parent).Returns(project.Object);
             component.Setup(m => m.Collection).Returns(components.Object);
 
