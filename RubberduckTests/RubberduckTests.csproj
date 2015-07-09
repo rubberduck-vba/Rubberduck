@@ -184,6 +184,7 @@
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Refactoring\RefactoringTestBase.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
+    <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="Refactoring\ExtractMethodTests.cs" />
     <Compile Include="SourceControl\ChangesPresenterTests.cs" />

@@ -3,7 +3,13 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenamePresenter
+    public interface IRenamePresenter
+    {
+        RenameModel Show();
+        RenameModel Show(Declaration target);
+    }
+
+    public class RenamePresenter : IRenamePresenter
     {
         private readonly IRenameView _view;
         private readonly RenameModel _model;
