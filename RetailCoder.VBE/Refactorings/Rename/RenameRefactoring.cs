@@ -15,10 +15,10 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
-        private readonly IRefactoringPresenterFactory<RenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<RenamePresenter> factory)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory)
         {
             _factory = factory;
         }
