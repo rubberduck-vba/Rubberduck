@@ -1051,7 +1051,33 @@ End Property";
         }
 
         [TestMethod]
-        public void ReorderParametersRefactoring_InterfacePAramsSwapped()
+        public void ReorderParams_PresenterIsNull()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
+
+            //Arrange
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
+
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
+                parseResult, null);
+
+            //act
+            var refactoring = new ReorderParametersRefactoring(factory, null);
+            refactoring.Refactor();
+
+            Assert.AreEqual(inputCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void ReorderParametersRefactoring_InterfaceParamsSwapped()
         {
             //Input
             const string inputCode1 =
