@@ -72,6 +72,10 @@ namespace Rubberduck.UI.UnitTesting
         {
             FindAllTests();
             _view.Refresh(_testEngine.AllTests);
+            _view.AllTests =
+                new BindingList<TestExplorerItem>(
+                    _gridViewSort.Sort(_view.AllTests.AsEnumerable(), _gridViewSort.ColumnName,
+                        _gridViewSort.SortedAscending).ToList());
         }
 
         public override void Show()

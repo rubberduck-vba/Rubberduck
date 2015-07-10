@@ -5,28 +5,38 @@ namespace Rubberduck.UI
 {
     public class GridViewSort<T>
     {
-        private bool _sortedAscending;
-        private string _columnName;
+        public bool SortedAscending { get; private set; }
+        public string ColumnName { get; private set; }
 
         public GridViewSort(string columnName, bool sortedAscending)
         {
-            _columnName = columnName;
-            _sortedAscending = sortedAscending;
+            ColumnName = columnName;
+            SortedAscending = sortedAscending;
         }
 
         public IEnumerable<T> Sort(IEnumerable<T> items, string columnName)
         {
-            if (columnName == _columnName && _sortedAscending)
+            if (columnName == ColumnName && SortedAscending)
             {
-                _sortedAscending = false;
+                SortedAscending = false;
                 return items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
             else
             {
-                _columnName = columnName;
-                _sortedAscending = true;
+                ColumnName = columnName;
+                SortedAscending = true;
                 return items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
+        }
+
+        public IEnumerable<T> Sort(IEnumerable<T> items, string columnName, bool sortAscending)
+        {
+            SortedAscending = sortAscending;
+            ColumnName = columnName;
+
+            return sortAscending
+                ? items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x))
+                : items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
         }
     }
 }

@@ -55,6 +55,8 @@ namespace Rubberduck.UI.ToDoItems
             {
                 Cursor.Current = Cursors.Default;
             }
+
+            _view.TodoItems = _gridViewSort.Sort(_view.TodoItems, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
         }
 
         private void RefreshToDoList(object sender, EventArgs e)

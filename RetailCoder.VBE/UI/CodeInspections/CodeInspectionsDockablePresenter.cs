@@ -192,6 +192,11 @@ namespace Rubberduck.UI.CodeInspections
                 Control.EnableRefresh();
                 Control.Cursor = Cursors.Default;
             }
+
+            Control.InspectionResults =
+                new BindingList<CodeInspectionResultGridViewItem>(
+                    _gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), _gridViewSort.ColumnName,
+                        _gridViewSort.SortedAscending).ToList());
         }
 
         private async Task RefreshAsync(CancellationToken token)
