@@ -629,22 +629,6 @@ End Sub
 ";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
-            //Expectation
-            const string expectedCode =
-@"Sub Foo(ByVal arg1 As String, ParamArray arg2())
-End Sub
-
-Public Sub Goo(ByVal arg1 As Integer, _
-               ByVal arg2 As Integer, _
-               ByVal arg3 As Integer, _
-               ByVal arg4 As Integer, _
-               ByVal arg5 As Integer, _
-               ByVal arg6 As Integer)
-              
-    Foo ""test"", test1x, test2x, test3x, test4x, test5x, test6x
-End Sub
-";
-
             //Arrange
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
@@ -667,7 +651,7 @@ End Sub
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(inputCode, module.Lines());
         }
 
         [TestMethod]
@@ -833,11 +817,6 @@ End Sub
 End Sub";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
-            //Expectation
-            const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer, Optional ByVal arg2 As String, Optional ByVal arg3 As Boolean = True)
-End Sub";
-
             //Arrange
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
@@ -866,7 +845,7 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            Assert.AreEqual(inputCode, module.Lines());
         }
 
         [TestMethod]
