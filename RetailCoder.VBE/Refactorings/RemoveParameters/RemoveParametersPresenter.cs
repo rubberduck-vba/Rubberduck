@@ -12,19 +12,23 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly IRemoveParametersView _view;
         private readonly RemoveParametersModel _model;
+        private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenter(IRemoveParametersView view, RemoveParametersModel model)
+        public RemoveParametersPresenter(IRemoveParametersView view, RemoveParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;
+            _messageBox = messageBox;
         }
 
         public RemoveParametersModel Show()
         {
+            if (_model.TargetDeclaration == null) { return null; }
+
             if (_model.Parameters.Count == 0)
             {
                 var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _model.TargetDeclaration.IdentifierName);
-                MessageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.Show(message, RubberduckUI.RemoveParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return null;
             }
 

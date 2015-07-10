@@ -19,10 +19,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
-        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection)
+        private readonly IMessageBox _messageBox;
+
+        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
+            _messageBox = messageBox;
 
             AcquireTarget(selection);
 
@@ -39,10 +42,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void LoadParameters()
         {
+            if (TargetDeclaration == null) { return; }
+
             Parameters.Clear();
 
             var index = 0;
-            Parameters = GetParameters(TargetDeclaration).Select(arg => new Parameter(arg, index++)).ToList();
+            Parameters = GetParameters().Select(arg => new Parameter(arg, index++)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -51,17 +56,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private IEnumerable<Declaration> GetParameters(Declaration method)
+        private IEnumerable<Declaration> GetParameters()
         {
+            var targetSelection = new Selection(TargetDeclaration.Context.Start.Line,
+                TargetDeclaration.Context.Start.Column,
+                TargetDeclaration.Context.Stop.Line,
+                TargetDeclaration.Context.Stop.Column);
+
             return Declarations.Items
                               .Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == method.ComponentName
-                                       && d.Project.Equals(method.Project)
-                                       && method.Context.GetSelection().Contains(
-                                                         new Selection(d.Selection.StartLine,
-                                                                       d.Selection.StartColumn,
-                                                                       d.Selection.EndLine,
-                                                                       d.Selection.EndColumn)))
+                                       && d.ComponentName == TargetDeclaration.ComponentName
+                                       && d.Project.Equals(TargetDeclaration.Project)
+                                       && targetSelection.Contains(d.Selection))
                               .OrderBy(item => item.Selection.StartLine)
                               .ThenBy(item => item.Selection.StartColumn);
         }
@@ -88,12 +94,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return confirm == DialogResult.No ? null : interfaceMember;
         }
 
         private Declaration GetGetter()
         {
+            if (TargetDeclaration == null) { return null; }
+
             if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                 TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
