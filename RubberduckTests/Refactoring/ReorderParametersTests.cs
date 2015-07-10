@@ -121,7 +121,10 @@ End Sub";
             catch (ArgumentException e)
             {
                 Assert.AreEqual("Invalid declaration type", e.Message);
+                return;
             }
+
+            Assert.IsTrue(false);
         }
 
         [TestMethod]
@@ -289,13 +292,7 @@ End Function";
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -427,13 +424,7 @@ End Property";
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -469,13 +460,7 @@ End Property";
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -557,14 +542,7 @@ End Sub";   // note: IDE removes excess spaces
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[2],
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -618,14 +596,7 @@ End Sub
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[2],
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -683,13 +654,7 @@ End Sub
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -755,7 +720,8 @@ End Sub
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
-                model.Parameters[0]
+                model.Parameters[0],
+                model.Parameters[2]
             };
 
             model.Parameters = reorderedParams;
@@ -838,7 +804,8 @@ End Sub
             var reorderedParams = new List<Parameter>()
             {
                 model.Parameters[1],
-                model.Parameters[0]
+                model.Parameters[0],
+                model.Parameters[2]
             };
 
             model.Parameters = reorderedParams;
@@ -983,13 +950,7 @@ End Property";
 
             //Specify Param(s) to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1031,13 +992,7 @@ End Property";
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1117,13 +1072,7 @@ End Sub";   // note: IDE removes excess spaces
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1184,13 +1133,7 @@ End Sub";
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, messageBox.Object);
-            var reorderedParams = new List<Parameter>()
-            {
-                model.Parameters[1],
-                model.Parameters[0]
-            };
-
-            model.Parameters = reorderedParams;
+            model.Parameters.Reverse();
 
             //SetupFactory
             var factory = SetupFactory(model);
