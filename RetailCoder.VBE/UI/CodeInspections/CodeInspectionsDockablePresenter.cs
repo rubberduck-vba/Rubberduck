@@ -178,9 +178,11 @@ namespace Rubberduck.UI.CodeInspections
                 await Task.Run(() => RefreshAsync(token), token);
                 if (_results != null)
                 {
-                    Control.SetContent(_results.Select(item => new CodeInspectionResultGridViewItem(item))
-                        .OrderBy(item => item.Component)
-                        .ThenBy(item => item.Line));
+                    var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
+
+                    Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
+                    _gridViewSort.Sort(results, _gridViewSort.ColumnName,
+                        _gridViewSort.SortedAscending).ToList()));
                 }
             }
             catch (TaskCanceledException)
@@ -192,11 +194,6 @@ namespace Rubberduck.UI.CodeInspections
                 Control.EnableRefresh();
                 Control.Cursor = Cursors.Default;
             }
-
-            Control.InspectionResults =
-                new BindingList<CodeInspectionResultGridViewItem>(
-                    _gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), _gridViewSort.ColumnName,
-                        _gridViewSort.SortedAscending).ToList());
         }
 
         private async Task RefreshAsync(CancellationToken token)

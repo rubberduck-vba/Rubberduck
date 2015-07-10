@@ -225,13 +225,6 @@ namespace Rubberduck.UI.UnitTesting
             return items.FirstOrDefault(item => item.QualifiedMemberName == test.QualifiedMemberName.ToString());
         }
 
-        public void Refresh(IDictionary<TestMethod, TestResult> tests)
-        {
-            AllTests = new BindingList<TestExplorerItem>(tests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
-            testOutputGridView.DataSource = AllTests;
-            testOutputGridView.Refresh();
-        }
-
         public void SetPlayList(IEnumerable<TestMethod> tests)
         {
             SetPlayList(tests.ToDictionary(test => test, test => null as TestResult));

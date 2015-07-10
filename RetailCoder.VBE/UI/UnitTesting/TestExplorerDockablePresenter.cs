@@ -71,10 +71,10 @@ namespace Rubberduck.UI.UnitTesting
         private void Synchronize()
         {
             FindAllTests();
-            _view.Refresh(_testEngine.AllTests);
+            var results = new BindingList<TestExplorerItem>(_testEngine.AllTests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
             _view.AllTests =
                 new BindingList<TestExplorerItem>(
-                    _gridViewSort.Sort(_view.AllTests.AsEnumerable(), _gridViewSort.ColumnName,
+                    _gridViewSort.Sort(results, _gridViewSort.ColumnName,
                         _gridViewSort.SortedAscending).ToList());
         }
 

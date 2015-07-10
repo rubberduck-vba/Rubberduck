@@ -49,14 +49,13 @@ namespace Rubberduck.UI.ToDoItems
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                _view.TodoItems = await GetItems();
+                var results = await GetItems();
+                _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
             }
             finally
             {
                 Cursor.Current = Cursors.Default;
             }
-
-            _view.TodoItems = _gridViewSort.Sort(_view.TodoItems, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
