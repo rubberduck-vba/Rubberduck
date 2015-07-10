@@ -1066,6 +1066,130 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal v1 As Integer, ByVal v2 As String)
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Public Sub DoSomething(ByVal b As String, ByVal a As Integer)
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal v2 As String, ByVal v1 As Integer)
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "IClass1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component1, component2 });
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
+            model.Parameters.Reverse();
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames_TwoImplementations()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal v1 As Integer, ByVal v2 As String)
+End Sub";
+            const string inputCode3 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal i As Integer, ByVal s As String)
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode1 =
+@"Public Sub DoSomething(ByVal b As String, ByVal a As Integer)
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal v2 As String, ByVal v1 As Integer)
+End Sub";   // note: IDE removes excess spaces
+            const string expectedCode3 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal s As String, ByVal i As Integer)
+End Sub";   // note: IDE removes excess spaces
+
+            //Arrange
+            var component1 = CreateMockComponent(inputCode1, "IClass1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component2 = CreateMockComponent(inputCode2, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+            var component3 = CreateMockComponent(inputCode3, "Class2",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component1, component2, component3 });
+            var module1 = project.Object.VBComponents.Item(0).CodeModule;
+            var module2 = project.Object.VBComponents.Item(1).CodeModule;
+            var module3 = project.Object.VBComponents.Item(2).CodeModule;
+            var parseResult = new RubberduckParser().Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            //Specify Params to remove
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
+            model.Parameters.Reverse();
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+            Assert.AreEqual(expectedCode3, module3.Lines());
+        }
+
+        [TestMethod]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_AcceptPrompt()
         {
             //Input
