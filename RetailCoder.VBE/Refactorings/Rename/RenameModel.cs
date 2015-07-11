@@ -31,12 +31,15 @@ namespace Rubberduck.Refactorings.Rename
 
         public string NewName { get; set; }
 
-        public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection)
+        private readonly IMessageBox _messageBox;
+
+        public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
         {
             _vbe = vbe;
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;
             _selection = selection;
+            _messageBox = messageBox;
 
             AcquireTarget(out _target, Selection);
         }
@@ -63,7 +66,7 @@ namespace Rubberduck.Refactorings.Rename
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = MessageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirm == DialogResult.No)
             {
                 target = null;

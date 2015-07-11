@@ -108,7 +108,7 @@ namespace RubberduckTests
             components.SetupGet(m => m.Parent).Returns(project);
             components.SetupGet(m => m.VBE).Returns(_ide.Object);
             components.Setup(m => m.Item(It.IsAny<int>())).Returns((int index) => items.ElementAt(index).Object);
-            components.Setup(m => m.Item(It.IsAny<string>())).Returns((string name) => items.Single(e => e.Name == name).Object);
+            components.Setup(m => m.Item(It.IsAny<string>())).Returns((string name) => items.Single(e => e.Object.Name == name).Object);
 
             return components;
         }

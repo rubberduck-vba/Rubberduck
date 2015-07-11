@@ -434,7 +434,7 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result);
+                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox());
                 var refactoring = new RenameRefactoring(factory);
                 refactoring.Refactor();
             }
@@ -447,7 +447,7 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result);
+                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox());
                 var refactoring = new RenameRefactoring(factory);
                 refactoring.Refactor(target);
             }
