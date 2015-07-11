@@ -7,13 +7,18 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class ParameterNotUsedInspection : IInspection
     {
-        public ParameterNotUsedInspection()
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+
+        public ParameterNotUsedInspection(IRubberduckFactory<IRubberduckCodePane> factory)
         {
+            _factory = factory;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -35,7 +40,7 @@ namespace Rubberduck.Inspections
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
-                    new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE),
+                    new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE, _factory),
                         new RemoveParametersDialog(), parseResult, new RubberduckMessageBox()));
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))

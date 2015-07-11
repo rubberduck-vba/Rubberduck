@@ -2,6 +2,6 @@
 {
     public interface IRubberduckFactory<out TPresenter>
     {
-        TPresenter Create();
+        TPresenter Create(object obj);
     }
 }

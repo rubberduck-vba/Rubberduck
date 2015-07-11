@@ -3,13 +3,18 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     class GenericProjectNameInspection : IInspection
     {
-        public GenericProjectNameInspection()
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+
+        public GenericProjectNameInspection(IRubberduckFactory<IRubberduckCodePane> factory)
         {
+            _factory = factory;
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
@@ -24,7 +29,7 @@ namespace Rubberduck.Inspections
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult))
+                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _factory))
                             .ToList();
 
             return issues;

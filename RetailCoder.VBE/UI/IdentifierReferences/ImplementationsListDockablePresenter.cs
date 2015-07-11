@@ -4,12 +4,16 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationsListDockablePresenter : DockablePresenterBase
     {
-        public ImplementationsListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations)
+        private static IRubberduckFactory<IRubberduckCodePane> _factory;
+
+        public ImplementationsListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations, IRubberduckFactory<IRubberduckCodePane> factory)
             : base(vbe, addin, control)
         {
             BindTarget(implementations);
@@ -26,7 +30,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateImplementation(VBE vbe, Declaration implementation)
         {
-            vbe.SetSelection(implementation.QualifiedName.QualifiedModuleName.Project, implementation.Selection, implementation.QualifiedName.QualifiedModuleName.Component.Name);
+            vbe.SetSelection(implementation.QualifiedName.QualifiedModuleName.Project, implementation.Selection, implementation.QualifiedName.QualifiedModuleName.Component.Name, _factory);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

@@ -5,17 +5,21 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class GenericProjectNameInspectionResult : CodeInspectionResultBase
     {
         private readonly VBProjectParseResult _parseResult;
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
 
-        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult) 
-            : base(inspection, type, target)
+        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckFactory<IRubberduckCodePane> factory) 
+            : base(inspection, type, target, factory)
         {
             _parseResult = parseResult;
+            _factory = factory;
         }
 
         public override IDictionary<string, Action> GetQuickFixes()
@@ -33,7 +37,7 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox());
+                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox(), _factory);
                 var refactoring = new RenameRefactoring(factory);
                 refactoring.Refactor(Target);
             }

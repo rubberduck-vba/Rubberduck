@@ -3,21 +3,26 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferencesListDockablePresenter : DockablePresenterBase
     {
-        public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, Declaration target)
+        private static IRubberduckFactory<IRubberduckCodePane> _factory;
+
+        public IdentifierReferencesListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, Declaration target, IRubberduckFactory<IRubberduckCodePane> factory)
             : base(vbe, addin, control)
         {
+            _factory = factory;
             BindTarget(target);
         }
 
         private void BindTarget(Declaration target)
         {
             var listBox = Control.ResultBox;
-            listBox.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference)).ToList();
+            listBox.DataSource = target.References.Select(reference => new IdentifierReferenceListItem(reference, _factory)).ToList();
             listBox.DisplayMember = "DisplayString";
             listBox.ValueMember = "Selection";
             Control.Navigate += ControlNavigate;
@@ -25,7 +30,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateIdentifierReference(VBE vbe, IdentifierReference reference)
         {
-            vbe.SetSelection(reference.QualifiedModuleName.Project, reference.Selection, reference.QualifiedModuleName.Component.Name);
+            vbe.SetSelection(reference.QualifiedModuleName.Project, reference.Selection, reference.QualifiedModuleName.Component.Name, _factory);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

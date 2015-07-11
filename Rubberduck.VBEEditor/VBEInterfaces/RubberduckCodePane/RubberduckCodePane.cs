@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
         /// <summary>   A CodePane extension method that gets the current selection. </summary>
         /// <returns>   The selection. </returns>
-        public QualifiedSelection Selection
+        public Selection Selection
         {
             get
             {
@@ -55,16 +55,16 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
                 {
                     // Gotcha
                 }
-                return new QualifiedSelection();
+                return new Selection();
             }
 
             set
             {
-                SetSelection(value.Selection);
+                SetSelection(value);
             }
         }
 
-        private QualifiedSelection GetSelection()
+        private Selection GetSelection()
         {
             int startLine;
             int endLine;
@@ -73,7 +73,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
             if (_codePane == null)
             {
-                return new QualifiedSelection();
+                return new Selection();
             }
 
             GetSelection(out startLine, out startColumn, out endLine, out endColumn);
@@ -84,8 +84,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
                 endColumn = CodeModule.Lines[endLine, 1].Length;
             }
 
-            var selection = new Selection(startLine, startColumn, endLine, endColumn);
-            return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
+            return new Selection(startLine, startColumn, endLine, endColumn);
         }
 
         private void SetSelection(Selection selection)

@@ -10,6 +10,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests.Refactoring
@@ -35,7 +36,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -72,7 +74,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -107,7 +110,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -152,7 +156,8 @@ End Sub
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -191,7 +196,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -228,7 +234,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -269,7 +276,8 @@ End Property";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -310,7 +318,8 @@ End Property";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -347,7 +356,8 @@ End Function";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -396,7 +406,8 @@ End Sub
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -431,7 +442,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -484,7 +496,8 @@ End Sub";
                 new List<Mock<VBComponent>>() { component1, component2 });
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -536,7 +549,8 @@ End Sub";
                 new List<Mock<VBComponent>>() { component1, component2 });
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -590,7 +604,8 @@ End Sub";
                 new List<Mock<VBComponent>>() { component1, component2 });
             var module1 = project.Object.VBComponents.Item(0).CodeModule;
             var module2 = project.Object.VBComponents.Item(1).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -637,7 +652,8 @@ End Sub";
             var vbe = MockFactory.CreateVbeMock();
             var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
                 new List<Mock<VBComponent>>() { component1, component2 });
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
@@ -660,11 +676,20 @@ End Sub";
 
             //Arrange
             var vbe = MockFactory.CreateVbeMock();
+
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null);
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null, codePaneFactory);
 
             //act
             var refactoring = new RenameRefactoring(factory);
@@ -685,10 +710,18 @@ End Sub";
             //Arrange
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(project.Object);
-            
-            var factory = new RenamePresenterFactory(vbe.Object, null,
-                parseResult, null);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null, codePaneFactory);
 
             var presenter = factory.Create();
 
@@ -706,12 +739,21 @@ End Sub";
             //Arrange
             var vbe = MockFactory.CreateVbeMock();
             var project = SetupMockProject(inputCode);
-            var parseResult = new RubberduckParser().Parse(project.Object);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
-            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null);
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null, codePaneFactory);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());

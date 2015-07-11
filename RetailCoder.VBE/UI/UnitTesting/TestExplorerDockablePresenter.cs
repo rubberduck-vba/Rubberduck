@@ -7,7 +7,8 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -16,12 +17,14 @@ namespace Rubberduck.UI.UnitTesting
         private readonly GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
         private readonly ITestExplorerWindow _view;
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, IRubberduckFactory<IRubberduckCodePane> factory)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
             _gridViewSort = gridViewSort;
+            _factory = factory;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
             _testEngine.ModuleCleanup += _testEngine_ModuleCleanup;
@@ -209,8 +212,9 @@ namespace Rubberduck.UI.UnitTesting
 
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {
+                var codePane = _factory.Create(codeModule.CodePane);
                 var selection = new Selection(startLine, startColumn, endLine, endColumn);
-                codeModule.CodePane.SetSelection(selection);
+                codePane.Selection = selection;
             }
         }
 

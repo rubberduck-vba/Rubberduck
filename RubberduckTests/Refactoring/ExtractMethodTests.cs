@@ -7,6 +7,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace RubberduckTests.Refactoring
 {
@@ -35,14 +36,16 @@ End Function
 
 ";
 
+            var codePaneFactory = new RubberduckCodePaneFactory();
+
             var project = SetupMockProject(inputCode);
             var module = project.Object.VBComponents.Item(0).CodeModule;
 
             var qualifiedSelection = GetQualifiedSelection(new Selection(4,1,4,20));
 
-            var parseResult = new RubberduckParser().Parse(project.Object);
-            
-            var editor = new ActiveCodePaneEditor(module.VBE);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var editor = new ActiveCodePaneEditor(module.VBE, codePaneFactory);
 
             var model = new ExtractMethodModel(editor, parseResult.Declarations, qualifiedSelection);
             model.Method.Accessibility = Accessibility.Private;

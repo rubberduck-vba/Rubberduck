@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
         int CountOfVisibleLines { get; }
         CodeModule CodeModule { get; }
         vbext_CodePaneview CodePaneView { get; }
-        QualifiedSelection Selection { get; set; }
+        Selection Selection { get; set; }
 
         void GetSelection(out int startLine, out int startColumn, out int endLine, out int endColumn);
         void SetSelection(int startLine, int startColumn, int endLine, int endColumn);

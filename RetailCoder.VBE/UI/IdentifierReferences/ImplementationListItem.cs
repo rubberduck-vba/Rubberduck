@@ -1,11 +1,14 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationListItem
     {
         private readonly Declaration _declaration;
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
 
         public ImplementationListItem(Declaration declaration)
         {
@@ -17,7 +20,7 @@ namespace Rubberduck.UI.IdentifierReferences
             return _declaration;
         }
 
-        public QualifiedSelection Selection { get { return new QualifiedSelection(_declaration.QualifiedName.QualifiedModuleName, _declaration.Selection); } }
+        public QualifiedSelection Selection { get { return new QualifiedSelection(_declaration.QualifiedName.QualifiedModuleName, _declaration.Selection, _factory); } }
         public string IdentifierName { get { return _declaration.IdentifierName; } }
 
         public string DisplayString

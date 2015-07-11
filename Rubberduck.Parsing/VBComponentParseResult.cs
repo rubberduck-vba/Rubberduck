@@ -5,12 +5,14 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing
 {
     public class VBComponentParseResult
     {
-        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ITokenStream tokenStream)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ITokenStream tokenStream, IRubberduckFactory<IRubberduckCodePane> factory)
         {
             _component = component;
             _qualifiedName = new QualifiedModuleName(component);
@@ -18,7 +20,7 @@ namespace Rubberduck.Parsing
             _comments = comments;
             _tokenStream = tokenStream;
 
-            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type);
+            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, factory);
             var walker = new ParseTreeWalker();
             walker.Walk(listener, _parseTree);
 

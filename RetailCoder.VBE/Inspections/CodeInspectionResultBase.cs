@@ -5,15 +5,20 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
+        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target, IRubberduckFactory<IRubberduckCodePane> factory)
             : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
+            _factory = factory;
         }
 
         /// <summary>
@@ -72,7 +77,7 @@ namespace Rubberduck.Inspections
                 }
                 return _context == null
                     ? _comment.QualifiedSelection
-                    : new QualifiedSelection(_qualifiedName, _context.GetSelection());
+                    : new QualifiedSelection(_qualifiedName, _context.GetSelection(), _factory);
             }
         }
 
