@@ -49,7 +49,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             {
                 try
                 {
-                    GetSelection();
+                    return GetSelection();
                 }
                 catch (COMException)
                 {
