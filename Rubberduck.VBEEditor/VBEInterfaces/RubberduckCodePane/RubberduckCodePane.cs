@@ -49,26 +49,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             {
                 try
                 {
-                    int startLine;
-                    int endLine;
-                    int startColumn;
-                    int endColumn;
-
-                    if (_codePane == null)
-                    {
-                        return new QualifiedSelection();
-                    }
-
-                    GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-
-                    if (endLine > startLine && endColumn == 1)
-                    {
-                        endLine--;
-                        endColumn = CodeModule.Lines[endLine, 1].Length;
-                    }
-
-                    var selection = new Selection(startLine, startColumn, endLine, endColumn);
-                    return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
+                    GetSelection();
                 }
                 catch (COMException)
                 {
@@ -79,10 +60,38 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
             set
             {
-                var selection = value.Selection;
-                SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-                ForceFocus();
+                SetSelection(value.Selection);
             }
+        }
+
+        private QualifiedSelection GetSelection()
+        {
+            int startLine;
+            int endLine;
+            int startColumn;
+            int endColumn;
+
+            if (_codePane == null)
+            {
+                return new QualifiedSelection();
+            }
+
+            GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+            if (endLine > startLine && endColumn == 1)
+            {
+                endLine--;
+                endColumn = CodeModule.Lines[endLine, 1].Length;
+            }
+
+            var selection = new Selection(startLine, startColumn, endLine, endColumn);
+            return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
+        }
+
+        private void SetSelection(Selection selection)
+        {
+            SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+            ForceFocus();
         }
 
         /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
