@@ -42,47 +42,47 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
         /// <summary>   A CodePane extension method that gets the current selection. </summary>
         /// <returns>   The selection. </returns>
-        public QualifiedSelection GetSelection()
+        public QualifiedSelection Selection
         {
-            int startLine;
-            int endLine;
-            int startColumn;
-            int endColumn;
-
-            if (_codePane == null)
+            get
             {
-                return new QualifiedSelection();
+                int startLine;
+                int endLine;
+                int startColumn;
+                int endColumn;
+
+                if (_codePane == null)
+                {
+                    return new QualifiedSelection();
+                }
+
+                GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+                if (endLine > startLine && endColumn == 1)
+                {
+                    endLine--;
+                    endColumn = CodeModule.Lines[endLine, 1].Length;
+                }
+
+                var selection = new Selection(startLine, startColumn, endLine, endColumn);
+                return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
             }
 
-            _codePane.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-
-            if (endLine > startLine && endColumn == 1)
+            set
             {
-                endLine--;
-                endColumn = _codePane.CodeModule.Lines[endLine, 1].Length;
+                var selection = value.Selection;
+                SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                ForceFocus();
             }
-
-            var selection = new Selection(startLine, startColumn, endLine, endColumn);
-            return new QualifiedSelection(new QualifiedModuleName(_codePane.CodeModule.Parent), selection);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="selection"></param>
-        public void SetSelection(Selection selection)
-        {
-            _codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-            _codePane.ForceFocus();
         }
 
         /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
         public void ForceFocus()
         {
-            _codePane.Show();
+            Show();
 
-            var mainWindowHandle = _codePane.VBE.MainWindow.Handle();
-            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(_codePane.Window.Caption);
+            var mainWindowHandle = VBE.MainWindow.Handle();
+            var childWindowFinder = new NativeWindowMethods.ChildWindowFinder(Window.Caption);
 
             NativeWindowMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;

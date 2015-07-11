@@ -13,20 +13,11 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
         int CountOfVisibleLines { get; }
         CodeModule CodeModule { get; }
         vbext_CodePaneview CodePaneView { get; }
+        QualifiedSelection Selection { get; set; }
 
         void GetSelection(out int startLine, out int startColumn, out int endLine, out int endColumn);
         void SetSelection(int startLine, int startColumn, int endLine, int endColumn);
         void Show();
-
-        /// <summary>   A CodePane extension method that gets the current selection. </summary>
-        /// <returns>   The selection. </returns>
-        QualifiedSelection GetSelection();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="selection"></param>
-        void SetSelection(Selection selection);
 
         /// <summary>   A CodePane extension method that forces focus onto the CodePane. This patches a bug in VBE.Interop.</summary>
         void ForceFocus();
