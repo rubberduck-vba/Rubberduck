@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.Extensions;
 
@@ -46,26 +47,34 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
         {
             get
             {
-                int startLine;
-                int endLine;
-                int startColumn;
-                int endColumn;
-
-                if (_codePane == null)
+                try
                 {
-                    return new QualifiedSelection();
+                    int startLine;
+                    int endLine;
+                    int startColumn;
+                    int endColumn;
+
+                    if (_codePane == null)
+                    {
+                        return new QualifiedSelection();
+                    }
+
+                    GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+
+                    if (endLine > startLine && endColumn == 1)
+                    {
+                        endLine--;
+                        endColumn = CodeModule.Lines[endLine, 1].Length;
+                    }
+
+                    var selection = new Selection(startLine, startColumn, endLine, endColumn);
+                    return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
                 }
-
-                GetSelection(out startLine, out startColumn, out endLine, out endColumn);
-
-                if (endLine > startLine && endColumn == 1)
+                catch (COMException)
                 {
-                    endLine--;
-                    endColumn = CodeModule.Lines[endLine, 1].Length;
+                    // Gotcha
                 }
-
-                var selection = new Selection(startLine, startColumn, endLine, endColumn);
-                return new QualifiedSelection(new QualifiedModuleName(CodeModule.Parent), selection);
+                return new QualifiedSelection();
             }
 
             set
