@@ -49,7 +49,8 @@ namespace Rubberduck.UI.ToDoItems
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                _view.TodoItems = await GetItems();
+                var results = await GetItems();
+                _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
             }
             finally
             {

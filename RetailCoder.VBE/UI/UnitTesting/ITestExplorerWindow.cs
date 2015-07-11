@@ -22,7 +22,6 @@ namespace Rubberduck.UI.UnitTesting
         event EventHandler OnAddTestModuleButtonClick;
         void ClearProgress();
         void ClearResults();
-        void Refresh(IDictionary<TestMethod, TestResult> tests);
         void SetPlayList(IEnumerable<TestMethod> tests);
         void SetPlayList(IDictionary<TestMethod, TestResult> tests);
         event EventHandler OnRefreshListButtonClick;

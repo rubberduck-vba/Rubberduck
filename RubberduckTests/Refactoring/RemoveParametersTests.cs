@@ -1307,7 +1307,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void RemoveParametersRefactoring_LastParamRemoved_RejectPrompt()
+        public void RemoveParametersRefactoring_LastInterfaceParamRemoved_RejectPrompt()
         {
             //Input
             const string inputCode1 =

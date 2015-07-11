@@ -56,7 +56,7 @@ namespace Rubberduck.UI
 
                 using (var view = new RenameDialog())
                 {
-                    var factory = new RenamePresenterFactory(_vbe, view, result);
+                    var factory = new RenamePresenterFactory(_vbe, view, result, new RubberduckMessageBox());
                     var refactoring = new RenameRefactoring(factory);
                     refactoring.Refactor(controlToRename);
                 }
