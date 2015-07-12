@@ -177,9 +177,12 @@ namespace Rubberduck.Refactorings.Rename
                     }
                     else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
                     {
+                        if ((string) module.Parent.Properties.Item("Caption").Value == _model.Target.IdentifierName)
+                        {
+                            module.Parent.Properties.Item("Caption").Value = _model.NewName;
+                        }
                         var codeModule = (CodeModuleClass)module;
                         codeModule.Parent.Name = _model.NewName;
-                        module.Parent.Properties.Item("Caption").Value = _model.NewName;
                     }
                     else
                     {
