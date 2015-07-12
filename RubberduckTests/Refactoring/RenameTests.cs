@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -947,6 +948,52 @@ End Sub";
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show(model.Target));
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameProject()
+        {
+            const string newName = "RenameProject";
+
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal a As Integer, ByVal b As String)
+End Sub";
+
+            var selection = new Selection(3, 27, 3, 27); //startLine, startCol, endLine, endCol
+            
+            //Arrange
+            var component = CreateMockComponent(inputCode, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var vbe = MockFactory.CreateVbeMock();
+            var project = CreateMockProject("VBAProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component });
+            var projects = MockFactory.CreateProjectsMock(new List<VBProject>() { project.Object });
+
+            vbe.Setup(v => v.VBProjects).Returns(projects.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(
+                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                .Returns(DialogResult.Yes);
+
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, messageBox.Object) { NewName = newName };
+            model.Target = model.Declarations.Items.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(factory.Object);
+            refactoring.Refactor(model.Target);
+
+            //Assert
+            Assert.AreSame(newName, project.Object.Name);
         }
 
         #region setup
