@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DeclarationType_Class" xml:space="preserve">
+    <value>Klasse</value>
+  </data>
+  <data name="DeclarationType_Constant" xml:space="preserve">
+    <value>Konstante</value>
+  </data>
+  <data name="DeclarationType_Enumeration" xml:space="preserve">
+    <value>Enum</value>
+  </data>
+  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
+    <value>Memberkonstante</value>
+  </data>
+  <data name="DeclarationType_Event" xml:space="preserve">
+    <value>Event</value>
+  </data>
+  <data name="DeclarationType_Function" xml:space="preserve">
+    <value>Funktion</value>
+  </data>
+  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
+    <value>Bibliotheks-Funktion</value>
+  </data>
+  <data name="DeclarationType_Module" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="DeclarationType_Parameter" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="DeclarationType_Procedure" xml:space="preserve">
+    <value>Prozedur</value>
+  </data>
+  <data name="DeclarationType_PropertyGet" xml:space="preserve">
+    <value>Get-Eigenschaftsprozedur</value>
+  </data>
+  <data name="DeclarationType_PropertyLet" xml:space="preserve">
+    <value>Let-Eigenschaftsprozedur</value>
+  </data>
+  <data name="DeclarationType_PropertySet" xml:space="preserve">
+    <value>Set-Eigenschaftsprozedur</value>
+  </data>
+  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
+    <value>Nutzerdefinierter Typ</value>
+  </data>
+  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
+    <value>Mitglied eines nutzerdefinierten Typs</value>
+  </data>
+  <data name="DeclarationType_Variable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Umbenennen</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte neuen Namen für {0} '{1}' angeben.</value>
+    <comment>0: Deklarationstyp; 1: Identifikationsname</comment>
+  </data>
+  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
+    <value>Konnte Modul nicht umbenennen.</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Identifikator umbenennen</value>
+  </data>
+  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
+    <value>Allgemeine Einstellungen</value>
+  </data>
+  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
+    <value>Code Untersuchung Einstellungen</value>
+  </data>
+  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
+    <value>ToDo Einstellungen</value>
+  </data>
+  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+    <value>Konfiguriere Inspektionssensitivität. Zum deaktivieren einer Inspektion "DoNotShow" auswählen.</value>
+  </data>
+  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
+    <value>[Ok] zum schließen und speichern oder [Abbrechen] zum verwerfen der Änderungen.</value>
+  </data>
+  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+    <value>Zu erkennende Markierungen in Kommentaren konfigurieren.</value>
+  </data>
+  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
+    <value>Konnte Projekt nicht umbenennen.</value>
+  </data>
+  <data name="DeclarationType_LineLabel" xml:space="preserve">
+    <value>Sprungmarke</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>Inspiziere...</value>
+  </data>
+  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+    <value>(nichts)</value>
+  </data>
+  <data name="Parsing" xml:space="preserve">
+    <value>(Parse...)</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Parameter umordnen</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Wählen sie einen Parameter und bewegen Sie ihn mit der Maus oder den Schaltflächen nach oben oder unten.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Nach unten</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Nach oben</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Parameter umordnen</value>
+  </data>
+  <data name="DeclarationType_Control" xml:space="preserve">
+    <value>VBDesigner-Objekt</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Optionale Parameter müssen am Ende der Parameterliste deklariert werden.</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Weniger als zwei Parameter für die Methode '{0}'.</value>
+    <comment>0: Gewähltes Ziel</comment>
+  </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>Keine Referenzen für '{0}' gefunden.</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>Keine Parameter in Methode '{0}'.</value>
+    <comment>0: Gewähltes Ziel</comment>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>Alle Referenzen: '{0}'</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Parameter entfernen</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Die Metode '{0}' implementiert '{1}.{2}'. Signatur Ändern? (Wird auf alle Implementierungen angewendet)</value>
+    <comment>0: Gewähltes Ziel; 1: Name des Interfaces; 2: Name des Interfacemembers</comment>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Kann den letzten Paramter eines Setters oder Letters nicht entfernen.</value>
+  </data>
+  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
+    <value>Die aktuelle Auswahl kann nicht extrahiert werden.</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>Zugriffsebene:</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - Methode Extrahieren</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>Bitte spezifizieren Sie Methodenname, Rückgabetyp und/oder Parameter (falls Anwendbar), sowie andere Optionen.</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>Parameter:</value>
+  </data>
+  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
+    <value>Vorschau:</value>
+  </data>
+  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
+    <value>Rückgabe:</value>
+  </data>
+  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="ExtractMethod_TitleText" xml:space="preserve">
+    <value>Methode extrahieren</value>
+  </data>
+  <data name="AllImplementations_NoneFound" xml:space="preserve">
+    <value>Klasse oder Member '{0}' ist nicht implementiert.</value>
+  </data>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Finde alle Referenzen...</value>
+  </data>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>Finde &amp;Symbol...</value>
+  </data>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>Springe zu &amp;Implementation...</value>
+  </data>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>Extrahiere &amp;Methode</value>
+  </data>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>Entferne &amp;Parameter</value>
+  </data>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>&amp;Umbenennen</value>
+  </data>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>Parameter &amp;Umordnen</value>
+  </data>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Ru&amp;bberduck</value>
+  </data>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;Über...</value>
+  </data>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>&amp;Code Explorer</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>Code-&amp;Untersuchungen</value>
+  </data>
+  <data name="RubberduckMenu_Options" xml:space="preserve">
+    <value>&amp;Optionen</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>Um&amp;gestalten</value>
+  </data>
+  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+    <value>&amp;Versionskontrolle</value>
+  </data>
+  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+    <value>To&amp;Do Liste</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>Unit &amp;Tests</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>Alle Tests &amp;durchführen</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>&amp;Test Explorer</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (parse...)</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
+    <value>'Global' Zugriffsmodifikator mit 'Public' ersetzen</value>
+  </data>
+  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
+    <value>Funktion in Prozedur umwandeln</value>
+  </data>
+  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
+    <value>Explizit als 'Variant' deklarieren</value>
+  </data>
+  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
+    <value>Lokale Variable einführen</value>
+  </data>
+  <data name="Inspections_PassParamByReference" xml:space="preserve">
+    <value>Parameter als Referenz übergeben</value>
+  </data>
+  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
+    <value>Parameter explizit als Referenz übergeben</value>
+  </data>
+  <data name="Inspections_PassParamByValue" xml:space="preserve">
+    <value>Paramter als Wert übergeben</value>
+  </data>
+  <data name="Inspections_RemoveComment" xml:space="preserve">
+    <value>Kommentar entfernen</value>
+  </data>
+  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
+    <value>Veralteten Aufruf entfernen</value>
+  </data>
+  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
+    <value>Typ-Hinweise entfernen</value>
+  </data>
+  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
+    <value>Unbenutzte Variable entfernen</value>
+  </data>
+  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
+    <value>Unbenutzte Deklaration entforenen</value>
+  </data>
+  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
+    <value>Unbenutzten Parameter entfernen</value>
+  </data>
+  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
+    <value>Referenzen entfernen (führt zu Fehlern)</value>
+  </data>
+  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
+    <value>'Rem'-Nutzung durch Hochkomma-Kommentar-Syntax ersetzen</value>
+  </data>
+  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
+    <value>Explizit 'Variant' zurückgeben</value>
+  </data>
+  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
+    <value>Öffentlichen Zugriff explizit angeben</value>
+  </data>
+  <data name="Inspections_SplitDeclarations" xml:space="preserve">
+    <value>Mehrere Deklarationen in mehrere Anweisungen aufteilen</value>
+  </data>
+  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Fehler beim Laden der Rubberduck-Konfiguration</value>
+  </data>
+  <data name="ParseProgress" xml:space="preserve">
+    <value>Parse '{0}'...</value>
+  </data>
+  <data name="ParseStarted" xml:space="preserve">
+    <value>Parse Projekt-Komponenten...</value>
+  </data>
+  <data name="PromptLoadDefaultConfig" xml:space="preserve">
+    <value>{0}
+{1}
+
+{2}
+
+Wollen sie die Standardkonfiguration wiederherstellen?
+Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
+  </data>
+  <data name="ResolutionProgress" xml:space="preserve">
+    <value>Löse '{0}' auf...</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Konnte das Rubberduck Add-In nicht laden</value>
+  </data>
+  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+    <value>Build {0} ({1})</value>
+    <comment>0: Version; 1: Architektur</comment>
+  </data>
+  <data name="ToDoMarkerBug" xml:space="preserve">
+    <value>BUG:</value>
+  </data>
+  <data name="ToDoMarkerNote" xml:space="preserve">
+    <value>NOTE:</value>
+  </data>
+  <data name="ToDoMarkerToDo" xml:space="preserve">
+    <value>TODO:</value>
+  </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>Implementierungen von '{0}'</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Code Inspektionen</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Code-Inspektionen ausführen</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>Beheben</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Nächstes</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Parameter" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Übergeben</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Voriges</value>
+  </data>
+  <data name="Severity" xml:space="preserve">
+    <value>Schärfe</value>
+  </data>
+  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
+    <value>Neues Repository erstellen</value>
+  </data>
+  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
+    <value>Working Directory öffnen</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} fehlgeschlagen</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} ergebnislos</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} bestanden</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Inspections_DeclarationOf" xml:space="preserve">
+    <value>Deklaration von </value>
+  </data>
+  <data name="Inspections_UsageOf" xml:space="preserve">
+    <value>Nutzung von </value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="ToDoExplorer_Caption" xml:space="preserve">
+    <value>ToDo Explorer</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="ByValParameterIsAssigned_" xml:space="preserve">
+    <value>ByVal Parameter '{0}' ist zugewiesen</value>
+  </data>
+  <data name="ConstantNotUsed_" xml:space="preserve">
+    <value>Konstante '{0}' wird nie verwendet</value>
+  </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>Sie haben das Abzeichen "Continuator" erhalten!</value>
+  </data>
+  <data name="FunctionNotUsed_" xml:space="preserve">
+    <value>Funktion '{0}' wird nie verwendet</value>
+  </data>
+  <data name="ImplicitByRef_" xml:space="preserve">
+    <value>Parameter '{0}' wird implizit ByRef übergeben</value>
+  </data>
+  <data name="ImplicitPublicMember_" xml:space="preserve">
+    <value>Mitglied '{0}' ist implizit Public</value>
+  </data>
+  <data name="ImplicitVariantReturnType_" xml:space="preserve">
+    <value>Die Funktion '{0}' gibt implizt ein Variant zurück</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Modul-Optionen sollten zuerst deklariert werden</value>
+  </data>
+  <data name="MultilineParameter_" xml:space="preserve">
+    <value>Parameter '{0}' wird über mehrere Zeilen hinweg deklariert</value>
+  </data>
+  <data name="MultipleDeclarations" xml:space="preserve">
+    <value>Anweisung enthält mehrere Deklarationen</value>
+  </data>
+  <data name="NonReturningFunction_" xml:space="preserve">
+    <value>Rückgabewert für Mitglied '{0}' wird nie zugewiesen</value>
+  </data>
+  <data name="ObsoleteCall" xml:space="preserve">
+    <value>Benutzung der veralteten 'Call'-Anweisung</value>
+  </data>
+  <data name="ObsoleteComment" xml:space="preserve">
+    <value>Benutzung der veralteten 'Rem'-Kommentar-Syntax</value>
+  </data>
+  <data name="ObsoleteGlobal" xml:space="preserve">
+    <value>Benutzung des veralteten 'Global' Zugriffsmodifikators</value>
+  </data>
+  <data name="ObsoleteLet" xml:space="preserve">
+    <value>Benutzung der veralteten 'Let'-Anweisung</value>
+  </data>
+  <data name="OptionBase" xml:space="preserve">
+    <value>Möglicherweise verwirrende implizite Untergrenze des Arrays</value>
+  </data>
+  <data name="OptionExplicit" xml:space="preserve">
+    <value>'Option Explicit' ist nicht angegeben</value>
+  </data>
+  <data name="ParameterCanBeByVal_" xml:space="preserve">
+    <value>Parameter '{0}' kann als Wert übergeben werden</value>
+  </data>
+  <data name="ParameterNotUsed_" xml:space="preserve">
+    <value>Parameter '{0}' wird nicht verwendet</value>
+  </data>
+  <data name="ProcedureNotUsed_" xml:space="preserve">
+    <value>Prozedur '{0}' wird nicht verwendet</value>
+  </data>
+  <data name="UnassignedVariableUsage_" xml:space="preserve">
+    <value>Verwendung der nicht zugewiesenen Variable '{0}'</value>
+  </data>
+  <data name="VariableNotAssigned_" xml:space="preserve">
+    <value>Variable '{0}' wird nie ein Wert zugewiesen</value>
+  </data>
+  <data name="VariableNotUsed_" xml:space="preserve">
+    <value>Variable '{0}' wird nie verwendet</value>
+  </data>
+  <data name="_ObsoleteTypeHint_" xml:space="preserve">
+    <value>Benutzung des veralteten Typ-Hinweises bei {0} '{1}'</value>
+  </data>
+  <data name="_TypeNotDeclared_" xml:space="preserve">
+    <value>{0} '{1}' ist implizit vom Typ Variant</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Priorität</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>Komponente</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="Settings_LanguageLabel" xml:space="preserve">
+    <value>Anzeigesprache:</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Französisch</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Parameter entfernen</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Wählen Sie einen Parameter und Benutzen Sie die Schaltflächen oder Doppelclicken Sie um ihn zu Bewegen oder zu Löschen</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Wiederherstellen</value>
+  </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Parser Fehler</value>
+  </data>
+  <data name="CodeExplorer_AddClassText" xml:space="preserve">
+    <value>&amp;Klassenmodul (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>Nutzer&amp;formular</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>&amp;Standardmodul (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>&amp;Testmodul</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>Member&amp;namen anzeigen</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>Volle &amp;Signaturen anzeigen</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>&amp;Alle Implementierungen finden...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>Alle Referenzen &amp;finden...</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>Inspizieren</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>Navigieren</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>Alle &amp;Tests ausführen</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
+    <value>Designer &amp;Anzeigen</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>Designer öffnen</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Ordner umschalten</value>
+  </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>Inspektionsresultate in Zwischenablage kopieren</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Los</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Zum ausgewählten Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Zum nächsten Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Zum vorigen Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Das Problem beheben</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Inspektionen ausführen</value>
+  </data>
+  <data name="TodoExplorer_Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="TodoExplorer_LineNumber" xml:space="preserve">
+    <value>Zeilennummer</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>Projektname</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>&amp;Hinzufügen</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>neue Testmethode (&amp;Erwartet Fehler)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>neue &amp;Testmethode</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>neues Test&amp;modul</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Dauer</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Zur Auswahl navigieren</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Meldung</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Methodenname</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Modulname</value>
+  </data>
+  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
+    <value>Qualifizierter Membername</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>&amp;Alle Tests</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>Ausfüh&amp;ren</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>&amp;Fehlgeschlagene Tests</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>Wiederhole &amp;letzten Testlauf</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>&amp;Nicht ausgeführte Tests</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>&amp;Bestanden Tests</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>Au&amp;sgewählte Tests</value>
+  </data>
+  <data name="GenericProjectName_" xml:space="preserve">
+    <value>Projekt '{0}' hat einen generischen Namen</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>Zeile</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>Rubberduck Einstellungen</value>
+  </data>
+  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
+    <value>Priorisierung:</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Token Text:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Token List:</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Code-Qualitätsprobleme</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Möglichkeiten der Sprache</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Wartbarkeits- und Lesbarkeitsprobleme</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>To-Do Explorer</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="Settings_ResetSettings" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>Einstellungen auf Standardkonfiguration zurücksetzen?</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen. Wollen Sie fortfahren?</value>
+  </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>{0} Umbenennen</value>
+  </data>
+  <data name="Language_SV" xml:space="preserve">
+    <value>Schwedisch</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="About_AllContributors" xml:space="preserve">
+    <value>Alle, die zu unserem GitHub Repository beigetragen haben</value>
+  </data>
+  <data name="About_Anyone" xml:space="preserve">
+    <value>...und alle die dies lesen!</value>
+  </data>
+  <data name="About_Attributions" xml:space="preserve">
+    <value>Namensnennungen</value>
+  </data>
+  <data name="About_Blogs" xml:space="preserve">
+    <value>Blogs:</value>
+  </data>
+  <data name="About_Caption" xml:space="preserve">
+    <value>Über Rubberduck</value>
+  </data>
+  <data name="About_CodeReview" xml:space="preserve">
+    <value>Code Review Stack Exchange</value>
+  </data>
+  <data name="About_Community" xml:space="preserve">
+    <value>Gemeinschaft:</value>
+  </data>
+  <data name="About_Contributors" xml:space="preserve">
+    <value>Beitragende &amp; Unterstützer:</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+  </data>
+  <data name="About_FugueIconCredit" xml:space="preserve">
+    <value>Fugue icons von Yusuke Kamiyamane</value>
+  </data>
+  <data name="About_JetBrains" xml:space="preserve">
+    <value>JetBrains ReSharper Community Team</value>
+  </data>
+  <data name="About_LibGit2SharpCredit" xml:space="preserve">
+    <value>GitHub-Integration ermöglicht durch LibGit2Sharp</value>
+  </data>
+  <data name="About_ParsingCredit" xml:space="preserve">
+    <value>Parsen ermöglicht durch ANTLR</value>
+  </data>
+  <data name="About_SpecialThanks" xml:space="preserve">
+    <value>Danksagungen</value>
+  </data>
+  <data name="About_StackOverflow" xml:space="preserve">
+    <value>Stack Overflow</value>
+  </data>
+  <data name="About_Stargazers" xml:space="preserve">
+    <value>Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
+    <value>Versionsverwaltung</value>
+  </data>
+  <data name="SourceControl_AttributesFile" xml:space="preserve">
+    <value>Attributes File</value>
+  </data>
+  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
+    <value>Standard Repositorypfad</value>
+  </data>
+  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
+    <value>Email Adresse</value>
+  </data>
+  <data name="SourceControl_GlobalSettings" xml:space="preserve">
+    <value>Globale Einstellungen</value>
+  </data>
+  <data name="SourceControl_IgnoreFile" xml:space="preserve">
+    <value>Datei ignorieren</value>
+  </data>
+  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
+    <value>Neues Repo auf Basis dieses Projektes erstellen</value>
+  </data>
+  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
+    <value>Arbeitsverzeichnis öffnen</value>
+  </data>
+  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
+    <value>Ausstehende Änderungen aktualisieren</value>
+  </data>
+  <data name="SourceControl_RespositorySettings" xml:space="preserve">
+    <value>Repository Einstellungen</value>
+  </data>
+  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="SourceControl_UserNameLabel" xml:space="preserve">
+    <value>Nutzername</value>
+  </data>
+  <data name="SourceControl_Changes" xml:space="preserve">
+    <value>Änderungen</value>
+  </data>
+  <data name="SourceControl_Branches" xml:space="preserve">
+    <value>Zweige</value>
+  </data>
+  <data name="SourceControl_Commit" xml:space="preserve">
+    <value>Commit</value>
+  </data>
+  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
+    <value>Los</value>
+  </data>
+  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
+    <value>Commit-Meldung:</value>
+  </data>
+  <data name="SourceControl_CommitPush" xml:space="preserve">
+    <value>Commit und Push</value>
+  </data>
+  <data name="SourceControl_CommitSync" xml:space="preserve">
+    <value>Commit und Synchronisieren</value>
+  </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>Zweig:</value>
+  </data>
+  <data name="SourceControl_DestinationLabel" xml:space="preserve">
+    <value>Ziel</value>
+  </data>
+  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
+    <value>Ausgeschlossene Änderungen</value>
+  </data>
+  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
+    <value>Fetch</value>
+  </data>
+  <data name="SourceControl_IncludedChanges" xml:space="preserve">
+    <value>Verwendete Änderungen</value>
+  </data>
+  <data name="SourceControl_IncomingCommits" xml:space="preserve">
+    <value>Eingehende Commits</value>
+  </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>Zusammenführen</value>
+  </data>
+  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
+    <value>Rubberduck - Zusammenführen</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>Neuer Zweig</value>
+  </data>
+  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
+    <value>Ausgehende Commits</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>Veröffentlichte Zweige</value>
+  </data>
+  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="SourceControl_Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SourceControl_SourceLabel" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
+    <value>Synchronisieren</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>Nicht veröffentlichte Zweige</value>
+  </data>
+  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
+    <value>Nicht Synchronisierte Commits</value>
+  </data>
+  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
+    <value>Nicht verfolgte Dateien</value>
+  </data>
+  <data name="SourceControl_SuccessfulMerge">
+    <value>{0} efolgreich mit {1} zusammengeführt</value>
+  </data>
+  <data name="FormContextMenu_Rename">
+    <value>Umbe&amp;nennen</value>
+  </data>
+  <data name="SourceControl_MergeFormInstructions">
+    <value>Bitte wählen Sie Quell- und Zielzweig</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable">
+    <value>Zweig löschen</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow">
+    <value>NIcht anzeigen</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchTitle">
+    <value>Neuer Zweig</value>
+  </data>
+  <data name="CodeExplorer_New">
+    <value>&amp;Neu</value>
+  </data>
+  <data name="SourceControl_DeleteBranchCaption">
+    <value>Rubberduck - Zweig löschen</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular">
+    <value>{0} Problem</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning">
+    <value>Warnung</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural">
+    <value>{0} ({1} Probleme)</value>
+  </data>
+  <data name="TodoSettings_TextLabel">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Priority">
+    <value>Wichtigkeit</value>
+  </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel">
+    <value>Bitte geben Sie einen Zweignamen an.</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint">
+    <value>Tipp</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchCaption">
+    <value>Rubberduck - Zweig erstellen</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular">
+    <value>Rubberduck Code Untersuchungen - {0} {1} Problem gefunden.</value>
+  </data>
+  <data name="SourceControl_NoRepoFound">
+    <value>Kein Repository gefunden.</value>
+  </data>
+  <data name="SourceControl_MergeFormTitle">
+    <value>Zweige zusammenführen</value>
+  </data>
+  <data name="TodoSettings_Text">
+    <value>Text</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchInstructions">
+    <value>Bitte geben sie einen Zweignamen an.</value>
+  </data>
+  <data name="CodeExplorer_Inspect">
+    <value>&amp;Inspizieren</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural">
+    <value>{0} Probleme</value>
+  </data>
+  <data name="CodeExplorer_Refresh">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CodeExplorer_Navigate">
+    <value>Na&amp;vigieren</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular">
+    <value>{0} ({1} Problem)</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion">
+    <value>Vorschlag</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural">
+    <value>Rubberduck Code Untersuchungen - {0} {1} Probleme gefunden</value>
+  </data>
+  <data name="ToDoPriority_Medium">
+    <value>Mittel</value>
+  </data>
+  <data name="ToDoPriority_High">
+    <value>Hoch</value>
+  </data>
+  <data name="ToDoPriority_Low">
+    <value>Gering</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error">
+    <value>Fehler</value>
+  </data>
+</root>
