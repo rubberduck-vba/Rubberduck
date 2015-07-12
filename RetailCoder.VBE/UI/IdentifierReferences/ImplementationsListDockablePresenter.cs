@@ -17,12 +17,13 @@ namespace Rubberduck.UI.IdentifierReferences
             : base(vbe, addin, control)
         {
             BindTarget(implementations);
+            _factory = factory;
         }
 
         private void BindTarget(IEnumerable<Declaration> implementations)
         {
             var listBox = Control.ResultBox;
-            listBox.DataSource = implementations.Select(implementation => new ImplementationListItem(implementation)).ToList();
+            listBox.DataSource = implementations.Select(implementation => new ImplementationListItem(implementation, _factory)).ToList();
             listBox.DisplayMember = "DisplayString";
             listBox.ValueMember = "Selection";
             Control.Navigate += ControlNavigate;

@@ -10,9 +10,10 @@ namespace Rubberduck.UI.IdentifierReferences
         private readonly Declaration _declaration;
         private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
 
-        public ImplementationListItem(Declaration declaration)
+        public ImplementationListItem(Declaration declaration, IRubberduckFactory<IRubberduckCodePane> factory)
         {
             _declaration = declaration;
+            _factory = factory;
         }
 
         public Declaration GetDeclaration()
