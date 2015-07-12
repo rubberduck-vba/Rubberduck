@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox(), _factory);
-                var refactoring = new RenameRefactoring(factory);
+                var refactoring = new RenameRefactoring(factory, new RubberduckMessageBox());
                 refactoring.Refactor(Target);
             }
         }

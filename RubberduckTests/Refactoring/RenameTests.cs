@@ -48,7 +48,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -86,7 +86,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -122,7 +122,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -168,7 +168,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -208,7 +208,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -246,7 +246,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -288,7 +288,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -330,7 +330,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -368,7 +368,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -418,7 +418,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -454,7 +454,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(model.Target);
 
             //Assert
@@ -508,7 +508,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -561,7 +561,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -621,7 +621,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(model.Selection);
 
             //Assert
@@ -693,7 +693,7 @@ End Sub";
             var factory = new RenamePresenterFactory(vbe.Object, null, parseResult, null, codePaneFactory);
 
             //act
-            var refactoring = new RenameRefactoring(factory);
+            var refactoring = new RenameRefactoring(factory, null);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -989,7 +989,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new RenameRefactoring(factory.Object);
+            var refactoring = new RenameRefactoring(factory.Object, null);
             refactoring.Refactor(model.Target);
 
             //Assert
