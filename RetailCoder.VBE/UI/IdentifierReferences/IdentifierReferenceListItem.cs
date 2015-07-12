@@ -1,15 +1,18 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferenceListItem
     {
         private readonly IdentifierReference _reference;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public IdentifierReferenceListItem(IdentifierReference reference)
+        public IdentifierReferenceListItem(IdentifierReference reference, IRubberduckCodePaneFactory factory)
         {
             _reference = reference;
+            _factory = factory;
         }
 
         public IdentifierReference GetReferenceItem()
@@ -17,7 +20,7 @@ namespace Rubberduck.UI.IdentifierReferences
             return _reference;
         }
 
-        public QualifiedSelection Selection { get { return new QualifiedSelection(_reference.QualifiedModuleName, _reference.Selection); } }
+        public QualifiedSelection Selection { get { return new QualifiedSelection(_reference.QualifiedModuleName, _reference.Selection, _factory); } }
         public string IdentifierName { get { return _reference.IdentifierName; } }
 
         public string DisplayString 

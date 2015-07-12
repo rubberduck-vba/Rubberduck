@@ -1,14 +1,17 @@
-﻿using Rubberduck.VBEditor.Extensions;
+﻿using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
 {
     public struct QualifiedSelection
     {
-        public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
+        public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection, IRubberduckCodePaneFactory factory)
         {
             _qualifiedName = qualifiedName;
             _selection = selection;
+            _factory = factory;
         }
+
+        private readonly IRubberduckCodePaneFactory _factory;
 
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get {return _qualifiedName; } }
@@ -21,7 +24,8 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public void Select()
         {
-            _qualifiedName.Component.CodeModule.CodePane.SetSelection(_selection);
+            var codePane = _factory.Create(_qualifiedName.Component.CodeModule.CodePane);
+            codePane.Selection = _selection;
         }
 
         public override string ToString()

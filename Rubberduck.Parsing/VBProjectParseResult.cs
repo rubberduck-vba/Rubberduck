@@ -5,12 +5,13 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing
 {
     public class VBProjectParseResult
     {
-        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults)
+        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, IRubberduckCodePaneFactory factory)
         {
             _project = project;
             _parseResults = parseResults;
@@ -18,7 +19,7 @@ namespace Rubberduck.Parsing
 
             var projectIdentifier = project.Name;
             var memberName = new QualifiedMemberName(new QualifiedModuleName(project), projectIdentifier);
-            var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
+            var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, factory, false);
             _declarations.Add(projectDeclaration);
 
             foreach (var declaration in VbaStandardLib.Declarations)

@@ -10,7 +10,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -23,13 +23,15 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IEnumerable<ToDoMarker> _markers;
         private readonly GridViewSort<ToDoItem> _gridViewSort;
         private readonly IToDoExplorerWindow _view;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort, IRubberduckCodePaneFactory factory)
             : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
             _gridViewSort = gridViewSort;
+            _factory = factory;
 
             _view = window;
             _view.NavigateToDoItem += NavigateToDoItem;
@@ -146,8 +148,8 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            var codePane = component.CodeModule.CodePane;
-            codePane.SetSelection(e.SelectedItem.GetSelection().Selection);
+            var codePane = _factory.Create(component.CodeModule.CodePane);
+            codePane.Selection = e.SelectedItem.GetSelection().Selection;
         }
     }
 }

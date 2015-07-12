@@ -1,15 +1,17 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
 {
     public class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ActiveCodePaneEditor(VBE vbe)
+        public ActiveCodePaneEditor(VBE vbe, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
+            _factory = factory;
         }
 
         private CodeModule Editor { get { return _vbe.ActiveCodePane == null ? null : _vbe.ActiveCodePane.CodeModule; } }
@@ -21,7 +23,8 @@ namespace Rubberduck.VBEditor
                 return null;
             }
 
-            return Editor.CodePane.GetSelection();
+            var codePane = _factory.Create(Editor.CodePane);
+            return new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
         }
 
         public string GetLines(Selection selection)

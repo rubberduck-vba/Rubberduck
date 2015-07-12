@@ -11,6 +11,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -19,17 +20,19 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly IRubberduckParser _parser;
+        private readonly IRubberduckCodePaneFactory _factory;
         private readonly IInspector _inspector;
 
         private IList<ICodeInspectionResult> _issues;
         private int _currentIssue;
         private int _issueCount;
 
-        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections)
+        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _parser = parser;
             _inspections = inspections;
+            _factory = factory;
         }
 
         public CodeInspectionsToolbar(VBE vbe, IInspector inspector)
@@ -139,11 +142,9 @@ namespace Rubberduck.UI.CodeInspections
             try
             {
                 var location = _vbe.FindInstruction(e.QualifiedName, e.Selection);
-                location.CodeModule.CodePane.SetSelection(location.Selection);
+                var codePane = _factory.Create(location.CodeModule.CodePane);
 
-                var codePane = location.CodeModule.CodePane;
-                var selection = location.Selection;
-                codePane.SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
+                codePane.Selection = location.Selection;
                 codePane.ForceFocus();
                 SetQuickFixTooltip();
             }

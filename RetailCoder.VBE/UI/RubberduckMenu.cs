@@ -17,6 +17,7 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
@@ -29,6 +30,7 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
         private readonly IRubberduckParser _parser;
+        private readonly IRubberduckCodePaneFactory _factory;
         private readonly AddIn _addIn;
 
         private CommandBarButton _about;
@@ -37,21 +39,22 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _addIn = addIn;
             _parser = parser;
+            _factory = factory;
             _configService = configService;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
             var testGridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort);
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort, _factory);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
-            var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
+            var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer, _factory);
             codePresenter.RunAllTests += CodePresenterRunAllAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
             codePresenter.Rename += codePresenter_Rename;
@@ -62,15 +65,15 @@ namespace Rubberduck.UI
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
             var todoExplorer = new ToDoExplorerWindow();
             var todoGridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
-            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, todoGridViewSort);
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, todoGridViewSort, _factory);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
             var inspectionGridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort, _factory);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _factory);
         }
 
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
@@ -123,7 +126,7 @@ namespace Rubberduck.UI
             _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
             _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
 
-            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser);
+            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _factory);
             _projectExplorerContextMenu.Initialize();
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
             _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;

@@ -4,13 +4,17 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspection : IInspection
     {
-        public MultipleDeclarationsInspection()
+        private readonly IRubberduckCodePaneFactory _factory;
+
+        public MultipleDeclarationsInspection(IRubberduckCodePaneFactory factory)
         {
+            _factory = factory;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -27,7 +31,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)
                 .Where(grouping => grouping.Count() > 1)
-                .Select(grouping => new MultipleDeclarationsInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
+                .Select(grouping => new MultipleDeclarationsInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key), _factory));
 
             return issues;
         }

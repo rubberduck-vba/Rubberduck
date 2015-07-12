@@ -5,11 +5,13 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
+        private readonly IRubberduckCodePaneFactory _factory;
         protected VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
@@ -17,10 +19,11 @@ namespace Rubberduck.SourceControl
             this.Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository)
+        protected SourceControlProviderBase(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
             :this(project)
         {
             this.CurrentRepository = repository;
+            _factory = factory;
         }
 
         public IRepository CurrentRepository { get; private set; }
@@ -119,7 +122,9 @@ namespace Rubberduck.SourceControl
         {
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
-            var selection = Project.VBE.ActiveCodePane.GetSelection();
+
+            var codePane = _factory.Create(Project.VBE.ActiveCodePane);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
             string name = null;
             if (selection.QualifiedName.Component != null)
             {
@@ -129,7 +134,7 @@ namespace Rubberduck.SourceControl
             Project.RemoveAllComponents();
             Project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _factory);
         }
     }
 }

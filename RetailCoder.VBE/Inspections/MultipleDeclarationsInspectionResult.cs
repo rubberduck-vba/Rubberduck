@@ -6,15 +6,19 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
     {
+        private readonly IRubberduckCodePaneFactory _factory;
+        
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext)
+            QualifiedContext<ParserRuleContext> qualifiedContext, IRubberduckCodePaneFactory factory)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
+            _factory = factory;
         }
 
         public override IDictionary<string, Action> GetQuickFixes()
@@ -39,7 +43,7 @@ namespace Rubberduck.Inspections
                     context = Context.Parent as ParserRuleContext;
                 }
                 var selection = context.GetSelection();
-                return new QualifiedSelection(QualifiedName, selection);
+                return new QualifiedSelection(QualifiedName, selection, _factory);
             }
         }
 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl.Interop
 {
@@ -18,17 +19,17 @@ namespace Rubberduck.SourceControl.Interop
             : base(project)
         { }
 
-        public GitProvider(VBProject project, IRepository repository)
-            : base(project, repository)
+        public GitProvider(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
+            : base(project, repository, factory)
         { }
 
         [Obsolete]
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord)
-            : base(project, repository, userName, passWord)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, IRubberduckCodePaneFactory factory)
+            : base(project, repository, userName, passWord, factory)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials credentials)
-            :base(project, repository, credentials.Username, credentials.Password)
+        public GitProvider(VBProject project, IRepository repository, ICredentials credentials, IRubberduckCodePaneFactory factory)
+            :base(project, repository, credentials.Username, credentials.Password, factory)
         { }
 
         public new string CurrentBranch

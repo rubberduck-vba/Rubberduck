@@ -4,13 +4,17 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class OptionExplicitInspection : IInspection
     {
-        public OptionExplicitInspection()
+        private readonly IRubberduckCodePaneFactory _factory;
+
+        public OptionExplicitInspection(IRubberduckCodePaneFactory factory)
         {
+            _factory = factory;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -37,7 +41,7 @@ namespace Rubberduck.Inspections
                 .Where(declaration => !declaration.IsBuiltIn && ModuleTypes.Contains(declaration.DeclarationType));
 
             var issues = modules.Where(module => !options.Select(option => option.Scope).Contains(module.Scope))
-                .Select(issue => new OptionExplicitInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName));
+                .Select(issue => new OptionExplicitInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName, _factory));
 
             return issues;
         }

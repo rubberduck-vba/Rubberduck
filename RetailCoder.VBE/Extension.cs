@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Extensibility;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {

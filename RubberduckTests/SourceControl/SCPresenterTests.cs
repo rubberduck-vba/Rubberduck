@@ -8,6 +8,7 @@ using Rubberduck.Settings;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 // ReSharper disable UnusedVariable
@@ -77,7 +78,7 @@ namespace RubberduckTests.SourceControl
             _providerFactory = new Mock<ISourceControlProviderFactory>();
             _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>()))
                 .Returns(_provider.Object);
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<IRubberduckCodePaneFactory>()))
                 .Returns(_provider.Object);
         }
 
@@ -87,7 +88,7 @@ namespace RubberduckTests.SourceControl
                 _view.Object, _changesPresenter.Object, _branchesPresenter.Object,
                 _settingsPresenter.Object, _unsyncedPresenter.Object,
                 _folderBrowserFactory.Object, _providerFactory.Object,
-                _failedActionView.Object, _loginView.Object);
+                _failedActionView.Object, _loginView.Object, new RubberduckCodePaneFactory());
             return presenter;
         }
 
@@ -143,7 +144,7 @@ namespace RubberduckTests.SourceControl
                                                         _view.Object, changesPresenter, branchesPresenter,
                                                         _settingsPresenter.Object, _unsyncedPresenter.Object,
                                                         _folderBrowserFactory.Object, _providerFactory.Object,
-                                                        _failedActionView.Object, _loginView.Object);
+                                                        _failedActionView.Object, _loginView.Object, new RubberduckCodePaneFactory());
 
             //act
             branchesView.Object.Current = "dev";
@@ -622,7 +623,7 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
-            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>()))
+            _providerFactory.Setup(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<IRubberduckCodePaneFactory>()))
                 .Throws(new SourceControlException(expectedTitle,
                     new LibGit2Sharp.LibGit2SharpException(expectedMessage))
                     );
@@ -698,7 +699,7 @@ namespace RubberduckTests.SourceControl
             _loginView.Raise(v => v.Confirm += null, EventArgs.Empty);
 
             //assert
-            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
+            _providerFactory.Verify(f => f.CreateProvider(It.IsAny<VBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>(), It.IsAny<IRubberduckCodePaneFactory>()));
         }
 
         private const string DummyRepoName = "SourceControlTest";

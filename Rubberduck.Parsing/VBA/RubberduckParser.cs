@@ -15,6 +15,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -23,16 +24,20 @@ namespace Rubberduck.Parsing.VBA
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
+        private static IRubberduckCodePaneFactory _factory;
+
         private static bool _isParsing;
 
         private readonly Logger _logger;
 
-        public RubberduckParser()
+        public RubberduckParser(IRubberduckCodePaneFactory factory)
         {
 #if DEBUG
             LoggingConfigurator.ConfigureParserLogger();
 #endif
             _logger = LogManager.GetCurrentClassLogger();
+
+            _factory = factory;
             
         }
 
@@ -55,7 +60,7 @@ namespace Rubberduck.Parsing.VBA
             var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                return new VBProjectParseResult(project, results);
+                return new VBProjectParseResult(project, results, _factory);
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
@@ -74,7 +79,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var parseResult = new VBProjectParseResult(project, results);
+            var parseResult = new VBProjectParseResult(project, results, _factory);
             if (mustResolve)
             {
                 parseResult.Progress += parseResult_Progress;
@@ -125,7 +130,7 @@ namespace Rubberduck.Parsing.VBA
                 ITokenStream stream;
                 var parseTree = Parse(lines, out stream);
                 var comments = ParseComments(name);
-                var result = new VBComponentParseResult(component, parseTree, comments, stream);
+                var result = new VBComponentParseResult(component, parseTree, comments, stream, _factory);
 
                 var existing = ParseResultCache.Keys.SingleOrDefault(k => k.Project == name.Project && k.ComponentName == name.ComponentName);
                 VBComponentParseResult removed;
@@ -160,7 +165,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = ParserError;
             if (handler != null)
             {
-                handler(this, new ParseErrorEventArgs(exception, component));
+                handler(this, new ParseErrorEventArgs(exception, component, new RubberduckCodePaneFactory()));
             }
         }
 
@@ -201,7 +206,7 @@ namespace Rubberduck.Parsing.VBA
                         commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
                         var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length + 1);
 
-                        var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
+                        var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection, _factory));
                         commentBuilder.Clear();
                         
                         yield return result;

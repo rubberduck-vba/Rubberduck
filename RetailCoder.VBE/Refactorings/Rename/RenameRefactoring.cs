@@ -16,11 +16,13 @@ namespace Rubberduck.Refactorings.Rename
     public class RenameRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IMessageBox _messageBox;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox)
         {
             _factory = factory;
+            _messageBox = messageBox;
         }
 
         public void Refactor()
@@ -121,7 +123,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
                     ambiguousId.IdentifierName);
-                var rename = MessageBox.Show(message, RubberduckUI.RenameDialog_Caption,
+                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
                 if (rename == DialogResult.No)
@@ -177,9 +179,12 @@ namespace Rubberduck.Refactorings.Rename
                     }
                     else if (module.Parent.Type == vbext_ComponentType.vbext_ct_MSForm)
                     {
+                        if ((string) module.Parent.Properties.Item("Caption").Value == _model.Target.IdentifierName)
+                        {
+                            module.Parent.Properties.Item("Caption").Value = _model.NewName;
+                        }
                         var codeModule = (CodeModuleClass)module;
                         codeModule.Parent.Name = _model.NewName;
-                        module.Parent.Properties.Item("Caption").Value = _model.NewName;
                     }
                     else
                     {
@@ -189,7 +194,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             catch (COMException)
             {
-                MessageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
+                _messageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
             }
         }
 
@@ -205,7 +210,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             catch (COMException)
             {
-                MessageBox.Show(RubberduckUI.RenameDialog_ProjectRenameError, RubberduckUI.RenameDialog_Caption);
+                _messageBox.Show(RubberduckUI.RenameDialog_ProjectRenameError, RubberduckUI.RenameDialog_Caption);
             }
         }
 

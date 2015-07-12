@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -12,6 +11,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ParserErrors;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {
@@ -19,29 +19,30 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private IList<IInspection> _inspections;
         private Inspector _inspector;
         private ParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService = new ConfigurationLoader();
         private readonly ActiveCodePaneEditor _editor;
+        private readonly IRubberduckCodePaneFactory _factory;
         private IRubberduckParser _parser;
 
         private Configuration _config;
         private RubberduckMenu _menu;
         private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
-        private bool displayToolbar = false;
-        private Point toolbarCoords = new Point(-1, -1);
+        private bool _displayToolbar = false;
+        private Point _toolbarCoords = new Point(-1, -1);
 
         public App(VBE vbe, AddIn addIn)
         {
             _vbe = vbe;
             _addIn = addIn;
+            _factory = new RubberduckCodePaneFactory();
 
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _editor = new ActiveCodePaneEditor(vbe);
+            _editor = new ActiveCodePaneEditor(vbe, _factory);
 
             LoadConfig();
 
@@ -78,7 +79,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = new RubberduckParser();
+            _parser = new RubberduckParser(_factory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -86,20 +87,20 @@ namespace Rubberduck
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector);
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _factory);
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser);
+            _formContextMenu = new FormContextMenu(_vbe, _parser, _factory);
             _formContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
             _codeInspectionsToolbar.Initialize();
 
-            if (toolbarCoords.X != -1 && toolbarCoords.Y != -1)
+            if (_toolbarCoords.X != -1 && _toolbarCoords.Y != -1)
             {
-                _codeInspectionsToolbar.ToolbarCoords = toolbarCoords;
+                _codeInspectionsToolbar.ToolbarCoords = _toolbarCoords;
             }
-            _codeInspectionsToolbar.ToolbarVisible = displayToolbar;
+            _codeInspectionsToolbar.ToolbarVisible = _displayToolbar;
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -139,8 +140,8 @@ namespace Rubberduck
 
             if (_codeInspectionsToolbar != null)
             {
-                displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
-                toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
+                _displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
+                _toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
             }
 
