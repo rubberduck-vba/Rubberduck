@@ -10,6 +10,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
@@ -757,6 +758,196 @@ End Sub";
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
+        }
+
+        [TestMethod]
+        public void Factory_SelectionIsNotNull_Accept()
+        {
+            const string newName = "Goo";
+
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As String)
+End Sub";
+            var selection = new Selection(1, 25, 1, 25); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = newName };
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var rubberduckCodePane = new Mock<IRubberduckCodePane>();
+            rubberduckCodePane.Setup(r => r.CodeModule).Returns(module);
+            rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
+            
+            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
+
+            var view = new Mock<IRenameView>();
+            view.Setup(v => v.NewName).Returns(newName);
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult, null, codePaneFactoryMock.Object);
+
+            var presenter = factory.Create();
+            Assert.AreEqual(model.NewName, presenter.Show().NewName);
+        }
+
+        [TestMethod]
+        public void Factory_SelectionIsNotNull_Reject()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As String)
+End Sub";
+            var selection = new Selection(1, 25, 1, 25); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var rubberduckCodePane = new Mock<IRubberduckCodePane>();
+            rubberduckCodePane.Setup(r => r.CodeModule).Returns(module);
+            rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
+
+            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
+
+            var view = new Mock<IRenameView>();
+            view.Setup(v => v.NewName).Returns("Goo");
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult, null, codePaneFactoryMock.Object);
+
+            var presenter = factory.Create();
+            Assert.AreEqual(null, presenter.Show());
+        }
+
+        [TestMethod]
+        public void Factory_SelectionIsNotNull_PassInTarget_Accept()
+        {
+            const string newName = "Goo";
+
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As String)
+End Sub";
+            var selection = new Selection(1, 25, 1, 25); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = newName };
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var rubberduckCodePane = new Mock<IRubberduckCodePane>();
+            rubberduckCodePane.Setup(r => r.CodeModule).Returns(module);
+            rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
+
+            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
+
+            var view = new Mock<IRenameView>();
+            view.Setup(v => v.NewName).Returns(newName);
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult, null, codePaneFactoryMock.Object);
+
+            var presenter = factory.Create();
+            Assert.AreEqual(model.NewName, presenter.Show(model.Target).NewName);
+        }
+
+        [TestMethod]
+        public void Factory_SelectionIsNotNull_PassInTarget_Reject()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 As String)
+End Sub";
+            var selection = new Selection(1, 25, 1, 25); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = "Goo" };
+
+            var editor = new Mock<IActiveCodePaneEditor>();
+            editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
+
+            int startLine, startColumn, endLine, endColumn;
+
+            var codePaneMock = new Mock<CodePane>();
+            codePaneMock.Setup(c => c.CodeModule).Returns(module);
+            codePaneMock.Setup(c => c.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+
+            var rubberduckCodePane = new Mock<IRubberduckCodePane>();
+            rubberduckCodePane.Setup(r => r.CodeModule).Returns(module);
+            rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
+            rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
+
+            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
+
+            var view = new Mock<IRenameView>();
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var factory = new RenamePresenterFactory(vbe.Object, view.Object, parseResult, null, codePaneFactoryMock.Object);
+
+            var presenter = factory.Create();
+            Assert.AreEqual(null, presenter.Show(model.Target));
         }
 
         #region setup
