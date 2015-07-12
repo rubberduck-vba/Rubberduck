@@ -17,10 +17,6 @@ namespace RubberduckTests
         public void Initialize()
         {
             _ide = MockFactory.CreateVbeMock();
-            _ide.SetupProperty(m => m.ActiveCodePane);
-            _ide.SetupProperty(m => m.ActiveVBProject);
-            _ide.SetupGet(m => m.SelectedVBComponent).Returns(() => _ide.Object.ActiveCodePane.CodeModule.Parent);
-            _ide.SetupGet(m => m.ActiveWindow).Returns(() => _ide.Object.ActiveCodePane.Window);
 
             _projects = new List<VBProject>();
             var projects = MockFactory.CreateProjectsMock(_projects);
@@ -42,7 +38,7 @@ namespace RubberduckTests
                 _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
                 _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
             }
-            return GetQualifiedSelection(selection, _ide.Object.ActiveCodePane.CodeModule.Parent);
+            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
         }
 
         protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)

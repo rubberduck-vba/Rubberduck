@@ -20,12 +20,12 @@ namespace RubberduckTests.Mocks
             :this(new List<Window>{MockFactory.CreateWindowMock().Object})
         { }
 
-        internal MockWindowsCollection(IList<Window> windows)
+        internal MockWindowsCollection(ICollection<Window> windows)
         {
             _windows = windows;
         }
 
-        private readonly IList<Window> _windows;
+        private readonly ICollection<Window> _windows;
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         [SuppressMessage("ReSharper", "RedundantAssignment")]
@@ -97,7 +97,7 @@ namespace RubberduckTests.Mocks
         {
             if (index is ValueType)
             {
-                return _windows[(int) index];
+                return _windows.ElementAt((int) index);
             }
 
             return _windows.FirstOrDefault(window => window.Caption == index.ToString());

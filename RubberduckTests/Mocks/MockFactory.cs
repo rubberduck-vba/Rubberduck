@@ -58,30 +58,17 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<VBE>();
             windows.VBE = vbe.Object;
-            vbe.Setup(v => v.Windows).Returns(windows);
+            vbe.Setup(m => m.Windows).Returns(windows);
+            vbe.SetupProperty(m => m.ActiveCodePane);
+            vbe.SetupProperty(m => m.ActiveVBProject);
+            vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane.CodeModule.Parent);
+            vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             //setting up a main window lets the native window functions fun
             var mainWindow = new Mock<Window>();
-            mainWindow.Setup(w => w.HWnd).Returns(0);
+            mainWindow.Setup(m => m.HWnd).Returns(0);
 
-            vbe.SetupGet(v => v.MainWindow).Returns(mainWindow.Object);
-
-            return vbe;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Mock{VBE}"/> with the <see cref="VBE.Windows"/> and <see cref="VBE.VBProjects"/> properties setup.
-        /// </summary>
-        /// <param name="windows">
-        /// A <see cref="MockWindowsCollection"/> is expected. 
-        /// Other objects implementing the<see cref="Windows"/> interface could cause issues.
-        /// </param>
-        /// <param name="projects"><see cref="VBProjects"/> collecction.</param>
-        /// <returns></returns>
-        internal static Mock<VBE> CreateVbeMock(MockWindowsCollection windows, VBProjects projects)
-        {
-            var vbe = CreateVbeMock(windows);
-            vbe.SetupGet(v => v.VBProjects).Returns(projects);
+            vbe.SetupGet(m => m.MainWindow).Returns(mainWindow.Object);
 
             return vbe;
         }
@@ -116,7 +103,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="code">A block of VBA code.</param>
         /// <returns></returns>
-        internal static Mock<CodeModule> CreateCodeModuleMock(string code)
+        private static Mock<CodeModule> CreateCodeModuleMock(string code)
         {
             var lines = code.Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
 
