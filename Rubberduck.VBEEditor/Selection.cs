@@ -10,6 +10,9 @@
             _endColumn = endColumn;
         }
 
+        /// <summary>
+        /// The first character of the first line.
+        /// </summary>
         public static Selection Home { get { return new Selection(1, 1, 1, 1); } }
 
         public bool ContainsFirstCharacter(Selection selection)
