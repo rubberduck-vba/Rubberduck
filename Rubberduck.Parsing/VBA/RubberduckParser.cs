@@ -15,7 +15,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
@@ -25,13 +24,13 @@ namespace Rubberduck.Parsing.VBA
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
             new ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult>();
 
-        private static IRubberduckFactory<IRubberduckCodePane> _factory;
+        private static IRubberduckCodePaneFactory _factory;
 
         private static bool _isParsing;
 
         private readonly Logger _logger;
 
-        public RubberduckParser(IRubberduckFactory<IRubberduckCodePane> factory)
+        public RubberduckParser(IRubberduckCodePaneFactory factory)
         {
 #if DEBUG
             LoggingConfigurator.ConfigureParserLogger();

@@ -17,7 +17,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
@@ -31,7 +30,7 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         private readonly AddIn _addIn;
 
         private CommandBarButton _about;
@@ -40,7 +39,7 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IRubberduckFactory<IRubberduckCodePane> factory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _addIn = addIn;

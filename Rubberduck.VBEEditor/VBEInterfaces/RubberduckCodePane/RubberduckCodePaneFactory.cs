@@ -2,11 +2,11 @@
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 {
-    public class RubberduckCodePaneFactory : IRubberduckFactory<IRubberduckCodePane>
+    public class RubberduckCodePaneFactory : IRubberduckCodePaneFactory
     {
-        public IRubberduckCodePane Create(object codePane)
+        public IRubberduckCodePane Create(CodePane codePane)
         {
-            return new RubberduckCodePane(codePane as CodePane);
+            return new RubberduckCodePane(codePane);
         }
     }
 }

@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -13,9 +12,9 @@ namespace Rubberduck.Inspections
     public class GenericProjectNameInspectionResult : CodeInspectionResultBase
     {
         private readonly VBProjectParseResult _parseResult;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckFactory<IRubberduckCodePane> factory) 
+        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckCodePaneFactory factory) 
             : base(inspection, type, target, factory)
         {
             _parseResult = parseResult;

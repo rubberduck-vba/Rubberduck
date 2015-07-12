@@ -1,5 +1,4 @@
 ﻿using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
@@ -7,9 +6,9 @@ namespace Rubberduck.VBEditor
     public class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ActiveCodePaneEditor(VBE vbe, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ActiveCodePaneEditor(VBE vbe, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _factory = factory;

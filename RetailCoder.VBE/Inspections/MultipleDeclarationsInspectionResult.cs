@@ -6,17 +6,16 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext, IRubberduckFactory<IRubberduckCodePane> factory)
+            QualifiedContext<ParserRuleContext> qualifiedContext, IRubberduckCodePaneFactory factory)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _factory = factory;

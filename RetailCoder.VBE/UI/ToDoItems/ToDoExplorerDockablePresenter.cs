@@ -10,8 +10,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.ToDoItems
@@ -25,9 +23,9 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IEnumerable<ToDoMarker> _markers;
         private readonly GridViewSort<ToDoItem> _gridViewSort;
         private readonly IToDoExplorerWindow _view;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort, IRubberduckCodePaneFactory factory)
             : base(vbe, addin, window)
         {
             _parser = parser;

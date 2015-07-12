@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.Symbols
@@ -14,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         private static IEnumerable<Declaration> _standardLibDeclarations;
         private static readonly QualifiedModuleName VbaModuleName = new QualifiedModuleName("VBA", "VBA");
-        private static readonly IRubberduckFactory<IRubberduckCodePane> Factory = new RubberduckCodePaneFactory();
+        private static readonly IRubberduckCodePaneFactory Factory = new RubberduckCodePaneFactory();
 
         public static IEnumerable<Declaration> Declarations
         {

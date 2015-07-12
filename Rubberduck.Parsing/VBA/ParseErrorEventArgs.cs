@@ -2,14 +2,13 @@
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class ParseErrorEventArgs : EventArgs
     {
-        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component, IRubberduckCodePaneFactory factory)
         {
             _exception = exception;
             _component = component;
@@ -17,7 +16,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly SyntaxErrorException _exception;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         public SyntaxErrorException Exception { get { return _exception; } }
 
         private readonly VBComponent _component;

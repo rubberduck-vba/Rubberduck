@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class OptionBaseInspectionResult : CodeInspectionResultBase
     {
-        public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, IRubberduckFactory<IRubberduckCodePane> factory)
+        public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, IRubberduckCodePaneFactory factory)
             : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home, factory)))
         {
         }

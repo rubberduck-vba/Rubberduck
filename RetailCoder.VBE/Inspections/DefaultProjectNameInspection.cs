@@ -3,16 +3,15 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     class GenericProjectNameInspection : IInspection
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public GenericProjectNameInspection(IRubberduckFactory<IRubberduckCodePane> factory)
+        public GenericProjectNameInspection(IRubberduckCodePaneFactory factory)
         {
             _factory = factory;
             Severity = CodeInspectionSeverity.Suggestion;

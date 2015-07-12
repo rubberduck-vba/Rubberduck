@@ -6,7 +6,6 @@ using System.Security;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
@@ -26,7 +25,7 @@ namespace Rubberduck.SourceControl
             _unsyncedRemoteCommits = new List<ICommit>();
         }
 
-        public GitProvider(VBProject project, IRepository repository, IRubberduckFactory<IRubberduckCodePane> factory)
+        public GitProvider(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
             : base(project, repository, factory) 
         {
             _unsyncedLocalCommits = new List<ICommit>();
@@ -42,7 +41,7 @@ namespace Rubberduck.SourceControl
             }
         }
 
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, IRubberduckFactory<IRubberduckCodePane> factory)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, IRubberduckCodePaneFactory factory)
             : this(project, repository, factory)
         {
             _credentials = new UsernamePasswordCredentials()
@@ -54,11 +53,11 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials, IRubberduckFactory<IRubberduckCodePane> factory)
+        public GitProvider(VBProject project, IRepository repository, ICredentials<string> credentials, IRubberduckCodePaneFactory factory)
             :this(project, repository, credentials.Username, credentials.Password, factory)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials, IRubberduckFactory<IRubberduckCodePane> factory)
+        public GitProvider(VBProject project, IRepository repository, ICredentials<SecureString> credentials, IRubberduckCodePaneFactory factory)
             : this(project, repository, factory)
         {
             _credentials = new SecureUsernamePasswordCredentials()

@@ -7,7 +7,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Reflection;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.UnitTesting
@@ -17,9 +16,9 @@ namespace Rubberduck.UI.UnitTesting
         private readonly GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
         private readonly ITestExplorerWindow _view;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, IRubberduckFactory<IRubberduckCodePane> factory)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, IRubberduckCodePaneFactory factory)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;

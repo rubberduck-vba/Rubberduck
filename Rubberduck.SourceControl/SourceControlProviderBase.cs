@@ -5,14 +5,13 @@ using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         protected VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
@@ -20,7 +19,7 @@ namespace Rubberduck.SourceControl
             this.Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository, IRubberduckFactory<IRubberduckCodePane> factory)
+        protected SourceControlProviderBase(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
             :this(project)
         {
             this.CurrentRepository = repository;

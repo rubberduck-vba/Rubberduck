@@ -4,16 +4,15 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class OptionExplicitInspection : IInspection
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public OptionExplicitInspection(IRubberduckFactory<IRubberduckCodePane> factory)
+        public OptionExplicitInspection(IRubberduckCodePaneFactory factory)
         {
             _factory = factory;
             Severity = CodeInspectionSeverity.Warning;

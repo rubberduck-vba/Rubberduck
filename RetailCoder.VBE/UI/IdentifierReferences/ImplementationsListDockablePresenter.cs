@@ -4,16 +4,15 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationsListDockablePresenter : DockablePresenterBase
     {
-        private static IRubberduckFactory<IRubberduckCodePane> _factory;
+        private static IRubberduckCodePaneFactory _factory;
 
-        public ImplementationsListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ImplementationsListDockablePresenter(VBE vbe, AddIn addin, SimpleListControl control, IEnumerable<Declaration> implementations, IRubberduckCodePaneFactory factory)
             : base(vbe, addin, control)
         {
             BindTarget(implementations);

@@ -18,7 +18,6 @@ using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
@@ -27,11 +26,11 @@ namespace Rubberduck.UI
     {
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         private readonly SearchResultIconCache _iconCache;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IRubberduckFactory<IRubberduckCodePane> factory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IRubberduckCodePaneFactory factory)
             : base(vbe, addin)
         {
             _parser = parser;

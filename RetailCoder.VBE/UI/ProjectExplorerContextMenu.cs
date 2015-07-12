@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
@@ -16,7 +15,7 @@ namespace Rubberduck.UI
     {
         private readonly VBE _vbe;
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         private CommandBarButton _findAllReferences;
         private CommandBarButton _findAllImplementations;
@@ -24,7 +23,7 @@ namespace Rubberduck.UI
         private CommandBarButton _inspect;
         private CommandBarButton _runAllTests;
         
-        public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _vbe = vbe;

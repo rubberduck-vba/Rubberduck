@@ -4,16 +4,15 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspection : IInspection
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public MultipleDeclarationsInspection(IRubberduckFactory<IRubberduckCodePane> factory)
+        public MultipleDeclarationsInspection(IRubberduckCodePaneFactory factory)
         {
             _factory = factory;
             Severity = CodeInspectionSeverity.Warning;

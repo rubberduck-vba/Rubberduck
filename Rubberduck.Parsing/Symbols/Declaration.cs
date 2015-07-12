@@ -6,7 +6,6 @@ using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.Symbols
@@ -19,13 +18,13 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, IRubberduckFactory<IRubberduckCodePane> factory, bool isBuiltIn = true)
+            Accessibility accessibility, DeclarationType declarationType, IRubberduckCodePaneFactory factory, bool isBuiltIn = true)
             :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, factory, isBuiltIn)
         {}
 
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, IRubberduckFactory<IRubberduckCodePane> factory, bool isBuiltIn = false)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, IRubberduckCodePaneFactory factory, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
@@ -41,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
             _isBuiltIn = isBuiltIn;
         }
 
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         private readonly bool _isBuiltIn;
         public bool IsBuiltIn { get { return _isBuiltIn; } }

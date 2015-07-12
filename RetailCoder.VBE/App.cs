@@ -11,7 +11,6 @@ using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ParserErrors;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
@@ -24,7 +23,7 @@ namespace Rubberduck
         private ParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService = new ConfigurationLoader();
         private readonly ActiveCodePaneEditor _editor;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         private IRubberduckParser _parser;
 
         private Configuration _config;

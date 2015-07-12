@@ -1,6 +1,5 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.IdentifierReferences
@@ -8,9 +7,9 @@ namespace Rubberduck.UI.IdentifierReferences
     public class ImplementationListItem
     {
         private readonly Declaration _declaration;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ImplementationListItem(Declaration declaration, IRubberduckFactory<IRubberduckCodePane> factory)
+        public ImplementationListItem(Declaration declaration, IRubberduckCodePaneFactory factory)
         {
             _declaration = declaration;
             _factory = factory;

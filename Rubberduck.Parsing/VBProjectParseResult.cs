@@ -5,14 +5,13 @@ using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing
 {
     public class VBProjectParseResult
     {
-        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, IRubberduckFactory<IRubberduckCodePane> factory)
+        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, IRubberduckCodePaneFactory factory)
         {
             _project = project;
             _parseResults = parseResults;

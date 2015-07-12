@@ -7,16 +7,15 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class ParameterNotUsedInspection : IInspection
     {
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public ParameterNotUsedInspection(IRubberduckFactory<IRubberduckCodePane> factory)
+        public ParameterNotUsedInspection(IRubberduckCodePaneFactory factory)
         {
             _factory = factory;
             Severity = CodeInspectionSeverity.Warning;

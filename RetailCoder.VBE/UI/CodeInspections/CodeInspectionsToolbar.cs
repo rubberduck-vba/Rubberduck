@@ -11,7 +11,6 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Properties;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
@@ -21,14 +20,14 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         private readonly IInspector _inspector;
 
         private IList<ICodeInspectionResult> _issues;
         private int _currentIssue;
         private int _issueCount;
 
-        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, IRubberduckFactory<IRubberduckCodePane> factory)
+        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _parser = parser;

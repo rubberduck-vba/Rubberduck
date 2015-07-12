@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
@@ -22,7 +21,7 @@ namespace Rubberduck.UI.CodeInspections
         private IList<ICodeInspectionResult> _results;
         private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         /// <summary>
         /// </summary>
@@ -31,7 +30,7 @@ namespace Rubberduck.UI.CodeInspections
         /// <param name="vbe"></param>
         /// <param name="addin"></param>
         /// <param name="window"></param>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, IRubberduckFactory<IRubberduckCodePane> factory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, IRubberduckCodePaneFactory factory)
             :base(vbe, addin, window)
         {
             _inspector = inspector;

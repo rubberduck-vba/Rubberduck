@@ -10,7 +10,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
@@ -796,7 +795,7 @@ End Sub";
             rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
             
-            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            var codePaneFactoryMock = new Mock<IRubberduckCodePaneFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
             var view = new Mock<IRenameView>();
@@ -842,7 +841,7 @@ End Sub";
             rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
 
-            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            var codePaneFactoryMock = new Mock<IRubberduckCodePaneFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
             var view = new Mock<IRenameView>();
@@ -891,7 +890,7 @@ End Sub";
             rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
 
-            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            var codePaneFactoryMock = new Mock<IRubberduckCodePaneFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
             var view = new Mock<IRenameView>();
@@ -938,7 +937,7 @@ End Sub";
             rubberduckCodePane.Setup(r => r.GetSelection(out startLine, out startColumn, out endLine, out endColumn));
             rubberduckCodePane.Setup(r => r.Selection).Returns(selection);
 
-            var codePaneFactoryMock = new Mock<IRubberduckFactory<IRubberduckCodePane>>();
+            var codePaneFactoryMock = new Mock<IRubberduckCodePaneFactory>();
             codePaneFactoryMock.Setup(c => c.Create(codePaneMock.Object)).Returns(rubberduckCodePane.Object);
 
             var view = new Mock<IRenameView>();

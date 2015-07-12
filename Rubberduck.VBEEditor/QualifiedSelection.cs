@@ -1,19 +1,17 @@
-﻿using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+﻿using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
 {
     public struct QualifiedSelection
     {
-        public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection, IRubberduckFactory<IRubberduckCodePane> factory)
+        public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection, IRubberduckCodePaneFactory factory)
         {
             _qualifiedName = qualifiedName;
             _selection = selection;
             _factory = factory;
         }
 
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get {return _qualifiedName; } }

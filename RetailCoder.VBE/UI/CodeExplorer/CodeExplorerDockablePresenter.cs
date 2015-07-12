@@ -10,7 +10,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer
@@ -18,10 +17,10 @@ namespace Rubberduck.UI.CodeExplorer
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addIn, CodeExplorerWindow view, IRubberduckFactory<IRubberduckCodePane> factory)
+        public CodeExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addIn, CodeExplorerWindow view, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn, view)
         {
             _parser = parser;

@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
 using Rubberduck.SourceControl;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.SourceControl
@@ -27,7 +26,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
         public SourceControlPresenter(
             VBE vbe, AddIn addin, 
@@ -41,7 +40,7 @@ namespace Rubberduck.UI.SourceControl
             ISourceControlProviderFactory providerFactory, 
             IFailedMessageView failedMessageView, 
             ILoginView loginView,
-            IRubberduckFactory<IRubberduckCodePane> factory
+            IRubberduckCodePaneFactory factory
             )
             : base(vbe, addin, view)
         {

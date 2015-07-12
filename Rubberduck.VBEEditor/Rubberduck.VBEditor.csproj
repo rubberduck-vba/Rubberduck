@@ -86,8 +86,8 @@
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
-    <Compile Include="VBEInterfaces\IRubberduckFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\IRubberduckCodePane.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodePane\IRubberduckCodePaneFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\RubberduckCodePaneFactory.cs" />
     <Compile Include="VBEInterfaces\RubberduckCodePane\RubberduckCodePane.cs" />
   </ItemGroup>

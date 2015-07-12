@@ -2,7 +2,6 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Refactorings.Rename
@@ -13,9 +12,9 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IRenameView _view;
         private readonly VBProjectParseResult _parseResult;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckFactory<IRubberduckCodePane> _factory;
+        private readonly IRubberduckCodePaneFactory _factory;
 
-        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IMessageBox messageBox, IRubberduckFactory<IRubberduckCodePane> factory)
+        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IMessageBox messageBox, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _view = view;
