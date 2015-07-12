@@ -39,7 +39,7 @@ namespace RubberduckTests
                 _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
                 _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
             }
-            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
+            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection, new RubberduckCodePaneFactory());
         }
 
         protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)

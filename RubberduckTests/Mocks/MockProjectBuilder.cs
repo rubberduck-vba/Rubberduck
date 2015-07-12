@@ -17,8 +17,8 @@ namespace RubberduckTests.Mocks
         private readonly Mock<VBComponents> _vbComponents;
         private readonly Mock<References> _vbReferences;
 
-        private readonly ICollection<Mock<VBComponent>> _components = new List<Mock<VBComponent>>();
-        private readonly ICollection<Mock<Reference>> _references = new List<Mock<Reference>>(); 
+        private readonly List<VBComponent> _components = new List<VBComponent>();
+        private readonly List<Reference> _references = new List<Reference>(); 
 
         public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe)
         {
@@ -55,7 +55,7 @@ namespace RubberduckTests.Mocks
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(Mock<VBComponent> component)
         {
-            _components.Add(component);
+            _components.Add(component.Object);
             return this;            
         }
 
@@ -67,7 +67,8 @@ namespace RubberduckTests.Mocks
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddReference(string name, string filePath)
         {
-            _references.Add(CreateReferenceMock(name, filePath));
+            var reference = CreateReferenceMock(name, filePath);
+            _references.Add(reference.Object);
             return this;
         }
 
@@ -111,8 +112,8 @@ namespace RubberduckTests.Mocks
             result.Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
             result.As<IEnumerable>().Setup(c => c.GetEnumerator()).Returns(() => _components.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _components.ElementAt(index).Object);
-            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Object.Name == name).Object);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _components.ElementAt(index));
+            result.Setup(m => m.Item(It.IsAny<string>())).Returns<string>(name => _components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(_components.Count);
 
             return result;
@@ -128,7 +129,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
 
-            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index).Object);
+            result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(index => _references.ElementAt(index));
             result.SetupGet(m => m.Count).Returns(_references.Count);
 
             return result;

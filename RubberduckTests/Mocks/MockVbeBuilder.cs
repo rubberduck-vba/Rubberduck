@@ -79,10 +79,10 @@ namespace RubberduckTests.Mocks
             vbe.SetupGet(m => m.MainWindow).Returns(mainWindow.Object);
 
             _vbProjects = CreateProjectsMock();
-            _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+            vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             _vbCodePanes = CreateCodePanesMock();
-            _vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
+            vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
 
             return vbe;
         }

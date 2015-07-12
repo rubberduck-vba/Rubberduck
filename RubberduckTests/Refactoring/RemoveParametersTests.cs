@@ -12,6 +12,7 @@ using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1570,7 +1571,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void Presenter_NoParams()
+        public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
             const string inputCode =
@@ -1579,11 +1580,17 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode);
+            var project = projectBuilder.Build();
+            builder.AddProject(project);
+
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection, codePaneFactory);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -1591,36 +1598,42 @@ End Sub";
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parseResult, messageBox.Object);
-
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
         }
 
         [TestMethod]
-        public void Presenter_TargetIsNull()
+        public void Presenter_NullTargetReturnsNullModel()
         {
             //Input
             const string inputCode =
 @"
 Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
+            var selection = Selection.Home;
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode);
+            var project = projectBuilder.Build();
+            builder.AddProject(project);
+
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var codePane = project.Object.VBComponents.Item(0).CodeModule.CodePane;
+            var ext = codePaneFactory.Create(codePane);
+            ext.Selection = selection;
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), selection, codePaneFactory);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
             
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parseResult, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult, null);
 
             var presenter = factory.Create();
 
@@ -1628,7 +1641,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void Factory_SelectionIsNull()
+        public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input
             const string inputCode =
@@ -1636,15 +1649,19 @@ End Sub";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            var projectBuilder = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            projectBuilder.AddComponent("Module1", vbext_ComponentType.vbext_ct_StdModule, inputCode);
+            var project = projectBuilder.Build();
+            builder.AddProject(project);
+
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
             
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?) null);
 
-            var factory = new RemoveParametersPresenterFactory(editor.Object, null,
-                parseResult, null);
+            var factory = new RemoveParametersPresenterFactory(editor.Object, null, parseResult, null);
             
             Assert.AreEqual(null, factory.Create());
         }
