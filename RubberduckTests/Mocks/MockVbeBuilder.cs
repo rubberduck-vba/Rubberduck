@@ -73,9 +73,13 @@ namespace RubberduckTests.Mocks
         private Mock<VBProjects> CreateProjectsMock()
         {
             var result = new Mock<VBProjects>();
+
             result.Setup(m => m.GetEnumerator()).Returns(_projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(_projects.GetEnumerator());
+            
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _projects.ElementAt(value));
+            result.SetupGet(m => m.Count).Returns(_projects.Count);
+
 
             return result;
         }
@@ -83,9 +87,12 @@ namespace RubberduckTests.Mocks
         private Mock<CodePanes> CreateCodePanesMock()
         {
             var result = new Mock<CodePanes>();
+
             result.Setup(m => m.GetEnumerator()).Returns(_codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(_codePanes.GetEnumerator());
+            
             result.Setup(m => m.Item(It.IsAny<int>())).Returns<int>(value => _codePanes.ElementAt(value));
+            result.SetupGet(m => m.Count).Returns(_codePanes.Count);
 
             return result;
         }
