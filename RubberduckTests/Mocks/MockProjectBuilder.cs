@@ -7,6 +7,9 @@ using Moq;
 
 namespace RubberduckTests.Mocks
 {
+    /// <summary>
+    /// Builds a mock <see cref="VBProject"/>.
+    /// </summary>
     public class MockProjectBuilder
     {
         private readonly Func<VBE> _getVbe;
@@ -30,30 +33,58 @@ namespace RubberduckTests.Mocks
             _project.SetupGet(m => m.References).Returns(_vbReferences.Object);
         }
 
+        /// <summary>
+        /// Adds a new component to the project.
+        /// </summary>
+        /// <param name="name">The name of the new component.</param>
+        /// <param name="type">The type of component to create.</param>
+        /// <param name="content">The VBA code associated to the component.</param>
+        /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(string name, vbext_ComponentType type, string content)
         {
             var component = CreateComponentMock(name, type, content);
             return AddComponent(component);
         }
 
+        /// <summary>
+        /// Adds a new mock component to the project.
+        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string)"/> overload to add module components.
+        /// Use this overload to add user forms created with a <see cref="MockUserFormBuilder"/> instance.
+        /// </summary>
+        /// <param name="component">The component to add.</param>
+        /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(Mock<VBComponent> component)
         {
             _components.Add(component);
             return this;            
         }
 
+        /// <summary>
+        /// Adds a mock reference to the project.
+        /// </summary>
+        /// <param name="name">The name of the referenced library.</param>
+        /// <param name="filePath">The path to the referenced library.</param>
+        /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddReference(string name, string filePath)
         {
             _references.Add(CreateReferenceMock(name, filePath));
             return this;
         }
 
+        /// <summary>
+        /// Creates a <see cref="MockUserFormBuilder"/> to build a new form component.
+        /// </summary>
+        /// <param name="name">The name of the component.</param>
+        /// <param name="content">The VBA code associated to the component.</param>
         public MockUserFormBuilder UserFormBuilder(string name, string content)
         {
             var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content);
             return new MockUserFormBuilder(component);
         }
 
+        /// <summary>
+        /// Gets the mock <see cref="VBProject"/> instance.
+        /// </summary>
         public Mock<VBProject> Build()
         {
             return _project;

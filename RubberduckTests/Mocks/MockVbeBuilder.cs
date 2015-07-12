@@ -6,6 +6,9 @@ using Moq;
 
 namespace RubberduckTests.Mocks
 {
+    /// <summary>
+    /// Builds a mock <see cref="VBE"/>.
+    /// </summary>
     public class MockVbeBuilder
     {
         private readonly Mock<VBE> _vbe;
@@ -21,6 +24,12 @@ namespace RubberduckTests.Mocks
             _vbe = CreateVbeMock();
         }
 
+        /// <summary>
+        /// Adds a project to the mock VBE.
+        /// Use a <see cref="MockProjectBuilder"/> to build the <see cref="project"/>.
+        /// </summary>
+        /// <param name="project">A mock <see cref="VBProject"/>.</param>
+        /// <returns>Returns the <see cref="MockVbeBuilder"/> instance.</returns>
         public MockVbeBuilder AddProject(Mock<VBProject> project)
         {
             project.SetupGet(m => m.VBE).Returns(_vbe.Object);
@@ -34,12 +43,20 @@ namespace RubberduckTests.Mocks
             return this;
         }
 
+        /// <summary>
+        /// Creates a <see cref="MockProjectBuilder"/> to build a new project.
+        /// </summary>
+        /// <param name="name">The name of the project to build.</param>
+        /// <param name="protection">A value that indicates whether the project is protected.</param>
         public MockProjectBuilder ProjectBuilder(string name, vbext_ProjectProtection protection)
         {
             var result = new MockProjectBuilder(name, protection, () => _vbe.Object);
             return result;
         }
 
+        /// <summary>
+        /// Gets the mock <see cref="VBE"/> instance.
+        /// </summary>
         public Mock<VBE> Build()
         {
             return _vbe;

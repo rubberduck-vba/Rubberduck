@@ -8,6 +8,9 @@ using Moq;
 
 namespace RubberduckTests.Mocks
 {
+    /// <summary>
+    /// Builds a mock <see cref="UserForm"/> component.
+    /// </summary>
     public class MockUserFormBuilder
     {
         private readonly Mock<VBComponent> _component;
@@ -25,6 +28,11 @@ namespace RubberduckTests.Mocks
             _vbControls = CreateControlsMock();
         }
 
+        /// <summary>
+        /// Adds a <see cref="Control"/> to the form.
+        /// </summary>
+        /// <param name="name">The name of the control to add.</param>
+        /// <returns></returns>
         public MockUserFormBuilder AddControl(string name)
         {
             var control = new Mock<Control>();
@@ -34,6 +42,10 @@ namespace RubberduckTests.Mocks
             return this;
         }
 
+        /// <summary>
+        /// Gets the mock <see cref="UserForm"/> component.
+        /// </summary>
+        /// <returns></returns>
         public Mock<VBComponent> Build()
         {
             var designer = CreateMockDesigner();
