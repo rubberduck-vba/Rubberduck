@@ -24,11 +24,29 @@ namespace Rubberduck.VBEditor
             }
 
             var codePane = _factory.Create(Editor.CodePane);
-            return new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            return new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
+        }
+
+        public void SetSelection(Selection selection)
+        {
+            if (Editor == null)
+            {
+                return;
+            }
+
+            var codePane = _factory.Create(Editor.CodePane);
+            codePane.Selection = selection;
+        }
+
+        public void SetSelection(QualifiedSelection selection)
+        {
+            _vbe.ActiveCodePane = selection.QualifiedName.Component.CodeModule.CodePane;
+            SetSelection(selection.Selection);
         }
 
         public string GetLines(Selection selection)
         {
+            // ReSharper disable once UseIndexedProperty
             return Editor.get_Lines(selection.StartLine, selection.LineCount);
         }
 

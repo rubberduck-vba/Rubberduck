@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections
                 }
                 return _context == null
                     ? _comment.QualifiedSelection
-                    : new QualifiedSelection(_qualifiedName, _context.GetSelection(), _factory);
+                    : new QualifiedSelection(_qualifiedName, _context.GetSelection());
             }
         }
 

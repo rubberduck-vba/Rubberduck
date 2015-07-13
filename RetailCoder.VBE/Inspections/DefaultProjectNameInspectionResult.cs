@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
@@ -37,7 +38,7 @@ namespace Rubberduck.Inspections
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox(), _factory);
-                var refactoring = new RenameRefactoring(factory, new RubberduckMessageBox());
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _factory), new RubberduckMessageBox());
                 refactoring.Refactor(Target);
             }
         }

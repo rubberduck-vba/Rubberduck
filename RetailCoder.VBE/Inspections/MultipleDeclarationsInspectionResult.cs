@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections
                     context = Context.Parent as ParserRuleContext;
                 }
                 var selection = context.GetSelection();
-                return new QualifiedSelection(QualifiedName, selection, _factory);
+                return new QualifiedSelection(QualifiedName, selection);
             }
         }
 

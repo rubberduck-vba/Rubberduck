@@ -27,7 +27,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             var codePane = _factory.Create(_vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent),
-                codePane.Selection, _factory);
+                codePane.Selection);
             return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, selection, _messageBox));
         }
     }

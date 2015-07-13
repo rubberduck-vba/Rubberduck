@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections
     public class OptionBaseInspectionResult : CodeInspectionResultBase
     {
         public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, IRubberduckCodePaneFactory factory)
-            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home, factory)))
+            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
         {
         }
 

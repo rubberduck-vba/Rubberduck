@@ -180,7 +180,7 @@ namespace Rubberduck.UI
         public void FindAllReferences()
         {
             var codePane = _factory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
             if (result == null)
@@ -258,7 +258,7 @@ namespace Rubberduck.UI
         public void FindAllImplementations()
         {
             var codePane = _factory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             var progress = new ParsingProgressPresenter();
             var parseResult = progress.Parse(_parser, IDE.ActiveVBProject);
 
@@ -417,7 +417,7 @@ namespace Rubberduck.UI
                 return;
             }
             var codePane = _factory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             ReorderParameters(selection);
         }
 
@@ -430,7 +430,7 @@ namespace Rubberduck.UI
             }
 
             var codePane = _factory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             RemoveParameter(selection);
         }
 
@@ -442,7 +442,7 @@ namespace Rubberduck.UI
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _factory);
-                var refactoring = new RenameRefactoring(factory, new RubberduckMessageBox());
+                var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor();
             }
         }
@@ -455,7 +455,7 @@ namespace Rubberduck.UI
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _factory);
-                var refactoring = new RenameRefactoring(factory, new RubberduckMessageBox());
+                var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor(target);
             }
         }
@@ -468,7 +468,7 @@ namespace Rubberduck.UI
             using (var view = new ReorderParametersDialog())
             {
                 var factory = new ReorderParametersPresenterFactory(_editor, view, result, new RubberduckMessageBox());
-                var refactoring = new ReorderParametersRefactoring(factory, new RubberduckMessageBox());
+                var refactoring = new ReorderParametersRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor(selection);
             }
         }
@@ -481,7 +481,7 @@ namespace Rubberduck.UI
             using (var view = new RemoveParametersDialog())
             {
                 var factory = new RemoveParametersPresenterFactory(_editor, view, result, new RubberduckMessageBox());
-                var refactoring = new RemoveParametersRefactoring(factory);
+                var refactoring = new RemoveParametersRefactoring(factory, _editor);
                 refactoring.Refactor(selection);
             }
         }

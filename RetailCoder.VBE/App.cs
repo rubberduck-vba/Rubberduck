@@ -90,7 +90,7 @@ namespace Rubberduck
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _factory);
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser, _factory);
+            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _factory);
             _formContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);

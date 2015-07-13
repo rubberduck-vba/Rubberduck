@@ -43,7 +43,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 

@@ -50,7 +50,7 @@ namespace RubberduckTests.Mocks
         /// <param name="protection">A value that indicates whether the project is protected.</param>
         public MockProjectBuilder ProjectBuilder(string name, vbext_ProjectProtection protection)
         {
-            var result = new MockProjectBuilder(name, protection, () => _vbe.Object);
+            var result = new MockProjectBuilder(name, protection, () => _vbe.Object, this);
             return result;
         }
 
@@ -60,6 +60,29 @@ namespace RubberduckTests.Mocks
         public Mock<VBE> Build()
         {
             return _vbe;
+        }
+
+        /// <summary>
+        /// Gets a mock <see cref="VBE"/> instance, 
+        /// containing a single "TestProject1" <see cref="VBProject"/>
+        /// and a single "TestModule1" <see cref="VBComponent"/>, with the specified <see cref="content"/>.
+        /// </summary>
+        /// <param name="content">The VBA code associated to the component.</param>
+        /// <param name="component">The created <see cref="VBComponent"/></param>
+        /// <returns></returns>
+        public Mock<VBE> BuildFromSingleStandardModule(string content, out VBComponent component)
+        {
+            var builder = ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none);
+            builder.AddComponent("TestModule1", vbext_ComponentType.vbext_ct_StdModule, content);
+            var project = builder.Build();
+            component = project.Object.VBComponents.Item(0);
+            return AddProject(project).Build();
+        }
+
+        public Mock<VBE> BuildFromSingleStandardModule(string content)
+        {
+            VBComponent discarded;
+            return BuildFromSingleStandardModule(content, out discarded);
         }
 
         private Mock<VBE> CreateVbeMock()
