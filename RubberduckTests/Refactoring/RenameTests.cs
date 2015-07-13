@@ -977,12 +977,7 @@ End Sub";
 
             var qualifiedSelection = GetQualifiedSelection(selection);
 
-            var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(
-                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                .Returns(DialogResult.Yes);
-
-            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, messageBox.Object) { NewName = newName };
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = newName };
             model.Target = model.Declarations.Items.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
 
             //SetupFactory
