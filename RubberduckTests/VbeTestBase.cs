@@ -4,7 +4,6 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using MockFactory = RubberduckTests.Mocks.MockFactory;
 
 namespace RubberduckTests
@@ -39,12 +38,7 @@ namespace RubberduckTests
                 _ide.Object.ActiveVBProject = _ide.Object.VBProjects.Item(0);
                 _ide.Object.ActiveCodePane = _ide.Object.ActiveVBProject.VBComponents.Item(0).CodeModule.CodePane;
             }
-            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection, new RubberduckCodePaneFactory());
-        }
-
-        protected QualifiedSelection GetQualifiedSelection(Selection selection, VBComponent component)
-        {
-            return new QualifiedSelection(new QualifiedModuleName(component), selection, new RubberduckCodePaneFactory());
+            return new QualifiedSelection(new QualifiedModuleName(_ide.Object.ActiveCodePane.CodeModule.Parent), selection);
         }
 
         protected Mock<VBProject> SetupMockProject(string inputCode, string projectName = null, string moduleName = null, vbext_ComponentType? componentType = null)

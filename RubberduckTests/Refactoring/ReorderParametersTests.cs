@@ -12,6 +12,7 @@ using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
@@ -33,12 +34,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -47,7 +51,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -69,12 +73,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -83,7 +90,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(model.TargetDeclaration);
 
             //assert
@@ -100,11 +107,14 @@ End Sub";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -113,7 +123,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
 
             //assert
             try
@@ -146,12 +156,15 @@ End Sub";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -167,7 +180,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -199,12 +212,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -213,7 +229,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -245,12 +261,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -267,7 +286,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -291,12 +310,15 @@ End Function";
 End Function";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -306,7 +328,7 @@ End Function";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -338,12 +360,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -360,7 +385,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -382,12 +407,15 @@ End Property";
 End Property";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -404,7 +432,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -426,12 +454,15 @@ End Property";
 End Property";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -441,7 +472,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -463,12 +494,15 @@ End Property";
 End Property";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -478,7 +512,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -495,11 +529,14 @@ End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
 
@@ -517,11 +554,14 @@ End Property";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
 
@@ -548,12 +588,15 @@ End Sub";
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -563,7 +606,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -603,12 +646,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -618,7 +664,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -646,12 +692,15 @@ End Sub
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -664,7 +713,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -710,12 +759,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -735,7 +787,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -795,12 +847,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -820,7 +875,7 @@ End Sub
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -837,12 +892,15 @@ End Sub";
             var selection = new Selection(1, 23, 1, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -861,7 +919,7 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, messageBox.Object);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -893,12 +951,15 @@ End Sub
 ";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -914,7 +975,7 @@ End Sub
             var factory = SetupFactory(model);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //assert
@@ -942,12 +1003,15 @@ Private Property Set Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3
 End Property";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -957,7 +1021,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -985,12 +1049,15 @@ Private Property Let Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3
 End Property";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to reorder
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1000,7 +1067,7 @@ End Property";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1016,10 +1083,13 @@ End Property";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
+            var module = project.VBComponents.Item(0).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
@@ -1028,7 +1098,7 @@ End Sub";
                 parseResult, null);
 
             //act
-            var refactoring = new ReorderParametersRefactoring(factory, null);
+            var refactoring = new ReorderParametersRefactoring(factory, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, module.Lines());
@@ -1060,19 +1130,20 @@ Private Sub IClass1_DoSomething(ByVal b As String, ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "IClass1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1082,7 +1153,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1116,19 +1187,20 @@ Private Sub IClass1_DoSomething(ByVal v2 As String, ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "IClass1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1138,7 +1210,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1182,22 +1254,22 @@ Private Sub IClass1_DoSomething(ByVal s As String, ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "IClass1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component3 = CreateMockComponent(inputCode3, "Class2",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2, component3 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
-            var module3 = project.Object.VBComponents.Item(2).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
+            var module3 = project.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1207,7 +1279,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1243,19 +1315,20 @@ End Sub";   // note: IDE removes excess spaces
 End Sub";
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "IClass1",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(
@@ -1270,7 +1343,7 @@ End Sub";
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1294,26 +1367,26 @@ End Sub";
             var selection = new Selection(3, 23, 3, 27); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "IClass1",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(
-                m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                .Returns(DialogResult.No);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.No);
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, messageBox.Object);
-            Assert.AreEqual(null, model.TargetDeclaration);
+            Assert.IsNull(model.TargetDeclaration);
         }
 
         [TestMethod]
@@ -1342,19 +1415,20 @@ Private Sub abc_Foo(ByVal arg2 As String, ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class2",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1364,7 +1438,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1398,19 +1472,20 @@ Private Sub abc_Foo(ByVal s As String, ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class2",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1420,7 +1495,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1465,22 +1540,22 @@ Private Sub abc_Foo(ByVal v2 As String, ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             //Arrange
-            var component1 = CreateMockComponent(inputCode1, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component2 = CreateMockComponent(inputCode2, "Class2",
-                vbext_ComponentType.vbext_ct_ClassModule);
-            var component3 = CreateMockComponent(inputCode3, "Class3",
-                vbext_ComponentType.vbext_ct_ClassModule);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .AddComponent("Class3", vbext_ComponentType.vbext_ct_ClassModule, inputCode3)
+                .Build().Object;
+            var vbe = builder.Build();
+            var component = project.VBComponents.Item(0);
 
-            var project = CreateMockProject("VBEProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component1, component2, component3 });
-            var module1 = project.Object.VBComponents.Item(0).CodeModule;
-            var module2 = project.Object.VBComponents.Item(1).CodeModule;
-            var module3 = project.Object.VBComponents.Item(2).CodeModule;
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
+            var module3 = project.VBComponents.Item(2).CodeModule;
 
             //Specify Params to remove
             var model = new ReorderParametersModel(parseResult, qualifiedSelection, null);
@@ -1490,7 +1565,7 @@ End Sub";   // note: IDE removes excess spaces
             var factory = SetupFactory(model);
 
             //Act
-            var refactoring = new ReorderParametersRefactoring(factory.Object, null);
+            var refactoring = new ReorderParametersRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
@@ -1500,7 +1575,7 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithParametersChanged()
+        public void Presenter_AcceptDialog_ReordersProcedureWithTwoParameters()
         {
             //Input
             const string inputCode =
@@ -1509,11 +1584,14 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -1525,8 +1603,7 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object,
-                parseResult, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parseResult, null);
 
             var presenter = factory.Create();
 
@@ -1534,7 +1611,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void Presenter_Reject_ReturnsNull()
+        public void Presenter_CancelDialogCreatesNullModel()
         {
             //Input
             const string inputCode =
@@ -1543,11 +1620,14 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
@@ -1558,16 +1638,18 @@ End Sub";
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object,
-                parseResult, null);
-
+            var factory = new ReorderParametersPresenterFactory(editor.Object, view.Object, parseResult, null);
             var presenter = factory.Create();
 
-            Assert.AreEqual(null, presenter.Show());
+            //Act
+            var result = presenter.Show();
+
+            //Assert
+            Assert.IsNull(result);
         }
         
         [TestMethod]
-        public void Presenter_NoParams()
+        public void Presenter_ParameterlessMemberCreatesNullModel()
         {
             //Input
             const string inputCode =
@@ -1576,28 +1658,34 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parseResult, messageBox.Object);
-
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult, messageBox.Object);
             var presenter = factory.Create();
 
-            Assert.AreEqual(null, presenter.Show());
+            //Act
+            var result = presenter.Show();
+
+            //Assert
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void Presenter_OneParam()
+        public void Presenter_SingleParameterMemberCreatesNullModel()
         {
             //Input
             const string inputCode =
@@ -1606,28 +1694,34 @@ End Sub";
             var selection = new Selection(1, 15, 1, 15); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parseResult, messageBox.Object);
-
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult, messageBox.Object);
             var presenter = factory.Create();
 
-            Assert.AreEqual(null, presenter.Show());
+            //Act
+            var result = presenter.Show();
+
+            //Assert
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void Presenter_TargetIsNull()
+        public void Presenter_NullTargetCreatesNullModel()
         {
             //Input
             const string inputCode =
@@ -1637,25 +1731,31 @@ End Sub";
             var selection = new Selection(1, 1, 1, 1); //startLine, startCol, endLine, endCol
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var qualifiedSelection = GetQualifiedSelection(selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parseResult, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult, null);
 
             var presenter = factory.Create();
 
-            Assert.AreEqual(null, presenter.Show());
+            //Act
+            var result = presenter.Show();
+
+            //Assert
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void Factory_SelectionIsNull()
+        public void Factory_NullSelectionCreatesNullPresenter()
         {
             //Input
             const string inputCode =
@@ -1663,17 +1763,23 @@ End Sub";
 End Sub";
 
             //Arrange
-            var project = SetupMockProject(inputCode);
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = vbe.Object.VBProjects.Item(0);
             var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns((QualifiedSelection?)null);
 
-            var factory = new ReorderParametersPresenterFactory(editor.Object, null,
-                parseResult, null);
+            var factory = new ReorderParametersPresenterFactory(editor.Object, null, parseResult, null);
 
-            Assert.AreEqual(null, factory.Create());
+            //Act
+            var result = factory.Create();
+
+            //Assert
+            Assert.IsNull(result);
         }
 
         #region setup

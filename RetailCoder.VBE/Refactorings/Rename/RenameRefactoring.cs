@@ -16,12 +16,14 @@ namespace Rubberduck.Refactorings.Rename
     public class RenameRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private readonly IMessageBox _messageBox;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _factory = factory;
+            _editor = editor;
             _messageBox = messageBox;
         }
 
@@ -38,7 +40,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 

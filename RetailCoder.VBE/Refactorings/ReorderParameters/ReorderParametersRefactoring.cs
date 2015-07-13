@@ -16,12 +16,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
         {
             _factory = factory;
+            _editor = editor;
             _messageBox = messageBox;
         }
 
@@ -45,7 +47,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 
@@ -56,7 +58,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            target.QualifiedSelection.Select();
+            _editor.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 

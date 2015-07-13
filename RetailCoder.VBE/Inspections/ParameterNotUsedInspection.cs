@@ -15,9 +15,9 @@ namespace Rubberduck.Inspections
     {
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public ParameterNotUsedInspection(IRubberduckCodePaneFactory factory)
+        public ParameterNotUsedInspection()
         {
-            _factory = factory;
+            _factory = new RubberduckCodePaneFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -37,10 +37,11 @@ namespace Rubberduck.Inspections
                 && !(parameter.Context.Parent.Parent is VBAParser.DeclareStmtContext));
 
             var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
+            var editor = new ActiveCodePaneEditor(parseResult.Project.VBE, _factory);
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
-                    new RemoveParametersPresenterFactory(new ActiveCodePaneEditor(parseResult.Project.VBE, _factory),
-                        new RemoveParametersDialog(), parseResult, new RubberduckMessageBox()));
+                    new RemoveParametersPresenterFactory(editor, 
+                        new RemoveParametersDialog(), parseResult, new RubberduckMessageBox()), editor);
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)

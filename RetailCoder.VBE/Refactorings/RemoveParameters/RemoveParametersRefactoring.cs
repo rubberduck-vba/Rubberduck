@@ -15,11 +15,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : IRefactoring
     {
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IActiveCodePaneEditor _editor;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IActiveCodePaneEditor editor)
         {
             _factory = factory;
+            _editor = editor;
         }
 
         public void Refactor()
@@ -41,7 +43,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            target.Select();
+            _editor.SetSelection(target);
             Refactor();
         }
 
@@ -52,7 +54,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            target.QualifiedSelection.Select();
+            _editor.SetSelection(target.QualifiedSelection);
             Refactor();
         }
 

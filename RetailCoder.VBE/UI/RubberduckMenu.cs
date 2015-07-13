@@ -30,6 +30,7 @@ namespace Rubberduck.UI
         private readonly RefactorMenu _refactorMenu;
         private readonly IGeneralConfigService _configService;
         private readonly IRubberduckParser _parser;
+        private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _factory;
         private readonly AddIn _addIn;
 
@@ -44,6 +45,7 @@ namespace Rubberduck.UI
         {
             _addIn = addIn;
             _parser = parser;
+            _editor = editor;
             _factory = factory;
             _configService = configService;
 
@@ -126,7 +128,7 @@ namespace Rubberduck.UI
             _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
             _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
 
-            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _factory);
+            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _editor, _factory);
             _projectExplorerContextMenu.Initialize();
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
             _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;

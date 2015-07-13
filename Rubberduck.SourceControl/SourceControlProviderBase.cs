@@ -124,7 +124,7 @@ namespace Rubberduck.SourceControl
             // so we can correctly reset it once the files are imported from the repository.
 
             var codePane = _factory.Create(Project.VBE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection, _factory);
+            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             string name = null;
             if (selection.QualifiedName.Component != null)
             {

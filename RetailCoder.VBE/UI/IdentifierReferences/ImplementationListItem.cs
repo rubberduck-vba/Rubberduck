@@ -20,7 +20,7 @@ namespace Rubberduck.UI.IdentifierReferences
             return _declaration;
         }
 
-        public QualifiedSelection Selection { get { return new QualifiedSelection(_declaration.QualifiedName.QualifiedModuleName, _declaration.Selection, _factory); } }
+        public QualifiedSelection Selection { get { return new QualifiedSelection(_declaration.QualifiedName.QualifiedModuleName, _declaration.Selection); } }
         public string IdentifierName { get { return _declaration.IdentifierName; } }
 
         public string DisplayString

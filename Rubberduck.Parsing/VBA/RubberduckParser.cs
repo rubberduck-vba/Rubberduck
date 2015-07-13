@@ -206,7 +206,7 @@ namespace Rubberduck.Parsing.VBA
                         commentBuilder.Append(line.Substring(index, commentLength).TrimStart());
                         var selection = new Selection(startLine + 1, startColumn + 1, i + 1, line.Length + 1);
 
-                        var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection, _factory));
+                        var result = new CommentNode(commentBuilder.ToString(), new QualifiedSelection(qualifiedName, selection));
                         commentBuilder.Clear();
                         
                         yield return result;

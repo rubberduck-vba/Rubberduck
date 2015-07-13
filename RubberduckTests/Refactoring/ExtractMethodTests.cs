@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
@@ -8,6 +9,7 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
@@ -38,15 +40,16 @@ End Function
 
             var codePaneFactory = new RubberduckCodePaneFactory();
 
-            var project = SetupMockProject(inputCode);
-            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var builder = new MockVbeBuilder();
+            VBComponent component;
+            var ide = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var project = ide.Object.VBProjects.Item(0);
+            var module = component.CodeModule;
 
-            var qualifiedSelection = GetQualifiedSelection(new Selection(4,1,4,20));
-
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
-
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
             var editor = new ActiveCodePaneEditor(module.VBE, codePaneFactory);
 
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), new Selection(4, 1, 4, 20));
             var model = new ExtractMethodModel(editor, parseResult.Declarations, qualifiedSelection);
             model.Method.Accessibility = Accessibility.Private;
             model.Method.MethodName = "Bar";

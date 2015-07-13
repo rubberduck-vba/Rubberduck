@@ -5,6 +5,7 @@ using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
@@ -12,16 +13,18 @@ namespace Rubberduck.UI
     internal class FormContextMenu
     {
         private readonly IRubberduckParser _parser;
+        private readonly IActiveCodePaneEditor _editor;
         private readonly VBE _vbe;
         private readonly IRubberduckCodePaneFactory _factory;
 
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _rename;
 
-        public FormContextMenu(VBE vbe, IRubberduckParser parser, IRubberduckCodePaneFactory factory)
+        public FormContextMenu(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _parser = parser;
+            _editor = editor;
             _factory = factory;
         }
 
@@ -60,7 +63,7 @@ namespace Rubberduck.UI
                 using (var view = new RenameDialog())
                 {
                     var factory = new RenamePresenterFactory(_vbe, view, result, new RubberduckMessageBox(), _factory);
-                    var refactoring = new RenameRefactoring(factory, new RubberduckMessageBox());
+                    var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                     refactoring.Refactor(controlToRename);
                 }
             }

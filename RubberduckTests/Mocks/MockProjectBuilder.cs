@@ -13,6 +13,7 @@ namespace RubberduckTests.Mocks
     public class MockProjectBuilder
     {
         private readonly Func<VBE> _getVbe;
+        private readonly MockVbeBuilder _mockVbeBuilder;
         private readonly Mock<VBProject> _project;
         private readonly Mock<VBComponents> _vbComponents;
         private readonly Mock<References> _vbReferences;
@@ -20,10 +21,11 @@ namespace RubberduckTests.Mocks
         private readonly List<VBComponent> _components = new List<VBComponent>();
         private readonly List<Reference> _references = new List<Reference>(); 
 
-        public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe)
+        public MockProjectBuilder(string name, vbext_ProjectProtection protection, Func<VBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
-            
+            _mockVbeBuilder = mockVbeBuilder;
+
             _project = CreateProjectMock(name, protection);
 
             _vbComponents = CreateComponentsMock();
@@ -56,6 +58,7 @@ namespace RubberduckTests.Mocks
         public MockProjectBuilder AddComponent(Mock<VBComponent> component)
         {
             _components.Add(component.Object);
+            _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
             return this;            
         }
 
@@ -72,6 +75,11 @@ namespace RubberduckTests.Mocks
             return this;
         }
 
+        public MockVbeBuilder MockVbeBuilder()
+        {
+            return _mockVbeBuilder;
+        }
+
         /// <summary>
         /// Creates a <see cref="MockUserFormBuilder"/> to build a new form component.
         /// </summary>
@@ -80,7 +88,7 @@ namespace RubberduckTests.Mocks
         public MockUserFormBuilder UserFormBuilder(string name, string content)
         {
             var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content);
-            return new MockUserFormBuilder(component);
+            return new MockUserFormBuilder(component, this);
         }
 
         /// <summary>
@@ -158,6 +166,7 @@ namespace RubberduckTests.Mocks
             result.SetupProperty(m => m.Name, name);
 
             var module = CreateCodeModuleMock(name, content);
+            module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
             result.Setup(m => m.Activate());

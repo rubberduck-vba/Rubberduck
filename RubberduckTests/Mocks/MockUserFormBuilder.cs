@@ -14,10 +14,11 @@ namespace RubberduckTests.Mocks
     public class MockUserFormBuilder
     {
         private readonly Mock<VBComponent> _component;
+        private readonly MockProjectBuilder _mockProjectBuilder;
         private readonly Mock<Controls> _vbControls;
         private readonly ICollection<Mock<Control>> _controls = new List<Mock<Control>>();
 
-        public MockUserFormBuilder(Mock<VBComponent> component)
+        public MockUserFormBuilder(Mock<VBComponent> component, MockProjectBuilder mockProjectBuilder)
         {
             if (component.Object.Type != vbext_ComponentType.vbext_ct_MSForm)
             {
@@ -25,6 +26,7 @@ namespace RubberduckTests.Mocks
             }
 
             _component = component;
+            _mockProjectBuilder = mockProjectBuilder;
             _vbControls = CreateControlsMock();
         }
 
@@ -40,6 +42,11 @@ namespace RubberduckTests.Mocks
 
             _controls.Add(control);
             return this;
+        }
+
+        public MockProjectBuilder MockProjectBuilder()
+        {
+            return _mockProjectBuilder;
         }
 
         /// <summary>
