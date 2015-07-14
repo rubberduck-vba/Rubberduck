@@ -79,12 +79,6 @@ namespace RubberduckTests.Mocks
             return AddProject(project).Build();
         }
 
-        public Mock<VBE> BuildFromSingleStandardModule(string content)
-        {
-            VBComponent discarded;
-            return BuildFromSingleStandardModule(content, out discarded);
-        }
-
         private Mock<VBE> CreateVbeMock()
         {
             var vbe = new Mock<VBE>();

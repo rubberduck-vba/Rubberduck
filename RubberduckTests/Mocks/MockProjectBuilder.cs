@@ -75,8 +75,15 @@ namespace RubberduckTests.Mocks
             return this;
         }
 
+        /// <summary>
+        /// Builds the project, adds it to the VBE,
+        /// and returns a <see cref="MockVbeBuilder"/>
+        /// to continue adding projects to the VBE.
+        /// </summary>
+        /// <returns></returns>
         public MockVbeBuilder MockVbeBuilder()
         {
+            _mockVbeBuilder.AddProject(Build());
             return _mockVbeBuilder;
         }
 

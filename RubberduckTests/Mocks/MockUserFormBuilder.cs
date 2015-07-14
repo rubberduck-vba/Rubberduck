@@ -44,8 +44,15 @@ namespace RubberduckTests.Mocks
             return this;
         }
 
+        /// <summary>
+        /// Builds the UserForm, adds it to the project,
+        /// and returns a <see cref="MockProjectBuilder"/>
+        /// to continue adding components to the project.
+        /// </summary>
+        /// <returns></returns>
         public MockProjectBuilder MockProjectBuilder()
         {
+            _mockProjectBuilder.AddComponent(Build());
             return _mockProjectBuilder;
         }
 
