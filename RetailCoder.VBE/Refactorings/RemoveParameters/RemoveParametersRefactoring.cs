@@ -265,13 +265,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
 
-            foreach (var withEvents in _model.Declarations.Items.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            var eventImplementations =
+                _model.Declarations.Items.Where(
+                    item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
+                    .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
+            foreach (var eventImplementation in eventImplementations)
             {
-                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
-                {
-                    AdjustReferences(reference.References, reference);
-                    AdjustSignatures(reference);
-                }
+                AdjustReferences(eventImplementation.References, eventImplementation);
+                AdjustSignatures(eventImplementation);
             }
 
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()

@@ -991,6 +991,135 @@ End Sub";
             Assert.AreSame(newName, project.Object.Name);
         }
 
+        [TestMethod]
+        public void RenameRefactoring_RenameSub_ConflictingNames_Reject()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim Goo As Integer
+End Sub";
+            var selection = new Selection(1, 14, 1, 14); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Foo()
+    Dim Goo As Integer
+End Sub";
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = "Goo" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(
+                m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.No);
+
+            //Act
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameSub_ConflictingNames_Accept()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim Goo As Integer
+End Sub";
+            var selection = new Selection(1, 14, 1, 14); //startLine, startCol, endLine, endCol
+
+            //Expectation
+            const string expectedCode =
+@"Private Sub Goo()
+    Dim Goo As Integer
+End Sub";
+
+            //Arrange
+            var vbe = MockFactory.CreateVbeMock();
+            var project = SetupMockProject(inputCode);
+            var module = project.Object.VBComponents.Item(0).CodeModule;
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = "Goo" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(
+                m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.Yes);
+
+            //Act
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
+
+            //Assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameCodeModule()
+        {
+            const string newName = "RenameModule";
+
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal a As Integer, ByVal b As String)
+End Sub";
+
+            var selection = new Selection(3, 27, 3, 27); //startLine, startCol, endLine, endCol
+
+            //Arrange
+            var component = CreateMockComponent(inputCode, "Class1",
+                vbext_ComponentType.vbext_ct_ClassModule);
+
+            var vbe = MockFactory.CreateVbeMock();
+            var project = CreateMockProject("VBAProject", vbext_ProjectProtection.vbext_pp_none,
+                new List<Mock<VBComponent>>() { component });
+            var projects = MockFactory.CreateProjectsMock(new List<VBProject>() { project.Object });
+
+            vbe.Setup(v => v.VBProjects).Returns(projects.Object);
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
+
+            var qualifiedSelection = GetQualifiedSelection(selection);
+
+            var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = newName };
+            model.Target = model.Declarations.Items.FirstOrDefault(i => i.DeclarationType == DeclarationType.Class && i.IdentifierName == "Class1");
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            //Act
+            var refactoring = new RenameRefactoring(factory.Object, new ActiveCodePaneEditor(vbe.Object, codePaneFactory), null);
+            refactoring.Refactor(model.Target);
+
+            //Assert
+            Assert.AreSame(newName, component.Object.CodeModule.Name);
+        }
+
         #region setup
         private static Mock<IRefactoringPresenterFactory<IRenamePresenter>> SetupFactory(RenameModel model)
         {
