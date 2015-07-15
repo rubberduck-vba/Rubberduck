@@ -1020,21 +1020,6 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-            /*
-
-            var component = CreateMockComponent(inputCode, "Class1",
-                vbext_ComponentType.vbext_ct_ClassModule);
-
-            var vbe = MockFactory.CreateVbeMock();
-            var project = CreateMockProject("VBAProject", vbext_ProjectProtection.vbext_pp_none,
-                new List<Mock<VBComponent>>() { component });
-            var projects = MockFactory.CreateProjectsMock(new List<VBProject>() { project.Object });
-
-            vbe.Setup(v => v.VBProjects).Returns(projects.Object);
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project.Object);
-
-            var qualifiedSelection = GetQualifiedSelection(selection);*/
 
             var model = new RenameModel(vbe.Object, parseResult, qualifiedSelection, null) { NewName = newName };
             model.Target = model.Declarations.Items.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
