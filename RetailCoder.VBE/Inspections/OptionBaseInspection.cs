@@ -12,9 +12,9 @@ namespace Rubberduck.Inspections
     {
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public OptionBaseInspection(IRubberduckCodePaneFactory factory)
+        public OptionBaseInspection()
         {
-            _factory = factory;
+            _factory = new RubberduckCodePaneFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 
