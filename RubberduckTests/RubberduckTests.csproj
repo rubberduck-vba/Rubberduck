@@ -187,6 +187,7 @@
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
     <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
