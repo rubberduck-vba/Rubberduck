@@ -3,6 +3,7 @@ using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
@@ -96,7 +97,6 @@ End Sub";
     var1 = 8
 
     Dim var2 as String
-    var2 = ""test""
 
     Goo var1
 End Sub
@@ -117,6 +117,34 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_ReturnsResult_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As String
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new VariableNotUsedInspection();
+            inspection.GetInspectionResults(parseResult).First().GetQuickFixes().First().Value();
+
+            Assert.AreEqual(expectedCode, module.Lines());
         }
 
         [TestMethod]
