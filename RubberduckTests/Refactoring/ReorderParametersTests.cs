@@ -1372,7 +1372,6 @@ End Sub";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
                 .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                 .Build().Object;
-            var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
             var codePaneFactory = new RubberduckCodePaneFactory();

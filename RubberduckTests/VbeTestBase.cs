@@ -108,6 +108,7 @@ namespace RubberduckTests
         {
             var codePane = MockFactory.CreateCodePaneMock(_ide, name);
             var module = MockFactory.CreateCodeModuleMock(content, codePane, _ide);
+            module.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(module.Object);
             return module;

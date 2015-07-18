@@ -189,6 +189,7 @@ namespace RubberduckTests.Mocks
             var result = CreateCodeModuleMock(content);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
+            result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
             return result;

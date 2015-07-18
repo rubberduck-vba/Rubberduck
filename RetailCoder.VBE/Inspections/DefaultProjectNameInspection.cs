@@ -11,9 +11,9 @@ namespace Rubberduck.Inspections
     {
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public GenericProjectNameInspection(IRubberduckCodePaneFactory factory)
+        public GenericProjectNameInspection()
         {
-            _factory = factory;
+            _factory = new RubberduckCodePaneFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
