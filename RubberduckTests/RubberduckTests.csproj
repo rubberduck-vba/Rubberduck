@@ -186,6 +186,7 @@
   <ItemGroup>
     <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
