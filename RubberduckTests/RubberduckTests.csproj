@@ -190,6 +190,7 @@
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
