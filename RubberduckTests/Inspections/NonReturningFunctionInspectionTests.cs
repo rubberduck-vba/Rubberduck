@@ -10,14 +10,14 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ImplicitPublicMemberInspectionTests : VbeTestBase
+    public class NonReturningFunctionInspectionTests : VbeTestBase
     {
         [TestMethod]
-        public void ImplicitPublicMember_ReturnsResult_Sub()
+        public void NonReturningFunction_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
-End Sub";
+@"Function Foo() As Boolean
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -28,14 +28,39 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new ImplicitPublicMemberInspection();
+            var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ImplicitPublicMember_ReturnsResult_Function()
+        public void NonReturningFunction_ReturnsResult_MultipleFunctions()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+End Function
+
+Function Goo() As String
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new NonReturningFunctionInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void NonReturningFunction_DoesNotReturnResult()
         {
             const string inputCode =
 @"Function Foo() As Boolean
@@ -51,68 +76,22 @@ End Function";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new ImplicitPublicMemberInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
-        {
-            const string inputCode =
-@"Sub Foo()
-End Sub
-
-Sub Goo()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var inspection = new ImplicitPublicMemberInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
-
-            Assert.AreEqual(2, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void ImplicitPublicMember_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Private Sub Foo()
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var inspection = new ImplicitPublicMemberInspection();
+            var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
+        public void NonReturningFunction_ReturnsResult_MultipleSubs_SomeNoneReturning()
         {
             const string inputCode =
-@"Private Sub Foo()
-End Sub
+@"Function Foo() As Boolean
+    Foo = True
+End Function
 
-Sub Goo()
-End Sub";
+Function Goo() As String
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
@@ -123,21 +102,50 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new ImplicitPublicMemberInspection();
+            var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void ImplicitPublicMember_QuickFixWorks()
+        public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Function Foo() As Boolean
+End Function";
+            const string inputCode2 =
+@"Implements IClass1
+
+Function IClass1_Foo() As Boolean
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new NonReturningFunctionInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void NonReturningFunction_QuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(ByVal arg1 as Integer)
-End Sub";
+@"Function Foo() As Boolean
+End Function";
 
             const string expectedCode =
-@"Public Sub Foo(ByVal arg1 as Integer)
+@"Sub Foo()
 End Sub";
 
             //Arrange
@@ -150,7 +158,7 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new ImplicitPublicMemberInspection();
+            var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             inspectionResults.First().GetQuickFixes().First().Value();
@@ -161,15 +169,15 @@ End Sub";
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new ImplicitPublicMemberInspection();
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            var inspection = new NonReturningFunctionInspection();
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "ImplicitPublicMemberInspection";
-            var inspection = new ImplicitPublicMemberInspection();
+            const string inspectionName = "NonReturningFunctionInspection";
+            var inspection = new NonReturningFunctionInspection();
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
