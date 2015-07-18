@@ -7,17 +7,17 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    class GenericProjectNameInspection : IInspection
+    public class DefaultProjectNameInspection : IInspection
     {
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public GenericProjectNameInspection()
+        public DefaultProjectNameInspection()
         {
             _factory = new RubberduckCodePaneFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        public string Name { get { return "GenericProjectNameInspection"; } }
+        public string Name { get { return "DefaultProjectNameInspection"; } }
         public string Description { get { return RubberduckUI.GenericProjectName_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new GenericProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _factory))
+                            .Select(issue => new DefaultProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _factory))
                             .ToList();
 
             return issues;

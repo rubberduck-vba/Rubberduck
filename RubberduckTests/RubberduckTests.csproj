@@ -184,6 +184,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />

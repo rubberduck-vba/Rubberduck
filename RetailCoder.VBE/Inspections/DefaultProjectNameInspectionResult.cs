@@ -10,12 +10,12 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
-    public class GenericProjectNameInspectionResult : CodeInspectionResultBase
+    public class DefaultProjectNameInspectionResult : CodeInspectionResultBase
     {
         private readonly VBProjectParseResult _parseResult;
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckCodePaneFactory factory) 
+        public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckCodePaneFactory factory) 
             : base(inspection, type, target)
         {
             _parseResult = parseResult;
