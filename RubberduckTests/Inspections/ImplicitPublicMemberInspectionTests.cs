@@ -13,11 +13,34 @@ namespace RubberduckTests.Inspections
     public class ImplicitPublicMemberInspectionTests : VbeTestBase
     {
         [TestMethod]
-        public void ImplicitPublicMember_ReturnsResult()
+        public void ImplicitPublicMember_ReturnsResult_Sub()
         {
             const string inputCode =
 @"Sub Foo()
 End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new ImplicitPublicMemberInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void ImplicitPublicMember_ReturnsResult_Function()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+    Foo = True
+End Function";
 
             //Arrange
             var builder = new MockVbeBuilder();
