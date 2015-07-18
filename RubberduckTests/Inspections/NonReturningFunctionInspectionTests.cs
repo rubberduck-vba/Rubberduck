@@ -167,6 +167,35 @@ End Sub";
         }
 
         [TestMethod]
+        public void NonReturningFunction_ReturnsResult_InterfaceImplementation_NoQuickFix()
+        {
+            //Input
+            const string inputCode1 =
+@"Function Foo() As Boolean
+End Function";
+            const string inputCode2 =
+@"Implements IClass1
+
+Function IClass1_Foo() As Boolean
+End Function";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("IClass1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new NonReturningFunctionInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            Assert.AreEqual(0, inspectionResults.First().GetQuickFixes().Count);
+        }
+
+        [TestMethod]
         public void InspectionType()
         {
             var inspection = new NonReturningFunctionInspection();
