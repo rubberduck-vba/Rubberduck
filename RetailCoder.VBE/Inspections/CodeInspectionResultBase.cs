@@ -5,19 +5,15 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
-        private readonly IRubberduckCodePaneFactory _factory;
-
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target, IRubberduckCodePaneFactory factory)
+        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
             : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
-            _factory = factory;
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections
         private readonly IRubberduckCodePaneFactory _factory;
 
         public GenericProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckCodePaneFactory factory) 
-            : base(inspection, type, target, factory)
+            : base(inspection, type, target)
         {
             _parseResult = parseResult;
             _factory = factory;
