@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ProcedureNotUsedInspectionTests : VbeTestBase
+    public class ProcedureNotUsedInspectionTests
     {
         [TestMethod]
         public void ProcedureNotUsed_ReturnsResult()

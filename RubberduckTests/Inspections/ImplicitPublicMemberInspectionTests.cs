@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ImplicitPublicMemberInspectionTests : VbeTestBase
+    public class ImplicitPublicMemberInspectionTests
     {
         [TestMethod]
         public void ImplicitPublicMember_ReturnsResult_Sub()

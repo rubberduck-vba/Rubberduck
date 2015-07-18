@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class OptionExplicitInspectionTests : VbeTestBase
+    public class OptionExplicitInspectionTests
     {
         [TestMethod]
         public void NotAlreadySpecified_ReturnsResult()

@@ -1126,6 +1126,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write variable on one line.
+        /// </summary>
+        internal static string Inspections_MultilineParameter {
+            get {
+                return ResourceManager.GetString("Inspections_MultilineParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pass parameter by reference.
         /// </summary>
         internal static string Inspections_PassParamByReference {

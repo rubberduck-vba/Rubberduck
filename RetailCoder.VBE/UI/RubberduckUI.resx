@@ -1116,4 +1116,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
   </data>
+  <data name="Inspections_MultilineParameter" xml:space="preserve">
+    <value>Write variable on one line</value>
+  </data>
 </root>

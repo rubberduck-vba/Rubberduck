@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class VariableNeverUsedInspectionTests : VbeTestBase
+    public class VariableNeverUsedInspectionTests
     {
         [TestMethod]
         public void VariableNotAssigned_ReturnsResult()

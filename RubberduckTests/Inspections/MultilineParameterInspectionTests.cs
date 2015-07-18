@@ -10,14 +10,16 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class VariableIsNeverAssignedInspectionTests
+    public class MultilineParameterInspectionTests
     {
         [TestMethod]
-        public void VariableNotAssigned_ReturnsResult()
+        public void MultilineParameter_ReturnsResult()
         {
-            const string inputCode =
-@"Sub Foo()
-    Dim var1 As String
+            const string inputCode = 
+@"Public Sub Foo(ByVal _
+    Var1 _
+    As _
+    Integer)
 End Sub";
 
             //Arrange
@@ -29,19 +31,17 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new VariableNotAssignedInspection();
+            var inspection = new MultilineParameterInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void UnassignedVariable_ReturnsResult_MultipleVariables()
+        public void MultilineParameter_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
-    Dim var1 As String
-    Dim var2 As Date
+@"Public Sub Foo(ByVal Var1 As Integer)
 End Sub";
 
             //Arrange
@@ -53,45 +53,25 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new VariableNotAssignedInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
-
-            Assert.AreEqual(2, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        public void UnassignedVariable_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Function Foo() As Boolean
-    Dim var1 as String
-    var1 = ""test""
-End Function";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var inspection = new VariableNotAssignedInspection();
+            var inspection = new MultilineParameterInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
+        public void MultilineParameter_ReturnsMultipleResults()
         {
             const string inputCode =
-@"Sub Foo()
-    Dim var1 as Integer
-    var1 = 8
-
-    Dim var2 as String
+@"Public Sub Foo( _
+    ByVal _
+    Var1 _
+    As _
+    Integer, _
+    ByVal _
+    Var2 _
+    As _
+    Date)
 End Sub";
 
             //Arrange
@@ -103,22 +83,51 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new VariableNotAssignedInspection();
+            var inspection = new MultilineParameterInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        public void MultilineParameter_ReturnsResults_SomeParams()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByVal _
+    Var1 _
+    As _
+    Integer, ByVal Var2 As Date)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var inspection = new MultilineParameterInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
-        public void UnassignedVariable_QuickFixWorks()
+        public void MultilineParameter_QuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
-    Dim var1 as Integer
+@"Public Sub Foo( _
+    ByVal _
+    Var1 _
+    As _
+    Integer)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+@"Public Sub Foo( _
+    ByVal Var1 As Integer)
 End Sub";
 
             //Arrange
@@ -131,8 +140,10 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var inspection = new VariableNotAssignedInspection();
-            inspection.GetInspectionResults(parseResult).First().GetQuickFixes().First().Value();
+            var inspection = new MultilineParameterInspection();
+            var inspectionResults = inspection.GetInspectionResults(parseResult);
+
+            inspectionResults.First().GetQuickFixes().First().Value();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -140,15 +151,15 @@ End Sub";
         [TestMethod]
         public void InspectionType()
         {
-            var inspection = new VariableNotAssignedInspection();
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            var inspection = new MultilineParameterInspection();
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         public void InspectionName()
         {
-            const string inspectionName = "VariableNotAssignedInspection";
-            var inspection = new VariableNotAssignedInspection();
+            const string inspectionName = "MultilineParameterInspection";
+            var inspection = new MultilineParameterInspection();
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

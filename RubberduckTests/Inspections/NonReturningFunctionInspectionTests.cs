@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class NonReturningFunctionInspectionTests : VbeTestBase
+    public class NonReturningFunctionInspectionTests
     {
         [TestMethod]
         public void NonReturningFunction_ReturnsResult()
