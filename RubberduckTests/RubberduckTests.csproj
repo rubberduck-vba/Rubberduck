@@ -185,6 +185,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
