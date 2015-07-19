@@ -13,7 +13,7 @@ namespace RubberduckTests.Inspections
     public class ConstantNotUsedInspectionTests
     {
         [TestMethod]
-        public void ConstantNotUsed_ReturnsResult_Sub()
+        public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -87,7 +87,7 @@ End Sub";
         }
 
         [TestMethod]
-        public void ConstantNotUsed_ReturnsResult_SomeAssignedByValParams()
+        public void ConstantNotUsed_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
 @"Public Sub Foo()

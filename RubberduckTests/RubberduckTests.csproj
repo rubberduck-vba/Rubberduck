@@ -189,6 +189,7 @@
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
