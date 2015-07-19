@@ -184,6 +184,25 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
+    <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
+    <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
+    <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteLetStatementInspectionTests.cs" />
+    <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
+    <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\ProcedureNotUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableIsNeverAssignedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableNeverUsedInspectionTests.cs" />
+    <Compile Include="Inspections\VariableTypeNotDeclaredInspectionTests.cs" />
     <Compile Include="Mocks\MockProjectBuilder.cs" />
     <Compile Include="Mocks\MockFactory.cs" />
     <Compile Include="Mocks\MockUserFormBuilder.cs" />

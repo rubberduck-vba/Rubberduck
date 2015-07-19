@@ -6,19 +6,15 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Inspections
 {
     public class MultipleDeclarationsInspectionResult : CodeInspectionResultBase
     {
-        private readonly IRubberduckCodePaneFactory _factory;
-        
         public MultipleDeclarationsInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext, IRubberduckCodePaneFactory factory)
+            QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _factory = factory;
         }
 
         public override IDictionary<string, Action> GetQuickFixes()
