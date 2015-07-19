@@ -193,6 +193,7 @@
     <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteGlobalInspectionTests.cs" />
     <Compile Include="Inspections\OptionExplicitInspectionTests.cs" />
     <Compile Include="Inspections\ParameterCanBeByValInspectionTests.cs" />
     <Compile Include="Inspections\ParameterNotUsedInspectionTests.cs" />

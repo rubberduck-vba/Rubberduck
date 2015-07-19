@@ -32,18 +32,7 @@ namespace Rubberduck.Inspections
 
             var selection = Context.GetSelection();
 
-            // remove line continuations to compare against Context:
-            var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
-                                          .Replace("\r\n", " ")
-                                          .Replace("_", string.Empty);
-            var originalInstruction = Context.GetText();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = Tokens.Public + ' ' + Context.GetText().Replace(Tokens.Global + ' ', string.Empty);
-            var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            module.InsertLines(selection.StartLine, newCodeLines);
+            module.ReplaceLine(selection.StartLine, Tokens.Public + ' ' + Context.GetText());
         }
     }
 }
