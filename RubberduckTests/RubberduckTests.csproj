@@ -188,6 +188,7 @@
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
     <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
