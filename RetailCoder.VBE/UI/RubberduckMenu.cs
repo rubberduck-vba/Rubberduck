@@ -28,7 +28,7 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationLoader _configService;
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _factory;
@@ -40,7 +40,7 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IRubberduckCodePaneFactory factory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationLoader configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _addIn = addIn;

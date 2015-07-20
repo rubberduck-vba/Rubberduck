@@ -3,6 +3,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.VBEditor
 {
+    // todo: fix VBE dependency and move back to Rubberduck.VBEditor, or create VBEditor namespace in this assembly.
     public class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
@@ -46,7 +47,6 @@ namespace Rubberduck.VBEditor
 
         public string GetLines(Selection selection)
         {
-            // ReSharper disable once UseIndexedProperty
             return Editor.get_Lines(selection.StartLine, selection.LineCount);
         }
 
