@@ -191,12 +191,10 @@ namespace Rubberduck.UI.CodeInspections
             catch (TaskCanceledException)
             {
             }
-            finally
-            {
-                Control.SetIssuesStatus(_issues, true);
-                Control.EnableRefresh();
-                Control.Cursor = Cursors.Default;
-            }
+
+            Control.SetIssuesStatus(_issues, true);
+            Control.EnableRefresh();
+            Control.Cursor = Cursors.Default;
         }
 
         private async Task RefreshAsync(CancellationToken token)
