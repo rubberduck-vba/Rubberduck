@@ -193,6 +193,7 @@
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
     <Compile Include="Inspections\MultipleDeclarationsInspectionTests.cs" />
     <Compile Include="Inspections\NonReturningFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteCallStatementInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteCommentSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteGlobalInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteLetStatementInspectionTests.cs" />
