@@ -35,7 +35,14 @@ namespace Rubberduck.UI.ParserErrors
         }
     }
 
-    public class ParserErrorsPresenter : DockablePresenterBase
+    public interface IParserErrorsPresenter
+    {
+        void Show();
+        void Clear();
+        void AddError(ParseErrorEventArgs error);
+    }
+
+    public class ParserErrorsPresenter : DockablePresenterBase, IParserErrorsPresenter
     {
         public ParserErrorsPresenter(VBE vbe, AddIn addin) 
             : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption))

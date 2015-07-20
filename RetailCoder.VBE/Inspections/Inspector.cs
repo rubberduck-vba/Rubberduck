@@ -13,10 +13,10 @@ namespace Rubberduck.Inspections
     public class Inspector : IInspector, IDisposable
     {
         private readonly IRubberduckParser _parser;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationLoader _configService;
         private readonly IList<IInspection> _inspections;
 
-        public Inspector(IRubberduckParser parser, IGeneralConfigService configService)
+        public Inspector(IRubberduckParser parser, IConfigurationLoader configService)
         {
             _parser = parser;
             _parser.ParseStarted += _parser_ParseStarted;

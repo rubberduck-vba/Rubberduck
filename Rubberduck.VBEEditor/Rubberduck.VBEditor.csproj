@@ -60,7 +60,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveCodePaneEditor.cs" />
     <Compile Include="DocumentEventHandlerPrefixes.cs" />
     <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="CodeModuleSelection.cs" />

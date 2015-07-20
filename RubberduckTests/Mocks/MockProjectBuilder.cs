@@ -51,7 +51,7 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Adds a new mock component to the project.
         /// Use the <see cref="AddComponent(string,vbext_ComponentType,string)"/> overload to add module components.
-        /// Use this overload to add user forms created with a <see cref="MockUserFormBuilder"/> instance.
+        /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
@@ -88,11 +88,11 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Creates a <see cref="MockUserFormBuilder"/> to build a new form component.
+        /// Creates a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> to build a new form component.
         /// </summary>
         /// <param name="name">The name of the component.</param>
         /// <param name="content">The VBA code associated to the component.</param>
-        public MockUserFormBuilder UserFormBuilder(string name, string content)
+        public MockUserFormBuilder MockUserFormBuilder(string name, string content)
         {
             var component = CreateComponentMock(name, vbext_ComponentType.vbext_ct_MSForm, content);
             return new MockUserFormBuilder(component, this);
