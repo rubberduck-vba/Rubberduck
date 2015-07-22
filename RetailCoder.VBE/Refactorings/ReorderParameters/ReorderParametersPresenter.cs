@@ -12,9 +12,9 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly IReorderParametersView _view;
         private readonly ReorderParametersModel _model;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(IReorderParametersView view, ReorderParametersModel model, IRubberduckMessageBox messageBox)
         {
             _view = view;
             _model = model;

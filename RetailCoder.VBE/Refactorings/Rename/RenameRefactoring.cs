@@ -17,10 +17,10 @@ namespace Rubberduck.Refactorings.Rename
     {
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
         private RenameModel _model;
 
-        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public RenameRefactoring(IRefactoringPresenterFactory<IRenamePresenter> factory, IActiveCodePaneEditor editor, IRubberduckMessageBox messageBox)
         {
             _factory = factory;
             _editor = editor;

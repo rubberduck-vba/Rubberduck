@@ -9,10 +9,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly IActiveCodePaneEditor _editor;
         private readonly IReorderParametersView _view;
         private readonly VBProjectParseResult _parseResult;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
         public ReorderParametersPresenterFactory(IActiveCodePaneEditor editor, IReorderParametersView view,
-            VBProjectParseResult parseResult, IMessageBox messageBox)
+            VBProjectParseResult parseResult, IRubberduckMessageBox messageBox)
         {
             _editor = editor;
             _view = view;

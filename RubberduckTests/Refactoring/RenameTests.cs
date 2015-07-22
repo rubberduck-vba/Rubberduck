@@ -636,7 +636,7 @@ End Sub";
             var module1 = project.VBComponents.Item(0).CodeModule;
             var module2 = project.VBComponents.Item(1).CodeModule;
 
-            var messageBox = new Mock<IMessageBox>();
+            var messageBox = new Mock<IRubberduckMessageBox>();
             messageBox.Setup(
                 m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                 .Returns(DialogResult.Yes);
@@ -684,7 +684,7 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var messageBox = new Mock<IMessageBox>();
+            var messageBox = new Mock<IRubberduckMessageBox>();
             messageBox.Setup(
                 m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                 .Returns(DialogResult.No);
@@ -1067,7 +1067,7 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var messageBox = new Mock<IMessageBox>();
+            var messageBox = new Mock<IRubberduckMessageBox>();
             messageBox.Setup(
                 m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
@@ -1113,7 +1113,7 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var messageBox = new Mock<IMessageBox>();
+            var messageBox = new Mock<IRubberduckMessageBox>();
             messageBox.Setup(
                 m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),

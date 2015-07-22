@@ -239,6 +239,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindAllImplementations\FindAllImplementations.cs" />
+    <Compile Include="FindAllImplementations\IFindAllImplementations.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
@@ -294,7 +296,7 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\IMessageBox.cs" />
+    <Compile Include="UI\IRubberduckMessageBox.cs" />
     <Compile Include="UI\Settings\AddMarkerForm.cs">
       <SubType>Form</SubType>
     </Compile>
