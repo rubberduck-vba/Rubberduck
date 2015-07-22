@@ -11,7 +11,7 @@ using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
-namespace Rubberduck.FindAllImplementations
+namespace Rubberduck.Navigations
 {
     public class FindAllImplementations : IFindAllImplementations
     {

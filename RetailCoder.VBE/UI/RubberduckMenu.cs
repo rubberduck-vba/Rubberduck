@@ -4,7 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Parameters;
-using Rubberduck.FindAllImplementations;
+using Rubberduck.Navigations;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;

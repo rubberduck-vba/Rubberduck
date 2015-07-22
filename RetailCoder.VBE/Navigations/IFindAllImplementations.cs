@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.FindAllImplementations
+namespace Rubberduck.Navigations
 {
     public interface IFindAllImplementations
     {
