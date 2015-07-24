@@ -31,9 +31,9 @@ namespace Rubberduck.Refactorings.Rename
 
         public string NewName { get; set; }
 
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
-        public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public RenameModel(VBE vbe, VBProjectParseResult parseResult, QualifiedSelection selection, IRubberduckMessageBox messageBox)
         {
             _vbe = vbe;
             _parseResult = parseResult;

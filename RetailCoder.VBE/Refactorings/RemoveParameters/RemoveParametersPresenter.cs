@@ -12,9 +12,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly IRemoveParametersView _view;
         private readonly RemoveParametersModel _model;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
-        public RemoveParametersPresenter(IRemoveParametersView view, RemoveParametersModel model, IMessageBox messageBox)
+        public RemoveParametersPresenter(IRemoveParametersView view, RemoveParametersModel model, IRubberduckMessageBox messageBox)
         {
             _view = view;
             _model = model;

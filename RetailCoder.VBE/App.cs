@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Navigations;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -23,8 +24,9 @@ namespace Rubberduck
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IConfigurationLoader _configService = new ConfigurationLoader();
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly IRubberduckCodePaneFactory _codePaneFactory;
         private readonly IRubberduckParser _parser;
+        private readonly IFindAllImplementations _findAllImplementations;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -33,12 +35,13 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor)
+        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllImplementations findAllImplementations)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _factory = factory;
+            _codePaneFactory = factory;
             _parser = parser;
+            _findAllImplementations = findAllImplementations;
 
             _parserErrorsPresenter = presenter;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -47,7 +50,7 @@ namespace Rubberduck
             // could it be that the VBE type in the two assemblies is actually different? 
             // aren't the two assemblies using the exact same Microsoft.Vbe.Interop assemby?
             
-            _editor = editor; // */ new ActiveCodePaneEditor(vbe, _factory);
+            _editor = editor; // */ new ActiveCodePaneEditor(vbe, _codePaneFactory);
 
             LoadConfig();
 
@@ -84,7 +87,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            //_parser = new RubberduckParser(_factory);
+            //_parser = new RubberduckParser(_codePaneFactory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -92,10 +95,10 @@ namespace Rubberduck
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _factory);
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllImplementations, _codePaneFactory);
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _factory);
+            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _codePaneFactory);
             _formContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);

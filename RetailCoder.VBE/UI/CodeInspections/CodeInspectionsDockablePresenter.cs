@@ -176,27 +176,19 @@ namespace Rubberduck.UI.CodeInspections
             Control.EnableRefresh(false);
             Control.Cursor = Cursors.WaitCursor;
 
-            try
+            await Task.Run(() => RefreshAsync(token), token);
+            if (_results != null)
             {
-                await Task.Run(() => RefreshAsync(token), token);
-                if (_results != null)
-                {
-                    var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
+                var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
 
-                    Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
-                    _gridViewSort.Sort(results, _gridViewSort.ColumnName,
-                        _gridViewSort.SortedAscending).ToList()));
-                }
+                Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
+                _gridViewSort.Sort(results, _gridViewSort.ColumnName,
+                    _gridViewSort.SortedAscending).ToList()));
             }
-            catch (TaskCanceledException)
-            {
-            }
-            finally
-            {
-                Control.SetIssuesStatus(_issues, true);
-                Control.EnableRefresh();
-                Control.Cursor = Cursors.Default;
-            }
+
+            Control.SetIssuesStatus(_issues, true);
+            Control.EnableRefresh();
+            Control.Cursor = Cursors.Default;
         }
 
         private async Task RefreshAsync(CancellationToken token)
