@@ -36,6 +36,7 @@ namespace Rubberduck.UI
         private readonly AddIn _addIn;
         private readonly IFindAllReferences _findAllReferences;
         private readonly IFindAllImplementations _findAllImplementations;
+        private readonly IFindSymbol _findSymbol;
 
         private CommandBarButton _about;
         private CommandBarButton _settings;
@@ -43,7 +44,7 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationLoader configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IRubberduckCodePaneFactory factory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationLoader configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _addIn = addIn;
@@ -53,6 +54,7 @@ namespace Rubberduck.UI
             _configService = configService;
             _findAllReferences = findAllReferences;
             _findAllImplementations = findAllImplementations;
+            _findSymbol = findSymbol;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
@@ -80,7 +82,7 @@ namespace Rubberduck.UI
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort, _factory);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _findAllReferences, _findAllImplementations, _factory);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _findAllReferences, _findAllImplementations, _findSymbol, _factory);
         }
 
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)

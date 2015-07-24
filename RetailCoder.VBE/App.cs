@@ -28,6 +28,7 @@ namespace Rubberduck
         private readonly IRubberduckParser _parser;
         private readonly IFindAllReferences _findAllReferences;
         private readonly IFindAllImplementations _findAllImplementations;
+        private readonly IFindSymbol _findSymbol;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -36,7 +37,7 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations)
+        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol)
         {
             _vbe = vbe;
             _addIn = addIn;
@@ -44,6 +45,7 @@ namespace Rubberduck
             _parser = parser;
             _findAllReferences = findAllReferences;
             _findAllImplementations = findAllImplementations;
+            _findSymbol = findSymbol;
 
             _parserErrorsPresenter = presenter;
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -98,7 +100,7 @@ namespace Rubberduck
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllReferences,
-                _findAllImplementations, _codePaneFactory);
+                _findAllImplementations, _findSymbol, _codePaneFactory);
             _menu.Initialize();
 
             _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _codePaneFactory);

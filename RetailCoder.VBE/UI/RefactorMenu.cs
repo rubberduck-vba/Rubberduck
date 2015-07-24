@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -13,8 +12,6 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI.FindSymbol;
-using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
@@ -27,20 +24,18 @@ namespace Rubberduck.UI
         private readonly IActiveCodePaneEditor _editor;
         private readonly IFindAllReferences _findAllReferences;
         private readonly IFindAllImplementations _findAllImplementations;
+        private readonly IFindSymbol _findSymbol;
         private readonly IRubberduckCodePaneFactory _factory;
 
-        private readonly SearchResultIconCache _iconCache;
-
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IRubberduckCodePaneFactory factory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory factory)
             : base(vbe, addin)
         {
             _parser = parser;
             _editor = editor;
             _findAllReferences = findAllReferences;
             _findAllImplementations = findAllImplementations;
+            _findSymbol = findSymbol;
             _factory = factory;
-
-            _iconCache = new SearchResultIconCache();
         }
 
         private CommandBarButton _extractMethodButton;
@@ -92,8 +87,8 @@ namespace Rubberduck.UI
             _removeParametersContextButton = AddButton(_refactorCodePaneContextMenu, RubberduckUI.RefactorMenu_RemoveParameter, false, OnRemoveParameterButtonClick);
             SetButtonImage(_removeParametersContextButton, Resources.RemoveParameters_6781_32, Resources.RemoveParameters_6781_32_Mask);
 
-            InitializeFindReferencesContextMenu(); //todo: untangle that mess...
-            InitializeFindImplementationsContextMenu(); //todo: untangle that mess...
+            InitializeFindReferencesContextMenu();
+            InitializeFindImplementationsContextMenu();
             InitializeFindSymbolContextMenu();
         }
 
@@ -141,37 +136,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            FindSymbol();
-        }
-
-        private void FindSymbol()
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-            var declarations = result.Declarations;
-            var vm = new FindSymbolViewModel(declarations.Items.Where(item => !item.IsBuiltIn), _iconCache);
-            using (var view = new FindSymbolDialog(vm))
-            {
-                view.Navigate += view_Navigate;
-                view.ShowDialog();
-            }
-        }
-
-        private void view_Navigate(object sender, NavigateCodeEventArgs e)
-        {
-            if (e.QualifiedName.Component == null)
-            {
-                return;
-            }
-
-            try
-            {
-                var codePane = _factory.Create(e.QualifiedName.Component.CodeModule.CodePane);
-                codePane.Selection = e.Selection;
-            }
-            catch (COMException)
-            {
-            }
+            _findSymbol.Find();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
