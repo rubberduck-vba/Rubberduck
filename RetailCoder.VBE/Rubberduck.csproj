@@ -240,8 +240,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Navigations\FindAllImplementations.cs" />
+    <Compile Include="Navigations\FindAllReferences.cs" />
     <Compile Include="Navigations\IFindAllImplementations.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
+    <Compile Include="Navigations\IFindAllReferences.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />

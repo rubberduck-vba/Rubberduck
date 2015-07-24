@@ -26,6 +26,7 @@ namespace Rubberduck
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _codePaneFactory;
         private readonly IRubberduckParser _parser;
+        private readonly IFindAllReferences _findAllReferences;
         private readonly IFindAllImplementations _findAllImplementations;
 
         private Configuration _config;
@@ -35,12 +36,13 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllImplementations findAllImplementations)
+        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations)
         {
             _vbe = vbe;
             _addIn = addIn;
             _codePaneFactory = factory;
             _parser = parser;
+            _findAllReferences = findAllReferences;
             _findAllImplementations = findAllImplementations;
 
             _parserErrorsPresenter = presenter;
@@ -95,7 +97,8 @@ namespace Rubberduck
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllImplementations, _codePaneFactory);
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllReferences,
+                _findAllImplementations, _codePaneFactory);
             _menu.Initialize();
 
             _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _codePaneFactory);
