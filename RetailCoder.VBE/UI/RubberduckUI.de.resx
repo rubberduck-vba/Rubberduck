@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1012,100 +1012,103 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
   <data name="SourceControl_UntrackedFiles" xml:space="preserve">
     <value>Nicht verfolgte Dateien</value>
   </data>
-  <data name="SourceControl_SuccessfulMerge">
+  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
     <value>{0} efolgreich mit {1} zusammengeführt</value>
   </data>
-  <data name="FormContextMenu_Rename">
+  <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Umbe&amp;nennen</value>
   </data>
-  <data name="SourceControl_MergeFormInstructions">
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
     <value>Bitte wählen Sie Quell- und Zielzweig</value>
   </data>
-  <data name="SourceControl_DeleteBranchTitleLable">
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
     <value>Zweig löschen</value>
   </data>
-  <data name="CodeInspectionSeverity_DoNotShow">
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
     <value>NIcht anzeigen</value>
   </data>
-  <data name="SourceControl_CreateNewBranchTitle">
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
     <value>Neuer Zweig</value>
   </data>
-  <data name="CodeExplorer_New">
+  <data name="CodeExplorer_New" xml:space="preserve">
     <value>&amp;Neu</value>
   </data>
-  <data name="SourceControl_DeleteBranchCaption">
+  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
     <value>Rubberduck - Zweig löschen</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues_Singular">
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
     <value>{0} Problem</value>
   </data>
-  <data name="CodeInspectionSeverity_Warning">
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
     <value>Warnung</value>
   </data>
-  <data name="CodeInspections_InspectingIssues_Plural">
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} Probleme)</value>
   </data>
-  <data name="TodoSettings_TextLabel">
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
   </data>
-  <data name="TodoSettings_Priority">
+  <data name="TodoSettings_Priority" xml:space="preserve">
     <value>Wichtigkeit</value>
   </data>
-  <data name="SourceControl_DeleteBranchInstructionsLabel">
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
     <value>Bitte geben Sie einen Zweignamen an.</value>
   </data>
-  <data name="CodeInspectionSeverity_Hint">
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
     <value>Tipp</value>
   </data>
-  <data name="SourceControl_CreateNewBranchCaption">
+  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
     <value>Rubberduck - Zweig erstellen</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Singular">
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck Code Untersuchungen - {0} {1} Problem gefunden.</value>
   </data>
-  <data name="SourceControl_NoRepoFound">
+  <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>Kein Repository gefunden.</value>
   </data>
-  <data name="SourceControl_MergeFormTitle">
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Zweige zusammenführen</value>
   </data>
-  <data name="TodoSettings_Text">
+  <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
   </data>
-  <data name="SourceControl_CreateNewBranchInstructions">
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
     <value>Bitte geben sie einen Zweignamen an.</value>
   </data>
-  <data name="CodeExplorer_Inspect">
+  <data name="CodeExplorer_Inspect" xml:space="preserve">
     <value>&amp;Inspizieren</value>
   </data>
-  <data name="CodeInspections_NumberOfIssues_Plural">
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} Probleme</value>
   </data>
-  <data name="CodeExplorer_Refresh">
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="CodeExplorer_Navigate">
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigieren</value>
   </data>
-  <data name="CodeInspections_InspectingIssues_Singular">
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} Problem)</value>
   </data>
-  <data name="CodeInspectionSeverity_Suggestion">
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
     <value>Vorschlag</value>
   </data>
-  <data name="CodeInspections_NumberOfIssuesFound_Plural">
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Untersuchungen - {0} {1} Probleme gefunden</value>
   </data>
-  <data name="ToDoPriority_Medium">
+  <data name="ToDoPriority_Medium" xml:space="preserve">
     <value>Mittel</value>
   </data>
-  <data name="ToDoPriority_High">
+  <data name="ToDoPriority_High" xml:space="preserve">
     <value>Hoch</value>
   </data>
-  <data name="ToDoPriority_Low">
+  <data name="ToDoPriority_Low" xml:space="preserve">
     <value>Gering</value>
   </data>
-  <data name="CodeInspectionSeverity_Error">
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Deutsch</value>
   </data>
 </root>
