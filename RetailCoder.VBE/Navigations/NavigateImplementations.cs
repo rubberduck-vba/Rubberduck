@@ -13,7 +13,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigations
 {
-    public class FindAllImplementations : IFindAllImplementations
+    public class NavigateImplementations : INavigateImplementations
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
@@ -21,7 +21,7 @@ namespace Rubberduck.Navigations
         private readonly IRubberduckCodePaneFactory _codePaneFactory;
         private readonly IRubberduckMessageBox _messageBox;
 
-        public FindAllImplementations(VBE vbe, AddIn addIn, IRubberduckParser parser, IRubberduckCodePaneFactory codePaneFactory, IRubberduckMessageBox messageBox)
+        public NavigateImplementations(VBE vbe, AddIn addIn, IRubberduckParser parser, IRubberduckCodePaneFactory codePaneFactory, IRubberduckMessageBox messageBox)
         {
             _vbe = vbe;
             _addIn = addIn;

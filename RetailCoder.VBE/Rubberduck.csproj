@@ -239,8 +239,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Navigations\FindAllImplementations.cs" />
-    <Compile Include="Navigations\IFindAllImplementations.cs" />
+    <Compile Include="Navigations\NavigateImplementations.cs" />
+    <Compile Include="Navigations\INavigateImplementations.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />

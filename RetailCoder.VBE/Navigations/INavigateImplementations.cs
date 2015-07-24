@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Navigations
 {
-    public interface IFindAllImplementations
+    public interface INavigateImplementations
     {
         void Find();
         void Find(Declaration target);

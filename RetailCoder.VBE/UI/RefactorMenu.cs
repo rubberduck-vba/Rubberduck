@@ -25,17 +25,17 @@ namespace Rubberduck.UI
     {
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IFindAllImplementations _findAllImplementations;
+        private readonly INavigateImplementations _navigateImplementations;
         private readonly IRubberduckCodePaneFactory _factory;
 
         private readonly SearchResultIconCache _iconCache;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IFindAllImplementations findAllImplementations, IRubberduckCodePaneFactory factory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, INavigateImplementations navigateImplementations, IRubberduckCodePaneFactory factory)
             : base(vbe, addin)
         {
             _parser = parser;
             _editor = editor;
-            _findAllImplementations = findAllImplementations;
+            _navigateImplementations = navigateImplementations;
             _factory = factory;
 
             _iconCache = new SearchResultIconCache();
@@ -245,7 +245,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            _findAllImplementations.Find();
+            _navigateImplementations.Find();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]

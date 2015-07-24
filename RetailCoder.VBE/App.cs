@@ -26,7 +26,7 @@ namespace Rubberduck
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _codePaneFactory;
         private readonly IRubberduckParser _parser;
-        private readonly IFindAllImplementations _findAllImplementations;
+        private readonly INavigateImplementations _navigateImplementations;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -35,36 +35,31 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllImplementations findAllImplementations)
+        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, INavigateImplementations navigateImplementations)
         {
             _vbe = vbe;
             _addIn = addIn;
             _codePaneFactory = factory;
             _parser = parser;
-            _findAllImplementations = findAllImplementations;
+            _navigateImplementations = navigateImplementations;
 
             _parserErrorsPresenter = presenter;
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            // todo: figure out why Ninject can't seem to resolve the VBE dependency to ActiveCodePaneEditor if it's in the VBEDitor assembly.
-            // could it be that the VBE type in the two assemblies is actually different? 
-            // aren't the two assemblies using the exact same Microsoft.Vbe.Interop assemby?
-            
-            _editor = editor; // */ new ActiveCodePaneEditor(vbe, _codePaneFactory);
+            _editor = editor;
 
-            LoadConfig();
-
-            CleanUp();
-
-            Setup();
+            CleanReloadConfiguration();
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
+            CleanReloadConfiguration();
+        }
+
+        private void CleanReloadConfiguration()
+        {
             LoadConfig();
-
             CleanUp();
-
             Setup();
         }
 
@@ -95,7 +90,7 @@ namespace Rubberduck
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllImplementations, _codePaneFactory);
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _navigateImplementations, _codePaneFactory);
             _menu.Initialize();
 
             _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _codePaneFactory);
