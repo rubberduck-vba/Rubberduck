@@ -33,6 +33,7 @@ namespace Rubberduck.Navigations
             {
                 view.Navigate += view_Navigate;
                 view.ShowDialog();
+                view.Navigate -= view_Navigate;
             }
         }
 
