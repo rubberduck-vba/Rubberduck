@@ -252,7 +252,6 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
-    <Compile Include="Root\ActiveCodePaneEditor.cs" />
     <Compile Include="Root\RubberduckConventions.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />

@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.SourceControl;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Root
@@ -19,9 +21,10 @@ namespace Rubberduck.Root
 
         public void Apply(VBE vbe, AddIn addin)
         {
+            _kernel.Bind<App>().ToSelf();
+
             _kernel.Bind<VBE>().ToConstant(vbe);
             _kernel.Bind<AddIn>().ToConstant(addin);
-            _kernel.Bind<App>().ToSelf();
 
             // bind IFoo to Foo across all assemblies:
             _kernel.Bind(t => t.FromThisAssembly().SelectAllClasses().BindDefaultInterface());
