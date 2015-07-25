@@ -1119,4 +1119,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Inspections_MultilineParameter" xml:space="preserve">
     <value>Write variable on one line</value>
   </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>German</value>
+  </data>
 </root>

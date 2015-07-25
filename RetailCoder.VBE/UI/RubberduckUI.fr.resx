@@ -1114,4 +1114,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Texte</value>
   </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Allemand</value>
+  </data>
 </root>
