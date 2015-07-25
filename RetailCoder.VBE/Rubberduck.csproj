@@ -39,6 +39,7 @@
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

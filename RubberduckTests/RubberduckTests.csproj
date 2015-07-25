@@ -37,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -162,12 +163,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
-    <Reference Include="Rubberduck">
-      <HintPath>..\RetailCoder.VBE\obj\Debug\Rubberduck.dll</HintPath>
-    </Reference>
-    <Reference Include="Rubberduck.Parsing">
-      <HintPath>..\Rubberduck.Parsing\obj\Debug\Rubberduck.Parsing.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -235,19 +230,25 @@
       <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
       <Name>Rubberduck</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
+      <Name>Rubberduck</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
+      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Name>Rubberduck.SourceControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
-      <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
