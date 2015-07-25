@@ -20,11 +20,11 @@ namespace Rubberduck
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private Inspector _inspector;
-        private IParserErrorsPresenter _parserErrorsPresenter;
-        private readonly IConfigurationLoader _configService = new ConfigurationLoader();
-        private readonly IActiveCodePaneEditor _editor;
+        private ParserErrorsPresenter _parserErrorsPresenter;
+        private readonly IGeneralConfigService _configService = new ConfigurationLoader();
+        private readonly ActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _factory;
-        private readonly IRubberduckParser _parser;
+        private IRubberduckParser _parser;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -33,21 +33,16 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor)
+        public App(VBE vbe, AddIn addIn)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _factory = factory;
-            _parser = parser;
+            _factory = new RubberduckCodePaneFactory();
 
-            _parserErrorsPresenter = presenter;
+            _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            // todo: figure out why Ninject can't seem to resolve the VBE dependency to ActiveCodePaneEditor if it's in the VBEDitor assembly.
-            // could it be that the VBE type in the two assemblies is actually different? 
-            // aren't the two assemblies using the exact same Microsoft.Vbe.Interop assemby?
-            
-            _editor = editor; // */ new ActiveCodePaneEditor(vbe, _factory);
+            _editor = new ActiveCodePaneEditor(vbe, _factory);
 
             LoadConfig();
 
@@ -84,7 +79,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            //_parser = new RubberduckParser(_factory);
+            _parser = new RubberduckParser(_factory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -153,6 +148,11 @@ namespace Rubberduck
             if (_inspector != null)
             {
                 _inspector.Dispose();
+            }
+
+            if (_parserErrorsPresenter != null)
+            {
+                _parserErrorsPresenter.Dispose();
             }
 
             if (_parser != null)

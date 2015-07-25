@@ -11,7 +11,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    public interface IConfigurationLoader : IConfigurationService<Configuration>
+    public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
         CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
@@ -19,7 +19,7 @@ namespace Rubberduck.Settings
         IList<IInspection> GetImplementedCodeInspections();
     }
 
-    public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IConfigurationLoader
+    public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
         protected override string ConfigFile
         {
