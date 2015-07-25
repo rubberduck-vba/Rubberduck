@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
@@ -100,7 +99,10 @@ namespace RubberduckTests.Inspections
         public void NotAlreadySpecified_QuickFixWorks()
         {
             const string inputCode = @"";
-            string expectedCode = "Option Explicit" + Environment.NewLine + Environment.NewLine;
+            const string expectedCode =
+@"Option Explicit
+
+";
 
             //Arrange
             var builder = new MockVbeBuilder();
