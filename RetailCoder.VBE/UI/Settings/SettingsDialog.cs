@@ -174,13 +174,14 @@ namespace Rubberduck.UI.Settings
         private void ActivateControl(Control control)
         {
             splitContainer1.Panel2.Controls.Clear();
+            if (control == null)
+            {
+                return;
+            }
+
             splitContainer1.Panel2.Controls.Add(control);
             _activeControl = control;
-            try
-            {
-                _activeControl.Dock = DockStyle.Fill;
-            }
-            catch { }
+            _activeControl.Dock = DockStyle.Fill;
         }
 
         private void SaveConfig()
