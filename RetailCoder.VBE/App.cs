@@ -33,11 +33,11 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn)
+        public App(VBE vbe, AddIn addIn, IRubberduckCodePaneFactory codePaneFactory)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _factory = new RubberduckCodePaneFactory();
+            _factory = codePaneFactory;
 
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;

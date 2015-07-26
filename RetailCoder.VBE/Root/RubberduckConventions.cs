@@ -5,10 +5,12 @@ using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Factory;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor.VBEHost;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Root
 {
@@ -33,8 +35,8 @@ namespace Rubberduck.Root
             _kernel.Bind<App>().ToSelf().DefinesNamedScope(appScopeName);
 
             // bind VBE and AddIn dependencies to host-provided instances.
-            _kernel.Bind<VBE>().ToConstant(vbe);
-            _kernel.Bind<AddIn>().ToConstant(addin);
+            _kernel.Bind<VBE>().ToConstant(vbe).InNamedScope(appScopeName);
+            _kernel.Bind<AddIn>().ToConstant(addin).InNamedScope(appScopeName);
 
             // multi-binding for code inspections:
             var inspections = FindInspectionTypes();
@@ -54,7 +56,7 @@ namespace Rubberduck.Root
             ApplyDefaultInterfaceConvention(assemblies, appScopeName);
 
             // note convention: abstract factory interface names end with "Factory".
-            ApplyAbstractFactoryConvention(assemblies);
+            ApplyAbstractFactoryConvention(assemblies, appScopeName);
         }
 
         private void ApplyDefaultInterfaceConvention(IEnumerable<Assembly> assemblies, string appScopeName)
@@ -66,13 +68,13 @@ namespace Rubberduck.Root
                 .Configure(binding => binding.InNamedScope(appScopeName)));
         }
 
-        private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies)
+        private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies, string appScopeName)
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllInterfaces()
                 .Where(type => type.Name.EndsWith("Factory"))
                 .BindToFactory()
-                .Configure(binding => binding.InSingletonScope()));
+                .Configure(binding => binding.InNamedScope(appScopeName)));
         }
 
         private static IEnumerable<Type> FindInspectionTypes()
