@@ -23,6 +23,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 
         public RubberduckCodePane(CodePane codePane)
         {
+            // bug: if there's no active code pane, we're creating (and using) an invalid object -> NullReferenceException
             _codePane = codePane;
         }
 
