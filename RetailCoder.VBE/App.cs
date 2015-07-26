@@ -21,14 +21,14 @@ namespace Rubberduck
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
         private Inspector _inspector;
-        private IParserErrorsPresenter _parserErrorsPresenter;
-        private readonly IConfigurationLoader _configService = new ConfigurationLoader();
+        private ParserErrorsPresenter _parserErrorsPresenter;
+        private IFindAllReferences _findAllReferences;
+        private IFindAllImplementations _findAllImplementations;
+        private IFindSymbol _findSymbol;
+        private IRubberduckParser _parser;
+        private readonly ConfigurationLoader _configService = new ConfigurationLoader();
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _codePaneFactory;
-        private readonly IRubberduckParser _parser;
-        private readonly IFindAllReferences _findAllReferences;
-        private readonly IFindAllImplementations _findAllImplementations;
-        private readonly IFindSymbol _findSymbol;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -37,20 +37,16 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IParserErrorsPresenter presenter, IRubberduckParser parser, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol)
+        public App(VBE vbe, AddIn addIn)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _codePaneFactory = factory;
-            _parser = parser;
-            _findAllReferences = findAllReferences;
-            _findAllImplementations = findAllImplementations;
-            _findSymbol = findSymbol;
+            _codePaneFactory = new RubberduckCodePaneFactory();
 
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _editor = new ActiveCodePaneEditor(vbe, _factory);
+            _editor = new ActiveCodePaneEditor(vbe, _codePaneFactory);
 
             LoadConfig();
 
@@ -94,6 +90,11 @@ namespace Rubberduck
             _inspector = new Inspector(_parser, _configService);
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
+
+
+            _findAllReferences = new FindAllReferences(_vbe, _addIn, _parser, _codePaneFactory, new RubberduckMessageBox());
+            _findAllImplementations = new FindAllImplementations(_vbe, _addIn, _parser, _codePaneFactory, new RubberduckMessageBox());
+            _findSymbol = new FindSymbol(_vbe, _parser, _codePaneFactory);
 
             _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllReferences,
                 _findAllImplementations, _findSymbol, _codePaneFactory);

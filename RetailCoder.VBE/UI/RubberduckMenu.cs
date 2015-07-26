@@ -44,7 +44,7 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationLoader configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory factory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, ConfigurationLoader configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory factory)
             : base(vbe, addIn)
         {
             _addIn = addIn;
