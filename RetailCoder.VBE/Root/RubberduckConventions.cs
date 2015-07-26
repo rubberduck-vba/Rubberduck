@@ -54,7 +54,7 @@ namespace Rubberduck.Root
             ApplyDefaultInterfaceConvention(assemblies, appScopeName);
 
             // note convention: abstract factory interface names end with "Factory".
-            ApplyAbstractFactoryConvention(assemblies, appScopeName);
+            ApplyAbstractFactoryConvention(assemblies);
         }
 
         private void ApplyDefaultInterfaceConvention(IEnumerable<Assembly> assemblies, string appScopeName)
@@ -66,13 +66,13 @@ namespace Rubberduck.Root
                 .Configure(binding => binding.InNamedScope(appScopeName)));
         }
 
-        private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies, string appScopeName)
+        private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies)
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllInterfaces()
                 .Where(type => type.Name.EndsWith("Factory"))
                 .BindToFactory()
-                .Configure(binding => binding.InNamedScope(appScopeName)));
+                .Configure(binding => binding.InSingletonScope()));
         }
 
         private static IEnumerable<Type> FindInspectionTypes()
