@@ -160,6 +160,10 @@ namespace Rubberduck.UI.CodeInspections
             {
                 // gulp
             }
+            catch (Exception exception)
+            {
+                // debug    
+            }
         }
 
         private void Control_RefreshCodeInspections(object sender, EventArgs e)

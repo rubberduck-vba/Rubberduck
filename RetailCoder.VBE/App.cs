@@ -19,10 +19,11 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
-        private Inspector _inspector;
+        private readonly IInspectorFactory _inspectorFactory;
+        private IInspector _inspector;
         private ParserErrorsPresenter _parserErrorsPresenter;
-        private readonly IGeneralConfigService _configService = new ConfigurationLoader();
-        private readonly ActiveCodePaneEditor _editor;
+        private readonly IGeneralConfigService _configService;
+        private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _factory;
         private IRubberduckParser _parser;
 
@@ -33,31 +34,32 @@ namespace Rubberduck
         private bool _displayToolbar = false;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IRubberduckCodePaneFactory codePaneFactory)
+        public App(VBE vbe, AddIn addIn, IInspectorFactory inspectorFactory, IGeneralConfigService configService, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor)
         {
             _vbe = vbe;
             _addIn = addIn;
-            _factory = codePaneFactory;
+            _inspectorFactory = inspectorFactory;
+            _configService = configService;
 
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _editor = new ActiveCodePaneEditor(vbe, _factory);
+            _editor = editor;
+            _factory = factory;
 
+            CleanReloadConfig();
+        }
+
+        private void CleanReloadConfig()
+        {
             LoadConfig();
-
             CleanUp();
-
             Setup();
         }
 
         private void _configService_SettingsChanged(object sender, EventArgs e)
         {
-            LoadConfig();
-
-            CleanUp();
-
-            Setup();
+            CleanReloadConfig();
         }
 
         private void LoadConfig()
@@ -83,7 +85,7 @@ namespace Rubberduck
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
-            _inspector = new Inspector(_parser, _configService);
+            _inspector = _inspectorFactory.Create();
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
@@ -143,11 +145,6 @@ namespace Rubberduck
                 _displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
                 _toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
-            }
-
-            if (_inspector != null)
-            {
-                _inspector.Dispose();
             }
 
             if (_parserErrorsPresenter != null)

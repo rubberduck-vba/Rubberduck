@@ -16,11 +16,17 @@ namespace Rubberduck.Settings
         CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
         ToDoMarker[] GetDefaultTodoMarkers();
-        IList<IInspection> GetImplementedCodeInspections();
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
     {
+        private readonly IEnumerable<IInspection> _inspections;
+
+        public ConfigurationLoader(IEnumerable<IInspection> inspections)
+        {
+            _inspections = inspections;
+        }
+
         protected override string ConfigFile
         {
             get { return Path.Combine(rootPath, "rubberduck.config"); }
@@ -54,10 +60,9 @@ namespace Rubberduck.Settings
                 config.UserSettings.CodeInspectionSettings = new CodeInspectionSettings(GetDefaultCodeInspections());
             }
 
-            var implementedInspections = GetImplementedCodeInspections();
             var configInspections = config.UserSettings.CodeInspectionSettings.CodeInspections.ToList();
             
-            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, implementedInspections);
+            configInspections = MergeImplementedInspectionsNotInConfig(configInspections, _inspections);
             config.UserSettings.CodeInspectionSettings.CodeInspections = configInspections.ToArray();
 
             return config;
@@ -90,7 +95,7 @@ namespace Rubberduck.Settings
             return config;
         }
 
-        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IList<IInspection> implementedInspections)
+        private List<CodeInspectionSetting> MergeImplementedInspectionsNotInConfig(List<CodeInspectionSetting> configInspections, IEnumerable<IInspection> implementedInspections)
         {
             foreach (var implementedInspection in implementedInspections)
             {
@@ -132,27 +137,7 @@ namespace Rubberduck.Settings
         /// <returns>   An array of Config.CodeInspection. </returns>
         public CodeInspectionSetting[] GetDefaultCodeInspections()
         {
-            return GetImplementedCodeInspections()
-                    .Select(x => new CodeInspectionSetting(x))
-                    .ToArray();
-        }
-
-        /// <summary>   Gets all implemented code inspections via reflection </summary>
-        public IList<IInspection> GetImplementedCodeInspections()
-        {
-            var inspections = Assembly.GetExecutingAssembly()
-                                  .GetTypes()
-                                  .Where(type => type.GetInterfaces().Contains(typeof(IInspection)))
-                                  .Select(type =>
-                                  {
-                                      var constructor = type.GetConstructor(Type.EmptyTypes);
-                                      return constructor != null ? constructor.Invoke(Type.EmptyTypes) : null;
-                                  })
-                                 .Where(inspection => inspection != null)
-                                  .Cast<IInspection>()
-                                  .ToList();
-
-            return inspections;
+            return _inspections.Select(x => new CodeInspectionSetting(x)).ToArray();
         }
     }
 }
