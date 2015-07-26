@@ -51,16 +51,28 @@ namespace Rubberduck.Root
             };
 
             // note convention: IFoo binds to Foo.
-            _kernel.Bind(t => t.From(assemblies)
-                .SelectAllClasses()
-                .BindDefaultInterface()
-                .Configure(binding => binding.InNamedScope(appScopeName)));
+            ApplyDefaultInterfaceConvention(assemblies, appScopeName);
 
             // note convention: abstract factory interface names end with "Factory".
+            ApplyAbstractFactoryConvention(assemblies, appScopeName);
+        }
+
+        private void ApplyDefaultInterfaceConvention(IEnumerable<Assembly> assemblies, string appScopeName)
+        {
+            _kernel.Bind(t => t.From(assemblies)
+                .SelectAllClasses()
+                .Where(type => !type.Name.EndsWith("Factory")) // skip concrete factory types
+                .BindDefaultInterface()
+                .Configure(binding => binding.InNamedScope(appScopeName)));
+        }
+
+        private void ApplyAbstractFactoryConvention(IEnumerable<Assembly> assemblies, string appScopeName)
+        {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllInterfaces()
                 .Where(type => type.Name.EndsWith("Factory"))
-                .BindToFactory());
+                .BindToFactory()
+                .Configure(binding => binding.InNamedScope(appScopeName)));
         }
 
         private static IEnumerable<Type> FindInspectionTypes()
