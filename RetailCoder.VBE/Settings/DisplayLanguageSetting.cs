@@ -32,7 +32,8 @@ namespace Rubberduck.Settings
                 _exists = false;
             }
 
-            _name = RubberduckUI.ResourceManager.GetString("Language_" + Code.Substring(0, 2).ToUpper(), culture);
+            var resource = "Language_" + Code.Substring(0, 2).ToUpper();
+            _name = RubberduckUI.ResourceManager.GetString(resource, culture);
         }
 
         private readonly string _name;

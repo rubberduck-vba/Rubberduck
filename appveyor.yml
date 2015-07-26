@@ -3,3 +3,6 @@ build:
   verbosity: normal
 
 configuration: Release
+
+init:
+  - git config --global core.autocrlf true

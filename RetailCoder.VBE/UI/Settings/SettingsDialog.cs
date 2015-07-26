@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
         private const string ProgId = "Rubberduck.UI.Settings.SettingsDialog";
 
         private Configuration _config;
-        private IConfigurationLoader _configService;
+        private IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.Settings
             Close();
         }
 
-        public _SettingsDialog(IConfigurationLoader configService)
+        public _SettingsDialog(IGeneralConfigService configService)
             : this()
         {
             _configService = configService;
@@ -105,7 +105,7 @@ namespace Rubberduck.UI.Settings
             splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting);
+            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
             var gridViewSort = new GridViewSort<ToDoMarker>("Priority", true);
@@ -174,13 +174,14 @@ namespace Rubberduck.UI.Settings
         private void ActivateControl(Control control)
         {
             splitContainer1.Panel2.Controls.Clear();
+            if (control == null)
+            {
+                return;
+            }
+
             splitContainer1.Panel2.Controls.Add(control);
             _activeControl = control;
-            try
-            {
-                _activeControl.Dock = DockStyle.Fill;
-            }
-            catch { }
+            _activeControl.Dock = DockStyle.Fill;
         }
 
         private void SaveConfig()
