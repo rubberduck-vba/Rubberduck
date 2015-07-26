@@ -83,10 +83,7 @@ namespace Rubberduck.Inspections
                 module.DeleteLines(Comment.QualifiedSelection.Selection.StartLine, Comment.QualifiedSelection.Selection.LineCount);
             }
 
-            if (!string.IsNullOrEmpty(code))
-            {
-                module.ReplaceLine(Comment.QualifiedSelection.Selection.StartLine, code);
-            }
+            module.ReplaceLine(Comment.QualifiedSelection.Selection.StartLine, code);
         }
     }
 }
