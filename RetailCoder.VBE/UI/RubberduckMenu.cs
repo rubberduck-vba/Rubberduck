@@ -29,7 +29,7 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
-        private readonly IConfigurationLoader _configService;
+        private readonly IGeneralConfigService _configService;
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRubberduckCodePaneFactory _factory;

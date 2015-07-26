@@ -39,6 +39,7 @@
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -214,9 +215,6 @@
       <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
-    </Reference>
     <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -258,8 +256,6 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
-    <Compile Include="Root\ActiveCodePaneEditor.cs" />
-    <Compile Include="Root\RubberduckConventions.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />
@@ -300,6 +296,16 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\RubberduckUI.de.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.sv.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\IRubberduckMessageBox.cs" />
     <Compile Include="UI\Settings\AddMarkerForm.cs">
       <SubType>Form</SubType>
@@ -630,7 +636,14 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.sv.resx" />
+    <EmbeddedResource Include="UI\RubberduckUI.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
       <DependentUpon>AddMarkerForm.cs</DependentUpon>
     </EmbeddedResource>

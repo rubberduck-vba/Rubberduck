@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Extensibility;
 using Microsoft.Vbe.Interop;
-using Ninject;
-using Rubberduck.Root;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {
@@ -22,7 +20,6 @@ namespace Rubberduck
         private const string ProgId = "Rubberduck.Extension";
 
         private App _app;
-        private IKernel _kernel;
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -36,21 +33,12 @@ namespace Rubberduck
         {
             try
             {
-                _kernel = new StandardKernel();
-                Compose((VBE) Application, (AddIn) AddInInst);
+                _app = new App((VBE)Application, (AddIn)AddInInst);
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void Compose(VBE application, AddIn addin)
-        {
-            var conventions = new RubberduckConventions(_kernel);
-            conventions.Apply(application, addin);
-
-            _app = _kernel.Get<App>();
         }
 
         public void OnStartupComplete(ref Array custom)
@@ -70,9 +58,9 @@ namespace Rubberduck
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing & _kernel != null)
+            if (disposing & _app != null)
             {
-                _kernel.Dispose();
+                _app.Dispose();
             }
         }
     }

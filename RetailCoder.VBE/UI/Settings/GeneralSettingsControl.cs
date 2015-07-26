@@ -6,6 +6,9 @@ namespace Rubberduck.UI.Settings
 {
     public partial class GeneralSettingsControl : UserControl
     {
+        private readonly IGeneralConfigService _configService;
+        private readonly DisplayLanguageSetting _currentLanguage;
+
         public GeneralSettingsControl()
         {
             InitializeComponent();
@@ -15,9 +18,11 @@ namespace Rubberduck.UI.Settings
             LoadLanguageList();
         }
 
-        public GeneralSettingsControl(DisplayLanguageSetting displayLanguage)
+        public GeneralSettingsControl(DisplayLanguageSetting displayLanguage, IGeneralConfigService configService)
             : this()
         {
+            _configService = configService;
+            _currentLanguage = displayLanguage;
             LanguageList.SelectedItem = displayLanguage;
         }
 
@@ -36,7 +41,6 @@ namespace Rubberduck.UI.Settings
                 new DisplayLanguageSetting("de-DE"),
             };
 
-            // ReSharper disable once CoVariantArrayConversion
             LanguageList.Items.AddRange(settings.Where(item => item.Exists).ToArray());
             LanguageList.DisplayMember = "Name";
         }

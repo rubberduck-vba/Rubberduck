@@ -47,14 +47,10 @@ namespace Rubberduck
             _findAllImplementations = findAllImplementations;
             _findSymbol = findSymbol;
 
-            _parserErrorsPresenter = presenter;
+            _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            // todo: figure out why Ninject can't seem to resolve the VBE dependency to ActiveCodePaneEditor if it's in the VBEDitor assembly.
-            // could it be that the VBE type in the two assemblies is actually different? 
-            // aren't the two assemblies using the exact same Microsoft.Vbe.Interop assemby?
-            
-            _editor = editor; // */ new ActiveCodePaneEditor(vbe, _codePaneFactory);
+            _editor = new ActiveCodePaneEditor(vbe, _factory);
 
             LoadConfig();
 
@@ -91,7 +87,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            //_parser = new RubberduckParser(_codePaneFactory);
+            _parser = new RubberduckParser(_codePaneFactory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -161,6 +157,11 @@ namespace Rubberduck
             if (_inspector != null)
             {
                 _inspector.Dispose();
+            }
+
+            if (_parserErrorsPresenter != null)
+            {
+                _parserErrorsPresenter.Dispose();
             }
 
             if (_parser != null)
