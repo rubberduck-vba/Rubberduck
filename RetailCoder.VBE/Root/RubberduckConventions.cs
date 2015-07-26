@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
-using Ninject.Extensions.Factory;
+using Ninject.Extensions.Conventions;
+using Ninject.Extensions.NamedScope;
+using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
 {
@@ -27,9 +28,46 @@ namespace Rubberduck.Root
         /// <param name="addin">The <see cref="AddIn"/> instance provided by the host application.</param>
         public void Apply(VBE vbe, AddIn addin)
         {
+            // use a named scope to ensure proper disposal
+            var appScopeName = "AppScope";
+            _kernel.Bind<App>().ToSelf().DefinesNamedScope(appScopeName);
+
             // bind VBE and AddIn dependencies to host-provided instances.
             _kernel.Bind<VBE>().ToConstant(vbe);
             _kernel.Bind<AddIn>().ToConstant(addin);
+
+            // multi-binding for code inspections:
+            var inspections = FindInspectionTypes();
+            foreach (var inspection in inspections)
+            {
+                _kernel.Bind<IInspection>().To(inspection).InSingletonScope();
+            }
+
+            var assemblies = new[]
+            {
+                Assembly.GetExecutingAssembly(),
+                Assembly.GetAssembly(typeof(IHostApplication)),
+                Assembly.GetAssembly(typeof(IRubberduckParser))
+            };
+
+            // note convention: IFoo binds to Foo.
+            _kernel.Bind(t => t.From(assemblies)
+                .SelectAllClasses()
+                .BindDefaultInterface()
+                .Configure(binding => binding.InNamedScope(appScopeName)));
+
+            // note convention: abstract factory interface names end with "Factory".
+            _kernel.Bind(t => t.From(assemblies)
+                .SelectAllInterfaces()
+                .Where(type => type.Name.EndsWith("Factory"))
+                .BindToFactory());
+        }
+
+        private static IEnumerable<Type> FindInspectionTypes()
+        {
+            return Assembly.GetExecutingAssembly()
+                           .GetTypes()
+                           .Where(type => type.GetInterfaces().Contains(typeof (IInspection)));
         }
     }
 }

@@ -4,8 +4,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Extensibility;
 using Microsoft.Vbe.Interop;
+using Ninject;
+using Rubberduck.Root;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {
@@ -14,12 +15,12 @@ namespace Rubberduck
     [ProgId(ProgId)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     // ReSharper disable once InconsistentNaming
-    public class _Extension : IDTExtensibility2, IDisposable
+    public class _Extension : IDTExtensibility2
     {
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
         private const string ProgId = "Rubberduck.Extension";
 
-        private App _app;
+        private readonly IKernel _kernel = new StandardKernel();
 
         public void OnAddInsUpdate(ref Array custom)
         {
@@ -33,7 +34,9 @@ namespace Rubberduck
         {
             try
             {
-                _app = new App((VBE)Application, (AddIn)AddInInst);
+                var conventions = new RubberduckConventions(_kernel);
+                conventions.Apply((VBE)Application, (AddIn)AddInInst);
+                _kernel.Get<App>();
             }
             catch (Exception exception)
             {
@@ -48,20 +51,7 @@ namespace Rubberduck
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing & _app != null)
-            {
-                _app.Dispose();
-            }
+            _kernel.Dispose();
         }
     }
 }
