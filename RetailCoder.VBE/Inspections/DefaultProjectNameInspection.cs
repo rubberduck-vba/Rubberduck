@@ -9,11 +9,11 @@ namespace Rubberduck.Inspections
 {
     public class DefaultProjectNameInspection : IInspection
     {
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public DefaultProjectNameInspection()
         {
-            _factory = new RubberduckCodePaneFactory();
+            _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new DefaultProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _factory))
+                            .Select(issue => new DefaultProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _wrapperFactory))
                             .ToList();
 
             return issues;

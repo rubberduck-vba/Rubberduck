@@ -11,7 +11,7 @@ namespace Rubberduck.SourceControl
 {
     public abstract class SourceControlProviderBase : ISourceControlProvider
     {
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         protected VBProject Project;
 
         protected SourceControlProviderBase(VBProject project)
@@ -19,11 +19,11 @@ namespace Rubberduck.SourceControl
             this.Project = project;
         }
 
-        protected SourceControlProviderBase(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
+        protected SourceControlProviderBase(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
             :this(project)
         {
             this.CurrentRepository = repository;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public IRepository CurrentRepository { get; private set; }
@@ -123,7 +123,7 @@ namespace Rubberduck.SourceControl
             //Because refreshing removes all components, we need to store the current selection,
             // so we can correctly reset it once the files are imported from the repository.
 
-            var codePane = _factory.Create(Project.VBE.ActiveCodePane);
+            var codePane = _wrapperFactory.Create(Project.VBE.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             string name = null;
             if (selection.QualifiedName.Component != null)
@@ -134,7 +134,7 @@ namespace Rubberduck.SourceControl
             Project.RemoveAllComponents();
             Project.ImportSourceFiles(CurrentRepository.LocalLocation);
 
-            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _factory);
+            Project.VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name, _wrapperFactory);
         }
     }
 }

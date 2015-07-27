@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing
 {
     public class VBProjectParseResult
     {
-        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, IRubberduckCodePaneFactory factory)
+        public VBProjectParseResult(VBProject project, IEnumerable<VBComponentParseResult> parseResults, ICodePaneWrapperFactory wrapperFactory)
         {
             _project = project;
             _parseResults = parseResults;
@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
 
             var projectIdentifier = project.Name;
             var memberName = new QualifiedMemberName(new QualifiedModuleName(project), projectIdentifier);
-            var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, factory, false);
+            var projectDeclaration = new Declaration(memberName, "VBE", projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, wrapperFactory, false);
             _declarations.Add(projectDeclaration);
 
             foreach (var declaration in VbaStandardLib.Declarations)

@@ -6,8 +6,14 @@ using Rubberduck.UI.IdentifierReferences;
 
 namespace Rubberduck.UI.ParserErrors
 {
+    public interface IParserErrorsPresenterFactory
+    {
+        IParserErrorsPresenter Create();
+    }
+
     public interface IParserErrorsPresenter
     {
+        void Show();
         void AddError(ParseErrorEventArgs error);
         void Clear();
     }

@@ -19,34 +19,47 @@ namespace Rubberduck
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
+        private readonly IMessageBox _messageBox;
+        private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IInspectorFactory _inspectorFactory;
         private IInspector _inspector;
-        private ParserErrorsPresenter _parserErrorsPresenter;
+        private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private IRubberduckParser _parser;
 
         private Configuration _config;
         private RubberduckMenu _menu;
         private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
-        private bool _displayToolbar = false;
+
+        private bool _displayToolbar;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, IInspectorFactory inspectorFactory, IGeneralConfigService configService, IRubberduckCodePaneFactory factory, IActiveCodePaneEditor editor)
+        public App(VBE vbe, AddIn addIn, 
+            IMessageBox messageBox,
+            IParserErrorsPresenterFactory parserErrorsPresenterFactory,
+            IInspectorFactory inspectorFactory, 
+            IGeneralConfigService configService, 
+            ICodePaneWrapperFactory wrapperFactory, 
+            IActiveCodePaneEditor editor)
         {
             _vbe = vbe;
             _addIn = addIn;
+            _messageBox = messageBox;
+            _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _inspectorFactory = inspectorFactory;
             _configService = configService;
 
-            _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
             _editor = editor;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
+        }
 
+        public void Startup()
+        {
             CleanReloadConfig();
         }
 
@@ -73,7 +86,7 @@ namespace Rubberduck
             }
             catch (CultureNotFoundException exception)
             {
-                MessageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
@@ -81,18 +94,18 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = new RubberduckParser(_factory);
+            _parser = new RubberduckParser(_wrapperFactory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
             _inspector = _inspectorFactory.Create();
 
-            _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
+            _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _factory);
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _wrapperFactory);
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _factory);
+            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _wrapperFactory);
             _formContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
@@ -145,11 +158,6 @@ namespace Rubberduck
                 _displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
                 _toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
                 _codeInspectionsToolbar.Dispose();
-            }
-
-            if (_parserErrorsPresenter != null)
-            {
-                _parserErrorsPresenter.Dispose();
             }
 
             if (_parser != null)

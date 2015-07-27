@@ -16,14 +16,14 @@ namespace Rubberduck.UI.UnitTesting
         private readonly GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
         private readonly ITestExplorerWindow _view;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, IRubberduckCodePaneFactory factory)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
             _gridViewSort = gridViewSort;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
             _testEngine.ModuleCleanup += _testEngine_ModuleCleanup;
@@ -211,7 +211,7 @@ namespace Rubberduck.UI.UnitTesting
 
             if (codeModule.Find(signature, ref startLine, ref startColumn, ref endLine, ref endColumn))
             {
-                var codePane = _factory.Create(codeModule.CodePane);
+                var codePane = _wrapperFactory.Create(codeModule.CodePane);
                 var selection = new Selection(startLine, startColumn, endLine, endColumn);
                 codePane.Selection = selection;
             }

@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing
 {
     public class VBComponentParseResult
     {
-        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ITokenStream tokenStream, IRubberduckCodePaneFactory factory)
+        public VBComponentParseResult(VBComponent component, IParseTree parseTree, IEnumerable<CommentNode> comments, ITokenStream tokenStream, ICodePaneWrapperFactory wrapperFactory)
         {
             _component = component;
             _qualifiedName = new QualifiedModuleName(component);
@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
             _comments = comments;
             _tokenStream = tokenStream;
 
-            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, factory);
+            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, wrapperFactory);
             var walker = new ParseTreeWalker();
             walker.Walk(listener, _parseTree);
 

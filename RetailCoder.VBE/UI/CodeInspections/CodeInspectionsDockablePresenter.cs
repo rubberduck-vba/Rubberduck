@@ -21,7 +21,7 @@ namespace Rubberduck.UI.CodeInspections
         private IList<ICodeInspectionResult> _results;
         private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         /// <summary>
         /// </summary>
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.CodeInspections
         /// <param name="vbe"></param>
         /// <param name="addin"></param>
         /// <param name="window"></param>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, IRubberduckCodePaneFactory factory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, ICodePaneWrapperFactory wrapperFactory)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.ParseCompleted += _inspector_ParseCompleted;
 
             _gridViewSort = gridViewSort;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
 
             Control.RefreshCodeInspections += Control_RefreshCodeInspections;
             Control.NavigateCodeIssue += Control_NavigateCodeIssue;
@@ -153,7 +153,7 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     return;
                 }
-                var codePane = _factory.Create(e.QualifiedName.Component.CodeModule.CodePane);
+                var codePane = _wrapperFactory.Create(e.QualifiedName.Component.CodeModule.CodePane);
                 codePane.Selection = e.Selection;
             }
             catch (COMException)

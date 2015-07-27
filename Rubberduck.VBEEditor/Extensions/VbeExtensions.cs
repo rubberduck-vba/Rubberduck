@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.Extensions
     public static class VbeExtensions
     {
         public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name,
-            IRubberduckCodePaneFactory factory)
+            ICodePaneWrapperFactory wrapperFactory)
         {
             var project = vbe.VBProjects.Cast<VBProject>()
                 .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked
@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.Extensions
 
             try
             {
-                var codePane = factory.Create(component.CodeModule.CodePane);
+                var codePane = wrapperFactory.Create(component.CodeModule.CodePane);
                 codePane.Selection = selection;
             }
             catch (Exception e)

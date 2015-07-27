@@ -52,7 +52,8 @@ namespace Rubberduck.Root
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
-                .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection))) // skip concrete factory types and code inspections
+                // inspections & factories have their own binding rules
+                .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindAllInterfaces()
                 .Configure(binding => binding.InCallScope()));
         }

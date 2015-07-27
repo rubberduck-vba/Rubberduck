@@ -17,7 +17,7 @@ namespace Rubberduck.UI
         private readonly VBE _vbe;
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         private CommandBarButton _findAllReferences;
         private CommandBarButton _findAllImplementations;
@@ -25,13 +25,13 @@ namespace Rubberduck.UI
         private CommandBarButton _inspect;
         private CommandBarButton _runAllTests;
         
-        public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser, IActiveCodePaneEditor editor, IRubberduckCodePaneFactory factory)
+        public ProjectExplorerContextMenu(VBE vbe, AddIn addIn, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn)
         {
             _vbe = vbe;
             _parser = parser;
             _editor = editor;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public void Initialize()
@@ -153,7 +153,7 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(_vbe, view, results, new RubberduckMessageBox(), _factory);
+                var factory = new RenamePresenterFactory(_vbe, view, results, new RubberduckMessageBox(), _wrapperFactory);
                 var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor(declaration);
             }

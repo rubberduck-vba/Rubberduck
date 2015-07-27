@@ -86,10 +86,10 @@
     <Compile Include="Extensions\VbProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\IRubberduckCodePane.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\IRubberduckCodePaneFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\RubberduckCodePaneFactory.cs" />
-    <Compile Include="VBEInterfaces\RubberduckCodePane\RubberduckCodePane.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapper.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodePane\ICodePaneWrapperFactory.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapperFactory.cs" />
+    <Compile Include="VBEInterfaces\RubberduckCodePane\CodePaneWrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

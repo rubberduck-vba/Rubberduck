@@ -13,19 +13,19 @@ namespace Rubberduck.Parsing.Symbols
         public Declarations Declarations { get { return _declarations; } }
 
         private readonly QualifiedModuleName _qualifiedName;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         private string _currentScope;
 
-        public DeclarationSymbolsListener(VBComponentParseResult result, IRubberduckCodePaneFactory factory)
-            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type, factory)
+        public DeclarationSymbolsListener(VBComponentParseResult result, ICodePaneWrapperFactory wrapperFactory)
+            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type, wrapperFactory)
         {
         }
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IRubberduckCodePaneFactory factory)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, ICodePaneWrapperFactory wrapperFactory)
         {
             _qualifiedName = qualifiedName;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
                 : DeclarationType.Class;
 
             SetCurrentScope();
-            _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home, _factory));
+            _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home, _wrapperFactory));
 
             if (type == vbext_ComponentType.vbext_ct_MSForm)
             {
@@ -65,13 +65,13 @@ namespace Rubberduck.Parsing.Symbols
 
             foreach (var control in ((dynamic)designer).Controls)
             {
-                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(control.Name), _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, _factory));
+                _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(control.Name), _currentScope, "Control", true, true, Accessibility.Public, DeclarationType.Control, null, Selection.Home, _wrapperFactory));
             }
         }
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, _factory);
+            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, _wrapperFactory);
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Rubberduck.Parsing.Symbols
             var identifier = context.ambiguousIdentifier();
             var name = identifier.GetText();
             var value = context.valueStmt().GetText();
-            var declaration = new ValuedDeclaration(new QualifiedMemberName(_qualifiedName, name), _currentScope, asTypeName, accessibility, DeclarationType.Constant, value, context, identifier.GetSelection(), _factory);
+            var declaration = new ValuedDeclaration(new QualifiedMemberName(_qualifiedName, name), _currentScope, asTypeName, accessibility, DeclarationType.Constant, value, context, identifier.GetSelection(), _wrapperFactory);
 
             _declarations.Add(declaration);
         }

@@ -26,7 +26,7 @@ namespace Rubberduck.UI.SourceControl
         private readonly IFailedMessageView _failedMessageView;
         private readonly ILoginView _loginView;
 
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public SourceControlPresenter(
             VBE vbe, AddIn addin, 
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.SourceControl
             ISourceControlProviderFactory providerFactory, 
             IFailedMessageView failedMessageView, 
             ILoginView loginView,
-            IRubberduckCodePaneFactory factory
+            ICodePaneWrapperFactory wrapperFactory
             )
             : base(vbe, addin, view)
         {
@@ -76,7 +76,7 @@ namespace Rubberduck.UI.SourceControl
             _view.OpenWorkingDirectory += OnOpenWorkingDirectory;
             _view.InitializeNewRepository += OnInitNewRepository;
 
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public override void Show()
@@ -99,7 +99,7 @@ namespace Rubberduck.UI.SourceControl
 
            _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name),
-                    creds, _factory);
+                    creds, _wrapperFactory);
 
             SetChildPresenterSourceControlProviders(_provider);
         }
@@ -139,7 +139,7 @@ namespace Rubberduck.UI.SourceControl
                 _provider = _providerFactory.CreateProvider(project);
                 var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
 
-                _provider = _providerFactory.CreateProvider(project, repo, _factory);
+                _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
 
                 AddRepoToConfig((Repository)repo);
 
@@ -162,7 +162,7 @@ namespace Rubberduck.UI.SourceControl
 
                 try
                 {
-                    _provider = _providerFactory.CreateProvider(project, repo, _factory);
+                    _provider = _providerFactory.CreateProvider(project, repo, _wrapperFactory);
                 }
                 catch (SourceControlException ex)
                 {
@@ -199,7 +199,7 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _provider = _providerFactory.CreateProvider(this.VBE.ActiveVBProject,
-                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name), _factory);
+                    _config.Repositories.First(repo => repo.Name == this.VBE.ActiveVBProject.Name), _wrapperFactory);
             }
             catch (SourceControlException ex)
             {

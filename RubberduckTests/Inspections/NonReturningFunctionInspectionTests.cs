@@ -25,7 +25,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -50,7 +50,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -73,7 +73,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -99,7 +99,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -128,7 +128,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -155,7 +155,7 @@ End Sub";
                 .Build().Object;
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();
@@ -186,7 +186,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new NonReturningFunctionInspection();

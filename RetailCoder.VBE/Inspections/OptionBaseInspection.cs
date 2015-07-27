@@ -10,11 +10,11 @@ namespace Rubberduck.Inspections
 {
     public class OptionBaseInspection : IInspection
     {
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         public OptionBaseInspection()
         {
-            _factory = new RubberduckCodePaneFactory();
+            _wrapperFactory = new CodePaneWrapperFactory();
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections
             }
 
             var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).INTEGERLITERAL().GetText() == "1")
-                                .Select(issue => new OptionBaseInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName, _factory));
+                                .Select(issue => new OptionBaseInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName, _wrapperFactory));
 
             return issues;
         }

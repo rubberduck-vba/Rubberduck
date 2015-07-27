@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
@@ -46,7 +46,7 @@ Global var2 As String";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_StdModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
@@ -67,7 +67,7 @@ Global var2 As String";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
@@ -89,7 +89,7 @@ Global var2 As Date";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();
@@ -114,7 +114,7 @@ Global var2 As Date";
                 .Build().Object;
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ObsoleteGlobalInspection();

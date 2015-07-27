@@ -13,13 +13,13 @@ namespace Rubberduck.Inspections
     public class DefaultProjectNameInspectionResult : CodeInspectionResultBase
     {
         private readonly VBProjectParseResult _parseResult;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, IRubberduckCodePaneFactory factory) 
+        public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory) 
             : base(inspection, type, target)
         {
             _parseResult = parseResult;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public override IDictionary<string, Action> GetQuickFixes()
@@ -37,8 +37,8 @@ namespace Rubberduck.Inspections
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox(), _factory);
-                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _factory), new RubberduckMessageBox());
+                var factory = new RenamePresenterFactory(vbe, view, _parseResult, new RubberduckMessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new RubberduckMessageBox());
                 refactoring.Refactor(Target);
             }
         }

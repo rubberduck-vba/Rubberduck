@@ -20,19 +20,19 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly IEnumerable<IInspection> _inspections;
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IInspector _inspector;
 
         private IList<ICodeInspectionResult> _issues;
         private int _currentIssue;
         private int _issueCount;
 
-        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, IRubberduckCodePaneFactory factory)
+        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _parser = parser;
             _inspections = inspections;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public CodeInspectionsToolbar(VBE vbe, IInspector inspector)
@@ -142,7 +142,7 @@ namespace Rubberduck.UI.CodeInspections
             try
             {
                 var location = _vbe.FindInstruction(e.QualifiedName, e.Selection);
-                var codePane = _factory.Create(location.CodeModule.CodePane);
+                var codePane = _wrapperFactory.Create(location.CodeModule.CodePane);
 
                 codePane.Selection = location.Selection;
                 codePane.ForceFocus();

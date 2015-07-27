@@ -7,12 +7,12 @@ namespace Rubberduck.UI.IdentifierReferences
     public class ImplementationListItem
     {
         private readonly Declaration _declaration;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ImplementationListItem(Declaration declaration, IRubberduckCodePaneFactory factory)
+        public ImplementationListItem(Declaration declaration, ICodePaneWrapperFactory wrapperFactory)
         {
             _declaration = declaration;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public Declaration GetDeclaration()

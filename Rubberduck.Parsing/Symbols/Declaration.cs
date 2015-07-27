@@ -18,13 +18,13 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, IRubberduckCodePaneFactory factory, bool isBuiltIn = true)
-            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, factory, isBuiltIn)
+            Accessibility accessibility, DeclarationType declarationType, ICodePaneWrapperFactory wrapperFactory, bool isBuiltIn = true)
+            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, wrapperFactory, isBuiltIn)
         {}
 
         public Declaration(QualifiedMemberName qualifiedName, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, IRubberduckCodePaneFactory factory, bool isBuiltIn = false)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, ICodePaneWrapperFactory wrapperFactory, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
             _parentScope = parentScope;
@@ -36,11 +36,11 @@ namespace Rubberduck.Parsing.Symbols
             _declarationType = declarationType;
             _selection = selection;
             _context = context;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
             _isBuiltIn = isBuiltIn;
         }
 
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         private readonly bool _isBuiltIn;
         public bool IsBuiltIn { get { return _isBuiltIn; } }

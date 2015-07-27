@@ -15,7 +15,7 @@ namespace Rubberduck
     [Guid(ClassId)]
     [ProgId(ProgId)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    // ReSharper disable once InconsistentNaming
+    // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
         private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
@@ -38,7 +38,8 @@ namespace Rubberduck
             {
                 var conventions = new RubberduckConventions(_kernel);
                 conventions.Apply((VBE)Application, (AddIn)AddInInst);
-                _kernel.Get<App>();
+                var app = _kernel.Get<App>();
+                app.Startup();
             }
             catch (Exception exception)
             {

@@ -19,17 +19,17 @@ namespace Rubberduck.SourceControl.Interop
             : base(project)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
-            : base(project, repository, factory)
+        public GitProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
+            : base(project, repository, wrapperFactory)
         { }
 
         [Obsolete]
-        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, IRubberduckCodePaneFactory factory)
-            : base(project, repository, userName, passWord, factory)
+        public GitProvider(VBProject project, IRepository repository, string userName, string passWord, ICodePaneWrapperFactory wrapperFactory)
+            : base(project, repository, userName, passWord, wrapperFactory)
         { }
 
-        public GitProvider(VBProject project, IRepository repository, ICredentials credentials, IRubberduckCodePaneFactory factory)
-            :base(project, repository, credentials.Username, credentials.Password, factory)
+        public GitProvider(VBProject project, IRepository repository, ICredentials credentials, ICodePaneWrapperFactory wrapperFactory)
+            :base(project, repository, credentials.Username, credentials.Password, wrapperFactory)
         { }
 
         public new string CurrentBranch

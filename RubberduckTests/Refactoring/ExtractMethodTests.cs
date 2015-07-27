@@ -38,7 +38,7 @@ End Function
 
 ";
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
 
             var builder = new MockVbeBuilder();
             VBComponent component;
