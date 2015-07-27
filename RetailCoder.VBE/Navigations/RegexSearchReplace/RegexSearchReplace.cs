@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
 
@@ -28,6 +29,44 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                     foreach (var codePane in _model.VBE.CodePanes.Cast<CodePane>().Where(codePane => ReferenceEquals(_model.VBE, codePane.VBE)))
                     {
                         results.AddRange(GetResultsFromModule(codePane.CodeModule, searchPattern));
+                    }
+                    break;
+
+                case RegexSearchReplaceScope.CurrentProject:
+                    foreach (dynamic dyn in _model.VBE.ActiveVBProject.VBComponents)
+                    {
+                        CodeModule module;
+                        try
+                        {
+                            var component = (VBComponent) dyn;
+                            module = component.CodeModule;
+                        }
+                        catch (COMException)
+                        {
+                            continue;
+                        }
+
+                        if (!ReferenceEquals(_model.VBE, module.VBE)) { continue; }
+
+                        results.AddRange(GetResultsFromModule(module, searchPattern));
+                    }
+                    break;
+
+                case RegexSearchReplaceScope.EntireSolution:
+                    foreach (dynamic dyn in _model.VBE.ActiveVBProject.VBComponents)
+                    {
+                        CodeModule module;
+                        try
+                        {
+                            var component = (VBComponent)dyn;
+                            module = component.CodeModule;
+                        }
+                        catch (COMException)
+                        {
+                            continue;
+                        }
+
+                        results.AddRange(GetResultsFromModule(module, searchPattern));
                     }
                     break;
             }
