@@ -244,6 +244,7 @@
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Navigations\IFindAllReferences.cs" />
     <Compile Include="Navigations\IFindSymbol.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplace.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -296,6 +297,12 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\RegexSearchReplace\RegexSearchReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RegexSearchReplace\RegexSearchReplace.Designer.cs">
+      <DependentUpon>RegexSearchReplace.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -635,6 +642,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RegexSearchReplace\RegexSearchReplace.resx">
+      <DependentUpon>RegexSearchReplace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
