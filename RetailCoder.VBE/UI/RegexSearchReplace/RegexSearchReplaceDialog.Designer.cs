@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.RegexSearchReplace
 {
-    partial class RegexSearchReplace
+    partial class RegexSearchReplaceDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RegexSearchReplace));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RegexSearchReplaceDialog));
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.CancelDialogButton = new System.Windows.Forms.Button();
             this.ReplaceAllButton = new System.Windows.Forms.Button();

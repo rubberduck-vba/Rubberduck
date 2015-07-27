@@ -6,13 +6,13 @@ using Rubberduck.Navigations.RegexSearchReplace;
 
 namespace Rubberduck.UI.RegexSearchReplace
 {
-    public partial class RegexSearchReplace : Form, IRegexSearchReplaceView
+    public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceView
     {
         public string SearchPattern { get; private set; }
         public string ReplacePattern { get; private set; }
         public RegexSearchReplaceScope Scope { get; private set; }
 
-        public RegexSearchReplace()
+        public RegexSearchReplaceDialog()
         {
             InitializeComponent();
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.VBEditor;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Navigations.RegexSearchReplace
 {
     public interface IRegexSearchReplace
     {
-        List<QualifiedSelection> Search(string pattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
-        List<QualifiedSelection> SearchAndReplace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
+        List<Match> Search(string pattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
+        void SearchAndReplace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
     }
 }
