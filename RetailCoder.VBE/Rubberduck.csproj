@@ -308,6 +308,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\RubberduckUI.sv.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -399,11 +404,6 @@
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesControl.cs">
       <SubType>UserControl</SubType>
@@ -650,6 +650,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
@@ -679,11 +683,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
       <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>

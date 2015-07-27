@@ -36,9 +36,11 @@
             this.FindButton = new System.Windows.Forms.Button();
             this.FindBox = new System.Windows.Forms.TextBox();
             this.ReplaceBox = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.SearchLabel = new System.Windows.Forms.Label();
+            this.ReplaceLabel = new System.Windows.Forms.Label();
+            this.ScopeComboBox = new System.Windows.Forms.ComboBox();
+            this.ScopeLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // flowLayoutPanel2
@@ -50,7 +52,7 @@
             this.flowLayoutPanel2.Controls.Add(this.FindButton);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 47);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 141);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(11, 10, 0, 10);
@@ -107,28 +109,52 @@
             // 
             // FindBox
             // 
-            this.FindBox.Location = new System.Drawing.Point(13, 12);
+            this.FindBox.Location = new System.Drawing.Point(107, 52);
             this.FindBox.Name = "FindBox";
-            this.FindBox.Size = new System.Drawing.Size(194, 22);
+            this.FindBox.Size = new System.Drawing.Size(330, 22);
             this.FindBox.TabIndex = 5;
             // 
             // ReplaceBox
             // 
-            this.ReplaceBox.Location = new System.Drawing.Point(243, 12);
+            this.ReplaceBox.Location = new System.Drawing.Point(107, 12);
             this.ReplaceBox.Name = "ReplaceBox";
-            this.ReplaceBox.Size = new System.Drawing.Size(194, 22);
+            this.ReplaceBox.Size = new System.Drawing.Size(330, 22);
             this.ReplaceBox.TabIndex = 6;
             // 
-            // pictureBox1
+            // SearchLabel
             // 
-            this.pictureBox1.Image = global::Rubberduck.Properties.Resources.arrow;
-            this.pictureBox1.Location = new System.Drawing.Point(214, 12);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(22, 22);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
+            this.SearchLabel.AutoSize = true;
+            this.SearchLabel.Location = new System.Drawing.Point(10, 17);
+            this.SearchLabel.Name = "SearchLabel";
+            this.SearchLabel.Size = new System.Drawing.Size(57, 17);
+            this.SearchLabel.TabIndex = 7;
+            this.SearchLabel.Text = "Search:";
+            // 
+            // ReplaceLabel
+            // 
+            this.ReplaceLabel.AutoSize = true;
+            this.ReplaceLabel.Location = new System.Drawing.Point(12, 57);
+            this.ReplaceLabel.Name = "ReplaceLabel";
+            this.ReplaceLabel.Size = new System.Drawing.Size(64, 17);
+            this.ReplaceLabel.TabIndex = 8;
+            this.ReplaceLabel.Text = "Replace:";
+            // 
+            // ScopeComboBox
+            // 
+            this.ScopeComboBox.FormattingEnabled = true;
+            this.ScopeComboBox.Location = new System.Drawing.Point(107, 92);
+            this.ScopeComboBox.Name = "ScopeComboBox";
+            this.ScopeComboBox.Size = new System.Drawing.Size(330, 24);
+            this.ScopeComboBox.TabIndex = 9;
+            // 
+            // ScopeLabel
+            // 
+            this.ScopeLabel.AutoSize = true;
+            this.ScopeLabel.Location = new System.Drawing.Point(10, 99);
+            this.ScopeLabel.Name = "ScopeLabel";
+            this.ScopeLabel.Size = new System.Drawing.Size(52, 17);
+            this.ScopeLabel.TabIndex = 10;
+            this.ScopeLabel.Text = "Scope:";
             // 
             // RegexSearchReplace
             // 
@@ -136,11 +162,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelDialogButton;
-            this.ClientSize = new System.Drawing.Size(452, 100);
+            this.ClientSize = new System.Drawing.Size(452, 194);
+            this.Controls.Add(this.ScopeLabel);
+            this.Controls.Add(this.ScopeComboBox);
+            this.Controls.Add(this.ReplaceLabel);
+            this.Controls.Add(this.SearchLabel);
             this.Controls.Add(this.ReplaceBox);
             this.Controls.Add(this.FindBox);
             this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -148,7 +177,6 @@
             this.Name = "RegexSearchReplace";
             this.Text = "Regex Search & Replace";
             this.flowLayoutPanel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -163,6 +191,9 @@
         private System.Windows.Forms.Button FindButton;
         private System.Windows.Forms.TextBox FindBox;
         private System.Windows.Forms.TextBox ReplaceBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label SearchLabel;
+        private System.Windows.Forms.Label ReplaceLabel;
+        private System.Windows.Forms.ComboBox ScopeComboBox;
+        private System.Windows.Forms.Label ScopeLabel;
     }
 }
