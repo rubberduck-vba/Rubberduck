@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Navigations;
+using Rubberduck.Navigations.RegexSearchReplace;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
@@ -13,6 +14,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.RegexSearchReplace;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -90,6 +92,7 @@ namespace Rubberduck.UI
             InitializeFindReferencesContextMenu();
             InitializeFindImplementationsContextMenu();
             InitializeFindSymbolContextMenu();
+            InitializeRegexSearchReplaceContextMenu();
         }
 
         private void RemoveRefactorContextMenu()
@@ -103,6 +106,7 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu.Delete();
             _findAllImplementationsContextMenu.Delete();
             _findSymbolContextMenu.Delete();
+            _regexSearchReplaceContextMenu.Delete();
         }
 
         private CommandBarButton _findAllReferencesContextMenu;
@@ -133,6 +137,15 @@ namespace Rubberduck.UI
             _findSymbolContextMenu.Click += FindSymbolContextMenuClick;
         }
 
+        private CommandBarButton _regexSearchReplaceContextMenu;
+        private void InitializeRegexSearchReplaceContextMenu()
+        {
+            var beforeItem = IDE.CommandBars["Code Window"].Controls.Cast<CommandBarControl>().First(control => control.Id == 2529).Index;
+            _regexSearchReplaceContextMenu = IDE.CommandBars["Code Window"].Controls.Add(Type: MsoControlType.msoControlButton, Temporary: true, Before: beforeItem) as CommandBarButton;
+            _regexSearchReplaceContextMenu.Caption = RubberduckUI.ContextMenu_RegexSearchReplace;
+            _regexSearchReplaceContextMenu.Click += RegexSearchReplaceContextMenuClick;
+        }
+
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindSymbolContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
@@ -149,6 +162,20 @@ namespace Rubberduck.UI
         private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _findAllImplementations.Find();
+        }
+
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private void RegexSearchReplaceContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var progress = new ParsingProgressPresenter();
+            var result = progress.Parse(_parser, IDE.ActiveVBProject);
+
+            using (var view = new RegexSearchReplaceDialog())
+            {
+                var model = new RegexSearchReplaceModel(IDE, result);
+                var presenter = new RegexSearchReplacePresenter(view, model);
+                presenter.Show();
+            }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -283,6 +310,7 @@ namespace Rubberduck.UI
             _findAllReferencesContextMenu.Click -= FindAllReferencesContextMenu_Click;
             _findAllImplementationsContextMenu.Click -= FindAllImplementationsContextMenu_Click;
             _findSymbolContextMenu.Click -= FindSymbolContextMenuClick;
+            _regexSearchReplaceContextMenu.Click -= RegexSearchReplaceContextMenuClick;
 
             RemoveRefactorContextMenu();
 

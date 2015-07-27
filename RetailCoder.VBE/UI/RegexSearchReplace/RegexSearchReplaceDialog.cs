@@ -8,9 +8,9 @@ namespace Rubberduck.UI.RegexSearchReplace
 {
     public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceView
     {
-        public string SearchPattern { get; private set; }
-        public string ReplacePattern { get; private set; }
-        public RegexSearchReplaceScope Scope { get; private set; }
+        public string SearchPattern { get { return SearchBox.Text; } }
+        public string ReplacePattern { get { return ReplaceBox.Text; } }
+        public RegexSearchReplaceScope Scope { get { return ConvertScopeLabelsToEnum(); } }
 
         public RegexSearchReplaceDialog()
         {
@@ -19,7 +19,7 @@ namespace Rubberduck.UI.RegexSearchReplace
             InitializeCaptions();
             ScopeComboBox.DataSource = ScopeLabels();
         }
-
+        
         private void InitializeCaptions()
         {
             Text = RubberduckUI.RegexSearchReplace_Caption;
@@ -39,6 +39,56 @@ namespace Rubberduck.UI.RegexSearchReplace
                     select
                     RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture))
                     .ToList();
+        }
+
+        private RegexSearchReplaceScope ConvertScopeLabelsToEnum()
+        {
+            var scopes = from RegexSearchReplaceScope scope in Enum.GetValues(typeof(RegexSearchReplaceScope))
+                         where RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture) == ScopeComboBox.SelectedValue
+                         select scope;
+
+
+            return scopes.First();
+        }
+
+        public event EventHandler<EventArgs> FindButtonClicked;
+        protected virtual void OnFindButtonClicked(object sender, EventArgs e)
+        {
+            var handler = FindButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> ReplaceButtonClicked;
+        protected virtual void OnReplaceButtonClicked(object sender, EventArgs e)
+        {
+            var handler = ReplaceButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> ReplaceAllButtonClicked;
+        protected virtual void OnReplaceAllButtonClicked(object sender, EventArgs e)
+        {
+            var handler = ReplaceAllButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> CancelButtonClicked;
+        protected virtual void OnCancelButtonClicked(object sender, EventArgs e)
+        {
+            var handler = CancelButtonClicked;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
     }
 }

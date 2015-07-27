@@ -13,7 +13,7 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             _model = model;
         }
 
-        public List<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
+        public List<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope)
         {
             var results = new List<RegexSearchResult>();
 
@@ -21,22 +21,45 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             {
                 var module = _model.VBE.ActiveCodePane.CodeModule;
 
-                for (var i = 0; i < module.CountOfLines; i++)
+                for (var i = 1; i <= module.CountOfLines; i++)
                 {
-                    results.AddRange(Regex.Matches(module.Lines[i, 1], searchPattern).OfType<Match>().Select(m => new RegexSearchResult(m, i)));
+                    var matches =
+                        Regex.Matches(module.Lines[i, 1], searchPattern)
+                            .OfType<Match>()
+                            .Select(m => new RegexSearchResult(m, i));
+
+                    if (matches.Any())
+                    {
+                        results.AddRange(matches);
+                    }
                 }
             }
 
             return results;
         }
 
-        public void SearchAndReplace(string searchPattern, string replaceValue,
-            RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
+        public void SearchAndReplace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
         {
             if (scope == RegexSearchReplaceScope.CurrentFile)
             {
                 var module = _model.VBE.ActiveCodePane.CodeModule;
-                var results = Search(searchPattern);
+                var results = Search(searchPattern, scope);
+
+                if (results.Count > 0)
+                {
+                    var originalLine = module.Lines[results[0].Selection.StartLine, 1];
+                    var newLine = originalLine.Replace(results[0].Match.Value, replaceValue);
+                    module.ReplaceLine(results[0].Selection.StartLine, newLine);
+                }
+            }
+        }
+
+        public void SearchAndReplaceAll(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
+        {
+            if (scope == RegexSearchReplaceScope.CurrentFile)
+            {
+                var module = _model.VBE.ActiveCodePane.CodeModule;
+                var results = Search(searchPattern, scope);
 
                 foreach (var result in results)
                 {

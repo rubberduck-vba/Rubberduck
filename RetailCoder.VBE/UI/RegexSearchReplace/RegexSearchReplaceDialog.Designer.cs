@@ -34,8 +34,8 @@
             this.ReplaceAllButton = new System.Windows.Forms.Button();
             this.ReplaceButton = new System.Windows.Forms.Button();
             this.FindButton = new System.Windows.Forms.Button();
-            this.FindBox = new System.Windows.Forms.TextBox();
             this.ReplaceBox = new System.Windows.Forms.TextBox();
+            this.SearchBox = new System.Windows.Forms.TextBox();
             this.SearchLabel = new System.Windows.Forms.Label();
             this.ReplaceLabel = new System.Windows.Forms.Label();
             this.ScopeComboBox = new System.Windows.Forms.ComboBox();
@@ -70,6 +70,7 @@
             this.CancelDialogButton.TabIndex = 0;
             this.CancelDialogButton.Text = "Cancel";
             this.CancelDialogButton.UseVisualStyleBackColor = false;
+            this.CancelDialogButton.Click += new System.EventHandler(this.OnCancelButtonClicked);
             // 
             // ReplaceAllButton
             // 
@@ -82,6 +83,7 @@
             this.ReplaceAllButton.TabIndex = 1;
             this.ReplaceAllButton.Text = "Replace All";
             this.ReplaceAllButton.UseVisualStyleBackColor = false;
+            this.ReplaceAllButton.Click += new System.EventHandler(this.OnReplaceAllButtonClicked);
             // 
             // ReplaceButton
             // 
@@ -94,6 +96,7 @@
             this.ReplaceButton.TabIndex = 2;
             this.ReplaceButton.Text = "Replace";
             this.ReplaceButton.UseVisualStyleBackColor = false;
+            this.ReplaceButton.Click += new System.EventHandler(this.OnReplaceButtonClicked);
             // 
             // FindButton
             // 
@@ -106,25 +109,26 @@
             this.FindButton.TabIndex = 3;
             this.FindButton.Text = "Find";
             this.FindButton.UseVisualStyleBackColor = false;
-            // 
-            // FindBox
-            // 
-            this.FindBox.Location = new System.Drawing.Point(107, 52);
-            this.FindBox.Name = "FindBox";
-            this.FindBox.Size = new System.Drawing.Size(330, 22);
-            this.FindBox.TabIndex = 5;
+            this.FindButton.Click += new System.EventHandler(this.OnFindButtonClicked);
             // 
             // ReplaceBox
             // 
-            this.ReplaceBox.Location = new System.Drawing.Point(107, 12);
+            this.ReplaceBox.Location = new System.Drawing.Point(107, 52);
             this.ReplaceBox.Name = "ReplaceBox";
             this.ReplaceBox.Size = new System.Drawing.Size(330, 22);
-            this.ReplaceBox.TabIndex = 6;
+            this.ReplaceBox.TabIndex = 5;
+            // 
+            // SearchBox
+            // 
+            this.SearchBox.Location = new System.Drawing.Point(107, 12);
+            this.SearchBox.Name = "SearchBox";
+            this.SearchBox.Size = new System.Drawing.Size(330, 22);
+            this.SearchBox.TabIndex = 6;
             // 
             // SearchLabel
             // 
             this.SearchLabel.AutoSize = true;
-            this.SearchLabel.Location = new System.Drawing.Point(10, 17);
+            this.SearchLabel.Location = new System.Drawing.Point(10, 12);
             this.SearchLabel.Name = "SearchLabel";
             this.SearchLabel.Size = new System.Drawing.Size(57, 17);
             this.SearchLabel.TabIndex = 7;
@@ -133,7 +137,7 @@
             // ReplaceLabel
             // 
             this.ReplaceLabel.AutoSize = true;
-            this.ReplaceLabel.Location = new System.Drawing.Point(12, 57);
+            this.ReplaceLabel.Location = new System.Drawing.Point(10, 52);
             this.ReplaceLabel.Name = "ReplaceLabel";
             this.ReplaceLabel.Size = new System.Drawing.Size(64, 17);
             this.ReplaceLabel.TabIndex = 8;
@@ -150,13 +154,13 @@
             // ScopeLabel
             // 
             this.ScopeLabel.AutoSize = true;
-            this.ScopeLabel.Location = new System.Drawing.Point(10, 99);
+            this.ScopeLabel.Location = new System.Drawing.Point(10, 92);
             this.ScopeLabel.Name = "ScopeLabel";
             this.ScopeLabel.Size = new System.Drawing.Size(52, 17);
             this.ScopeLabel.TabIndex = 10;
             this.ScopeLabel.Text = "Scope:";
             // 
-            // RegexSearchReplace
+            // RegexSearchReplaceDialog
             // 
             this.AcceptButton = this.FindButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -167,14 +171,14 @@
             this.Controls.Add(this.ScopeComboBox);
             this.Controls.Add(this.ReplaceLabel);
             this.Controls.Add(this.SearchLabel);
+            this.Controls.Add(this.SearchBox);
             this.Controls.Add(this.ReplaceBox);
-            this.Controls.Add(this.FindBox);
             this.Controls.Add(this.flowLayoutPanel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "RegexSearchReplace";
+            this.Name = "RegexSearchReplaceDialog";
             this.Text = "Regex Search & Replace";
             this.flowLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -189,8 +193,8 @@
         private System.Windows.Forms.Button ReplaceAllButton;
         private System.Windows.Forms.Button ReplaceButton;
         private System.Windows.Forms.Button FindButton;
-        private System.Windows.Forms.TextBox FindBox;
         private System.Windows.Forms.TextBox ReplaceBox;
+        private System.Windows.Forms.TextBox SearchBox;
         private System.Windows.Forms.Label SearchLabel;
         private System.Windows.Forms.Label ReplaceLabel;
         private System.Windows.Forms.ComboBox ScopeComboBox;

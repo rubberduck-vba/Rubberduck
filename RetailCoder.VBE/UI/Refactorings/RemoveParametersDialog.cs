@@ -110,11 +110,6 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        private int GetFirstSelectedRowIndex(int index)
-        {
-            return MethodParametersGrid.SelectedRows[index].Index;
-        }
-
         private void SelectionChanged()
         {
             _selectedItem = MethodParametersGrid.SelectedRows.Count == 0

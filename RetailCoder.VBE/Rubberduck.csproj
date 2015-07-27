@@ -244,6 +244,7 @@
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Navigations\IFindAllReferences.cs" />
     <Compile Include="Navigations\IFindSymbol.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplace.cs" />
     <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplaceView.cs" />
     <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplace.cs" />
@@ -657,7 +658,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>

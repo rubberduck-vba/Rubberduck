@@ -1123,22 +1123,22 @@ Are you sure you want to proceed with this rename?</value>
     <value>German</value>
   </data>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
-  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
     <value>Replace:</value>
   </data>
-  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Scope:</value>
   </data>
-  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
+  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
     <value>Find</value>
   </data>
-  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
     <value>Replace</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+    <value>Replace All</value>
   </data>
   <data name="RegexSearchReplace_Caption" xml:space="preserve">
     <value>Regex Search &amp; Replace</value>
@@ -1160,5 +1160,8 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Selection</value>
+  </data>
+  <data name="ContextMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rege&amp;x Search/Replace</value>
   </data>
 </root>

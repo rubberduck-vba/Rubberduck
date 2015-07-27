@@ -711,6 +711,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
+        /// </summary>
+        internal static string ContextMenu_RegexSearchReplace {
+            get {
+                return ResourceManager.GetString("ContextMenu_RegexSearchReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to class.
         /// </summary>
         internal static string DeclarationType_Class {
@@ -1780,7 +1789,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Search:.
         /// </summary>
         internal static string RegexSearchReplace_SearchLabel {
             get {
