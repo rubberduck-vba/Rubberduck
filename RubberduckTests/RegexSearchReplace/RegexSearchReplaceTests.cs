@@ -1,9 +1,8 @@
 ﻿using Microsoft.Vbe.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Navigations.RegexSearchReplace;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.RegexSearchReplace
@@ -25,10 +24,7 @@ End Sub";
                 .Build().Object;
             var vbe = builder.Build();
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
+            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, new Selection()));
             var results = regexSearchReplace.Find("Foo", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -57,10 +53,7 @@ End Sub";
                 .Build().Object;
             var vbe = builder.Build();
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
+            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, new Selection()));
             var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -102,10 +95,7 @@ End Sub";
             var vbe = builder.Build();
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
+            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, new Selection()));
             regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -147,10 +137,7 @@ End Sub";
             var vbe = builder.Build();
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
+            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, new Selection()));
             regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert

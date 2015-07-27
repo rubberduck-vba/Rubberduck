@@ -167,12 +167,11 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void RegexSearchReplaceContextMenuClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
+            var codePane = _factory.Create(IDE.ActiveCodePane);
 
             using (var view = new RegexSearchReplaceDialog())
             {
-                var model = new RegexSearchReplaceModel(IDE, result);
+                var model = new RegexSearchReplaceModel(IDE, codePane.Selection);
                 var presenter = new RegexSearchReplacePresenter(view, model);
                 presenter.Show();
             }

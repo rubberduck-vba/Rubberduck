@@ -21,6 +21,11 @@ namespace Rubberduck.Navigations.RegexSearchReplace
 
             switch (scope)
             {
+                case RegexSearchReplaceScope.Selection:
+                    results.AddRange(GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern));
+                    results = results.Where(r => _model.Selection.Contains(r.Selection)).ToList();
+                    break;
+
                 case RegexSearchReplaceScope.CurrentFile:
                     results.AddRange(GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern));
                     break;
