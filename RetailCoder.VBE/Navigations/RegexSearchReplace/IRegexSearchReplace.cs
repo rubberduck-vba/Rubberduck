@@ -5,7 +5,7 @@ namespace Rubberduck.Navigations.RegexSearchReplace
 {
     public interface IRegexSearchReplace
     {
-        List<Match> Search(string pattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
+        List<RegexSearchResult> Search(string pattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
         void SearchAndReplace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile);
     }
 }

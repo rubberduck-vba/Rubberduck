@@ -13,21 +13,38 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             _model = model;
         }
 
-        public List<Match> Search(string pattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
+        public List<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
         {
+            var results = new List<RegexSearchResult>();
+
             if (scope == RegexSearchReplaceScope.CurrentFile)
             {
-                var lines = _model.VBE.ActiveCodePane.CodeModule.Lines[0, _model.VBE.ActiveCodePane.CodeModule.CountOfLines];
-                return Regex.Matches(lines, pattern).OfType<Match>().ToList();
+                var module = _model.VBE.ActiveCodePane.CodeModule;
+
+                for (var i = 0; i < module.CountOfLines; i++)
+                {
+                    results.AddRange(Regex.Matches(module.Lines[i, 1], searchPattern).OfType<Match>().Select(m => new RegexSearchResult(m, i)));
+                }
             }
 
-            return null;
+            return results;
         }
 
         public void SearchAndReplace(string searchPattern, string replaceValue,
             RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
         {
-            throw new System.NotImplementedException();
+            if (scope == RegexSearchReplaceScope.CurrentFile)
+            {
+                var module = _model.VBE.ActiveCodePane.CodeModule;
+                var results = Search(searchPattern);
+
+                foreach (var result in results)
+                {
+                    var originalLine = module.Lines[result.Selection.StartLine, 1];
+                    var newLine = originalLine.Replace(result.Match.Value, replaceValue);
+                    module.ReplaceLine(result.Selection.StartLine, newLine);
+                }
+            }
         }
     }
 }

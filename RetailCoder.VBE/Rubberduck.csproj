@@ -249,6 +249,7 @@
     <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplace.cs" />
     <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplaceModel.cs" />
     <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplaceScope.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchResult.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
