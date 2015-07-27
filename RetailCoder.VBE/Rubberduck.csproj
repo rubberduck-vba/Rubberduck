@@ -245,6 +245,9 @@
     <Compile Include="Navigations\IFindAllReferences.cs" />
     <Compile Include="Navigations\IFindSymbol.cs" />
     <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplace.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplaceView.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplace.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
