@@ -8,7 +8,7 @@ namespace Rubberduck.UI.RegexSearchReplace
 {
     public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceView
     {
-        public string SearchPattern { get { return SearchBox.Text; } }
+        public string SearchPattern { get { return SearchBox.Text.Replace(@"\\", @"\"); } }
         public string ReplacePattern { get { return ReplaceBox.Text; } }
         public RegexSearchReplaceScope Scope { get { return ConvertScopeLabelsToEnum(); } }
 
