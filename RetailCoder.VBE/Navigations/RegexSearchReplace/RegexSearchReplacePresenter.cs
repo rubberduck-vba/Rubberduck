@@ -26,19 +26,19 @@ namespace Rubberduck.Navigations.RegexSearchReplace
         void _view_FindButtonClicked(object sender, EventArgs e)
         {
             var regexSearchReplace = new RegexSearchReplace(_model);
-            regexSearchReplace.Search(_view.SearchPattern, _view.Scope);
+            regexSearchReplace.Find(_view.SearchPattern, _view.Scope);
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
         {
             var regexSearchReplace = new RegexSearchReplace(_model);
-            regexSearchReplace.SearchAndReplace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
+            regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
             var regexSearchReplace = new RegexSearchReplace(_model);
-            regexSearchReplace.SearchAndReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
+            regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         void _view_CancelButtonClicked(object sender, EventArgs e)

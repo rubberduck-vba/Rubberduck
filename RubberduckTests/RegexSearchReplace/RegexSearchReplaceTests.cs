@@ -29,7 +29,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
-            var results = regexSearchReplace.Search("Foo", RegexSearchReplaceScope.CurrentFile);
+            var results = regexSearchReplace.Find("Foo", RegexSearchReplaceScope.CurrentFile);
 
             //assert
             Assert.AreEqual(1, results.Count);
@@ -61,7 +61,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
-            var results = regexSearchReplace.Search("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentFile);
+            var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentFile);
 
             //assert
             Assert.AreEqual(3, results.Count);
@@ -106,7 +106,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
-            regexSearchReplace.SearchAndReplace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
+            regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert
             Assert.AreEqual(expectedCode, module.Lines());
@@ -151,7 +151,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult));
-            regexSearchReplace.SearchAndReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
+            regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert
             Assert.AreEqual(expectedCode, module.Lines());

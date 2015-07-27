@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using Rubberduck.UI.IdentifierReferences;
 
 namespace Rubberduck.Navigations.RegexSearchReplace
 {
@@ -13,7 +16,7 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             _model = model;
         }
 
-        public List<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope)
+        public List<RegexSearchResult> Find(string searchPattern, RegexSearchReplaceScope scope)
         {
             var results = new List<RegexSearchResult>();
 
@@ -26,7 +29,7 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                     var matches =
                         Regex.Matches(module.Lines[i, 1], searchPattern)
                             .OfType<Match>()
-                            .Select(m => new RegexSearchResult(m, i));
+                            .Select(m => new RegexSearchResult(m, i)).ToList();
 
                     if (matches.Any())
                     {
@@ -38,12 +41,12 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             return results;
         }
 
-        public void SearchAndReplace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
+        public void Replace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
         {
             if (scope == RegexSearchReplaceScope.CurrentFile)
             {
                 var module = _model.VBE.ActiveCodePane.CodeModule;
-                var results = Search(searchPattern, scope);
+                var results = Find(searchPattern, scope);
 
                 if (results.Count > 0)
                 {
@@ -54,12 +57,12 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             }
         }
 
-        public void SearchAndReplaceAll(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
+        public void ReplaceAll(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
         {
             if (scope == RegexSearchReplaceScope.CurrentFile)
             {
                 var module = _model.VBE.ActiveCodePane.CodeModule;
-                var results = Search(searchPattern, scope);
+                var results = Find(searchPattern, scope);
 
                 foreach (var result in results)
                 {
@@ -69,5 +72,13 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                 }
             }
         }
+
+        /*private void ShowResultsToolwindow(IEnumerable<Declaration> implementations, string name)
+        {
+            // throws a COMException if toolwindow was already closed
+            var window = new SimpleListControl(string.Format(RubberduckUI.RegexSearchReplace_Caption, name));
+            var presenter = new ImplementationsListDockablePresenter(_vbe, _addIn, window, implementations, _codePaneFactory);
+            presenter.Show();
+        }*/
     }
 }
