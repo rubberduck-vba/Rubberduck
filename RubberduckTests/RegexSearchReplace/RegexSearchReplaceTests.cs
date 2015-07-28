@@ -157,5 +157,462 @@ End Sub";
             //assert
             Assert.AreEqual(expectedCode, module.Lines());
         }
+
+        [TestMethod]
+        public void RegexSearch_MatchUSPhoneNumber_Selection()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
+                    vbe.Object, parseResult,
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))));
+            var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.Selection);
+
+            //assert
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [TestMethod]
+        public void RegexSearchReplace_RemoveUSPhoneNumber_Selection()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""hi""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
+                    vbe.Object, parseResult,
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))));
+            regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.Selection);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RegexSearchReplaceAll_RemoveUSPhoneNumber_Selection()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""hi""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""hi""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
+                    vbe.Object, parseResult,
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 12, 1))));
+            regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.Selection);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RegexSearch_MatchUSPhoneNumber_CurrentProject()
+        {
+            const string inputCode1 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string inputCode2 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentProject);
+
+            //assert
+            Assert.AreEqual(6, results.Count);
+        }
+
+        [TestMethod]
+        public void RegexSearchReplace_RemoveUSPhoneNumber_CurrentProject()
+        {
+            const string inputCode1 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string inputCode2 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string expectedCode1 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""hi""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string expectedCode2 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentProject);
+
+            //assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+        [TestMethod]
+        public void RegexSearchReplaceAll_RemoveUSPhoneNumber_CurrentProject()
+        {
+            const string inputCode1 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string inputCode2 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""987-654-3210""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""1-222-333-4444""
+End Sub";
+
+            const string expectedCode1 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""hi""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""hi""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""hi""
+End Sub";
+
+            const string expectedCode2 = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""hi""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""hi""
+
+    Dim phoneNumber3 As String
+    phoneNumber3 = ""hi""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode1)
+                .AddComponent("Class2", vbext_ComponentType.vbext_ct_ClassModule, inputCode2)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+            var module1 = project.VBComponents.Item(0).CodeModule;
+            var module2 = project.VBComponents.Item(1).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentProject);
+
+            //assert
+            Assert.AreEqual(expectedCode1, module1.Lines());
+            Assert.AreEqual(expectedCode2, module2.Lines());
+        }
+
+/*        [TestMethod]
+        public void RegexSearch_MatchUSPhoneNumber_CurrentBlock()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub
+
+Private Sub Goo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
+                    vbe.Object, parseResult, new QualifiedSelection(new QualifiedModuleName(), new Selection(3, 1, 3, 1))));
+            var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentBlock);
+
+            //assert
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [TestMethod]
+        public void RegexSearchReplace_RemoveUSPhoneNumber_CurrentBlock()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub
+
+Private Sub Goo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""hi""
+End Sub
+
+Private Sub Goo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
+                    vbe.Object, parseResult, new QualifiedSelection(new QualifiedModuleName(), new Selection(3, 1, 3, 1))));
+            regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentBlock);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+        [TestMethod]
+        public void RegexSearchReplaceAll_RemoveUSPhoneNumber_CurrentBlock()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""1-123-456-7890""
+End Sub
+
+Private Sub Goo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Foo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""hi""
+
+    Dim phoneNumber2 As String
+    phoneNumber2 = ""hi""
+End Sub
+
+Private Sub Goo()
+    Dim phoneNumber1 As String
+    phoneNumber1 = ""123-456-7890""
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            vbe.Setup(v => v.ActiveVBProject).Returns(project);
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentBlock);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }*/
     }
 }
