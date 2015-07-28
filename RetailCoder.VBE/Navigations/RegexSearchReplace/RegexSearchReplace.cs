@@ -3,6 +3,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigations.RegexSearchReplace
 {
@@ -23,7 +25,26 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             {
                 case RegexSearchReplaceScope.Selection:
                     results.AddRange(GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern));
-                    results = results.Where(r => _model.Selection.Contains(r.Selection)).ToList();
+                    results = results.Where(r => _model.Selection.Selection.Contains(r.Selection)).ToList();
+                    break;
+
+                case RegexSearchReplaceScope.CurrentBlock:
+
+                    var declarationTypes = new []
+                    {
+                        DeclarationType.Event,
+                        DeclarationType.Function,
+                        DeclarationType.Procedure,
+                        DeclarationType.PropertyGet,
+                        DeclarationType.PropertyLet,
+                        DeclarationType.PropertySet
+                    };
+
+                    results.AddRange(GetResultsFromModule(_model.VBE.ActiveCodePane.CodeModule, searchPattern));
+                    dynamic block = _model.ParseResult.Declarations.FindSelection(_model.Selection, declarationTypes).Context.Parent;
+                    var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
+                        block.Stop.Column);
+                    results = results.Where(r => selection.Contains(r.Selection)).ToList();
                     break;
 
                 case RegexSearchReplaceScope.CurrentFile:
@@ -70,6 +91,8 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                         {
                             continue;
                         }
+
+                        if (!ReferenceEquals(_model.VBE, module.VBE)) { continue; }
 
                         results.AddRange(GetResultsFromModule(module, searchPattern));
                     }
