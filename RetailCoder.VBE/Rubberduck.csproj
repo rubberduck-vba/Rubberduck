@@ -326,11 +326,6 @@
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\IRubberduckMessageBox.cs" />
-    <Compile Include="UI\RubberduckUI1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\Settings\AddMarkerForm.cs">
       <SubType>Form</SubType>
     </Compile>
