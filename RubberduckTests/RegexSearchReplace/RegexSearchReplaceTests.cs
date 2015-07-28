@@ -114,6 +114,36 @@ End Sub";
         }
 
         [TestMethod]
+        public void RegexSearchReplace_RemoveUSPhoneNumber_CurrentFile_NoResults()
+        {
+            const string inputCode = @"
+Private Sub Foo()
+End Sub";
+
+            const string expectedCode = @"
+Private Sub Foo()
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
+                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
+                .Build().Object;
+            var vbe = builder.Build();
+            var module = project.VBComponents.Item(0).CodeModule;
+
+            var codePaneFactory = new RubberduckCodePaneFactory();
+            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
+
+            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            regexSearchReplace.Replace("Goo", "Hoo", RegexSearchReplaceScope.CurrentFile);
+
+            //assert
+            Assert.AreEqual(expectedCode, module.Lines());
+        }
+
+
+        [TestMethod]
         public void RegexSearchReplaceAll_RemoveUSPhoneNumber_CurrentFile()
         {
             const string inputCode = @"
