@@ -72,8 +72,7 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                             continue;
                         }
 
-                        if (!ReferenceEquals(_model.VBE, module.VBE)) { continue; }
-
+                        if (!ReferenceEquals(_model.VBE.ActiveVBProject, module.VBE.ActiveVBProject)) { continue; }
                         results.AddRange(GetResultsFromModule(module, searchPattern));
                     }
                     break;
@@ -93,7 +92,6 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                         }
 
                         if (!ReferenceEquals(_model.VBE, module.VBE)) { continue; }
-
                         results.AddRange(GetResultsFromModule(module, searchPattern));
                     }
                     break;
