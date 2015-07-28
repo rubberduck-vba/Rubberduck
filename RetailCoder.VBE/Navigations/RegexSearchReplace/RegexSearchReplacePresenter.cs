@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Navigations.RegexSearchReplace
 {
@@ -23,10 +24,20 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             _view.ShowDialog();
         }
 
-        void _view_FindButtonClicked(object sender, EventArgs e)
+        public event EventHandler<List<RegexSearchResult>> FindButtonResults;
+        protected virtual void OnFindButtonResults(List<RegexSearchResult> results)
+        {
+            var handler = FindButtonResults;
+            if (handler != null)
+            {
+                handler(this, results);
+            }
+        }
+
+        private void _view_FindButtonClicked(object sender, EventArgs e)
         {
             var regexSearchReplace = new RegexSearchReplace(_model);
-            regexSearchReplace.Find(_view.SearchPattern, _view.Scope);
+            OnFindButtonResults(regexSearchReplace.Find(_view.SearchPattern, _view.Scope));
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
@@ -35,13 +46,13 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
-        void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
+        private void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
             var regexSearchReplace = new RegexSearchReplace(_model);
             regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
-        void _view_CancelButtonClicked(object sender, EventArgs e)
+        private void _view_CancelButtonClicked(object sender, EventArgs e)
         {
             _view.Close();
         }

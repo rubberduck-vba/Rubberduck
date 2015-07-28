@@ -143,13 +143,5 @@ namespace Rubberduck.Navigations.RegexSearchReplace
             }
             return results;
         }
-
-        /*private void ShowResultsToolwindow(IEnumerable<Declaration> implementations, string name)
-        {
-            // throws a COMException if toolwindow was already closed
-            var window = new SimpleListControl(string.Format(RubberduckUI.RegexSearchReplace_Caption, name));
-            var presenter = new ImplementationsListDockablePresenter(_vbe, _addIn, window, implementations, _codePaneFactory);
-            presenter.Show();
-        }*/
     }
 }

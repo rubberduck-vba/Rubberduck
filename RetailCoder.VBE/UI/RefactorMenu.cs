@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +14,7 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.RegexSearchReplace;
 using Rubberduck.VBEditor;
@@ -22,22 +24,24 @@ namespace Rubberduck.UI
 {
     public class RefactorMenu : Menu
     {
+        private readonly AddIn _addin;
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly IFindAllReferences _findAllReferences;
         private readonly IFindAllImplementations _findAllImplementations;
         private readonly IFindSymbol _findSymbol;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly IRubberduckCodePaneFactory _codePaneFactory;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory factory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, IFindAllReferences findAllReferences, IFindAllImplementations findAllImplementations, IFindSymbol findSymbol, IRubberduckCodePaneFactory codePaneFactory)
             : base(vbe, addin)
         {
+            _addin = addin;
             _parser = parser;
             _editor = editor;
             _findAllReferences = findAllReferences;
             _findAllImplementations = findAllImplementations;
             _findSymbol = findSymbol;
-            _factory = factory;
+            _codePaneFactory = codePaneFactory;
         }
 
         private CommandBarButton _extractMethodButton;
@@ -169,15 +173,31 @@ namespace Rubberduck.UI
         {
             var progress = new ParsingProgressPresenter();
             var result = progress.Parse(_parser, IDE.ActiveVBProject);
-            var codePane = _factory.Create(IDE.ActiveCodePane);
+            var codePane = _codePaneFactory.Create(IDE.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
             using (var view = new RegexSearchReplaceDialog())
             {
                 var model = new RegexSearchReplaceModel(IDE, result, selection);
                 var presenter = new RegexSearchReplacePresenter(view, model);
+
+                presenter.FindButtonResults += presenter_FindButtonResults;
                 presenter.Show();
+                presenter.FindButtonResults -= presenter_FindButtonResults;
             }
+        }
+
+        private void presenter_FindButtonResults(object sender, List<RegexSearchResult> results)
+        {
+            ShowResultsToolwindow(results);
+        }
+
+        private void ShowResultsToolwindow(List<RegexSearchResult> results)
+        {
+            // throws a COMException if toolwindow was already closed
+            var window = new SimpleListControl(string.Format(RubberduckUI.RegexSearchReplace_Caption));
+            var presenter = new RegexSearchResultsDockablePresenter(IDE, _addin, window, results);
+            presenter.Show();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -221,7 +241,7 @@ namespace Rubberduck.UI
             {
                 return;
             }
-            var codePane = _factory.Create(IDE.ActiveCodePane);
+            var codePane = _codePaneFactory.Create(IDE.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             ReorderParameters(selection);
         }
@@ -234,7 +254,7 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var codePane = _factory.Create(IDE.ActiveCodePane);
+            var codePane = _codePaneFactory.Create(IDE.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             RemoveParameter(selection);
         }
@@ -246,7 +266,7 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _factory);
+                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _codePaneFactory);
                 var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor();
             }
@@ -259,7 +279,7 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _factory);
+                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _codePaneFactory);
                 var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
                 refactoring.Refactor(target);
             }

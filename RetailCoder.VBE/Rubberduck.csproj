@@ -303,6 +303,7 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
+    <Compile Include="UI\IdentifierReferences\RegexSearchResultsDockablePresenter.cs" />
     <Compile Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
