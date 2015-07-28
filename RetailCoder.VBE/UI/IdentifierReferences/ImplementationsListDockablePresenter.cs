@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -22,7 +21,7 @@ namespace Rubberduck.UI.IdentifierReferences
         private void BindTarget(IEnumerable<Declaration> implementations)
         {
             var listBox = Control.ResultBox;
-            listBox.DataSource = implementations.Select(implementation => new ImplementationListItem(implementation, _factory)).ToList();
+            listBox.DataSource = implementations.Select(implementation => new ImplementationListItem(implementation)).ToList();
             listBox.DisplayMember = "DisplayString";
             listBox.ValueMember = "Selection";
             Control.Navigate += ControlNavigate;
