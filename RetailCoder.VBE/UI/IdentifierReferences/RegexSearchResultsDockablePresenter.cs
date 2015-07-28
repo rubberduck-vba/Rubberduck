@@ -19,15 +19,14 @@ namespace Rubberduck.UI.IdentifierReferences
         private void BindTarget(List<RegexSearchResult> results)
         {
             var listBox = Control.ResultBox;
-            listBox.DataSource = results.Select(t => t.Match.Value).ToList();
-            /*listBox.DisplayMember = "DisplayString";
-            listBox.ValueMember = "Selection";*/
+            listBox.DataSource = results;
+            listBox.DisplayMember = "DisplayString";
             Control.Navigate += ControlNavigate;
         }
 
         public static void OnNavigate(VBE vbe, RegexSearchResult result)
         {
-            vbe.SetSelection(result.Module.VBE.ActiveVBProject, result.Selection, "", CodePaneFactory);
+            vbe.SetSelection(result.Module.VBE.ActiveVBProject, result.Selection, result.Module.Name, CodePaneFactory);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
