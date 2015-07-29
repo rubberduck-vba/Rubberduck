@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -59,18 +58,9 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                     break;
 
                 case RegexSearchReplaceScope.CurrentProject:
-                    foreach (dynamic dyn in _model.VBE.ActiveVBProject.VBComponents)
+                    foreach (var component in _model.VBE.ActiveVBProject.VBComponents.Cast<VBComponent>())
                     {
-                        CodeModule module;
-                        try
-                        {
-                            var component = (VBComponent) dyn;
-                            module = component.CodeModule;
-                        }
-                        catch (COMException)
-                        {
-                            continue;
-                        }
+                        var module = component.CodeModule;
 
                         if (!ReferenceEquals(_model.VBE.ActiveVBProject, module.VBE.ActiveVBProject)) { continue; }
                         results.AddRange(GetResultsFromModule(module, searchPattern));
@@ -80,18 +70,9 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                 case RegexSearchReplaceScope.AllOpenProjects:
                     foreach (VBProject project in _model.VBE.VBProjects)
                     {
-                        foreach (dynamic dyn in project.VBComponents)
+                        foreach (var component in project.VBComponents.Cast<VBComponent>())
                         {
-                            CodeModule module;
-                            try
-                            {
-                                var component = (VBComponent) dyn;
-                                module = component.CodeModule;
-                            }
-                            catch (COMException)
-                            {
-                                continue;
-                            }
+                            var module = component.CodeModule;
 
                             if (!ReferenceEquals(_model.VBE, module.VBE))
                             {
