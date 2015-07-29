@@ -59,6 +59,9 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<VBE> Build()
         {
+            _vbProjects = CreateProjectsMock();
+            _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+
             return _vbe;
         }
 
