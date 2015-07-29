@@ -75,7 +75,6 @@
             // ReplaceAllButton
             // 
             this.ReplaceAllButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ReplaceAllButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.ReplaceAllButton.Location = new System.Drawing.Point(229, 14);
             this.ReplaceAllButton.Margin = new System.Windows.Forms.Padding(4);
             this.ReplaceAllButton.Name = "ReplaceAllButton";
@@ -88,7 +87,6 @@
             // ReplaceButton
             // 
             this.ReplaceButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ReplaceButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.ReplaceButton.Location = new System.Drawing.Point(121, 14);
             this.ReplaceButton.Margin = new System.Windows.Forms.Padding(4);
             this.ReplaceButton.Name = "ReplaceButton";
@@ -101,7 +99,6 @@
             // FindButton
             // 
             this.FindButton.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.FindButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.FindButton.Location = new System.Drawing.Point(13, 14);
             this.FindButton.Margin = new System.Windows.Forms.Padding(4);
             this.FindButton.Name = "FindButton";
@@ -162,9 +159,9 @@
             // 
             // RegexSearchReplaceDialog
             // 
-            this.AcceptButton = this.FindButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.CancelButton = this.CancelDialogButton;
             this.ClientSize = new System.Drawing.Size(452, 194);
             this.Controls.Add(this.ScopeLabel);
