@@ -6,6 +6,7 @@
         CurrentBlock,
         CurrentFile,
         AllOpenedFiles,
-        CurrentProject
+        CurrentProject,
+        EntireSolution
     }
 }

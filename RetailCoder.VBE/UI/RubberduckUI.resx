@@ -1155,6 +1155,9 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
     <value>Current Project</value>
   </data>
+  <data name="RegexSearchReplaceScope_EntireSolution" xml:space="preserve">
+    <value>Entire Solution</value>
+  </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Selection</value>
   </data>
