@@ -77,22 +77,28 @@ namespace Rubberduck.Navigations.RegexSearchReplace
                     }
                     break;
 
-                case RegexSearchReplaceScope.EntireSolution:
-                    foreach (dynamic dyn in _model.VBE.ActiveVBProject.VBComponents)
+                case RegexSearchReplaceScope.AllOpenProjects:
+                    foreach (VBProject project in _model.VBE.VBProjects)
                     {
-                        CodeModule module;
-                        try
+                        foreach (dynamic dyn in project.VBComponents)
                         {
-                            var component = (VBComponent)dyn;
-                            module = component.CodeModule;
-                        }
-                        catch (COMException)
-                        {
-                            continue;
-                        }
+                            CodeModule module;
+                            try
+                            {
+                                var component = (VBComponent) dyn;
+                                module = component.CodeModule;
+                            }
+                            catch (COMException)
+                            {
+                                continue;
+                            }
 
-                        if (!ReferenceEquals(_model.VBE, module.VBE)) { continue; }
-                        results.AddRange(GetResultsFromModule(module, searchPattern));
+                            if (!ReferenceEquals(_model.VBE, module.VBE))
+                            {
+                                continue;
+                            }
+                            results.AddRange(GetResultsFromModule(module, searchPattern));
+                        }
                     }
                     break;
             }

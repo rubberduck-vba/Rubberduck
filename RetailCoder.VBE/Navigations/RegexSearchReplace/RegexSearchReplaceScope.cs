@@ -7,6 +7,6 @@
         CurrentFile,
         AllOpenedFiles,
         CurrentProject,
-        EntireSolution
+        AllOpenProjects
     }
 }

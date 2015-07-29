@@ -26,7 +26,13 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigate(VBE vbe, RegexSearchResult result)
         {
-            vbe.SetSelection(result.Module.VBE.ActiveVBProject, result.Selection, result.Module.Name, CodePaneFactory);
+            var project = result.Module.VBE.ActiveVBProject;
+            foreach (var proj in result.Module.VBE.VBProjects.Cast<VBProject>().Where(proj => proj.VBComponents.Cast<VBComponent>().Any(v => v.CodeModule == result.Module)))
+            {
+                project = proj;
+                break;
+            }
+            vbe.SetSelection(project, result.Selection, result.Module.Name, CodePaneFactory);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
