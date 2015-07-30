@@ -29,7 +29,9 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             var results = regexSearchReplace.Find("Foo", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -61,7 +63,9 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -106,7 +110,9 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -135,7 +141,9 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.Replace("Goo", "Hoo", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -181,7 +189,9 @@ End Sub";
             var codePaneFactory = new RubberduckCodePaneFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
-            var regexSearchReplace = new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+            var regexSearchReplace =
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentFile);
 
             //assert
@@ -216,7 +226,7 @@ End Sub";
             var regexSearchReplace =
                 new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
                     vbe.Object, parseResult,
-                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))));
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))), codePaneFactory);
             var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.Selection);
 
             //assert
@@ -264,7 +274,7 @@ End Sub";
             var regexSearchReplace =
                 new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
                     vbe.Object, parseResult,
-                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))));
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 8, 1))), codePaneFactory);
             regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.Selection);
 
             //assert
@@ -312,7 +322,7 @@ End Sub";
             var regexSearchReplace =
                 new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(
                     vbe.Object, parseResult,
-                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 12, 1))));
+                    new QualifiedSelection(new QualifiedModuleName(), new Selection(5, 1, 12, 1))), codePaneFactory);
             regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.Selection);
 
             //assert
@@ -359,7 +369,8 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.CurrentProject);
 
             //assert
@@ -432,7 +443,8 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentProject);
 
             //assert
@@ -506,7 +518,8 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.CurrentProject);
 
             //assert
@@ -556,8 +569,10 @@ End Sub";
             builder.AddProject(project2);
             var vbe = builder.Build();
 
+            var codePaneFactory = new RubberduckCodePaneFactory();
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, null, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, null, new QualifiedSelection()), codePaneFactory);
             var results = regexSearchReplace.Find("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", RegexSearchReplaceScope.AllOpenProjects);
 
             //assert
@@ -651,7 +666,8 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project1.Object);
 
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.Replace("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.AllOpenProjects);
 
             //assert
@@ -736,7 +752,8 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project1.Object);
 
             var regexSearchReplace =
-                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()));
+                new Rubberduck.Navigations.RegexSearchReplace.RegexSearchReplace(
+                    new RegexSearchReplaceModel(vbe.Object, parseResult, new QualifiedSelection()), codePaneFactory);
             regexSearchReplace.ReplaceAll("(1-)?\\p{N}{3}-\\p{N}{3}-\\p{N}{4}\\b", "hi", RegexSearchReplaceScope.AllOpenProjects);
 
             //assert

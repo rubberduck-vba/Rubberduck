@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigations.RegexSearchReplace
 {
@@ -36,19 +37,19 @@ namespace Rubberduck.Navigations.RegexSearchReplace
 
         private void _view_FindButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_model);
+            var regexSearchReplace = new RegexSearchReplace(_model, new RubberduckCodePaneFactory());
             OnFindButtonResults(regexSearchReplace.Find(_view.SearchPattern, _view.Scope));
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_model);
+            var regexSearchReplace = new RegexSearchReplace(_model, new RubberduckCodePaneFactory());
             regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         private void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new RegexSearchReplace(_model);
+            var regexSearchReplace = new RegexSearchReplace(_model, new RubberduckCodePaneFactory());
             regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
