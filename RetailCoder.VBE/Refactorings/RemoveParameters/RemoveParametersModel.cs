@@ -19,9 +19,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
-        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IMessageBox messageBox)
+        public RemoveParametersModel(VBProjectParseResult parseResult, QualifiedSelection selection, IRubberduckMessageBox messageBox)
         {
             _parseResult = parseResult;
             _declarations = parseResult.Declarations;

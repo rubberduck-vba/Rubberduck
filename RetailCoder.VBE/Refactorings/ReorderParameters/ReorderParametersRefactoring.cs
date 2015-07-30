@@ -18,9 +18,9 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private readonly IActiveCodePaneEditor _editor;
         private ReorderParametersModel _model;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IActiveCodePaneEditor editor, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IActiveCodePaneEditor editor, IRubberduckMessageBox messageBox)
         {
             _factory = factory;
             _editor = editor;

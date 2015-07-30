@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Navigations;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -21,10 +22,13 @@ namespace Rubberduck
         private readonly AddIn _addIn;
         private Inspector _inspector;
         private ParserErrorsPresenter _parserErrorsPresenter;
-        private readonly IGeneralConfigService _configService = new ConfigurationLoader();
-        private readonly ActiveCodePaneEditor _editor;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private IFindAllReferences _findAllReferences;
+        private IFindAllImplementations _findAllImplementations;
+        private IFindSymbol _findSymbol;
         private IRubberduckParser _parser;
+        private readonly ConfigurationLoader _configService = new ConfigurationLoader();
+        private readonly IActiveCodePaneEditor _editor;
+        private readonly IRubberduckCodePaneFactory _codePaneFactory;
 
         private Configuration _config;
         private RubberduckMenu _menu;
@@ -37,12 +41,12 @@ namespace Rubberduck
         {
             _vbe = vbe;
             _addIn = addIn;
-            _factory = new RubberduckCodePaneFactory();
+            _codePaneFactory = new RubberduckCodePaneFactory();
 
             _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _editor = new ActiveCodePaneEditor(vbe, _factory);
+            _editor = new ActiveCodePaneEditor(vbe, _codePaneFactory);
 
             LoadConfig();
 
@@ -79,7 +83,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = new RubberduckParser(_factory);
+            _parser = new RubberduckParser(_codePaneFactory);
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -87,10 +91,16 @@ namespace Rubberduck
 
             _parserErrorsPresenter = new ParserErrorsPresenter(_vbe, _addIn);
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _factory);
+
+            _findAllReferences = new FindAllReferences(_vbe, _addIn, _parser, _codePaneFactory, new RubberduckMessageBox());
+            _findAllImplementations = new FindAllImplementations(_vbe, _addIn, _parser, _codePaneFactory, new RubberduckMessageBox());
+            _findSymbol = new FindSymbol(_vbe, _parser, _codePaneFactory);
+
+            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _findAllReferences,
+                _findAllImplementations, _findSymbol, _codePaneFactory);
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _factory);
+            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _codePaneFactory);
             _formContextMenu.Initialize();
 
             _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);

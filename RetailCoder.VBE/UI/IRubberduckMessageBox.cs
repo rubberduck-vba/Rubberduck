@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI
 {
-    public interface IMessageBox
+    public interface IRubberduckMessageBox
     {
         DialogResult Show(string text);
         DialogResult Show(IWin32Window owner, string text);
@@ -27,7 +27,7 @@ namespace Rubberduck.UI
         DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator, object param);
     }
 
-    public class RubberduckMessageBox : IMessageBox
+    public class RubberduckMessageBox : IRubberduckMessageBox
     {
         public DialogResult Show(string text)
         {

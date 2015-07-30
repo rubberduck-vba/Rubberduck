@@ -9,10 +9,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IActiveCodePaneEditor _editor;
         private readonly IRemoveParametersView _view;
         private readonly VBProjectParseResult _parseResult;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
 
         public RemoveParametersPresenterFactory(IActiveCodePaneEditor editor, IRemoveParametersView view,
-            VBProjectParseResult parseResult, IMessageBox messageBox)
+            VBProjectParseResult parseResult, IRubberduckMessageBox messageBox)
         {
             _editor = editor;
             _view = view;

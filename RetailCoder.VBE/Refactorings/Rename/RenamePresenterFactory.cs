@@ -11,10 +11,10 @@ namespace Rubberduck.Refactorings.Rename
         private readonly VBE _vbe;
         private readonly IRenameView _view;
         private readonly VBProjectParseResult _parseResult;
-        private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMessageBox _messageBox;
         private readonly IRubberduckCodePaneFactory _factory;
 
-        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IMessageBox messageBox, IRubberduckCodePaneFactory factory)
+        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IRubberduckMessageBox messageBox, IRubberduckCodePaneFactory factory)
         {
             _vbe = vbe;
             _view = view;

@@ -237,7 +237,20 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Navigations\FindAllImplementations.cs" />
+    <Compile Include="Navigations\FindAllReferences.cs" />
+    <Compile Include="Navigations\FindSymbol.cs" />
+    <Compile Include="Navigations\IFindAllImplementations.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
+    <Compile Include="Navigations\IFindAllReferences.cs" />
+    <Compile Include="Navigations\IFindSymbol.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplace.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\IRegexSearchReplaceView.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplace.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplaceModel.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchReplaceScope.cs" />
+    <Compile Include="Navigations\RegexSearchReplace\RegexSearchResult.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -290,17 +303,29 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\IMessageBox.cs" />
+    <Compile Include="UI\IdentifierReferences\RegexSearchResultsDockablePresenter.cs" />
+    <Compile Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.Designer.cs">
+      <DependentUpon>RegexSearchReplaceDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\RubberduckUI.sv.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.sv.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\IRubberduckMessageBox.cs" />
     <Compile Include="UI\Settings\AddMarkerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -386,11 +411,6 @@
       <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\BranchesControl.cs">
       <SubType>UserControl</SubType>
@@ -630,9 +650,16 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.resx">
+      <DependentUpon>RegexSearchReplaceDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -663,11 +690,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\CodeInspectionSettingsControl.resx">
       <DependentUpon>CodeInspectionSettingsControl.cs</DependentUpon>
