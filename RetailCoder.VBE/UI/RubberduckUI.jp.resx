@@ -623,6 +623,9 @@
   <data name="Language_FR" xml:space="preserve">
     <value>フランス語</value>
   </data>
+  <data name="Language_JP" xml:space="preserve">
+    <value>日本語</value>
+  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - パラメーター削除</value>
   </data>
