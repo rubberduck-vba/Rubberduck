@@ -39,7 +39,6 @@ namespace Rubberduck
             _addIn = addIn;
             _factory = new RubberduckCodePaneFactory();
 
-            _parserErrorsPresenter = new ParserErrorsPresenter(vbe, addIn);
             _configService.SettingsChanged += _configService_SettingsChanged;
 
             _editor = new ActiveCodePaneEditor(vbe, _factory);
