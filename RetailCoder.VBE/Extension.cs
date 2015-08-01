@@ -36,8 +36,7 @@ namespace Rubberduck
         {
             try
             {
-                var conventions = new RubberduckConventions(_kernel);
-                conventions.Apply((VBE)Application, (AddIn)AddInInst);
+                _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
                 var app = _kernel.Get<App>();
                 app.Startup();
             }

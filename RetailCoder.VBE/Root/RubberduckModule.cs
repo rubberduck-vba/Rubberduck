@@ -6,6 +6,7 @@ using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.NamedScope;
+using Ninject.Modules;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
@@ -15,28 +16,26 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
 {
-    // todo: rename to RubberduckModule and derive from NinjectModule
-    public class RubberduckConventions
+    public class RubberduckModule : NinjectModule
     {
         private readonly IKernel _kernel;
+        private readonly VBE _vbe;
+        private readonly AddIn _addin;
 
-        public RubberduckConventions(IKernel kernel)
+        public RubberduckModule(IKernel kernel, VBE vbe, AddIn addin)
         {
             _kernel = kernel;
+            _vbe = vbe;
+            _addin = addin;
         }
 
-        /// <summary>
-        /// Configures the IoC <see cref="IKernel"/>.
-        /// </summary>
-        /// <param name="vbe">The <see cref="VBE"/> instance provided by the host application.</param>
-        /// <param name="addin">The <see cref="AddIn"/> instance provided by the host application.</param>
-        public void Apply(VBE vbe, AddIn addin)
+        public override void Load()
         {
             _kernel.Bind<App>().ToSelf();
 
             // bind VBE and AddIn dependencies to host-provided instances.
-            _kernel.Bind<VBE>().ToConstant(vbe);
-            _kernel.Bind<AddIn>().ToConstant(addin);
+            _kernel.Bind<VBE>().ToConstant(_vbe);
+            _kernel.Bind<AddIn>().ToConstant(_addin);
 
             BindCodeInspectionTypes();
 
