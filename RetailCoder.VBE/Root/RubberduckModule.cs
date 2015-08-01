@@ -75,12 +75,12 @@ namespace Rubberduck.Root
                 .Configure(binding => binding.InCallScope()));
         }
 
-        // note convention: settings namespace classes are injected in singleton scope
+        // note: settings namespace classes are injected in singleton scope
         private void ApplyConfigurationConvention(IEnumerable<Assembly> assemblies)
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
-                .InNamespaceOf<IGeneralConfigService>()
+                .InNamespaceOf<Configuration>()
                 .BindAllInterfaces()
                 .Configure(binding => binding.InSingletonScope()));
         }
