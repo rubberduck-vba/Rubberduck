@@ -8,9 +8,9 @@ using Rubberduck.SourceControl;
 namespace Rubberduck.UI.SourceControl
 {
     [ExcludeFromCodeCoverage]
-    public partial class UnSyncedCommitsControl : UserControl, IUnsyncedCommitsView
+    public partial class UnsyncedCommitsControl : UserControl, IUnsyncedCommitsView
     {
-        public UnSyncedCommitsControl()
+        public UnsyncedCommitsControl()
         {
             InitializeComponent();
             SetText();

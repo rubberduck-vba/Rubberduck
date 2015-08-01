@@ -26,7 +26,7 @@ namespace Rubberduck.UI.SourceControl
             Bind<ILoginView>().To<LoginControl>();
 
             Bind<IChangesView>().To<ChangesControl>();
-            Bind<IUnsyncedCommitsView>().To<UnSyncedCommitsControl>();
+            Bind<IUnsyncedCommitsView>().To<UnsyncedCommitsControl>();
             Bind<ISettingsView>().To<SettingsControl>();
             Bind<IBranchesView>().To<BranchesControl>();
 

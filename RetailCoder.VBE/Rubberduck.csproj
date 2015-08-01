@@ -459,7 +459,7 @@
     <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\IUnsyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\MergeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -496,11 +496,11 @@
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
+    <Compile Include="UI\SourceControl\UnsyncedCommitsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    <Compile Include="UI\SourceControl\UnsyncedCommitsControl.Designer.cs">
+      <DependentUpon>UnsyncedCommitsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
@@ -734,8 +734,8 @@
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
-      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SourceControl\UnsyncedCommitsControl.resx">
+      <DependentUpon>UnsyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
