@@ -9,10 +9,13 @@ using Ninject.Extensions.NamedScope;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
+using Rubberduck.UI;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
 {
+    // todo: rename to RubberduckModule and derive from NinjectModule
     public class RubberduckConventions
     {
         private readonly IKernel _kernel;
@@ -44,9 +47,23 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IRubberduckParser))
             };
 
+            BindMenuTypes();
+            BindToolbarTypes();
+
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
+        }
+
+        private void BindMenuTypes()
+        {
+            _kernel.Bind<IMenu>().To<RubberduckMenu>(); // todo: confirm RubberduckMenuFactory is actually needed
+            _kernel.Bind<IMenu>().To<FormContextMenu>().WhenTargetHas<FormContextMenuAttribute>();
+        }
+
+        private void BindToolbarTypes()
+        {
+            _kernel.Bind<IToolbar>().To<CodeInspectionsToolbar>().WhenTargetHas<CodeInspectionsToolbarAttribute>();
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)

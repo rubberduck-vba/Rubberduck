@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -10,45 +9,37 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.ParserErrors;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck
 {
     public class App : IDisposable
     {
-        private readonly VBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRubberduckMenuFactory _rubberduckMenuFactory;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IRubberduckParserFactory _parserFactory;
         private readonly IInspectorFactory _inspectorFactory;
-        private IInspector _inspector;
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
-        private readonly IActiveCodePaneEditor _editor;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private IRubberduckParser _parser;
 
         private Configuration _config;
-        private IRubberduckMenu _menu;
-        private FormContextMenu _formContextMenu;
-        private CodeInspectionsToolbar _codeInspectionsToolbar;
+        private IMenu _menu;
+        private readonly IMenu _formContextMenu;
+        private readonly IToolbar _codeInspectionsToolbar;
 
         private bool _displayToolbar;
-        private Point _toolbarCoords = new Point(-1, -1);
+        private Point _toolbarLocation = new Point(-1, -1);
 
-        public App(VBE vbe, 
-            IMessageBox messageBox,
+        public App(IMessageBox messageBox,
             IRubberduckMenuFactory rubberduckMenuFactory,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParserFactory parserFactory,
             IInspectorFactory inspectorFactory, 
-            IGeneralConfigService configService, 
-            ICodePaneWrapperFactory wrapperFactory, 
-            IActiveCodePaneEditor editor)
+            IGeneralConfigService configService,
+            [FormContextMenu] IMenu formContextMenu,
+            [CodeInspectionsToolbar] IToolbar codeInspectionsToolbar)
         {
-            _vbe = vbe;
             _messageBox = messageBox;
             _rubberduckMenuFactory = rubberduckMenuFactory;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
@@ -58,8 +49,8 @@ namespace Rubberduck
 
             _configService.SettingsChanged += _configService_SettingsChanged;
 
-            _editor = editor;
-            _wrapperFactory = wrapperFactory;
+            _formContextMenu = formContextMenu;
+            _codeInspectionsToolbar = codeInspectionsToolbar;
         }
 
         public void Startup()
@@ -102,24 +93,21 @@ namespace Rubberduck
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
-            _inspector = _inspectorFactory.Create();
+            _inspectorFactory.Create();
 
             _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
 
             _menu = _rubberduckMenuFactory.Create();
             _menu.Initialize();
 
-            _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _wrapperFactory);
             _formContextMenu.Initialize();
-
-            _codeInspectionsToolbar = new CodeInspectionsToolbar(_vbe, _inspector);
             _codeInspectionsToolbar.Initialize();
 
-            if (_toolbarCoords.X != -1 && _toolbarCoords.Y != -1)
+            if (_toolbarLocation.X != -1 && _toolbarLocation.Y != -1)
             {
-                _codeInspectionsToolbar.ToolbarCoords = _toolbarCoords;
+                _codeInspectionsToolbar.Location = _toolbarLocation;
             }
-            _codeInspectionsToolbar.ToolbarVisible = _displayToolbar;
+            _codeInspectionsToolbar.Visible = _displayToolbar;
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -153,16 +141,19 @@ namespace Rubberduck
                 menu.Dispose();
             }
 
-            if (_formContextMenu != null)
+            var formContextMenu = _formContextMenu as IDisposable;
+            if (formContextMenu != null)
             {
-                _formContextMenu.Dispose();
+                formContextMenu.Dispose();
             }
 
-            if (_codeInspectionsToolbar != null)
+            _displayToolbar = _codeInspectionsToolbar.Visible;
+            _toolbarLocation = _codeInspectionsToolbar.Location;
+
+            var codeInspectionsToolbar = _codeInspectionsToolbar as IDisposable;
+            if (codeInspectionsToolbar != null)
             {
-                _displayToolbar = _codeInspectionsToolbar.ToolbarVisible;
-                _toolbarCoords = _codeInspectionsToolbar.ToolbarCoords;
-                _codeInspectionsToolbar.Dispose();
+                codeInspectionsToolbar.Dispose();
             }
 
             if (_parser != null)

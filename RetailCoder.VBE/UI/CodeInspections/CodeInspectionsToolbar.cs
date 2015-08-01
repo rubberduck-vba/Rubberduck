@@ -15,11 +15,25 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
 {
-    public class CodeInspectionsToolbar : IDisposable
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class CodeInspectionsToolbarAttribute : Attribute
+    {
+    }
+
+    public interface IToolbar : IMenu
+    {
+        bool Visible { get; set; }
+        Point Location { get; set; }
+    }
+
+    /*
+     * bug: toolbar results don't seem to reset...
+     * bug: toolbar navigation shouldn't try to navigate when there's no CodeModule for a result.
+     * */
+
+    public class CodeInspectionsToolbar : IToolbar, IDisposable
     {
         private readonly VBE _vbe;
-        private readonly IEnumerable<IInspection> _inspections;
-        private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IInspector _inspector;
 
@@ -27,18 +41,11 @@ namespace Rubberduck.UI.CodeInspections
         private int _currentIssue;
         private int _issueCount;
 
-        public CodeInspectionsToolbar(VBE vbe, IRubberduckParser parser, IEnumerable<IInspection> inspections, ICodePaneWrapperFactory wrapperFactory)
-        {
-            _vbe = vbe;
-            _parser = parser;
-            _inspections = inspections;
-            _wrapperFactory = wrapperFactory;
-        }
-
-        public CodeInspectionsToolbar(VBE vbe, IInspector inspector)
+        public CodeInspectionsToolbar(VBE vbe, IInspector inspector, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _inspector = inspector;
+            _wrapperFactory = wrapperFactory;
         }
 
         private CommandBarButton _refreshButton;
@@ -93,16 +100,12 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.ParseCompleted += _inspector_ParseCompleted;
         }
 
-        private IEnumerable<VBProjectParseResult> _parseResults;
-
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
         {
             if (sender != this)
             {
                 return;
             }
-
-            _parseResults = e.ParseResults;
         }
 
         private void _navigateNextButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
@@ -175,15 +178,21 @@ namespace Rubberduck.UI.CodeInspections
         private CancellationTokenSource _tokenSource;
         private CommandBar _toolbar;
 
-        public bool ToolbarVisible
+        public bool Visible
         {
-            get { return _toolbar.Visible; }
+            get { return _toolbar != null && _toolbar.Visible; }
             set { _toolbar.Visible = value; }
         }
 
-        public Point ToolbarCoords
+        public Point Location
         {
-            get { return new Point(_toolbar.Top, _toolbar.Left); }
+            get
+            {
+                return _toolbar == null 
+                    ? new Point(-1,-1) 
+                    : new Point(_toolbar.Top, _toolbar.Left);
+            }
+
             set
             {
                 _toolbar.Top = value.X;
@@ -258,7 +267,7 @@ namespace Rubberduck.UI.CodeInspections
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing) { return; }
+            if (_toolbar == null || !disposing) { return; }
 
             _refreshButton.Click -= _refreshButton_Click;
             _quickFixButton.Click -= _quickFixButton_Click;

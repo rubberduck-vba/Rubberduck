@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -10,7 +11,17 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
-    internal class FormContextMenu
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class FormContextMenuAttribute : Attribute
+    {
+    }
+
+    public interface IMenu
+    {
+        void Initialize();
+    }
+
+    internal class FormContextMenu : IMenu
     {
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;

@@ -23,15 +23,15 @@ namespace Rubberduck.UI
 {
     public interface IRubberduckMenuFactory
     {
-        IRubberduckMenu Create();
+        IMenu Create();
     }
 
-    public interface IRubberduckMenu
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class RubberduckMenuAttribute : Attribute
     {
-        void Initialize();
     }
 
-    public class RubberduckMenu : Menu, IRubberduckMenu
+    public class RubberduckMenu : Menu, IMenu
     {
         private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
