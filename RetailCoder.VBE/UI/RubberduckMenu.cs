@@ -21,7 +21,17 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
-    internal class RubberduckMenu : Menu
+    public interface IRubberduckMenuFactory
+    {
+        IRubberduckMenu Create();
+    }
+
+    public interface IRubberduckMenu
+    {
+        void Initialize();
+    }
+
+    public class RubberduckMenu : Menu, IRubberduckMenu
     {
         private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
@@ -40,7 +50,12 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, ICodePaneWrapperFactory wrapperFactory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, 
+            IGeneralConfigService configService, 
+            IRubberduckParser parser, 
+            IActiveCodePaneEditor editor, 
+            IInspector inspector, 
+            ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn)
         {
             _addIn = addIn;

@@ -27,126 +27,126 @@ namespace Rubberduck.UI
         DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator, object param);
     }
 
-    public class RubberduckMessageBox : IMessageBox
+    public class MessageBox : IMessageBox
     {
         public DialogResult Show(string text)
         {
-            return MessageBox.Show(text);
+            return System.Windows.Forms.MessageBox.Show(text);
         }
 
         public DialogResult Show(IWin32Window owner, string text)
         {
-            return MessageBox.Show(owner, text);
+            return System.Windows.Forms.MessageBox.Show(owner, text);
         }
 
         public DialogResult Show(string text, string caption)
         {
-            return MessageBox.Show(text, caption);
+            return System.Windows.Forms.MessageBox.Show(text, caption);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption)
         {
-            return MessageBox.Show(owner, text, caption);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons)
         {
-            return MessageBox.Show(text, caption, buttons);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons)
         {
-            return MessageBox.Show(owner, text, caption, buttons);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
-            return MessageBox.Show(text, caption, buttons, icon);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, bool displayHelpButton)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options, displayHelpButton);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options, displayHelpButton);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, string keyword)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, keyword);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, keyword);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, string keyword)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, keyword);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, keyword);
         }
 
         public DialogResult Show(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator,
             object param)
         {
-            return MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator, param);
+            return System.Windows.Forms.MessageBox.Show(text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator, param);
         }
 
         public DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon,
             MessageBoxDefaultButton defaultButton, MessageBoxOptions options, string helpFilePath, HelpNavigator navigator,
             object param)
         {
-            return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator, param);
+            return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options, helpFilePath, navigator, param);
         }
     }
 }

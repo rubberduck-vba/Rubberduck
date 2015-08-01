@@ -98,7 +98,7 @@ namespace Rubberduck.UI.UnitTesting
             }
             catch (ArgumentException)
             {
-                MessageBox.Show(
+                System.Windows.Forms.MessageBox.Show(
                     RubberduckUI.TestExplorerDockablePresenter_MultipleTestsSameNameError,
                     RubberduckUI.Warning, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);

@@ -12,6 +12,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
+using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1578,7 +1579,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersView>();
@@ -1611,7 +1612,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersView>();
@@ -1645,7 +1646,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new RemoveParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters[0].IsRemoved = true;
             
             var factory = new RemoveParametersPresenterFactory(editor.Object, null,

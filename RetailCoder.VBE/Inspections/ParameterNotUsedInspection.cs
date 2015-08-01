@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections
             var quickFixRefactoring =
                 new RemoveParametersRefactoring(
                     new RemoveParametersPresenterFactory(editor, 
-                        new RemoveParametersDialog(), parseResult, new RubberduckMessageBox()), editor);
+                        new RemoveParametersDialog(), parseResult, new MessageBox()), editor);
 
             var issues = from issue in unused.Where(parameter => !IsInterfaceMemberParameter(parameter, interfaceMemberScopes))
                          let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)

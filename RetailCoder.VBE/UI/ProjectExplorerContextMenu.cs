@@ -153,8 +153,8 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(_vbe, view, results, new RubberduckMessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
+                var factory = new RenamePresenterFactory(_vbe, view, results, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, _editor, new MessageBox());
                 refactoring.Refactor(declaration);
             }
         }

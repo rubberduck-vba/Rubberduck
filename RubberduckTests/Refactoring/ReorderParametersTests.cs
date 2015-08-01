@@ -13,6 +13,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
+using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1595,7 +1596,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters.Reverse();
 
             var view = new Mock<IReorderParametersView>();
@@ -1631,7 +1632,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new MessageBox());
 
             var view = new Mock<IReorderParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);

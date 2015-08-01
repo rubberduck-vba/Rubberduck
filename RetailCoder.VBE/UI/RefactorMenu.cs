@@ -229,7 +229,7 @@ namespace Rubberduck.UI
             {
                 var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
                 var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
-                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -329,7 +329,7 @@ namespace Rubberduck.UI
             {
                 var message = string.Format(RubberduckUI.AllImplementations_NoneFound, name);
                 var caption = string.Format(RubberduckUI.AllImplementations_Caption, name);
-                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -395,7 +395,7 @@ namespace Rubberduck.UI
 
         void refactoring_InvalidSelection(object sender, EventArgs e)
         {
-            MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            System.Windows.Forms.MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -441,8 +441,8 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
+                var factory = new RenamePresenterFactory(IDE, view, result, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, _editor, new MessageBox());
                 refactoring.Refactor();
             }
         }
@@ -454,8 +454,8 @@ namespace Rubberduck.UI
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(IDE, view, result, new RubberduckMessageBox(), _wrapperFactory);
-                var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
+                var factory = new RenamePresenterFactory(IDE, view, result, new MessageBox(), _wrapperFactory);
+                var refactoring = new RenameRefactoring(factory, _editor, new MessageBox());
                 refactoring.Refactor(target);
             }
         }
@@ -467,8 +467,8 @@ namespace Rubberduck.UI
 
             using (var view = new ReorderParametersDialog())
             {
-                var factory = new ReorderParametersPresenterFactory(_editor, view, result, new RubberduckMessageBox());
-                var refactoring = new ReorderParametersRefactoring(factory, _editor, new RubberduckMessageBox());
+                var factory = new ReorderParametersPresenterFactory(_editor, view, result, new MessageBox());
+                var refactoring = new ReorderParametersRefactoring(factory, _editor, new MessageBox());
                 refactoring.Refactor(selection);
             }
         }
@@ -480,7 +480,7 @@ namespace Rubberduck.UI
 
             using (var view = new RemoveParametersDialog())
             {
-                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new RubberduckMessageBox());
+                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new MessageBox());
                 var refactoring = new RemoveParametersRefactoring(factory, _editor);
                 refactoring.Refactor(selection);
             }

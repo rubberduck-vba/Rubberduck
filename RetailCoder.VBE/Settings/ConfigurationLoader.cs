@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Rubberduck.Inspections;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Rubberduck.Settings
 {

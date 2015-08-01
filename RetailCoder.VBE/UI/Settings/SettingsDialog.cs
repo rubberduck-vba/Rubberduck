@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Settings
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            var confirmReset = System.Windows.Forms.MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (confirmReset == DialogResult.No)
             {
                 return;

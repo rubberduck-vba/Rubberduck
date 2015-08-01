@@ -43,7 +43,7 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(exception.Message, RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

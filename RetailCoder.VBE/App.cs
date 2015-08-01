@@ -18,9 +18,10 @@ namespace Rubberduck
     public class App : IDisposable
     {
         private readonly VBE _vbe;
-        private readonly AddIn _addIn;
         private readonly IMessageBox _messageBox;
+        private readonly IRubberduckMenuFactory _rubberduckMenuFactory;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
+        private readonly IRubberduckParserFactory _parserFactory;
         private readonly IInspectorFactory _inspectorFactory;
         private IInspector _inspector;
         private IParserErrorsPresenter _parserErrorsPresenter;
@@ -30,25 +31,28 @@ namespace Rubberduck
         private IRubberduckParser _parser;
 
         private Configuration _config;
-        private RubberduckMenu _menu;
+        private IRubberduckMenu _menu;
         private FormContextMenu _formContextMenu;
         private CodeInspectionsToolbar _codeInspectionsToolbar;
 
         private bool _displayToolbar;
         private Point _toolbarCoords = new Point(-1, -1);
 
-        public App(VBE vbe, AddIn addIn, 
+        public App(VBE vbe, 
             IMessageBox messageBox,
+            IRubberduckMenuFactory rubberduckMenuFactory,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
+            IRubberduckParserFactory parserFactory,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService, 
             ICodePaneWrapperFactory wrapperFactory, 
             IActiveCodePaneEditor editor)
         {
             _vbe = vbe;
-            _addIn = addIn;
             _messageBox = messageBox;
+            _rubberduckMenuFactory = rubberduckMenuFactory;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
+            _parserFactory = parserFactory;
             _inspectorFactory = inspectorFactory;
             _configService = configService;
 
@@ -94,7 +98,7 @@ namespace Rubberduck
 
         private void Setup()
         {
-            _parser = new RubberduckParser(_wrapperFactory);
+            _parser = _parserFactory.Create();
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParserError += _parser_ParserError;
 
@@ -102,7 +106,7 @@ namespace Rubberduck
 
             _parserErrorsPresenter = _parserErrorsPresenterFactory.Create();
 
-            _menu = new RubberduckMenu(_vbe, _addIn, _configService, _parser, _editor, _inspector, _wrapperFactory);
+            _menu = _rubberduckMenuFactory.Create();
             _menu.Initialize();
 
             _formContextMenu = new FormContextMenu(_vbe, _parser, _editor, _wrapperFactory);
@@ -143,9 +147,10 @@ namespace Rubberduck
 
         private void CleanUp()
         {
-            if (_menu != null)
+            var menu = _menu as IDisposable;
+            if (menu != null)
             {
-                _menu.Dispose();
+                menu.Dispose();
             }
 
             if (_formContextMenu != null)

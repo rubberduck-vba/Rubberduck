@@ -8,6 +8,7 @@ using Ninject.Extensions.Conventions;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -43,19 +44,29 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IRubberduckParser))
             };
 
-            ApplyAllInterfacesConvention(assemblies);
+            ApplyConfigurationConvention(assemblies);
+            ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
         }
 
-        // note: binds all interfaces
-        private void ApplyAllInterfacesConvention(IEnumerable<Assembly> assemblies)
+        private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
         {
             _kernel.Bind(t => t.From(assemblies)
                 .SelectAllClasses()
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
-                .BindAllInterfaces()
+                .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope()));
+        }
+
+        // note convention: settings namespace classes are injected in singleton scope
+        private void ApplyConfigurationConvention(IEnumerable<Assembly> assemblies)
+        {
+            _kernel.Bind(t => t.From(assemblies)
+                .SelectAllClasses()
+                .InNamespaceOf<IGeneralConfigService>()
+                .BindAllInterfaces()
+                .Configure(binding => binding.InSingletonScope()));
         }
 
         // note convention: abstract factory interface names end with "Factory".

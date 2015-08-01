@@ -19,6 +19,11 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.VBA
 {
+    public interface IRubberduckParserFactory
+    {
+        IRubberduckParser Create();
+    }
+
     public class RubberduckParser : IRubberduckParser
     {
         private static readonly ConcurrentDictionary<QualifiedModuleName, VBComponentParseResult> ParseResultCache = 
