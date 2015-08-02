@@ -1,10 +1,11 @@
-﻿using Microsoft.Office.Core;
+﻿using System;
+using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    public class CodeExplorerMenu : Menu
+    public class CodeExplorerMenu : Menu, IDisposable
     {
         private CommandBarButton _codeExplorerButton;
         private readonly CodeExplorerWindow _window;
@@ -28,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         bool _disposed;
-        protected override void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed && !disposing)
             {
@@ -43,7 +44,11 @@ namespace Rubberduck.UI.CodeExplorer
             _codeExplorerButton.Click -= OnCodeExplorerButtonClick;
 
             _disposed = true;
-            base.Dispose(disposing);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }

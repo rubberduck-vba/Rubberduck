@@ -11,6 +11,7 @@ using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Commands;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
@@ -44,6 +45,8 @@ namespace Rubberduck.UI
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly AddIn _addIn;
 
+        private readonly RubberduckCommandBase _aboutCommand;
+
         private CommandBarButton _about;
         private CommandBarButton _settings;
         private CommandBarButton _sourceControl;
@@ -58,6 +61,8 @@ namespace Rubberduck.UI
             ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn)
         {
+            _aboutCommand = new AboutCommand(new RubberduckMenuCommand(), vbe);
+
             _addIn = addIn;
             _parser = parser;
             _editor = editor;
@@ -141,7 +146,8 @@ namespace Rubberduck.UI
 
             _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
             _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
-            _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
+
+            _aboutCommand.Initialize();
 
             _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _editor, _wrapperFactory);
             _projectExplorerContextMenu.Initialize();
@@ -173,16 +179,6 @@ namespace Rubberduck.UI
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _SettingsDialog(_configService))
-            {
-                window.ShowDialog();
-            }
-        }
-
-        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
-        {
-            using (var window = new _AboutWindow())
             {
                 window.ShowDialog();
             }
@@ -228,7 +224,8 @@ namespace Rubberduck.UI
                 _codeInspectionsMenu.Dispose();
             }
 
-            _about.Click -= OnAboutClick;
+            _aboutCommand.Release();
+
             _settings.Click -= OnOptionsClick;
             _sourceControl.Click -= OnSourceControlClick;
 
