@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Commands
         /// <param name="beforeIndex">Optionally specifies the index of the UI element in the parent collection.</param>
         /// <param name="image">An optional icon to represent the command.</param>
         /// <param name="mask">A transparency mask for the command's icon. Required if <see cref="image"/> is not null.</param>
-        void AddCommandBarButton(CommandBarControls parent, string caption, bool beginGroup = false, int beforeIndex = -1, Image image = null, Image mask = null);
+        void AddCommandBarButton(CommandBarControls parent, string caption, bool beginGroup = false, int? beforeIndex = null, Image image = null, Image mask = null);
         
         /// <summary>
         /// Destroys all UI elements associated to the command.

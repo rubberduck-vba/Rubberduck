@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Commands
             _buttons = new List<CommandBarButton>();
         }
 
-        public void AddCommandBarButton(CommandBarControls parent, string caption, bool beginGroup = false, int beforeIndex = -1, Image image = null, Image mask = null)
+        public void AddCommandBarButton(CommandBarControls parent, string caption, bool beginGroup = false, int? beforeIndex = null, Image image = null, Image mask = null)
         {
             if (image != null && mask == null)
             {
@@ -31,9 +31,9 @@ namespace Rubberduck.UI.Commands
                 throw new ArgumentNullException("'mask' cannot be null if 'image' is non-null.");
             }
 
-            var button = (CommandBarButton) (beforeIndex == -1
-                ? parent.Add(MsoControlType.msoControlButton, Temporary: true)
-                : parent.Add(MsoControlType.msoControlButton, Before: beforeIndex, Temporary: true));
+            var button = (CommandBarButton) (beforeIndex.HasValue
+                ? parent.Add(MsoControlType.msoControlButton, Before: beforeIndex.Value, Temporary: true)
+                : parent.Add(MsoControlType.msoControlButton, Temporary: true));
 
             button.BeginGroup = beginGroup;
             button.Caption = caption;
