@@ -264,7 +264,10 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="UI\Commands\AboutCommand.cs" />
-    <Compile Include="UI\Commands\IRubberduckMenuCommand.cs" />
+    <Compile Include="UI\Commands\ICommand.cs" />
+    <Compile Include="UI\Commands\ICommandBar.cs" />
+    <Compile Include="UI\Commands\ICommandMenuItem.cs" />
+    <Compile Include="UI\Commands\IMenuItem.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
     <Compile Include="Settings\SourceControlConfigurationService.cs" />
@@ -305,12 +308,13 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\Commands\OptionsCommand.cs" />
+    <Compile Include="UI\Commands\ParentMenu.cs" />
     <Compile Include="UI\Commands\ParentMenuNotFoundException.cs" />
-    <Compile Include="UI\Commands\RubberduckCommandBase.cs" />
+    <Compile Include="UI\Commands\RubberduckParentMenu.cs" />
+    <Compile Include="UI\Commands\CodeExplorerCommand.cs" />
     <Compile Include="UI\Commands\ToolbarState.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
-    <Compile Include="UI\Commands\RubberduckMenuCommand.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>

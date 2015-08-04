@@ -11,8 +11,6 @@ using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
-using Rubberduck.UI.Commands;
-using Rubberduck.UI.Settings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
@@ -44,9 +42,6 @@ namespace Rubberduck.UI
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly AddIn _addIn;
 
-        private readonly RubberduckCommandBase _aboutCommand;
-        private readonly RubberduckCommandBase _optionsCommand;
-
         private CommandBarButton _sourceControl;
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
@@ -59,9 +54,6 @@ namespace Rubberduck.UI
             ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn)
         {
-            _aboutCommand = new AboutCommand(new RubberduckMenuCommand(), vbe);
-            _optionsCommand = new OptionsCommand(new RubberduckMenuCommand(), vbe, configService);
-
             _addIn = addIn;
             _parser = parser;
             _editor = editor;
@@ -144,9 +136,6 @@ namespace Rubberduck.UI
 
             _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
 
-            _optionsCommand.Initialize();
-            _aboutCommand.Initialize();
-
             _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _editor, _wrapperFactory);
             _projectExplorerContextMenu.Initialize();
             _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
@@ -211,9 +200,6 @@ namespace Rubberduck.UI
             {
                 _codeInspectionsMenu.Dispose();
             }
-
-            _aboutCommand.Release();
-            _optionsCommand.Release();
 
             _sourceControl.Click -= OnSourceControlClick;
 

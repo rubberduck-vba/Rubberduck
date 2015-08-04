@@ -1,41 +1,29 @@
+using System;
+using System.Drawing;
 using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 
 namespace Rubberduck.UI.Commands
 {
-    /// <summary>
-    /// A command that displays the "About" dialog.
-    /// </summary>
-    public class AboutCommand : RubberduckCommandBase
+    public class AboutCommand : ICommand
     {
-        private readonly VBE _vbe;
-
-        public AboutCommand(IRubberduckMenuCommand command, VBE vbe)
-            : base(command)
-        {
-            _vbe = vbe;
-        }
-
-        public override void Initialize()
-        {
-            var parent = _vbe.CommandBars[1].Controls.OfType<CommandBarPopup>()
-                .SingleOrDefault(control => control.Caption == RubberduckUI.RubberduckMenu);
-
-            if (parent == null)
-            {
-                throw new ParentMenuNotFoundException(RubberduckUI.RubberduckMenu);
-            }
-
-            Command.AddCommandBarButton(parent.Controls, RubberduckUI.RubberduckMenu_About, true);
-        }
-
-        public override void ExecuteAction()
+        public void Execute()
         {
             using (var window = new _AboutWindow())
             {
                 window.ShowDialog();
             }
         }
+    }
+
+    public class AboutCommandMenuItem : CommandMenuItemBase
+    {
+        public AboutCommandMenuItem(ICommand command)
+            : base(command)
+        {
+        }
+        
+        public override string Key { get { return "RubberduckMenu_About"; } }
     }
 }

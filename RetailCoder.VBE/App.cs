@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
+using Rubberduck.UI.Commands;
 using Rubberduck.UI.ParserErrors;
 
 namespace Rubberduck
@@ -13,27 +14,25 @@ namespace Rubberduck
     public class App : IDisposable
     {
         private readonly IMessageBox _messageBox;
+        private readonly RubberduckParentMenu _rubberduckMenu;
         private readonly IParserErrorsPresenterFactory _parserErrorsPresenterFactory;
         private readonly IRubberduckParserFactory _parserFactory;
         private readonly IInspectorFactory _inspectorFactory;
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
-        private readonly IRubberduckMenuFactory _menuFactory;
         
         private IRubberduckParser _parser;
-        private IMenu _menu;
         private Configuration _config;
 
         public App(IMessageBox messageBox,
-            //IMenu integratedUserInterface,
-            IRubberduckMenuFactory menuFactory,
+            RubberduckParentMenu rubberduckMenu,
             IParserErrorsPresenterFactory parserErrorsPresenterFactory,
             IRubberduckParserFactory parserFactory,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService)
         {
             _messageBox = messageBox;
-            _menuFactory = menuFactory;
+            _rubberduckMenu = rubberduckMenu;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parserFactory = parserFactory;
             _inspectorFactory = inspectorFactory;
@@ -44,6 +43,7 @@ namespace Rubberduck
 
         public void Startup()
         {
+            _rubberduckMenu.Initialize();
             CleanReloadConfig();
         }
 
@@ -85,8 +85,7 @@ namespace Rubberduck
 
             _inspectorFactory.Create();
 
-            _menu = _menuFactory.Create();
-            _menu.Initialize();
+            _rubberduckMenu.Localize();
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -107,19 +106,17 @@ namespace Rubberduck
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposing) { return; }
+            if (!disposing)
+            {
+                return;
+            }
 
             CleanUp();
+            _rubberduckMenu.Remove();
         }
 
         private void CleanUp()
         {
-            var menu = _menu as IDisposable;
-            if (menu != null)
-            {
-                menu.Dispose();
-            }
-
             if (_parser != null)
             {
                 _parser.ParseStarted -= _parser_ParseStarted;
