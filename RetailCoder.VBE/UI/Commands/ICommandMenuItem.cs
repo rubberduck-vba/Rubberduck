@@ -22,8 +22,8 @@ namespace Rubberduck.UI.Commands
         public ICommand Command { get { return _command; } }
         public Func<string> Caption { get { return () => RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture); } }
         public bool IsParent { get { return false; } }
-        public Image Image { get { return null; } }
-        public Image Mask { get { return null; } }
+        public virtual Image Image { get { return null; } }
+        public virtual Image Mask { get { return null; } }
 
     }
 }
