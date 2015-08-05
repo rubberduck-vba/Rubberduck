@@ -3,28 +3,6 @@ using System;
 namespace Rubberduck.UI.Commands
 {
     /// <summary>
-    /// Base class to derived all parameterized menu commands from.
-    /// </summary>
-    /// <typeparam name="TParam">The type of the parameter used by the command.</typeparam>
-    public abstract class RubberduckParamCommandBase<TParam> : RubberduckCommandBase
-    {
-        protected RubberduckParamCommandBase(IRubberduckMenuCommand command)
-            : base(command)
-        {
-        }
-
-        /// <summary>
-        /// A method that enables executing the command with a strongly-typed parameter.
-        /// Base method simply calls non-parameterized <see cref="ExecuteAction"/> method.
-        /// </summary>
-        /// <param name="parameter">An object containing information needed to execute a parameterized command.</param>
-        public virtual void ExecuteAction(TParam parameter)
-        {
-            ExecuteAction();
-        }
-    }
-
-    /// <summary>
     /// Base class to derive all menu commands from.
     /// </summary>
     public abstract class RubberduckCommandBase

@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Commands
 
             if (parent == null)
             {
-                throw new ParentMenuNotFoundException(RubberduckUI.RubberduckMenu);
+                throw new InvalidOperationException("Parent menu not found. Cannot create child menu item.");
             }
 
             Command.AddCommandBarButton(parent.Controls, RubberduckUI.RubberduckMenu_About, true);
