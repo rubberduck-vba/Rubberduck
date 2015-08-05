@@ -52,15 +52,8 @@ namespace Rubberduck.UI.Commands
             foreach (var button in _buttons)
             {
                 button.Click -= button_Click;
-                try
-                {
-                    button.Delete();
-                    Marshal.ReleaseComObject(button);
-                }
-                catch (COMException)
-                {
-                    // just let it be
-                }
+                button.Delete();
+                Marshal.ReleaseComObject(button);
             }
 
             _buttons.Clear();

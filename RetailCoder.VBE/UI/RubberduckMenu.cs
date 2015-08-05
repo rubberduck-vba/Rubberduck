@@ -39,14 +39,16 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
+        private readonly IGeneralConfigService _configService;
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly AddIn _addIn;
 
         private readonly RubberduckCommandBase _aboutCommand;
-        private readonly RubberduckCommandBase _optionsCommand;
 
+        private CommandBarButton _about;
+        private CommandBarButton _settings;
         private CommandBarButton _sourceControl;
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
@@ -60,12 +62,12 @@ namespace Rubberduck.UI
             : base(vbe, addIn)
         {
             _aboutCommand = new AboutCommand(new RubberduckMenuCommand(), vbe);
-            _optionsCommand = new OptionsCommand(new RubberduckMenuCommand(), vbe, configService);
 
             _addIn = addIn;
             _parser = parser;
             _editor = editor;
             _wrapperFactory = wrapperFactory;
+            _configService = configService;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
@@ -143,8 +145,8 @@ namespace Rubberduck.UI
             _codeInspectionsMenu.Initialize(_menu);
 
             _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
+            _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
 
-            _optionsCommand.Initialize();
             _aboutCommand.Initialize();
 
             _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser, _editor, _wrapperFactory);
@@ -170,6 +172,16 @@ namespace Rubberduck.UI
             }
 
             _sourceControlPresenter.Show();
+        }
+
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            using (var window = new _SettingsDialog(_configService))
+            {
+                window.ShowDialog();
+            }
         }
 
         private bool _disposed;
@@ -213,8 +225,8 @@ namespace Rubberduck.UI
             }
 
             _aboutCommand.Release();
-            _optionsCommand.Release();
 
+            _settings.Click -= OnOptionsClick;
             _sourceControl.Click -= OnSourceControlClick;
 
             var menuBarControls = IDE.CommandBars[1].Controls;

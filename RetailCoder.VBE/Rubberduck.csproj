@@ -304,7 +304,6 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
-    <Compile Include="UI\Commands\OptionsCommand.cs" />
     <Compile Include="UI\Commands\ParentMenuNotFoundException.cs" />
     <Compile Include="UI\Commands\RubberduckCommandBase.cs" />
     <Compile Include="UI\Commands\ToolbarState.cs" />

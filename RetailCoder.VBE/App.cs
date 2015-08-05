@@ -18,6 +18,7 @@ namespace Rubberduck
         private readonly IInspectorFactory _inspectorFactory;
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
+        //private readonly IMenu _integratedUserInterface;
         private readonly IRubberduckMenuFactory _menuFactory;
         
         private IRubberduckParser _parser;
@@ -33,6 +34,7 @@ namespace Rubberduck
             IGeneralConfigService configService)
         {
             _messageBox = messageBox;
+            //_integratedUserInterface = integratedUserInterface;
             _menuFactory = menuFactory;
             _parserErrorsPresenterFactory = parserErrorsPresenterFactory;
             _parserFactory = parserFactory;
@@ -87,6 +89,7 @@ namespace Rubberduck
 
             _menu = _menuFactory.Create();
             _menu.Initialize();
+            //_integratedUserInterface.Initialize();
         }
 
         private void _parser_ParseStarted(object sender, ParseStartedEventArgs e)
@@ -114,6 +117,7 @@ namespace Rubberduck
 
         private void CleanUp()
         {
+            //_integratedUserInterface.TearDown();
             var menu = _menu as IDisposable;
             if (menu != null)
             {
