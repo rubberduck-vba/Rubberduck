@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
@@ -13,7 +12,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
-using Rubberduck.UI.Commands;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -48,55 +46,23 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IRubberduckParser))
             };
 
-            BindRubberduckMenu();
+            BindMenuTypes();
+            BindToolbarTypes();
 
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
         }
 
-        private void BindRubberduckMenu()
+        private void BindMenuTypes()
         {
-            const int windowMenuId = 30009;
-            var menuBarControls = _vbe.CommandBars[1].Controls;
-            var beforeIndex = FindMenuInsertionIndex(menuBarControls, windowMenuId);
-
-            _kernel.Bind(t => t.FromThisAssembly()
-                .SelectAllClasses()
-                .InNamespaceOf<ICommand>()
-                .EndingWith("CommandMenuItem")
-                .BindToSelf());
-
-            //_kernel.Bind(t => t.FromThisAssembly()
-            //    .SelectAllClasses()
-            //    .InNamespaceOf<ICommand>()
-            //    .EndingWith("Command")
-            //    .Where(type => type.GetInterfaces().Contains(typeof (ICommand)))
-            //    .BindAllInterfaces()
-            //    .Configure(binding => binding
-            //        .When(request => request.Service == typeof(ICommand) 
-            //                      && request.Target.Member.DeclaringType.Name.StartsWith("????"))));
-
-            _kernel.Bind<ICommand>().To<AboutCommand>().WhenInjectedExactlyInto<AboutCommandMenuItem>();
-            _kernel.Bind<ICommand>().To<OptionsCommand>().WhenInjectedExactlyInto<OptionsCommandMenuItem>();
-            _kernel.Bind<ICommand>().To<CodeExplorerCommand>().WhenInjectedExactlyInto<CodeExplorerCommandMenuItem>();
-
-            _kernel.Bind<RubberduckParentMenu>().ToSelf()
-                .WithConstructorArgument("parent", menuBarControls)
-                .WithConstructorArgument("beforeIndex", beforeIndex);
+            _kernel.Bind<IMenu>().To<RubberduckMenu>(); // todo: confirm RubberduckMenuFactory is actually needed
+            _kernel.Bind<IMenu>().To<FormContextMenu>().WhenTargetHas<FormContextMenuAttribute>();
         }
 
-        private int FindMenuInsertionIndex(CommandBarControls controls, int beforeId)
+        private void BindToolbarTypes()
         {
-            for (var i = 1; i <= controls.Count; i++)
-            {
-                if (controls[i].BuiltIn && controls[i].Id == beforeId)
-                {
-                    return i;
-                }
-            }
-
-            return controls.Count;
+            _kernel.Bind<IToolbar>().To<CodeInspectionsToolbar>().WhenTargetHas<CodeInspectionsToolbarAttribute>();
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)

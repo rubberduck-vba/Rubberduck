@@ -1,33 +1,43 @@
+using System;
+using System.Linq;
+using Microsoft.Office.Core;
+using Microsoft.Vbe.Interop;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Commands
 {
-    public class OptionsCommand : ICommand
+    public class OptionsCommand : RubberduckCommandBase
     {
+        private readonly VBE _vbe;
         private readonly IGeneralConfigService _configService;
 
-        public OptionsCommand(IGeneralConfigService configService)
+        public OptionsCommand(IRubberduckMenuCommand command, VBE vbe, IGeneralConfigService configService)
+            : base(command)
         {
+            _vbe = vbe;
             _configService = configService;
         }
 
-        public void Execute()
+        public override void Initialize()
+        {
+            var parent = _vbe.CommandBars[1].Controls.OfType<CommandBarPopup>()
+                .SingleOrDefault(control => control.Caption == RubberduckUI.RubberduckMenu);
+
+            if (parent == null)
+            {
+                throw new ParentMenuNotFoundException(RubberduckUI.RubberduckMenu);
+            }
+
+            Command.AddCommandBarButton(parent.Controls, RubberduckUI.RubberduckMenu_Options, true);
+        }
+
+        public override void ExecuteAction()
         {
             using (var window = new _SettingsDialog(_configService))
             {
                 window.ShowDialog();
             }
         }
-    }
-
-    public class OptionsCommandMenuItem : CommandMenuItemBase
-    {
-        public OptionsCommandMenuItem(ICommand command) 
-            : base(command)
-        {
-        }
-
-        public override string Key { get { return "RubberduckMenu_Options"; } }
     }
 }
