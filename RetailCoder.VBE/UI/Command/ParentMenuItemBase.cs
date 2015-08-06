@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command
         private readonly CommandBarPopup _item;
         private readonly IDictionary<IMenuItem, CommandBarControl> _items;
 
-        protected ParentMenuItemBase(CommandBarControls parent, string key, IEnumerable<IMenuItem> items, int? beforeIndex)
+        protected ParentMenuItemBase(CommandBarControls parent, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
             _item = beforeIndex.HasValue
                 ? (CommandBarPopup) parent.Add(MsoControlType.msoControlPopup, Temporary: true, Before: beforeIndex)

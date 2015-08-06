@@ -29,6 +29,6 @@ namespace Rubberduck.UI.Command
         }
 
         public override bool BeginGroup { get { return true; } }
-        public override int DisplayOrder { get { return 99; } }
+        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.About; } }
     }
 }

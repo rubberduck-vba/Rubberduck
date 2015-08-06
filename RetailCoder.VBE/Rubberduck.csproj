@@ -306,12 +306,17 @@
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
+    <Compile Include="UI\Command\CodeExplorerCommand.cs" />
     <Compile Include="UI\Command\CommandMenuItemBase.cs" />
     <Compile Include="UI\Command\ICommand.cs" />
     <Compile Include="UI\Command\IMenuItem.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\ParentMenuItemBase.cs" />
+    <Compile Include="UI\Command\RubberduckMenuItemDisplayOrder.cs" />
     <Compile Include="UI\Command\RubberduckParentMenu.cs" />
+    <Compile Include="UI\Command\RunAllTestsCommand.cs" />
+    <Compile Include="UI\Command\TestExplorerCommand.cs" />
+    <Compile Include="UI\Command\UnitTestingParentMenu.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
