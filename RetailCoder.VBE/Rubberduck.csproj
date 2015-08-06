@@ -264,6 +264,7 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
+    <Compile Include="Root\CommandBarsModule.cs" />
     <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\SourceControlConfiguration.cs" />
@@ -304,6 +305,13 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\Command\AboutCommand.cs" />
+    <Compile Include="UI\Command\CommandMenuItemBase.cs" />
+    <Compile Include="UI\Command\ICommand.cs" />
+    <Compile Include="UI\Command\IMenuItem.cs" />
+    <Compile Include="UI\Command\OptionsCommand.cs" />
+    <Compile Include="UI\Command\ParentMenuItemBase.cs" />
+    <Compile Include="UI\Command\RubberduckParentMenu.cs" />
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />

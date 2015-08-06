@@ -170,7 +170,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new _SettingsDialog(_configService))
+            using (var window = new SettingsDialog(_configService))
             {
                 window.ShowDialog();
             }
@@ -180,7 +180,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new _AboutWindow())
+            using (var window = new AboutWindow())
             {
                 window.ShowDialog();
             }
