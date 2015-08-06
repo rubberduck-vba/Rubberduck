@@ -7,15 +7,10 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [ComVisible(false)]
     // ReSharper disable once InconsistentNaming
-    public partial class _AboutWindow : Form
+    public sealed partial class AboutWindow : Form
     {
-        private const string ClassId = "939CC8BB-A8CA-3BE6-89A3-5450949A6A43";
-        private const string ProgId = "Rubberduck.UI.AboutWindow";
-
         private static readonly IDictionary<string, string> Links =
             new Dictionary<string, string>
             {
@@ -26,7 +21,7 @@ namespace Rubberduck.UI
                 {"Google+", "http://plus.google.com/116859653258584466987"}
             };
 
-        public _AboutWindow()
+        public AboutWindow()
         {
             InitializeComponent();
             var assembly = Assembly.GetExecutingAssembly();
@@ -77,7 +72,7 @@ namespace Rubberduck.UI
             Close();
         }
 
-        private void VisitLink(string url)
+        private static void VisitLink(string url)
         {
             var info = new ProcessStartInfo(url);
             Process.Start(info);

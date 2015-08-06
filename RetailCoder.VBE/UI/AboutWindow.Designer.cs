@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI
 {
-    partial class _AboutWindow
+    partial class AboutWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -223,7 +223,7 @@ namespace Rubberduck.UI
             this.AttributionsList.Size = new System.Drawing.Size(288, 52);
             this.AttributionsList.TabIndex = 1;
             // 
-            // _AboutWindow
+            // AboutWindow
             // 
             this.AcceptButton = this.CloseButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,7 +247,7 @@ namespace Rubberduck.UI
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "_AboutWindow";
+            this.Name = "AboutWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
