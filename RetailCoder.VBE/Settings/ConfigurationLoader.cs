@@ -13,9 +13,7 @@ namespace Rubberduck.Settings
 {
     public interface IGeneralConfigService : IConfigurationService<Configuration>
     {
-        CodeInspectionSetting[] GetDefaultCodeInspections();
         Configuration GetDefaultConfiguration();
-        ToDoMarker[] GetDefaultTodoMarkers();
     }
 
     public class ConfigurationLoader : XmlConfigurationServiceBase<Configuration>, IGeneralConfigService
