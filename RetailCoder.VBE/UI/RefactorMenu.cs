@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Navigations;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactorings.ExtractMethod;
@@ -27,14 +26,16 @@ namespace Rubberduck.UI
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly INavigateImplementations _navigateImplementations;
 
         private readonly SearchResultIconCache _iconCache;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperFactory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, INavigateImplementations navigateImplementations, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin)
         {
             _parser = parser;
             _editor = editor;
+            _navigateImplementations = navigateImplementations;
             _wrapperFactory = wrapperFactory;
 
             _iconCache = new SearchResultIconCache();
@@ -233,14 +234,6 @@ namespace Rubberduck.UI
             }
         }
 
-        private void ShowImplementationsToolwindow(IEnumerable<Declaration> implementations, string name)
-        {
-            // throws a COMException if toolwindow was already closed
-            var window = new SimpleListControl(string.Format(RubberduckUI.AllImplementations_Caption, name));
-            var presenter = new ImplementationsListDockablePresenter(IDE, AddIn, window, implementations, _wrapperFactory);
-            presenter.Show();
-        }
-
         private void ShowReferencesToolwindow(Declaration target)
         {
             // throws a COMException if toolwindow was already closed
@@ -252,127 +245,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            FindAllImplementations();
-        }
-
-        public void FindAllImplementations()
-        {
-            var codePane = _wrapperFactory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            var implementsStatement = parseResult.Declarations.FindInterfaces()
-                .SelectMany(i => i.References.Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .SingleOrDefault(r => r.QualifiedModuleName == selection.QualifiedName && r.Selection.Contains(selection.Selection));
-
-            if (implementsStatement != null)
-            {
-                FindAllImplementations(implementsStatement.Declaration, parseResult);
-            }
-
-            var member = parseResult.Declarations.FindInterfaceImplementationMembers()
-                .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                      && m.ComponentName == selection.QualifiedName.ComponentName
-                                      && m.Selection.Contains(selection.Selection)) ??
-                         parseResult.Declarations.FindInterfaceMembers()
-                                          .SingleOrDefault(m => m.Project == selection.QualifiedName.Project
-                                                                && m.ComponentName == selection.QualifiedName.ComponentName
-                                                                && m.Selection.Contains(selection.Selection));
-
-            if (member == null)
-            {
-                return;
-            }
-
-            FindAllImplementations(member, parseResult);
-        }
-
-        public void FindAllImplementations(Declaration target)
-        {
-            var progress = new ParsingProgressPresenter();
-            var parseResult = progress.Parse(_parser, IDE.ActiveVBProject);
-            FindAllImplementations(target, parseResult);
-        }
-
-        private void FindAllImplementations(Declaration target, VBProjectParseResult parseResult)
-        {
-            string name;
-            var implementations = (target.DeclarationType == DeclarationType.Class
-                ? FindAllImplementationsOfClass(target, parseResult, out name)
-                : FindAllImplementationsOfMember(target, parseResult, out name)) ??
-                                  new List<Declaration>();
-
-            var declarations = implementations as IList<Declaration> ?? implementations.ToList();
-            var implementationsCount = declarations.Count();
-
-            if (implementationsCount == 1)
-            {
-                // if there's only 1 implementation, just jump to it:
-                ImplementationsListDockablePresenter.OnNavigateImplementation(IDE, declarations.First());
-            }
-            else if (implementationsCount > 1)
-            {
-                // if there's more than one implementation, show the dockable navigation window:
-                try
-                {
-                    ShowImplementationsToolwindow(declarations, name);
-                }
-                catch (COMException)
-                {
-                    // the exception is related to the docked control host instance,
-                    // trying again will work (I know, that's bad bad bad code)
-                    ShowImplementationsToolwindow(declarations, name);
-                }
-            }
-            else
-            {
-                var message = string.Format(RubberduckUI.AllImplementations_NoneFound, name);
-                var caption = string.Format(RubberduckUI.AllImplementations_Caption, name);
-                System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, VBProjectParseResult parseResult, out string name)
-        {
-            if (target.DeclarationType != DeclarationType.Class)
-            {
-                name = string.Empty;
-                return null;
-            }
-
-            var result = target.References
-                .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
-                .SelectMany(reference => parseResult.Declarations[reference.QualifiedModuleName.ComponentName])
-                .ToList();
-
-            name = target.ComponentName;
-            return result;
-        }
-
-        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, VBProjectParseResult parseResult, out string name)
-        {
-            if (!target.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                name = string.Empty;
-                return null;
-            }
-
-            var isInterface = parseResult.Declarations.FindInterfaces()
-                .Select(i => i.QualifiedName.QualifiedModuleName.ToString())
-                .Contains(target.QualifiedName.QualifiedModuleName.ToString());
-
-            if (isInterface)
-            {
-                name = target.ComponentName + "." + target.IdentifierName;
-                return parseResult.Declarations.FindInterfaceImplementationMembers(target.IdentifierName)
-                       .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
-            }
-            
-            var member = parseResult.Declarations.FindInterfaceMember(target);
-            name = member.ComponentName + "." + member.IdentifierName;
-            return parseResult.Declarations.FindInterfaceImplementationMembers(member.IdentifierName)
-                   .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
+            _navigateImplementations.Find();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
