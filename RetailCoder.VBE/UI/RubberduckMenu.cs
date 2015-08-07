@@ -64,8 +64,7 @@ namespace Rubberduck.UI
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
-            var testGridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort, _wrapperFactory);
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, _wrapperFactory);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
@@ -79,13 +78,11 @@ namespace Rubberduck.UI
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
             var todoExplorer = new ToDoExplorerWindow();
-            var todoGridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
-            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, todoGridViewSort, _wrapperFactory);
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, _wrapperFactory);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
-            var inspectionGridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort, _wrapperFactory);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, _wrapperFactory);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _navigateImplementations, _wrapperFactory);

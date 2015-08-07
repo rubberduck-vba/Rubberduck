@@ -30,7 +30,7 @@ namespace Rubberduck.UI.CodeInspections
         /// <param name="vbe"></param>
         /// <param name="addin"></param>
         /// <param name="window"></param>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, ICodePaneWrapperFactory wrapperFactory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, ICodePaneWrapperFactory wrapperFactory)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -39,7 +39,7 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Parsing += _inspector_Parsing;
             _inspector.ParseCompleted += _inspector_ParseCompleted;
 
-            _gridViewSort = gridViewSort;
+            _gridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
             _wrapperFactory = wrapperFactory;
 
             Control.RefreshCodeInspections += Control_RefreshCodeInspections;

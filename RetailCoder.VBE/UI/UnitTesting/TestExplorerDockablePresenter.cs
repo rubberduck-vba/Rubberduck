@@ -18,11 +18,11 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ITestExplorerWindow _view;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, GridViewSort<TestExplorerItem> gridViewSort, ICodePaneWrapperFactory wrapperFactory)
+        public TestExplorerDockablePresenter(VBE vbe, AddIn addin, ITestExplorerWindow control, ITestEngine testEngine, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
-            _gridViewSort = gridViewSort;
+            _gridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false); ;
             _wrapperFactory = wrapperFactory;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;

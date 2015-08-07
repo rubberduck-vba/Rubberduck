@@ -25,12 +25,12 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IToDoExplorerWindow _view;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort, ICodePaneWrapperFactory wrapperFactory)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
-            _gridViewSort = gridViewSort;
+            _gridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
             _wrapperFactory = wrapperFactory;
 
             _view = window;
