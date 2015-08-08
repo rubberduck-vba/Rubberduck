@@ -69,9 +69,9 @@ namespace Rubberduck.Root
             {
                 var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);
                 var item = types.SingleOrDefault(type => type.Name.StartsWith(commandName) && type.Name.EndsWith("CommandMenuItem"));
-                _kernel.Bind(item).ToSelf().InSingletonScope();
                 if (item != null)
                 {
+                    _kernel.Bind(item).ToSelf().InSingletonScope();
                     _kernel.Bind<ICommand>().To(command).WhenInjectedInto(item).InSingletonScope();
                 }
             }
