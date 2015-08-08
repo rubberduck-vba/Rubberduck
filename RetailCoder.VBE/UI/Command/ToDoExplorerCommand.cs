@@ -1,8 +1,9 @@
-﻿using Rubberduck.UI.ToDoItems;
+﻿using System;
+using Rubberduck.UI.ToDoItems;
 
 namespace Rubberduck.UI.Command
 {
-    public class ToDoExplorerCommand : ICommand
+    public class ToDoExplorerCommand : ICommand, IDisposable
     {
         private readonly ToDoExplorerDockablePresenter _presenter;
 
@@ -14,6 +15,11 @@ namespace Rubberduck.UI.Command
         public void Execute()
         {
             _presenter.Show();
+        }
+
+        public void Dispose()
+        {
+            _presenter.Dispose();
         }
     }
 

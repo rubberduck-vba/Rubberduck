@@ -1,10 +1,11 @@
+using System;
 using System.Drawing;
 using Rubberduck.Properties;
 using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
-    public class TestExplorerCommand : ICommand
+    public class TestExplorerCommand : ICommand, IDisposable
     {
         private readonly TestExplorerDockablePresenter _presenter;
 
@@ -16,6 +17,11 @@ namespace Rubberduck.UI.Command
         public void Execute()
         {
             _presenter.Show();
+        }
+
+        public void Dispose()
+        {
+            _presenter.Dispose();
         }
     }
 

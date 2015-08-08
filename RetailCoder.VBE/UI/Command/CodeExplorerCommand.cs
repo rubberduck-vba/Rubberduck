@@ -6,7 +6,7 @@ using Rubberduck.UI.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
-    public class CodeExplorerCommand : ICommand
+    public class CodeExplorerCommand : ICommand, IDisposable
     {
         private readonly CodeExplorerDockablePresenter _presenter;
 
@@ -18,6 +18,11 @@ namespace Rubberduck.UI.Command
         public void Execute()
         {
             _presenter.Show();
+        }
+
+        public void Dispose()
+        {
+            _presenter.Dispose();
         }
     }
 
