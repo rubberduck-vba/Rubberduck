@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command
         {
         }
 
-        public override string Key { get { return RubberduckUI.RefactorMenu_RemoveParameter; } }
+        public override string Key { get { return "RefactorMenu_RemoveParameter"; } }
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.RemoveParameters; } }
     }
 }

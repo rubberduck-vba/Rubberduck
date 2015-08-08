@@ -4,34 +4,42 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
+using Ninject;
 using stdole;
 
 namespace Rubberduck.UI.Command
 {
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
-        private readonly CommandBarPopup _item;
+        private readonly string _key;
+        private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, CommandBarControl> _items;
 
-        protected ParentMenuItemBase(CommandBarControls parent, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
+        protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
-            _item = beforeIndex.HasValue
-                ? (CommandBarPopup) parent.Add(MsoControlType.msoControlPopup, Temporary: true, Before: beforeIndex)
-                : (CommandBarPopup) parent.Add(MsoControlType.msoControlPopup, Temporary: true);
-            _item.Tag = key;
+            _key = key;
+            _beforeIndex = beforeIndex;
             _items = items.ToDictionary(item => item, item => null as CommandBarControl);
         }
 
-        public CommandBarPopup Item { get { return _item; } }
+        public CommandBarControls Parent { get; set; }
+        public CommandBarPopup Item { get; private set; }
 
-        public string Key { get { return _item.Tag; } }
-        public Func<string> Caption { get { return () => RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture); } }
+        public string Key { get { return Item == null ? null : Item.Tag; } }
+
+        public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture); } }
 
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }
         
         public void Localize()
         {
+            if (Item == null)
+            {
+                return;
+            }
+
+            Item.Caption = Caption.Invoke();
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
@@ -40,6 +48,16 @@ namespace Rubberduck.UI.Command
 
         public void Initialize()
         {
+            if (Parent == null)
+            {
+                return;
+            }
+
+            Item = _beforeIndex.HasValue
+                ? (CommandBarPopup)Parent.Add(MsoControlType.msoControlPopup, Temporary: true, Before: _beforeIndex)
+                : (CommandBarPopup)Parent.Add(MsoControlType.msoControlPopup, Temporary: true);
+            Item.Tag = _key;
+
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
                 _items[item] = InitializeChildControl(item as ICommandMenuItem)
@@ -54,6 +72,7 @@ namespace Rubberduck.UI.Command
                 return null;
             }
 
+            item.Parent = Item.Controls;
             item.Initialize();
             return item.Item;
         }
@@ -65,9 +84,10 @@ namespace Rubberduck.UI.Command
                 return null;
             }
 
-            var child = (CommandBarButton)_item.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
+            var child = (CommandBarButton)Item.Controls.Add(MsoControlType.msoControlButton, Temporary: true);
             SetButtonImage(child, item.Image, item.Mask);
 
+            child.BeginGroup = item.BeginGroup;
             child.Tag = item.Key;
             child.Caption = item.Caption.Invoke();
             child.Click += delegate { item.Command.Execute(); };

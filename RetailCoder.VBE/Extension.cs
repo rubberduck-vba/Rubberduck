@@ -37,12 +37,13 @@ namespace Rubberduck
             try
             {
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
+                _kernel.Load(new CommandBarsModule(_kernel));
                 var app = _kernel.Get<App>();
                 app.Startup();
             }
             catch (Exception exception)
             {
-                System.Windows.Forms.MessageBox.Show(exception.Message, RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

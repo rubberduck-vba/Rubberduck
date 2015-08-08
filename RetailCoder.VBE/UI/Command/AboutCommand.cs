@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rubberduck.UI.Command
+﻿namespace Rubberduck.UI.Command
 {
     public class AboutCommand : ICommand
     {
@@ -17,17 +11,13 @@ namespace Rubberduck.UI.Command
         }
     }
 
-    public class AboutMenuCommand : CommandMenuItemBase
+    public class AboutCommandMenuItem : CommandMenuItemBase
     {
-        public AboutMenuCommand(ICommand command) : base(command)
+        public AboutCommandMenuItem(ICommand command) : base(command)
         {
         }
 
-        public override string Key
-        {
-            get { return RubberduckUI.RubberduckMenu_About; }
-        }
-
+        public override string Key { get { return "RubberduckMenu_About"; } }
         public override bool BeginGroup { get { return true; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.About; } }
     }

@@ -17,17 +17,13 @@ namespace Rubberduck.UI.Command
         }
     }
 
-    public class OptionsMenuCommand : CommandMenuItemBase
+    public class OptionsCommandMenuItem : CommandMenuItemBase
     {
-        public OptionsMenuCommand(ICommand command) : base(command)
+        public OptionsCommandMenuItem(ICommand command) : base(command)
         {
         }
 
-        public override string Key
-        {
-            get { return RubberduckUI.RubberduckMenu_Options; }
-        }
-
+        public override string Key { get { return "RubberduckMenu_Options"; } }
         public override bool BeginGroup { get { return true; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.Options; } }
     }

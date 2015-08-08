@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command
         {
         }
 
-        public override string Key { get { return RubberduckUI.RefactorMenu_ReorderParameters; } }
+        public override string Key { get { return "RefactorMenu_ReorderParameters"; } }
         public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.ReorderParameters; } }
     }
 }

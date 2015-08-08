@@ -15,7 +15,7 @@
         {
         }
 
-        public override string Key { get { return RubberduckUI.RubberduckMenu_SourceControl; } }
+        public override string Key { get { return "RubberduckMenu_SourceControl"; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.SourceControl; } }
     }
 }

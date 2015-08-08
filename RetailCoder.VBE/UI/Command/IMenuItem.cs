@@ -14,6 +14,7 @@ namespace Rubberduck.UI.Command
 
     public interface IParentMenuItem : IMenuItem
     {
+        CommandBarControls Parent { get; set; }
         CommandBarPopup Item { get; }
         void Localize();
         void Initialize();

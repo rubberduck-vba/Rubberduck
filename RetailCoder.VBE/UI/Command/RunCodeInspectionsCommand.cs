@@ -15,7 +15,7 @@
         {
         }
 
-        public override string Key { get { return RubberduckUI.RubberduckMenu_CodeInspections; } }
+        public override string Key { get { return "RubberduckMenu_CodeInspections"; } }
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.CodeInspections; } }
     }
 }
