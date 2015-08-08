@@ -114,6 +114,8 @@ namespace Rubberduck.Root
             {
                 _kernel.Get<CodeExplorerCommandMenuItem>(), 
                 _kernel.Get<ToDoExplorerCommandMenuItem>(), 
+                _kernel.Get<NavigateFindSymbolCommandMenuItem>(),
+                _kernel.Get<NavigateFindAllReferencesCommandMenuItem>(),
             };
 
             return new NavigateParentMenu(items);

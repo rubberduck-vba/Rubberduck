@@ -31,6 +31,6 @@ namespace Rubberduck.UI.Command
         }
 
         public override string Key { get { return "RubberduckMenu_ToDoItems"; } }
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.ToDoExplorer; } }
+        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.ToDoExplorer; } }
     }
 }

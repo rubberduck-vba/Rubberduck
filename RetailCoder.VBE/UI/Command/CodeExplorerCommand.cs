@@ -34,6 +34,6 @@ namespace Rubberduck.UI.Command
         }
 
         public override string Key { get { return "RubberduckMenu_CodeExplorer"; } }
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.CodeExplorer; } }
+        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.CodeExplorer; } }
     }
 }

@@ -6,8 +6,6 @@ namespace Rubberduck.UI.Command
         Refactorings,
         Navigate,
         CodeInspections,
-        CodeExplorer,
-        ToDoExplorer,
         SourceControl,
         Options,
         About
@@ -25,5 +23,14 @@ namespace Rubberduck.UI.Command
         RenameIdentifier,
         ReorderParameters,
         RemoveParameters
+    }
+
+    public enum NavigationMenuItemDisplayOrder
+    {
+        CodeExplorer,
+        ToDoExplorer,
+        FindSymbol,
+        FindAllReferences,
+        FindImplementations
     }
 }

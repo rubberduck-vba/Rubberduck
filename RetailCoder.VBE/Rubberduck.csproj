@@ -310,6 +310,9 @@
     <Compile Include="UI\Command\CommandMenuItemBase.cs" />
     <Compile Include="UI\Command\ICommand.cs" />
     <Compile Include="UI\Command\IMenuItem.cs" />
+    <Compile Include="UI\Command\NavigateFindAllImplementationsCommand.cs" />
+    <Compile Include="UI\Command\NavigateFindSymbolCommand.cs" />
+    <Compile Include="UI\Command\NavigateFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\NavigateParentMenu.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\ParentMenuItemBase.cs" />
