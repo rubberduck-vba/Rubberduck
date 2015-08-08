@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
-using Ninject.Activation;
-using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.Root
@@ -82,13 +75,12 @@ namespace Rubberduck.Root
             return new[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
-                _kernel.Get<CodeExplorerCommandMenuItem>(), 
                 _kernel.Get<OptionsCommandMenuItem>(), 
                 _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
-                _kernel.Get<ToDoExplorerCommandMenuItem>(), 
                 _kernel.Get<ShowSourceControlPanelCommandMenuItem>(), 
                 GetUnitTestingParentMenu(),
                 GetRefactoringsParentMenu(),
+                GetNavigateParentMenu(),
             };
         }
 
@@ -114,6 +106,17 @@ namespace Rubberduck.Root
             };
 
             return new RefactoringsParentMenu(items);
+        }
+
+        private IMenuItem GetNavigateParentMenu()
+        {
+            var items = new IMenuItem[]
+            {
+                _kernel.Get<CodeExplorerCommandMenuItem>(), 
+                _kernel.Get<ToDoExplorerCommandMenuItem>(), 
+            };
+
+            return new NavigateParentMenu(items);
         }
     }
 }

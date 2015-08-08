@@ -1110,4 +1110,7 @@
   <data name="CodeInspections_GoToolTip" xml:space="preserve">
     <value>選択中の問題へ移動</value>
   </data>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>&amp;vナビゲート</value>
+  </data>
 </root>

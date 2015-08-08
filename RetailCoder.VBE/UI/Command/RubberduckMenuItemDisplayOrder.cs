@@ -4,6 +4,7 @@ namespace Rubberduck.UI.Command
     {
         UnitTesting,
         Refactorings,
+        Navigate,
         CodeInspections,
         CodeExplorer,
         ToDoExplorer,

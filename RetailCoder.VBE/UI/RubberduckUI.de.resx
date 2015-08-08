@@ -1111,4 +1111,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>
   </data>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>Na&amp;vigieren</value>
+  </data>
 </root>
