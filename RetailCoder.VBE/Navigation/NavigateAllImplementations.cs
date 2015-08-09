@@ -11,9 +11,9 @@ using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
-namespace Rubberduck.Navigations
+namespace Rubberduck.Navigation
 {
-    public class NavigateImplementations : INavigateImplementations
+    public class NavigateAllImplementations : IDeclarationNavigator
     {
         private readonly VBE _vbe;
         private readonly AddIn _addIn;
@@ -21,7 +21,7 @@ namespace Rubberduck.Navigations
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly IMessageBox _messageBox;
 
-        public NavigateImplementations(VBE vbe, AddIn addIn, IRubberduckParser parser, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
+        public NavigateAllImplementations(VBE vbe, AddIn addIn, IRubberduckParser parser, ICodePaneWrapperFactory wrapperFactory, IMessageBox messageBox)
         {
             _vbe = vbe;
             _addIn = addIn;
@@ -70,7 +70,7 @@ namespace Rubberduck.Navigations
             Find(target, parseResult);
         }
 
-        public void Find(Declaration target, VBProjectParseResult parseResult)
+        private void Find(Declaration target, VBProjectParseResult parseResult)
         {
             string name;
             var implementations = (target.DeclarationType == DeclarationType.Class

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Navigations;
+using Rubberduck.Navigation;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
@@ -14,7 +14,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.FindSymbol;
-using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
@@ -25,17 +24,21 @@ namespace Rubberduck.UI
     {
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
-        private readonly INavigateImplementations _navigateImplementations;
+        private readonly IDeclarationNavigator _implementationsNavigator;
+        private readonly IDeclarationNavigator _referenceNavigator;
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
         private readonly SearchResultIconCache _iconCache;
 
-        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, INavigateImplementations navigateImplementations, ICodePaneWrapperFactory wrapperFactory)
+        public RefactorMenu(VBE vbe, AddIn addin, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperFactory,
+            IDeclarationNavigator implementationsNavigator,
+            IDeclarationNavigator referenceNavigator)
             : base(vbe, addin)
         {
             _parser = parser;
             _editor = editor;
-            _navigateImplementations = navigateImplementations;
+            _implementationsNavigator = implementationsNavigator;
+            _referenceNavigator = referenceNavigator;
             _wrapperWrapperFactory = wrapperFactory;
 
             _iconCache = new SearchResultIconCache();
@@ -175,77 +178,13 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllReferencesContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            FindAllReferences();
-        }
-
-        public void FindAllReferences()
-        {
-            var codePane = _wrapperWrapperFactory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-            if (result == null)
-            {
-                return; // bug/todo: something's definitely wrong, exception thrown in resolver code
-            }
-
-            var declarations = result.Declarations.Items
-                                     .Where(item => item.DeclarationType != DeclarationType.ModuleOption)
-                                     .ToList();
-
-            var target = declarations.SingleOrDefault(item =>
-                item.IsSelected(selection)
-                || item.References.Any(r => r.IsSelected(selection)));
-
-            if (target != null)
-            {
-                FindAllReferences(target);
-            }
-        }
-
-        public void FindAllReferences(Declaration target)
-        {
-            var referenceCount = target.References.Count();
-
-            if (referenceCount == 1)
-            {
-                // if there's only 1 reference, just jump to it:
-                IdentifierReferencesListDockablePresenter.OnNavigateIdentifierReference(IDE, target.References.First());
-            }
-            else if (referenceCount > 1)
-            {
-                // if there's more than one reference, show the dockable reference navigation window:
-                try
-                {
-                    ShowReferencesToolwindow(target);
-                }
-                catch (COMException)
-                {
-                    // the exception is related to the docked control host instance,
-                    // trying again will work (I know, that's bad bad bad code)
-                    ShowReferencesToolwindow(target);
-                }
-            }
-            else
-            {
-                var message = string.Format(RubberduckUI.AllReferences_NoneFound, target.IdentifierName);
-                var caption = string.Format(RubberduckUI.AllReferences_Caption, target.IdentifierName);
-                System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void ShowReferencesToolwindow(Declaration target)
-        {
-            // throws a COMException if toolwindow was already closed
-            var window = new SimpleListControl(target);
-            var presenter = new IdentifierReferencesListDockablePresenter(IDE, AddIn, window, target, _wrapperWrapperFactory);
-            presenter.Show();
+            _referenceNavigator.Find();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void FindAllImplementationsContextMenu_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            _navigateImplementations.Find();
+            _implementationsNavigator.Find();
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.UI.Command
 {
@@ -8,5 +9,10 @@ namespace Rubberduck.UI.Command
             : base("RubberduckMenu", items, beforeIndex)
         {
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class MainMenuAttribute : Attribute
+    {
     }
 }

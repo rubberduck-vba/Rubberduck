@@ -4,7 +4,7 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Parameters;
-using Rubberduck.Navigations;
+using Rubberduck.Navigation;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -44,7 +44,8 @@ namespace Rubberduck.UI
         private readonly IActiveCodePaneEditor _editor;
         private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly AddIn _addIn;
-        private readonly INavigateImplementations _navigateImplementations;
+        private readonly IDeclarationNavigator _implementationsNavigator;
+        private readonly IDeclarationNavigator _referencesNavigator;
 
         private CommandBarButton _about;
         private CommandBarButton _settings;
@@ -52,7 +53,7 @@ namespace Rubberduck.UI
 
         private ProjectExplorerContextMenu _projectExplorerContextMenu;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, INavigateImplementations navigateImplementations, ICodePaneWrapperFactory wrapperFactory)
+        public RubberduckMenu(VBE vbe, AddIn addIn, IMessageBox messageBox, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn)
         {
             _addIn = addIn;
@@ -60,7 +61,8 @@ namespace Rubberduck.UI
             _editor = editor;
             _wrapperFactory = wrapperFactory;
             _configService = configService;
-            _navigateImplementations = navigateImplementations;
+            _implementationsNavigator = new NavigateAllImplementations(vbe, addIn, parser, wrapperFactory, messageBox);
+            _referencesNavigator = new NavigateAllReferences(vbe, addIn, parser, wrapperFactory, messageBox);
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
@@ -85,17 +87,17 @@ namespace Rubberduck.UI
             var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, _wrapperFactory);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _navigateImplementations, _wrapperFactory);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _wrapperFactory, _implementationsNavigator, _referencesNavigator);
         }
 
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
         {
-            _refactorMenu.FindAllReferences(e.Declaration);
+            _referencesNavigator.Find(e.Declaration);
         }
 
         private void codePresenter_FindAllImplementations(object sender, NavigateCodeEventArgs e)
         {
-            _navigateImplementations.Find(e.Declaration);
+            _implementationsNavigator.Find(e.Declaration);
         }
 
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)

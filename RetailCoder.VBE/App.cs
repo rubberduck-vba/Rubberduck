@@ -22,7 +22,7 @@ namespace Rubberduck
         private readonly IInspectorFactory _inspectorFactory;
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
-        private readonly RubberduckParentMenu _rubberduckMenu;
+        private readonly IParentMenuItem _rubberduckMenu;
         private IRubberduckParser _parser;
 
         private Configuration _config;
@@ -39,7 +39,8 @@ namespace Rubberduck
             IRubberduckParserFactory parserFactory,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService,
-            RubberduckParentMenu rubberduckMenu,
+            [MainMenu] IParentMenuItem rubberduckMenu,
+            [CodePaneContextMenu] IParentMenuItem codePaneContextMenu,
             [FormContextMenu] IMenu formContextMenu,
             [CodeInspectionsToolbar] IToolbar codeInspectionsToolbar)
         {

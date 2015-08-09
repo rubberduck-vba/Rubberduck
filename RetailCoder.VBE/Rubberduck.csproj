@@ -249,8 +249,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Navigations\NavigateImplementations.cs" />
-    <Compile Include="Navigations\INavigateImplementations.cs" />
+    <Compile Include="Navigation\NavigateAllReferences.cs" />
+    <Compile Include="Navigation\NavigateAllImplementations.cs" />
+    <Compile Include="Navigation\IDeclarationNavigator.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
@@ -307,15 +308,19 @@
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
     <Compile Include="UI\Command\CodeExplorerCommand.cs" />
+    <Compile Include="UI\Command\CodePaneContextParentMenu.cs" />
     <Compile Include="UI\Command\CommandMenuItemBase.cs" />
+    <Compile Include="UI\Command\FormDesignerContextParentMenu.cs" />
     <Compile Include="UI\Command\ICommand.cs" />
     <Compile Include="UI\Command\IMenuItem.cs" />
-    <Compile Include="UI\Command\NavigateFindAllImplementationsCommand.cs" />
-    <Compile Include="UI\Command\NavigateFindSymbolCommand.cs" />
-    <Compile Include="UI\Command\NavigateFindAllReferencesCommand.cs" />
+    <Compile Include="UI\Command\FindAllImplementationsCommand.cs" />
+    <Compile Include="UI\Command\FindSymbolCommand.cs" />
+    <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\NavigateParentMenu.cs" />
+    <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
     <Compile Include="UI\Command\ParentMenuItemBase.cs" />
+    <Compile Include="UI\Command\ProjectWindowContextParentMenu.cs" />
     <Compile Include="UI\Command\RefactorExtractMethodCommand.cs" />
     <Compile Include="UI\Command\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\RefactorRemoveParametersCommand.cs" />
