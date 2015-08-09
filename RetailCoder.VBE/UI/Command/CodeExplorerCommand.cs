@@ -25,15 +25,4 @@ namespace Rubberduck.UI.Command
             _presenter.Dispose();
         }
     }
-
-    public class CodeExplorerCommandMenuItem : CommandMenuItemBase
-    {
-        public CodeExplorerCommandMenuItem(ICommand command) 
-            : base(command)
-        {
-        }
-
-        public override string Key { get { return "RubberduckMenu_CodeExplorer"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.CodeExplorer; } }
-    }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using Microsoft.Office.Core;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems
 {
     public interface IMenuItem
     {
@@ -10,14 +9,6 @@ namespace Rubberduck.UI.Command
         Func<string> Caption { get; }
         bool BeginGroup { get; }
         int DisplayOrder { get; }
-    }
-
-    public interface IParentMenuItem : IMenuItem
-    {
-        CommandBarControls Parent { get; set; }
-        CommandBarPopup Item { get; }
-        void Localize();
-        void Initialize();
     }
 
     public interface ICommandMenuItem : IMenuItem

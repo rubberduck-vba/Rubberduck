@@ -28,15 +28,4 @@ namespace Rubberduck.UI.Command
     public class FindReferencesAttribute : Attribute
     {
     }
-
-    public class FindAllReferencesCommandMenuItem : CommandMenuItemBase
-    {
-        public FindAllReferencesCommandMenuItem(ICommand command) 
-            : base(command)
-        {
-        }
-
-        public override string Key { get { return "ContextMenu_FindAllReferences"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindAllReferences; } }
-    }
 }

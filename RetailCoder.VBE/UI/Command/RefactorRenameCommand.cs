@@ -1,3 +1,6 @@
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
+
 namespace Rubberduck.UI.Command
 {
     public class RefactorRenameCommand : ICommand

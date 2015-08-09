@@ -4,10 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
-using Ninject;
 using stdole;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public abstract class ParentMenuItemBase : IParentMenuItem
     {

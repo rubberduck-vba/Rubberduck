@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class CodePaneContextParentMenu : ParentMenuItemBase
     {
@@ -11,10 +10,5 @@ namespace Rubberduck.UI.Command
         }
 
         public override bool BeginGroup { get { return true; } }
-    }
-
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class CodePaneContextMenuAttribute : Attribute
-    {
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Rubberduck.UI.Command
+﻿using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
+
+namespace Rubberduck.UI.Command
 {
     public class RunCodeInspectionsCommand : ICommand
     {

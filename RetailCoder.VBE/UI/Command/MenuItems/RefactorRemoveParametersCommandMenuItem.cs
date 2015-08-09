@@ -1,0 +1,18 @@
+using System.Drawing;
+using Rubberduck.Properties;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
+
+namespace Rubberduck.UI.Command.MenuItems
+{
+    public class RefactorRemoveParametersCommandMenuItem : CommandMenuItemBase
+    {
+        public RefactorRemoveParametersCommandMenuItem(ICommand command) : base(command)
+        {
+        }
+
+        public override string Key { get { return "RefactorMenu_RemoveParameter"; } }
+        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.RemoveParameters; } }
+        public override Image Image { get { return Resources.RemoveParameters_6781_32; } }
+        public override Image Mask { get { return Resources.RemoveParameters_6781_32_Mask; }}
+    }
+}

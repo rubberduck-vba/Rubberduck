@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems
 {
     public abstract class CommandMenuItemBase : ICommandMenuItem
     {

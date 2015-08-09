@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class NavigateParentMenu : ParentMenuItemBase
     {
@@ -10,5 +10,14 @@ namespace Rubberduck.UI.Command
         }
 
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.Navigate; } }
+    }
+
+    public enum NavigationMenuItemDisplayOrder
+    {
+        CodeExplorer,
+        ToDoExplorer,
+        FindSymbol,
+        FindAllReferences,
+        FindImplementations
     }
 }

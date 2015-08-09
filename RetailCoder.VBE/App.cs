@@ -9,6 +9,8 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.ParserErrors;
 
 namespace Rubberduck
@@ -22,6 +24,7 @@ namespace Rubberduck
         private readonly IInspectorFactory _inspectorFactory;
         private IParserErrorsPresenter _parserErrorsPresenter;
         private readonly IGeneralConfigService _configService;
+        private readonly IAppMenu _appMenus;
         private readonly IParentMenuItem _rubberduckMenu;
         private IRubberduckParser _parser;
 
@@ -39,8 +42,7 @@ namespace Rubberduck
             IRubberduckParserFactory parserFactory,
             IInspectorFactory inspectorFactory, 
             IGeneralConfigService configService,
-            [MainMenu] IParentMenuItem rubberduckMenu,
-            [CodePaneContextMenu] IParentMenuItem codePaneContextMenu,
+            IAppMenu appMenus,
             [FormContextMenu] IMenu formContextMenu,
             [CodeInspectionsToolbar] IToolbar codeInspectionsToolbar)
         {
@@ -50,7 +52,7 @@ namespace Rubberduck
             _parserFactory = parserFactory;
             _inspectorFactory = inspectorFactory;
             _configService = configService;
-            _rubberduckMenu = rubberduckMenu;
+            _appMenus = appMenus;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
 
@@ -61,8 +63,9 @@ namespace Rubberduck
         public void Startup()
         {
             CleanReloadConfig();
-            _rubberduckMenu.Initialize();
-            _rubberduckMenu.Localize();
+
+            _appMenus.Initialize();
+            _appMenus.Localize();
         }
 
         private void CleanReloadConfig()

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class RefactoringsParentMenu : ParentMenuItemBase
     {
@@ -10,5 +10,13 @@ namespace Rubberduck.UI.Command
         }
 
         public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.Refactorings; } }
+    }
+
+    public enum RefactoringsMenuItemDisplayOrder
+    {
+        ExtractMethod,
+        RenameIdentifier,
+        ReorderParameters,
+        RemoveParameters
     }
 }

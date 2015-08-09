@@ -9,6 +9,8 @@ using Ninject.Modules;
 using Rubberduck.Navigation;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.Root
 {
@@ -39,7 +41,7 @@ namespace Rubberduck.Root
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
 
             var items = GetRubberduckMenuItems();
-            BindParentMenuItem<RubberduckParentMenu, MainMenuAttribute>(parent, beforeIndex, items);
+            BindParentMenuItem<RubberduckParentMenu>(parent, beforeIndex, items);
         }
 
         private void ConfigureCodePaneContextMenu()
@@ -49,7 +51,7 @@ namespace Rubberduck.Root
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == listMembersMenuId).Index;
 
             var items = GetCodePaneContextMenuItems();
-            BindParentMenuItem<RubberduckParentMenu, CodePaneContextMenuAttribute>(parent, beforeIndex, items);
+            BindParentMenuItem<RubberduckParentMenu>(parent, beforeIndex, items);
         }
 
         private void ConfigureFormDesignerContextMenu()
@@ -59,7 +61,7 @@ namespace Rubberduck.Root
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
 
             var items = GetFormDesignerContextMenuItems();
-            BindParentMenuItem<FormDesignerContextParentMenu, FormDesignerContextMenuAttribute>(parent, beforeIndex, items);
+            BindParentMenuItem<FormDesignerContextParentMenu>(parent, beforeIndex, items);
         }
 
         private void ConfigureFormDesignerControlContextMenu()
@@ -69,7 +71,7 @@ namespace Rubberduck.Root
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
 
             var items = GetFormDesignerContextMenuItems();
-            BindParentMenuItem<FormDesignerControlContextParentMenu, FormDesignerControlContextMenuAttribute>(parent, beforeIndex, items);
+            BindParentMenuItem<FormDesignerControlContextParentMenu>(parent, beforeIndex, items);
         }
 
         private void ConfigureProjectExplorerContextMenu()
@@ -79,13 +81,12 @@ namespace Rubberduck.Root
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == projectPropertiesMenuId).Index;
 
             var items = GetProjectWindowContextMenuItems();
-            BindParentMenuItem<ProjectWindowContextParentMenu, ProjectWindowContextMenuAttribute>(parent, beforeIndex, items);
+            BindParentMenuItem<ProjectWindowContextParentMenu>(parent, beforeIndex, items);
         }
 
-        private void BindParentMenuItem<TParentMenu, TAttribute>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
+        private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
-                .WhenTargetHas(typeof(TAttribute))
                 .InSingletonScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
@@ -139,7 +140,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
                 _kernel.Get<OptionsCommandMenuItem>(), 
@@ -179,28 +180,29 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<CodeExplorerCommandMenuItem>(), 
-                _kernel.Get<ToDoExplorerCommandMenuItem>(), 
+                _kernel.Get<CodeExplorerCommandMenuItem>(),
+                _kernel.Get<ToDoExplorerCommandMenuItem>(),
                 _kernel.Get<FindSymbolCommandMenuItem>(),
                 _kernel.Get<FindAllReferencesCommandMenuItem>(),
                 _kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
-
             return new NavigateParentMenu(items);
         }
 
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 GetRefactoringsParentMenu(),
-                GetNavigateParentMenu()
+                _kernel.Get<FindSymbolCommandMenuItem>(),
+                _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 _kernel.Get<RefactorRenameCommandMenuItem>(), 
             };
@@ -208,9 +210,12 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetProjectWindowContextMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
-                GetNavigateParentMenu(),
+                _kernel.Get<RefactorRenameCommandMenuItem>(), 
+                _kernel.Get<FindSymbolCommandMenuItem>(),
+                _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
             };
         }
     }

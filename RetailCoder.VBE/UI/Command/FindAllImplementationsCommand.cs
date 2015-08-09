@@ -28,14 +28,4 @@ namespace Rubberduck.UI.Command
     public class FindImplementationsAttribute : Attribute
     {
     }
-
-    public class FindAllImplementationsCommandMenuItem : CommandMenuItemBase
-    {
-        public FindAllImplementationsCommandMenuItem(ICommand command) : base(command)
-        {
-        }
-
-        public override string Key { get { return "ContextMenu_GoToImplementation"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindImplementations; } }
-    }
 }
