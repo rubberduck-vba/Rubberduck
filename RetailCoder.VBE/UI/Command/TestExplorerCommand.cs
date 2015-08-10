@@ -3,7 +3,7 @@ using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
-    public class TestExplorerCommand : ICommand, IDisposable
+    public class TestExplorerCommand : ICommand
     {
         private readonly TestExplorerDockablePresenter _presenter;
 
@@ -17,9 +17,5 @@ namespace Rubberduck.UI.Command
             _presenter.Show();
         }
 
-        public void Dispose()
-        {
-            _presenter.Dispose();
-        }
     }
 }

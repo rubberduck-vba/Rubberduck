@@ -5,7 +5,6 @@ using System.Reflection;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Extensions.Conventions;
-using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
@@ -72,7 +71,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InCallScope()));
+                .Configure(binding => binding.InThreadScope()));
         }
 
         // note: settings namespace classes are injected in singleton scope

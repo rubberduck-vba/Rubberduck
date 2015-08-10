@@ -64,10 +64,10 @@ namespace Rubberduck.UI
             _implementationsNavigator = new NavigateAllImplementations(vbe, addIn, parser, wrapperFactory, messageBox);
             _referencesNavigator = new NavigateAllReferences(vbe, addIn, parser, wrapperFactory, messageBox);
 
-            var testExplorer = new TestExplorerWindow();
-            var testEngine = new TestEngine();
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, _wrapperFactory);
-            _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
+            //var testExplorer = new TestExplorerWindow();
+            //var testEngine = new TestEngine();
+            //var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, _wrapperFactory);
+            //_testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer, _wrapperFactory);
@@ -130,7 +130,7 @@ namespace Rubberduck.UI
 
             _menu.Caption = RubberduckUI.RubberduckMenu;
 
-            _testMenu.Initialize(_menu.Controls);
+            //_testMenu.Initialize(_menu.Controls);
             _codeExplorerMenu.Initialize(_menu);
             _refactorMenu.Initialize(_menu.Controls);
             _todoItemsMenu.Initialize(_menu);

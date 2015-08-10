@@ -3,7 +3,7 @@ using Rubberduck.UI.ToDoItems;
 
 namespace Rubberduck.UI.Command
 {
-    public class ToDoExplorerCommand : ICommand, IDisposable
+    public class ToDoExplorerCommand : ICommand
     {
         private readonly ToDoExplorerDockablePresenter _presenter;
 
@@ -15,11 +15,6 @@ namespace Rubberduck.UI.Command
         public void Execute()
         {
             _presenter.Show();
-        }
-
-        public void Dispose()
-        {
-            _presenter.Dispose();
         }
     }
 }

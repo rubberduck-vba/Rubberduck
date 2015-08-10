@@ -52,17 +52,19 @@ namespace Rubberduck.UI
             const int defaultWidth = 350;
             const int defaultHeight = 200;
 
-            if (window.Visible && window.LinkedWindows == null) //checking these conditions prevents errors
+            if (!window.Visible || window.LinkedWindows != null)
             {
-                if (window.Width < defaultWidth)
-                {
-                    window.Width = defaultWidth;
-                }
+                return;
+            }
 
-                if (window.Height < defaultHeight)
-                {
-                    window.Height = defaultHeight;
-                }
+            if (window.Width < defaultWidth)
+            {
+                window.Width = defaultWidth;
+            }
+
+            if (window.Height < defaultHeight)
+            {
+                window.Height = defaultHeight;
             }
         }
 

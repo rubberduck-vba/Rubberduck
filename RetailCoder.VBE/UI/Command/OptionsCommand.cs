@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Settings;
+﻿using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Command
