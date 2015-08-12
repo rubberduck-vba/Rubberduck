@@ -15,7 +15,10 @@ namespace Rubberduck.VBEditor.VBEHost
 
         ~HostApplicationBase()
         {
-            Marshal.ReleaseComObject(Application);
+            if (Application != null)
+            {
+                Marshal.ReleaseComObject(Application);
+            }
         }
 
         public abstract void Run(QualifiedMemberName qualifiedMemberName);

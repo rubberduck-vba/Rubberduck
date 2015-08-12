@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using System.Reflection;
+using Microsoft.Office.Interop.Excel;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
@@ -8,7 +9,8 @@ namespace Rubberduck.VBEditor.VBEHost
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            Application.Run(GenerateMethodCall(qualifiedMemberName));
+            var call = GenerateMethodCall(qualifiedMemberName);
+            Application.Run(call);
         }
 
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)

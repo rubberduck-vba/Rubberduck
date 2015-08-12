@@ -1125,4 +1125,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
+  <data name="Language_JP" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
 </root>

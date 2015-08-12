@@ -1,13 +1,10 @@
-using System;
-using Rubberduck.UI.UnitTesting;
-
 namespace Rubberduck.UI.Command
 {
     public class TestExplorerCommand : ICommand
     {
-        private readonly TestExplorerDockablePresenter _presenter;
+        private readonly IPresenter _presenter;
 
-        public TestExplorerCommand(TestExplorerDockablePresenter presenter)
+        public TestExplorerCommand(IPresenter presenter)
         {
             _presenter = presenter;
         }

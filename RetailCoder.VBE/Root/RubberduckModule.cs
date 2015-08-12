@@ -11,6 +11,8 @@ using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeInspections;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.Root
@@ -51,6 +53,9 @@ namespace Rubberduck.Root
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
+
+            Bind<IPresenter>().To<TestExplorerDockablePresenter>().WhenInjectedInto<TestExplorerCommand>().InSingletonScope();
+
         }
 
         private void BindMenuTypes()

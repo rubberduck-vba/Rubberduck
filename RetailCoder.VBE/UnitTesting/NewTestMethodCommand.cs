@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Reflection;
@@ -49,23 +51,35 @@ namespace Rubberduck.UnitTesting
 
         public static void NewTestMethod(VBE vbe)
         {
-            if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+            try
             {
-                var module = vbe.ActiveCodePane.CodeModule;
-                var name = GetNextTestMethodName(module.Parent);
-                var method = TestMethodTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, method);
+                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                {
+                    var module = vbe.ActiveCodePane.CodeModule;
+                    var name = GetNextTestMethodName(module.Parent);
+                    var method = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, method);
+                }
+            }
+            catch (COMException)
+            {
             }
         }
-
+    
         public static void NewExpectedErrorTestMethod(VBE vbe)
         {
-            if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+            try
             {
-                var module = vbe.ActiveCodePane.CodeModule;
-                var name = GetNextTestMethodName(module.Parent);
-                var method = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, method);
+                if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
+                {
+                    var module = vbe.ActiveCodePane.CodeModule;
+                    var name = GetNextTestMethodName(module.Parent);
+                    var method = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, method);
+                }
+            }
+            catch (COMException)
+            {
             }
         }
 

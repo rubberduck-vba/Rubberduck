@@ -11,7 +11,13 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerDockablePresenter : DockablePresenterBase
+    public interface ITestExplorerPresenter : IPresenter
+    {
+        void RunTests();
+        void RunTests(IEnumerable<TestMethod> tests);
+    }
+
+    public class TestExplorerDockablePresenter : DockablePresenterBase, ITestExplorerPresenter
     {
         private readonly GridViewSort<TestExplorerItem> _gridViewSort;
         private readonly ITestEngine _testEngine;
@@ -22,7 +28,7 @@ namespace Rubberduck.UI.UnitTesting
             : base(vbe, addin, control)
         {
             _testEngine = testEngine;
-            _gridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false); ;
+            _gridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
             _wrapperFactory = wrapperFactory;
 
             _testEngine.ModuleInitialize += _testEngine_ModuleInitialize;
