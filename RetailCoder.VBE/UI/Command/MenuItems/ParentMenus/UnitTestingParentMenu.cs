@@ -15,6 +15,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     public enum UnitTestingMenuItemDisplayOrder
     {
         TestExplorer,
-        RunAllTests
+        RunAllTests,
+        AddTestModule,
+        AddTestMethod,
+        AddTestMethodExpectedError
     }
 }

@@ -4,9 +4,9 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class RunAllTestsUnitTestingCommandMenuItem : CommandMenuItemBase
+    public class RunAllTestsCommandMenuItem : CommandMenuItemBase
     {
-        public RunAllTestsUnitTestingCommandMenuItem(ICommand command)
+        public RunAllTestsCommandMenuItem(ICommand command)
             : base(command)
         {
         }

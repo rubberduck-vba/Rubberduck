@@ -2,9 +2,9 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    public class TestExplorerUnitTestingCommandMenuItem : CommandMenuItemBase
+    public class TestExplorerCommandMenuItem : CommandMenuItemBase
     {
-        public TestExplorerUnitTestingCommandMenuItem(ICommand command)
+        public TestExplorerCommandMenuItem(ICommand command)
             : base(command)
         {
         }

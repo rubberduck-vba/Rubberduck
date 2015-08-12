@@ -13,6 +13,5 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
-
     }
 }

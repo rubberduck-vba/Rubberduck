@@ -123,8 +123,8 @@ namespace Rubberduck.Root
                 var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);
                 try
                 {
-                    // note: ICommandMenuItem naming convention for [Foo]Command: [Foo][*]CommandMenuItem
-                    var item = types.SingleOrDefault(type => type.Name.StartsWith(commandName) && type.Name.EndsWith("CommandMenuItem"));
+                    // note: ICommandMenuItem naming convention for [Foo]Command: [Foo]CommandMenuItem
+                    var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
                         _kernel.Bind(item).ToSelf().InSingletonScope();
@@ -156,8 +156,11 @@ namespace Rubberduck.Root
         {
             var items = new IMenuItem[]
             {
-                _kernel.Get<RunAllTestsUnitTestingCommandMenuItem>(), 
-                _kernel.Get<TestExplorerUnitTestingCommandMenuItem>(), 
+                _kernel.Get<RunAllTestsCommandMenuItem>(), 
+                _kernel.Get<TestExplorerCommandMenuItem>(), 
+                _kernel.Get<AddTestModuleCommandMenuItem>(),
+                _kernel.Get<AddTestMethodCommandMenuItem>(),
+                _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
             };
 
             return new UnitTestingParentMenu(items);
