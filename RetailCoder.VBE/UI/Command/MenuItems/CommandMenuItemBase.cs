@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Castle.Core.Internal;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -14,7 +15,16 @@ namespace Rubberduck.UI.Command.MenuItems
         public ICommand Command { get { return _command; } }
 
         public abstract string Key { get; }
-        public Func<string> Caption { get { return () => RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture); } }
+
+        public Func<string> Caption
+        {
+            get
+            {
+                return () => Key.IsNullOrEmpty() 
+                    ? string.Empty 
+                    : RubberduckUI.ResourceManager.GetString(Key, RubberduckUI.Culture);
+            }
+        }
 
         public virtual bool BeginGroup { get { return false; } }
         public virtual int DisplayOrder { get { return default(int); } }

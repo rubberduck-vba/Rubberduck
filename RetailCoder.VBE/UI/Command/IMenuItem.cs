@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Rubberduck.UI.Command.MenuItems
+namespace Rubberduck.UI.Command
 {
     public interface IMenuItem
     {

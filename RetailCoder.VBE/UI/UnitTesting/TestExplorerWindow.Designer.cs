@@ -84,7 +84,7 @@ namespace Rubberduck.UI.UnitTesting
             this.inconclusiveTestsLabel});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 30);
+            this.toolStrip1.Size = new System.Drawing.Size(600, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -92,16 +92,17 @@ namespace Rubberduck.UI.UnitTesting
             // 
             this.refreshTestsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.refreshTestsButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshTestsButton.Image")));
+            this.refreshTestsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.refreshTestsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshTestsButton.Name = "refreshTestsButton";
-            this.refreshTestsButton.Size = new System.Drawing.Size(24, 27);
+            this.refreshTestsButton.Size = new System.Drawing.Size(23, 22);
             this.refreshTestsButton.ToolTipText = "Refresh";
             this.refreshTestsButton.Click += new System.EventHandler(this.RefreshTestsButtonClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // runButton
             // 
@@ -115,68 +116,75 @@ namespace Rubberduck.UI.UnitTesting
             this.toolStripSeparator4,
             this.runLastRunMenuItem});
             this.runButton.Image = global::Rubberduck.Properties.Resources.control_000_small;
+            this.runButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(68, 27);
+            this.runButton.Size = new System.Drawing.Size(57, 22);
             this.runButton.Text = "&Run";
             // 
             // runAllTestsMenuItem
             // 
             this.runAllTestsMenuItem.Image = global::Rubberduck.Properties.Resources.flask_arrow;
+            this.runAllTestsMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runAllTestsMenuItem.ImageTransparentColor = System.Drawing.Color.White;
             this.runAllTestsMenuItem.Name = "runAllTestsMenuItem";
             this.runAllTestsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.A)));
-            this.runAllTestsMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runAllTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runAllTestsMenuItem.Text = "&All Tests";
             // 
             // runSelectedTestMenuItem
             // 
             this.runSelectedTestMenuItem.Enabled = false;
+            this.runSelectedTestMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runSelectedTestMenuItem.Name = "runSelectedTestMenuItem";
-            this.runSelectedTestMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runSelectedTestMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runSelectedTestMenuItem.Text = "&Selected Tests";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(276, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(227, 6);
             // 
             // runNotRunTestsMenuItem
             // 
             this.runNotRunTestsMenuItem.Image = global::Rubberduck.Properties.Resources.question_white;
+            this.runNotRunTestsMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runNotRunTestsMenuItem.Name = "runNotRunTestsMenuItem";
-            this.runNotRunTestsMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runNotRunTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runNotRunTestsMenuItem.Text = "&Not Run Tests";
             // 
             // runFailedTestsMenuItem
             // 
             this.runFailedTestsMenuItem.Enabled = false;
             this.runFailedTestsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("runFailedTestsMenuItem.Image")));
+            this.runFailedTestsMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runFailedTestsMenuItem.Name = "runFailedTestsMenuItem";
-            this.runFailedTestsMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runFailedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runFailedTestsMenuItem.Text = "&Failed Tests";
             // 
             // runPassedTestsMenuItem
             // 
             this.runPassedTestsMenuItem.Enabled = false;
             this.runPassedTestsMenuItem.Image = global::Rubberduck.Properties.Resources.tick_circle;
+            this.runPassedTestsMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runPassedTestsMenuItem.Name = "runPassedTestsMenuItem";
-            this.runPassedTestsMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runPassedTestsMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runPassedTestsMenuItem.Text = "&Passed Tests";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(276, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(227, 6);
             // 
             // runLastRunMenuItem
             // 
             this.runLastRunMenuItem.Enabled = false;
+            this.runLastRunMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.runLastRunMenuItem.Name = "runLastRunMenuItem";
             this.runLastRunMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.L)));
-            this.runLastRunMenuItem.Size = new System.Drawing.Size(279, 26);
+            this.runLastRunMenuItem.Size = new System.Drawing.Size(230, 22);
             this.runLastRunMenuItem.Text = "Repeat &Last Run";
             // 
             // addButton
@@ -187,98 +195,106 @@ namespace Rubberduck.UI.UnitTesting
             this.addTestMethodButton,
             this.addExpectedErrorTestMethodButton});
             this.addButton.Image = global::Rubberduck.Properties.Resources.flask_plus;
+            this.addButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.addButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(71, 27);
+            this.addButton.Size = new System.Drawing.Size(58, 22);
             this.addButton.Text = "&Add";
             // 
             // addTestModuleButton
             // 
             this.addTestModuleButton.Image = global::Rubberduck.Properties.Resources.flask_empty;
+            this.addTestModuleButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.addTestModuleButton.Name = "addTestModuleButton";
-            this.addTestModuleButton.Size = new System.Drawing.Size(277, 26);
+            this.addTestModuleButton.Size = new System.Drawing.Size(226, 22);
             this.addTestModuleButton.Text = "Test &Module";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(274, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(223, 6);
             // 
             // addTestMethodButton
             // 
             this.addTestMethodButton.Image = global::Rubberduck.Properties.Resources.flask;
+            this.addTestMethodButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.addTestMethodButton.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.addTestMethodButton.Name = "addTestMethodButton";
             this.addTestMethodButton.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.T)));
-            this.addTestMethodButton.Size = new System.Drawing.Size(277, 26);
+            this.addTestMethodButton.Size = new System.Drawing.Size(226, 22);
             this.addTestMethodButton.Text = "&Test Method";
             // 
             // addExpectedErrorTestMethodButton
             // 
             this.addExpectedErrorTestMethodButton.Image = global::Rubberduck.Properties.Resources.flask_exclamation;
+            this.addExpectedErrorTestMethodButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.addExpectedErrorTestMethodButton.Name = "addExpectedErrorTestMethodButton";
-            this.addExpectedErrorTestMethodButton.Size = new System.Drawing.Size(277, 26);
+            this.addExpectedErrorTestMethodButton.Size = new System.Drawing.Size(226, 22);
             this.addExpectedErrorTestMethodButton.Text = "Test Method (Expected &Error)";
             // 
             // gotoSelectionButton
             // 
             this.gotoSelectionButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.gotoSelectionButton.Image = global::Rubberduck.Properties.Resources.arrow;
+            this.gotoSelectionButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.gotoSelectionButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.gotoSelectionButton.Name = "gotoSelectionButton";
-            this.gotoSelectionButton.Size = new System.Drawing.Size(24, 27);
+            this.gotoSelectionButton.Size = new System.Drawing.Size(23, 22);
             this.gotoSelectionButton.ToolTipText = "Navigate to selected";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 30);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
             // testProgressBar
             // 
             this.testProgressBar.ForeColor = System.Drawing.Color.LimeGreen;
             this.testProgressBar.Name = "testProgressBar";
-            this.testProgressBar.Size = new System.Drawing.Size(133, 27);
+            this.testProgressBar.Size = new System.Drawing.Size(100, 22);
             this.testProgressBar.Step = 1;
             // 
             // TotalElapsedMilisecondsLabel
             // 
+            this.TotalElapsedMilisecondsLabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.TotalElapsedMilisecondsLabel.Name = "TotalElapsedMilisecondsLabel";
-            this.TotalElapsedMilisecondsLabel.Size = new System.Drawing.Size(40, 27);
+            this.TotalElapsedMilisecondsLabel.Size = new System.Drawing.Size(32, 22);
             this.TotalElapsedMilisecondsLabel.Text = "0 ms";
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 30);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
             // passedTestsLabel
             // 
+            this.passedTestsLabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.passedTestsLabel.Name = "passedTestsLabel";
-            this.passedTestsLabel.Size = new System.Drawing.Size(65, 27);
+            this.passedTestsLabel.Size = new System.Drawing.Size(52, 22);
             this.passedTestsLabel.Text = "0 Passed";
             // 
             // failedTestsLabel
             // 
+            this.failedTestsLabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.failedTestsLabel.Name = "failedTestsLabel";
-            this.failedTestsLabel.Size = new System.Drawing.Size(60, 27);
+            this.failedTestsLabel.Size = new System.Drawing.Size(47, 22);
             this.failedTestsLabel.Text = "0 Failed";
             // 
             // inconclusiveTestsLabel
             // 
+            this.inconclusiveTestsLabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.inconclusiveTestsLabel.Name = "inconclusiveTestsLabel";
-            this.inconclusiveTestsLabel.Size = new System.Drawing.Size(101, 27);
+            this.inconclusiveTestsLabel.Size = new System.Drawing.Size(82, 22);
             this.inconclusiveTestsLabel.Text = "0 Inconclusive";
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.testOutputGridView);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 30);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(800, 216);
+            this.panel1.Size = new System.Drawing.Size(600, 175);
             this.panel1.TabIndex = 2;
             // 
             // testOutputGridView
@@ -305,25 +321,23 @@ namespace Rubberduck.UI.UnitTesting
             this.testOutputGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.testOutputGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.testOutputGridView.Location = new System.Drawing.Point(0, 0);
-            this.testOutputGridView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.testOutputGridView.Name = "testOutputGridView";
             this.testOutputGridView.ReadOnly = true;
             this.testOutputGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.testOutputGridView.Size = new System.Drawing.Size(800, 216);
+            this.testOutputGridView.Size = new System.Drawing.Size(600, 175);
             this.testOutputGridView.TabIndex = 1;
             this.testOutputGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridCellDoubleClicked);
             this.testOutputGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ColumnHeaderMouseClicked);
             // 
             // TestExplorerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.MinimumSize = new System.Drawing.Size(800, 246);
+            this.MinimumSize = new System.Drawing.Size(600, 200);
             this.Name = "TestExplorerWindow";
-            this.Size = new System.Drawing.Size(800, 246);
+            this.Size = new System.Drawing.Size(600, 200);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
