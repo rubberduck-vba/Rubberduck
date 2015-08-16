@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
-using Rubberduck.VBA;
-using Rubberduck.VBEHost;
+using Rubberduck.VBEditor.Extensions;
+using System.Reflection;
+using System.IO;
 
 namespace Rubberduck.UnitTesting
 {
-    internal static class ProjectTestExtensions
+    [ComVisible(false)]
+    public static class ProjectTestExtensions
     {
         /// <summary>
         /// Runs all methods with specified attribute.
@@ -35,17 +38,19 @@ namespace Rubberduck.UnitTesting
         {
             var hostApp = project.VBE.HostApplication();
 
-            return project.VBComponents
+            var result = project.VBComponents
                           .Cast<VBComponent>()
                           .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => 
                               new TestMethod(method.QualifiedMemberName, hostApp)));
+
+            return result;
         }
 
         public static IEnumerable<TestMethod> TestMethods(this VBComponent component)
         {
-            IHostApplication hostApp = component.VBE.HostApplication();
+            var hostApp = component.VBE.HostApplication();
 
             if (component.Type == vbext_ComponentType.vbext_ct_StdModule 
                 && component.CodeModule.HasAttribute<TestModuleAttribute>())
@@ -58,21 +63,52 @@ namespace Rubberduck.UnitTesting
             return new List<TestMethod>();
         }
 
-        private static readonly string[] ReservedTestAttributeNames = {"TestInitialize", "TestCleanup"};
+        private static readonly string[] ReservedTestAttributeNames =
+        {
+            "ModuleInitialize",
+            "TestInitialize", 
+            "TestCleanup",
+            "ModuleCleanup"
+        };
 
         private static bool IsTestMethod(Member member)
         {
-            return (member.QualifiedMemberName.MemberName.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
+            var isIgnoredMethod = member.HasAttribute<TestInitializeAttribute>()
+                               || member.HasAttribute<TestCleanupAttribute>()
+                               || member.HasAttribute<ModuleInitializeAttribute>()
+                               || member.HasAttribute<ModuleCleanupAttribute>()
+                               || ReservedTestAttributeNames.Any(attribute => 
+                                   member.QualifiedMemberName.MemberName.StartsWith(attribute));
+
+            var result = !isIgnoredMethod &&
+                (member.QualifiedMemberName.MemberName.StartsWith("Test") || member.HasAttribute<TestMethodAttribute>())
                  && member.Signature.Contains(member.QualifiedMemberName.MemberName + "()")
-                 && !ReservedTestAttributeNames.Contains(member.QualifiedMemberName.MemberName)
                  && member.MemberType == MemberType.Sub
                  && member.MemberVisibility == MemberVisibility.Public;
+
+            return result;
         }
 
-        private static bool IsTestModule(CodeModule module)
+        public static void EnsureReferenceToAddInLibrary(this VBProject project)
         {
-            return (module.Parent.Type == vbext_ComponentType.vbext_ct_StdModule
-                && module.Name.StartsWith("Test") || module.HasAttribute<TestModuleAttribute>());
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var name = assembly.GetName().Name.Replace('.', '_');
+            var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
+
+            var references = project.References.Cast<Reference>().ToList();
+
+            var reference = references.SingleOrDefault(r => r.Name == name);
+            if (reference != null)
+            {
+                references.Remove(reference);
+                project.References.Remove(reference);
+            }
+
+            if (references.All(r => r.FullPath != referencePath))
+            {
+                project.References.AddFromFile(referencePath);
+            }
         }
     }
 }

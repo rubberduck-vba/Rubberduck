@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -11,24 +11,30 @@ namespace Rubberduck.UI.CodeInspections
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return "Code Inspections"; } }
+        string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
-        public BindingList<CodeInspectionResultGridViewItem> InspectionResults 
+        private BindingList<CodeInspectionResultGridViewItem> _inspectionResults;
+        public BindingList<CodeInspectionResultGridViewItem> InspectionResults
         {
-            get { return CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>; }
-            set { CodeIssuesGridView.DataSource = value; }
+            get { return _inspectionResults; }
+            set
+            {
+                _inspectionResults = value;
+                CodeIssuesGridView.DataSource = _inspectionResults;
+                CodeIssuesGridView.Refresh();
+            }
         }
 
-        public int IssueCount {get; set;}
-        public string IssueCountText 
-        {
-            get { return StatusLabel.Text; }
-            set { StatusLabel.Text = value; }
-        }
+        public DataGridView GridView { get { return CodeIssuesGridView; } }
 
         public CodeInspectionsWindow()
         {
             InitializeComponent();
+            InitWindow();
+        }
+
+        private void InitWindow()
+        {
             RefreshButton.Click += RefreshButtonClicked;
             QuickFixButton.ButtonClick += QuickFixButton_Click;
             GoButton.Click += GoButton_Click;
@@ -39,12 +45,115 @@ namespace Rubberduck.UI.CodeInspections
             var items = new List<CodeInspectionResultGridViewItem>();
             CodeIssuesGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(items);
+            InspectionResults = CodeIssuesGridView.DataSource as BindingList<CodeInspectionResultGridViewItem>;
 
             CodeIssuesGridView.AutoResizeColumns();
             CodeIssuesGridView.Columns["Issue"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            CodeIssuesGridView.Columns["Severity"].Visible = false;
+
+            CodeIssuesGridView.Columns["Icon"].HeaderText = RubberduckUI.Severity;
+            CodeIssuesGridView.Columns["Project"].HeaderText = RubberduckUI.Project;
+            CodeIssuesGridView.Columns["Component"].HeaderText = RubberduckUI.Component;
+            CodeIssuesGridView.Columns["Line"].HeaderText = RubberduckUI.Line;
+            CodeIssuesGridView.Columns["Issue"].HeaderText = RubberduckUI.Issue;
 
             CodeIssuesGridView.SelectionChanged += CodeIssuesGridView_SelectionChanged;
             CodeIssuesGridView.CellDoubleClick += CodeIssuesGridView_CellDoubleClick;
+
+            QuickFixButton.Text = RubberduckUI.Fix;
+            GoButton.Text = RubberduckUI.Go;
+            NextButton.Text = RubberduckUI.Next;
+            PreviousButton.Text = RubberduckUI.Previous;
+
+            StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_NumberOfIssues_Plural, 0);
+
+            RefreshButton.ToolTipText = RubberduckUI.CodeInspections_RefreshToolTip;
+            QuickFixButton.ToolTipText = RubberduckUI.CodeInspections_QuickFixToolTip;
+            GoButton.ToolTipText = RubberduckUI.CodeInspections_GoToolTip;
+            PreviousButton.ToolTipText = RubberduckUI.CodeInspections_PreviousToolTip;
+            NextButton.ToolTipText = RubberduckUI.CodeInspections_NextToolTip;
+            CopyButton.ToolTipText = RubberduckUI.CodeInspections_CopyToolTip;
+        }
+
+        public void ToggleParsingStatus(bool enabled = true)
+        {
+            StatusLabel.Image = enabled
+                ? Resources.hourglass
+                : Resources.exclamation_diamond;
+            StatusLabel.Text = enabled
+                ? RubberduckUI.Parsing
+                : RubberduckUI.CodeInspections_Inspecting;
+        }
+
+        public void SetIssuesStatus(int issueCount, bool completed = false)
+        {
+            _issueCount = issueCount;
+
+            RefreshButton.Enabled = completed;  // remove this when uncommenting below lines
+
+            /*RefreshButton.Image = completed
+                ? Resources.arrow_circle_double
+                : Resources.cross_circle;
+
+            if (!completed)
+            {
+                RefreshButton.Click -= RefreshButtonClicked;
+                RefreshButton.Click += CancelButton_Click;
+            }
+            else
+            {
+                RefreshButton.Click -= CancelButton_Click;
+                RefreshButton.Click += RefreshButtonClicked;
+            }*/
+
+
+            if (issueCount == 0)
+            {
+                if (completed)
+                {
+                    StatusLabel.Image = Resources.tick_circle;
+                    StatusLabel.Text = RubberduckUI.OK_AllCaps;
+                }
+                else
+                {
+                    StatusLabel.Image = Resources.hourglass;
+                    StatusLabel.Text = RubberduckUI.CodeInspections_Inspecting;
+                }
+            }
+            else
+            {
+                if (completed)
+                {
+                    StatusLabel.Image = Resources.exclamation_diamond;
+                    var resource = issueCount == 1
+                        ? RubberduckUI.CodeInspections_NumberOfIssues_Singular
+                        : RubberduckUI.CodeInspections_NumberOfIssues_Plural;
+                    StatusLabel.Text = string.Format(resource, issueCount);
+                    QuickFixButton.Enabled = QuickFixButton.HasDropDownItems;
+                }
+                else
+                {
+                    StatusLabel.Image = Resources.hourglass;
+                    StatusLabel.Text = string.Format(RubberduckUI.CodeInspections_InspectingIssues_Singular, RubberduckUI.CodeInspections_Inspecting, issueCount, (issueCount != 1 ? "s" : string.Empty));
+                }
+            }
+        }
+
+        public event EventHandler Cancel;
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            var handler = Cancel;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        private int _issueCount;
+        public void EnableRefresh(bool enabled = true)
+        {
+            RefreshButton.Enabled = enabled;
+            QuickFixButton.Enabled = enabled && _issueCount > 0;
         }
 
         public event EventHandler CopyResults;
@@ -89,7 +198,7 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(item);
         }
 
-        private IDictionary<string, Action<VBE>> _availableQuickFixes;
+        private IDictionary<string, Action> _availableQuickFixes;
         private void CodeIssuesGridView_SelectionChanged(object sender, EventArgs e)
         {
             var enableNavigation = (CodeIssuesGridView.SelectedRows.Count != 0);
@@ -147,8 +256,7 @@ namespace Rubberduck.UI.CodeInspections
         {
             var results = inspectionResults.ToList();
 
-            CodeIssuesGridView.DataSource = new BindingList<CodeInspectionResultGridViewItem>(results);
-            CodeIssuesGridView.Refresh();
+            InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(results);
         }
 
         private void GoButton_Click(object sender, EventArgs e)
@@ -192,6 +300,18 @@ namespace Rubberduck.UI.CodeInspections
             toolStrip1.Refresh();
 
             handler(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
+        private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var handler = SortColumn;
+            if (handler == null)
+            {
+                return;
+            }
+
+            handler(this, e);
         }
     }
 }

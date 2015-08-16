@@ -1,11 +1,14 @@
 using System;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Config;
+using Ninject;
+using Ninject.Parameters;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Settings;
+using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
@@ -13,8 +16,7 @@ using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBA;
-using CommandBarButtonClickEvent = Microsoft.Office.Core._CommandBarButtonEvents_ClickEventHandler;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI
 {
@@ -25,44 +27,50 @@ namespace Rubberduck.UI
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
         private readonly RefactorMenu _refactorMenu;
-        private readonly IConfigurationService _configService;
+        private readonly IGeneralConfigService _configService;
+        private readonly IRubberduckParser _parser;
+        private readonly AddIn _addIn;
 
-        //These need to stay in scope for their click events to fire. (32-bit only?)
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _about;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _settings;
-        // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _sourceControl;
 
-        public RubberduckMenu(VBE vbe, AddIn addIn, IConfigurationService configService, IRubberduckParser parser, IInspector inspector)
+        private ProjectExplorerContextMenu _projectExplorerContextMenu;
+
+        public RubberduckMenu(VBE vbe, AddIn addIn, IGeneralConfigService configService, IRubberduckParser parser, IActiveCodePaneEditor editor, IInspector inspector)
             : base(vbe, addIn)
         {
+            _addIn = addIn;
+            _parser = parser;
             _configService = configService;
 
             var testExplorer = new TestExplorerWindow();
             var testEngine = new TestEngine();
-            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine);
+            var testGridViewSort = new GridViewSort<TestExplorerItem>(RubberduckUI.Result, false);
+            var testPresenter = new TestExplorerDockablePresenter(vbe, addIn, testExplorer, testEngine, testGridViewSort);
             _testMenu = new TestMenu(vbe, addIn, testExplorer, testPresenter);
 
             var codeExplorer = new CodeExplorerWindow();
             var codePresenter = new CodeExplorerDockablePresenter(parser, vbe, addIn, codeExplorer);
-            codePresenter.RunAllTests += codePresenter_RunAllTests;
+            codePresenter.RunAllTests += CodePresenterRunAllAllTests;
             codePresenter.RunInspections += codePresenter_RunInspections;
             codePresenter.Rename += codePresenter_Rename;
             codePresenter.FindAllReferences += codePresenter_FindAllReferences;
+            codePresenter.FindAllImplementations += codePresenter_FindAllImplementations;
             _codeExplorerMenu = new CodeExplorerMenu(vbe, addIn, codeExplorer, codePresenter);
 
             var todoSettings = configService.LoadConfiguration().UserSettings.ToDoListSettings;
             var todoExplorer = new ToDoExplorerWindow();
-            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer);
+            var todoGridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
+            var todoPresenter = new ToDoExplorerDockablePresenter(parser, todoSettings.ToDoMarkers, vbe, addIn, todoExplorer, todoGridViewSort);
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
+            var inspectionGridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, inspectionGridViewSort);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
-            _refactorMenu = new RefactorMenu(IDE, AddIn, parser);
+            _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor);
         }
 
         private void codePresenter_FindAllReferences(object sender, NavigateCodeEventArgs e)
@@ -70,9 +78,20 @@ namespace Rubberduck.UI
             _refactorMenu.FindAllReferences(e.Declaration);
         }
 
+        private void codePresenter_FindAllImplementations(object sender, NavigateCodeEventArgs e)
+        {
+            _refactorMenu.FindAllImplementations(e.Declaration);
+        }
+
         private void codePresenter_Rename(object sender, TreeNodeNavigateCodeEventArgs e)
         {
-            _refactorMenu.Rename(e.Node.Tag as Declaration);
+            var declaration = e.Node.Tag as Declaration;
+            if (declaration == null)
+            {
+                return;
+            }
+
+            _refactorMenu.Rename(declaration);
         }
 
         private void codePresenter_RunInspections(object sender, EventArgs e)
@@ -80,7 +99,7 @@ namespace Rubberduck.UI
             _codeInspectionsMenu.Inspect();
         }
 
-        private void codePresenter_RunAllTests(object sender, EventArgs e)
+        private void CodePresenterRunAllAllTests(object sender, EventArgs e)
         {
             _testMenu.RunAllTests();
         }
@@ -90,31 +109,47 @@ namespace Rubberduck.UI
             const int windowMenuId = 30009;
             var menuBarControls = IDE.CommandBars[1].Controls;
             var beforeIndex = FindMenuInsertionIndex(menuBarControls, windowMenuId);
-            var menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
-            Debug.Assert(menu != null, "menu != null");
+            _menu = menuBarControls.Add(MsoControlType.msoControlPopup, Before: beforeIndex, Temporary: true) as CommandBarPopup;
 
-            menu.Caption = "Ru&bberduck";
+            _menu.Caption = RubberduckUI.RubberduckMenu;
 
-            _testMenu.Initialize(menu.Controls);
-            _codeExplorerMenu.Initialize(menu);
-            _refactorMenu.Initialize(menu.Controls);
-            _todoItemsMenu.Initialize(menu);
-            _codeInspectionsMenu.Initialize(menu);
+            _testMenu.Initialize(_menu.Controls);
+            _codeExplorerMenu.Initialize(_menu);
+            _refactorMenu.Initialize(_menu.Controls);
+            _todoItemsMenu.Initialize(_menu);
+            _codeInspectionsMenu.Initialize(_menu);
 
-            // note: disabled for 1.21 release (RepositoryNotFoundException on click)
-            //_sourceControl = AddButton(menu, "Source Control", false, OnSourceControlClick);
-            _settings = AddButton(menu, "&Options", true, OnOptionsClick);
-            _about = AddButton(menu, "&About...", true, OnAboutClick);
+            _sourceControl = AddButton(_menu, RubberduckUI.RubberduckMenu_SourceControl, false, OnSourceControlClick);
+            _settings = AddButton(_menu, RubberduckUI.RubberduckMenu_Options, true, OnOptionsClick);
+            _about = AddButton(_menu, RubberduckUI.RubberduckMenu_About, true, OnAboutClick);
+
+            _projectExplorerContextMenu = new ProjectExplorerContextMenu(IDE, _addIn, _parser);
+            _projectExplorerContextMenu.Initialize();
+            _projectExplorerContextMenu.RunInspections += codePresenter_RunInspections;
+            _projectExplorerContextMenu.FindReferences += codePresenter_FindAllReferences;
+            _projectExplorerContextMenu.FindImplementations += codePresenter_FindAllImplementations;
+            _projectExplorerContextMenu.RunAllTests += CodePresenterRunAllAllTests;
         }
 
+        private SourceControlPresenter _sourceControlPresenter;
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnSourceControlClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            using (var window = new DummyGitView(IDE.ActiveVBProject))
+            if (_sourceControlPresenter == null)
             {
-                window.ShowDialog();
+                var kernel = new StandardKernel(new SourceControlBindings());
+                var vbeArg = new ConstructorArgument("vbe", this.IDE);
+                var addinArg = new ConstructorArgument("addin", this.AddIn);
+
+                _sourceControlPresenter = kernel.Get<SourceControlPresenter>(vbeArg, addinArg);
             }
+
+            _sourceControlPresenter.Show();
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnOptionsClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _SettingsDialog(_configService))
@@ -123,6 +158,8 @@ namespace Rubberduck.UI
             }
         }
 
+        //I'm not the one with the bad name, MS is. Signature must match delegate definition.
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnAboutClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             using (var window = new _AboutWindow())
@@ -131,43 +168,55 @@ namespace Rubberduck.UI
             }
         }
 
-        bool _disposed;
+        private bool _disposed;
+        private CommandBarPopup _menu;
+
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (_disposed || !disposing)
             {
                 return;
             }
 
-            if (disposing)
+            if (_projectExplorerContextMenu != null)
             {
-                if (_todoItemsMenu != null)
-                {
-                    _todoItemsMenu.Dispose();
-                }
-
-                if (_refactorMenu != null)
-                {
-                    _refactorMenu.Dispose();
-                }
-
-                if (_codeExplorerMenu != null)
-                {
-                    _codeExplorerMenu.Dispose();
-                }
-                if (_testMenu != null)
-                {
-                    _testMenu.Dispose();
-                }
-                if (_codeInspectionsMenu != null)
-                {
-                    _codeInspectionsMenu.Dispose();
-                }
+                _projectExplorerContextMenu.Dispose();
             }
 
-            _disposed = true;
+            if (_todoItemsMenu != null)
+            {
+                _todoItemsMenu.Dispose();
+            }
 
-            base.Dispose(disposing);
+            if (_refactorMenu != null)
+            {
+                _refactorMenu.Dispose();
+            }
+
+            if (_codeExplorerMenu != null)
+            {
+                _codeExplorerMenu.Dispose();
+            }
+
+            if (_testMenu != null)
+            {
+                _testMenu.Dispose();
+            }
+
+            if (_codeInspectionsMenu != null)
+            {
+                _codeInspectionsMenu.Dispose();
+            }
+
+            _about.Click -= OnAboutClick;
+            _settings.Click -= OnOptionsClick;
+            _sourceControl.Click -= OnSourceControlClick;
+
+            var menuBarControls = IDE.CommandBars[1].Controls;
+            menuBarControls.Parent.FindControl(_menu.Type, _menu.Id, _menu.Tag, _menu.Visible).Delete();
+
+            _disposed = true;
+            base.Dispose(true);
         }
     }
 }

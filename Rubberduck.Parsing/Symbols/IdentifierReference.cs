@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -93,6 +92,12 @@ namespace Rubberduck.Parsing.Symbols
                 token = null;
                 return false;
             }
+        }
+
+        public bool IsSelectedReference(QualifiedSelection selection)
+        {
+            return QualifiedModuleName == selection.QualifiedName &&
+                   Selection.ContainsFirstCharacter(selection.Selection);
         }
     }
 }

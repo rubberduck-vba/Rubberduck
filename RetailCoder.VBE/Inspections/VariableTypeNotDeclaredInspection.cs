@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -13,7 +13,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames._TypeNotDeclared_; } }
+        public string Name { get { return "VariableTypeNotDeclaredInspection"; } }
+        public string Description { get { return RubberduckUI._TypeNotDeclared_; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant
                             || item.DeclarationType == DeclarationType.Parameter)
                          && !item.IsTypeSpecified()
-                         select new VariableTypeNotDeclaredInspectionResult(string.Format(Name, item.DeclarationType, item.IdentifierName), Severity, item.Context, item.QualifiedName.QualifiedModuleName);
+                         select new VariableTypeNotDeclaredInspectionResult(string.Format(Description, item.DeclarationType, item.IdentifierName), Severity, ((dynamic)item.Context).ambiguousIdentifier(), item.QualifiedName.QualifiedModuleName);
 
             return issues;
         }

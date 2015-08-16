@@ -1,0 +1,1102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="DeclarationType_Class" xml:space="preserve">
+    <value>klass</value>
+  </data>
+  <data name="DeclarationType_Constant" xml:space="preserve">
+    <value>konstant</value>
+  </data>
+  <data name="DeclarationType_Enumeration" xml:space="preserve">
+    <value>enum</value>
+  </data>
+  <data name="DeclarationType_EnumerationMember" xml:space="preserve">
+    <value>enum medlem</value>
+  </data>
+  <data name="DeclarationType_Event" xml:space="preserve">
+    <value>händelse</value>
+  </data>
+  <data name="DeclarationType_Function" xml:space="preserve">
+    <value>funktion</value>
+  </data>
+  <data name="DeclarationType_LibraryFunction" xml:space="preserve">
+    <value>extern funktion</value>
+  </data>
+  <data name="DeclarationType_Module" xml:space="preserve">
+    <value>modul</value>
+  </data>
+  <data name="DeclarationType_Parameter" xml:space="preserve">
+    <value>parameter</value>
+  </data>
+  <data name="DeclarationType_Procedure" xml:space="preserve">
+    <value>procedur</value>
+  </data>
+  <data name="DeclarationType_PropertyGet" xml:space="preserve">
+    <value>egenskap get åtkommare</value>
+  </data>
+  <data name="DeclarationType_PropertyLet" xml:space="preserve">
+    <value>egenskap let åtkommare</value>
+  </data>
+  <data name="DeclarationType_PropertySet" xml:space="preserve">
+    <value>egenskap set åtkommare</value>
+  </data>
+  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
+    <value>användardefinerad typ</value>
+  </data>
+  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
+    <value>användardefinerad typsmedlem</value>
+  </data>
+  <data name="DeclarationType_Variable" xml:space="preserve">
+    <value>variabel</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>Namn:</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="RenameDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Byt namn</value>
+  </data>
+  <data name="RenameDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Vänligen ange nytt namn för {0} '{1}'.</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
+  </data>
+  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
+    <value>Kunde inte byta namn på modul.</value>
+  </data>
+  <data name="RenameDialog_TitleText" xml:space="preserve">
+    <value>Byt namn på identifierare</value>
+  </data>
+  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
+    <value>Generella inställningar</value>
+  </data>
+  <data name="SettingsCaption_CodeInspections" xml:space="preserve">
+    <value>Inspektions inställningar</value>
+  </data>
+  <data name="SettingsCaption_ToDoSettings" xml:space="preserve">
+    <value>"TODO"-markörer inställningar</value>
+  </data>
+  <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
+    <value>Inställningar för inspektionsnivå känslighet. Använd "DoNotShow" för att inaktivera en inspektion.</value>
+  </data>
+  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
+    <value>Klicka [Ok] för att stänga fönstret och verkställa ändringar, eller [Avbryt] för att kassera ändringar.</value>
+  </data>
+  <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
+    <value>Ställ in markörer som ska bli igenkända i kommentarer.</value>
+  </data>
+  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
+    <value>Kunde inte byta namn på projektet.</value>
+  </data>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>projektet</value>
+  </data>
+  <data name="DeclarationType_LineLabel" xml:space="preserve">
+    <value>radnummer text</value>
+  </data>
+  <data name="CodeInspections_Inspecting" xml:space="preserve">
+    <value>Inspekterar..</value>
+  </data>
+  <data name="ExtractMethod_OutputNone" xml:space="preserve">
+    <value>(ingen)</value>
+  </data>
+  <data name="Parsing" xml:space="preserve">
+    <value>(tolkar...)</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Ändra ordning på parametrar</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Markera en parameter och drag eller använd knapparna för att flytta upp och ner.</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveDownButtonText" xml:space="preserve">
+    <value>Flytta ned</value>
+  </data>
+  <data name="ReorderParamsDialog_MoveUpButtonText" xml:space="preserve">
+    <value>Flytta upp</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Ändra ordning på parametrar</value>
+  </data>
+  <data name="DeclarationType_Control" xml:space="preserve">
+    <value>kontroll</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Frivilliga parametrar måste specifieras i slutet av parameterlistan.</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>Metoden '{0}' har färre än två parametrar.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>Inga referenser hittades för identifieraren '{0}'.</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>En ParamArray parameter måste specifieras sist.</value>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>Metoden '{0}' har inga parametrar.</value>
+    <comment>0: Selected target</comment>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>Alla referenser: '{0}'</value>
+  </data>
+  <data name="RemoveParamsDialog_TitleText" xml:space="preserve">
+    <value>Ta bort parametrar</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoden '{0}' implementerar '{1}.{2}'. Ändra signaturen på metoden i gränssnittet? (denna ändring propagerar till alla implementationer)</value>
+    <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Kan inte ta bort sista parametern från en setter eller getter.</value>
+  </data>
+  <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
+    <value>Markeringen är inte giltig.</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>Åtkomst:</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahera metod</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>Vänligen specifiera metodnamn, returtyp och/eller parametrar (om applicerbart).</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>Parametrar:</value>
+  </data>
+  <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
+    <value>Förhandsgranskning:</value>
+  </data>
+  <data name="ExtractMethod_ReturnLabel" xml:space="preserve">
+    <value>Returnera:</value>
+  </data>
+  <data name="ExtractMethod_SetBoxLabel" xml:space="preserve">
+    <value>Sätt</value>
+  </data>
+  <data name="ExtractMethod_TitleText" xml:space="preserve">
+    <value>Extrahera metod</value>
+  </data>
+  <data name="AllImplementations_NoneFound" xml:space="preserve">
+    <value>Klass eller medlem '{0}' är inte implementerad.</value>
+  </data>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Hitta alla referenser...</value>
+  </data>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>Hitta &amp;symbol...</value>
+  </data>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>Gå till &amp;implementering...</value>
+  </data>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>Extrahera &amp;metod</value>
+  </data>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>Ta bort &amp;parametrar</value>
+  </data>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>Byt &amp;namn</value>
+  </data>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>Ändra ordning på &amp;parametrar</value>
+  </data>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Ru&amp;bberduck</value>
+  </data>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;Om...</value>
+  </data>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>Kod &amp;utforskare</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>Inspe&amp;ktioner</value>
+  </data>
+  <data name="RubberduckMenu_Options" xml:space="preserve">
+    <value>&amp;Inställningar</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Refaktorera</value>
+  </data>
+  <data name="RubberduckMenu_SourceControl" xml:space="preserve">
+    <value>&amp;Källkontroll</value>
+  </data>
+  <data name="RubberduckMenu_ToDoItems" xml:space="preserve">
+    <value>Lista över To&amp;Do</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>Enhets&amp;tester</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>Kö&amp;r alla tester</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>Test&amp;utforskare</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (tolkar...)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problems hittades.
+</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Hem</value>
+  </data>
+  <data name="Inspections_ChangeGlobalAccessModifierToPublic" xml:space="preserve">
+    <value>Ersätt åtkomstmodifieraren 'Global' med 'Public'</value>
+  </data>
+  <data name="Inspections_ConvertFunctionToProcedure" xml:space="preserve">
+    <value>Konvertera funktion till procedur</value>
+  </data>
+  <data name="Inspections_DeclareAsExplicitVariant" xml:space="preserve">
+    <value>Deklarera som explicit Variant</value>
+  </data>
+  <data name="Inspections_IntroduceLocalVariable" xml:space="preserve">
+    <value>Introducera lokal variabel</value>
+  </data>
+  <data name="Inspections_PassParamByReference" xml:space="preserve">
+    <value>Skicka parameter som referens</value>
+  </data>
+  <data name="Inspections_PassParamByRefExplicitly" xml:space="preserve">
+    <value>Skicka parameter som referens explicit</value>
+  </data>
+  <data name="Inspections_PassParamByValue" xml:space="preserve">
+    <value>Skicka parameter som värde</value>
+  </data>
+  <data name="Inspections_RemoveComment" xml:space="preserve">
+    <value>Ta bort kommentar</value>
+  </data>
+  <data name="Inspections_RemoveObsoleteStatement" xml:space="preserve">
+    <value>Ta bort föråldrat kommando</value>
+  </data>
+  <data name="Inspections_RemoveTypeHints" xml:space="preserve">
+    <value>Ta bort typ-hint</value>
+  </data>
+  <data name="Inspections_RemoveUnassignedVariable" xml:space="preserve">
+    <value>Ta bort otilldelad variabel</value>
+  </data>
+  <data name="Inspections_RemoveUnusedDeclaration" xml:space="preserve">
+    <value>Ta bort oanvänd dekleration</value>
+  </data>
+  <data name="Inspections_RemoveUnusedParameter" xml:space="preserve">
+    <value>Ta bort oanvänd parameter</value>
+  </data>
+  <data name="Inspections_RemoveUsageBreaksCode" xml:space="preserve">
+    <value>Ta bort användning (gör koden trasig)</value>
+  </data>
+  <data name="Inspections_ReplaceRemWithSingleQuoteMarker" xml:space="preserve">
+    <value>Ersät 'Rem' instruktion med en apostrof</value>
+  </data>
+  <data name="Inspections_ReturnExplicitVariant" xml:space="preserve">
+    <value>Returnera explicit Variant</value>
+  </data>
+  <data name="Inspections_SpecifyPublicModifierExplicitly" xml:space="preserve">
+    <value>Specifiera Public åtkomstmodifierare explicit</value>
+  </data>
+  <data name="Inspections_SplitDeclarations" xml:space="preserve">
+    <value>Separera multipla deklerationer till multipla instruktioner</value>
+  </data>
+  <data name="Inspections_UnassignedVariableToDo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Ett fel uppstod vid laddning av konfigurationen för Gummiankan.</value>
+  </data>
+  <data name="ParseProgress" xml:space="preserve">
+    <value>Tolkar '{0}'...</value>
+  </data>
+  <data name="ParseStarted" xml:space="preserve">
+    <value>Tolkar projektkomponenter...</value>
+  </data>
+  <data name="PromptLoadDefaultConfig" xml:space="preserve">
+    <value>{0}
+{1}
+
+{2}
+
+Vill du återställa standardinställningarna?
+Varning: Alla anpassade inställningar kommer att försvinna.    Din gamla fil kommer att bli sparad i '{3}'.</value>
+  </data>
+  <data name="ResolutionProgress" xml:space="preserve">
+    <value>Löser '{0}'...</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Ett fel uppstod vid laddning av Rubberduck.</value>
+  </data>
+  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+    <value>Version {0} ({1})</value>
+    <comment>0: Version; 1: ProcessorArchitecture</comment>
+  </data>
+  <data name="ToDoMarkerBug" xml:space="preserve">
+    <value>BUG:</value>
+  </data>
+  <data name="ToDoMarkerNote" xml:space="preserve">
+    <value>NOTE:</value>
+  </data>
+  <data name="ToDoMarkerToDo" xml:space="preserve">
+    <value>TODO:</value>
+  </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>Implementationer av '{0}'</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} problems)</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Navigera till föregående problem</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Kör inspektioner</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>Fix</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Nästa</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Parameter" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Passerade</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Föregående</value>
+  </data>
+  <data name="Severity" xml:space="preserve">
+    <value>Allvarlighetsgrad</value>
+  </data>
+  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
+    <value>Skapa ett nytt 'repository'</value>
+  </data>
+  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
+    <value>Öppna arbetskatalog</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} Misslyckades</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Icke-avgörande</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} Lyckade</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Inspections_DeclarationOf" xml:space="preserve">
+    <value>deklaration av</value>
+  </data>
+  <data name="Inspections_UsageOf" xml:space="preserve">
+    <value>användning av</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Två eller fler projekt som innehåller testmetoder har samma namn och identisk namngivna tester. Vänligen byt namn på ett test för att fortsätta.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Testutforskare</value>
+  </data>
+  <data name="ToDoExplorer_Caption" xml:space="preserve">
+    <value>"TODO" utforskare</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Varning</value>
+  </data>
+  <data name="ByValParameterIsAssigned_" xml:space="preserve">
+    <value>ByVal parameter '{0}', är tilldelad</value>
+  </data>
+  <data name="ConstantNotUsed_" xml:space="preserve">
+    <value>Konstanten '{0}' används aldrig</value>
+  </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>Du har förtjänat "Fortsättare" medaljen!</value>
+  </data>
+  <data name="FunctionNotUsed_" xml:space="preserve">
+    <value>Funktionen '{0}' används aldrig</value>
+  </data>
+  <data name="ImplicitByRef_" xml:space="preserve">
+    <value>Parametern '{0}' skickas som ByRef implicit</value>
+  </data>
+  <data name="ImplicitPublicMember_" xml:space="preserve">
+    <value>Medlemmen '{0}' är implicit publik</value>
+  </data>
+  <data name="ImplicitVariantReturnType_" xml:space="preserve">
+    <value>Functionen '{0}' återger en Variant implicit</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Modulinställningar ska specifieras först</value>
+  </data>
+  <data name="MultilineParameter_" xml:space="preserve">
+    <value>Parametern '{0}' är deklarerad på flera rader</value>
+  </data>
+  <data name="MultipleDeclarations" xml:space="preserve">
+    <value>Instruktionen innehåller flera deklarationer</value>
+  </data>
+  <data name="NonReturningFunction_" xml:space="preserve">
+    <value>Returvärdet för medlemmen '{0}' är aldrig tilldelat</value>
+  </data>
+  <data name="ObsoleteCall" xml:space="preserve">
+    <value>Användning av föråldrat Call-anrop</value>
+  </data>
+  <data name="ObsoleteComment" xml:space="preserve">
+    <value>Användning av föråldrad Rem kommentarssyntax</value>
+  </data>
+  <data name="ObsoleteGlobal" xml:space="preserve">
+    <value>Användning av föråldrad Global åtkomstmodifierare</value>
+  </data>
+  <data name="ObsoleteLet" xml:space="preserve">
+    <value>Användning av föråldrad Let instruktion</value>
+  </data>
+  <data name="OptionBase" xml:space="preserve">
+    <value>Möjlig förväxling av undre gränsvärde för array</value>
+  </data>
+  <data name="OptionExplicit" xml:space="preserve">
+    <value>Explicit inställning är inte specifierad</value>
+  </data>
+  <data name="ParameterCanBeByVal_" xml:space="preserve">
+    <value>Parametern '{0}' kan skickas som värde</value>
+  </data>
+  <data name="ParameterNotUsed_" xml:space="preserve">
+    <value>Parametern '{0}' används inte</value>
+  </data>
+  <data name="ProcedureNotUsed_" xml:space="preserve">
+    <value>Proceduren '{0}' anropas aldrig</value>
+  </data>
+  <data name="UnassignedVariableUsage_" xml:space="preserve">
+    <value>Användning av icke tilldelad variabel '{0}'</value>
+  </data>
+  <data name="VariableNotAssigned_" xml:space="preserve">
+    <value>Variabeln '{0}' tilldelas aldrig ett värde</value>
+  </data>
+  <data name="VariableNotUsed_" xml:space="preserve">
+    <value>Variabeln '{0}' används aldrig</value>
+  </data>
+  <data name="_ObsoleteTypeHint_" xml:space="preserve">
+    <value>Användning av föråldrad typ-hint {0} '{1}'</value>
+  </data>
+  <data name="_TypeNotDeclared_" xml:space="preserve">
+    <value>{0} '{1}' är implicit Variant</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Prioritet</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>Komponent</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultat</value>
+  </data>
+  <data name="Outcome" xml:space="preserve">
+    <value>Utfall</value>
+  </data>
+  <data name="Settings_LanguageLabel" xml:space="preserve">
+    <value>Språk:</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Engelska</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Franska</value>
+  </data>
+  <data name="Language_SV" xml:space="preserve">
+    <value>Svenska</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Ta bort parametrar</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Välj en parameter och dubbelklicka på den eller använd knapparna för att ta bort eller återställa den.</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Återställ</value>
+  </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Fel vid tolkning</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Lägg till</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Ändra</value>
+  </data>
+  <data name="CodeExplorer_AddClassText" xml:space="preserve">
+    <value>&amp;Klassmodul (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>Användar&amp;formulär</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>&amp;Standardmodul (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>&amp;Testmodul</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>Visa medlems&amp;namn</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>Visa fullständiga &amp;signaturer</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>Hitta alla implementationer...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>Hitta alla referenser...</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>Inspektera</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>Navigera</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Uppdatera</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Byt namn</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>Kör alla tester</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerText" xml:space="preserve">
+    <value>Visa designer</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>Öppna designer</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Aktivera/inaktivera mappar</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Inspektioner</value>
+  </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>Kopiera inspektionsresultat till urklipp</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Gå</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Navigera till markerat problem</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Modulnamn</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>Projektnamn</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Navigera till nästa problem</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Applicera lösning</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Kör inspektioner igen</value>
+  </data>
+  <data name="TodoExplorer_Description" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="TodoExplorer_LineNumber" xml:space="preserve">
+    <value>Radnummer</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>Rubberduck Inställningar</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>&amp;Lägg till</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Testmetod (förvändade &amp;fel)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>&amp;Testmetod</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Test&amp;modul</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Varaktighet</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Navigera till markering</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Meddelande</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Metodnamn</value>
+  </data>
+  <data name="TestExplorer_QualifiedMemberName" xml:space="preserve">
+    <value>Kvalificerat medlemsnamn</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>Kör alla &amp;tester</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>&amp;Kör</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>Kör &amp;misslyckade tester</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>&amp;Repetera senast körning</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>&amp;icke körda tester</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>&amp;Lyckade tester</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>Markera&amp;de tester</value>
+  </data>
+  <data name="GenericProjectName_" xml:space="preserve">
+    <value>Projektet '{0}' har ett generellt namn</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>"TODO" markörer</value>
+  </data>
+  <data name="TodoSettings_PriorityLabel" xml:space="preserve">
+    <value>Prioritet:</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Lista:</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Problem med kodkvalitet</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Språkmöjligheter</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Problem med läsbarhet och underhållning</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} problems</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>Rad</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>projektet</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Ny</value>
+  </data>
+  <data name="Settings_ResetSettings" xml:space="preserve">
+    <value>Återställ</value>
+  </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>Återställ standardinställningarna?</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>Kodutforskare</value>
+  </data>
+  <data name="About_AllContributors" xml:space="preserve">
+    <value>Alla bidrag till vårt GitHub repository</value>
+  </data>
+  <data name="About_Anyone" xml:space="preserve">
+    <value>...och alla som läser detta!</value>
+  </data>
+  <data name="About_Attributions" xml:space="preserve">
+    <value>Attributioner</value>
+  </data>
+  <data name="About_Blogs" xml:space="preserve">
+    <value>Bloggar:</value>
+  </data>
+  <data name="About_Caption" xml:space="preserve">
+    <value>Om Rubberduck</value>
+  </data>
+  <data name="About_CodeReview" xml:space="preserve">
+    <value>Code Review Stack Exchange</value>
+  </data>
+  <data name="About_Community" xml:space="preserve">
+    <value>Gemenskap:</value>
+  </data>
+  <data name="About_Contributors" xml:space="preserve">
+    <value>Bidragare &amp; supportrar:</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>© Copyright 2014-2015 Mathieu Guindon &amp; Christopher McClellan</value>
+  </data>
+  <data name="About_FugueIconCredit" xml:space="preserve">
+    <value>Fuga ikoner av Yusuke Kamiyamane</value>
+  </data>
+  <data name="About_JetBrains" xml:space="preserve">
+    <value>JetBrains ReSharper Community Team</value>
+  </data>
+  <data name="About_LibGit2SharpCredit" xml:space="preserve">
+    <value>GitHub integration driven av LibGit2Sharp</value>
+  </data>
+  <data name="About_ParsingCredit" xml:space="preserve">
+    <value>Tolkare gjord av ANTLR</value>
+  </data>
+  <data name="About_SpecialThanks" xml:space="preserve">
+    <value>Särskilt tack</value>
+  </data>
+  <data name="About_StackOverflow" xml:space="preserve">
+    <value>Stack Overflow</value>
+  </data>
+  <data name="About_Stargazers" xml:space="preserve">
+    <value>Alla som stjärnmärkt, gillat &amp; och följt oss, för den varma känslan det ger oss</value>
+  </data>
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
+    <value>Källkontroll</value>
+  </data>
+  <data name="SourceControl_AttributesFile" xml:space="preserve">
+    <value>Attributfil</value>
+  </data>
+  <data name="SourceControl_Branches" xml:space="preserve">
+    <value>Grenar</value>
+  </data>
+  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="SourceControl_Changes" xml:space="preserve">
+    <value>Ändringar</value>
+  </data>
+  <data name="SourceControl_Commit" xml:space="preserve">
+    <value>Commita</value>
+  </data>
+  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
+    <value>Commit meddelande:</value>
+  </data>
+  <data name="SourceControl_CommitPush" xml:space="preserve">
+    <value>Commita och Pusha</value>
+  </data>
+  <data name="SourceControl_CommitSync" xml:space="preserve">
+    <value>Commita och Synkronisera</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
+    <value>Rubberduck - Skapa Gren</value>
+  </data>
+  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
+    <value>Grenar:</value>
+  </data>
+  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
+    <value>Standardplats för Repository</value>
+  </data>
+  <data name="SourceControl_DestinationLabel" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
+    <value>E-post Adress</value>
+  </data>
+  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
+    <value>Exkluderade ändringar</value>
+  </data>
+  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
+    <value>Hämta</value>
+  </data>
+  <data name="SourceControl_GlobalSettings" xml:space="preserve">
+    <value>Globala Inställningar</value>
+  </data>
+  <data name="SourceControl_IgnoreFile" xml:space="preserve">
+    <value>Ignorera Fil</value>
+  </data>
+  <data name="SourceControl_IncludedChanges" xml:space="preserve">
+    <value>Inkluderade ändringar</value>
+  </data>
+  <data name="SourceControl_IncomingCommits" xml:space="preserve">
+    <value>Inkommande commits</value>
+  </data>
+  <data name="SourceControl_InitRepoButtonToolTip" xml:space="preserve">
+    <value>Initiera nytt Repo från detta Projekt</value>
+  </data>
+  <data name="SourceControl_MergeBranch" xml:space="preserve">
+    <value>Mergea</value>
+  </data>
+  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
+    <value>Rubberduck - Merge</value>
+  </data>
+  <data name="SourceControl_NewBranch" xml:space="preserve">
+    <value>Ny Gren</value>
+  </data>
+  <data name="SourceControl_OpenWorkingFolderToolTip" xml:space="preserve">
+    <value>Öppna arbetskatalog</value>
+  </data>
+  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
+    <value>Utgående commits</value>
+  </data>
+  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
+    <value>Publicerade Grenar</value>
+  </data>
+  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
+    <value>Uppdaterar oavslutade ändringar</value>
+  </data>
+  <data name="SourceControl_RespositorySettings" xml:space="preserve">
+    <value>Repository Inställningar</value>
+  </data>
+  <data name="SourceControl_Settings" xml:space="preserve">
+    <value>Inställningar</value>
+  </data>
+  <data name="SourceControl_SourceLabel" xml:space="preserve">
+    <value>Källa</value>
+  </data>
+  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
+    <value>Synkronisera</value>
+  </data>
+  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
+    <value>Opublicerade Grenar</value>
+  </data>
+  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
+    <value>Osynkroniserade commits</value>
+  </data>
+  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
+    <value>Ej spårade filer</value>
+  </data>
+  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
+    <value>Uppdatera</value>
+  </data>
+  <data name="SourceControl_UserNameLabel" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>Byt &amp;namn</value>
+  </data>
+  <data name="CodeExplorer_Inspect" xml:space="preserve">
+    <value>&amp;Inspektera</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>Na&amp;vigera</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>&amp;Ny</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>Uppdat&amp;era</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Namnbyte till '{0}' krockar med '{1}' i samma utrymme.
+Är du säker på att du vill fortsätta med denna namnbytning?</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
+    <value>Vänligen specifiera grennamn.</value>
+  </data>
+  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
+    <value>Ny Gren</value>
+  </data>
+  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
+    <value>Vänligen välj käll- och destinationsgren.</value>
+  </data>
+  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
+    <value>Mergea grenar</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Visa Inte</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Tips</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Förslag</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Varning</value>
+  </data>
+  <data name="SourceControl_NoRepoFound" xml:space="preserve">
+    <value>Inget repository hittat.</value>
+  </data>
+  <data name="ToDoPriority_High" xml:space="preserve">
+    <value>Hög</value>
+  </data>
+  <data name="ToDoPriority_Low" xml:space="preserve">
+    <value>Låg</value>
+  </data>
+  <data name="ToDoPriority_Medium" xml:space="preserve">
+    <value>Medel</value>
+  </data>
+  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
+    <value>Lyckades slå ihop {0} in i {1}</value>
+  </data>
+  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
+    <value>Rubberduck - Ta bort gren</value>
+  </data>
+  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
+    <value>Vänligen ange grennamn.</value>
+  </data>
+  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
+    <value>Ta bort gren</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} problem)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Gummianka Inspektioner - {0} 
+{1} problem hittades.</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} problem</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Priority" xml:space="preserve">
+    <value>Prioritet</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+</root>

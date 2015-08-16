@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -22,11 +21,11 @@ namespace Rubberduck.Inspections
             _declaration = declaration;
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
-            return new Dictionary<string, Action<VBE>>
+            return new Dictionary<string, Action>
             {
-                { "Remove type hints", RemoveTypeHints }
+                { RubberduckUI.Inspections_RemoveTypeHints, RemoveTypeHints }
             };
         }
 
@@ -40,7 +39,7 @@ namespace Rubberduck.Inspections
             { "$", Tokens.String }
         };
 
-        private void RemoveTypeHints(VBE vbe)
+        private void RemoveTypeHints()
         {
             string hint;
             if (_declaration.HasTypeHint(out hint))

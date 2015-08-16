@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI
 {
     partial class _AboutWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -79,7 +82,8 @@
             "@Duga SE chat bot",
             "Francis Veilleux-Gaboury",
             "Frank Van Heeswijk",
-            "@Hosch250",
+            "@Heslacher",
+            "Jeroen Vannevel dos Sànchez di Castello du Aragon de Pompidou",
             "@mjolka",
             "Philip Wales",
             "Rob Bovey",
@@ -107,7 +111,7 @@
             this.OfficialWebsiteLinkLabel.ForeColor = System.Drawing.Color.DimGray;
             this.OfficialWebsiteLinkLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.OfficialWebsiteLinkLabel.LinkColor = System.Drawing.Color.DimGray;
-            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(12, 125);
+            this.OfficialWebsiteLinkLabel.Location = new System.Drawing.Point(12, 126);
             this.OfficialWebsiteLinkLabel.Name = "OfficialWebsiteLinkLabel";
             this.OfficialWebsiteLinkLabel.Size = new System.Drawing.Size(156, 17);
             this.OfficialWebsiteLinkLabel.TabIndex = 2;
@@ -210,9 +214,9 @@
             this.AttributionsList.ForeColor = System.Drawing.Color.DimGray;
             this.AttributionsList.FormattingEnabled = true;
             this.AttributionsList.Items.AddRange(new object[] {
-            "Parsing powered by ANTLR",
-            "GitHub integration powered by LibGit2Sharp",
-            "Fugue icons by Yusuke Kamiyamane"});
+            global::Rubberduck.UI.RubberduckUI.About_ParsingCredit,
+            global::Rubberduck.UI.RubberduckUI.About_LibGit2SharpCredit,
+            global::Rubberduck.UI.RubberduckUI.About_FugueIconCredit});
             this.AttributionsList.Location = new System.Drawing.Point(187, 74);
             this.AttributionsList.Name = "AttributionsList";
             this.AttributionsList.SelectionMode = System.Windows.Forms.SelectionMode.None;
@@ -260,18 +264,18 @@
 
         #endregion
 
-        private System.Windows.Forms.Label AppVersionLabel;
-        private System.Windows.Forms.ListBox SpecialThanksList;
-        private System.Windows.Forms.LinkLabel OfficialWebsiteLinkLabel;
-        private System.Windows.Forms.PictureBox TwitterIcon;
-        private System.Windows.Forms.PictureBox FacebookIcon;
-        private System.Windows.Forms.PictureBox GitHubIcon;
-        private System.Windows.Forms.PictureBox GooglePlusIcon;
-        private System.Windows.Forms.Button CloseButton;
-        private System.Windows.Forms.Label CopyrightLabel;
-        private System.Windows.Forms.Label AttributionsLabel;
-        private System.Windows.Forms.Label SpecialThanksLabel;
-        private System.Windows.Forms.ListBox AttributionsList;
+        private Label AppVersionLabel;
+        private ListBox SpecialThanksList;
+        private LinkLabel OfficialWebsiteLinkLabel;
+        private PictureBox TwitterIcon;
+        private PictureBox FacebookIcon;
+        private PictureBox GitHubIcon;
+        private PictureBox GooglePlusIcon;
+        private Button CloseButton;
+        private Label CopyrightLabel;
+        private Label AttributionsLabel;
+        private Label SpecialThanksLabel;
+        private ListBox AttributionsList;
 
     }
 }

@@ -1,16 +1,32 @@
-﻿using System.CodeDom;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class Declarations
     {
         private readonly ConcurrentBag<Declaration> _declarations = new ConcurrentBag<Declaration>();
+
+        public static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
+
+        public static readonly DeclarationType[] PropertyTypes =
+        {
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
 
         /// <summary>
         /// Adds specified declaration to available lookups.
@@ -50,16 +66,59 @@ namespace Rubberduck.Parsing.Symbols
                 && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
 
-        private static readonly DeclarationType[] ProcedureTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
+        private IEnumerable<Declaration> _interfaces;
         private IEnumerable<Declaration> _interfaceMembers;
+
+        /// <summary>
+        /// Gets the <see cref="Declaration"/> of the specified <see cref="type"/>, 
+        /// at the specified <see cref="selection"/>.
+        /// Returns the declaration if selection is on an identifier reference.
+        /// </summary>
+        public Declaration FindSelectedDeclaration(QualifiedSelection selection, DeclarationType type, Func<Declaration, Selection> selector = null)
+        {
+            return FindSelectedDeclaration(selection, new[] {type}, selector);
+        }
+
+        public Declaration FindSelectedDeclaration(QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration,Selection> selector = null)
+        {
+            var userDeclarations = _declarations.Where(item => !item.IsBuiltIn);
+            var declarations = userDeclarations.Where(item => types.Contains(item.DeclarationType)
+                && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
+
+            var declaration = declarations.SingleOrDefault(item => 
+                selector == null
+                    ? item.Selection.Contains(selection.Selection)
+                    : selector(item).Contains(selection.Selection));
+
+            if (declaration != null)
+            {
+                return declaration;
+            }
+
+            // if we haven't returned yet, then we must be on an identifier reference.
+            declaration = _declarations.SingleOrDefault(item => !item.IsBuiltIn
+                && types.Contains(item.DeclarationType)
+                && item.References.Any(reference =>
+                reference.QualifiedModuleName == selection.QualifiedName
+                && reference.Selection.Contains(selection.Selection)));
+
+            return declaration;
+        }
+
+        public IEnumerable<Declaration> FindInterfaces()
+        {
+            if (_interfaces != null)
+            {
+                return _interfaces;
+            }
+
+            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
+            _interfaces = classes.Where(item => item.References.Any(reference =>
+                reference.Context.Parent is VBAParser.ImplementsStmtContext))
+                .ToList();
+
+            return _interfaces;
+        }
 
         /// <summary>
         /// Finds all interface members.
@@ -71,12 +130,7 @@ namespace Rubberduck.Parsing.Symbols
                 return _interfaceMembers;
             }
 
-            var classes = _declarations.Where(item => item.DeclarationType == DeclarationType.Class);
-            var interfaces = classes.Where(item => item.References.Any(reference =>
-                reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                .Select(i => i.Scope)
-                .ToList();
-
+            var interfaces = FindInterfaces().Select(i => i.Scope).ToList();
             _interfaceMembers = _declarations.Where(item => !item.IsBuiltIn 
                                                 && ProcedureTypes.Contains(item.DeclarationType)
                                                 && interfaces.Any(i => item.ParentScope.StartsWith(i)))
@@ -166,6 +220,12 @@ namespace Rubberduck.Parsing.Symbols
             return _interfaceImplementationMembers;
         }
 
+        public IEnumerable<Declaration> FindInterfaceImplementationMembers(string interfaceMember)
+        {
+            return FindInterfaceImplementationMembers()
+                .Where(m => m.IdentifierName.EndsWith(interfaceMember));
+        }
+
         public Declaration FindInterfaceMember(Declaration implementation)
         {
             var members = FindInterfaceMembers();
@@ -174,6 +234,67 @@ namespace Rubberduck.Parsing.Symbols
             return matches.Count > 1 
                 ? matches.SingleOrDefault(m => m.Project == implementation.Project) 
                 : matches.First();
+        }
+
+        public Declaration FindSelection(QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
+        {
+            var target = Items
+                .Where(item => !item.IsBuiltIn)
+                .FirstOrDefault(item => item.IsSelectedDeclaration(selection)
+                                     || item.References.Any(r => r.IsSelectedReference(selection)));
+
+            if (target != null && validDeclarationTypes.Contains(target.DeclarationType))
+            {
+                return target;
+            }
+
+            target = null;
+
+            var targets = Items
+                .Where(item => !item.IsBuiltIn
+                               && item.ComponentName == selection.QualifiedName.ComponentName
+                               && validDeclarationTypes.Contains(item.DeclarationType));
+
+            var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
+
+            foreach (var declaration in targets)
+            {
+                var activeSelection = new Selection(declaration.Context.Start.Line,
+                                                    declaration.Context.Start.Column,
+                                                    declaration.Context.Stop.Line,
+                                                    declaration.Context.Stop.Column);
+
+                if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
+                {
+                    target = declaration;
+                    currentSelection = activeSelection;
+                }
+
+                foreach (var reference in declaration.References)
+                {
+                    var proc = (dynamic)reference.Context.Parent;
+                    VBAParser.ArgsCallContext paramList;
+
+                    // This is to prevent throws when this statement fails:
+                    // (VBAParser.ArgsCallContext)proc.argsCall();
+                    try { paramList = (VBAParser.ArgsCallContext)proc.argsCall(); }
+                    catch { continue; }
+
+                    if (paramList == null) { continue; }
+
+                    activeSelection = new Selection(paramList.Start.Line,
+                                                    paramList.Start.Column,
+                                                    paramList.Stop.Line,
+                                                    paramList.Stop.Column + paramList.Stop.Text.Length + 1);
+
+                    if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
+                    {
+                        target = reference.Declaration;
+                        currentSelection = activeSelection;
+                    }
+                }
+            }
+            return target;
         }
     }
 }

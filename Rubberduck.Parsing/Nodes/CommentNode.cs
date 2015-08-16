@@ -1,4 +1,5 @@
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Nodes
 {

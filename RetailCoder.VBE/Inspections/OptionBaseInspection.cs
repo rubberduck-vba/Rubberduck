@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
@@ -13,7 +14,8 @@ namespace Rubberduck.Inspections
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        public string Name { get { return InspectionNames.OptionBase; } }
+        public string Name { get { return "OptionBaseInspection"; } }
+        public string Description { get { return RubberduckUI.OptionBase; } }
         public CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
@@ -31,7 +33,7 @@ namespace Rubberduck.Inspections
             }
 
             var issues = options.Where(option => ((VBAParser.OptionBaseStmtContext)option.Context).INTEGERLITERAL().GetText() == "1")
-                                .Select(issue => new OptionBaseInspectionResult(Name, Severity, issue.QualifiedName.QualifiedModuleName));
+                                .Select(issue => new OptionBaseInspectionResult(Description, Severity, issue.QualifiedName.QualifiedModuleName));
 
             return issues;
         }

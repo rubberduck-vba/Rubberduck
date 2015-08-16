@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.ToDoItems;
 
 namespace Rubberduck.UI.ToDoItems
 {
+    [ExcludeFromCodeCoverage]
     public partial class ToDoExplorerWindow : UserControl, IToDoExplorerWindow
     {
         private const string ClassId = "8B071EDA-2C9C-4009-9A22-A1958BF98B28";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return "ToDo Explorer"; } }
-
-        public string SortedByColumn { get; set; }
-        public bool SortedAscending { get; set; }
+        string IDockableUserControl.Caption { get { return RubberduckUI.ToDoExplorer_Caption; } }
 
         private BindingList<ToDoItem> _todoItems;
         public IEnumerable<ToDoItem> TodoItems 
@@ -50,6 +49,15 @@ namespace Rubberduck.UI.ToDoItems
             
             todoItemsGridView.CellDoubleClick += ToDoGridViewCellDoubleClicked;
             refreshButton.Click += RefreshButtonClicked;
+
+            todoItemsGridView.Columns["Priority"].Visible = false;
+            todoItemsGridView.Columns["PriorityLabel"].HeaderText = RubberduckUI.Priority;
+            todoItemsGridView.Columns["Description"].HeaderText = RubberduckUI.TodoExplorer_Description;
+            todoItemsGridView.Columns["ProjectName"].HeaderText = RubberduckUI.ProjectName;
+            todoItemsGridView.Columns["ModuleName"].HeaderText = RubberduckUI.ModuleName;
+            todoItemsGridView.Columns["LineNumber"].HeaderText = RubberduckUI.TodoExplorer_LineNumber;
+
+            refreshButton.ToolTipText = RubberduckUI.Refresh;
         }
 
         public event EventHandler<ToDoItemClickEventArgs> NavigateToDoItem;
@@ -61,38 +69,42 @@ namespace Rubberduck.UI.ToDoItems
             }
 
             var handler = NavigateToDoItem;
-            if (handler == null)
+            if (handler != null)
             {
-                return;
+                var item = (ToDoItem)todoItemsGridView[e.ColumnIndex, e.RowIndex].OwningRow.DataBoundItem;
+                var args = new ToDoItemClickEventArgs(item);
+                handler(this, args);
             }
-
-            var item = (ToDoItem)todoItemsGridView[e.ColumnIndex, e.RowIndex].OwningRow.DataBoundItem;
-            var args = new ToDoItemClickEventArgs(item);
-            handler(this, args);
         }
 
         public event EventHandler RefreshToDoItems;
         private void RefreshButtonClicked(object sender, EventArgs e)
         {
             var handler = RefreshToDoItems;
-            if (handler == null)
+            if (handler != null)
             {
-                return;
-            }
+                handler(this, EventArgs.Empty);
+            } 
+        }
 
-            handler(this, EventArgs.Empty);
+        public event EventHandler RemoveToDoMarker;
+        private void RemoveButtonClicked(object sender, EventArgs e)
+        {
+            var handler = RemoveToDoMarker;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler<DataGridViewCellMouseEventArgs> SortColumn;
         private void ColumnHeaderMouseClicked(object sender, DataGridViewCellMouseEventArgs e)
         {
             var handler = SortColumn;
-            if (handler == null)
+            if (handler != null)
             {
-                return;
-            }
-
-            handler(this, e);
+                handler(this, e);
+            } 
         }
     }
 }

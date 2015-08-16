@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -15,20 +16,29 @@ namespace Rubberduck.Parsing.Symbols
         private string _currentScope;
 
         public DeclarationSymbolsListener(VBComponentParseResult result)
-            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type == vbext_ComponentType.vbext_ct_StdModule ? DeclarationType.Module : DeclarationType.Class)
+            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type)
         {
-            if (result.Component.Type == vbext_ComponentType.vbext_ct_MSForm)
-            {
-                DeclareControlsAsMembers(result.Component);
-            }
         }
 
-        private DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, DeclarationType declarationType)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type)
         {
             _qualifiedName = qualifiedName;
 
+            var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
+                ? DeclarationType.Module
+                //: result.Component.Type == vbext_ComponentType.vbext_ct_MSForm 
+                //    ? DeclarationType.UserForm
+                //    : result.Component.Type == vbext_ComponentType.vbext_ct_Document
+                //        ? DeclarationType.Document
+                : DeclarationType.Class;
+
             SetCurrentScope();
             _declarations.Add(new Declaration(_qualifiedName.QualifyMemberName(_qualifiedName.Component.Name), _qualifiedName.Project.Name, _qualifiedName.Component.Name, false, false, componentAccessibility, declarationType, null, Selection.Home));
+
+            if (type == vbext_ComponentType.vbext_ct_MSForm)
+            {
+                DeclareControlsAsMembers(qualifiedName.Component);
+            }
         }
 
         /// <summary>

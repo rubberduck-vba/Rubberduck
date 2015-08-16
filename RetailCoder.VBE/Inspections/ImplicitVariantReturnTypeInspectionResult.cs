@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Antlr4.Runtime;
-using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 using Rubberduck.VBA.Nodes;
 
 namespace Rubberduck.Inspections
@@ -17,16 +16,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Return explicit Variant", ReturnExplicitVariant}
+                    {RubberduckUI.Inspections_ReturnExplicitVariant, ReturnExplicitVariant}
                 };
         }
 
-        private void ReturnExplicitVariant(VBE vbe)
+        private void ReturnExplicitVariant()
         {
             // note: turns a multiline signature into a one-liner signature.
             // bug: removes all comments.
@@ -47,10 +46,9 @@ namespace Rubberduck.Inspections
         private ProcedureNode GetNode(ParserRuleContext context)
         {
             var result = GetNode(context as VBAParser.FunctionStmtContext);
-            if (result != null) return result;
+            if (result != null) { return result; }
             
             result = GetNode(context as VBAParser.PropertyGetStmtContext);
-            Debug.Assert(result != null, "result != null");
 
             return result;
         }

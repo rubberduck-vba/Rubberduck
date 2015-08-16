@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.Config;
 using Rubberduck.Inspections;
+using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Settings
         private const string ProgId = "Rubberduck.UI.Settings.SettingsDialog";
 
         private Configuration _config;
-        private IConfigurationService _configService;
+        private IGeneralConfigService _configService;
         private ConfigurationTreeViewControl _treeview;
         private Control _activeControl;
 
@@ -36,44 +36,96 @@ namespace Rubberduck.UI.Settings
 
             OkButton.Click += OkButton_Click;
             CancelButton.Click += CancelButton_Click;
+            ResetButton.Click += ResetButton_Click;
+
+            InitWindow();
         }
 
-        private void CancelButton_Click(object sender, System.EventArgs e)
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            var confirmReset = MessageBox.Show(RubberduckUI.Settings_ResetSettingsConfirmation, RubberduckUI.Settings_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (confirmReset == DialogResult.No)
+            {
+                return;
+            }
+
+            ResetSettings();
+        }
+
+        private void ResetSettings()
+        {
+            var currentLanguage = _config.UserSettings.LanguageSetting;
+
+            System.IO.File.Delete(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck\\rubberduck.config"));
+            var config = _configService.GetDefaultConfiguration();
+            _configService.SaveConfiguration(config, !currentLanguage.Equals(config.UserSettings.LanguageSetting));
+        }
+
+        private void InitWindow()
+        {
+            this.Text = RubberduckUI.Settings_Caption;
+            OkButton.Text = RubberduckUI.OK;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+            ResetButton.Text = RubberduckUI.Settings_ResetSettings;
+            InstructionsLabel.Text = RubberduckUI.SettingsInstructions_GeneralSettings;
+            TitleLabel.Text = RubberduckUI.SettingsCaption_GeneralSettings;
+
+            OkButton.Text = RubberduckUI.OK_AllCaps;
+            CancelButton.Text = RubberduckUI.CancelButtonText;
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void OkButton_Click(object sender, System.EventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
             SaveConfig();
             Close();
         }
 
-        public _SettingsDialog(IConfigurationService configService)
+        public _SettingsDialog(IGeneralConfigService configService)
             : this()
         {
             _configService = configService;
             _config = _configService.LoadConfiguration();
             _codeInspectionSettings = _config.UserSettings.CodeInspectionSettings.CodeInspections;
 
+            LoadWindow();
+
+            RegisterEvents();
+        }
+
+        private void LoadWindow()
+        {
             _treeview = new ConfigurationTreeViewControl(_config);
 
+            splitContainer1.Panel1.Controls.Clear();
             splitContainer1.Panel1.Controls.Add(_treeview);
             _treeview.Dock = DockStyle.Fill;
 
-            _generalSettingsView = new GeneralSettingsControl();
+            _generalSettingsView = new GeneralSettingsControl(_config.UserSettings.LanguageSetting, _configService);
 
             var markers = _config.UserSettings.ToDoListSettings.ToDoMarkers;
-            _todoView = new TodoListSettingsUserControl(markers);
-            _todoController = new TodoSettingPresenter(_todoView);
+            var gridViewSort = new GridViewSort<ToDoMarker>("Priority", true);
+            _todoView = new TodoListSettingsUserControl(markers, gridViewSort);
+            _todoController = new TodoSettingPresenter(_todoView, new AddMarkerForm());
 
             ActivateControl(_generalSettingsView);
-            RegisterEvents();
         }
 
         private void RegisterEvents()
         {
             _treeview.NodeSelected += _treeview_NodeSelected;
+            _configService.SettingsChanged += _configService_SettingsChanged;
+        }
+
+        private void _configService_SettingsChanged(object sender, EventArgs e)
+        {
+            _config = _configService.LoadConfiguration();
+
+            LoadWindow();
         }
 
         private readonly IEnumerable<CodeInspectionSetting> _codeInspectionSettings;
@@ -86,6 +138,11 @@ namespace Rubberduck.UI.Settings
         private void _treeview_NodeSelected(object sender, TreeViewEventArgs e)
         {
             Control controlToActivate = null;
+            if (e.Node == null)
+            {
+                // a "parent" node is selected. todo: create a page for "parent" nodes.
+                return;
+            }
 
             if (e.Node.Text == "Rubberduck")
             {
@@ -95,26 +152,20 @@ namespace Rubberduck.UI.Settings
                 return;
             }
 
-            if (e.Node.Text == "To-Do Explorer")
+            if (e.Node.Text == RubberduckUI.TodoSettings_Caption)
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_ToDoSettings;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_ToDoSettings;
                 controlToActivate = _todoView;
             }
 
-            if (e.Node.Parent.Text == "Code Inspections")
+            if (e.Node.Parent.Text == RubberduckUI.CodeInspections)
             {
                 TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
                 InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
-                var inspectionType = (CodeInspectionType) Enum.Parse(typeof (CodeInspectionType), e.Node.Text);
-                controlToActivate = new CodeInspectionSettingsControl(GetInspectionSettings(inspectionType));
-            }
-
-            if (e.Node.Parent.Text == CodeInspectionType.LanguageOpportunities.ToString())
-            {
-                TitleLabel.Text = RubberduckUI.SettingsCaption_CodeInspections;
-                InstructionsLabel.Text = RubberduckUI.SettingsInstructions_CodeInspections;
-                controlToActivate = new CodeInspectionSettingsControl(_config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                var inspectionType = (CodeInspectionType)Enum.Parse(typeof(CodeInspectionType), e.Node.Name);
+                var settingGridViewSort = new GridViewSort<CodeInspectionSetting>(RubberduckUI.Name, true);
+                controlToActivate = new CodeInspectionSettingsControl(GetInspectionSettings(inspectionType), settingGridViewSort);
             }
 
             ActivateControl(controlToActivate);
@@ -134,9 +185,12 @@ namespace Rubberduck.UI.Settings
 
         private void SaveConfig()
         {
+            var langChanged = !Equals(_config.UserSettings.LanguageSetting, _generalSettingsView.SelectedLanguage);
+
+            _config.UserSettings.LanguageSetting = _generalSettingsView.SelectedLanguage;
             _config.UserSettings.ToDoListSettings.ToDoMarkers = _todoView.TodoMarkers.ToArray();
             // The datagrid view of the CodeInspectionControl seems to keep the config magically in sync, so I don't manually do it here.
-            _configService.SaveConfiguration(_config);
+            _configService.SaveConfiguration(_config, langChanged);
         }
     }
 }

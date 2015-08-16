@@ -1,11 +1,14 @@
-﻿namespace Rubberduck.UI.Settings
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Rubberduck.UI.Settings
 {
     partial class GeneralSettingsControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -30,7 +33,8 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
-            this.InstructionsLabel = new System.Windows.Forms.Label();
+            this.LanguageLabel = new System.Windows.Forms.Label();
+            this.LanguageList = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,23 +60,32 @@
             this.TitleLabel.TabIndex = 4;
             this.TitleLabel.Text = "General Settings";
             // 
-            // InstructionsLabel
+            // LanguageLabel
             // 
-            this.InstructionsLabel.AutoSize = true;
-            this.InstructionsLabel.Location = new System.Drawing.Point(3, 100);
-            this.InstructionsLabel.MaximumSize = new System.Drawing.Size(350, 0);
-            this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
-            this.InstructionsLabel.Size = new System.Drawing.Size(8, 21);
-            this.InstructionsLabel.TabIndex = 5;
+            this.LanguageLabel.AutoSize = true;
+            this.LanguageLabel.Location = new System.Drawing.Point(14, 161);
+            this.LanguageLabel.Name = "LanguageLabel";
+            this.LanguageLabel.Size = new System.Drawing.Size(58, 13);
+            this.LanguageLabel.TabIndex = 6;
+            this.LanguageLabel.Text = "Language:";
+            // 
+            // LanguageList
+            // 
+            this.LanguageList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguageList.FormattingEnabled = true;
+            this.LanguageList.Location = new System.Drawing.Point(17, 178);
+            this.LanguageList.Name = "LanguageList";
+            this.LanguageList.Size = new System.Drawing.Size(156, 21);
+            this.LanguageList.TabIndex = 7;
             // 
             // GeneralSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.LanguageList);
+            this.Controls.Add(this.LanguageLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.InstructionsLabel);
             this.Controls.Add(this.pictureBox1);
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "GeneralSettingsControl";
@@ -85,8 +98,9 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label TitleLabel;
-        private System.Windows.Forms.Label InstructionsLabel;
+        private PictureBox pictureBox1;
+        private Label TitleLabel;
+        private Label LanguageLabel;
+        private ComboBox LanguageList;
     }
 }

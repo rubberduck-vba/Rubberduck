@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -16,16 +13,16 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
                     {"Specify Option Explicit", SpecifyOptionExplicit}
                 };
         }
 
-        private void SpecifyOptionExplicit(VBE vbe)
+        private void SpecifyOptionExplicit()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)

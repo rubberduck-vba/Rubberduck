@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Vbe.Interop;
-using Rubberduck.Extensions;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
+using Rubberduck.UI;
 using Rubberduck.VBA;
 
 namespace Rubberduck.Inspections
@@ -17,17 +14,17 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override IDictionary<string, Action<VBE>> GetQuickFixes()
+        public override IDictionary<string, Action> GetQuickFixes()
         {
             return
-                new Dictionary<string, Action<VBE>>
+                new Dictionary<string, Action>
                 {
-                    {"Replace 'Rem' usage with a single-quote comment marker", ReplaceWithSingleQuote},
-                    {"Remove comment", RemoveComment}
+                    {RubberduckUI.Inspections_ReplaceRemWithSingleQuoteMarker, ReplaceWithSingleQuote},
+                    {RubberduckUI.Inspections_RemoveComment, RemoveComment}
                 };
         }
 
-        private void ReplaceWithSingleQuote(VBE vbe)
+        private void ReplaceWithSingleQuote()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)
@@ -59,7 +56,7 @@ namespace Rubberduck.Inspections
             module.ReplaceLine(QualifiedSelection.Selection.StartLine, newContent);
         }
 
-        private void RemoveComment(VBE vbe)
+        private void RemoveComment()
         {
             var module = QualifiedName.Component.CodeModule;
             if (module == null)
