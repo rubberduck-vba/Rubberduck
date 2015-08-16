@@ -152,12 +152,12 @@ namespace Rubberduck.SourceControl
                     repo.Stage(stat.FilePath);
                 }
 
-                //If the user hasn't set up their name, this could throw an exception.
-                //There may be other situations in which this could occur, but I'm not sure what they are right now.
-                //Todo: consider a more specific exception that inherits from SourceControlException.
                 try
                 {
-                    repo.Commit("Intial Commit");
+                    //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                    // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                    // so we pass a signature that won't throw along to the commit.
+                    repo.Commit("Intial Commit", GetSignature());
                 }
                 catch(LibGit2SharpException ex)
                 {
@@ -250,7 +250,10 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Commit(message);
+                //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                // so we pass a signature that won't throw along to the commit.
+                _repo.Commit(message, GetSignature());
             }
             catch (LibGit2SharpException ex)
             {
