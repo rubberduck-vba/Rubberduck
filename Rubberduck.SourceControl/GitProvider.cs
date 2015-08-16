@@ -152,7 +152,17 @@ namespace Rubberduck.SourceControl
                     repo.Stage(stat.FilePath);
                 }
 
-                repo.Commit("Intial Commit");
+                //If the user hasn't set up their name, this could throw an exception.
+                //There may be other situations in which this could occur, but I'm not sure what they are right now.
+                //Todo: consider a more specific exception that inherits from SourceControlException.
+                try
+                {
+                    repo.Commit("Intial Commit");
+                }
+                catch(LibGit2SharpException ex)
+                {
+                    throw new SourceControlException("Unable to perform intial commit.", ex);
+                }
             }
 
             return repository;
