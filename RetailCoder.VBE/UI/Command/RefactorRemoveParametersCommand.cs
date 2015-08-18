@@ -1,10 +1,15 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
+
 namespace Rubberduck.UI.Command
 {
-    public class RefactorRemoveParametersCommand : ICommand
+    [ComVisible(false)]
+    public class RefactorRemoveParametersCommand : CommandBase
     {
-        public void Execute()
+        public override void Execute(object parameter)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

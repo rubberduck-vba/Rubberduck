@@ -2,7 +2,10 @@ using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
-    public class RunAllTestsCommand : ICommand
+    /// <summary>
+    /// A command that runs all Rubberduck unit tests in the VBE.
+    /// </summary>
+    public class RunAllTestsCommand : CommandBase
     {
         private readonly TestExplorerDockablePresenter _presenter;
 
@@ -11,7 +14,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             _presenter.RunTests();
         }

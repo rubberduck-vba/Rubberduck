@@ -89,7 +89,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.BeginGroup = item.BeginGroup;
             child.Tag = item.Key;
             child.Caption = item.Caption.Invoke();
-            child.Click += delegate { item.Command.Execute(); };
+            child.Click += delegate { item.Command.Execute(null); };
 
             return child;
         }

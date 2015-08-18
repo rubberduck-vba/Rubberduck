@@ -1,11 +1,17 @@
-﻿using Rubberduck.UI.Command.MenuItems;
+﻿using System.Runtime.InteropServices;
+using System.Windows.Input;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command
 {
-    public class RunCodeInspectionsCommand : ICommand
+    /// <summary>
+    /// A command that runs all active code inspections for the active VBAProject.
+    /// </summary>
+    [ComVisible(false)]
+    public class RunCodeInspectionsCommand : CommandBase
     {
-        public void Execute()
+        public override void Execute(object parameter)
         {
             throw new System.NotImplementedException();
         }

@@ -51,6 +51,11 @@ namespace Rubberduck.UnitTesting
 
         public static void NewTestMethod(VBE vbe)
         {
+            if (vbe.ActiveCodePane == null)
+            {
+                return;
+            }
+
             try
             {
                 if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())

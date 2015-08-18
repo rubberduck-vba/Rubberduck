@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Input;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
@@ -108,16 +109,16 @@ namespace Rubberduck.Root
 
         private void BindCommandsToMenuItems()
         {
-            _kernel.Bind<ICommand<NavigateCodeEventArgs>>().To<NavigateCommand>().InSingletonScope();
+            //_kernel.Bind<ICommand>().To<NavigateCommand>().InSingletonScope();
             _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>().InSingletonScope();
             _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>().InSingletonScope();
 
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.Namespace != null && type.Namespace.StartsWith(typeof(ICommand).Namespace ?? string.Empty))
+                .Where(type => type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: ICommand naming convention: [Foo]Command
-            var commands = types.Where(type => type.IsClass && type.GetInterfaces().Contains(typeof(ICommand)) && type.Name.EndsWith("Command"));
+            var commands = types.Where(type => type.IsClass && type.BaseType == typeof(CommandBase) && type.Name.EndsWith("Command"));
             foreach (var command in commands)
             {
                 var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);

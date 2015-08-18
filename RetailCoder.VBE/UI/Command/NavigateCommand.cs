@@ -3,7 +3,11 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
-    public class NavigateCommand : ICommand<NavigateCodeEventArgs>
+    /// <summary>
+    /// A command that navigates to a specified selection, using a <see cref="NavigateCodeEventArgs"/> parameter.
+    /// </summary>
+    [ComVisible(false)]
+    public class NavigateCommand : CommandBase
     {
         private readonly ICodePaneWrapperFactory _wrapperFactory;
 
@@ -12,26 +16,22 @@ namespace Rubberduck.UI.Command
             _wrapperFactory = wrapperFactory;
         }
 
-        public void Execute(NavigateCodeEventArgs parameter)
+        public override void Execute(object parameter)
         {
-            if (parameter == null || parameter.QualifiedName.Component == null)
+            var param = parameter as NavigateCodeEventArgs;
+            if (param == null || param.QualifiedName.Component == null)
             {
                 return;
             }
 
             try
             {
-                var codePane = _wrapperFactory.Create(parameter.QualifiedName.Component.CodeModule.CodePane);
-                codePane.Selection = parameter.Selection;
+                var codePane = _wrapperFactory.Create(param.QualifiedName.Component.CodeModule.CodePane);
+                codePane.Selection = param.Selection;
             }
             catch (COMException)
             {
             }
-        }
-
-        public void Execute()
-        {
-            Execute(null);
         }
     }
 }

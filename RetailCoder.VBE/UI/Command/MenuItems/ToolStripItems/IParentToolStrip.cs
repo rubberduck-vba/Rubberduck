@@ -24,8 +24,7 @@ namespace Rubberduck.UI.Command.MenuItems.ToolStripItems
         {
             foreach (var kvp in _items)
             {
-                kvp.Value.Text = kvp.Key.Caption.Invoke();
-                kvp.Value.ToolTipText = kvp.Key.ToolTip.Invoke();
+                kvp.Key.Localize();
             }
         }
 

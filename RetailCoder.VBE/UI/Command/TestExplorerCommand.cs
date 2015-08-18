@@ -1,6 +1,9 @@
+using System.Runtime.InteropServices;
+
 namespace Rubberduck.UI.Command
 {
-    public class TestExplorerCommand : ICommand
+    [ComVisible(false)]
+    public class TestExplorerCommand : CommandBase
     {
         private readonly IPresenter _presenter;
 
@@ -9,7 +12,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             _presenter.Show();
         }

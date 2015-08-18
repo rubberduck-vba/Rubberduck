@@ -1,12 +1,13 @@
-using System;
-using System.Linq;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
+using System.Runtime.InteropServices;
 using Rubberduck.UI.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
-    public class CodeExplorerCommand : ICommand
+    /// <summary>
+    /// A command that displays the Code Explorer window.
+    /// </summary>
+    [ComVisible(false)]
+    public class CodeExplorerCommand : CommandBase
     {
         private readonly CodeExplorerDockablePresenter _presenter;
 
@@ -15,7 +16,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             _presenter.Show();
         }

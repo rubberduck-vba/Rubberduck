@@ -311,6 +311,7 @@
     <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodCommand.cs" />
     <Compile Include="UI\Command\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\DelegateCommand.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestModuleCommandMenuItem.cs" />
@@ -325,7 +326,6 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\CodePaneContextParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\CommandMenuItemBase.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\FormDesignerContextParentMenu.cs" />
-    <Compile Include="UI\Command\ICommand.cs" />
     <Compile Include="UI\Command\IMenuItem.cs" />
     <Compile Include="UI\Command\FindAllImplementationsCommand.cs" />
     <Compile Include="UI\Command\FindSymbolCommand.cs" />
@@ -642,9 +642,13 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
     <Compile Include="UI\UnitTesting\ITestExplorerWindow.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
+      <DependentUpon>TestExplorerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UnitTesting\TestExplorerDockablePresenter.cs" />
     <Compile Include="UI\UnitTesting\SelectedTestEventArgs.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerItem.cs" />
+    <Compile Include="UI\UnitTesting\TestExplorerViewModel.cs" />
     <Compile Include="UI\UnitTesting\TestResultExtensions.cs" />
     <Compile Include="UI\RubberduckMenu.cs" />
     <Compile Include="ToDoItems\ToDoItem.cs" />
@@ -1157,6 +1161,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UnitTesting\TestExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

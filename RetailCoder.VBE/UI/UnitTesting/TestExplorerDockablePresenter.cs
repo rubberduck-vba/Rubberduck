@@ -118,20 +118,27 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests(IEnumerable<TestMethod> tests)
         {
-            _view.ClearResults();
-
-            var testMethods = tests as IList<TestMethod> ?? tests.ToList(); //bypasses multiple enumeration
-            _view.SetPlayList(testMethods);
-
-            _view.ClearProgress();
-
-            var projects = testMethods.Select(t => t.QualifiedMemberName.QualifiedModuleName.Project).Distinct();
-            foreach (var project in projects)
+            try
             {
-                project.EnsureReferenceToAddInLibrary();
-            }
+                _view.ClearResults();
+
+                var testMethods = tests as IList<TestMethod> ?? tests.ToList(); //bypasses multiple enumeration
+                _view.SetPlayList(testMethods);
+
+                _view.ClearProgress();
+
+                var projects = testMethods.Select(t => t.QualifiedMemberName.QualifiedModuleName.Project).Distinct();
+                foreach (var project in projects)
+                {
+                    project.EnsureReferenceToAddInLibrary();
+                }
             
-            _testEngine.Run(testMethods);
+                _testEngine.Run(testMethods);
+            }
+            catch (Exception exception)
+            {
+                // WTF is going on here?
+            }
         }
 
         private void TestComplete(object sender, TestCompletedEventArgs e)

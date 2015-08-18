@@ -1,9 +1,13 @@
-﻿using System;
+﻿using System.Runtime.InteropServices;
 using Rubberduck.UI.ToDoItems;
 
 namespace Rubberduck.UI.Command
 {
-    public class ToDoExplorerCommand : ICommand
+    /// <summary>
+    /// A command that displays the To-Do explorer window.
+    /// </summary>
+    [ComVisible(false)]
+    public class ToDoExplorerCommand : CommandBase
     {
         private readonly ToDoExplorerDockablePresenter _presenter;
 
@@ -12,7 +16,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             _presenter.Show();
         }

@@ -1,10 +1,14 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace Rubberduck.UI.Command
 {
-    public partial class RefactorExtractMethodCommand : ICommand
+    [ComVisible(false)]
+    public class RefactorExtractMethodCommand : CommandBase
     {
-        public void Execute()
+        public override void Execute(object parameter)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

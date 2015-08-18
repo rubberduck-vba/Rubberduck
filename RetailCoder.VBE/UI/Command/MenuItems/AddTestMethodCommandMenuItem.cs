@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Windows.Input;
 using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 

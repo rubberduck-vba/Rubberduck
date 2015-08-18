@@ -1,9 +1,14 @@
+using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
-    public class AddTestMethodExpectedErrorCommand : ICommand
+    /// <summary>
+    /// A command that adds a new test method stub to the active code pane.
+    /// </summary>
+    [ComVisible(false)]
+    public class AddTestMethodExpectedErrorCommand : CommandBase
     {
         private readonly VBE _vbe;
 
@@ -12,7 +17,7 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             // legacy static class...
             NewTestMethodCommand.NewExpectedErrorTestMethod(_vbe);

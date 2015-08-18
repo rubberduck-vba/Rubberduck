@@ -1,8 +1,15 @@
-﻿namespace Rubberduck.UI.Command
+﻿using System.Runtime.InteropServices;
+using System.Windows.Input;
+
+namespace Rubberduck.UI.Command
 {
-    public class ShowSourceControlPanelCommand : ICommand
+    /// <summary>
+    /// A command that displays the Source Control panel.
+    /// </summary>
+    [ComVisible(false)]
+    public class ShowSourceControlPanelCommand : CommandBase
     {
-        public void Execute()
+        public override void Execute(object parameter)
         {
             throw new System.NotImplementedException();
         }

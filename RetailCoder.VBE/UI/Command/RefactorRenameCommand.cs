@@ -1,13 +1,17 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command
 {
-    public class RefactorRenameCommand : ICommand
+    [ComVisible(false)]
+    public class RefactorRenameCommand : CommandBase
     {
-        public void Execute()
+        public override void Execute(object parameter)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 

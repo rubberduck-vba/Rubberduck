@@ -1,9 +1,14 @@
-﻿using Rubberduck.Settings;
+﻿using System.Runtime.InteropServices;
+using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Command
 {
-    public class OptionsCommand : ICommand
+    /// <summary>
+    /// A command that displays the Options dialog.
+    /// </summary>
+    [ComVisible(false)]
+    public class OptionsCommand : CommandBase
     {
         private readonly IGeneralConfigService _service;
         public OptionsCommand(IGeneralConfigService service)
@@ -11,7 +16,7 @@ namespace Rubberduck.UI.Command
             _service = service;
         }
 
-        public void Execute()
+        public override void Execute(object parameter)
         {
             using (var window = new SettingsDialog(_service))
             {
