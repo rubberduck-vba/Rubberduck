@@ -1,4 +1,5 @@
-using Rubberduck.UI.UnitTesting;
+using System.Linq;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
@@ -7,16 +8,16 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public class RunAllTestsCommand : CommandBase
     {
-        private readonly TestExplorerDockablePresenter _presenter;
+        private readonly ITestEngine _engine;
 
-        public RunAllTestsCommand(TestExplorerDockablePresenter presenter)
+        public RunAllTestsCommand(ITestEngine engine)
         {
-            _presenter = presenter;
+            _engine = engine;
         }
 
         public override void Execute(object parameter)
         {
-            _presenter.RunTests();
+            _engine.Run();
         }
     }
 }

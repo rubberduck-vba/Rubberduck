@@ -311,6 +311,7 @@
     <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodCommand.cs" />
     <Compile Include="UI\Command\AddTestModuleCommand.cs" />
+    <Compile Include="UI\Command\CommandBase.cs" />
     <Compile Include="UI\Command\DelegateCommand.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\AddTestMethodExpectedErrorCommandMenuItem.cs" />
@@ -675,6 +676,7 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UnitTesting\TestMenu.cs" />
+    <Compile Include="UI\ViewModelBase.cs" />
     <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />

@@ -79,7 +79,7 @@ namespace Rubberduck.UI.UnitTesting
         private void Synchronize()
         {
             FindAllTests();
-            var results = new BindingList<TestExplorerItem>(_testEngine.AllTests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
+            var results = new BindingList<TestExplorerItem>(_testEngine.Model.AllTests.Select(test => new TestExplorerItem(test.Key, test.Value)).ToList());
             _view.AllTests =
                 new BindingList<TestExplorerItem>(
                     _gridViewSort.Sort(results, _gridViewSort.ColumnName,
@@ -96,11 +96,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             try
             {
-                _testEngine.AllTests = VBE.VBProjects
-                                .Cast<VBProject>().Where(project => project.Protection != vbext_ProjectProtection.vbext_pp_locked)
-                                .SelectMany(project => project.TestMethods())
-                                .ToDictionary(test => test, test => _testEngine.AllTests.ContainsKey(test) ? _testEngine.AllTests[test] : null);
-
+                _testEngine.Model.Refresh();
             }
             catch (ArgumentException)
             {
@@ -113,7 +109,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void RunTests()
         {
-            RunTests(_testEngine.AllTests.Keys);
+            RunTests(_testEngine.Model.AllTests.Keys);
         }
 
         public void RunTests(IEnumerable<TestMethod> tests)
@@ -153,27 +149,27 @@ namespace Rubberduck.UI.UnitTesting
 
         private void OnExplorerRunAllTestsButtonClick(object sender, EventArgs e)
         {
-            RunTests(_testEngine.AllTests.Keys);
+            RunTests(_testEngine.Model.AllTests.Keys);
         }
 
         private void OnExplorerRunFailedTestsButtonClick(object sender, EventArgs e)
         {
-            RunTests(_testEngine.FailedTests());
+            RunTests(_testEngine.Model.AllTests.Where(test => test.Value.Outcome == TestOutcome.Failed).Select(kvp => kvp.Key));
         }
 
         private void OnExplorerRunLastRunTestsButtonClick(object sender, EventArgs e)
         {
-            RunTests(_testEngine.LastRunTests());
+            RunTests(_testEngine.Model.AllTests.Where(test => test.Value.Outcome != TestOutcome.Unknown).Select(kvp => kvp.Key));
         }
 
         private void OnExplorerRunNotRunTestsButtonClick(object sender, EventArgs e)
         {
-            RunTests(_testEngine.NotRunTests());
+            RunTests(_testEngine.Model.AllTests.Where(test => test.Value.Outcome == TestOutcome.Unknown).Select(kvp => kvp.Key));
         }
 
         private void OnExplorerRunPassedTestsButtonClick(object sender, EventArgs e)
         {
-            RunTests(_testEngine.PassedTests());
+            RunTests(_testEngine.Model.AllTests.Where(test => test.Value.Outcome == TestOutcome.Succeeded).Select(kvp => kvp.Key));
         }
 
         private void OnExplorerRunSelectedTestButtonClick(object sender, SelectedTestEventArgs e)
