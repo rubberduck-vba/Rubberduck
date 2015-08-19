@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true">
+
+  <!-- define various log targets -->
+  <targets>
+    <!-- write logs to file -->
+    <target xsi:type="File" name="file"
+        fileName="${specialfolder:folder=ApplicationData}/Rubberduck/logs/${logger}.log"
+        layout="${longdate} ${processid} ${uppercase:${level}} ${message} ${exception:format=tostring}" />
+
+    <!-- log message to event log -->
+    <target xsi:type="EventLog" name="eventLog" source="RubberDuck.VBE" eventId="${event-properties:EventID}"
+            layout="${message}${newline}Call site: ${callsite:className=true:methodName=true}${newline}Logger: ${logger}${newline}${exception:format=tostring}">
+    </target>
+
+    <!-- increase the performance counter -->
+    <!--target xsi:type="PerfCounter" name="pc1" categoryName="My Log" counterName="My Counter">
+    </target-->
+  </targets>
+  <rules>
+    <logger name="*" minlevel="Trace" writeTo="file" />
+    <logger name="*" minlevel="Error"  writeTo="eventlog"/>
+  </rules>
+</nlog>
