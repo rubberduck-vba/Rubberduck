@@ -174,6 +174,7 @@ namespace Rubberduck.UI.UnitTesting
             _runNotExecutedTestsCommand = new DelegateCommand(ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
             _runFailedTestsCommand = new DelegateCommand(ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
             _runPassedTestsCommand = new DelegateCommand(ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
+            _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand, CanExecuteExportResultsCommand);
         }
 
         private readonly ICommand _runAllTestsCommand;
@@ -202,6 +203,9 @@ namespace Rubberduck.UI.UnitTesting
 
         private readonly ICommand _runPassedTestsCommand;
         public ICommand RunPassedTestsCommand { get { return _runPassedTestsCommand; } }
+
+        private readonly ICommand _exportResultsCommand;
+        public ICommand ExportResultsCommand { get { return _exportResultsCommand; } }
 
         private bool _isBusy;
         public bool IsBusy 
@@ -278,6 +282,16 @@ namespace Rubberduck.UI.UnitTesting
         private bool CanExecuteRunPassedTestsCommand(object parameter)
         {
             return !IsBusy && _model.AllTests.Any(kvp => kvp.Value.Outcome == TestOutcome.Succeeded);
+        }
+
+        private void ExecuteExportResultsCommand(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CanExecuteExportResultsCommand(object parameter)
+        {
+            return !IsBusy && _model.AllTests.Any(kvp => kvp.Value.Outcome != TestOutcome.Unknown);
         }
     }
 }

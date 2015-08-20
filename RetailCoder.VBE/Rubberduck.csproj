@@ -966,6 +966,7 @@
     <None Include="Resources\cross-script.png" />
     <None Include="Resources\flask_exclamation_mask.png" />
     <None Include="Resources\flask_mask.png" />
+    <None Include="Resources\disk.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
