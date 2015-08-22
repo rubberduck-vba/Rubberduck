@@ -4,13 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:unitTesting="clr-namespace:Rubberduck.UI.UnitTesting"
+             xmlns:local="clr-namespace:Rubberduck.UnitTesting"
+             xmlns:resx="clr-namespace:Rubberduck.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="600" d:DataContext="{d:DesignInstance unitTesting:TestExplorerViewModel }">
+             d:DesignHeight="255" d:DesignWidth="255" d:DataContext="{d:DesignInstance unitTesting:TestExplorerViewModel}"
+             MinWidth="255" MinHeight="255">
+    
+    <UserControl.Resources>
+        <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*" />
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+ 
+        <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
         
         <ToolBar Grid.Row="0">
 
@@ -21,52 +34,52 @@
             <Separator />
 
             <Menu>
-                <MenuItem VerticalAlignment="Center" Header="Run">
+                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Run}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/control.png"></Image>
                     </MenuItem.Icon>
-                    <MenuItem Header="All tests" Command="{Binding RunAllTestsCommand}">
+                    <MenuItem Command="{Binding RunAllTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunAllTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask--arrow.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Run new tests" Command="{Binding RunNotExecutedTestsCommand}">
+                    <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunNotRunTests}" >
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/question-white.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Run passed tests" Command="{Binding RunPassedTestsCommand}">
+                    <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunPassedTests}" >
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/tick-circle.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Run failed tests" Command="{Binding RunFailedTestsCommand}">
+                    <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunFailedTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/cross-circle.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Repeat last run" Command="{Binding RepeatLastRunCommand}">
+                    <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunLastRunTests}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/arrow-repeat.png" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                 </MenuItem>
-                <MenuItem VerticalAlignment="Center" Header="Add">
+                <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Add}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/flask--plus.png" />
                     </MenuItem.Icon>
-                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="Test Module">
+                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{x:Static resx:RubberduckUI.CodeExplorer_AddTestModuleText}">
                     </MenuItem>
                     <Separator />
-                    <MenuItem Command="{Binding AddTestMethodCommand}" Header="Test Method">
+                    <MenuItem Command="{Binding AddTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestMethod}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="Test Method (expected error)">
+                    <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddExpectedErrorTestMethod}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/flask--exclamation.png" />
                         </MenuItem.Icon>
@@ -74,22 +87,59 @@
                 </MenuItem>
             </Menu>
             <Separator />
-            <ProgressBar Height="16" Width="100" Foreground="#FF06B025" Value="100" />
-            <Label Content="0 ms" />
-            <Label Content="0 passed" />
-            <Label Content="0 failed" />
-            <Label Content="0 inconclusive" />
 
-            <Separator />
+            <Button Command="{Binding CopyResultsCommand}">
+                <Image Height="16" Source="../../Resources/document-copy.png" />
+            </Button>
 
             <Button Command="{Binding ExportResultsCommand}">
                 <Image Height="16" Source="../../Resources/disk.png" />
             </Button>
             
         </ToolBar>
-        
-        <TreeView Grid.Row="1">
+
+        <Border Grid.Row="1" Margin="2,4,2,0">
+            <StackPanel>
+
+                <Border BorderBrush="DimGray" BorderThickness="1,1,0,0">
+                    <ProgressBar Height="12" 
+                                 Background="DimGray" 
+                                 Foreground="LawnGreen"
+                                 Maximum="{Binding Model.TestCount}" 
+                                 Value="{Binding Model.ExecutedCount}"/>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Margin="2">
+
+                    <Image Height="16" Source="../../Resources/question-white.png" />
+                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.TestCount}"/>
+
+                    <Image Height="16" Source="../../Resources/tick-circle.png" />
+                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.SuccessfulCount}"/>
+
+                    <Image Height="16" Source="../../Resources/cross-circle.png" />
+                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.FailedCount}" />
+
+                    <Image Height="16" Source="../../Resources/exclamation-circle.png" />
+                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.InconclusiveCount}" />
+                </StackPanel>
+                
+            </StackPanel>
+        </Border>
+                
+        <TreeView Grid.Row="2">
             <!-- todo: define hierarchical data template -->
         </TreeView>
+
+        <GridSplitter Grid.Row="3" Height="5" ResizeDirection="Rows" ShowsPreview="True"/>
+
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+            <WrapPanel Background="Gainsboro" MinHeight="48">
+                <Image Margin="4" Height="16" Source="{Binding Model.SelectedItem.Value.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
+                <Label Content="{Binding Model.SelectedItem.Key.QualifiedMemberName}" FontWeight="Black"/>
+                <Label Content="{Binding Model.SelectedItem.Value.Outcome}" />
+                <Label Content="{Binding Model.SelectedItem.Value.Output}" />
+            </WrapPanel>
+        </Border>
     </Grid>
 </UserControl>

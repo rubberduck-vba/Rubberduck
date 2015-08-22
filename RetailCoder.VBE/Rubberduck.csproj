@@ -642,7 +642,6 @@
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\UnitTesting\ITestExplorerWindow.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
     </Compile>
@@ -689,6 +688,7 @@
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
+    <Compile Include="UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
   </ItemGroup>

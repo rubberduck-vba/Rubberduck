@@ -46,7 +46,6 @@ namespace Rubberduck.UI.UnitTesting
         void OnRunAllTestsButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             _presenter.Show();
-            _presenter.RunTests();
         }
 
         void OnTestExplorerButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)

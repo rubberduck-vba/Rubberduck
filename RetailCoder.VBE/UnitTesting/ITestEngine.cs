@@ -12,7 +12,7 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestModuleEventArgs> ModuleCleanup;
         event EventHandler<TestModuleEventArgs> MethodInitialize;
         event EventHandler<TestModuleEventArgs> MethodCleanup;
-        ITestExplorerModel Model { get; }
+        TestExplorerModelBase Model { get; }
         void Run();
         void Run(IEnumerable<TestMethod> tests);
 
@@ -21,9 +21,9 @@ namespace Rubberduck.UnitTesting
 
     public class TestEngine : ITestEngine
     {
-        private readonly ITestExplorerModel _model;
+        private readonly TestExplorerModelBase _model;
 
-        public TestEngine(ITestExplorerModel model)
+        public TestEngine(TestExplorerModelBase model)
         {
             _model = model;
         }
@@ -44,7 +44,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public ITestExplorerModel Model { get { return _model; } }
+        public TestExplorerModelBase Model { get { return _model; } }
 
         public void Run()
         {

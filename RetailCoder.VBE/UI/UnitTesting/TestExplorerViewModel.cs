@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Reflection;
@@ -13,34 +15,20 @@ using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public interface ITestExplorerModel
+    public abstract class TestExplorerModelBase : ViewModelBase
     {
-        /// <summary>
-        /// A method that discovers unit tests.
-        /// </summary>
-        void Refresh();
+        protected TestExplorerModelBase(IDictionary<TestMethod, TestResult> tests = null)
+        {
+            Tests = tests ?? new Dictionary<TestMethod, TestResult>();
+        }
 
-        /// <summary>
-        /// A method that assigns a result to a test.
-        /// </summary>
-        /// <param name="test">The test that was executed.</param>
-        /// <param name="result">The test result.</param>
-        void SetResult(TestMethod test, TestResult result);
-
-        /// <summary>
-        /// The unit tests discovered by the <see cref="Refresh"/> method, and their results (if any).
-        /// </summary>
-        IReadOnlyDictionary<TestMethod, TestResult> AllTests { get; } 
-    }
-
-    public abstract class TestExplorerModelBase : ViewModelBase, ITestExplorerModel
-    {
         public abstract void Refresh();
         
-        protected readonly IDictionary<TestMethod, TestResult> Tests = new Dictionary<TestMethod, TestResult>();
+        protected readonly IDictionary<TestMethod, TestResult> Tests;
 
         /// <summary>
         /// Adds a <see cref="TestMethod"/> to the <see cref="Tests"/> dictionary, with an <see cref="TestResult.Unknown"/> result.
@@ -50,6 +38,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             Tests.Add(test, TestResult.Unknown());
             OnPropertyChanged("AllTests");
+            OnPropertyChanged("TestCount");
         }
 
         public void SetResult(TestMethod test, TestResult result)
@@ -70,6 +59,48 @@ namespace Rubberduck.UI.UnitTesting
             "TestCleanup",
             "ModuleCleanup"
         };
+
+        private KeyValuePair<TestMethod, TestResult> _selectedItem;
+
+        public KeyValuePair<TestMethod, TestResult> SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int TestCount { get { return Tests.Count; } }
+        public int ExecutedCount { get { return Tests.Count(kvp => kvp.Value.Outcome != TestOutcome.Unknown); } }
+
+        public string FailedCount
+        {
+            get
+            {
+                return string.Format(resx.TestExplorer_TestNumberFailed,
+                    Tests.Values.Count(test => test.Outcome == TestOutcome.Failed));
+            }
+        }
+
+        public string SuccessfulCount
+        {
+            get
+            {
+                return string.Format(resx.TestExplorer_TestNumberFailed,
+                    Tests.Values.Count(test => test.Outcome == TestOutcome.Succeeded));
+            }
+        }
+
+        public string InconclusiveCount
+        {
+            get
+            {
+                return string.Format(resx.TestExplorer_TestNumberFailed,
+                    Tests.Values.Count(test => test.Outcome == TestOutcome.Inconclusive));
+            }
+        }
 
         /// <summary>
         /// A method that determines whether a <see cref="Member"/> is a test method or not.
@@ -154,13 +185,11 @@ namespace Rubberduck.UI.UnitTesting
 
     public class TestExplorerViewModel : ViewModelBase
     {
-        private readonly VBE _vbe;
         private readonly ITestEngine _testEngine;
-        private readonly ITestExplorerModel _model;
+        private readonly TestExplorerModelBase _model;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, ITestExplorerModel model)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model)
         {
-            _vbe = vbe;
             _testEngine = testEngine;
             _model = model;
 
@@ -174,6 +203,8 @@ namespace Rubberduck.UI.UnitTesting
             _runNotExecutedTestsCommand = new DelegateCommand(ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
             _runFailedTestsCommand = new DelegateCommand(ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
             _runPassedTestsCommand = new DelegateCommand(ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
+
+            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand, CanExecuteExportResultsCommand);
         }
 
@@ -204,6 +235,9 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ICommand _runPassedTestsCommand;
         public ICommand RunPassedTestsCommand { get { return _runPassedTestsCommand; } }
 
+        private readonly ICommand _copyResultsCommand;
+        public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
+
         private readonly ICommand _exportResultsCommand;
         public ICommand ExportResultsCommand { get { return _exportResultsCommand; } }
 
@@ -214,10 +248,12 @@ namespace Rubberduck.UI.UnitTesting
             private set
             {
                 _isBusy = value; 
-                OnPropertyChanged("IsBusy"); 
+                OnPropertyChanged(); 
                 CommandManager.InvalidateRequerySuggested();
             } 
         }
+
+        public TestExplorerModelBase Model { get { return _model; } }
 
         private void ExecuteRefreshCommand(object parameter)
         {
@@ -226,9 +262,9 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            IsBusy = false;
-            _model.Refresh();
             IsBusy = true;
+            _model.Refresh();
+            IsBusy = false;
         }
 
         private bool CanExecuteRefreshCommand(object parameter)
@@ -290,6 +326,21 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         private bool CanExecuteExportResultsCommand(object parameter)
+        {
+            return HasExportableResults();
+        }
+
+        private void ExecuteCopyResultsCommand(object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CanExecuteCopyResultsCommand(object parameter)
+        {
+            return HasExportableResults();
+        }
+
+        private bool HasExportableResults()
         {
             return !IsBusy && _model.AllTests.Any(kvp => kvp.Value.Outcome != TestOutcome.Unknown);
         }
