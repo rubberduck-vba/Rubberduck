@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Reflection;
 using Rubberduck.Reflection;
 using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using resx = Rubberduck.UI.RubberduckUI;
 
@@ -257,7 +256,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRefreshCommand(object parameter)
         {
-            if (!_isBusy)
+            if (_isBusy)
             {
                 return;
             }
@@ -269,7 +268,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRefreshCommand(object parameter)
         {
-            return IsBusy;
+            return !IsBusy;
         }
 
         private void ExecuteRepeatLastRunCommand(object parameter)

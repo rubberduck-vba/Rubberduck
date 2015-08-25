@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Rubberduck.UnitTesting"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="255" d:DataContext="{d:DesignInstance unitTesting:TestExplorerViewModel}"
+             d:DesignHeight="255" d:DesignWidth="255"
              MinWidth="255" MinHeight="255">
     
     <UserControl.Resources>
@@ -105,8 +105,8 @@
                     <ProgressBar Height="12" 
                                  Background="DimGray" 
                                  Foreground="LawnGreen"
-                                 Maximum="{Binding Model.TestCount}" 
-                                 Value="{Binding Model.ExecutedCount}"/>
+                                 Maximum="{Binding Model.TestCount, Mode=OneWay}" 
+                                 Value="{Binding Model.ExecutedCount, Mode=OneWay}"/>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" Margin="2">

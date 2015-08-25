@@ -711,15 +711,15 @@
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.jp.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.jp.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.sv.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\AddMarkerForm.resx">
@@ -744,12 +744,12 @@
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -809,44 +809,44 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\minus-circle.png" />
+    <Resource Include="Resources\minus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\exclamation-circle.png" />
+    <Resource Include="Resources\exclamation-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-circle-double.png" />
+    <Resource Include="Resources\arrow-circle-double.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\control.png" />
+    <Resource Include="Resources\control.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-repeat.png" />
+    <Resource Include="Resources\arrow-repeat.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-repeat1.png" />
+    <Resource Include="Resources\arrow-repeat1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\flask--pencil.png" />
+    <Resource Include="Resources\flask--pencil.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\magnifier--arrow.png" />
+    <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\rubberduck.config" />
-    <None Include="Resources\rubberduck_adsize.png" />
+    <Resource Include="Resources\rubberduck.config" />
+    <Resource Include="Resources\rubberduck_adsize.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\plus-circle.png" />
+    <Resource Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Rubberduck.png" />
-    <None Include="Resources\hourglass.png" />
-    <None Include="Resources\arrow-090.png" />
-    <None Include="Resources\arrow-270.png" />
+    <Resource Include="Resources\Rubberduck.png" />
+    <Resource Include="Resources\hourglass.png" />
+    <Resource Include="Resources\arrow-090.png" />
+    <Resource Include="Resources\arrow-270.png" />
     <Resource Include="Resources\Microsoft\PNG\AddClass_5561_32.png" />
     <Resource Include="Resources\Microsoft\PNG\AddEvent_5539_32.png" />
     <Resource Include="Resources\Microsoft\PNG\AddForm_369_32.png" />
@@ -960,13 +960,13 @@
     <Resource Include="Resources\Microsoft\PNG\VSObject_ValueType_Shortcut.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_form.png" />
     <Resource Include="Resources\Microsoft\PNG\VSProject_reference.png" />
-    <None Include="Resources\arrow1.png" />
-    <None Include="Resources\Ducky.ico" />
-    <None Include="Resources\arrow-return-180-left.png" />
-    <None Include="Resources\cross-script.png" />
-    <None Include="Resources\flask_exclamation_mask.png" />
-    <None Include="Resources\flask_mask.png" />
-    <None Include="Resources\disk.png" />
+    <Resource Include="Resources\arrow1.png" />
+    <Resource Include="Resources\Ducky.ico" />
+    <Resource Include="Resources\arrow-return-180-left.png" />
+    <Resource Include="Resources\cross-script.png" />
+    <Resource Include="Resources\flask_exclamation_mask.png" />
+    <Resource Include="Resources\flask_mask.png" />
+    <Resource Include="Resources\disk.png" />
     <Content Include="Resources\Microsoft\Mask\AllLoadedTests_8644_24.bmp" />
     <Content Include="Resources\Microsoft\Mask\ExtractMethod_6786_32.bmp" />
     <Content Include="Resources\Microsoft\Mask\FindSymbol_6263_32.bmp" />
@@ -976,64 +976,64 @@
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
-    <None Include="Resources\RD-AboutWindow.png" />
-    <None Include="Resources\twitter_circle_black-512.png" />
-    <None Include="Resources\RD-InstallWindow.png" />
-    <None Include="Resources\minus-circle1.png" />
-    <None Include="Resources\plus-circle1.png" />
-    <None Include="Resources\question-white.png" />
-    <None Include="Resources\tick-circle.png" />
-    <None Include="Resources\navigation-180.png" />
-    <None Include="Resources\navigation.png" />
-    <None Include="Resources\tick.png" />
-    <None Include="Resources\Step-RunTest_8814_32.bmp" />
-    <None Include="Resources\Warning.bmp" />
-    <None Include="Resources\Serious.bmp" />
-    <None Include="Resources\OK.bmp" />
-    <None Include="Resources\GoLtrHS.bmp" />
-    <None Include="Resources\Critical.bmp" />
-    <None Include="Resources\ListsofTests_8643_24.bmp" />
-    <None Include="Resources\applycodechanges_6548_321.bmp" />
-    <None Include="Resources\Alert.bmp" />
-    <None Include="Resources\Information.bmp" />
-    <None Include="Resources\Collapse_large.bmp" />
-    <None Include="Resources\Expand_large.bmp" />
-    <None Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
-    <None Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
-    <None Include="Resources\cross-circle.png" />
-    <None Include="Resources\exclamation-diamond.png" />
+    <Resource Include="Resources\RD-AboutWindow.png" />
+    <Resource Include="Resources\twitter_circle_black-512.png" />
+    <Resource Include="Resources\RD-InstallWindow.png" />
+    <Resource Include="Resources\minus-circle1.png" />
+    <Resource Include="Resources\plus-circle1.png" />
+    <Resource Include="Resources\question-white.png" />
+    <Resource Include="Resources\tick-circle.png" />
+    <Resource Include="Resources\navigation-180.png" />
+    <Resource Include="Resources\navigation.png" />
+    <Resource Include="Resources\tick.png" />
+    <Resource Include="Resources\Step-RunTest_8814_32.bmp" />
+    <Resource Include="Resources\Warning.bmp" />
+    <Resource Include="Resources\Serious.bmp" />
+    <Resource Include="Resources\OK.bmp" />
+    <Resource Include="Resources\GoLtrHS.bmp" />
+    <Resource Include="Resources\Critical.bmp" />
+    <Resource Include="Resources\ListsofTests_8643_24.bmp" />
+    <Resource Include="Resources\applycodechanges_6548_321.bmp" />
+    <Resource Include="Resources\Alert.bmp" />
+    <Resource Include="Resources\Information.bmp" />
+    <Resource Include="Resources\Collapse_large.bmp" />
+    <Resource Include="Resources\Expand_large.bmp" />
+    <Resource Include="Resources\112_LeftArrowLong_Blue_16x16_72.png" />
+    <Resource Include="Resources\112_RightArrowLong_Blue_16x16_72.png" />
+    <Resource Include="Resources\cross-circle.png" />
+    <Resource Include="Resources\exclamation-diamond.png" />
     <Resource Include="Resources\arrow.png" />
-    <None Include="Resources\document-copy.png" />
-    <None Include="Resources\information-white.png" />
-    <None Include="Resources\exclamation-white.png" />
-    <None Include="Resources\exclamation.png" />
-    <None Include="Resources\information.png" />
-    <None Include="Resources\flask.png" />
-    <None Include="Resources\flask--arrow.png" />
-    <None Include="Resources\flask--exclamation.png" />
-    <None Include="Resources\flask--plus.png" />
-    <None Include="Resources\flask-empty.png" />
-    <None Include="Resources\creative-commons.png" />
-    <None Include="Resources\gear.png" />
-    <None Include="Resources\control-000-small.png" />
-    <None Include="Resources\git.png" />
-    <None Include="Resources\arrow-merge-090.png" />
-    <None Include="Resources\arrow-split.png" />
-    <None Include="Resources\drive-download.png" />
-    <None Include="Resources\drive-upload.png" />
-    <None Include="Resources\arrow-step.png" />
-    <None Include="Resources\github-alt.png" />
-    <None Include="Resources\icon-github.png" />
-    <None Include="Resources\arrow-branch-090.png" />
-    <None Include="Resources\folder-horizontal-open.png" />
-    <None Include="Resources\folder-horizontal.png" />
-    <None Include="Resources\application-resize.png" />
-    <None Include="Resources\light-bulb-code.png" />
+    <Resource Include="Resources\document-copy.png" />
+    <Resource Include="Resources\information-white.png" />
+    <Resource Include="Resources\exclamation-white.png" />
+    <Resource Include="Resources\exclamation.png" />
+    <Resource Include="Resources\information.png" />
+    <Resource Include="Resources\flask.png" />
+    <Resource Include="Resources\flask--arrow.png" />
+    <Resource Include="Resources\flask--exclamation.png" />
+    <Resource Include="Resources\flask--plus.png" />
+    <Resource Include="Resources\flask-empty.png" />
+    <Resource Include="Resources\creative-commons.png" />
+    <Resource Include="Resources\gear.png" />
+    <Resource Include="Resources\control-000-small.png" />
+    <Resource Include="Resources\git.png" />
+    <Resource Include="Resources\arrow-merge-090.png" />
+    <Resource Include="Resources\arrow-split.png" />
+    <Resource Include="Resources\drive-download.png" />
+    <Resource Include="Resources\drive-upload.png" />
+    <Resource Include="Resources\arrow-step.png" />
+    <Resource Include="Resources\github-alt.png" />
+    <Resource Include="Resources\icon-github.png" />
+    <Resource Include="Resources\arrow-branch-090.png" />
+    <Resource Include="Resources\folder-horizontal-open.png" />
+    <Resource Include="Resources\folder-horizontal.png" />
+    <Resource Include="Resources\application-resize.png" />
+    <Resource Include="Resources\light-bulb-code.png" />
     <Content Include="Ducky.ico" />
-    <None Include="Resources\facebook-icon.png" />
-    <None Include="Resources\github_circle_black-128.png" />
-    <None Include="Resources\facebook-circle-256.png" />
-    <None Include="Resources\google-circle-512.png" />
+    <Resource Include="Resources\facebook-icon.png" />
+    <Resource Include="Resources\github_circle_black-128.png" />
+    <Resource Include="Resources\facebook-circle-256.png" />
+    <Resource Include="Resources\google-circle-512.png" />
     <Resource Include="Resources\Microsoft\AddClass_5561_32.bmp" />
     <Resource Include="Resources\Microsoft\AddEvent_5539_32.bmp" />
     <Resource Include="Resources\Microsoft\AddForm_369_32.bmp" />

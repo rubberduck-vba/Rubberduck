@@ -32,7 +32,7 @@ namespace Rubberduck.UI.UnitTesting
         private void InitializeComponent()
         {
             this.wpfHost = new System.Windows.Forms.Integration.ElementHost();
-            this.testExplorerControl1 = new Rubberduck.UI.UnitTesting.TestExplorerControl();
+            this.wpfTestExplorerControl = new Rubberduck.UI.UnitTesting.TestExplorerControl();
             this.SuspendLayout();
             // 
             // wpfHost
@@ -40,19 +40,18 @@ namespace Rubberduck.UI.UnitTesting
             this.wpfHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wpfHost.Location = new System.Drawing.Point(0, 0);
             this.wpfHost.Name = "wpfHost";
-            this.wpfHost.Size = new System.Drawing.Size(600, 200);
-            this.wpfHost.TabIndex = 0;
-            this.wpfHost.Text = "wpfHost";
-            this.wpfHost.Child = this.testExplorerControl1;
+            this.wpfHost.Size = new System.Drawing.Size(255, 255);
+            this.wpfHost.TabIndex = 1;
+            this.wpfHost.Child = this.wpfTestExplorerControl;
             // 
             // TestExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.wpfHost);
-            this.MinimumSize = new System.Drawing.Size(600, 200);
+            this.MinimumSize = new System.Drawing.Size(255, 255);
             this.Name = "TestExplorerWindow";
-            this.Size = new System.Drawing.Size(600, 200);
+            this.Size = new System.Drawing.Size(255, 255);
             this.ResumeLayout(false);
 
         }
@@ -60,7 +59,7 @@ namespace Rubberduck.UI.UnitTesting
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost wpfHost;
-        private TestExplorerControl testExplorerControl1;
+        private TestExplorerControl wpfTestExplorerControl;
 
 
     }
