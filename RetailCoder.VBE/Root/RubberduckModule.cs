@@ -57,7 +57,7 @@ namespace Rubberduck.Root
             Bind<IPresenter>().To<TestExplorerDockablePresenter>().WhenInjectedInto<TestExplorerCommand>().InSingletonScope();
             
             // todo: something smarter than that involving IHostApplication
-            Bind<TestExplorerModelBase>().To<ThisOutlookSessionTestExplorerModel>();
+            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>();
             
             Bind<IDockableUserControl>().To<TestExplorerWindow>().WhenInjectedInto<TestExplorerDockablePresenter>().InSingletonScope()
                 .WithPropertyValue("ViewModel", _kernel.Get<TestExplorerViewModel>());

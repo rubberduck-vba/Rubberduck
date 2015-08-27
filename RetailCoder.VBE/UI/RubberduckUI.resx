@@ -721,16 +721,16 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Project Name</value>
   </data>
   <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>&amp;Add</value>
+    <value>Add</value>
   </data>
   <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test Method (Expected &amp;Error)</value>
+    <value>Test Method (Expected Error)</value>
   </data>
   <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>&amp;Test Method</value>
+    <value>Test Method</value>
   </data>
   <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Test &amp;Module</value>
+    <value>Test Module</value>
   </data>
   <data name="TestExplorer_Duration" xml:space="preserve">
     <value>Duration</value>
@@ -751,28 +751,28 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Qualified Member Name</value>
   </data>
   <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>&amp;All Tests</value>
+    <value>All Tests</value>
   </data>
   <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>&amp;Run</value>
+    <value>Run</value>
   </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>&amp;Failed Tests</value>
+    <value>Failed Tests</value>
   </data>
   <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Repeat &amp;Last Run</value>
+    <value>Repeat Last Run</value>
   </data>
   <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>&amp;Not Run Tests</value>
+    <value>Not Run Tests</value>
   </data>
   <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>&amp;Passed Tests</value>
+    <value>Passed Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>&amp;Selected Tests</value>
+    <value>Selected Tests</value>
   </data>
   <data name="GenericProjectName_" xml:space="preserve">
     <value>Project '{0}' has generic name</value>

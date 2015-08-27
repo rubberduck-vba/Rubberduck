@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Vbe.Interop;
@@ -18,7 +16,7 @@ using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public abstract class TestExplorerModelBase : ViewModelBase
+    public abstract class TestExplorerModelBase : ViewModelBase, INotifyCollectionChanged
     {
         protected TestExplorerModelBase(IDictionary<TestMethod, TestResult> tests = null)
         {
@@ -38,17 +36,30 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Add(test, TestResult.Unknown());
             OnPropertyChanged("AllTests");
             OnPropertyChanged("TestCount");
+            OnPropertyChanged("TestItems");
+            OnCollectionChanged();
         }
 
         public void SetResult(TestMethod test, TestResult result)
         {
             Tests[test] = result;
             OnPropertyChanged("AllTests");
+            OnPropertyChanged("TestItems");
+            OnCollectionChanged();
         }
 
         public IReadOnlyDictionary<TestMethod, TestResult> AllTests
         {
             get { return new ReadOnlyDictionary<TestMethod, TestResult>(Tests); }
+        }
+
+        public ObservableCollection<TestResultGrouping> TestItems
+        {
+            get
+            {
+                return new ObservableCollection<TestResultGrouping>(Tests.GroupBy(t => t.Value.Outcome)
+                    .Select(outcome => new TestResultGrouping(outcome.Key, outcome.ToDictionary(kvp => kvp.Key, kvp => kvp.Value))));
+            }
         }
 
         private static readonly string[] ReservedTestAttributeNames =
@@ -58,18 +69,6 @@ namespace Rubberduck.UI.UnitTesting
             "TestCleanup",
             "ModuleCleanup"
         };
-
-        private KeyValuePair<TestMethod, TestResult> _selectedItem;
-
-        public KeyValuePair<TestMethod, TestResult> SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-                OnPropertyChanged();
-            }
-        }
 
         public int TestCount { get { return Tests.Count; } }
         public int ExecutedCount { get { return Tests.Count(kvp => kvp.Value.Outcome != TestOutcome.Unknown); } }
@@ -123,6 +122,62 @@ namespace Rubberduck.UI.UnitTesting
 
             return result;
         }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        private void OnCollectionChanged()
+        {
+            var handler = CollectionChanged;
+            if (handler != null)
+            {
+                handler(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+        }
+    }
+
+    public class TestResultGrouping
+    {
+        private readonly TestOutcome _outcome;
+        private readonly IDictionary<TestMethod, TestResult> _tests;
+
+        public TestResultGrouping(TestOutcome outcome, IDictionary<TestMethod, TestResult> tests)
+        {
+            _outcome = outcome;
+            _tests = tests;
+
+            _label = _outcome == TestOutcome.Unknown
+                    ? string.Concat(_tests.Count, " ", RubberduckUI.TestExplorer_RunNotRunTests)
+                    : string.Format(RubberduckUI.ResourceManager.GetString("TestExplorer_TestNumber" + _outcome), _tests.Count);
+
+            _icon = new TestOutcomeImageSourceConverter().Convert(_outcome, null, null, null) as ImageSource;
+
+            _items = tests.Select(kvp => new TestItem(kvp.Key, kvp.Value));
+        }
+
+        private readonly string _label;
+        public string Label { get { return _label; } }
+
+        private readonly ImageSource _icon;
+        public ImageSource Icon { get { return _icon; } }
+
+        private readonly IEnumerable<TestItem> _items;
+        public IEnumerable<TestItem> Items { get { return _items; } }
+    }
+    
+    public class TestItem
+    {
+        private readonly TestMethod _test;
+        private readonly TestResult _result;
+
+        public TestItem(TestMethod test, TestResult result)
+        {
+            _test = test;
+            _result = result;
+        }
+
+        public string TestName { get { return _test.QualifiedMemberName.ToString(); } }
+        public string Message { get { return _result.Output; } }
+        public long Duration { get { return _result.Duration; } }
     }
 
     /// <summary>
@@ -158,6 +213,9 @@ namespace Rubberduck.UI.UnitTesting
     /// <summary>
     /// A TestExplorer model that discovers unit tests in a 'ThisOutlookSession' document/class module.
     /// </summary>
+    /// <remarks>
+    /// We can *discover* unit test methods all we want... we can't run them.
+    /// </remarks>
     public class ThisOutlookSessionTestExplorerModel : TestExplorerModelBase
     {
         private readonly VBE _vbe;
@@ -205,6 +263,17 @@ namespace Rubberduck.UI.UnitTesting
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand, CanExecuteExportResultsCommand);
+        }
+
+        private TestItem _selectedItem;
+        public TestItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                OnPropertyChanged("SelectedItem");
+            }
         }
 
         private readonly ICommand _runAllTestsCommand;
@@ -263,6 +332,7 @@ namespace Rubberduck.UI.UnitTesting
 
             IsBusy = true;
             _model.Refresh();
+            SelectedItem = null;
             IsBusy = false;
         }
 

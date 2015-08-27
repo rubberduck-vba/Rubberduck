@@ -7,12 +7,16 @@ namespace Rubberduck.VBEditor.VBEHost
     [ComVisible(false)]
     public class OutlookApp : HostApplicationBase<Microsoft.Office.Interop.Outlook.Application>
     {
-        public OutlookApp() : base("Outlook") { }
+        public OutlookApp() : base("Outlook")
+        {
+        }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            var app = Application.GetType();
-            app.InvokeMember(qualifiedMemberName.MemberName, BindingFlags.InvokeMethod | BindingFlags.Instance, null, Application, null);
+            // note: does not work. http://stackoverflow.com/q/31954364/1188513
+            //var app = Application.GetType();
+            //app.InvokeMember(qualifiedMemberName.MemberName, BindingFlags.InvokeMethod | BindingFlags.Default, null, Application, null);
+            throw new NotImplementedException();
         }
     }
 }

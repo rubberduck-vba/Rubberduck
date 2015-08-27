@@ -2645,7 +2645,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Add.
+        ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string TestExplorer_AddButtonText {
             get {
@@ -2654,7 +2654,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test Method (Expected &amp;Error).
+        ///   Looks up a localized string similar to Test Method (Expected Error).
         /// </summary>
         public static string TestExplorer_AddExpectedErrorTestMethod {
             get {
@@ -2663,7 +2663,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Test Method.
+        ///   Looks up a localized string similar to Test Method.
         /// </summary>
         public static string TestExplorer_AddTestMethod {
             get {
@@ -2672,7 +2672,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test &amp;Module.
+        ///   Looks up a localized string similar to Test Module.
         /// </summary>
         public static string TestExplorer_AddTestModule {
             get {
@@ -2726,7 +2726,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;All Tests.
+        ///   Looks up a localized string similar to All Tests.
         /// </summary>
         public static string TestExplorer_RunAllTests {
             get {
@@ -2735,7 +2735,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Run.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string TestExplorer_RunButtonText {
             get {
@@ -2744,7 +2744,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Failed Tests.
+        ///   Looks up a localized string similar to Failed Tests.
         /// </summary>
         public static string TestExplorer_RunFailedTests {
             get {
@@ -2753,7 +2753,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repeat &amp;Last Run.
+        ///   Looks up a localized string similar to Repeat Last Run.
         /// </summary>
         public static string TestExplorer_RunLastRunTests {
             get {
@@ -2762,7 +2762,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Not Run Tests.
+        ///   Looks up a localized string similar to Not Run Tests.
         /// </summary>
         public static string TestExplorer_RunNotRunTests {
             get {
@@ -2771,7 +2771,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Passed Tests.
+        ///   Looks up a localized string similar to Passed Tests.
         /// </summary>
         public static string TestExplorer_RunPassedTests {
             get {
@@ -2780,7 +2780,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Selected Tests.
+        ///   Looks up a localized string similar to Selected Tests.
         /// </summary>
         public static string TestExplorer_RunSelectedTests {
             get {

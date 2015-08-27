@@ -39,7 +39,7 @@ namespace Rubberduck.UnitTesting
         private static ImageSource ToImageSource(Image source)
         {
             var ms = new MemoryStream();
-            ((Bitmap)source).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            ((Bitmap)source).Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             var image = new BitmapImage();
             image.BeginInit();
             ms.Seek(0, SeekOrigin.Begin);
