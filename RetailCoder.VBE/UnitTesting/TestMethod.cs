@@ -1,26 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Microsoft.Vbe.Interop;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestMethod : IEquatable<TestMethod>
+    public class TestMethod : ViewModelBase, IEquatable<TestMethod>
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
         private readonly IHostApplication _hostApp;
 
-        public TestMethod(QualifiedMemberName qualifiedMemberName, IHostApplication hostApp)
+        public TestMethod(QualifiedMemberName qualifiedMemberName, VBE vbe)
         {
             _qualifiedMemberName = qualifiedMemberName;
-            _hostApp = hostApp;
+            _vbe = vbe;
+            _hostApp = vbe.HostApplication();
         }
 
         private readonly QualifiedMemberName _qualifiedMemberName;
+        private readonly VBE _vbe;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
-        public TestResult Run()
+        public void Run()
         {
             _assertResults.Clear(); //clear previous results to account for changes being made
 
@@ -39,7 +45,15 @@ namespace Rubberduck.UnitTesting
                 result = TestResult.Inconclusive("Test raised an error. " + exception.Message);
             }
             
-            return new TestResult(result, duration.Milliseconds);
+            Result = new TestResult(result, duration.Milliseconds);
+        }
+
+        private TestResult _result = new TestResult(TestOutcome.Unknown);
+
+        public TestResult Result
+        {
+            get { return _result; } 
+            set { _result = value; OnPropertyChanged();}
         }
 
         void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
@@ -57,6 +71,32 @@ namespace Rubberduck.UnitTesting
             }
 
             return result;
+        }
+
+        public NavigateCodeEventArgs GetNavigationArgs()
+        {
+            try
+            {
+                var moduleName = QualifiedMemberName.QualifiedModuleName;
+                var methodName = QualifiedMemberName.MemberName;
+
+                var module = _vbe.VBProjects.Cast<VBProject>()
+                    .Single(project => project == QualifiedMemberName.QualifiedModuleName.Project)
+                    .VBComponents.Cast<VBComponent>()
+                    .Single(component => component.Name == QualifiedMemberName.QualifiedModuleName.ComponentName)
+                    .CodeModule;
+
+                var startLine = module.get_ProcStartLine(methodName, vbext_ProcKind.vbext_pk_Proc);
+                var endLine = startLine + module.get_ProcCountLines(methodName, vbext_ProcKind.vbext_pk_Proc);
+                var endLineColumns = module.get_Lines(endLine, 1).Length;
+
+                var selection = new Selection(startLine, 1, endLine, endLineColumns == 0 ? 1 : endLineColumns);
+                return new NavigateCodeEventArgs(new QualifiedSelection(moduleName, selection));
+            }
+            catch (COMException)
+            {
+                return null;
+            }
         }
 
         public bool Equals(TestMethod other)

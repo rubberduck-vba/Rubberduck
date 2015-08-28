@@ -49,7 +49,7 @@ namespace Rubberduck.UnitTesting
         public void Run()
         {
             _model.Refresh();
-            Run(_model.AllTests.Keys);
+            Run(_model.Tests);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -70,12 +70,11 @@ namespace Rubberduck.UnitTesting
                 {
                     RaiseEvent(MethodInitialize, moduleEventArgs);
 
-                    var result = test.Run();
-                    _model.SetResult(test, result);
+                    test.Run();
 
                     RaiseEvent(MethodCleanup, moduleEventArgs);
 
-                    var completedEventArgs = new TestCompletedEventArgs(test, result);
+                    var completedEventArgs = new TestCompletedEventArgs(test);
                     RaiseEvent(TestComplete, completedEventArgs);
                 }
 
@@ -97,13 +96,11 @@ namespace Rubberduck.UnitTesting
 
     public class TestCompletedEventArgs : EventArgs
     {
-        public TestResult Result { get; private set; }
         public TestMethod Test { get; private set; }
 
-        public TestCompletedEventArgs(TestMethod test, TestResult result)
+        public TestCompletedEventArgs(TestMethod test)
         {
             Test = test;
-            Result = result;
         }
     }
 }

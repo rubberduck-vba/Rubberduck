@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Reflection;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.UnitTesting
 {
@@ -49,11 +51,11 @@ namespace Rubberduck.UnitTesting
             "End Sub\n"
             );
 
-        public static void NewTestMethod(VBE vbe)
+        public static TestMethod NewTestMethod(VBE vbe)
         {
             if (vbe.ActiveCodePane == null)
             {
-                return;
+                return null;
             }
 
             try
@@ -62,30 +64,45 @@ namespace Rubberduck.UnitTesting
                 {
                     var module = vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var method = TestMethodTemplate.Replace(NamePlaceholder, name);
-                    module.InsertLines(module.CountOfLines, method);
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+
+                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
                 }
             }
             catch (COMException)
             {
             }
+
+            return null;
         }
     
-        public static void NewExpectedErrorTestMethod(VBE vbe)
+        public static TestMethod NewExpectedErrorTestMethod(VBE vbe)
         {
+            if (vbe.ActiveCodePane == null)
+            {
+                return null;
+            }
+
             try
             {
                 if (vbe.ActiveCodePane.CodeModule.HasAttribute<TestModuleAttribute>())
                 {
                     var module = vbe.ActiveCodePane.CodeModule;
                     var name = GetNextTestMethodName(module.Parent);
-                    var method = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                    module.InsertLines(module.CountOfLines, method);
+                    var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+
+                    var qualifiedModuleName = new QualifiedModuleName(module.Parent);
+                    return new TestMethod(new QualifiedMemberName(qualifiedModuleName, name), vbe);
                 }
             }
             catch (COMException)
             {
             }
+
+            return null;
         }
 
         private static string GetNextTestMethodName(VBComponent component)

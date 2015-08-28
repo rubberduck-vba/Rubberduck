@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interactivity;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -17,6 +20,24 @@ namespace Rubberduck.UI.UnitTesting
         public TestExplorerControl()
         {
             InitializeComponent();
+        }
+
+        private TestExplorerViewModel Context { get { return DataContext as TestExplorerViewModel; } }
+
+        private void ListView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Context == null)
+            {
+                return;
+            }
+
+            var selection = Context.SelectedItem;
+            if (selection == null)
+            {
+                return;
+            }
+
+            Context.NavigateCommand.Execute(selection.GetNavigationArgs());
         }
     }
 

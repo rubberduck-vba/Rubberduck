@@ -18,10 +18,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*" MinHeight="64" />
             <RowDefinition Height="5"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
  
         <Border Grid.Row="0" Grid.RowSpan="5" Background="#FFEEF5FD" />
@@ -72,7 +72,7 @@
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/flask--plus.png" />
                     </MenuItem.Icon>
-                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{x:Static resx:RubberduckUI.CodeExplorer_AddTestModuleText}">
+                    <MenuItem Command="{Binding AddTestModuleCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestModule}">
                     </MenuItem>
                     <Separator />
                     <MenuItem Command="{Binding AddTestMethodCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_AddTestMethod}">
@@ -99,7 +99,7 @@
             
         </ToolBar>
 
-        <Border Grid.Row="1" Margin="2,4,2,0">
+        <Border Grid.Row="1" Margin="2">
             <StackPanel>
 
                 <Border BorderBrush="DimGray" BorderThickness="1,1,0,0">
@@ -110,52 +110,40 @@
                                  Value="{Binding Model.ExecutedCount, Mode=OneWay}"/>
                 </Border>
 
-                <StackPanel Orientation="Horizontal" Margin="2">
-
-                    <Image Height="16" Source="../../Resources/question-white.png" />
-                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.TestCount}"/>
-
-                    <Image Height="16" Source="../../Resources/tick-circle.png" />
-                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.SuccessfulCount}"/>
-
-                    <Image Height="16" Source="../../Resources/cross-circle.png" />
-                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.FailedCount}" />
-
-                    <Image Height="16" Source="../../Resources/exclamation-circle.png" />
-                    <Label MinWidth="20" Padding="2" FontSize="10" Content="{Binding Model.InconclusiveCount}" />
-                </StackPanel>
-                
             </StackPanel>
         </Border>
-                
-        <TreeView Grid.Row="2" ItemsSource="{Binding Model.TestItems}">
-            <i:Interaction.Behaviors>
-                <unitTesting:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            </i:Interaction.Behaviors>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{Binding Icon}" />
-                        <Label Content="{Binding Label}" />
-                    </StackPanel>
-                    
-                    <HierarchicalDataTemplate.ItemTemplate>
-                        <HierarchicalDataTemplate DataType="unitTesting:TestItem">
-                            <Label Content="{Binding TestName}" />
-                        </HierarchicalDataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
 
-        <GridSplitter Grid.Row="3" Height="5" ResizeDirection="Rows" ShowsPreview="True"/>
+        <ListView Grid.Row="2" ItemsSource="{Binding Model.Tests}" SelectedItem="{Binding SelectedItem}" 
+                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                  MouseDoubleClick="ListView_OnMouseDoubleClick">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="2" Padding="2" Background="SkyBlue" BorderBrush="SlateGray" BorderThickness="2" CornerRadius="2" 
+                            HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Image Margin="4" VerticalAlignment="Center"
+                                   Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
+                            <TextBlock Margin="4" VerticalAlignment="Center" Text="{Binding Result.Outcome}" TextWrapping="NoWrap"/>
+                            <TextBlock Margin="4" Text="{Binding QualifiedMemberName}" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-            <WrapPanel Background="Gainsboro" MinHeight="48">
-                <Image Margin="4" Height="16" Source="{Binding Model.SelectedItem.Value.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
-                <Label Content="{Binding SelectedItem.TestName}" FontWeight="Black"/>
-                <Label Content="{Binding SelectedItem.Message}" />
-            </WrapPanel>
+                        
+            <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
+                <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <Image Height="16" VerticalAlignment="Center" 
+                           Margin="4"
+                           Source="{Binding SelectedItem.Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
+                    <TextBlock Margin="4" Text="{Binding SelectedItem.QualifiedMemberName}" FontWeight="Black" TextWrapping="Wrap"/>
+                </StackPanel>
+                <TextBlock Margin="32,0,0,0" Text="{Binding SelectedItem.Result.Output}" TextWrapping="Wrap" Foreground="DarkSlateGray"/>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>

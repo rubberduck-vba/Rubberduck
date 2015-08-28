@@ -43,7 +43,7 @@ namespace Rubberduck.UnitTesting
                           .Where(component => component.CodeModule.HasAttribute<TestModuleAttribute>())
                           .Select(component => new { Component = component, Members = component.GetMembers().Where(IsTestMethod)})
                           .SelectMany(component => component.Members.Select(method => 
-                              new TestMethod(method.QualifiedMemberName, hostApp)));
+                              new TestMethod(method.QualifiedMemberName, project.VBE)));
 
             return result;
         }
@@ -57,7 +57,7 @@ namespace Rubberduck.UnitTesting
             {
                 return component.GetMembers()
                                 .Where(IsTestMethod)
-                                .Select(member => new TestMethod(member.QualifiedMemberName, hostApp));
+                                .Select(member => new TestMethod(member.QualifiedMemberName, component.VBE));
             }
 
             return new List<TestMethod>();
