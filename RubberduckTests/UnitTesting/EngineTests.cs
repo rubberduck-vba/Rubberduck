@@ -174,14 +174,14 @@ namespace RubberduckTests.UnitTesting
     //    {
     //        //arrange
     //        var expectedCount = _engine.AllTests.Count;
-    //        _engine.TestComplete += EngineOnTestComplete;
+    //        _engine.TestCompleted += EngineOnTestComplete;
 
     //        //act
     //        _engine.Run(_engine.AllTests.Keys);
 
     //        //assert
-    //        Assert.IsTrue(_wasEventRaised, "TestComplete event was not raised.");
-    //        Assert.AreEqual(expectedCount, _eventCount, "TestComplete event was expected to be raised {0} times.", expectedCount);
+    //        Assert.IsTrue(_wasEventRaised, "TestCompleted event was not raised.");
+    //        Assert.AreEqual(expectedCount, _eventCount, "TestCompleted event was expected to be raised {0} times.", expectedCount);
     //    }
 
     //    [TestMethod]

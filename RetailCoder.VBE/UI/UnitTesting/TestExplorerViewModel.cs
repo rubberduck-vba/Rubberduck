@@ -18,6 +18,7 @@ namespace Rubberduck.UI.UnitTesting
         public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, ICodePaneWrapperFactory wrapper, TestExplorerModelBase model)
         {
             _testEngine = testEngine;
+            _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
 
             _navigateCommand = new NavigateCommand(wrapper);
@@ -35,6 +36,16 @@ namespace Rubberduck.UI.UnitTesting
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
             _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
+        }
+
+        public event EventHandler<TestCompletedEventArgs> TestCompleted;
+        private void TestEngineTestCompleted(object sender, TestCompletedEventArgs e)
+        {
+            var handler = TestCompleted;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
 
         private TestMethod _selectedItem;

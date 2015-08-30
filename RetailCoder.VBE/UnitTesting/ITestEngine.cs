@@ -16,7 +16,7 @@ namespace Rubberduck.UnitTesting
         void Run();
         void Run(IEnumerable<TestMethod> tests);
 
-        event EventHandler<TestCompletedEventArgs> TestComplete;
+        event EventHandler<TestCompletedEventArgs> TestCompleted;
     }
 
     public class TestEngine : ITestEngine
@@ -33,7 +33,7 @@ namespace Rubberduck.UnitTesting
         public event EventHandler<TestModuleEventArgs> ModuleCleanup;
         public event EventHandler<TestModuleEventArgs> MethodInitialize;
         public event EventHandler<TestModuleEventArgs> MethodCleanup;
-        public event EventHandler<TestCompletedEventArgs> TestComplete;
+        public event EventHandler<TestCompletedEventArgs> TestCompleted;
 
         private void RaiseEvent<T>(EventHandler<T> method, T args)
         {
@@ -75,7 +75,7 @@ namespace Rubberduck.UnitTesting
                     RaiseEvent(MethodCleanup, moduleEventArgs);
 
                     var completedEventArgs = new TestCompletedEventArgs(test);
-                    RaiseEvent(TestComplete, completedEventArgs);
+                    RaiseEvent(TestCompleted, completedEventArgs);
                 }
 
                 RaiseEvent(ModuleCleanup, moduleEventArgs);

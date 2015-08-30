@@ -21,7 +21,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public override void Refresh()
         {
-            Tests.Clear();
             var tests = _vbe.VBProjects.Cast<VBProject>()
                 .Where(project => project.Protection == vbext_ProjectProtection.vbext_pp_none)
                 .SelectMany(project => project.VBComponents.Cast<VBComponent>())
@@ -30,10 +29,13 @@ namespace Rubberduck.UI.UnitTesting
                 .SelectMany(component => component.Members.Select(method =>
                     new TestMethod(method.QualifiedMemberName, _vbe)));
 
+            Tests.Clear();
             foreach (var test in tests)
-            {
+            {                
                 Tests.Add(test);
             }
+
+            OnPropertyChanged("Tests");
         }
     }
 }

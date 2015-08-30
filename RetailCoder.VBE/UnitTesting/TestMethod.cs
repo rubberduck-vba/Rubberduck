@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
@@ -10,7 +11,7 @@ using Rubberduck.VBEditor.VBEHost;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestMethod : ViewModelBase, IEquatable<TestMethod>
+    public class TestMethod : ViewModelBase, IEquatable<TestMethod>, IEditableObject
     {
         private readonly ICollection<TestResult> _assertResults = new List<TestResult>();
         private readonly IHostApplication _hostApp;
@@ -25,6 +26,8 @@ namespace Rubberduck.UnitTesting
         private readonly QualifiedMemberName _qualifiedMemberName;
         private readonly VBE _vbe;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
+
+        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedMemberName.QualifiedModuleName; } }
 
         public void Run()
         {
@@ -49,6 +52,8 @@ namespace Rubberduck.UnitTesting
         }
 
         private TestResult _result = new TestResult(TestOutcome.Unknown);
+
+        public TestOutcome Outcome { get { return _result.Outcome; } }
 
         public TestResult Result
         {
@@ -113,6 +118,34 @@ namespace Rubberduck.UnitTesting
         public override int GetHashCode()
         {
             return QualifiedMemberName.GetHashCode();
+        }
+
+        private TestResult _cachedResult;
+
+        private bool _isEditing;
+        public bool IsEditing { get { return _isEditing; } set { _isEditing = value; OnPropertyChanged(); } }
+
+        public void BeginEdit()
+        {
+            _cachedResult = new TestResult(Result, Result.Duration);
+            IsEditing = true;
+        }
+
+        public void EndEdit()
+        {
+            _cachedResult = null;
+            IsEditing = false;
+        }
+
+        public void CancelEdit()
+        {
+            if (_cachedResult != null)
+            {
+                Result = _cachedResult;
+            }
+
+            _cachedResult = null;
+            IsEditing = false;
         }
     }
 }

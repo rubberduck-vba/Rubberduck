@@ -3,16 +3,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:unitTesting="clr-namespace:Rubberduck.UI.UnitTesting"
-             xmlns:local="clr-namespace:Rubberduck.UnitTesting"
+             xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
+             xmlns:unitTesting="clr-namespace:Rubberduck.UnitTesting"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="255"
-             MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance unitTesting:TestExplorerViewModel}">
+             MinWidth="255" MinHeight="255" d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
     
     <UserControl.Resources>
-        <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+        
+        <Style x:Key="IconStyle" TargetType="Image">
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        
+        <unitTesting:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+        
+        <CollectionViewSource x:Key="OutcomeGroupViewSource" Source="{Binding Model.Tests}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Outcome" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <DataTemplate x:Key="TestMethodTemplate" DataType="{x:Type unitTesting:TestMethod}">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource IconStyle}" 
+                       Source="{Binding Outcome, Converter={StaticResource OutcomeIconConverter}}"
+                       VerticalAlignment="Center" />
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding QualifiedMemberName}" 
+                           TextWrapping="NoWrap"/>
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding Result.Duration, StringFormat=({0}ms)}" 
+                           Foreground="DimGray"
+                           TextWrapping="NoWrap"/>
+            </StackPanel>
+        </DataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="OutcomeTemplate" 
+                                    DataType="{x:Type CollectionViewGroup}"
+                                    ItemsSource="{Binding Items}" 
+                                    ItemTemplate="{StaticResource TestMethodTemplate}">
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding Name}"
+                           FontWeight="Bold"
+                           TextWrapping="NoWrap"/>
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding ItemCount, StringFormat=({0})}" 
+                           TextWrapping="NoWrap"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        
     </UserControl.Resources>
     
     <Grid>
@@ -37,7 +86,7 @@
             <Menu>
                 <MenuItem VerticalAlignment="Center" Header="{x:Static resx:RubberduckUI.Run}">
                     <MenuItem.Icon>
-                        <Image Height="16" Source="../../Resources/control.png"></Image>
+                        <Image Height="16" Source="../../Resources/control.png" />
                     </MenuItem.Icon>
                     <MenuItem Command="{Binding RunAllTestsCommand}" Header="{x:Static resx:RubberduckUI.TestExplorer_RunAllTests}">
                         <MenuItem.Icon>
@@ -113,32 +162,22 @@
             </StackPanel>
         </Border>
 
-        <ListView Grid.Row="2" ItemsSource="{Binding Model.Tests}" SelectedItem="{Binding SelectedItem}" 
-                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
-                  MouseDoubleClick="ListView_OnMouseDoubleClick">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border Margin="2" Padding="2" Background="SkyBlue" BorderBrush="SlateGray" BorderThickness="2" CornerRadius="2" 
-                            HorizontalAlignment="Stretch">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                            <Image Margin="4" VerticalAlignment="Center"
-                                   Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
-                            <TextBlock Margin="4" VerticalAlignment="Center" Text="{Binding Result.Outcome}" TextWrapping="NoWrap"/>
-                            <TextBlock Margin="4" Text="{Binding QualifiedMemberName}" />
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <TreeView Grid.Row="2" x:Name="TestMethodTree"
+                  MouseDoubleClick="TreeView_MouseDoubleClick"
+                  ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
+                  ItemTemplate="{StaticResource OutcomeTemplate}">
+            <i:Interaction.Behaviors>
+                <local:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+        </TreeView>
         
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-                        
+            
             <StackPanel Orientation="Vertical" MinHeight="48" Background="Gainsboro">
                 <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Image Height="16" VerticalAlignment="Center" 
-                           Margin="4"
+                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Center" 
                            Source="{Binding SelectedItem.Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"/>
                     <TextBlock Margin="4" Text="{Binding SelectedItem.QualifiedMemberName}" FontWeight="Black" TextWrapping="Wrap"/>
                 </StackPanel>

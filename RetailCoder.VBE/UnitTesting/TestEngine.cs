@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting
 {
     //public class TestEngine : ITestEngine
     //{
-    //    public event EventHandler<TestCompletedEventArgs> TestComplete;
+    //    public event EventHandler<TestCompletedEventArgs> TestCompleted;
 
     //    public TestEngine()
     //    {
@@ -126,9 +126,9 @@ namespace Rubberduck.UnitTesting
 
     //    protected virtual void OnTestCompleted(TestCompletedEventArgs arg)
     //    {
-    //        if (TestComplete != null)
+    //        if (TestCompleted != null)
     //        {
-    //            TestComplete(this, arg);
+    //            TestCompleted(this, arg);
     //        }
     //    }
     //}
