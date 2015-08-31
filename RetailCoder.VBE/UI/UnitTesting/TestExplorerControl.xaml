@@ -169,6 +169,17 @@
             <i:Interaction.Behaviors>
                 <local:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem VerticalAlignment="Center" 
+                              Header="{x:Static resx:RubberduckUI.Run}" 
+                              Command="{Binding RunSelectedTestCommand}">
+                        <MenuItem.Icon>
+                            <Image Height="16" Source="../../Resources/control.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </TreeView.ContextMenu>
         </TreeView>
         
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>

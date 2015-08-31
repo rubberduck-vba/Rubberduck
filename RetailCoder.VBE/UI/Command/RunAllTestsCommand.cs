@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -23,6 +25,7 @@ namespace Rubberduck.UI.Command
         public override void Execute(object parameter)
         {
             _model.Refresh();
+            _model.ClearLastRun();
             _engine.Run(_model.Tests);
         }
     }

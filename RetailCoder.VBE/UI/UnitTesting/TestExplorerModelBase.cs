@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Parsing.Reflection;
@@ -20,6 +21,19 @@ namespace Rubberduck.UI.UnitTesting
             "TestCleanup",
             "ModuleCleanup"
         };
+
+        private readonly IList<TestMethod> _lastRun = new List<TestMethod>();
+        public IEnumerable<TestMethod> LastRun { get { return _lastRun; } } 
+
+        public void ClearLastRun()
+        {
+            _lastRun.Clear();
+        }
+
+        public void AddExecutedTest(TestMethod test)
+        {
+            _lastRun.Add(test);
+        }
 
         public int TestCount { get { return _tests.Count; } }
         public int ExecutedCount { get { return _tests.Count(test => test.Result.Outcome != TestOutcome.Unknown); } }

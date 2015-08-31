@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -29,18 +30,41 @@ namespace Rubberduck.UI.UnitTesting
             _addErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, model);
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommand, CanExecuteRefreshCommand);
-            _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand);
-            _runNotExecutedTestsCommand = new DelegateCommand(ExecuteRunNotExecutedTestsCommand);
-            _runFailedTestsCommand = new DelegateCommand(ExecuteRunFailedTestsCommand);
-            _runPassedTestsCommand = new DelegateCommand(ExecuteRunPassedTestsCommand);
+            _repeatLastRunCommand = new DelegateCommand(ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
+            _runNotExecutedTestsCommand = new DelegateCommand(ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
+            _runFailedTestsCommand = new DelegateCommand(ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
+            _runPassedTestsCommand = new DelegateCommand(ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
+            _runSelectedTestCommand = new DelegateCommand(ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
             _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
         }
 
+        private bool CanExecuteRunPassedTestsCommand(object obj)
+        {
+            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Succeeded);
+        }
+
+        private bool CanExecuteRunFailedTestsCommand(object obj)
+        {
+            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Failed);
+        }
+
+        private bool CanExecuteRunNotExecutedTestsCommand(object obj)
+        {
+            return true; //_model.Tests.Any(test => test.Outcome == TestOutcome.Unknown);
+        }
+
+        private bool CanExecuteRepeatLastRunCommand(object obj)
+        {
+            return true; //_model.LastRun.Any();
+        }
+
         public event EventHandler<TestCompletedEventArgs> TestCompleted;
         private void TestEngineTestCompleted(object sender, TestCompletedEventArgs e)
         {
+            _model.AddExecutedTest(e.Test);
+
             var handler = TestCompleted;
             if (handler != null)
             {
@@ -95,8 +119,10 @@ namespace Rubberduck.UI.UnitTesting
         private readonly NavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
 
-        private bool _isBusy;
+        private readonly ICommand _runSelectedTestCommand;
+        public ICommand RunSelectedTestCommand { get { return _runSelectedTestCommand; } }
 
+        private bool _isBusy;
         public bool IsBusy 
         { 
             get { return _isBusy; }
@@ -134,14 +160,19 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRepeatLastRunCommand(object parameter)
         {
+            var tests = _model.LastRun.ToList();
+            _model.ClearLastRun();
+
             IsBusy = true;
-            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome != TestOutcome.Unknown));
+            _testEngine.Run(tests);
             IsBusy = false;
             EvaluateCanExecute();
         }
 
         private void ExecuteRunNotExecutedTestsCommand(object parameter)
         {
+            _model.ClearLastRun();
+
             IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
             IsBusy = false;
@@ -150,6 +181,8 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunFailedTestsCommand(object parameter)
         {
+            _model.ClearLastRun();
+
             IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
             IsBusy = false;
@@ -158,8 +191,30 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunPassedTestsCommand(object parameter)
         {
+            _model.ClearLastRun();
+
             IsBusy = true;
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            IsBusy = false;
+            EvaluateCanExecute();
+        }
+
+        private bool CanExecuteSelectedTestCommand(object obj)
+        {
+            return true; //SelectedItem != null;
+        }
+
+        private void ExecuteSelectedTestCommand(object obj)
+        {
+            if (SelectedItem == null)
+            {
+                return;
+            }
+
+            _model.ClearLastRun();
+
+            IsBusy = true;
+            _testEngine.Run(new[]{SelectedItem});
             IsBusy = false;
             EvaluateCanExecute();
         }
