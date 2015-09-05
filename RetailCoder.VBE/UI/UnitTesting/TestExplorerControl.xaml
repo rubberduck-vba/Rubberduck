@@ -167,7 +167,7 @@
                   ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
                   ItemTemplate="{StaticResource OutcomeTemplate}">
             <i:Interaction.Behaviors>
-                <local:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
             <TreeView.ContextMenu>
                 <ContextMenu>

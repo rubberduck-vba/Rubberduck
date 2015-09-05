@@ -1,5 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Input;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Inspections;
+using Rubberduck.Parsing;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
@@ -11,9 +15,30 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class RunCodeInspectionsCommand : CommandBase
     {
-        public override void Execute(object parameter)
+        private readonly VBE _vbe;
+        private readonly IInspector _inspector;
+        private readonly IRubberduckParser _parser;
+
+        public RunCodeInspectionsCommand(VBE vbe, IInspector inspector, IRubberduckParser parser)
         {
-            throw new System.NotImplementedException();
+            _vbe = vbe;
+            _inspector = inspector;
+            _parser = parser;
+        }
+
+        /// <summary>
+        /// Runs code inspections 
+        /// </summary>
+        /// <param name="parameter"></param>
+        public override async void Execute(object parameter)
+        {
+            // todo: find a way to run this from UI
+            //var project = parameter as VBProject;
+            //var parseResult = project == null 
+            //    ? _parser.Parse(_vbe.ActiveVBProject)
+            //    : _parser.Parse(project);
+
+            //var results = _inspector.FindIssuesAsync(parseResult, CancellationToken.None);
         }
     }
 

@@ -26,10 +26,6 @@ namespace Rubberduck.UI.CodeInspections
         /// <summary>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
-        /// <param name="inspector"></param>
-        /// <param name="vbe"></param>
-        /// <param name="addin"></param>
-        /// <param name="window"></param>
         public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, ICodePaneWrapperFactory wrapperFactory)
             :base(vbe, addin, window)
         {

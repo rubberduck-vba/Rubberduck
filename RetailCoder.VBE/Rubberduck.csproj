@@ -251,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
+    <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
@@ -308,6 +309,10 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
+      <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeInspections\InspectionResultsViewModel.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodCommand.cs" />
@@ -643,6 +648,7 @@
     <Compile Include="UI\Settings\TodoSettingPresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
+    <Compile Include="UI\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\StandardModuleTestExplorerModel.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
@@ -1167,6 +1173,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\CodeInspections\InspectionResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

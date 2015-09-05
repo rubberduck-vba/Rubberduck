@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Rubberduck.UI.CodeInspections.InspectionResultsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:inspections="clr-namespace:Rubberduck.Inspections"
+             xmlns:resx="clr-namespace:Rubberduck.UI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <Style x:Key="IconStyle" TargetType="Image">
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+
+        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <DataTemplate x:Key="InspectionResultTemplate" DataType="{x:Type inspections:CodeInspectionResultBase}">
+            <StackPanel Orientation="Horizontal">
+                <Image Style="{StaticResource IconStyle}" 
+                       Source="{Binding Severity}"
+                       VerticalAlignment="Center" />
+                <TextBlock Margin="4" 
+                           VerticalAlignment="Center" 
+                           Text="{Binding Name}" 
+                           TextWrapping="NoWrap"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="QuickFixItemTemplate" DataType="{x:Type inspections:CodeInspectionResultBase}">
+            
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*" MinHeight="64" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+
+        <ToolBar Grid.Row="0">
+
+            <Button Command="{Binding RefreshCommand}">
+                <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+            </Button>
+
+            <Separator />
+
+            <Button Command="{Binding CopyResultsCommand}">
+                <Image Height="16" Source="../../Resources/document-copy.png" />
+            </Button>
+
+            <Button Command="{Binding ExportResultsCommand}">
+                <Image Height="16" Source="../../Resources/disk.png" />
+            </Button>
+
+        </ToolBar>
+
+        <TreeView Grid.Row="2" x:Name="TestMethodTree"
+                  ItemsSource="{Binding Source={StaticResource InspectionTypeGroupViewSource}, Path=Groups}"
+                  ItemTemplate="{StaticResource InspectionResultTemplate}">
+            <i:Interaction.Behaviors>
+                <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+        </TreeView>
+    </Grid>
+</UserControl>

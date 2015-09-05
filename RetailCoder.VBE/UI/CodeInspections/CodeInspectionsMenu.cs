@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeInspections
 
         public void Initialize(CommandBarPopup parentMenu)
         {
-            _codeInspectionsButton = AddButton(parentMenu, RubberduckUI.RubberduckMenu_CodeInspections, false, new CommandBarButtonClickEvent(OnCodeInspectionsButtonClick));
+            _codeInspectionsButton = AddButton(parentMenu, RubberduckUI.RubberduckMenu_CodeInspections, false, OnCodeInspectionsButtonClick);
         }
 
         public void Inspect()
