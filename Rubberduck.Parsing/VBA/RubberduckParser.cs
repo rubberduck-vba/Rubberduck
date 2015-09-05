@@ -8,7 +8,6 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using NLog;
-using Rubberduck.Logging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Nodes;
 using Rubberduck.Parsing.Symbols;
@@ -32,13 +31,9 @@ namespace Rubberduck.Parsing.VBA
 
         public RubberduckParser(IRubberduckCodePaneFactory factory)
         {
-#if DEBUG
-            LoggingConfigurator.ConfigureParserLogger();
-#endif
             _logger = LogManager.GetCurrentClassLogger();
 
             _factory = factory;
-            
         }
 
         public void RemoveProject(VBProject project)
@@ -173,10 +168,10 @@ namespace Rubberduck.Parsing.VBA
         {
             var offendingProject = component.Collection.Parent.Name;
             var offendingComponent = component.Name;
-            var offendingLine = component.CodeModule.get_Lines(exception.LineNumber, 1);
+            var offendingLine = component.CodeModule.Lines[exception.LineNumber, 1];
 
             var message = string.Format("Parser encountered a syntax error in {0}.{1}, line {2}. Content: '{3}'", offendingProject, offendingComponent, exception.LineNumber, offendingLine);
-            _logger.ErrorException(message, exception);
+            _logger.Error(exception, message);
         }
 
         private IEnumerable<CommentNode> ParseComments(QualifiedModuleName qualifiedName)
