@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
+using NLog;
 
 namespace Rubberduck.UI
 {
@@ -13,13 +14,16 @@ namespace Rubberduck.UI
     public abstract class DockablePresenterBase : IPresenter, IDisposable
     {
         private readonly AddIn _addin;
-        private Window _window;
-        protected UserControl UserControl;
+        private readonly Logger _logger;
+        private readonly Window _window;
+        protected readonly UserControl UserControl;
 
         protected DockablePresenterBase(VBE vbe, AddIn addin, IDockableUserControl control)
         {
             _vbe = vbe;
             _addin = addin;
+            _logger = LogManager.GetCurrentClassLogger();
+            _logger.Trace("Initializing Dockable Panel");
             UserControl = control as UserControl;
             _window = CreateToolWindow(control);
         }
@@ -33,13 +37,18 @@ namespace Rubberduck.UI
             Window toolWindow;
             try
             {
+                _logger.Trace("Loading \"{0}\" ClassId {1}", control.Caption, control.ClassId);
                 toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
                     control.Caption, control.ClassId, ref userControlObject);
             }
-            catch (COMException)
+            catch (COMException exception)
             {
-                toolWindow = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId,
-                    control.Caption, control.ClassId, ref userControlObject);
+                var logEvent = new LogEventInfo(LogLevel.Error, _logger.Name,  "Error Creating Control");
+                logEvent.Exception = exception;
+                logEvent.Properties.Add("EventID", 1);
+
+                _logger.Error(logEvent);
+                throw;
             }
             var userControlHost = (_DockableWindowHost)userControlObject;
             toolWindow.Visible = true; //window resizing doesn't work without this

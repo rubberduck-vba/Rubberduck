@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using Microsoft.Vbe.Interop;
+using NLog;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -9,6 +11,8 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
+using Rubberduck.VBEditor;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Rubberduck
 {
@@ -21,8 +25,9 @@ namespace Rubberduck
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
 
-        private IRubberduckParser _parser;
         private IParserErrorsPresenter _parserErrorsPresenter;
+        private readonly Logger _logger;
+        private IRubberduckParser _parser;
 
         private Configuration _config;
 
@@ -39,6 +44,7 @@ namespace Rubberduck
             _inspectorFactory = inspectorFactory;
             _configService = configService;
             _appMenus = appMenus;
+            _logger = LogManager.GetCurrentClassLogger();
 
             _configService.SettingsChanged += _configService_SettingsChanged;
         }
@@ -65,6 +71,8 @@ namespace Rubberduck
 
         private void LoadConfig()
         {
+
+            _logger.Debug("Loading configuration");
             _config = _configService.LoadConfiguration();
 
             var currentCulture = RubberduckUI.Culture;
@@ -74,6 +82,7 @@ namespace Rubberduck
             }
             catch (CultureNotFoundException exception)
             {
+                _logger.Error(exception, "Error Setting Culture for RubberDuck");
                 _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _config.UserSettings.LanguageSetting.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
