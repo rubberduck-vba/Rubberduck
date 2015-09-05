@@ -6,12 +6,12 @@ namespace Rubberduck.VBEditor
     public class ActiveCodePaneEditor : IActiveCodePaneEditor
     {
         private readonly VBE _vbe;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ActiveCodePaneEditor(VBE vbe, IRubberduckCodePaneFactory factory)
+        public ActiveCodePaneEditor(VBE vbe, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         private CodeModule Editor { get { return _vbe.ActiveCodePane == null ? null : _vbe.ActiveCodePane.CodeModule; } }
@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor
                 return null;
             }
 
-            var codePane = _factory.Create(Editor.CodePane);
+            var codePane = _wrapperFactory.Create(Editor.CodePane);
             return new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
         }
 
@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor
                 return;
             }
 
-            var codePane = _factory.Create(Editor.CodePane);
+            var codePane = _wrapperFactory.Create(Editor.CodePane);
             codePane.Selection = selection;
         }
 

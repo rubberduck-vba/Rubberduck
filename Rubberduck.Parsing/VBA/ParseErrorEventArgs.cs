@@ -8,15 +8,15 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParseErrorEventArgs : EventArgs
     {
-        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component, IRubberduckCodePaneFactory factory)
+        public ParseErrorEventArgs(SyntaxErrorException exception, VBComponent component, ICodePaneWrapperFactory wrapperFactory)
         {
             _exception = exception;
             _component = component;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         private readonly SyntaxErrorException _exception;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         public SyntaxErrorException Exception { get { return _exception; } }
 
         private readonly VBComponent _component;
@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.VBA
         public void Navigate()
         {
             var selection = new Selection(_exception.LineNumber, _exception.Position, _exception.LineNumber, _exception.Position + _exception.OffendingSymbol.Text.Length - 1);
-            var codePane = _factory.Create(_component.CodeModule.CodePane);
+            var codePane = _wrapperFactory.Create(_component.CodeModule.CodePane);
             codePane.Selection = selection;
         }
     }

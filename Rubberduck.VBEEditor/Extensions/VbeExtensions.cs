@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.VBEHost;
@@ -7,11 +8,12 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class VbeExtensions
     {
-        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name, IRubberduckCodePaneFactory factory)
+        public static void SetSelection(this VBE vbe, VBProject vbProject, Selection selection, string name,
+            ICodePaneWrapperFactory wrapperFactory)
         {
             var project = vbe.VBProjects.Cast<VBProject>()
-                             .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked 
-                                               && ReferenceEquals(p, vbProject));
+                .SingleOrDefault(p => p.Protection != vbext_ProjectProtection.vbext_pp_locked
+                                      && ReferenceEquals(p, vbProject));
 
             VBComponent component = null;
             if (project != null)
@@ -25,8 +27,14 @@ namespace Rubberduck.VBEditor.Extensions
                 return;
             }
 
-            var codePane = factory.Create(component.CodeModule.CodePane);
-            codePane.Selection = selection;
+            try
+            {
+                var codePane = wrapperFactory.Create(component.CodeModule.CodePane);
+                codePane.Selection = selection;
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         public static CodeModuleSelection FindInstruction(this VBE vbe, QualifiedModuleName qualifiedModuleName, Selection selection)

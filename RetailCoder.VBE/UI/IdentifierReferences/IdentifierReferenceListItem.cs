@@ -7,12 +7,12 @@ namespace Rubberduck.UI.IdentifierReferences
     public class IdentifierReferenceListItem
     {
         private readonly IdentifierReference _reference;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public IdentifierReferenceListItem(IdentifierReference reference, IRubberduckCodePaneFactory factory)
+        public IdentifierReferenceListItem(IdentifierReference reference, ICodePaneWrapperFactory wrapperFactory)
         {
             _reference = reference;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public IdentifierReference GetReferenceItem()

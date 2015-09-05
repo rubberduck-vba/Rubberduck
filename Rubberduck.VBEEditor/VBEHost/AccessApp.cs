@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.VBEHost
             Application.Run(call);
         }
 
-        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             //Access only supports Project.Procedure syntax. Error occurs if there are naming conflicts.
             // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx

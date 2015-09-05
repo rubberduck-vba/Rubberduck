@@ -7,8 +7,8 @@ namespace Rubberduck.UI.SourceControl
     public interface ISourceControlProviderFactory
     {
         ISourceControlProvider CreateProvider(VBProject project);
-        ISourceControlProvider CreateProvider(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory);
-        ISourceControlProvider CreateProvider(VBProject isAny, IRepository repository, SecureCredentials secureCredentials, IRubberduckCodePaneFactory factory);
+        ISourceControlProvider CreateProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory);
+        ISourceControlProvider CreateProvider(VBProject isAny, IRepository repository, SecureCredentials secureCredentials, ICodePaneWrapperFactory wrapperFactory);
     }
 
     public class SourceControlProviderFactory : ISourceControlProviderFactory
@@ -18,14 +18,14 @@ namespace Rubberduck.UI.SourceControl
             return new GitProvider(project);
         }
 
-        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, IRubberduckCodePaneFactory factory)
+        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, ICodePaneWrapperFactory wrapperFactory)
         {
-            return new GitProvider(project, repository, factory);
+            return new GitProvider(project, repository, wrapperFactory);
         }
 
-        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, SecureCredentials creds, IRubberduckCodePaneFactory factory)
+        public ISourceControlProvider CreateProvider(VBProject project, IRepository repository, SecureCredentials creds, ICodePaneWrapperFactory wrapperFactory)
         {
-            return new GitProvider(project, repository, creds, factory);
+            return new GitProvider(project, repository, creds, wrapperFactory);
         }
     }
 }

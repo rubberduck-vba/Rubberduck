@@ -4,18 +4,29 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
+    [ComVisible(false)]
     public abstract class HostApplicationBase<TApplication> : IHostApplication
         where TApplication : class
     {
+        private readonly string _applicationName;
         protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
         {
+            _applicationName = applicationName;
             Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
         }
 
         ~HostApplicationBase()
         {
-            Marshal.ReleaseComObject(Application);
+            if (Application != null)
+            {
+                Marshal.ReleaseComObject(Application);
+            }
+        }
+
+        public string ApplicationName
+        {
+            get { return _applicationName; }
         }
 
         public abstract void Run(QualifiedMemberName qualifiedMemberName);

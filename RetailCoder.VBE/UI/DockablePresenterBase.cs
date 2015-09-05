@@ -6,7 +6,12 @@ using NLog;
 
 namespace Rubberduck.UI
 {
-    public abstract class DockablePresenterBase : IDisposable
+    public interface IPresenter
+    {
+        void Show();
+    }
+
+    public abstract class DockablePresenterBase : IPresenter, IDisposable
     {
         private readonly AddIn _addin;
         private readonly Logger _logger;
@@ -61,28 +66,25 @@ namespace Rubberduck.UI
             const int defaultWidth = 350;
             const int defaultHeight = 200;
 
-            if (window.Visible && window.LinkedWindows == null) //checking these conditions prevents errors
+            if (!window.Visible || window.LinkedWindows != null)
             {
-                if (window.Width < defaultWidth)
-                {
-                    window.Width = defaultWidth;
-                }
+                return;
+            }
 
-                if (window.Height < defaultHeight)
-                {
-                    window.Height = defaultHeight;
-                }
+            if (window.Width < defaultWidth)
+            {
+                window.Width = defaultWidth;
+            }
+
+            if (window.Height < defaultHeight)
+            {
+                window.Height = defaultHeight;
             }
         }
 
         public virtual void Show()
         {
             _window.Visible = true;
-        }
-
-        public virtual void Close()
-        {
-            _window.Close();
         }
 
         public void Dispose()

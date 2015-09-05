@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.VBEHost
             Application.Run(call, paramArray);
         }
 
-        protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             /* Note: Powerpoint supports a `FileName.ppt!Module.method` syntax
              * http://msdn.microsoft.com/en-us/library/office/ff744221(v=office.15).aspx

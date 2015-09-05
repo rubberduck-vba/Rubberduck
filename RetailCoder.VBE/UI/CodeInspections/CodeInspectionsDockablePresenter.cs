@@ -21,16 +21,12 @@ namespace Rubberduck.UI.CodeInspections
         private IList<ICodeInspectionResult> _results;
         private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         /// <summary>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
-        /// <param name="inspector"></param>
-        /// <param name="vbe"></param>
-        /// <param name="addin"></param>
-        /// <param name="window"></param>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, GridViewSort<CodeInspectionResultGridViewItem> gridViewSort, IRubberduckCodePaneFactory factory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, ICodePaneWrapperFactory wrapperFactory)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -39,8 +35,8 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Parsing += _inspector_Parsing;
             _inspector.ParseCompleted += _inspector_ParseCompleted;
 
-            _gridViewSort = gridViewSort;
-            _factory = factory;
+            _gridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
+            _wrapperFactory = wrapperFactory;
 
             Control.RefreshCodeInspections += Control_RefreshCodeInspections;
             Control.NavigateCodeIssue += Control_NavigateCodeIssue;
@@ -153,12 +149,16 @@ namespace Rubberduck.UI.CodeInspections
                 {
                     return;
                 }
-                var codePane = _factory.Create(e.QualifiedName.Component.CodeModule.CodePane);
+                var codePane = _wrapperFactory.Create(e.QualifiedName.Component.CodeModule.CodePane);
                 codePane.Selection = e.Selection;
             }
             catch (COMException)
             {
                 // gulp
+            }
+            catch (Exception exception)
+            {
+                // debug    
             }
         }
 
@@ -176,27 +176,19 @@ namespace Rubberduck.UI.CodeInspections
             Control.EnableRefresh(false);
             Control.Cursor = Cursors.WaitCursor;
 
-            try
+            await Task.Run(() => RefreshAsync(token), token);
+            if (_results != null)
             {
-                await Task.Run(() => RefreshAsync(token), token);
-                if (_results != null)
-                {
-                    var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
+                var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
 
-                    Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
-                    _gridViewSort.Sort(results, _gridViewSort.ColumnName,
-                        _gridViewSort.SortedAscending).ToList()));
-                }
+                Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
+                _gridViewSort.Sort(results, _gridViewSort.ColumnName,
+                    _gridViewSort.SortedAscending).ToList()));
             }
-            catch (TaskCanceledException)
-            {
-            }
-            finally
-            {
-                Control.SetIssuesStatus(_issues, true);
-                Control.EnableRefresh();
-                Control.Cursor = Cursors.Default;
-            }
+
+            Control.SetIssuesStatus(_issues, true);
+            Control.EnableRefresh();
+            Control.Cursor = Cursors.Default;
         }
 
         private async Task RefreshAsync(CancellationToken token)

@@ -12,7 +12,7 @@ namespace Rubberduck.SourceControl.Interop
     public interface _ISourceControlClassFactory
     {
         [DispId(1)]
-        ISourceControlProvider CreateGitProvider(VBProject project, IRubberduckCodePaneFactory factory, [Optional] IRepository repository, [Optional] ICredentials credentials);
+        ISourceControlProvider CreateGitProvider(VBProject project, ICodePaneWrapperFactory wrapperFactory, [Optional] IRepository repository, [Optional] ICredentials credentials);
 
         [DispId(2)]
         IRepository CreateRepository(string name, string localDirectory, [Optional] string remotePathOrUrl);
@@ -28,7 +28,7 @@ namespace Rubberduck.SourceControl.Interop
     public class SourceControlClassFactory : _ISourceControlClassFactory
     {
         [Description("Returns a new GitProvider. IRepository must be supplied if also passing user credentials.")]
-        public ISourceControlProvider CreateGitProvider(VBProject project, IRubberduckCodePaneFactory factory, [Optional] IRepository repository, [Optional] ICredentials credentials)
+        public ISourceControlProvider CreateGitProvider(VBProject project, ICodePaneWrapperFactory wrapperFactory, [Optional] IRepository repository, [Optional] ICredentials credentials)
         {
             if (credentials != null)
             {
@@ -37,12 +37,12 @@ namespace Rubberduck.SourceControl.Interop
                     throw new ArgumentNullException("Must supply an IRepository if supplying credentials.");
                 }
 
-                return new GitProvider(project, repository, credentials, factory);
+                return new GitProvider(project, repository, credentials, wrapperFactory);
             }
 
             if (repository != null) 
             {
-                return new GitProvider(project, repository, factory);
+                return new GitProvider(project, repository, wrapperFactory);
             }
 
             return new GitProvider(project);

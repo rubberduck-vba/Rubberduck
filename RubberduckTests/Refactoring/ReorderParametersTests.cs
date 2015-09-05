@@ -13,6 +13,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using RubberduckTests.Mocks;
+using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace RubberduckTests.Refactoring
 {
@@ -39,7 +40,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -78,7 +79,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -111,7 +112,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -161,7 +162,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -217,7 +218,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -266,7 +267,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -315,7 +316,7 @@ End Function";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -365,7 +366,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -412,7 +413,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -459,7 +460,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -499,7 +500,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -533,7 +534,7 @@ End Property";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -558,7 +559,7 @@ End Property";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -593,7 +594,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -651,7 +652,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -697,7 +698,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -764,7 +765,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -852,7 +853,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -897,7 +898,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -956,7 +957,7 @@ End Sub
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1008,7 +1009,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1054,7 +1055,7 @@ End Property";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1088,7 +1089,7 @@ End Sub";
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
             var module = project.VBComponents.Item(0).CodeModule;
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var editor = new Mock<IActiveCodePaneEditor>();
@@ -1138,7 +1139,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1195,7 +1196,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1263,7 +1264,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1323,7 +1324,7 @@ End Sub";
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1374,7 +1375,7 @@ End Sub";
                 .Build().Object;
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1422,7 +1423,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1479,7 +1480,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1548,7 +1549,7 @@ End Sub";   // note: IDE removes excess spaces
             var vbe = builder.Build();
             var component = project.VBComponents.Item(0);
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1587,7 +1588,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1595,7 +1596,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new MessageBox());
             model.Parameters.Reverse();
 
             var view = new Mock<IReorderParametersView>();
@@ -1623,7 +1624,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1631,7 +1632,7 @@ End Sub";
             var editor = new Mock<IActiveCodePaneEditor>();
             editor.Setup(e => e.GetSelection()).Returns(qualifiedSelection);
 
-            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new RubberduckMessageBox());
+            var model = new ReorderParametersModel(parseResult, qualifiedSelection, new MessageBox());
 
             var view = new Mock<IReorderParametersView>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
@@ -1661,7 +1662,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1697,7 +1698,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1734,7 +1735,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1766,7 +1767,7 @@ End Sub";
             VBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects.Item(0);
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var editor = new Mock<IActiveCodePaneEditor>();

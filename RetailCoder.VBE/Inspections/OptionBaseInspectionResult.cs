@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections
 {
     public class OptionBaseInspectionResult : CodeInspectionResultBase
     {
-        public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, IRubberduckCodePaneFactory factory)
+        public OptionBaseInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ICodePaneWrapperFactory wrapperFactory)
             : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
         {
         }

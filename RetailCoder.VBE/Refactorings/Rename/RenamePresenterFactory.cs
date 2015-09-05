@@ -12,20 +12,20 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IRenameView _view;
         private readonly VBProjectParseResult _parseResult;
         private readonly IMessageBox _messageBox;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IMessageBox messageBox, IRubberduckCodePaneFactory factory)
+        public RenamePresenterFactory(VBE vbe, IRenameView view, VBProjectParseResult parseResult, IMessageBox messageBox, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _view = view;
             _parseResult = parseResult;
             _messageBox = messageBox;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public RenamePresenter Create()
         {
-            var codePane = _factory.Create(_vbe.ActiveCodePane);
+            var codePane = _wrapperFactory.Create(_vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent),
                 codePane.Selection);
             return new RenamePresenter(_view, new RenameModel(_vbe, _parseResult, selection, _messageBox));

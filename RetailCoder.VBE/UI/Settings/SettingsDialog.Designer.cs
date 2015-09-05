@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.Settings
 {
-    partial class _SettingsDialog
+    partial class SettingsDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -140,7 +140,7 @@ namespace Rubberduck.UI.Settings
             this.ResetButton.Text = "Reset";
             this.ResetButton.UseVisualStyleBackColor = false;
             // 
-            // _SettingsDialog
+            // SettingsDialog
             // 
             this.AcceptButton = this.OkButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,7 +154,7 @@ namespace Rubberduck.UI.Settings
             this.Icon = global::Rubberduck.UI.RubberduckUI.Ducky;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "_SettingsDialog";
+            this.Name = "SettingsDialog";
             this.ShowInTaskbar = false;
             this.Text = "Rubberduck Settings";
             this.TopMost = true;

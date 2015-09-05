@@ -5,7 +5,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 {
-    public class RubberduckCodePane : IRubberduckCodePane
+    public class CodePaneWrapper : ICodePaneWrapper
     {
         private readonly CodePane _codePane;
         public CodePane CodePane { get { return _codePane; } }
@@ -21,8 +21,9 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
         public CodeModule CodeModule { get { return _codePane.CodeModule; } }
         public vbext_CodePaneview CodePaneView { get { return _codePane.CodePaneView; } }
 
-        public RubberduckCodePane(CodePane codePane)
+        public CodePaneWrapper(CodePane codePane)
         {
+            // bug: if there's no active code pane, we're creating (and using) an invalid object -> NullReferenceException
             _codePane = codePane;
         }
 

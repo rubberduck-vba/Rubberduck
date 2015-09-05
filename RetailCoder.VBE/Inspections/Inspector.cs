@@ -10,20 +10,26 @@ using Rubberduck.Settings;
 
 namespace Rubberduck.Inspections
 {
+    public interface IInspectorFactory
+    {
+        IInspector Create();
+    }
+
     public class Inspector : IInspector, IDisposable
     {
         private readonly IRubberduckParser _parser;
         private readonly IGeneralConfigService _configService;
-        private readonly IList<IInspection> _inspections;
+        private readonly IEnumerable<IInspection> _inspections;
 
-        public Inspector(IRubberduckParser parser, IGeneralConfigService configService)
+        public Inspector(IRubberduckParser parser, IGeneralConfigService configService, IEnumerable<IInspection> inspections)
         {
+            _inspections = inspections;
+
             _parser = parser;
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParseCompleted += _parser_ParseCompleted;
 
             _configService = configService;
-            _inspections = configService.GetImplementedCodeInspections();
             configService.SettingsChanged += ConfigServiceSettingsChanged;
             UpdateInspectionSeverity();
         }

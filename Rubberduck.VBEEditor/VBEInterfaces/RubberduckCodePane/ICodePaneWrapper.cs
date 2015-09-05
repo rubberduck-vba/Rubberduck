@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 {
-    public interface IRubberduckCodePane
+    public interface ICodePaneWrapper
     {
         CodePane CodePane { get; }
 

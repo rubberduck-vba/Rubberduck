@@ -1,21 +1,22 @@
 using System;
-using Microsoft.Vbe.Interop;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.VBEHost
 {
-    public class OutlookApp : HostApplicationBase<Application>
+    [ComVisible(false)]
+    public class OutlookApp : HostApplicationBase<Microsoft.Office.Interop.Outlook.Application>
     {
-        public OutlookApp() : base("Outlook") { }
+        public OutlookApp() : base("Outlook")
+        {
+        }
 
         public override void Run(QualifiedMemberName qualifiedMemberName)
         {
-            //Outlook does not support the run method.
-            throw new NotImplementedException("Unit Testing not supported for Outlook");
-        }
-
-        protected virtual string GenerateMethodCall(string projectName, string moduleName, string methodName)
-        {
-            return string.Concat(moduleName, ".", methodName);
+            // note: does not work. http://stackoverflow.com/q/31954364/1188513
+            //var app = Application.GetType();
+            //app.InvokeMember(qualifiedMemberName.MemberName, BindingFlags.InvokeMethod | BindingFlags.Default, null, Application, null);
+            throw new NotImplementedException();
         }
     }
 }

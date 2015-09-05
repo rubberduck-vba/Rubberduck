@@ -17,17 +17,17 @@ namespace Rubberduck.UI.CodeExplorer
     public class CodeExplorerDockablePresenter : DockablePresenterBase
     {
         private readonly IRubberduckParser _parser;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private CodeExplorerWindow Control { get { return UserControl as CodeExplorerWindow; } }
 
-        public CodeExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addIn, CodeExplorerWindow view, IRubberduckCodePaneFactory factory)
+        public CodeExplorerDockablePresenter(IRubberduckParser parser, VBE vbe, AddIn addIn, CodeExplorerWindow view, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addIn, view)
         {
             _parser = parser;
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParseCompleted += _parser_ParseCompleted;
             RegisterControlEvents();
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         private void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
@@ -244,7 +244,7 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = e.Declaration;
             if (declaration != null)
             {
-                VBE.SetSelection(declaration.QualifiedName.QualifiedModuleName.Project, declaration.Selection, declaration.QualifiedName.QualifiedModuleName.Component.Name, _factory);
+                VBE.SetSelection(declaration.QualifiedName.QualifiedModuleName.Project, declaration.Selection, declaration.QualifiedName.QualifiedModuleName.Component.Name, _wrapperFactory);
             }
         }
 

@@ -23,15 +23,15 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IEnumerable<ToDoMarker> _markers;
         private readonly GridViewSort<ToDoItem> _gridViewSort;
         private readonly IToDoExplorerWindow _view;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
-        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, GridViewSort<ToDoItem> gridViewSort, IRubberduckCodePaneFactory factory)
+        public ToDoExplorerDockablePresenter(IRubberduckParser parser, IEnumerable<ToDoMarker> markers, VBE vbe, AddIn addin, IToDoExplorerWindow window, ICodePaneWrapperFactory wrapperFactory)
             : base(vbe, addin, window)
         {
             _parser = parser;
             _markers = markers;
-            _gridViewSort = gridViewSort;
-            _factory = factory;
+            _gridViewSort = new GridViewSort<ToDoItem>(RubberduckUI.Priority, false);
+            _wrapperFactory = wrapperFactory;
 
             _view = window;
             _view.NavigateToDoItem += NavigateToDoItem;
@@ -48,16 +48,11 @@ namespace Rubberduck.UI.ToDoItems
 
         public async void Refresh()
         {
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                var results = await GetItems();
-                _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
+            Cursor.Current = Cursors.WaitCursor;
+            var results = await GetItems();
+            _view.TodoItems = _gridViewSort.Sort(results, _gridViewSort.ColumnName, _gridViewSort.SortedAscending);
+            
+            Cursor.Current = Cursors.Default;
         }
 
         private void RefreshToDoList(object sender, EventArgs e)
@@ -148,7 +143,7 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            var codePane = _factory.Create(component.CodeModule.CodePane);
+            var codePane = _wrapperFactory.Create(component.CodeModule.CodePane);
             codePane.Selection = e.SelectedItem.GetSelection().Selection;
         }
     }

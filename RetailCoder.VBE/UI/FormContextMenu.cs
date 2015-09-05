@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
@@ -10,22 +11,32 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
-    internal class FormContextMenu
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class FormContextMenuAttribute : Attribute
+    {
+    }
+
+    public interface IMenu
+    {
+        void Initialize();
+    }
+
+    internal class FormContextMenu : IMenu
     {
         private readonly IRubberduckParser _parser;
         private readonly IActiveCodePaneEditor _editor;
         private readonly VBE _vbe;
-        private readonly IRubberduckCodePaneFactory _factory;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         // ReSharper disable once NotAccessedField.Local
         private CommandBarButton _rename;
 
-        public FormContextMenu(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, IRubberduckCodePaneFactory factory)
+        public FormContextMenu(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperFactory)
         {
             _vbe = vbe;
             _parser = parser;
             _editor = editor;
-            _factory = factory;
+            _wrapperFactory = wrapperFactory;
         }
 
         public void Initialize()
@@ -62,8 +73,8 @@ namespace Rubberduck.UI
 
                 using (var view = new RenameDialog())
                 {
-                    var factory = new RenamePresenterFactory(_vbe, view, result, new RubberduckMessageBox(), _factory);
-                    var refactoring = new RenameRefactoring(factory, _editor, new RubberduckMessageBox());
+                    var factory = new RenamePresenterFactory(_vbe, view, result, new MessageBox(), _wrapperFactory);
+                    var refactoring = new RenameRefactoring(factory, _editor, new MessageBox());
                     refactoring.Refactor(controlToRename);
                 }
             }

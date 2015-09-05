@@ -2,8 +2,8 @@
 
 namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
 {
-    public interface IRubberduckCodePaneFactory
+    public interface ICodePaneWrapperFactory
     {
-        IRubberduckCodePane Create(CodePane codePane);
+        ICodePaneWrapper Create(CodePane codePane);
     }
 }

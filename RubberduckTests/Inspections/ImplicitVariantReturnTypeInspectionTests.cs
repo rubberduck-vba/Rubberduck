@@ -25,7 +25,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -47,7 +47,7 @@ End Property";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -72,7 +72,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -94,7 +94,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -119,7 +119,7 @@ End Function";
                 .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
                 .Build().Object;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -146,7 +146,7 @@ End Function";
                 .Build().Object;
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
@@ -175,7 +175,7 @@ End Property";
                 .Build().Object;
             var module = project.VBComponents.Item(0).CodeModule;
 
-            var codePaneFactory = new RubberduckCodePaneFactory();
+            var codePaneFactory = new CodePaneWrapperFactory();
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ImplicitVariantReturnTypeInspection();
