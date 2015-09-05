@@ -152,7 +152,17 @@ namespace Rubberduck.SourceControl
                     repo.Stage(stat.FilePath);
                 }
 
-                repo.Commit("Intial Commit");
+                try
+                {
+                    //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                    // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                    // so we pass a signature that won't throw along to the commit.
+                    repo.Commit("Intial Commit", GetSignature());
+                }
+                catch(LibGit2SharpException ex)
+                {
+                    throw new SourceControlException("Unable to perform intial commit.", ex);
+                }
             }
 
             return repository;
@@ -240,7 +250,10 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Commit(message);
+                //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
+                // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
+                // so we pass a signature that won't throw along to the commit.
+                _repo.Commit(message, GetSignature());
             }
             catch (LibGit2SharpException ex)
             {
