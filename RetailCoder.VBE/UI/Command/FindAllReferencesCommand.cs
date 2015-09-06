@@ -26,10 +26,9 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var param = (Declaration)parameter;
-            _service.Find(param);
+            var declaration = (Declaration)parameter;
+            _service.Find(declaration);
         }
-
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]

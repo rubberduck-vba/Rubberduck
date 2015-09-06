@@ -215,11 +215,6 @@ namespace Rubberduck.UI
                 _codeExplorerMenu.Dispose();
             }
 
-            if (_testMenu != null)
-            {
-                _testMenu.Dispose();
-            }
-
             if (_codeInspectionsMenu != null)
             {
                 _codeInspectionsMenu.Dispose();
