@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections
         {
             _quickFixes = new[]
             {
-                new RemoveExplicitCallStatemntQuickFix(Context, QualifiedSelection), 
+                new RemoveExplicitLetStatementQuickFix(Context, QualifiedSelection), 
             };
         }
 
