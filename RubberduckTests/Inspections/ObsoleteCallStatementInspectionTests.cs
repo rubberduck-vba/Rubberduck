@@ -146,9 +146,13 @@ End Sub";
             var inspection = new ObsoleteCallStatementInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            foreach (var inspectionResult in inspectionResults)
+            {
+                inspectionResult.QuickFixes.First().Fix();
+            }
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            var actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]

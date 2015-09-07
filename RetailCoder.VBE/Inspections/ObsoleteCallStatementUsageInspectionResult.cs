@@ -58,10 +58,11 @@ namespace Rubberduck.Inspections
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
-            var argsList = arguments == null
-                ? new[] { string.Empty }
-                : arguments.argCall().Select(e => e.GetText());
-            var newInstruction = procedure + ' ' + string.Join(", ", argsList);
+            var argsList = (arguments == null
+                ? new string[] { }
+                : arguments.argCall().Select(e => e.GetText()))
+            .ToList();
+            var newInstruction = procedure + (argsList.Any() ? ' ' + string.Join(", ", argsList) : string.Empty);
             var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
 
             module.InsertLines(selection.StartLine, newCodeLines);
