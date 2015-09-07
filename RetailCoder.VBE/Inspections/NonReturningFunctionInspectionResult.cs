@@ -4,48 +4,51 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
     public class NonReturningFunctionInspectionResult : CodeInspectionResultBase
     {
-        private readonly bool _isInterfaceImplementation;
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
         public NonReturningFunctionInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> qualifiedContext, bool isInterfaceImplementation)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _isInterfaceImplementation = isInterfaceImplementation;
+            _quickFixes = isInterfaceImplementation ? null
+                : new[]
+                {
+                    new ConvertToProcedureQuickFix(Context, QualifiedSelection),
+                };
         }
 
-        private new VBAParser.FunctionStmtContext Context { get { return base.Context as VBAParser.FunctionStmtContext; } }
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+    public class ConvertToProcedureQuickFix : CodeInspectionQuickFix
+    {
+        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_ConvertFunctionToProcedure)
         {
-            var result = new Dictionary<string, Action>();
-            if (!_isInterfaceImplementation) // changing procedure type would break interface implementation
-            {
-                result.Add(RubberduckUI.Inspections_ConvertFunctionToProcedure, ConvertFunctionToProcedure);
-            }
-
-            return result;
         }
 
-        private void ConvertFunctionToProcedure()
+        public override void Fix()
         {
-            var visibility = Context.visibility() == null ? string.Empty : Context.visibility().GetText() + ' ';
-            var name = ' ' + Context.ambiguousIdentifier().GetText();
-            var args = Context.argList().GetText();
-            var asType = Context.asTypeClause() == null ? string.Empty : ' ' + Context.asTypeClause().GetText();
+            var context = (VBAParser.FunctionStmtContext) Context;
+            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
+            var name = ' ' + context.ambiguousIdentifier().GetText();
+            var args = context.argList().GetText();
+            var asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
 
             var oldSignature = visibility + Tokens.Function + name + args + asType;
-            var newSignature = visibility +  Tokens.Sub + name + args;
+            var newSignature = visibility + Tokens.Sub + name + args;
 
             var procedure = Context.GetText();
             var result = procedure.Replace(oldSignature, newSignature)
                 .Replace(Tokens.End + ' ' + Tokens.Function, Tokens.End + ' ' + Tokens.Sub)
                 .Replace(Tokens.Exit + ' ' + Tokens.Function, Tokens.Exit + ' ' + Tokens.Sub);
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             var selection = Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);

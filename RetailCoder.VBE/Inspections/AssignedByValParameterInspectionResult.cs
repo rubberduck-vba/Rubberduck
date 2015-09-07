@@ -9,29 +9,38 @@ namespace Rubberduck.Inspections
 {
     public class AssignedByValParameterInspectionResult : CodeInspectionResultBase
     {
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
         public AssignedByValParameterInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, type, qualifiedName.QualifiedModuleName, context)
         {
-        }
-
-        public override IDictionary<string, Action> GetQuickFixes()
-        {
-            return new Dictionary<string, Action>
+            _quickFixes = new[]
             {
-                {RubberduckUI.Inspections_PassParamByReference, PassParameterByReference}
-                //,{RubberduckUI.InspectionsIntroduceLocalVariable, IntroduceLocalVariable}
+                new PassParameterByReferenceQuickFix(context, QualifiedSelection),
             };
         }
 
-        //note: vbe parameter is not used
-        private void PassParameterByReference()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    /// <summary>
+    /// Encapsulates a code inspection quickfix that changes a ByVal parameter into an explicit ByRef parameter.
+    /// </summary>
+    public class PassParameterByReferenceQuickFix : CodeInspectionQuickFix
+    {
+        public PassParameterByReferenceQuickFix(ParserRuleContext context, QualifiedSelection selection) 
+            : base(context, selection, RubberduckUI.Inspections_PassParamByReference)
+        {
+        }
+
+        public override void Fix()
         {
             var parameter = Context.GetText();
             var newContent = string.Concat(Tokens.ByRef, " ", parameter.Replace(Tokens.ByVal, string.Empty).Trim());
-            var selection = QualifiedSelection.Selection;
+            var selection = Selection.Selection;
 
-            var module = QualifiedName.Component.CodeModule;
+            var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.get_Lines(selection.StartLine, selection.LineCount);
 
             var result = lines.Replace(parameter, newContent);

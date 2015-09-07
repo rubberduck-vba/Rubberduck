@@ -161,10 +161,10 @@ namespace Rubberduck.UI.CodeInspections
         {
             try
             {
-                var fix = _issues[_currentIssue].GetQuickFixes().FirstOrDefault();
-                if (!string.IsNullOrEmpty(fix.Key))
+                var fix = _issues[_currentIssue].QuickFixes.FirstOrDefault();
+                if (fix != null)
                 {
-                    fix.Value();
+                    fix.Fix();
                     _refreshButton_Click(null, ref CancelDefault);
                     _navigateNextButton_Click(null, ref CancelDefault);
                 }
@@ -250,13 +250,13 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var fix = _issues[_currentIssue].GetQuickFixes().FirstOrDefault();
-            if (string.IsNullOrEmpty(fix.Key))
+            var fix = _issues[_currentIssue].QuickFixes.FirstOrDefault();
+            if (fix == null)
             {
                 _quickFixButton.Enabled = false;
             }
 
-            _quickFixButton.TooltipText = fix.Key;
+            _quickFixButton.TooltipText = fix.Description;
             _statusButton.TooltipText = _issues[_currentIssue].Name;
         }
 
