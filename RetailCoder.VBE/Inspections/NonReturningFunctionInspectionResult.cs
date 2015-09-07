@@ -15,7 +15,8 @@ namespace Rubberduck.Inspections
         public NonReturningFunctionInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> qualifiedContext, bool isInterfaceImplementation)
             : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            _quickFixes = isInterfaceImplementation ? null
+            _quickFixes = isInterfaceImplementation 
+                ? new CodeInspectionQuickFix[] { }
                 : new[]
                 {
                     new ConvertToProcedureQuickFix(Context, QualifiedSelection),
