@@ -123,8 +123,7 @@ namespace Rubberduck.Refactorings.Rename
             var ambiguousId = AmbiguousId();
             if (ambiguousId != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    ambiguousId.IdentifierName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, ambiguousId.IdentifierName);
                 var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
@@ -164,7 +163,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             else
             {
-                RenameDeclaration();
+                RenameDeclaration(_model.Target, _model.NewName);
             }
         }
 
@@ -216,39 +215,39 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void RenameDeclaration()
+        private void RenameDeclaration(Declaration target, string newName)
         {
-            if (_model.Target.DeclarationType == DeclarationType.Control)
+            if (target.DeclarationType == DeclarationType.Control)
             {
                 RenameControl();
                 return;
             }
 
-            var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            var newContent = GetReplacementLine(module, _model.Target, _model.NewName);
+            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var newContent = GetReplacementLine(module, target, newName);
 
-            if (_model.Target.DeclarationType == DeclarationType.Parameter)
+            if (target.DeclarationType == DeclarationType.Parameter)
             {
-                var argList = (VBAParser.ArgListContext)_model.Target.Context.Parent;
+                var argList = (VBAParser.ArgListContext)target.Context.Parent;
                 var lineNum = argList.GetSelection().LineCount;
 
                 module.ReplaceLine(argList.Start.Line, newContent);
                 module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
             }
-            else if (!_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
+            else if (!target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                module.ReplaceLine(_model.Target.Selection.StartLine, newContent);
+                module.ReplaceLine(target.Selection.StartLine, newContent);
             }
             else
             {
-                var members = _model.Declarations[_model.Target.IdentifierName]
-                    .Where(item => item.Project == _model.Target.Project
-                        && item.ComponentName == _model.Target.ComponentName
+                var members = _model.Declarations[target.IdentifierName]
+                    .Where(item => item.Project == target.Project
+                        && item.ComponentName == target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
                 foreach (var member in members)
                 {
-                    newContent = GetReplacementLine(module, member, _model.NewName);
+                    newContent = GetReplacementLine(module, member, newName);
                     module.ReplaceLine(member.Selection.StartLine, newContent);
                 }
             }
@@ -284,6 +283,16 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameUsages(Declaration target, string interfaceName = null)
         {
             // todo: refactor
+
+
+            if (target.DeclarationType == DeclarationType.Event)
+            {
+                var handlers = _model.Declarations.FindHandlersForEvent(target);
+                foreach (var handler in handlers)
+                {
+                    RenameDeclaration(handler.Item2, handler.Item1.IdentifierName + '_' + _model.NewName);
+                }
+            }
 
             // rename interface member
             if (_model.Declarations.FindInterfaceMembers().Contains(target))
