@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -21,24 +23,47 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            //note: this misses calls to procedures/functions without a Declaration object.
-            // alternative is to walk the tree and listen for "CallStmt".
+            var issues = new List<ObsoleteCallStatementUsageInspectionResult>();
+            foreach (var result in parseResult.ComponentParseResults)
+            {
+                var listener = new ObsoleteCallStatementListener();
+                var walker = new ParseTreeWalker();
 
-            var calls = (from declaration in parseResult.Declarations.Items
-                from reference in declaration.References
-                where (reference.Declaration.DeclarationType == DeclarationType.Function
-                       || reference.Declaration.DeclarationType == DeclarationType.Procedure)
-                      && reference.HasExplicitCallStatement()
-                select reference).ToList();
-
-            var issues = from reference in calls
-                let context = reference.Context.Parent.Parent as VBAParser.ExplicitCallStmtContext
-                where context != null
-                let qualifiedContext = new QualifiedContext<VBAParser.ExplicitCallStmtContext>
-                    (reference.QualifiedModuleName, (VBAParser.ExplicitCallStmtContext)reference.Context.Parent.Parent)
-                select new ObsoleteCallStatementUsageInspectionResult(Description, Severity, qualifiedContext);
+                walker.Walk(listener, result.ParseTree);
+                issues.AddRange(listener.Contexts.Select(context => new ObsoleteCallStatementUsageInspectionResult(Description, Severity,
+                    new QualifiedContext<VBAParser.ExplicitCallStmtContext>(result.QualifiedName, context))));
+            }
 
             return issues;
+        }
+
+        private class ObsoleteCallStatementListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.ExplicitCallStmtContext> _contexts = new List<VBAParser.ExplicitCallStmtContext>();
+            public IEnumerable<VBAParser.ExplicitCallStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterExplicitCallStmt(VBAParser.ExplicitCallStmtContext context)
+            {
+                var procedureCall = context.eCS_ProcedureCall();
+                if (procedureCall != null)
+                {
+                    if (procedureCall.CALL() != null)
+                    {
+                        _contexts.Add(context);
+                        return;
+                    }
+                }
+
+                var memberCall = context.eCS_MemberProcedureCall();
+                if (memberCall != null)
+                {
+                    if (memberCall.CALL() != null)
+                    {
+                        _contexts.Add(context);
+                        return;
+                    }
+                }
+            }
         }
     }
 }

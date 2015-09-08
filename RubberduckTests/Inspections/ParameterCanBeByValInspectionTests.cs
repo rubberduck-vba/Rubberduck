@@ -167,7 +167,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ParameterCanBeByValInspection();
-            inspection.GetInspectionResults(parseResult).First().GetQuickFixes().First().Value();
+            inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -194,7 +194,7 @@ End Sub";
             var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
 
             var inspection = new ParameterCanBeByValInspection();
-            inspection.GetInspectionResults(parseResult).First().GetQuickFixes().First().Value();
+            inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Rename;
@@ -12,34 +13,46 @@ namespace Rubberduck.Inspections
 {
     public class DefaultProjectNameInspectionResult : CodeInspectionResultBase
     {
-        private readonly VBProjectParseResult _parseResult;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
         public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory) 
             : base(inspection, type, target)
         {
+            _quickFixes = new[]
+            {
+                new RenameProjectQuickFix(target.Context, target.QualifiedSelection, target, parseResult, wrapperFactory),
+            };
+        }
+
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    /// <summary>
+    /// A code inspection quickfix that addresses a VBProject bearing the default name.
+    /// </summary>
+    public class RenameProjectQuickFix : CodeInspectionQuickFix
+    {
+        private readonly Declaration _target;
+        private readonly VBProjectParseResult _parseResult;
+        private readonly ICodePaneWrapperFactory _wrapperFactory;
+
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory)
+            : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture)))
+        {
+            _target = target;
             _parseResult = parseResult;
             _wrapperFactory = wrapperFactory;
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override void Fix()
         {
-            var project = RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, RubberduckUI.Culture);
-            return new Dictionary<string, Action>
-            {
-                { string.Format(RubberduckUI.Rename_DeclarationType, project), RenameProject }
-            };
-        }
-
-        private void RenameProject()
-        {
-            var vbe = QualifiedSelection.QualifiedName.Project.VBE;
+            var vbe = Selection.QualifiedName.Project.VBE;
 
             using (var view = new RenameDialog())
             {
                 var factory = new RenamePresenterFactory(vbe, view, _parseResult, new MessageBox(), _wrapperFactory);
                 var refactoring = new RenameRefactoring(factory, new ActiveCodePaneEditor(vbe, _wrapperFactory), new MessageBox());
-                refactoring.Refactor(Target);
+                refactoring.Refactor(_target);
             }
         }
     }

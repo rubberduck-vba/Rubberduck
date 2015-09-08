@@ -167,6 +167,31 @@ namespace Rubberduck.Parsing.Symbols
             return handlers.ToList();
         }
 
+        /// <summary>
+        /// Gets a tuple containing the <c>WithEvents</c> declaration and the corresponding handler,
+        /// for each type implementing this event.
+        /// </summary>
+        public IEnumerable<Tuple<Declaration,Declaration>> FindHandlersForEvent(Declaration eventDeclaration)
+        {
+            return _declarations.Where(item => item.IsWithEvents && item.AsTypeName == eventDeclaration.ComponentName)
+                .Select(item => new
+                {
+                    WithEventDeclaration = item, 
+                    EventProvider = _declarations.SingleOrDefault(type => type.DeclarationType == DeclarationType.Class && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
+                })
+                .Select(item => new
+                {
+                    WithEventsDeclaration = item.WithEventDeclaration,
+                    ProviderEvents = _declarations.Where(member => member.DeclarationType == DeclarationType.Event && member.QualifiedSelection.QualifiedName == item.EventProvider.QualifiedName.QualifiedModuleName)
+                })
+                .Select(item => Tuple.Create(
+                    item.WithEventsDeclaration,
+                    _declarations.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Procedure
+                    && declaration.QualifiedName.QualifiedModuleName == item.WithEventsDeclaration.QualifiedName.QualifiedModuleName
+                    && declaration.IdentifierName == item.WithEventsDeclaration.IdentifierName + '_' + eventDeclaration.IdentifierName)
+                    ));
+        }
+
         public IEnumerable<Declaration> FindEventProcedures(Declaration withEventsDeclaration)
         {
             if (!withEventsDeclaration.IsWithEvents)

@@ -157,7 +157,7 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -190,7 +190,7 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -223,7 +223,7 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

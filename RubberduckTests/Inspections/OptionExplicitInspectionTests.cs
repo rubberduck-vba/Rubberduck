@@ -117,7 +117,7 @@ namespace RubberduckTests.Inspections
             var inspection = new OptionExplicitInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
             
             Assert.AreEqual(expectedCode, module.Lines());
         }

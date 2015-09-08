@@ -161,7 +161,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -192,7 +192,7 @@ End Function";
             var inspection = new NonReturningFunctionInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            Assert.AreEqual(0, inspectionResults.First().GetQuickFixes().Count);
+            Assert.AreEqual(0, inspectionResults.First().QuickFixes.Count());
         }
 
         [TestMethod]

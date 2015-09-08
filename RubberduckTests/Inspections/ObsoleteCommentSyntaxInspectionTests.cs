@@ -118,7 +118,7 @@ Rem test2";
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
@@ -145,7 +145,7 @@ Rem test2";
             var inspection = new ObsoleteCommentSyntaxInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
             
-            inspectionResults.First().GetQuickFixes().ElementAt(1).Value();
+            inspectionResults.First().QuickFixes.ElementAt(1).Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }

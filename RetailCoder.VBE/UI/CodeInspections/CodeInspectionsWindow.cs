@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Inspections;
 using Rubberduck.Properties;
 
 namespace Rubberduck.UI.CodeInspections
@@ -198,7 +199,7 @@ namespace Rubberduck.UI.CodeInspections
             OnNavigateCodeIssue(item);
         }
 
-        private IDictionary<string, Action> _availableQuickFixes;
+        private IEnumerable<CodeInspectionQuickFix> _availableQuickFixes;
         private void CodeIssuesGridView_SelectionChanged(object sender, EventArgs e)
         {
             var enableNavigation = (CodeIssuesGridView.SelectedRows.Count != 0);
@@ -219,16 +220,15 @@ namespace Rubberduck.UI.CodeInspections
             if (CodeIssuesGridView.SelectedRows.Count > 0)
             {
                 var issue = (CodeInspectionResultGridViewItem) CodeIssuesGridView.SelectedRows[0].DataBoundItem;
-                _availableQuickFixes = issue.GetInspectionResultItem()
-                    .GetQuickFixes();
-                var descriptions = _availableQuickFixes.Keys.ToList();
+                _availableQuickFixes = issue.GetInspectionResultItem().QuickFixes;
 
                 quickFixMenu.Clear();
-                foreach (var caption in descriptions)
+                foreach (var fix in _availableQuickFixes)
                 {
-                    var item = (ToolStripMenuItem) quickFixMenu.Add(caption);
+                    var item = (ToolStripMenuItem) quickFixMenu.Add(fix.Description);
                     if (quickFixMenu.Count > 0)
                     {
+                        item.Tag = fix;
                         item.CheckOnClick = false;
                         item.Checked = quickFixMenu.Count == 1;
                         item.Click += QuickFixItemClick;
@@ -248,7 +248,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var args = new QuickFixEventArgs(_availableQuickFixes[quickFixButton.Text]);
+            var args = new QuickFixEventArgs(_availableQuickFixes.SingleOrDefault(fix => fix == (CodeInspectionQuickFix)quickFixButton.Tag).Fix);
             QuickFix(this, args);
         }
 

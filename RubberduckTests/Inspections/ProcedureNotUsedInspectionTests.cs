@@ -214,7 +214,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection();
             var inspectionResults = inspection.GetInspectionResults(parseResult);
 
-            inspectionResults.First().GetQuickFixes().First().Value();
+            inspectionResults.First().QuickFixes.First().Fix();
 
             Assert.AreEqual(expectedCode, module.Lines());
         }
