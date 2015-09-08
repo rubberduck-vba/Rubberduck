@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Castle.Components.DictionaryAdapter;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -20,13 +23,32 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var issues = parseResult.Declarations.Items
-                .Where(item => !item.IsBuiltIn)
-                .SelectMany(item =>
-                item.References.Where(reference => reference.HasExplicitLetStatement))
-                .Select(issue => new ObsoleteLetStatementUsageInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context)));
+            var issues = new List<ObsoleteLetStatementUsageInspectionResult>();
+            foreach (var result in parseResult.ComponentParseResults)
+            {
+                var listener = new ObsoleteLetStatementListener();
+                var walker = new ParseTreeWalker();
+
+                walker.Walk(listener, result.ParseTree);
+                issues.AddRange(listener.Contexts.Select(context => new ObsoleteLetStatementUsageInspectionResult(Description, Severity, 
+                    new QualifiedContext<ParserRuleContext>(result.QualifiedName, context))));
+            }
 
             return issues;
+        }
+
+        private class ObsoleteLetStatementListener : VBABaseListener
+        {
+            private readonly IList<VBAParser.LetStmtContext> _contexts = new EditableList<VBAParser.LetStmtContext>();
+            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+
+            public override void EnterLetStmt(VBAParser.LetStmtContext context)
+            {
+                if (context.LET() != null)
+                {
+                    _contexts.Add(context);
+                }
+            }
         }
     }
 }
