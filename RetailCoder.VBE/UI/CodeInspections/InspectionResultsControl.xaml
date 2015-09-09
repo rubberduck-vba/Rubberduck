@@ -17,13 +17,13 @@
             <Setter Property="Margin" Value="4" />
         </Style>
 
-        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding }">
+        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding Results}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <DataTemplate x:Key="InspectionResultTemplate" DataType="{x:Type inspections:CodeInspectionResultBase}">
+        <DataTemplate x:Key="InspectionResultTemplate" DataType="{x:Type inspections:ICodeInspectionResult}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource IconStyle}" 
                        Source="{Binding Severity}"
