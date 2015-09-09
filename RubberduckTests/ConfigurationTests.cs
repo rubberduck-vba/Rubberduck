@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 
@@ -32,12 +34,32 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void DefaultCodeInspectionsIsNotNull()
+        public void DefaultCodeInspectionsIsEmptyAsSpecified()
         {
-            var configService = new ConfigurationLoader(null);
-            var config = configService.GetDefaultCodeInspections();
+            var expected = new IInspection[]{};
+            var configService = new ConfigurationLoader(expected);
+            
+            var actual = configService.GetDefaultCodeInspections();
 
-            Assert.IsNotNull(config);
+            Assert.AreEqual(expected.Length, actual.Length);
+        }
+
+        [TestMethod]
+        public void DefaultCodeInspectionsIsAsSpecified()
+        {
+            var inspection = new Mock<IInspection>();
+            inspection.SetupGet(m => m.Description).Returns("TestInspection");
+            inspection.SetupGet(m => m.Name).Returns("TestInspection");
+            inspection.SetupGet(m => m.Severity).Returns(CodeInspectionSeverity.DoNotShow);
+
+            var expected = new[] { inspection.Object };
+            var configService = new ConfigurationLoader(expected);
+
+            var actual = configService.GetDefaultCodeInspections();
+
+            Assert.AreEqual(expected.Length, actual.Length);
+            Assert.AreEqual(inspection.Object.Name, actual[0].Name);
+            Assert.AreEqual(inspection.Object.Severity, actual[0].Severity);
         }
 
         [TestMethod]
