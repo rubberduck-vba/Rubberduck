@@ -22,29 +22,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        public void ToDoMarkersTextIsNotNull()
-        {
-            var configService = new ConfigurationLoader(null);
-            ToDoMarker[] markers = configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
-
-            foreach (var marker in markers)
-            {
-                Assert.IsNotNull(marker.Text);
-            }
-        }
-
-        [TestMethod]
-        public void DefaultCodeInspectionsIsEmptyAsSpecified()
-        {
-            var expected = new IInspection[]{};
-            var configService = new ConfigurationLoader(expected);
-            
-            var actual = configService.GetDefaultCodeInspections();
-
-            Assert.AreEqual(expected.Length, actual.Length);
-        }
-
-        [TestMethod]
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
