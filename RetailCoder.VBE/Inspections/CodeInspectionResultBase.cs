@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Nodes;
@@ -80,5 +81,7 @@ namespace Rubberduck.Inspections
         /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
         public virtual IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return new CodeInspectionQuickFix[] {}; } }
+
+        public bool HasQuickFixes { get { return QuickFixes.Any(); } }
     }
 }

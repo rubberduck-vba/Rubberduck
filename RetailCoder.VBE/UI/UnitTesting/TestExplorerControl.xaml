@@ -162,7 +162,7 @@
             </StackPanel>
         </Border>
 
-        <TreeView Grid.Row="2" x:Name="TestMethodTree"
+        <TreeView Grid.Row="2"
                   MouseDoubleClick="TreeView_MouseDoubleClick"
                   ItemsSource="{Binding Source={StaticResource OutcomeGroupViewSource}, Path=Groups}"
                   ItemTemplate="{StaticResource OutcomeTemplate}">

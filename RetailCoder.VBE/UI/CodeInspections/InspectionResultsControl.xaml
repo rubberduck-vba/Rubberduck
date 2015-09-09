@@ -6,8 +6,9 @@
              xmlns:inspections="clr-namespace:Rubberduck.Inspections"
              xmlns:resx="clr-namespace:Rubberduck.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:codeInspections="clr-namespace:Rubberduck.UI.CodeInspections"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
 
         <Style x:Key="IconStyle" TargetType="Image">
@@ -16,7 +17,7 @@
             <Setter Property="Margin" Value="4" />
         </Style>
 
-        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding}">
+        <CollectionViewSource x:Key="InspectionTypeGroupViewSource" Source="{Binding }">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="" />
             </CollectionViewSource.GroupDescriptions>
@@ -34,16 +35,11 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="QuickFixItemTemplate" DataType="{x:Type inspections:CodeInspectionResultBase}">
-            
-        </DataTemplate>
-
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="16"/>
             <RowDefinition Height="*" MinHeight="64" />
         </Grid.RowDefinitions>
 
@@ -51,10 +47,26 @@
 
         <ToolBar Grid.Row="0">
 
-            <Button Command="{Binding RefreshCommand}">
+            <Button Command="{Binding RefreshCommand}" IsEnabled="{Binding CanRefresh}">
                 <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
             </Button>
 
+            <Separator />
+            <Menu>
+                <MenuItem VerticalAlignment="Center" 
+                          Header="{x:Static resx:RubberduckUI.Fix}"
+                          ItemsSource="{Binding SelectedItem.QuickFixes}"
+                          IsEnabled="{Binding SelectedItem.HasQuickFixes}">
+                    <MenuItem.Icon>
+                        <Image Height="16" Source="../../Resources/tick.png" />
+                    </MenuItem.Icon>
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate DataType="inspections:CodeInspectionQuickFix">
+                            <TextBlock Text="{Binding Description}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+            </Menu>
             <Separator />
 
             <Button Command="{Binding CopyResultsCommand}">
@@ -67,7 +79,7 @@
 
         </ToolBar>
         
-        <TreeView Grid.Row="2" x:Name="TestMethodTree"
+        <TreeView Grid.Row="1"
                   ItemsSource="{Binding Source={StaticResource InspectionTypeGroupViewSource}, Path=Groups}"
                   ItemTemplate="{StaticResource InspectionResultTemplate}">
             <i:Interaction.Behaviors>

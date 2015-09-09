@@ -4,8 +4,10 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.Command
 {
@@ -16,12 +18,14 @@ namespace Rubberduck.UI.Command
     public class RunCodeInspectionsCommand : CommandBase
     {
         private readonly VBE _vbe;
+        private readonly AddIn _addin;
         private readonly IInspector _inspector;
         private readonly IRubberduckParser _parser;
 
-        public RunCodeInspectionsCommand(VBE vbe, IInspector inspector, IRubberduckParser parser)
+        public RunCodeInspectionsCommand(VBE vbe, AddIn addin, IInspector inspector, IRubberduckParser parser)
         {
             _vbe = vbe;
+            _addin = addin;
             _inspector = inspector;
             _parser = parser;
         }
@@ -32,13 +36,10 @@ namespace Rubberduck.UI.Command
         /// <param name="parameter"></param>
         public override async void Execute(object parameter)
         {
-            // todo: find a way to run this from UI
-            //var project = parameter as VBProject;
-            //var parseResult = project == null 
-            //    ? _parser.Parse(_vbe.ActiveVBProject)
-            //    : _parser.Parse(project);
-
-            //var results = _inspector.FindIssuesAsync(parseResult, CancellationToken.None);
+            var factory = new CodePaneWrapperFactory();
+            var viewModel = new InspectionResultsViewModel(_inspector, factory, _vbe);
+            var presenter = new CodeInspectionsDockablePresenter(_inspector, _vbe, _addin, new CodeInspectionsWindow(viewModel), factory);
+            presenter.Show();
         }
     }
 
