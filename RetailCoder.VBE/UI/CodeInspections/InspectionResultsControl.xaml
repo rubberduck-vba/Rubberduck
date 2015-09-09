@@ -56,7 +56,7 @@
                 <MenuItem VerticalAlignment="Center" 
                           Header="{x:Static resx:RubberduckUI.Fix}"
                           ItemsSource="{Binding SelectedItem.QuickFixes}"
-                          IsEnabled="{Binding SelectedItem.HasQuickFixes}">
+                          IsEnabled="{Binding CanQuickFix}">
                     <MenuItem.Icon>
                         <Image Height="16" Source="../../Resources/tick.png" />
                     </MenuItem.Icon>

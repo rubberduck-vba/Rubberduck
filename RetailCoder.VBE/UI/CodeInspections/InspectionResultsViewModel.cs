@@ -49,6 +49,8 @@ namespace Rubberduck.UI.CodeInspections
         private bool _canRefresh = true;
         public bool CanRefresh { get { return _canRefresh; } private set { _canRefresh = value; OnPropertyChanged(); } }
 
+        public bool CanQuickFix { get { return _selectedItem != null && _selectedItem.HasQuickFixes; } }
+
         private async void RefreshAsync(object parameter)
         {
             CanRefresh = false;
