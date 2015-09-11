@@ -342,6 +342,8 @@
     <Compile Include="UI\Command\FindSymbolCommand.cs" />
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ToolStripItems\IParentToolStrip.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />

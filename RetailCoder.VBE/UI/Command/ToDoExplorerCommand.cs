@@ -21,4 +21,20 @@ namespace Rubberduck.UI.Command
             _presenter.Show();
         }
     }
+
+    [ComVisible(false)]
+    public class RegexSearchReplaceCommand : CommandBase
+    {
+        private readonly ToDoExplorerDockablePresenter _presenter;
+
+        public RegexSearchReplaceCommand()
+        {
+//            _presenter = presenter;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _presenter.Show();
+        }
+    }
 }
