@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
 using NLog;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
@@ -11,8 +9,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.ParserErrors;
-using Rubberduck.VBEditor;
-using MessageBox = System.Windows.MessageBox;
 
 namespace Rubberduck
 {

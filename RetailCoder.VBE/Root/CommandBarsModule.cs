@@ -8,7 +8,6 @@ using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Modules;
 using Rubberduck.Navigation;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;

@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public virtual QualifiedSelection QualifiedSelection
+        public QualifiedSelection QualifiedSelection
         {
             get
             {
@@ -79,9 +79,6 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
-        /// <returns>Returns a <c>Dictionary&lt;string&gt;, Action&lt;VBE&gt;</c>
-        /// where the keys are descriptions for each quick fix, and
-        /// each value is a parameterless method returning <c>void</c>.</returns>
-        public abstract IDictionary<string, Action> GetQuickFixes();
+        public virtual IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return new CodeInspectionQuickFix[] {}; } }
     }
 }

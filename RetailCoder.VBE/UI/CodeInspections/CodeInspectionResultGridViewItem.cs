@@ -17,7 +17,7 @@ namespace Rubberduck.UI.CodeInspections
             _severity = result.Severity;
             _selection = result.QualifiedSelection;
             _issue = result.Name;
-            _quickFix = FirstOrDefaultQuickFix(result.GetQuickFixes());
+            _quickFix = result.QuickFixes.FirstOrDefault();
 
             _project = _selection.QualifiedName.ProjectName;
             _component = _selection.QualifiedName.ComponentName;
@@ -30,11 +30,6 @@ namespace Rubberduck.UI.CodeInspections
         }
 
         private object _quickFix;
-        private Action FirstOrDefaultQuickFix(IDictionary<string, Action> fixes)
-        {
-            return fixes.FirstOrDefault().Value;
-        }
-
         private static readonly IDictionary<CodeInspectionSeverity, Bitmap> _severityIcons =
             new Dictionary<CodeInspectionSeverity, Bitmap>
             {

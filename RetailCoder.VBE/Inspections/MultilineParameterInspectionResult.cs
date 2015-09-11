@@ -9,24 +9,31 @@ namespace Rubberduck.Inspections
 {
     public class MultilineParameterInspectionResult : CodeInspectionResultBase
     {
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
         public MultilineParameterInspectionResult(string inspection, CodeInspectionSeverity severity, ParserRuleContext context, QualifiedMemberName qualifiedName)
             : base(inspection, severity, qualifiedName.QualifiedModuleName, context)
         {
-
-        }
-
-        public override IDictionary<string, Action> GetQuickFixes()
-        {
-            return new Dictionary<string, Action>
+            _quickFixes = new[]
             {
-                {RubberduckUI.Inspections_MultilineParameter, WriteParamOnOneLine}
+                new MakeSingleLineParameterQuickFix(Context, QualifiedSelection), 
             };
         }
 
-        private void WriteParamOnOneLine()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class MakeSingleLineParameterQuickFix : CodeInspectionQuickFix
+    {
+        public MakeSingleLineParameterQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_MultilineParameter)
         {
-            var module = QualifiedName.Component.CodeModule;
-            var selection = QualifiedSelection.Selection;
+        }
+
+        public override void Fix()
+        {
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var selection = Selection.Selection;
 
             var lines = module.Lines[selection.StartLine, selection.EndLine - selection.StartLine + 1];
 

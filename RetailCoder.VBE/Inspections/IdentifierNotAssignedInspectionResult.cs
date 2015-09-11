@@ -8,25 +8,32 @@ namespace Rubberduck.Inspections
 {
     public class IdentifierNotAssignedInspectionResult : IdentifierNotUsedInspectionResult
     {
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
         public IdentifierNotAssignedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, type, context, qualifiedName)
         {
+            _quickFixes = new[]
+            {
+                new RemoveUnassignedIdentifierQuickFix(Context, QualifiedSelection), 
+            };
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    public class RemoveUnassignedIdentifierQuickFix : CodeInspectionQuickFix
+    {
+        public RemoveUnassignedIdentifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_RemoveUnassignedVariable)
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_RemoveUnassignedVariable, RemoveUnusedDeclaration}
-                };
         }
 
-        protected override void RemoveUnusedDeclaration()
+        public override void Fix()
         {
-            var module = QualifiedName.Component.CodeModule;
-            var selection = QualifiedSelection.Selection;
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var selection = Selection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
                 .Replace(Environment.NewLine, " ")

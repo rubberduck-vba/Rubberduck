@@ -8,25 +8,35 @@ namespace Rubberduck.Inspections
 {
     public class IdentifierNotUsedInspectionResult : CodeInspectionResultBase
     {
+        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
+
         public IdentifierNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
             ParserRuleContext context, QualifiedModuleName qualifiedName)
             : base(inspection, type, qualifiedName, context)
         {
+            _quickFixes = new[]
+            {
+                new RemoveUnusedDeclarationQuickFix(context, QualifiedSelection), 
+            };
         }
 
-        public override IDictionary<string, Action> GetQuickFixes()
+        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
+    }
+
+    /// <summary>
+    /// A code inspection quickfix that removes an unused identifier declaration.
+    /// </summary>
+    public class RemoveUnusedDeclarationQuickFix : CodeInspectionQuickFix
+    {
+        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection)
+            : base(context, selection, RubberduckUI.Inspections_RemoveUnusedDeclaration)
         {
-            return
-                new Dictionary<string, Action>
-                {
-                    {RubberduckUI.Inspections_RemoveUnusedDeclaration, RemoveUnusedDeclaration}
-                };
         }
 
-        protected virtual void RemoveUnusedDeclaration()
+        public override void Fix()
         {
-            var module = QualifiedName.Component.CodeModule;
-            var selection = QualifiedSelection.Selection;
+            var module = Selection.QualifiedName.Component.CodeModule;
+            var selection = Selection.Selection;
 
             var originalCodeLines = module.get_Lines(selection.StartLine, selection.LineCount)
                 .Replace("\r\n", " ")
