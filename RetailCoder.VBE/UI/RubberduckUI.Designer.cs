@@ -1735,6 +1735,123 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regex Search &amp; Replace.
+        /// </summary>
+        public static string RegexSearchReplace_Caption {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find.
+        /// </summary>
+        public static string RegexSearchReplace_FindButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_FindButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace All.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceAllButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceAllButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace:.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scope:.
+        /// </summary>
+        public static string RegexSearchReplace_ScopeLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ScopeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search:.
+        /// </summary>
+        public static string RegexSearchReplace_SearchLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_SearchLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Opened Files.
+        /// </summary>
+        public static string RegexSearchReplaceScope_AllOpenedFiles {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Open Projects.
+        /// </summary>
+        public static string RegexSearchReplaceScope_AllOpenProjects {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Block.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentBlock {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current File.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentFile {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Project.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentProject {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection.
+        /// </summary>
+        public static string RegexSearchReplaceScope_Selection {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_Selection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         public static string Remove {
