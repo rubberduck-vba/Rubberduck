@@ -349,6 +349,8 @@
     <Compile Include="UI\Command\FindSymbolCommand.cs" />
     <Compile Include="UI\Command\FindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\NavigateParentMenu.cs" />
+    <Compile Include="UI\Command\MenuItems\ParentMenus\NavigationMenuItemDisplayOrder.cs" />
+    <Compile Include="UI\Command\MenuItems\RegexSearchReplaceCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ToolStripItems\IParentToolStrip.cs" />
     <Compile Include="UI\Command\NavigateCommand.cs" />
     <Compile Include="UI\Command\OptionsCommand.cs" />
@@ -364,6 +366,7 @@
     <Compile Include="UI\Command\RefactorReorderParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
+    <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
     <Compile Include="UI\Command\RunCodeInspectionsCommand.cs" />

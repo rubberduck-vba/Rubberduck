@@ -1167,4 +1167,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Regex search/replace...</value>
+  </data>
 </root>
