@@ -25,7 +25,8 @@ namespace Rubberduck.UI.CodeInspections
             _wrapperFactory = wrapperFactory;
             _vbe = vbe;
 
-            _refreshCommand = new DelegateCommand(RefreshAsync);
+            _refreshCommand = new DelegateCommand(ExecuteRefreshCommandAsync);
+            _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -51,13 +52,24 @@ namespace Rubberduck.UI.CodeInspections
 
         public bool CanQuickFix { get { return _selectedItem != null && _selectedItem.HasQuickFixes; } }
 
-        private async void RefreshAsync(object parameter)
+        private async void ExecuteRefreshCommandAsync(object parameter)
         {
             CanRefresh = false;
             var projectParseResult = await _inspector.Parse(_vbe.ActiveVBProject, this);
             var results = await _inspector.FindIssuesAsync(projectParseResult, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
+        }
+
+        private void ExecuteQuickFixCommand(object parameter)
+        {
+            var quickFix = parameter as CodeInspectionQuickFix;
+            if (quickFix == null)
+            {
+                return;
+            }
+
+            quickFix.Fix();
         }
     }
 }
