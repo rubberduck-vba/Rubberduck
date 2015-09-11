@@ -205,7 +205,6 @@
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockWindowsCollection.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
-    <Compile Include="RegexSearchReplace\RegexSearchReplaceTests.cs" />
     <Compile Include="VbeTestBase.cs" />
     <Compile Include="Refactoring\RemoveParametersTests.cs" />
     <Compile Include="Refactoring\RenameTests.cs" />
