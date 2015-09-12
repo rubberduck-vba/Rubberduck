@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Vbe.Interop;
+using Rubberduck.Parsing;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
-    public class RegexSearchReplacePresenter
+    public class RegexSearchReplacePresenter : IPresenter
     {
-        private readonly IRegexSearchReplaceView _view;
-        private readonly RegexSearchReplaceModel _model;
+        private readonly VBE _vbe;
+        private readonly IRegexSearchReplaceDialog _view;
+        private readonly IRubberduckParser _parser;
 
-        public RegexSearchReplacePresenter(IRegexSearchReplaceView view, RegexSearchReplaceModel model)
+        public RegexSearchReplacePresenter(VBE vbe, IRubberduckParser parser, IRegexSearchReplaceDialog view)
         {
+            _vbe = vbe;
             _view = view;
-            _model = model;
+            _parser = parser;
 
             _view.FindButtonClicked += _view_FindButtonClicked;
             _view.ReplaceButtonClicked += _view_ReplaceButtonClicked;
@@ -25,8 +30,8 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             _view.ShowDialog();
         }
 
-        public event EventHandler<List<RegexSearchResult>> FindButtonResults;
-        protected virtual void OnFindButtonResults(List<RegexSearchResult> results)
+        public event EventHandler<IEnumerable<RegexSearchResult>> FindButtonResults;
+        protected virtual void OnFindButtonResults(IEnumerable<RegexSearchResult> results)
         {
             var handler = FindButtonResults;
             if (handler != null)
@@ -37,19 +42,19 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void _view_FindButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new Navigation.RegexSearchReplace.RegexSearchReplace(_model, new CodePaneWrapperFactory());
-            OnFindButtonResults(regexSearchReplace.Find(_view.SearchPattern, _view.Scope));
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
+            OnFindButtonResults(regexSearchReplace.Search(_view.SearchPattern, _view.Scope));
         }
 
         private void _view_ReplaceButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new Navigation.RegexSearchReplace.RegexSearchReplace(_model, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
             regexSearchReplace.Replace(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 
         private void _view_ReplaceAllButtonClicked(object sender, EventArgs e)
         {
-            var regexSearchReplace = new Navigation.RegexSearchReplace.RegexSearchReplace(_model, new CodePaneWrapperFactory());
+            var regexSearchReplace = new RegexSearchReplace(_vbe, _parser, new CodePaneWrapperFactory());
             regexSearchReplace.ReplaceAll(_view.SearchPattern, _view.ReplacePattern, _view.Scope);
         }
 

@@ -27,6 +27,8 @@ namespace Rubberduck.UI.CodeInspections
 
             _refreshCommand = new DelegateCommand(ExecuteRefreshCommandAsync);
             _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
+            _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
+            _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -70,6 +72,16 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             quickFix.Fix();
+        }
+
+        private void ExecuteCopyResultsCommand(object parameter)
+        {
+            
+        }
+
+        private void ExecuteExportResultsCommand(object parameter)
+        {
+            
         }
     }
 }

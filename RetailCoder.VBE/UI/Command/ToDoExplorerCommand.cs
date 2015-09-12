@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.Navigation.RegexSearchReplace;
 using Rubberduck.UI.ToDoItems;
 
 namespace Rubberduck.UI.Command
@@ -25,11 +26,11 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class RegexSearchReplaceCommand : CommandBase
     {
-        private readonly ToDoExplorerDockablePresenter _presenter;
+        private readonly RegexSearchReplacePresenter _presenter;
 
-        public RegexSearchReplaceCommand()
+        public RegexSearchReplaceCommand(RegexSearchReplacePresenter presenter)
         {
-//            _presenter = presenter;
+            _presenter = presenter;
         }
 
         public override void Execute(object parameter)

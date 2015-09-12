@@ -261,7 +261,7 @@
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplace.cs" />
-    <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceView.cs" />
+    <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceDialog.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplace.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceModel.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />

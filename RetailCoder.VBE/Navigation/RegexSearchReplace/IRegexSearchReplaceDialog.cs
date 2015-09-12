@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
-    public interface IRegexSearchReplaceView
+    public interface IRegexSearchReplaceDialog
     {
         string SearchPattern { get; }
         string ReplacePattern { get; }

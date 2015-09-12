@@ -6,7 +6,7 @@ using Rubberduck.Navigation.RegexSearchReplace;
 
 namespace Rubberduck.UI.RegexSearchReplace
 {
-    public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceView
+    public partial class RegexSearchReplaceDialog : Form, IRegexSearchReplaceDialog
     {
         public string SearchPattern { get { return SearchBox.Text.Replace(@"\\", @"\"); } }
         public string ReplacePattern { get { return ReplaceBox.Text; } }
