@@ -12,7 +12,7 @@ namespace Rubberduck.UnitTesting
     {
         private const string ClassId = "";
         // FIXME generate a GUID
-        private const string ProgIdAttribute = "Rubberduck.PermissiveAssertClass";
+        private const string ProgId = "Rubberduck.PermissiveAssertClass";
 
         /// <summary>
         /// Verifies that two specified objects are equal as considered equal under the loose terms of VBA equality.
@@ -32,7 +32,7 @@ namespace Rubberduck.UnitTesting
 
             if (expected.GetType() != actual.GetType())
             {
-                if (!RunTypePromotions(out expected, out actual))
+                if (!RunTypePromotions(ref expected, ref actual))
                 {
                     AssertHandler.OnAssertFailed("AreEqual", message);
                 }
@@ -52,7 +52,7 @@ namespace Rubberduck.UnitTesting
 
             if (expected.GetType() != actual.GetType())
             {
-                if (!RunTypePromotions(out expected, out actual))
+                if (!RunTypePromotions(ref expected, ref actual))
                 {
                     AssertHandler.OnAssertFailed("AreNotEqual", message);
                 }
@@ -70,7 +70,7 @@ namespace Rubberduck.UnitTesting
         /// <returns><c>true</c>, if any type promotion was run, <c>false</c> otherwise.</returns>
         /// <param name="expected">the expected value given to the test-method</param>
         /// <param name="actual">the actual value given to the test method</param>
-        static bool RunTypePromotions(out object expected, out object actual)
+        static bool RunTypePromotions(ref object expected, ref object actual)
         {
             // try promoting integral types first.
             if (expected is ulong && actual is ulong)
@@ -99,9 +99,16 @@ namespace Rubberduck.UnitTesting
                 expected = (double)expected;
                 actual = (double)actual;
             }
-            // no number-type promotions are applicable. Notify the Assert without changing anything
+            // no number-type promotions are applicable.
             else
             {
+                // last staw: string "promotion"
+                if (expected is string || actual is string)
+                {
+                    expected = expected.ToString();
+                    actual = actual.ToString();
+                    return true;
+                }
                 return false;
             }
             return true;
