@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.22.0-pre20150516171636\build\net40\LibGit2Sharp.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -227,10 +227,6 @@
     <Compile Include="UnitTesting\EngineTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Name>Rubberduck</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
       <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
       <Name>Rubberduck</Name>
