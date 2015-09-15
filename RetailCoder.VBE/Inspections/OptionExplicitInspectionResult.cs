@@ -12,8 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
-            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
+        public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
+            : base(inspection, inspection.Description, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
             _quickFixes = new[]
             {

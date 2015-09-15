@@ -30,8 +30,8 @@ namespace Rubberduck.Inspections
                 var walker = new ParseTreeWalker();
 
                 walker.Walk(listener, result.ParseTree);
-                issues.AddRange(listener.Contexts.Select(context => new ObsoleteLetStatementUsageInspectionResult(Description, Severity, 
-                    new QualifiedContext<ParserRuleContext>(result.QualifiedName, context))));
+                issues.AddRange(listener.Contexts.Select(context => 
+                    new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(result.QualifiedName, context))));
             }
 
             return issues;

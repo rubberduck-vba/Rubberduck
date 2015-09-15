@@ -42,7 +42,7 @@ namespace Rubberduck.UI.UnitTesting
         /// A method that determines whether a <see cref="Member"/> is a test method or not.
         /// </summary>
         /// <param name="member">The <see cref="Member"/> to evaluate.</param>
-        /// <returns>Returns <c>true</c> if specified <see cref="member"/> is a test method.</returns>
+        /// <returns>Returns <c>true</c> if specified member is a test method.</returns>
         protected static bool IsTestMethod(Member member)
         {
             var isIgnoredMethod = member.HasAttribute<TestInitializeAttribute>()

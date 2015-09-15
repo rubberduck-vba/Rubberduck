@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -11,8 +10,8 @@ namespace Rubberduck.Inspections
 {
     public abstract class CodeInspectionResultBase : ICodeInspectionResult
     {
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, Declaration target)
-            : this(inspection, type, target.QualifiedName.QualifiedModuleName, null)
+        protected CodeInspectionResultBase(IInspection inspection, string result, Declaration target)
+            : this(inspection, result, target.QualifiedName.QualifiedModuleName, null)
         {
             _target = target;
         }
@@ -20,33 +19,30 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Creates a comment inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, CommentNode comment)
-            : this(inspection, type, comment.QualifiedSelection.QualifiedName, null, comment)
+        protected CodeInspectionResultBase(IInspection inspection, string result, CommentNode comment)
+            : this(inspection, result, comment.QualifiedSelection.QualifiedName, null, comment)
         { }
 
         /// <summary>
         /// Creates an inspection result.
         /// </summary>
-        protected CodeInspectionResultBase(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
+        protected CodeInspectionResultBase(IInspection inspection, string result, QualifiedModuleName qualifiedName, ParserRuleContext context, CommentNode comment = null)
         {
-            _name = inspection;
-            _type = type;
+            _inspection = inspection;
+            _name = result;
             _qualifiedName = qualifiedName;
             _context = context;
             _comment = comment;
         }
+
+        private readonly IInspection _inspection;
+        public IInspection Inspection { get { return _inspection; } }
 
         private readonly string _name;
         /// <summary>
         /// Gets a string containing the name of the code inspection.
         /// </summary>
         public string Name { get { return _name; } }
-
-        private readonly CodeInspectionSeverity _type;
-        /// <summary>
-        /// Gets the severity of the code issue.
-        /// </summary>
-        public CodeInspectionSeverity Severity { get { return _type; } }
 
         private readonly QualifiedModuleName _qualifiedName;
         protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }

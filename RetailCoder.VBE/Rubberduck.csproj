@@ -324,6 +324,7 @@
       <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeInspections\InspectionResultsViewModel.cs" />
+    <Compile Include="UI\CodeInspections\InspectionSeverityImageSourceConverter.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
     <Compile Include="UI\Command\AddTestMethodCommand.cs" />

@@ -12,8 +12,9 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public NonReturningFunctionInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<ParserRuleContext> qualifiedContext, bool isInterfaceImplementation)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public NonReturningFunctionInspectionResult(IInspection inspection, string result, QualifiedContext<ParserRuleContext> qualifiedContext, 
+            bool isInterfaceImplementation)
+            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = isInterfaceImplementation 
                 ? new CodeInspectionQuickFix[] { }

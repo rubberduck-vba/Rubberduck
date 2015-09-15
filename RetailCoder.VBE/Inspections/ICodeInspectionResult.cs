@@ -11,6 +11,6 @@ namespace Rubberduck.Inspections
         ParserRuleContext Context { get; }
         string Name { get; }
         QualifiedSelection QualifiedSelection { get; }
-        CodeInspectionSeverity Severity { get; }
+        IInspection Inspection { get; }
     }
 }

@@ -12,8 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection,type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
+            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             // array parameters & paramarrays must be passed by reference
             var context = (VBAParser.ArgContext) Context;

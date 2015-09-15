@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections
                 select p;
 
             var issues = multilineParameters
-                .Select(param => new MultilineParameterInspectionResult(string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new MultilineParameterInspectionResult(this, string.Format(param.Context.GetSelection().LineCount > 3 ? RubberduckUI.EasterEgg_Continuator : Description, param.IdentifierName), param.Context, param.QualifiedName));
 
             return issues;
         }

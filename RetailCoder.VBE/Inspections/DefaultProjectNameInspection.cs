@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                             .Where(declaration => !declaration.IsBuiltIn 
                                                 && declaration.DeclarationType == DeclarationType.Project
                                                 && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new DefaultProjectNameInspectionResult(string.Format(Description, issue.IdentifierName), Severity, issue, parseResult, _wrapperFactory))
+                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, parseResult, _wrapperFactory))
                             .ToList();
 
             return issues;

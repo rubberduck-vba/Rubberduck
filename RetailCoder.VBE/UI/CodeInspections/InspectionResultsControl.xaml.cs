@@ -20,9 +20,34 @@ namespace Rubberduck.UI.CodeInspections
     /// </summary>
     public partial class InspectionResultsControl : UserControl
     {
+        private readonly CollectionViewSource _inspectionTypeGroupsViewSource;
+        private readonly DataTemplate _inspectionTypeGroupsTemplate;
+
+        private readonly CollectionViewSource _moduleGroupsViewSource;
+        private readonly DataTemplate _moduleGroupsTemplate;
+
         public InspectionResultsControl()
         {
             InitializeComponent();
+
+            _inspectionTypeGroupsViewSource = (CollectionViewSource)FindResource("InspectionTypeGroupViewSource");
+            _inspectionTypeGroupsTemplate = (DataTemplate)FindResource("InspectionTypeGroupsTemplate");
+
+            _moduleGroupsViewSource = (CollectionViewSource)FindResource("CodeModuleGroupViewSource");
+            _moduleGroupsTemplate = (DataTemplate)FindResource("CodeModuleGroupsTemplate");
+        }
+
+        private bool _isModuleTemplate;
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isModuleTemplate = TreeViewStyleToggle.IsChecked.HasValue && TreeViewStyleToggle.IsChecked.Value;
+            InspectionResultsTreeView.ItemTemplate = _isModuleTemplate
+                ? _moduleGroupsTemplate
+                : _inspectionTypeGroupsTemplate;
+
+            InspectionResultsTreeView.ItemsSource = _isModuleTemplate
+                ? _moduleGroupsViewSource.View.Groups
+                : _inspectionTypeGroupsViewSource.View.Groups;
         }
     }
 }

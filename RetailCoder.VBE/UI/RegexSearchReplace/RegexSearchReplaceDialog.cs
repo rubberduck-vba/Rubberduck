@@ -44,7 +44,7 @@ namespace Rubberduck.UI.RegexSearchReplace
         private RegexSearchReplaceScope ConvertScopeLabelsToEnum()
         {
             var scopes = from RegexSearchReplaceScope scope in Enum.GetValues(typeof(RegexSearchReplaceScope))
-                         where RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture) == ScopeComboBox.SelectedValue
+                         where ReferenceEquals(RubberduckUI.ResourceManager.GetString("RegexSearchReplaceScope_" + scope, RubberduckUI.Culture), ScopeComboBox.SelectedValue)
                          select scope;
 
 

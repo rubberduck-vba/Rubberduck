@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                 var walker = new ParseTreeWalker();
 
                 walker.Walk(listener, result.ParseTree);
-                issues.AddRange(listener.Contexts.Select(context => new ObsoleteCallStatementUsageInspectionResult(Description, Severity,
+                issues.AddRange(listener.Contexts.Select(context => new ObsoleteCallStatementUsageInspectionResult(this, 
                     new QualifiedContext<VBAParser.ExplicitCallStmtContext>(result.QualifiedName, context))));
             }
 

@@ -74,7 +74,7 @@ namespace Rubberduck.UI.CodeInspections
             var module = result.QualifiedSelection.QualifiedName;
             return string.Format(
                 "{0}: {1} - {2}.{3}, line {4}",
-                result.Severity,
+                result.Inspection.Severity,
                 result.Name,
                 module.ProjectName,
                 module.ComponentName,

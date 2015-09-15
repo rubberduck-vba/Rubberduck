@@ -12,9 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteLetStatementUsageInspectionResult(string inspection, CodeInspectionSeverity type, 
-            QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ObsoleteLetStatementUsageInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, inspection.Description, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new[]
             {
