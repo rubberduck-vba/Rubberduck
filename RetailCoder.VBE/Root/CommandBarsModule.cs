@@ -37,7 +37,7 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var parent = _kernel.Get<VBE>().CommandBars["Menu Bar"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[1].Controls;
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
 
             var items = GetRubberduckMenuItems();
