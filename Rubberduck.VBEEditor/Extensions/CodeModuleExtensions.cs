@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.Extensions
                 return string.Empty;
             }
 
-            return module.Lines[1, module.CountOfLines];
+            return module.get_Lines(1, module.CountOfLines);
         }
 
         /// <summary>
