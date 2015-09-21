@@ -16,6 +16,12 @@ namespace Rubberduck.Root
 {
     public class CommandBarsModule : NinjectModule
     {
+        private const int MENU_BAR = 1;
+        private const int CODE_WINDOW = 9;
+        private const int PROJECT_WINDOW = 14;
+        private const int MS_FORMS = 17;
+        private const int MS_FORMS_CONTROL = 18;
+
         private readonly IKernel _kernel;
 
         public CommandBarsModule(IKernel kernel)
@@ -37,7 +43,7 @@ namespace Rubberduck.Root
         private void ConfigureRubberduckMenu()
         {
             const int windowMenuId = 30009;
-            var parent = _kernel.Get<VBE>().CommandBars[1].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[MENU_BAR].Controls;
             var beforeIndex = FindRubberduckMenuInsertionIndex(parent, windowMenuId);
 
             var items = GetRubberduckMenuItems();
@@ -47,7 +53,7 @@ namespace Rubberduck.Root
         private void ConfigureCodePaneContextMenu()
         {
             const int listMembersMenuId = 2529;
-            var parent = _kernel.Get<VBE>().CommandBars["Code Window"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[CODE_WINDOW].Controls;
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == listMembersMenuId).Index;
 
             var items = GetCodePaneContextMenuItems();
@@ -57,7 +63,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars["MSForms"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[MS_FORMS].Controls;
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
 
             var items = GetFormDesignerContextMenuItems();
@@ -67,7 +73,7 @@ namespace Rubberduck.Root
         private void ConfigureFormDesignerControlContextMenu()
         {
             const int viewCodeMenuId = 2558;
-            var parent = _kernel.Get<VBE>().CommandBars["MSForms Control"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[MS_FORMS_CONTROL].Controls;
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == viewCodeMenuId).Index;
 
             var items = GetFormDesignerContextMenuItems();
@@ -77,7 +83,7 @@ namespace Rubberduck.Root
         private void ConfigureProjectExplorerContextMenu()
         {
             const int projectPropertiesMenuId = 2578;
-            var parent = _kernel.Get<VBE>().CommandBars["Project Window"].Controls;
+            var parent = _kernel.Get<VBE>().CommandBars[PROJECT_WINDOW].Controls;
             var beforeIndex = parent.Cast<CommandBarControl>().First(control => control.Id == projectPropertiesMenuId).Index;
 
             var items = GetProjectWindowContextMenuItems();
