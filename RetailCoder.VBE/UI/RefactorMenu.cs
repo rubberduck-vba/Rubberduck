@@ -224,14 +224,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRemoveParameterButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (IDE.ActiveCodePane == null)
-            {
-                return;
-            }
-
-            var codePane = _wrapperWrapperFactory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            RemoveParameter(selection);
+            new RefactorRemoveParametersCommand(IDE, _parser, _editor,_wrapperWrapperFactory).Execute(null)
         }
 
         public void Rename()
@@ -269,19 +262,6 @@ namespace Rubberduck.UI
             {
                 var factory = new ReorderParametersPresenterFactory(_editor, view, result, new MessageBox());
                 var refactoring = new ReorderParametersRefactoring(factory, _editor, new MessageBox());
-                refactoring.Refactor(selection);
-            }
-        }
-
-        private void RemoveParameter(QualifiedSelection selection)
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            using (var view = new RemoveParametersDialog())
-            {
-                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new MessageBox());
-                var refactoring = new RemoveParametersRefactoring(factory, _editor);
                 refactoring.Refactor(selection);
             }
         }

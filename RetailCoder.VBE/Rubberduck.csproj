@@ -363,7 +363,6 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\ProjectWindowContextParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
-    <Compile Include="UI\Command\RefactorRemoveParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\RefactorRenameCommand.cs" />
     <Compile Include="UI\Command\RefactorReorderParametersCommand.cs" />
@@ -720,6 +719,7 @@
     <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\AboutWindow.resx">
