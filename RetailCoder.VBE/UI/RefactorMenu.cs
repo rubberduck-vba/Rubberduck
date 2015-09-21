@@ -9,12 +9,12 @@ using Rubberduck.Navigation;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
-using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -190,19 +190,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ExtractMethod();
-        }
-
-        private void ExtractMethod()
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            var declarations = result.Declarations;
-            var factory = new ExtractMethodPresenterFactory(_editor, declarations);
-            var refactoring = new ExtractMethodRefactoring(factory, _editor);
-            refactoring.InvalidSelection += refactoring_InvalidSelection;
-            refactoring.Refactor();
+            new RefactorExtractMethodCommand(IDE, _parser, _editor).Execute(null);
         }
 
         void refactoring_InvalidSelection(object sender, EventArgs e)
