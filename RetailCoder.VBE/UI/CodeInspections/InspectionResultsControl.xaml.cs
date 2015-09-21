@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -26,6 +16,8 @@ namespace Rubberduck.UI.CodeInspections
         private readonly CollectionViewSource _moduleGroupsViewSource;
         private readonly DataTemplate _moduleGroupsTemplate;
 
+        private InspectionResultsViewModel ViewModel { get { return DataContext as InspectionResultsViewModel; } }
+
         public InspectionResultsControl()
         {
             InitializeComponent();
@@ -35,6 +27,13 @@ namespace Rubberduck.UI.CodeInspections
 
             _moduleGroupsViewSource = (CollectionViewSource)FindResource("CodeModuleGroupViewSource");
             _moduleGroupsTemplate = (DataTemplate)FindResource("CodeModuleGroupsTemplate");
+
+            Loaded += InspectionResultsControl_Loaded;
+        }
+
+        private void InspectionResultsControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.RefreshCommand.Execute(null);
         }
 
         private bool _isModuleTemplate;
@@ -48,6 +47,17 @@ namespace Rubberduck.UI.CodeInspections
             InspectionResultsTreeView.ItemsSource = _isModuleTemplate
                 ? _moduleGroupsViewSource.View.Groups
                 : _inspectionTypeGroupsViewSource.View.Groups;
+        }
+
+        private void InspectionResultsTreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewModel == null || ViewModel.SelectedItem == null)
+            {
+                return;
+            }
+
+            var arg = ViewModel.SelectedItem.QualifiedSelection.GetNavitationArgs();
+            ViewModel.NavigateCommand.Execute(arg);
         }
     }
 }

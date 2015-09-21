@@ -21,13 +21,15 @@ namespace Rubberduck.UI.Command
         private readonly AddIn _addin;
         private readonly IInspector _inspector;
         private readonly IRubberduckParser _parser;
+        private readonly INavigateCommand _navigate;
 
-        public RunCodeInspectionsCommand(VBE vbe, AddIn addin, IInspector inspector, IRubberduckParser parser)
+        public RunCodeInspectionsCommand(VBE vbe, AddIn addin, IInspector inspector, IRubberduckParser parser, INavigateCommand navigate)
         {
             _vbe = vbe;
             _addin = addin;
             _inspector = inspector;
             _parser = parser;
+            _navigate = navigate;
         }
 
         /// <summary>
@@ -37,8 +39,8 @@ namespace Rubberduck.UI.Command
         public override async void Execute(object parameter)
         {
             var factory = new CodePaneWrapperFactory();
-            var viewModel = new InspectionResultsViewModel(_inspector, factory, _vbe);
-            var presenter = new CodeInspectionsDockablePresenter(_inspector, _vbe, _addin, new CodeInspectionsWindow(viewModel), factory);
+            var viewModel = new InspectionResultsViewModel(_inspector, _vbe, _navigate);
+            var presenter = new CodeInspectionsDockablePresenter(_inspector, _vbe, _addin, new CodeInspectionsWindow(viewModel));
             presenter.Show();
         }
     }

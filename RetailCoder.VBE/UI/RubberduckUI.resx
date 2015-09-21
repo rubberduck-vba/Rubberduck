@@ -1167,4 +1167,16 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
     <value>Search:</value>
   </data>
+  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
+    <value>Specify 'Option Explicit'</value>
+  </data>
+  <data name="QuickFix_ThisInstance" xml:space="preserve">
+    <value>This instance</value>
+  </data>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value>All instances in module</value>
+  </data>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value>All instances in project</value>
+  </data>
 </root>

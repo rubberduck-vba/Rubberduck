@@ -26,9 +26,8 @@ namespace Rubberduck.Inspections
 
     public class OptionExplicitQuickFix : CodeInspectionQuickFix
     {
-        // todo: add a resource string for "Specify Option Explicit".
         public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.OptionExplicit)
+            : base(context, selection, RubberduckUI.Inspections_SpecifyOptionExplicit)
         {
         }
 

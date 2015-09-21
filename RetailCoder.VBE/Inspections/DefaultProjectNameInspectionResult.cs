@@ -55,5 +55,8 @@ namespace Rubberduck.Inspections
                 refactoring.Refactor(_target);
             }
         }
+
+        public override bool CanFixInModule { get { return false; } }
+        public override bool CanFixInProject { get { return false; } }
     }
 }

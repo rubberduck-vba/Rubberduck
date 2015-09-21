@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -17,15 +16,13 @@ namespace Rubberduck.UI.CodeInspections
     {
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
-        private IEnumerable<VBProjectParseResult> _parseResults;
         private IList<ICodeInspectionResult> _results;
         private readonly IInspector _inspector;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         /// <summary>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, ICodePaneWrapperFactory wrapperFactory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -33,8 +30,6 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Reset += _inspector_Reset;
             _inspector.Parsing += _inspector_Parsing;
             _inspector.ParseCompleted += _inspector_ParseCompleted;
-
-            _wrapperFactory = wrapperFactory;
         }
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
@@ -45,7 +40,6 @@ namespace Rubberduck.UI.CodeInspections
             }
 
             //ToggleParsingStatus(false);
-            _parseResults = e.ParseResults;
         }
 
         private void _inspector_Parsing(object sender, EventArgs e)
@@ -60,25 +54,6 @@ namespace Rubberduck.UI.CodeInspections
 
         private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
-            var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var resource = _results.Count == 1
-                ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
-                : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
-
-            Clipboard.SetText(text);
-        }
-
-        private string FormatResultForClipboard(ICodeInspectionResult result)
-        {
-            var module = result.QualifiedSelection.QualifiedName;
-            return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
-                result.Inspection.Severity,
-                result.Name,
-                module.ProjectName,
-                module.ComponentName,
-                result.QualifiedSelection.Selection.StartLine);
         }
 
         private int _issues;
