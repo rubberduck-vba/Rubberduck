@@ -11,15 +11,15 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
-using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
+    [Obsolete]
     public class RefactorMenu : Menu
     {
         private readonly IRubberduckParser _parser;
@@ -224,7 +224,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRemoveParameterButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            new RefactorRemoveParametersCommand(IDE, _parser, _editor,_wrapperWrapperFactory).Execute(null)
+            new RefactorRemoveParametersCommand(IDE, _parser, _editor,_wrapperWrapperFactory).Execute(null);
         }
 
         public void Rename()
