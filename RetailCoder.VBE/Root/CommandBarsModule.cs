@@ -11,6 +11,7 @@ using Rubberduck.Navigation;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.Root
 {
@@ -123,7 +124,8 @@ namespace Rubberduck.Root
                 .ToList();
 
             // note: ICommand naming convention: [Foo]Command
-            var commands = types.Where(type => type.IsClass && type.BaseType == typeof(CommandBase) && type.Name.EndsWith("Command"));
+            var baseCommandTypes = new[] {typeof (CommandBase), typeof (RefactorCommandBase)};
+            var commands = types.Where(type => type.IsClass && baseCommandTypes.Contains(type.BaseType) && type.Name.EndsWith("Command"));
             foreach (var command in commands)
             {
                 var commandName = command.Name.Substring(0, command.Name.Length - "Command".Length);

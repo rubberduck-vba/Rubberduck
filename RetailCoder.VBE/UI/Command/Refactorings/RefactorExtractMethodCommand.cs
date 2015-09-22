@@ -6,7 +6,6 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
