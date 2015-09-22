@@ -1,8 +1,8 @@
 ﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
-using Rubberduck.UI.Command;
 using System;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
