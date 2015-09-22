@@ -273,7 +273,6 @@
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
-<<<<<<< HEAD
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplace.cs" />
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceDialog.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplace.cs" />
@@ -281,8 +280,6 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
-=======
->>>>>>> 49ae39383d7cbb0f30b65155fe35781972147eda
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
