@@ -8,15 +8,15 @@ namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IRubberduckParser _parser;
-        protected readonly IActiveCodePaneEditor _editor;
-        protected readonly VBE _ide;
+        protected readonly IRubberduckParser Parser;
+        protected readonly IActiveCodePaneEditor Editor;
+        protected readonly VBE Vbe;
 
-        protected RefactorCommandBase(VBE ide, IRubberduckParser parser, IActiveCodePaneEditor editor)
+        protected RefactorCommandBase(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor)
         {
-            _ide = ide;
-            _parser = parser;
-            _editor = editor;
+            Vbe = vbe;
+            Parser = parser;
+            Editor = editor;
         }
 
         protected void refactoring_InvalidSelection(object sender, EventArgs e)

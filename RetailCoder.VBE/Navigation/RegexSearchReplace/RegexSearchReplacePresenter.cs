@@ -13,16 +13,16 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private readonly IRegexSearchReplaceDialog _view;
         private readonly IRubberduckParser _parser;
 
-        public RegexSearchReplacePresenter(VBE vbe, IRubberduckParser parser, IRegexSearchReplaceDialog view)
+        public RegexSearchReplacePresenter(VBE vbe, IRubberduckParser parser/*, IRegexSearchReplaceDialog view*/)
         {
             _vbe = vbe;
-            _view = view;
+            //_view = view;
             _parser = parser;
 
-            _view.FindButtonClicked += _view_FindButtonClicked;
-            _view.ReplaceButtonClicked += _view_ReplaceButtonClicked;
-            _view.ReplaceAllButtonClicked += _view_ReplaceAllButtonClicked;
-            _view.CancelButtonClicked += _view_CancelButtonClicked;
+            //_view.FindButtonClicked += _view_FindButtonClicked;
+            //_view.ReplaceButtonClicked += _view_ReplaceButtonClicked;
+            //_view.ReplaceAllButtonClicked += _view_ReplaceAllButtonClicked;
+            //_view.CancelButtonClicked += _view_CancelButtonClicked;
         }
 
         public void Show()
