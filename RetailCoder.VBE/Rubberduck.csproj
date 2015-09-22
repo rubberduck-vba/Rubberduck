@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -51,6 +51,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -63,6 +65,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -75,6 +79,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +91,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -98,6 +105,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -110,6 +119,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -121,6 +131,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
@@ -136,6 +148,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -148,6 +162,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -160,19 +176,20 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Release64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
     <Optimize>true</Optimize>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -185,6 +202,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -197,6 +215,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
@@ -209,32 +228,14 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
+      <HintPath>..\packages\ninject.extensions.conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Factory">
       <HintPath>..\packages\Ninject.Extensions.Factory.3.2.1.0\lib\net45-full\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.NamedScope">
       <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
-    </Reference>
-    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -252,6 +253,18 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Microsoft.Vbe.Interop">
+      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="office">
+      <HintPath>..\libs\Office.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
@@ -260,6 +273,7 @@
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionResult.cs" />
+<<<<<<< HEAD
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplace.cs" />
     <Compile Include="Navigation\RegexSearchReplace\IRegexSearchReplaceDialog.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplace.cs" />
@@ -267,6 +281,8 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
+=======
+>>>>>>> 49ae39383d7cbb0f30b65155fe35781972147eda
     <Compile Include="Refactorings\RemoveParameters\IRemoveParametersView.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
@@ -358,10 +374,8 @@
     <Compile Include="UI\Command\MenuItems\OptionsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ParentMenuItemBase.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ProjectWindowContextParentMenu.cs" />
-    <Compile Include="UI\Command\RefactorExtractMethodCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorExtractMethodCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
-    <Compile Include="UI\Command\RefactorRemoveParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\RefactorRenameCommand.cs" />
     <Compile Include="UI\Command\RefactorReorderParametersCommand.cs" />
@@ -381,10 +395,6 @@
     <Compile Include="UI\FolderBrowser.cs" />
     <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
-    <Compile Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.Designer.cs" />
     <Compile Include="UI\RubberduckUI.de.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -539,7 +549,6 @@
     <Compile Include="UI\SourceControl\IRefreshableView.cs" />
     <Compile Include="UI\SourceControl\ISettingsView.cs" />
     <Compile Include="UI\SourceControl\ISourceControlView.cs" />
-    <Compile Include="UI\SourceControl\IUnsyncedCommitsView.cs" />
     <Compile Include="UI\SourceControl\MergeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -576,12 +585,6 @@
     </Compile>
     <Compile Include="UI\SourceControl\SourceControlPresenter.cs" />
     <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\UnsyncedCommitsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\UnsyncedCommitsControl.Designer.cs">
-      <DependentUpon>UnsyncedCommitsControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\SourceControl\UnsyncedCommitsPresenter.cs" />
     <Compile Include="UI\ToDoItems\IToDoExplorerWindow.cs" />
     <Compile Include="Settings\IConfigurationService.cs" />
@@ -719,6 +722,17 @@
     <Compile Include="UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UnitTesting\TestRunner.cs" />
+    <Compile Include="UI\SourceControl\IUnSyncedCommitsView.cs" />
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SourceControl\UnSyncedCommitsControl.Designer.cs">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
+    <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\AboutWindow.resx">
@@ -738,7 +752,6 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RegexSearchReplace\RegexSearchReplaceDialog.resx" />
     <EmbeddedResource Include="UI\RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
@@ -824,14 +837,14 @@
     <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
       <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\UnsyncedCommitsControl.resx">
-      <DependentUpon>UnsyncedCommitsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\ToDoItems\ToDoExplorerWindow.resx">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UnitTesting\TestExplorerWindow.resx">
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SourceControl\UnSyncedCommitsControl.resx">
+      <DependentUpon>UnSyncedCommitsControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -869,6 +882,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\DataSources\" />
+    <Folder Include="UI\Command\Refactorings\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\rubberduck.config" />
@@ -1185,15 +1199,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
+      <Project>{0040E129-1AA2-459F-A59A-129FA4035E01}</Project>
       <Name>Rubberduck.SourceControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>

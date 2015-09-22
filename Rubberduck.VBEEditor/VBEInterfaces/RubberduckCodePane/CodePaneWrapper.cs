@@ -80,7 +80,7 @@ namespace Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane
             if (endLine > startLine && endColumn == 1)
             {
                 endLine--;
-                endColumn = CodeModule.Lines[endLine, 1].Length;
+                endColumn = CodeModule.get_Lines(endLine, 1).Length;
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);

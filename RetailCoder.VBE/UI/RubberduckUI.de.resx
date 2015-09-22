@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -197,10 +197,10 @@
     <value>ToDo Einstellungen</value>
   </data>
   <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
-    <value>Konfiguriere Inspektionssensitivität. Zum deaktivieren einer Inspektion "DoNotShow" auswählen.</value>
+    <value>Konfiguriere Inspektionssensitivität. Zum Deaktivieren einer Inspektion "Nicht anzeigen" auswählen.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>[Ok] zum schließen und speichern oder [Abbrechen] zum verwerfen der Änderungen.</value>
+    <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
   </data>
   <data name="SettingsInstructions_ToDoSettings" xml:space="preserve">
     <value>Zu erkennende Markierungen in Kommentaren konfigurieren.</value>
@@ -266,7 +266,7 @@
     <comment>0: Gewähltes Ziel; 1: Name des Interfaces; 2: Name des Interfacemembers</comment>
   </data>
   <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
-    <value>Kann den letzten Paramter eines Setters oder Letters nicht entfernen.</value>
+    <value>Kann den letzten Parameter eines Setters oder Letters nicht entfernen.</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
     <value>Die aktuelle Auswahl kann nicht extrahiert werden.</value>
@@ -627,7 +627,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Rubberduck - Parameter entfernen</value>
   </data>
   <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Wählen Sie einen Parameter und Benutzen Sie die Schaltflächen oder Doppelclicken Sie um ihn zu Bewegen oder zu Löschen</value>
+    <value>Wählen Sie einen Parameter und benutzen Sie die Schaltflächen oder doppelklicken Sie um ihn zu bewegen oder zu löschen</value>
   </data>
   <data name="Restore" xml:space="preserve">
     <value>Wiederherstellen</value>
@@ -1103,7 +1103,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Hoch</value>
   </data>
   <data name="ToDoPriority_Low" xml:space="preserve">
-    <value>Gering</value>
+    <value>Niedrig</value>
   </data>
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
@@ -1113,5 +1113,11 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;vigieren</value>
+  </data>
+  <data name="Language_JP" xml:space="preserve">
+    <value>Japanisch</value>
+  </data>
+  <data name="Inspections_MultilineParameter" xml:space="preserve">
+    <value>Variablen in einer Zeile angeben</value>
   </data>
 </root>

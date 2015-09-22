@@ -9,12 +9,12 @@ using Rubberduck.Navigation;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
-using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
@@ -190,19 +190,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnExtractMethodButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            ExtractMethod();
-        }
-
-        private void ExtractMethod()
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            var declarations = result.Declarations;
-            var factory = new ExtractMethodPresenterFactory(_editor, declarations);
-            var refactoring = new ExtractMethodRefactoring(factory, _editor);
-            refactoring.InvalidSelection += refactoring_InvalidSelection;
-            refactoring.Refactor();
+            new RefactorExtractMethodCommand(IDE, _parser, _editor).Execute(null);
         }
 
         void refactoring_InvalidSelection(object sender, EventArgs e)
@@ -236,14 +224,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnRemoveParameterButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (IDE.ActiveCodePane == null)
-            {
-                return;
-            }
-
-            var codePane = _wrapperWrapperFactory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            RemoveParameter(selection);
+            new RefactorRemoveParametersCommand(IDE, _parser, _editor,_wrapperWrapperFactory).Execute(null)
         }
 
         public void Rename()
@@ -281,19 +262,6 @@ namespace Rubberduck.UI
             {
                 var factory = new ReorderParametersPresenterFactory(_editor, view, result, new MessageBox());
                 var refactoring = new ReorderParametersRefactoring(factory, _editor, new MessageBox());
-                refactoring.Refactor(selection);
-            }
-        }
-
-        private void RemoveParameter(QualifiedSelection selection)
-        {
-            var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, IDE.ActiveVBProject);
-
-            using (var view = new RemoveParametersDialog())
-            {
-                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new MessageBox());
-                var refactoring = new RemoveParametersRefactoring(factory, _editor);
                 refactoring.Refactor(selection);
             }
         }
