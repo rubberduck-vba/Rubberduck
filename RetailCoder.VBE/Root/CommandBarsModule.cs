@@ -146,90 +146,123 @@ namespace Rubberduck.Root
             }
         }
 
+        private IEnumerable<IMenuItem> _rubberduckMenuItems;
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            return new[]
+            if (_rubberduckMenuItems == null)
             {
-                _kernel.Get<AboutCommandMenuItem>(),
-                _kernel.Get<OptionsCommandMenuItem>(), 
-                _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
-                _kernel.Get<ShowSourceControlPanelCommandMenuItem>(), 
-                GetUnitTestingParentMenu(),
-                GetRefactoringsParentMenu(),
-                GetNavigateParentMenu(),
-            };
+                _rubberduckMenuItems = new[]
+                {
+                    _kernel.Get<AboutCommandMenuItem>(),
+                    _kernel.Get<OptionsCommandMenuItem>(),
+                    _kernel.Get<RunCodeInspectionsCommandMenuItem>(),
+                    _kernel.Get<ShowSourceControlPanelCommandMenuItem>(),
+                    GetUnitTestingParentMenu(),
+                    GetRefactoringsParentMenu(),
+                    GetNavigateParentMenu(),
+                };
+            }
+            return _rubberduckMenuItems;
         }
 
+        private UnitTestingParentMenu _unitTestingParentMenu;
         private IMenuItem GetUnitTestingParentMenu()
         {
-            var items = new IMenuItem[]
+            if (_unitTestingParentMenu == null)
             {
-                _kernel.Get<RunAllTestsCommandMenuItem>(), 
-                _kernel.Get<TestExplorerCommandMenuItem>(), 
-                _kernel.Get<AddTestModuleCommandMenuItem>(),
-                _kernel.Get<AddTestMethodCommandMenuItem>(),
-                _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
-            };
-
-            return new UnitTestingParentMenu(items);
+                var items = new IMenuItem[]
+                {
+                    _kernel.Get<RunAllTestsCommandMenuItem>(),
+                    _kernel.Get<TestExplorerCommandMenuItem>(),
+                    _kernel.Get<AddTestModuleCommandMenuItem>(),
+                    _kernel.Get<AddTestMethodCommandMenuItem>(),
+                    _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
+                };
+                _unitTestingParentMenu = new UnitTestingParentMenu(items);
+            }
+            return _unitTestingParentMenu;
         }
 
+        private RefactoringsParentMenu _refactoringsParentMenu;
         private IMenuItem GetRefactoringsParentMenu()
         {
-            var items = new IMenuItem[]
+            if (_refactoringsParentMenu == null)
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
-                _kernel.Get<RefactorExtractMethodCommandMenuItem>(), 
-                _kernel.Get<RefactorReorderParametersCommandMenuItem>(), 
-                _kernel.Get<RefactorRemoveParametersCommandMenuItem>(), 
-            };
-
-            return new RefactoringsParentMenu(items);
+                var items = new IMenuItem[]
+                {
+                    _kernel.Get<RefactorRenameCommandMenuItem>(),
+                    _kernel.Get<RefactorExtractMethodCommandMenuItem>(),
+                    _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
+                    _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
+                };
+                _refactoringsParentMenu = new RefactoringsParentMenu(items);
+            }
+            return _refactoringsParentMenu;
         }
 
+        private NavigateParentMenu _navigateParentMenu;
         private IMenuItem GetNavigateParentMenu()
         {
-            var items = new IMenuItem[]
+            if (_navigateParentMenu == null)
             {
-                _kernel.Get<CodeExplorerCommandMenuItem>(),
-                _kernel.Get<ToDoExplorerCommandMenuItem>(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
-            };
-            return new NavigateParentMenu(items);
+                var items = new IMenuItem[]
+                {
+                    _kernel.Get<CodeExplorerCommandMenuItem>(),
+                    _kernel.Get<ToDoExplorerCommandMenuItem>(),
+                    _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                    _kernel.Get<FindSymbolCommandMenuItem>(),
+                    _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                    _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                };
+                _navigateParentMenu = new NavigateParentMenu(items);
+            }
+            return _navigateParentMenu;
         }
 
+        private IEnumerable<IMenuItem> _codePaneContextMenuItems; 
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
-            return new[]
+            if (_codePaneContextMenuItems == null)
             {
-                GetRefactoringsParentMenu(),
-                _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
-            };
+                _codePaneContextMenuItems = new[]
+                {
+                    GetRefactoringsParentMenu(),
+                    _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
+                    _kernel.Get<FindSymbolCommandMenuItem>(),
+                    _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                    _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                };
+            }
+            return _codePaneContextMenuItems;
         }
 
+        private IEnumerable<IMenuItem> _formDesignerContextMenuItems; 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()
         {
-            return new IMenuItem[]
+            if (_formDesignerContextMenuItems == null)
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
-            };
+                _formDesignerContextMenuItems = new IMenuItem[]
+                {
+                    _kernel.Get<RefactorRenameCommandMenuItem>(),
+                };
+            }
+            return _formDesignerContextMenuItems;
         }
 
+        private IEnumerable<IMenuItem> _projectWindowContextMenuItems; 
         private IEnumerable<IMenuItem> GetProjectWindowContextMenuItems()
         {
-            return new IMenuItem[]
+            if (_projectWindowContextMenuItems == null)
             {
-                _kernel.Get<RefactorRenameCommandMenuItem>(), 
-                _kernel.Get<FindSymbolCommandMenuItem>(),
-                _kernel.Get<FindAllReferencesCommandMenuItem>(),
-                _kernel.Get<FindAllImplementationsCommandMenuItem>(),
-            };
+                _projectWindowContextMenuItems = new IMenuItem[]
+                {
+                    _kernel.Get<RefactorRenameCommandMenuItem>(),
+                    _kernel.Get<FindSymbolCommandMenuItem>(),
+                    _kernel.Get<FindAllReferencesCommandMenuItem>(),
+                    _kernel.Get<FindAllImplementationsCommandMenuItem>(),
+                };
+            }
+            return _projectWindowContextMenuItems;
         }
     }
 }
