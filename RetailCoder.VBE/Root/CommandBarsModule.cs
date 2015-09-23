@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
+using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Navigation;
 using Rubberduck.UI.Command;
@@ -94,7 +95,7 @@ namespace Rubberduck.Root
         private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
-                .InSingletonScope()
+                .InCallScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
                 .WithPropertyValue("Parent", parent);
@@ -115,9 +116,8 @@ namespace Rubberduck.Root
 
         private void BindCommandsToMenuItems()
         {
-            //_kernel.Bind<ICommand>().To<NavigateCommand>().InSingletonScope();
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>().InSingletonScope();
-            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>().InSingletonScope();
+            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllImplementations>().WhenTargetHas<FindImplementationsAttribute>();
+            _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>();
 
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(type => type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
@@ -135,8 +135,8 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        _kernel.Bind(item).ToSelf().InSingletonScope();
-                        _kernel.Bind<ICommand>().To(command).WhenInjectedInto(item).InSingletonScope();
+                        _kernel.Bind(item).ToSelf().InCallScope();
+                        _kernel.Bind<ICommand>().To(command).WhenInjectedInto(item).InCallScope();
                     }
                 }
                 catch (InvalidOperationException exception)
@@ -148,7 +148,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            return new IMenuItem[]
+            return new[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
                 _kernel.Get<OptionsCommandMenuItem>(), 
@@ -203,7 +203,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
-            return new IMenuItem[]
+            return new[]
             {
                 GetRefactoringsParentMenu(),
                 _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
