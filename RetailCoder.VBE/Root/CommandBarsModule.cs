@@ -178,7 +178,7 @@ namespace Rubberduck.Root
                     _kernel.Get<AddTestMethodCommandMenuItem>(),
                     _kernel.Get<AddTestMethodExpectedErrorCommandMenuItem>(),
                 };
-                _unitTestingParentMenu = new UnitTestingParentMenu(items);
+                _unitTestingParentMenu = new UnitTestingParentMenu(items.ToList());
             }
             return _unitTestingParentMenu;
         }
@@ -195,7 +195,7 @@ namespace Rubberduck.Root
                     _kernel.Get<RefactorReorderParametersCommandMenuItem>(),
                     _kernel.Get<RefactorRemoveParametersCommandMenuItem>(),
                 };
-                _refactoringsParentMenu = new RefactoringsParentMenu(items);
+                _refactoringsParentMenu = new RefactoringsParentMenu(items.ToList());
             }
             return _refactoringsParentMenu;
         }
@@ -214,7 +214,7 @@ namespace Rubberduck.Root
                     _kernel.Get<FindAllReferencesCommandMenuItem>(),
                     _kernel.Get<FindAllImplementationsCommandMenuItem>(),
                 };
-                _navigateParentMenu = new NavigateParentMenu(items);
+                _navigateParentMenu = new NavigateParentMenu(items.ToList());
             }
             return _navigateParentMenu;
         }
@@ -233,7 +233,7 @@ namespace Rubberduck.Root
                     _kernel.Get<FindAllImplementationsCommandMenuItem>(),
                 };
             }
-            return _codePaneContextMenuItems;
+            return _codePaneContextMenuItems.ToList();
         }
 
         private IEnumerable<IMenuItem> _formDesignerContextMenuItems; 
@@ -246,7 +246,7 @@ namespace Rubberduck.Root
                     _kernel.Get<RefactorRenameCommandMenuItem>(),
                 };
             }
-            return _formDesignerContextMenuItems;
+            return _formDesignerContextMenuItems.ToList();
         }
 
         private IEnumerable<IMenuItem> _projectWindowContextMenuItems; 
@@ -262,7 +262,7 @@ namespace Rubberduck.Root
                     _kernel.Get<FindAllImplementationsCommandMenuItem>(),
                 };
             }
-            return _projectWindowContextMenuItems;
+            return _projectWindowContextMenuItems.ToList();
         }
     }
 }
