@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.VBA
             var results = new List<VBComponentParseResult>();
             if (project.Protection == vbext_ProjectProtection.vbext_pp_locked)
             {
-                return new VBProjectParseResult(project, results, _wrapperFactory);
+                return new VBProjectParseResult(project, results);
             }
 
             var modules = project.VBComponents.Cast<VBComponent>();
@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            var parseResult = new VBProjectParseResult(project, results, _wrapperFactory);
+            var parseResult = new VBProjectParseResult(project, results);
             if (mustResolve)
             {
                 parseResult.Progress += parseResult_Progress;

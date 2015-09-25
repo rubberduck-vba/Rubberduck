@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        private static string[] PrimitiveTypes =
+        private static readonly string[] PrimitiveTypes =
         {
             Tokens.Boolean,
             Tokens.Byte,
@@ -70,8 +70,42 @@ namespace Rubberduck.Inspections
 
         private bool IsUsedAsByRefParam(Declarations declarations, Declaration parameter)
         {
-            // todo: enable tracking parameter references 
-            // by linking Parameter declarations to their parent Procedure/Function/Property member.
+            // find the procedure calls in the procedure of the parameter.
+            // note: works harder than it needs to when procedure has more than a single procedure call...
+            //       ...but caching [declarations] would be a memory leak
+            var procedureCalls = declarations.Items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .GroupBy(call => call.Declaration)
+                .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
+
+            foreach (var item in procedureCalls)
+            {
+                var calledProcedureArgs = declarations.Items
+                    .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
+                    .OrderBy(arg => arg.Selection.StartLine)
+                    .ThenBy(arg => arg.Selection.StartColumn)
+                    .ToArray();
+
+                for (var i = 0; i < calledProcedureArgs.Count(); i++)
+                {
+                    if (((VBAParser.ArgContext) calledProcedureArgs[i].Context).BYVAL() == null)
+                    {
+                        foreach (var reference in item)
+                        {
+                            var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
+                            if (context == null)
+                            {
+                                continue;
+                            }
+                            if (parameter.IdentifierName == context.GetText())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
             return false;
         }
     }

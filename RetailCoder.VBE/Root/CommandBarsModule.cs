@@ -162,7 +162,7 @@ namespace Rubberduck.Root
                     GetNavigateParentMenu(),
                 };
             }
-            return _rubberduckMenuItems;
+            return _rubberduckMenuItems.ToList();
         }
 
         private UnitTestingParentMenu _unitTestingParentMenu;

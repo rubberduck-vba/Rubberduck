@@ -6,7 +6,6 @@ using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -16,17 +15,18 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration
     {
-        public Declaration(QualifiedMemberName qualifiedName, string parentScope,
+        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ICodePaneWrapperFactory wrapperFactory, bool isBuiltIn = true)
-            :this(qualifiedName, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, wrapperFactory, isBuiltIn)
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true)
+            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn)
         {}
 
-        public Declaration(QualifiedMemberName qualifiedName, string parentScope,
+        public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, ICodePaneWrapperFactory wrapperFactory, bool isBuiltIn = false)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false)
         {
             _qualifiedName = qualifiedName;
+            _parentDeclaration = parentDeclaration;
             _parentScope = parentScope;
             _identifierName = qualifiedName.MemberName;
             _asTypeName = asTypeName;
@@ -36,14 +36,14 @@ namespace Rubberduck.Parsing.Symbols
             _declarationType = declarationType;
             _selection = selection;
             _context = context;
-            _wrapperFactory = wrapperFactory;
             _isBuiltIn = isBuiltIn;
         }
 
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
-
         private readonly bool _isBuiltIn;
         public bool IsBuiltIn { get { return _isBuiltIn; } }
+
+        private readonly Declaration _parentDeclaration;
+        public Declaration ParentDeclaration { get { return _parentDeclaration; } }
 
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }

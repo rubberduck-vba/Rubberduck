@@ -147,7 +147,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
-            return new IdentifierReference(_qualifiedModuleName, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private Declaration ResolveType(VBAParser.ComplexTypeContext context)
