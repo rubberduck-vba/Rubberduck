@@ -269,6 +269,7 @@
   <ItemGroup>
     <Compile Include="AppMenu.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
     <Compile Include="Navigation\NavigateAllImplementations.cs" />
     <Compile Include="Navigation\IDeclarationNavigator.cs" />

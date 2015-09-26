@@ -26,11 +26,13 @@
         public const string ChDir = "ChDir";
         public const string ChDrive = "ChDrive";
         public const string Chr = "Chr";
+        public const string ChrW = "Chr";
         public const string CInt = "CInt";
         public const string CLng = "CLng";
         public const string CLngLng = "CLngLng";
         public const string CLngPtr = "CLngPtr";
         public const string Close = "Close";
+        public const string Command = "Command";
         public const string CommentMarker = "'";
         public const string Compare = "Compare";
         public const string Const = "Const";
@@ -58,6 +60,7 @@
         public const string ElseIf = "ElseIf";
         public const string End = "End";
         public const string Enum = "Enum";
+        public const string Environ = "Environ";
         public const string EOF = "EOF";
         public const string Err = "Err";
         public const string Error = "Error";
@@ -95,6 +98,7 @@
         public const string LBound = "LBound";
         public const string LCase = "LCase";
         public const string Left = "Left";
+        public const string LeftB = "Left";
         public const string Len = "Len";
         public const string LenB = "LenB";
         public const string Let = "Let";
@@ -109,6 +113,7 @@
         public const string LTrim = "LTrim";
         public const string Me = "Me";
         public const string Mid = "Mid";
+        public const string MidB = "Mid";
         public const string Minute = "Minute";
         public const string MkDir = "MkDir";
         public const string Mod = "Mod";
@@ -142,6 +147,7 @@
         public const string Resume = "Resume";
         public const string Return = "Return";
         public const string Right = "Right";
+        public const string RightB = "Right";
         public const string RmDir = "RmDir";
         public const string Rnd = "Rnd";
         public const string RTrim = "RTrim";
