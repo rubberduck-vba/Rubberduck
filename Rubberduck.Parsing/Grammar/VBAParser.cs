@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Source\Repos\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
+// Generated from C:\Users\Mathieu\Documents\GitHub\Rubberduck\Rubberduck.Parsing\Grammar\VBA.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -64,7 +64,7 @@ public partial class VBAParser : Parser {
 		BYTELITERAL=209, IDENTIFIER=210, LINE_CONTINUATION=211, NEWLINE=212, COMMENT=213, 
 		WS=214;
 	public static readonly string[] tokenNames = {
-		"<INVALID>", "'%'", "'.'", "','", "':'", "'@'", "'#'", "';'", "'!'", "'$'", 
+		"<INVALID>", "'@'", "'!'", "'#'", "'$'", "'%'", "':'", "';'", "','", "'.'", 
 		"ACCESS", "ADDRESSOF", "ALIAS", "AND", "ATTRIBUTE", "APPACTIVATE", "APPEND", 
 		"AS", "BEGIN", "BEEP", "BINARY", "BOOLEAN", "BYVAL", "BYREF", "BYTE", 
 		"CALL", "CASE", "CHDIR", "CHDRIVE", "CLASS", "CLOSE", "COLLECTION", "CONST", 
@@ -230,28 +230,28 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleContext : ParserRuleContext {
-		public ModuleBodyContext moduleBody() {
-			return GetRuleContext<ModuleBodyContext>(0);
-		}
-		public ModuleAttributesContext moduleAttributes() {
-			return GetRuleContext<ModuleAttributesContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ModuleHeaderContext moduleHeader() {
 			return GetRuleContext<ModuleHeaderContext>(0);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ModuleDeclarationsContext moduleDeclarations() {
-			return GetRuleContext<ModuleDeclarationsContext>(0);
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
 		public ModuleConfigContext moduleConfig() {
 			return GetRuleContext<ModuleConfigContext>(0);
+		}
+		public ModuleAttributesContext moduleAttributes() {
+			return GetRuleContext<ModuleAttributesContext>(0);
+		}
+		public ModuleBodyContext moduleBody() {
+			return GetRuleContext<ModuleBodyContext>(0);
+		}
+		public ModuleDeclarationsContext moduleDeclarations() {
+			return GetRuleContext<ModuleDeclarationsContext>(0);
 		}
 		public ModuleContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -403,7 +403,7 @@ public partial class VBAParser : Parser {
 			}
 			State = 330;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 329; moduleBody();
 				}
@@ -444,12 +444,12 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleHeaderContext : ParserRuleContext {
-		public ITerminalNode DOUBLELITERAL() { return GetToken(VBAParser.DOUBLELITERAL, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode VERSION() { return GetToken(VBAParser.VERSION, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode DOUBLELITERAL() { return GetToken(VBAParser.DOUBLELITERAL, 0); }
 		public ITerminalNode CLASS() { return GetToken(VBAParser.CLASS, 0); }
 		public ModuleHeaderContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -501,14 +501,14 @@ public partial class VBAParser : Parser {
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ModuleConfigElementContext moduleConfigElement(int i) {
-			return GetRuleContext<ModuleConfigElementContext>(i);
-		}
 		public IReadOnlyList<ModuleConfigElementContext> moduleConfigElement() {
 			return GetRuleContexts<ModuleConfigElementContext>();
 		}
 		public ITerminalNode BEGIN() { return GetToken(VBAParser.BEGIN, 0); }
 		public ITerminalNode END() { return GetToken(VBAParser.END, 0); }
+		public ModuleConfigElementContext moduleConfigElement(int i) {
+			return GetRuleContext<ModuleConfigElementContext>(i);
+		}
 		public ModuleConfigContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -605,14 +605,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleConfigElementContext : ParserRuleContext {
-		public ITerminalNode NEWLINE() { return GetToken(VBAParser.NEWLINE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode NEWLINE() { return GetToken(VBAParser.NEWLINE, 0); }
 		public LiteralContext literal() {
 			return GetRuleContext<LiteralContext>(0);
 		}
@@ -769,12 +769,12 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleDeclarationsContext : ParserRuleContext {
+		public ModuleDeclarationsElementContext moduleDeclarationsElement(int i) {
+			return GetRuleContext<ModuleDeclarationsElementContext>(i);
+		}
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public ModuleDeclarationsElementContext moduleDeclarationsElement(int i) {
-			return GetRuleContext<ModuleDeclarationsElementContext>(i);
 		}
 		public IReadOnlyList<ModuleDeclarationsElementContext> moduleDeclarationsElement() {
 			return GetRuleContexts<ModuleDeclarationsElementContext>();
@@ -879,6 +879,25 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
+	public partial class OptionBaseStmtContext : ModuleOptionContext {
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode OPTION_BASE() { return GetToken(VBAParser.OPTION_BASE, 0); }
+		public OptionBaseStmtContext(ModuleOptionContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterOptionBaseStmt(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitOptionBaseStmt(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOptionBaseStmt(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
 	public partial class OptionPrivateModuleStmtContext : ModuleOptionContext {
 		public ITerminalNode OPTION_PRIVATE_MODULE() { return GetToken(VBAParser.OPTION_PRIVATE_MODULE, 0); }
 		public OptionPrivateModuleStmtContext(ModuleOptionContext context) { CopyFrom(context); }
@@ -896,31 +915,12 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class OptionBaseStmtContext : ModuleOptionContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
-		public ITerminalNode OPTION_BASE() { return GetToken(VBAParser.OPTION_BASE, 0); }
-		public OptionBaseStmtContext(ModuleOptionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterOptionBaseStmt(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitOptionBaseStmt(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitOptionBaseStmt(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 	public partial class OptionCompareStmtContext : ModuleOptionContext {
-		public ITerminalNode DATABASE() { return GetToken(VBAParser.DATABASE, 0); }
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode TEXT() { return GetToken(VBAParser.TEXT, 0); }
-		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
 		public ITerminalNode OPTION_COMPARE() { return GetToken(VBAParser.OPTION_COMPARE, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode DATABASE() { return GetToken(VBAParser.DATABASE, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
 		public OptionCompareStmtContext(ModuleOptionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
@@ -998,26 +998,26 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleDeclarationsElementContext : ParserRuleContext {
+		public EnumerationStmtContext enumerationStmt() {
+			return GetRuleContext<EnumerationStmtContext>(0);
+		}
+		public TypeStmtContext typeStmt() {
+			return GetRuleContext<TypeStmtContext>(0);
+		}
+		public EventStmtContext eventStmt() {
+			return GetRuleContext<EventStmtContext>(0);
+		}
+		public ModuleBlockContext moduleBlock() {
+			return GetRuleContext<ModuleBlockContext>(0);
+		}
+		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+			return GetRuleContext<MacroIfThenElseStmtContext>(0);
+		}
 		public ModuleOptionContext moduleOption() {
 			return GetRuleContext<ModuleOptionContext>(0);
 		}
 		public DeclareStmtContext declareStmt() {
 			return GetRuleContext<DeclareStmtContext>(0);
-		}
-		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
-			return GetRuleContext<MacroIfThenElseStmtContext>(0);
-		}
-		public TypeStmtContext typeStmt() {
-			return GetRuleContext<TypeStmtContext>(0);
-		}
-		public ModuleBlockContext moduleBlock() {
-			return GetRuleContext<ModuleBlockContext>(0);
-		}
-		public EventStmtContext eventStmt() {
-			return GetRuleContext<EventStmtContext>(0);
-		}
-		public EnumerationStmtContext enumerationStmt() {
-			return GetRuleContext<EnumerationStmtContext>(0);
 		}
 		public ModuleDeclarationsElementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1108,10 +1108,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleBodyContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public IReadOnlyList<ModuleBodyElementContext> moduleBodyElement() {
 			return GetRuleContexts<ModuleBodyElementContext>();
 		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
@@ -1190,26 +1190,26 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ModuleBodyElementContext : ParserRuleContext {
-		public PropertyLetStmtContext propertyLetStmt() {
-			return GetRuleContext<PropertyLetStmtContext>(0);
-		}
 		public PropertySetStmtContext propertySetStmt() {
 			return GetRuleContext<PropertySetStmtContext>(0);
 		}
-		public FunctionStmtContext functionStmt() {
-			return GetRuleContext<FunctionStmtContext>(0);
-		}
-		public SubStmtContext subStmt() {
-			return GetRuleContext<SubStmtContext>(0);
-		}
-		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
-			return GetRuleContext<MacroIfThenElseStmtContext>(0);
+		public PropertyLetStmtContext propertyLetStmt() {
+			return GetRuleContext<PropertyLetStmtContext>(0);
 		}
 		public ModuleBlockContext moduleBlock() {
 			return GetRuleContext<ModuleBlockContext>(0);
 		}
+		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+			return GetRuleContext<MacroIfThenElseStmtContext>(0);
+		}
 		public PropertyGetStmtContext propertyGetStmt() {
 			return GetRuleContext<PropertyGetStmtContext>(0);
+		}
+		public SubStmtContext subStmt() {
+			return GetRuleContext<SubStmtContext>(0);
+		}
+		public FunctionStmtContext functionStmt() {
+			return GetRuleContext<FunctionStmtContext>(0);
 		}
 		public ModuleBodyElementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1345,21 +1345,21 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AttributeStmtContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode ATTRIBUTE() { return GetToken(VBAParser.ATTRIBUTE, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
-		}
-		public IReadOnlyList<LiteralContext> literal() {
-			return GetRuleContexts<LiteralContext>();
 		}
 		public LiteralContext literal(int i) {
 			return GetRuleContext<LiteralContext>(i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<LiteralContext> literal() {
+			return GetRuleContexts<LiteralContext>();
+		}
+		public ITerminalNode ATTRIBUTE() { return GetToken(VBAParser.ATTRIBUTE, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
 		public AttributeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1425,7 +1425,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 453; Match(T__6);
+					State = 453; Match(T__1);
 					State = 455;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -1456,16 +1456,16 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class BlockContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public IReadOnlyList<BlockStmtContext> blockStmt() {
 			return GetRuleContexts<BlockStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
 		public BlockStmtContext blockStmt(int i) {
 			return GetRuleContext<BlockStmtContext>(i);
@@ -1565,143 +1565,32 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class BlockStmtContext : ParserRuleContext {
-		public WidthStmtContext widthStmt() {
-			return GetRuleContext<WidthStmtContext>(0);
-		}
-		public ConstStmtContext constStmt() {
-			return GetRuleContext<ConstStmtContext>(0);
-		}
-		public KillStmtContext killStmt() {
-			return GetRuleContext<KillStmtContext>(0);
-		}
 		public GoToStmtContext goToStmt() {
 			return GetRuleContext<GoToStmtContext>(0);
 		}
-		public OpenStmtContext openStmt() {
-			return GetRuleContext<OpenStmtContext>(0);
-		}
-		public ExitStmtContext exitStmt() {
-			return GetRuleContext<ExitStmtContext>(0);
-		}
-		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
-			return GetRuleContext<MacroIfThenElseStmtContext>(0);
-		}
-		public UnlockStmtContext unlockStmt() {
-			return GetRuleContext<UnlockStmtContext>(0);
-		}
-		public LineInputStmtContext lineInputStmt() {
-			return GetRuleContext<LineInputStmtContext>(0);
-		}
-		public SetattrStmtContext setattrStmt() {
-			return GetRuleContext<SetattrStmtContext>(0);
-		}
-		public CloseStmtContext closeStmt() {
-			return GetRuleContext<CloseStmtContext>(0);
-		}
-		public LockStmtContext lockStmt() {
-			return GetRuleContext<LockStmtContext>(0);
-		}
-		public SetStmtContext setStmt() {
-			return GetRuleContext<SetStmtContext>(0);
+		public LoadStmtContext loadStmt() {
+			return GetRuleContext<LoadStmtContext>(0);
 		}
 		public ChdriveStmtContext chdriveStmt() {
 			return GetRuleContext<ChdriveStmtContext>(0);
 		}
-		public OnErrorStmtContext onErrorStmt() {
-			return GetRuleContext<OnErrorStmtContext>(0);
+		public EndStmtContext endStmt() {
+			return GetRuleContext<EndStmtContext>(0);
 		}
-		public ImplicitCallStmt_InBlockContext implicitCallStmt_InBlock() {
-			return GetRuleContext<ImplicitCallStmt_InBlockContext>(0);
+		public LetStmtContext letStmt() {
+			return GetRuleContext<LetStmtContext>(0);
 		}
-		public SendkeysStmtContext sendkeysStmt() {
-			return GetRuleContext<SendkeysStmtContext>(0);
+		public FilecopyStmtContext filecopyStmt() {
+			return GetRuleContext<FilecopyStmtContext>(0);
 		}
-		public DateStmtContext dateStmt() {
-			return GetRuleContext<DateStmtContext>(0);
-		}
-		public SeekStmtContext seekStmt() {
-			return GetRuleContext<SeekStmtContext>(0);
-		}
-		public LsetStmtContext lsetStmt() {
-			return GetRuleContext<LsetStmtContext>(0);
-		}
-		public RandomizeStmtContext randomizeStmt() {
-			return GetRuleContext<RandomizeStmtContext>(0);
-		}
-		public ForNextStmtContext forNextStmt() {
-			return GetRuleContext<ForNextStmtContext>(0);
-		}
-		public EraseStmtContext eraseStmt() {
-			return GetRuleContext<EraseStmtContext>(0);
-		}
-		public DeftypeStmtContext deftypeStmt() {
-			return GetRuleContext<DeftypeStmtContext>(0);
-		}
-		public ImplementsStmtContext implementsStmt() {
-			return GetRuleContext<ImplementsStmtContext>(0);
-		}
-		public NameStmtContext nameStmt() {
-			return GetRuleContext<NameStmtContext>(0);
+		public RmdirStmtContext rmdirStmt() {
+			return GetRuleContext<RmdirStmtContext>(0);
 		}
 		public RsetStmtContext rsetStmt() {
 			return GetRuleContext<RsetStmtContext>(0);
 		}
-		public ResetStmtContext resetStmt() {
-			return GetRuleContext<ResetStmtContext>(0);
-		}
-		public UnloadStmtContext unloadStmt() {
-			return GetRuleContext<UnloadStmtContext>(0);
-		}
-		public MkdirStmtContext mkdirStmt() {
-			return GetRuleContext<MkdirStmtContext>(0);
-		}
-		public PrintStmtContext printStmt() {
-			return GetRuleContext<PrintStmtContext>(0);
-		}
-		public LineLabelContext lineLabel() {
-			return GetRuleContext<LineLabelContext>(0);
-		}
-		public DoLoopStmtContext doLoopStmt() {
-			return GetRuleContext<DoLoopStmtContext>(0);
-		}
-		public SelectCaseStmtContext selectCaseStmt() {
-			return GetRuleContext<SelectCaseStmtContext>(0);
-		}
-		public StopStmtContext stopStmt() {
-			return GetRuleContext<StopStmtContext>(0);
-		}
-		public ErrorStmtContext errorStmt() {
-			return GetRuleContext<ErrorStmtContext>(0);
-		}
-		public OnGoToStmtContext onGoToStmt() {
-			return GetRuleContext<OnGoToStmtContext>(0);
-		}
-		public BeepStmtContext beepStmt() {
-			return GetRuleContext<BeepStmtContext>(0);
-		}
-		public EndStmtContext endStmt() {
-			return GetRuleContext<EndStmtContext>(0);
-		}
-		public ExplicitCallStmtContext explicitCallStmt() {
-			return GetRuleContext<ExplicitCallStmtContext>(0);
-		}
-		public WithStmtContext withStmt() {
-			return GetRuleContext<WithStmtContext>(0);
-		}
-		public AttributeStmtContext attributeStmt() {
-			return GetRuleContext<AttributeStmtContext>(0);
-		}
-		public MidStmtContext midStmt() {
-			return GetRuleContext<MidStmtContext>(0);
-		}
-		public VariableStmtContext variableStmt() {
-			return GetRuleContext<VariableStmtContext>(0);
-		}
-		public ForEachStmtContext forEachStmt() {
-			return GetRuleContext<ForEachStmtContext>(0);
-		}
-		public AppactivateStmtContext appactivateStmt() {
-			return GetRuleContext<AppactivateStmtContext>(0);
+		public EraseStmtContext eraseStmt() {
+			return GetRuleContext<EraseStmtContext>(0);
 		}
 		public ChdirStmtContext chdirStmt() {
 			return GetRuleContext<ChdirStmtContext>(0);
@@ -1709,62 +1598,173 @@ public partial class VBAParser : Parser {
 		public WriteStmtContext writeStmt() {
 			return GetRuleContext<WriteStmtContext>(0);
 		}
-		public SavepictureStmtContext savepictureStmt() {
-			return GetRuleContext<SavepictureStmtContext>(0);
+		public ExplicitCallStmtContext explicitCallStmt() {
+			return GetRuleContext<ExplicitCallStmtContext>(0);
 		}
-		public GetStmtContext getStmt() {
-			return GetRuleContext<GetStmtContext>(0);
+		public MacroIfThenElseStmtContext macroIfThenElseStmt() {
+			return GetRuleContext<MacroIfThenElseStmtContext>(0);
 		}
-		public DeleteSettingStmtContext deleteSettingStmt() {
-			return GetRuleContext<DeleteSettingStmtContext>(0);
+		public RandomizeStmtContext randomizeStmt() {
+			return GetRuleContext<RandomizeStmtContext>(0);
+		}
+		public ConstStmtContext constStmt() {
+			return GetRuleContext<ConstStmtContext>(0);
+		}
+		public SelectCaseStmtContext selectCaseStmt() {
+			return GetRuleContext<SelectCaseStmtContext>(0);
+		}
+		public ImplicitCallStmt_InBlockContext implicitCallStmt_InBlock() {
+			return GetRuleContext<ImplicitCallStmt_InBlockContext>(0);
+		}
+		public MkdirStmtContext mkdirStmt() {
+			return GetRuleContext<MkdirStmtContext>(0);
 		}
 		public RaiseEventStmtContext raiseEventStmt() {
 			return GetRuleContext<RaiseEventStmtContext>(0);
 		}
-		public TimeStmtContext timeStmt() {
-			return GetRuleContext<TimeStmtContext>(0);
+		public SavepictureStmtContext savepictureStmt() {
+			return GetRuleContext<SavepictureStmtContext>(0);
 		}
-		public RedimStmtContext redimStmt() {
-			return GetRuleContext<RedimStmtContext>(0);
-		}
-		public InputStmtContext inputStmt() {
-			return GetRuleContext<InputStmtContext>(0);
-		}
-		public OnGoSubStmtContext onGoSubStmt() {
-			return GetRuleContext<OnGoSubStmtContext>(0);
-		}
-		public ResumeStmtContext resumeStmt() {
-			return GetRuleContext<ResumeStmtContext>(0);
-		}
-		public PutStmtContext putStmt() {
-			return GetRuleContext<PutStmtContext>(0);
+		public ExitStmtContext exitStmt() {
+			return GetRuleContext<ExitStmtContext>(0);
 		}
 		public IfThenElseStmtContext ifThenElseStmt() {
 			return GetRuleContext<IfThenElseStmtContext>(0);
 		}
-		public FilecopyStmtContext filecopyStmt() {
-			return GetRuleContext<FilecopyStmtContext>(0);
+		public OpenStmtContext openStmt() {
+			return GetRuleContext<OpenStmtContext>(0);
 		}
-		public LoadStmtContext loadStmt() {
-			return GetRuleContext<LoadStmtContext>(0);
+		public SetattrStmtContext setattrStmt() {
+			return GetRuleContext<SetattrStmtContext>(0);
 		}
 		public SaveSettingStmtContext saveSettingStmt() {
 			return GetRuleContext<SaveSettingStmtContext>(0);
 		}
-		public RmdirStmtContext rmdirStmt() {
-			return GetRuleContext<RmdirStmtContext>(0);
+		public AttributeStmtContext attributeStmt() {
+			return GetRuleContext<AttributeStmtContext>(0);
 		}
-		public ReturnStmtContext returnStmt() {
-			return GetRuleContext<ReturnStmtContext>(0);
+		public ForEachStmtContext forEachStmt() {
+			return GetRuleContext<ForEachStmtContext>(0);
+		}
+		public ForNextStmtContext forNextStmt() {
+			return GetRuleContext<ForNextStmtContext>(0);
+		}
+		public RedimStmtContext redimStmt() {
+			return GetRuleContext<RedimStmtContext>(0);
+		}
+		public TimeStmtContext timeStmt() {
+			return GetRuleContext<TimeStmtContext>(0);
+		}
+		public OnGoSubStmtContext onGoSubStmt() {
+			return GetRuleContext<OnGoSubStmtContext>(0);
+		}
+		public SendkeysStmtContext sendkeysStmt() {
+			return GetRuleContext<SendkeysStmtContext>(0);
+		}
+		public DeleteSettingStmtContext deleteSettingStmt() {
+			return GetRuleContext<DeleteSettingStmtContext>(0);
+		}
+		public ErrorStmtContext errorStmt() {
+			return GetRuleContext<ErrorStmtContext>(0);
+		}
+		public SetStmtContext setStmt() {
+			return GetRuleContext<SetStmtContext>(0);
+		}
+		public WithStmtContext withStmt() {
+			return GetRuleContext<WithStmtContext>(0);
+		}
+		public OnErrorStmtContext onErrorStmt() {
+			return GetRuleContext<OnErrorStmtContext>(0);
 		}
 		public WhileWendStmtContext whileWendStmt() {
 			return GetRuleContext<WhileWendStmtContext>(0);
 		}
-		public LetStmtContext letStmt() {
-			return GetRuleContext<LetStmtContext>(0);
+		public UnlockStmtContext unlockStmt() {
+			return GetRuleContext<UnlockStmtContext>(0);
+		}
+		public StopStmtContext stopStmt() {
+			return GetRuleContext<StopStmtContext>(0);
+		}
+		public NameStmtContext nameStmt() {
+			return GetRuleContext<NameStmtContext>(0);
+		}
+		public LineInputStmtContext lineInputStmt() {
+			return GetRuleContext<LineInputStmtContext>(0);
+		}
+		public DateStmtContext dateStmt() {
+			return GetRuleContext<DateStmtContext>(0);
+		}
+		public InputStmtContext inputStmt() {
+			return GetRuleContext<InputStmtContext>(0);
+		}
+		public ResetStmtContext resetStmt() {
+			return GetRuleContext<ResetStmtContext>(0);
+		}
+		public ImplementsStmtContext implementsStmt() {
+			return GetRuleContext<ImplementsStmtContext>(0);
+		}
+		public CloseStmtContext closeStmt() {
+			return GetRuleContext<CloseStmtContext>(0);
 		}
 		public GoSubStmtContext goSubStmt() {
 			return GetRuleContext<GoSubStmtContext>(0);
+		}
+		public KillStmtContext killStmt() {
+			return GetRuleContext<KillStmtContext>(0);
+		}
+		public DeftypeStmtContext deftypeStmt() {
+			return GetRuleContext<DeftypeStmtContext>(0);
+		}
+		public ReturnStmtContext returnStmt() {
+			return GetRuleContext<ReturnStmtContext>(0);
+		}
+		public LockStmtContext lockStmt() {
+			return GetRuleContext<LockStmtContext>(0);
+		}
+		public DoLoopStmtContext doLoopStmt() {
+			return GetRuleContext<DoLoopStmtContext>(0);
+		}
+		public LineLabelContext lineLabel() {
+			return GetRuleContext<LineLabelContext>(0);
+		}
+		public BeepStmtContext beepStmt() {
+			return GetRuleContext<BeepStmtContext>(0);
+		}
+		public AppactivateStmtContext appactivateStmt() {
+			return GetRuleContext<AppactivateStmtContext>(0);
+		}
+		public LsetStmtContext lsetStmt() {
+			return GetRuleContext<LsetStmtContext>(0);
+		}
+		public MidStmtContext midStmt() {
+			return GetRuleContext<MidStmtContext>(0);
+		}
+		public GetStmtContext getStmt() {
+			return GetRuleContext<GetStmtContext>(0);
+		}
+		public OnGoToStmtContext onGoToStmt() {
+			return GetRuleContext<OnGoToStmtContext>(0);
+		}
+		public WidthStmtContext widthStmt() {
+			return GetRuleContext<WidthStmtContext>(0);
+		}
+		public PrintStmtContext printStmt() {
+			return GetRuleContext<PrintStmtContext>(0);
+		}
+		public SeekStmtContext seekStmt() {
+			return GetRuleContext<SeekStmtContext>(0);
+		}
+		public ResumeStmtContext resumeStmt() {
+			return GetRuleContext<ResumeStmtContext>(0);
+		}
+		public VariableStmtContext variableStmt() {
+			return GetRuleContext<VariableStmtContext>(0);
+		}
+		public PutStmtContext putStmt() {
+			return GetRuleContext<PutStmtContext>(0);
+		}
+		public UnloadStmtContext unloadStmt() {
+			return GetRuleContext<UnloadStmtContext>(0);
 		}
 		public BlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2276,12 +2276,12 @@ public partial class VBAParser : Parser {
 
 	public partial class AppactivateStmtContext : ParserRuleContext {
 		public ITerminalNode APPACTIVATE() { return GetToken(VBAParser.APPACTIVATE, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -2329,7 +2329,7 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 560; Match(T__6);
+				State = 560; Match(T__1);
 				State = 562;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -2399,10 +2399,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ChdirStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode CHDIR() { return GetToken(VBAParser.CHDIR, 0); }
 		public ChdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2448,10 +2448,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ChdriveStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode CHDRIVE() { return GetToken(VBAParser.CHDRIVE, 0); }
 		public ChdriveStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -2497,13 +2497,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class CloseStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<FileNumberContext> fileNumber() {
-			return GetRuleContexts<FileNumberContext>();
-		}
-		public ITerminalNode CLOSE() { return GetToken(VBAParser.CLOSE, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode CLOSE() { return GetToken(VBAParser.CLOSE, 0); }
+		public IReadOnlyList<FileNumberContext> fileNumber() {
+			return GetRuleContexts<FileNumberContext>();
 		}
 		public FileNumberContext fileNumber(int i) {
 			return GetRuleContext<FileNumberContext>(i);
@@ -2559,7 +2559,7 @@ public partial class VBAParser : Parser {
 							}
 						}
 
-						State = 583; Match(T__6);
+						State = 583; Match(T__1);
 						State = 585;
 						_la = _input.La(1);
 						if (_la==WS) {
@@ -2593,17 +2593,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ConstStmtContext : ParserRuleContext {
-		public ConstSubStmtContext constSubStmt(int i) {
-			return GetRuleContext<ConstSubStmtContext>(i);
+		public ITerminalNode CONST() { return GetToken(VBAParser.CONST, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<ConstSubStmtContext> constSubStmt() {
 			return GetRuleContexts<ConstSubStmtContext>();
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public ConstSubStmtContext constSubStmt(int i) {
+			return GetRuleContext<ConstSubStmtContext>(i);
 		}
-		public ITerminalNode CONST() { return GetToken(VBAParser.CONST, 0); }
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
@@ -2663,7 +2663,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 606; Match(T__6);
+					State = 606; Match(T__1);
 					State = 608;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -2694,21 +2694,21 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ConstSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
 		public ConstSubStmtContext(ParserRuleContext parent, int invokingState)
@@ -2742,7 +2742,7 @@ public partial class VBAParser : Parser {
 			State = 616; ambiguousIdentifier();
 			State = 618;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4))) != 0) || _la==AMPERSAND) {
 				{
 				State = 617; typeHint();
 				}
@@ -2789,15 +2789,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class DateStmtContext : ParserRuleContext {
-		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
 		public DateStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2859,32 +2859,32 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class DeclareStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode DECLARE() { return GetToken(VBAParser.DECLARE, 0); }
-		public ITerminalNode PTRSAFE() { return GetToken(VBAParser.PTRSAFE, 0); }
-		public ArgListContext argList() {
-			return GetRuleContext<ArgListContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> STRINGLITERAL() { return GetTokens(VBAParser.STRINGLITERAL); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode STRINGLITERAL(int i) {
 			return GetToken(VBAParser.STRINGLITERAL, i);
 		}
-		public ITerminalNode ALIAS() { return GetToken(VBAParser.ALIAS, 0); }
-		public VisibilityContext visibility() {
-			return GetRuleContext<VisibilityContext>(0);
-		}
+		public ITerminalNode PTRSAFE() { return GetToken(VBAParser.PTRSAFE, 0); }
+		public ITerminalNode DECLARE() { return GetToken(VBAParser.DECLARE, 0); }
+		public ITerminalNode SUB() { return GetToken(VBAParser.SUB, 0); }
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		public VisibilityContext visibility() {
+			return GetRuleContext<VisibilityContext>(0);
+		}
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
+		}
+		public ITerminalNode LIB() { return GetToken(VBAParser.LIB, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
-		public ITerminalNode LIB() { return GetToken(VBAParser.LIB, 0); }
-		public ITerminalNode SUB() { return GetToken(VBAParser.SUB, 0); }
+		public IReadOnlyList<ITerminalNode> STRINGLITERAL() { return GetTokens(VBAParser.STRINGLITERAL); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode ALIAS() { return GetToken(VBAParser.ALIAS, 0); }
 		public DeclareStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2995,28 +2995,28 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class DeftypeStmtContext : ParserRuleContext {
-		public ITerminalNode DEFCUR() { return GetToken(VBAParser.DEFCUR, 0); }
-		public ITerminalNode DEFSTR() { return GetToken(VBAParser.DEFSTR, 0); }
-		public ITerminalNode DEFDATE() { return GetToken(VBAParser.DEFDATE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode DEFOBJ() { return GetToken(VBAParser.DEFOBJ, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode DEFDBL() { return GetToken(VBAParser.DEFDBL, 0); }
+		public ITerminalNode DEFDEC() { return GetToken(VBAParser.DEFDEC, 0); }
 		public ITerminalNode DEFINT() { return GetToken(VBAParser.DEFINT, 0); }
-		public LetterrangeContext letterrange(int i) {
-			return GetRuleContext<LetterrangeContext>(i);
-		}
-		public ITerminalNode DEFVAR() { return GetToken(VBAParser.DEFVAR, 0); }
-		public ITerminalNode DEFSNG() { return GetToken(VBAParser.DEFSNG, 0); }
 		public IReadOnlyList<LetterrangeContext> letterrange() {
 			return GetRuleContexts<LetterrangeContext>();
 		}
 		public ITerminalNode DEFBOOL() { return GetToken(VBAParser.DEFBOOL, 0); }
-		public ITerminalNode DEFDEC() { return GetToken(VBAParser.DEFDEC, 0); }
+		public ITerminalNode DEFDBL() { return GetToken(VBAParser.DEFDBL, 0); }
 		public ITerminalNode DEFBYTE() { return GetToken(VBAParser.DEFBYTE, 0); }
+		public ITerminalNode DEFSNG() { return GetToken(VBAParser.DEFSNG, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode DEFCUR() { return GetToken(VBAParser.DEFCUR, 0); }
+		public LetterrangeContext letterrange(int i) {
+			return GetRuleContext<LetterrangeContext>(i);
+		}
+		public ITerminalNode DEFDATE() { return GetToken(VBAParser.DEFDATE, 0); }
 		public ITerminalNode DEFLNG() { return GetToken(VBAParser.DEFLNG, 0); }
+		public ITerminalNode DEFSTR() { return GetToken(VBAParser.DEFSTR, 0); }
+		public ITerminalNode DEFVAR() { return GetToken(VBAParser.DEFVAR, 0); }
 		public DeftypeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3069,7 +3069,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 683; Match(T__6);
+					State = 683; Match(T__1);
 					State = 685;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -3100,17 +3100,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class DeleteSettingStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode DELETESETTING() { return GetToken(VBAParser.DELETESETTING, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode DELETESETTING() { return GetToken(VBAParser.DELETESETTING, 0); }
 		public DeleteSettingStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3150,7 +3150,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 699; Match(T__6);
+			State = 699; Match(T__1);
 			State = 701;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -3172,7 +3172,7 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 707; Match(T__6);
+				State = 707; Match(T__1);
 				State = 709;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -3199,24 +3199,24 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class DoLoopStmtContext : ParserRuleContext {
-		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public ITerminalNode DO() { return GetToken(VBAParser.DO, 0); }
-		public ITerminalNode LOOP() { return GetToken(VBAParser.LOOP, 0); }
-		public ITerminalNode UNTIL() { return GetToken(VBAParser.UNTIL, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ITerminalNode DO() { return GetToken(VBAParser.DO, 0); }
+		public ITerminalNode LOOP() { return GetToken(VBAParser.LOOP, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
+		public ITerminalNode UNTIL() { return GetToken(VBAParser.UNTIL, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
+		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
 		public DoLoopStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3440,25 +3440,25 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class EnumerationStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<EnumerationStmt_ConstantContext> enumerationStmt_Constant() {
+			return GetRuleContexts<EnumerationStmt_ConstantContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public EnumerationStmt_ConstantContext enumerationStmt_Constant(int i) {
 			return GetRuleContext<EnumerationStmt_ConstantContext>(i);
 		}
 		public ITerminalNode ENUM() { return GetToken(VBAParser.ENUM, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<EnumerationStmt_ConstantContext> enumerationStmt_Constant() {
-			return GetRuleContexts<EnumerationStmt_ConstantContext>();
-		}
 		public ITerminalNode END_ENUM() { return GetToken(VBAParser.END_ENUM, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
@@ -3543,19 +3543,19 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class EnumerationStmt_ConstantContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
 		public EnumerationStmt_ConstantContext(ParserRuleContext parent, int invokingState)
@@ -3640,10 +3640,10 @@ public partial class VBAParser : Parser {
 
 	public partial class EraseStmtContext : ParserRuleContext {
 		public ITerminalNode ERASE() { return GetToken(VBAParser.ERASE, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public EraseStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3688,11 +3688,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ErrorStmtContext : ParserRuleContext {
+		public ITerminalNode ERROR() { return GetToken(VBAParser.ERROR, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ITerminalNode ERROR() { return GetToken(VBAParser.ERROR, 0); }
 		public ErrorStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3740,17 +3740,17 @@ public partial class VBAParser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode EVENT() { return GetToken(VBAParser.EVENT, 0); }
 		public ArgListContext argList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
+		public ITerminalNode EVENT() { return GetToken(VBAParser.EVENT, 0); }
 		public EventStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3814,11 +3814,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ExitStmtContext : ParserRuleContext {
-		public ITerminalNode EXIT_FUNCTION() { return GetToken(VBAParser.EXIT_FUNCTION, 0); }
+		public ITerminalNode EXIT_SUB() { return GetToken(VBAParser.EXIT_SUB, 0); }
 		public ITerminalNode EXIT_PROPERTY() { return GetToken(VBAParser.EXIT_PROPERTY, 0); }
+		public ITerminalNode EXIT_FUNCTION() { return GetToken(VBAParser.EXIT_FUNCTION, 0); }
 		public ITerminalNode EXIT_DO() { return GetToken(VBAParser.EXIT_DO, 0); }
 		public ITerminalNode EXIT_FOR() { return GetToken(VBAParser.EXIT_FOR, 0); }
-		public ITerminalNode EXIT_SUB() { return GetToken(VBAParser.EXIT_SUB, 0); }
 		public ExitStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -3867,13 +3867,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class FilecopyStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode FILECOPY() { return GetToken(VBAParser.FILECOPY, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -3917,7 +3917,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 837; Match(T__6);
+			State = 837; Match(T__1);
 			State = 839;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -3941,32 +3941,32 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ForEachStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
+			return GetRuleContexts<AmbiguousIdentifierContext>();
+		}
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
+			return GetRuleContext<AmbiguousIdentifierContext>(i);
+		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
+		public ITerminalNode EACH() { return GetToken(VBAParser.EACH, 0); }
+		public ITerminalNode IN() { return GetToken(VBAParser.IN, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public TypeHintContext typeHint() {
+			return GetRuleContext<TypeHintContext>(0);
 		}
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode EACH() { return GetToken(VBAParser.EACH, 0); }
-		public TypeHintContext typeHint() {
-			return GetRuleContext<TypeHintContext>(0);
-		}
-		public ITerminalNode IN() { return GetToken(VBAParser.IN, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
-			return GetRuleContexts<AmbiguousIdentifierContext>();
-		}
-		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
-		}
-		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
-			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
 		public ForEachStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -4003,7 +4003,7 @@ public partial class VBAParser : Parser {
 			State = 847; ambiguousIdentifier();
 			State = 849;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4))) != 0) || _la==AMPERSAND) {
 				{
 				State = 848; typeHint();
 				}
@@ -4071,37 +4071,37 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ForNextStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode STEP() { return GetToken(VBAParser.STEP, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public TypeHintContext typeHint() {
-			return GetRuleContext<TypeHintContext>(0);
-		}
-		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
 		public IReadOnlyList<AmbiguousIdentifierContext> ambiguousIdentifier() {
 			return GetRuleContexts<AmbiguousIdentifierContext>();
 		}
-		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
-		public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public AmbiguousIdentifierContext ambiguousIdentifier(int i) {
 			return GetRuleContext<AmbiguousIdentifierContext>(i);
 		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
+		}
 		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
+		public ITerminalNode STEP() { return GetToken(VBAParser.STEP, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public TypeHintContext typeHint() {
+			return GetRuleContext<TypeHintContext>(0);
+		}
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
+		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
+		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -4138,7 +4138,7 @@ public partial class VBAParser : Parser {
 			State = 875; ambiguousIdentifier();
 			State = 877;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4))) != 0) || _la==AMPERSAND) {
 				{
 				State = 876; typeHint();
 				}
@@ -4244,31 +4244,31 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class FunctionStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
 		public ArgListContext argList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
-		public ITerminalNode END_FUNCTION() { return GetToken(VBAParser.END_FUNCTION, 0); }
+		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
+		public ITerminalNode END_FUNCTION() { return GetToken(VBAParser.END_FUNCTION, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
 		}
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
+		}
+		public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
 		}
 		public FunctionStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -4359,7 +4359,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 952;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 946; block();
 				State = 948;
@@ -4393,14 +4393,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class GetStmtContext : ParserRuleContext {
-		public ITerminalNode GET() { return GetToken(VBAParser.GET, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode GET() { return GetToken(VBAParser.GET, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -4443,7 +4443,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 962; Match(T__6);
+			State = 962; Match(T__1);
 			State = 964;
 			switch ( Interpreter.AdaptivePredict(_input,111,_ctx) ) {
 			case 1:
@@ -4454,7 +4454,7 @@ public partial class VBAParser : Parser {
 			}
 			State = 967;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
 				{
 				State = 966; valueStmt(0);
 				}
@@ -4468,7 +4468,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 972; Match(T__6);
+			State = 972; Match(T__1);
 			State = 974;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -4492,11 +4492,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class GoSubStmtContext : ParserRuleContext {
+		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
 		public GoSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -4541,11 +4541,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class GoToStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
 		public GoToStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -4602,18 +4602,18 @@ public partial class VBAParser : Parser {
 		}
 	}
 	public partial class BlockIfThenElseContext : IfThenElseStmtContext {
-		public IfElseBlockStmtContext ifElseBlockStmt() {
-			return GetRuleContext<IfElseBlockStmtContext>(0);
+		public IfElseIfBlockStmtContext ifElseIfBlockStmt(int i) {
+			return GetRuleContext<IfElseIfBlockStmtContext>(i);
 		}
 		public ITerminalNode END_IF() { return GetToken(VBAParser.END_IF, 0); }
 		public IReadOnlyList<IfElseIfBlockStmtContext> ifElseIfBlockStmt() {
 			return GetRuleContexts<IfElseIfBlockStmtContext>();
 		}
-		public IfElseIfBlockStmtContext ifElseIfBlockStmt(int i) {
-			return GetRuleContext<IfElseIfBlockStmtContext>(i);
-		}
 		public IfBlockStmtContext ifBlockStmt() {
 			return GetRuleContext<IfBlockStmtContext>(0);
+		}
+		public IfElseBlockStmtContext ifElseBlockStmt() {
+			return GetRuleContext<IfElseBlockStmtContext>(0);
 		}
 		public BlockIfThenElseContext(IfThenElseStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
@@ -4631,18 +4631,18 @@ public partial class VBAParser : Parser {
 		}
 	}
 	public partial class InlineIfThenElseContext : IfThenElseStmtContext {
-		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
-		public ITerminalNode IF() { return GetToken(VBAParser.IF, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IfConditionStmtContext ifConditionStmt() {
-			return GetRuleContext<IfConditionStmtContext>(0);
-		}
 		public ITerminalNode ELSE() { return GetToken(VBAParser.ELSE, 0); }
+		public ITerminalNode IF() { return GetToken(VBAParser.IF, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public IReadOnlyList<BlockStmtContext> blockStmt() {
 			return GetRuleContexts<BlockStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public IfConditionStmtContext ifConditionStmt() {
+			return GetRuleContext<IfConditionStmtContext>(0);
 		}
 		public BlockStmtContext blockStmt(int i) {
 			return GetRuleContext<BlockStmtContext>(i);
@@ -4739,18 +4739,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class IfBlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
 		public ITerminalNode IF() { return GetToken(VBAParser.IF, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -4881,18 +4881,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class IfElseIfBlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode ELSEIF() { return GetToken(VBAParser.ELSEIF, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode ELSEIF() { return GetToken(VBAParser.ELSEIF, 0); }
 		public IfConditionStmtContext ifConditionStmt() {
 			return GetRuleContext<IfConditionStmtContext>(0);
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
@@ -4978,11 +4978,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class IfElseBlockStmtContext : ParserRuleContext {
+		public ITerminalNode ELSE() { return GetToken(VBAParser.ELSE, 0); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ITerminalNode ELSE() { return GetToken(VBAParser.ELSE, 0); }
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
@@ -5030,7 +5030,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1063;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1057; block();
 				State = 1059;
@@ -5112,16 +5112,16 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class InputStmtContext : ParserRuleContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode INPUT() { return GetToken(VBAParser.INPUT, 0); }
 		public FileNumberContext fileNumber() {
 			return GetRuleContext<FileNumberContext>(0);
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -5174,7 +5174,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 1075; Match(T__6);
+					State = 1075; Match(T__1);
 					State = 1077;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -5208,10 +5208,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class KillStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode KILL() { return GetToken(VBAParser.KILL, 0); }
 		public KillStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -5257,20 +5257,20 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LetStmtContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode PLUS_EQ() { return GetToken(VBAParser.PLUS_EQ, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode LET() { return GetToken(VBAParser.LET, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode PLUS_EQ() { return GetToken(VBAParser.PLUS_EQ, 0); }
 		public ITerminalNode MINUS_EQ() { return GetToken(VBAParser.MINUS_EQ, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
+		public ITerminalNode LET() { return GetToken(VBAParser.LET, 0); }
 		public LetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5346,17 +5346,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LineInputStmtContext : ParserRuleContext {
-		public ITerminalNode LINE_INPUT() { return GetToken(VBAParser.LINE_INPUT, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public FileNumberContext fileNumber() {
-			return GetRuleContext<FileNumberContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public FileNumberContext fileNumber() {
+			return GetRuleContext<FileNumberContext>(0);
+		}
+		public ITerminalNode LINE_INPUT() { return GetToken(VBAParser.LINE_INPUT, 0); }
 		public LineInputStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5396,7 +5396,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1108; Match(T__6);
+			State = 1108; Match(T__1);
 			State = 1110;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -5420,10 +5420,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LoadStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode LOAD() { return GetToken(VBAParser.LOAD, 0); }
 		public LoadStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -5469,14 +5469,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode LOCK() { return GetToken(VBAParser.LOCK, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode LOCK() { return GetToken(VBAParser.LOCK, 0); }
 		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -5524,7 +5524,7 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 1124; Match(T__6);
+				State = 1124; Match(T__1);
 				State = 1126;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -5562,18 +5562,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LsetStmtContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode LSET() { return GetToken(VBAParser.LSET, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public ITerminalNode LSET() { return GetToken(VBAParser.LSET, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
 		public LsetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5637,18 +5637,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MacroIfThenElseStmtContext : ParserRuleContext {
-		public MacroElseBlockStmtContext macroElseBlockStmt() {
-			return GetRuleContext<MacroElseBlockStmtContext>(0);
-		}
 		public IReadOnlyList<MacroElseIfBlockStmtContext> macroElseIfBlockStmt() {
 			return GetRuleContexts<MacroElseIfBlockStmtContext>();
 		}
 		public ITerminalNode MACRO_END_IF() { return GetToken(VBAParser.MACRO_END_IF, 0); }
+		public MacroIfBlockStmtContext macroIfBlockStmt() {
+			return GetRuleContext<MacroIfBlockStmtContext>(0);
+		}
 		public MacroElseIfBlockStmtContext macroElseIfBlockStmt(int i) {
 			return GetRuleContext<MacroElseIfBlockStmtContext>(i);
 		}
-		public MacroIfBlockStmtContext macroIfBlockStmt() {
-			return GetRuleContext<MacroIfBlockStmtContext>(0);
+		public MacroElseBlockStmtContext macroElseBlockStmt() {
+			return GetRuleContext<MacroElseBlockStmtContext>(0);
 		}
 		public MacroIfThenElseStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -5715,22 +5715,22 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MacroIfBlockStmtContext : ParserRuleContext {
-		public ModuleBodyContext moduleBody() {
-			return GetRuleContext<ModuleBodyContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IfConditionStmtContext ifConditionStmt() {
-			return GetRuleContext<IfConditionStmtContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
 		public ITerminalNode MACRO_IF() { return GetToken(VBAParser.MACRO_IF, 0); }
+		public IfConditionStmtContext ifConditionStmt() {
+			return GetRuleContext<IfConditionStmtContext>(0);
+		}
+		public ModuleBodyContext moduleBody() {
+			return GetRuleContext<ModuleBodyContext>(0);
+		}
 		public MacroIfBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5786,7 +5786,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1179;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1173; moduleBody();
 				State = 1175;
@@ -5819,22 +5819,22 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MacroElseIfBlockStmtContext : ParserRuleContext {
-		public ModuleBodyContext moduleBody() {
-			return GetRuleContext<ModuleBodyContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IfConditionStmtContext ifConditionStmt() {
-			return GetRuleContext<IfConditionStmtContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode MACRO_ELSEIF() { return GetToken(VBAParser.MACRO_ELSEIF, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
+		public IfConditionStmtContext ifConditionStmt() {
+			return GetRuleContext<IfConditionStmtContext>(0);
+		}
+		public ModuleBodyContext moduleBody() {
+			return GetRuleContext<ModuleBodyContext>(0);
+		}
 		public MacroElseIfBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5890,7 +5890,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1199;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1193; moduleBody();
 				State = 1195;
@@ -5923,14 +5923,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MacroElseBlockStmtContext : ParserRuleContext {
-		public ModuleBodyContext moduleBody() {
-			return GetRuleContext<ModuleBodyContext>(0);
-		}
+		public ITerminalNode MACRO_ELSE() { return GetToken(VBAParser.MACRO_ELSE, 0); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ITerminalNode MACRO_ELSE() { return GetToken(VBAParser.MACRO_ELSE, 0); }
+		public ModuleBodyContext moduleBody() {
+			return GetRuleContext<ModuleBodyContext>(0);
+		}
 		public MacroElseBlockStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -5975,7 +5975,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1213;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PROPERTY_GET - 128)) | (1L << (PROPERTY_LET - 128)) | (1L << (PROPERTY_SET - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1207; moduleBody();
 				State = 1209;
@@ -6008,16 +6008,16 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MidStmtContext : ParserRuleContext {
-		public ITerminalNode MID() { return GetToken(VBAParser.MID, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ArgsCallContext argsCall() {
-			return GetRuleContext<ArgsCallContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ArgsCallContext argsCall() {
+			return GetRuleContext<ArgsCallContext>(0);
+		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public ITerminalNode MID() { return GetToken(VBAParser.MID, 0); }
 		public MidStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -6088,10 +6088,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class MkdirStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode MKDIR() { return GetToken(VBAParser.MKDIR, 0); }
 		public MkdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -6137,18 +6137,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class NameStmtContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode NAME() { return GetToken(VBAParser.NAME, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode NAME() { return GetToken(VBAParser.NAME, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
+		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
 		public NameStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -6197,17 +6197,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class OnErrorStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
 		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode ON_ERROR() { return GetToken(VBAParser.ON_ERROR, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ITerminalNode ON_ERROR() { return GetToken(VBAParser.ON_ERROR, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
 		public ITerminalNode RESUME() { return GetToken(VBAParser.RESUME, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
 		public OnErrorStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -6270,15 +6270,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class OnGoToStmtContext : ParserRuleContext {
-		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
 		public ITerminalNode ON() { return GetToken(VBAParser.ON, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -6333,7 +6333,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 1261; Match(T__6);
+					State = 1261; Match(T__1);
 					State = 1263;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -6365,13 +6365,13 @@ public partial class VBAParser : Parser {
 
 	public partial class OnGoSubStmtContext : ParserRuleContext {
 		public ITerminalNode ON() { return GetToken(VBAParser.ON, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -6427,7 +6427,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 1281; Match(T__6);
+					State = 1281; Match(T__1);
 					State = 1283;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -6458,37 +6458,37 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class OpenStmtContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
-		public ITerminalNode READ_WRITE() { return GetToken(VBAParser.READ_WRITE, 0); }
-		public ITerminalNode LEN() { return GetToken(VBAParser.LEN, 0); }
-		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBAParser.LOCK_READ_WRITE, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode LOCK_WRITE() { return GetToken(VBAParser.LOCK_WRITE, 0); }
+		public ITerminalNode ACCESS() { return GetToken(VBAParser.ACCESS, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode APPEND() { return GetToken(VBAParser.APPEND, 0); }
-		public ITerminalNode INPUT() { return GetToken(VBAParser.INPUT, 0); }
-		public ITerminalNode ACCESS() { return GetToken(VBAParser.ACCESS, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode LOCK_WRITE() { return GetToken(VBAParser.LOCK_WRITE, 0); }
-		public ITerminalNode RANDOM() { return GetToken(VBAParser.RANDOM, 0); }
-		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ITerminalNode LOCK_READ_WRITE() { return GetToken(VBAParser.LOCK_READ_WRITE, 0); }
 		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
-		public ITerminalNode READ() { return GetToken(VBAParser.READ, 0); }
-		public ITerminalNode OPEN() { return GetToken(VBAParser.OPEN, 0); }
+		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
+		public ITerminalNode LEN() { return GetToken(VBAParser.LEN, 0); }
 		public FileNumberContext fileNumber() {
 			return GetRuleContext<FileNumberContext>(0);
 		}
+		public ITerminalNode INPUT() { return GetToken(VBAParser.INPUT, 0); }
+		public ITerminalNode READ() { return GetToken(VBAParser.READ, 0); }
 		public ITerminalNode SHARED() { return GetToken(VBAParser.SHARED, 0); }
-		public ITerminalNode OUTPUT() { return GetToken(VBAParser.OUTPUT, 0); }
-		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
+		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
+		public ITerminalNode APPEND() { return GetToken(VBAParser.APPEND, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
+		public ITerminalNode RANDOM() { return GetToken(VBAParser.RANDOM, 0); }
+		public ITerminalNode OPEN() { return GetToken(VBAParser.OPEN, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
 		public ITerminalNode LOCK_READ() { return GetToken(VBAParser.LOCK_READ, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode OUTPUT() { return GetToken(VBAParser.OUTPUT, 0); }
+		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ITerminalNode READ_WRITE() { return GetToken(VBAParser.READ_WRITE, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
 		public OpenStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -6604,12 +6604,12 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class OutputListContext : ParserRuleContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<OutputList_ExpressionContext> outputList_Expression() {
 			return GetRuleContexts<OutputList_ExpressionContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public OutputList_ExpressionContext outputList_Expression(int i) {
 			return GetRuleContext<OutputList_ExpressionContext>(i);
@@ -6664,7 +6664,7 @@ public partial class VBAParser : Parser {
 
 						State = 1328;
 						_la = _input.La(1);
-						if ( !(_la==T__6 || _la==T__2) ) {
+						if ( !(_la==T__2 || _la==T__1) ) {
 						_errHandler.RecoverInline(this);
 						}
 						Consume();
@@ -6699,7 +6699,7 @@ public partial class VBAParser : Parser {
 				{
 				State = 1341;
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
 					{
 					State = 1340; outputList_Expression();
 					}
@@ -6723,7 +6723,7 @@ public partial class VBAParser : Parser {
 
 						State = 1346;
 						_la = _input.La(1);
-						if ( !(_la==T__6 || _la==T__2) ) {
+						if ( !(_la==T__2 || _la==T__1) ) {
 						_errHandler.RecoverInline(this);
 						}
 						Consume();
@@ -6769,20 +6769,20 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class OutputList_ExpressionContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode SPC() { return GetToken(VBAParser.SPC, 0); }
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ArgsCallContext argsCall() {
-			return GetRuleContext<ArgsCallContext>(0);
-		}
+		public ITerminalNode TAB() { return GetToken(VBAParser.TAB, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
-		public ITerminalNode TAB() { return GetToken(VBAParser.TAB, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode SPC() { return GetToken(VBAParser.SPC, 0); }
+		public ArgsCallContext argsCall() {
+			return GetRuleContext<ArgsCallContext>(0);
+		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public OutputList_ExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -6878,15 +6878,15 @@ public partial class VBAParser : Parser {
 
 	public partial class PrintStmtContext : ParserRuleContext {
 		public ITerminalNode PRINT() { return GetToken(VBAParser.PRINT, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public FileNumberContext fileNumber() {
-			return GetRuleContext<FileNumberContext>(0);
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public OutputListContext outputList() {
 			return GetRuleContext<OutputListContext>(0);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public FileNumberContext fileNumber() {
+			return GetRuleContext<FileNumberContext>(0);
 		}
 		public PrintStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -6927,7 +6927,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1384; Match(T__6);
+			State = 1384; Match(T__1);
 			State = 1389;
 			switch ( Interpreter.AdaptivePredict(_input,187,_ctx) ) {
 			case 1:
@@ -6958,32 +6958,32 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PropertyGetStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ArgListContext argList() {
 			return GetRuleContext<ArgListContext>(0);
 		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ITerminalNode PROPERTY_GET() { return GetToken(VBAParser.PROPERTY_GET, 0); }
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
+		}
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
+		public ITerminalNode PROPERTY_GET() { return GetToken(VBAParser.PROPERTY_GET, 0); }
+		public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
+		}
+		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
 		public PropertyGetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -7073,7 +7073,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1424;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1418; block();
 				State = 1420;
@@ -7107,29 +7107,29 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PropertySetStmtContext : ParserRuleContext {
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		}
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ArgListContext argList() {
-			return GetRuleContext<ArgListContext>(0);
-		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public VisibilityContext visibility() {
+			return GetRuleContext<VisibilityContext>(0);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
-			return GetRuleContext<VisibilityContext>(0);
-		}
 		public ITerminalNode PROPERTY_SET() { return GetToken(VBAParser.PROPERTY_SET, 0); }
+		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
 		public PropertySetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -7210,7 +7210,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1457;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1451; block();
 				State = 1453;
@@ -7244,29 +7244,29 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PropertyLetStmtContext : ParserRuleContext {
+		public ITerminalNode PROPERTY_LET() { return GetToken(VBAParser.PROPERTY_LET, 0); }
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		}
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ArgListContext argList() {
-			return GetRuleContext<ArgListContext>(0);
-		}
-		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
-		public ITerminalNode PROPERTY_LET() { return GetToken(VBAParser.PROPERTY_LET, 0); }
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public VisibilityContext visibility() {
+			return GetRuleContext<VisibilityContext>(0);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
-			return GetRuleContext<VisibilityContext>(0);
-		}
+		public ITerminalNode END_PROPERTY() { return GetToken(VBAParser.END_PROPERTY, 0); }
 		public PropertyLetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -7347,7 +7347,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1490;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1484; block();
 				State = 1486;
@@ -7381,17 +7381,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class PutStmtContext : ParserRuleContext {
-		public ITerminalNode PUT() { return GetToken(VBAParser.PUT, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public FileNumberContext fileNumber() {
-			return GetRuleContext<FileNumberContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public FileNumberContext fileNumber() {
+			return GetRuleContext<FileNumberContext>(0);
+		}
+		public ITerminalNode PUT() { return GetToken(VBAParser.PUT, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -7434,7 +7434,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1500; Match(T__6);
+			State = 1500; Match(T__1);
 			State = 1502;
 			switch ( Interpreter.AdaptivePredict(_input,211,_ctx) ) {
 			case 1:
@@ -7445,7 +7445,7 @@ public partial class VBAParser : Parser {
 			}
 			State = 1505;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
 				{
 				State = 1504; valueStmt(0);
 				}
@@ -7459,7 +7459,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1510; Match(T__6);
+			State = 1510; Match(T__1);
 			State = 1512;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -7486,16 +7486,16 @@ public partial class VBAParser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ArgsCallContext argsCall() {
-			return GetRuleContext<ArgsCallContext>(0);
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
 		public ITerminalNode RAISEEVENT() { return GetToken(VBAParser.RAISEEVENT, 0); }
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public ArgsCallContext argsCall() {
+			return GetRuleContext<ArgsCallContext>(0);
+		}
 		public RaiseEventStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -7550,7 +7550,7 @@ public partial class VBAParser : Parser {
 				}
 				State = 1530;
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__6) | (1L << T__2) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (WS - 192)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__2) | (1L << T__1) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (WS - 192)))) != 0)) {
 					{
 					State = 1526; argsCall();
 					State = 1528;
@@ -7582,10 +7582,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class RandomizeStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode RANDOMIZE() { return GetToken(VBAParser.RANDOMIZE, 0); }
 		public RandomizeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -7638,17 +7638,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class RedimStmtContext : ParserRuleContext {
-		public RedimSubStmtContext redimSubStmt(int i) {
-			return GetRuleContext<RedimSubStmtContext>(i);
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
 		public IReadOnlyList<RedimSubStmtContext> redimSubStmt() {
 			return GetRuleContexts<RedimSubStmtContext>();
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode PRESERVE() { return GetToken(VBAParser.PRESERVE, 0); }
 		public ITerminalNode REDIM() { return GetToken(VBAParser.REDIM, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public ITerminalNode PRESERVE() { return GetToken(VBAParser.PRESERVE, 0); }
+		public RedimSubStmtContext redimSubStmt(int i) {
+			return GetRuleContext<RedimSubStmtContext>(i);
 		}
 		public RedimStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -7706,7 +7706,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 1550; Match(T__6);
+					State = 1550; Match(T__1);
 					State = 1552;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -7737,21 +7737,21 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class RedimSubStmtContext : ParserRuleContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
 			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public SubscriptsContext subscripts() {
 			return GetRuleContext<SubscriptsContext>(0);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
 		public RedimSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -7874,10 +7874,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ResumeStmtContext : ParserRuleContext {
-		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
+		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
 		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode RESUME() { return GetToken(VBAParser.RESUME, 0); }
 		public ResumeStmtContext(ParserRuleContext parent, int invokingState)
@@ -7987,10 +7987,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class RmdirStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode RMDIR() { return GetToken(VBAParser.RMDIR, 0); }
 		public RmdirStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -8036,18 +8036,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class RsetStmtContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
 		public ITerminalNode RSET() { return GetToken(VBAParser.RSET, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
 		public RsetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -8111,17 +8111,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SavepictureStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode SAVEPICTURE() { return GetToken(VBAParser.SAVEPICTURE, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode SAVEPICTURE() { return GetToken(VBAParser.SAVEPICTURE, 0); }
 		public SavepictureStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -8161,7 +8161,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1611; Match(T__6);
+			State = 1611; Match(T__1);
 			State = 1613;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8185,13 +8185,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SaveSettingStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode SAVESETTING() { return GetToken(VBAParser.SAVESETTING, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -8235,7 +8235,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1623; Match(T__6);
+			State = 1623; Match(T__1);
 			State = 1625;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8253,7 +8253,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1631; Match(T__6);
+			State = 1631; Match(T__1);
 			State = 1633;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8271,7 +8271,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1639; Match(T__6);
+			State = 1639; Match(T__1);
 			State = 1641;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8295,17 +8295,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SeekStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode SEEK() { return GetToken(VBAParser.SEEK, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public ITerminalNode SEEK() { return GetToken(VBAParser.SEEK, 0); }
 		public SeekStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -8345,7 +8345,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1651; Match(T__6);
+			State = 1651; Match(T__1);
 			State = 1653;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -8369,25 +8369,25 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SelectCaseStmtContext : ParserRuleContext {
+		public ITerminalNode CASE() { return GetToken(VBAParser.CASE, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode END_SELECT() { return GetToken(VBAParser.END_SELECT, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<SC_CaseContext> sC_Case() {
-			return GetRuleContexts<SC_CaseContext>();
-		}
-		public ITerminalNode CASE() { return GetToken(VBAParser.CASE, 0); }
-		public ITerminalNode END_SELECT() { return GetToken(VBAParser.END_SELECT, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
 		public ITerminalNode SELECT() { return GetToken(VBAParser.SELECT, 0); }
 		public SC_CaseContext sC_Case(int i) {
 			return GetRuleContext<SC_CaseContext>(i);
+		}
+		public IReadOnlyList<SC_CaseContext> sC_Case() {
+			return GetRuleContexts<SC_CaseContext>();
 		}
 		public SelectCaseStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -8471,20 +8471,20 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SC_CaseContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode CASE() { return GetToken(VBAParser.CASE, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
 		public SC_CondContext sC_Cond() {
 			return GetRuleContext<SC_CondContext>(0);
+		}
+		public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
 		}
 		public SC_CaseContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -8531,9 +8531,9 @@ public partial class VBAParser : Parser {
 				{
 				State = 1685;
 				_la = _input.La(1);
-				if (_la==T__5) {
+				if (_la==T__3) {
 					{
-					State = 1684; Match(T__5);
+					State = 1684; Match(T__3);
 					}
 				}
 
@@ -8617,14 +8617,40 @@ public partial class VBAParser : Parser {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class CaseCondToContext : SC_CondContext {
+	public partial class CaseCondValueContext : SC_CondContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public CaseCondValueContext(SC_CondContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterCaseCondValue(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitCaseCondValue(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCaseCondValue(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CaseCondToContext : SC_CondContext {
 		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
@@ -8645,41 +8671,15 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class CaseCondValueContext : SC_CondContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public CaseCondValueContext(SC_CondContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterCaseCondValue(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitCaseCondValue(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCaseCondValue(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 	public partial class CaseCondIsContext : SC_CondContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ComparisonOperatorContext comparisonOperator() {
 			return GetRuleContext<ComparisonOperatorContext>(0);
 		}
@@ -8779,7 +8779,7 @@ public partial class VBAParser : Parser {
 							}
 						}
 
-						State = 1723; Match(T__6);
+						State = 1723; Match(T__1);
 						State = 1725;
 						_la = _input.La(1);
 						if (_la==WS) {
@@ -8823,7 +8823,7 @@ public partial class VBAParser : Parser {
 							}
 						}
 
-						State = 1741; Match(T__6);
+						State = 1741; Match(T__1);
 						State = 1743;
 						_la = _input.La(1);
 						if (_la==WS) {
@@ -8856,13 +8856,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SendkeysStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode SENDKEYS() { return GetToken(VBAParser.SENDKEYS, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode SENDKEYS() { return GetToken(VBAParser.SENDKEYS, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
 		}
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -8910,7 +8910,7 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 1759; Match(T__6);
+				State = 1759; Match(T__1);
 				State = 1761;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -8937,14 +8937,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SetattrStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode SETATTR() { return GetToken(VBAParser.SETATTR, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode SETATTR() { return GetToken(VBAParser.SETATTR, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -8987,7 +8987,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 1772; Match(T__6);
+			State = 1772; Match(T__1);
 			State = 1774;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -9011,18 +9011,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SetStmtContext : ParserRuleContext {
-		public ITerminalNode SET() { return GetToken(VBAParser.SET, 0); }
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
+		public ITerminalNode SET() { return GetToken(VBAParser.SET, 0); }
 		public SetStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -9129,29 +9129,29 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SubStmtContext : ParserRuleContext {
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		}
+		public ArgListContext argList() {
+			return GetRuleContext<ArgListContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode END_SUB() { return GetToken(VBAParser.END_SUB, 0); }
+		public ITerminalNode SUB() { return GetToken(VBAParser.SUB, 0); }
 		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public ITerminalNode END_SUB() { return GetToken(VBAParser.END_SUB, 0); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ArgListContext argList() {
-			return GetRuleContext<ArgListContext>(0);
-		}
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public VisibilityContext visibility() {
+			return GetRuleContext<VisibilityContext>(0);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		public VisibilityContext visibility() {
-			return GetRuleContext<VisibilityContext>(0);
-		}
-		public ITerminalNode SUB() { return GetToken(VBAParser.SUB, 0); }
 		public SubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -9232,7 +9232,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 1821;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 1815; block();
 				State = 1817;
@@ -9266,14 +9266,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TimeStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode TIME() { return GetToken(VBAParser.TIME, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode TIME() { return GetToken(VBAParser.TIME, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
 		public TimeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -9336,28 +9336,28 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TypeStmtContext : ParserRuleContext {
-		public IReadOnlyList<TypeStmt_ElementContext> typeStmt_Element() {
-			return GetRuleContexts<TypeStmt_ElementContext>();
-		}
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public TypeStmt_ElementContext typeStmt_Element(int i) {
-			return GetRuleContext<TypeStmt_ElementContext>(i);
-		}
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode END_TYPE() { return GetToken(VBAParser.END_TYPE, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<TypeStmt_ElementContext> typeStmt_Element() {
+			return GetRuleContexts<TypeStmt_ElementContext>();
+		}
+		public ITerminalNode TYPE() { return GetToken(VBAParser.TYPE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public TypeStmt_ElementContext typeStmt_Element(int i) {
+			return GetRuleContext<TypeStmt_ElementContext>(i);
+		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
 		}
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
-		public ITerminalNode TYPE() { return GetToken(VBAParser.TYPE, 0); }
+		public ITerminalNode END_TYPE() { return GetToken(VBAParser.END_TYPE, 0); }
 		public TypeStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -9439,25 +9439,25 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TypeStmt_ElementContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public SubscriptsContext subscripts() {
-			return GetRuleContext<SubscriptsContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
+		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public SubscriptsContext subscripts() {
+			return GetRuleContext<SubscriptsContext>(0);
+		}
 		public TypeStmt_ElementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -9564,18 +9564,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TypeOfStmtContext : ParserRuleContext {
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode TYPEOF() { return GetToken(VBAParser.TYPEOF, 0); }
-		public TypeContext type() {
-			return GetRuleContext<TypeContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public ITerminalNode TYPEOF() { return GetToken(VBAParser.TYPEOF, 0); }
+		public TypeContext type() {
+			return GetRuleContext<TypeContext>(0);
+		}
 		public TypeOfStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -9631,10 +9631,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class UnloadStmtContext : ParserRuleContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode UNLOAD() { return GetToken(VBAParser.UNLOAD, 0); }
 		public UnloadStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -9680,15 +9680,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class UnlockStmtContext : ParserRuleContext {
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public ITerminalNode UNLOCK() { return GetToken(VBAParser.UNLOCK, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
 		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
+		public ITerminalNode UNLOCK() { return GetToken(VBAParser.UNLOCK, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -9735,7 +9735,7 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 1901; Match(T__6);
+				State = 1901; Match(T__1);
 				State = 1903;
 				_la = _input.La(1);
 				if (_la==WS) {
@@ -9784,144 +9784,70 @@ public partial class VBAParser : Parser {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class VsDivContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode DIV() { return GetToken(VBAParser.DIV, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
+	public partial class VsStructContext : ValueStmtContext {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsDivContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsDiv(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsDiv(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsDiv(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsNegationContext : ValueStmtContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
-		public VsNegationContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsNegation(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsNegation(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsNegation(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsMinusContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public VsMinusContext(ValueStmtContext context) { CopyFrom(context); }
+		public VsStructContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsMinus(this);
+			if (typedListener != null) typedListener.EnterVsStruct(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsMinus(this);
+			if (typedListener != null) typedListener.ExitVsStruct(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsMinus(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsStruct(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsImpContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode IMP() { return GetToken(VBAParser.IMP, 0); }
+	public partial class VsAddContext : ValueStmtContext {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsImpContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsImp(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsImp(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsImp(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsGeqContext : ValueStmtContext {
-		public ITerminalNode GEQ() { return GetToken(VBAParser.GEQ, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<ValueStmtContext> valueStmt() {
 			return GetRuleContexts<ValueStmtContext>();
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode PLUS() { return GetToken(VBAParser.PLUS, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public VsGeqContext(ValueStmtContext context) { CopyFrom(context); }
+		public VsAddContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsGeq(this);
+			if (typedListener != null) typedListener.EnterVsAdd(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsGeq(this);
+			if (typedListener != null) typedListener.ExitVsAdd(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsGeq(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsAdd(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsLtContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode LT() { return GetToken(VBAParser.LT, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode LT() { return GetToken(VBAParser.LT, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -9940,60 +9866,131 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsLiteralContext : ValueStmtContext {
-		public LiteralContext literal() {
-			return GetRuleContext<LiteralContext>(0);
+	public partial class VsAddressOfContext : ValueStmtContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public VsLiteralContext(ValueStmtContext context) { CopyFrom(context); }
+		public ITerminalNode ADDRESSOF() { return GetToken(VBAParser.ADDRESSOF, 0); }
+		public VsAddressOfContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsLiteral(this);
+			if (typedListener != null) typedListener.EnterVsAddressOf(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsLiteral(this);
+			if (typedListener != null) typedListener.ExitVsAddressOf(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsLiteral(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsAddressOf(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsEqvContext : ValueStmtContext {
-		public ITerminalNode EQV() { return GetToken(VBAParser.EQV, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
+	public partial class VsNewContext : ValueStmtContext {
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsEqvContext(ValueStmtContext context) { CopyFrom(context); }
+		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
+		public VsNewContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsEqv(this);
+			if (typedListener != null) typedListener.EnterVsNew(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsEqv(this);
+			if (typedListener != null) typedListener.ExitVsNew(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsEqv(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsNew(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsMultContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode MULT() { return GetToken(VBAParser.MULT, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsMultContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsMult(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsMult(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsMult(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsNegationContext : ValueStmtContext {
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
+		public VsNegationContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsNegation(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsNegation(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsNegation(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsAssignContext : ValueStmtContext {
+		public ITerminalNode ASSIGN() { return GetToken(VBAParser.ASSIGN, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
+		public VsAssignContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsAssign(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsAssign(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsAssign(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsLikeContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode LIKE() { return GetToken(VBAParser.LIKE, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -10010,6 +10007,121 @@ public partial class VBAParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVsLike(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsDivContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public ITerminalNode DIV() { return GetToken(VBAParser.DIV, 0); }
+		public VsDivContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsDiv(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsDiv(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsDiv(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsPlusContext : ValueStmtContext {
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode PLUS() { return GetToken(VBAParser.PLUS, 0); }
+		public VsPlusContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsPlus(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsPlus(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsPlus(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsNotContext : ValueStmtContext {
+		public ITerminalNode NOT() { return GetToken(VBAParser.NOT, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ValueStmtContext valueStmt() {
+			return GetRuleContext<ValueStmtContext>(0);
+		}
+		public VsNotContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsNot(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsNot(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsNot(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsGeqContext : ValueStmtContext {
+		public ITerminalNode GEQ() { return GetToken(VBAParser.GEQ, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsGeqContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsGeq(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsGeq(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsGeq(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsTypeOfContext : ValueStmtContext {
+		public TypeOfStmtContext typeOfStmt() {
+			return GetRuleContext<TypeOfStmtContext>(0);
+		}
+		public VsTypeOfContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsTypeOf(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsTypeOf(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsTypeOf(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -10034,13 +10146,13 @@ public partial class VBAParser : Parser {
 	}
 	public partial class VsNeqContext : ValueStmtContext {
 		public ITerminalNode NEQ() { return GetToken(VBAParser.NEQ, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -10059,33 +10171,95 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsTypeOfContext : ValueStmtContext {
-		public TypeOfStmtContext typeOfStmt() {
-			return GetRuleContext<TypeOfStmtContext>(0);
+	public partial class VsXorContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
-		public VsTypeOfContext(ValueStmtContext context) { CopyFrom(context); }
+		public ITerminalNode XOR() { return GetToken(VBAParser.XOR, 0); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsXorContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsTypeOf(this);
+			if (typedListener != null) typedListener.EnterVsXor(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsTypeOf(this);
+			if (typedListener != null) typedListener.ExitVsXor(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsTypeOf(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsXor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsAndContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode AND() { return GetToken(VBAParser.AND, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsAndContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsAnd(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsAnd(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsAnd(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsLeqContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode LEQ() { return GetToken(VBAParser.LEQ, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsLeqContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsLeq(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsLeq(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsLeq(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsPowContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -10105,362 +10279,15 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsMultContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode MULT() { return GetToken(VBAParser.MULT, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsMultContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsMult(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsMult(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsMult(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsAssignContext : ValueStmtContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode ASSIGN() { return GetToken(VBAParser.ASSIGN, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public VsAssignContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsAssign(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsAssign(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsAssign(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsAddContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode PLUS() { return GetToken(VBAParser.PLUS, 0); }
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsAddContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsAdd(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsAdd(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsAdd(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsPlusContext : ValueStmtContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode PLUS() { return GetToken(VBAParser.PLUS, 0); }
-		public VsPlusContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsPlus(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsPlus(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsPlus(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsStructContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsStructContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsStruct(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsStruct(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsStruct(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsOrContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode OR() { return GetToken(VBAParser.OR, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsOrContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsOr(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsOr(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsOr(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsAddressOfContext : ValueStmtContext {
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ITerminalNode ADDRESSOF() { return GetToken(VBAParser.ADDRESSOF, 0); }
-		public VsAddressOfContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsAddressOf(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsAddressOf(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsAddressOf(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsModContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public ITerminalNode MOD() { return GetToken(VBAParser.MOD, 0); }
-		public VsModContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsMod(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsMod(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsMod(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsNewContext : ValueStmtContext {
-		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public VsNewContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsNew(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsNew(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsNew(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsNotContext : ValueStmtContext {
-		public ValueStmtContext valueStmt() {
-			return GetRuleContext<ValueStmtContext>(0);
-		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
-		public ITerminalNode NOT() { return GetToken(VBAParser.NOT, 0); }
-		public VsNotContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsNot(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsNot(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsNot(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsAmpContext : ValueStmtContext {
-		public ITerminalNode AMPERSAND() { return GetToken(VBAParser.AMPERSAND, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsAmpContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsAmp(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsAmp(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsAmp(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsMidContext : ValueStmtContext {
-		public MidStmtContext midStmt() {
-			return GetRuleContext<MidStmtContext>(0);
-		}
-		public VsMidContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsMid(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsMid(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsMid(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsAndContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode AND() { return GetToken(VBAParser.AND, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public VsAndContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsAnd(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsAnd(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsAnd(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-	public partial class VsEqContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ValueStmtContext valueStmt(int i) {
-			return GetRuleContext<ValueStmtContext>(i);
-		}
-		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
-		public VsEqContext(ValueStmtContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsEq(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsEq(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsEq(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 	public partial class VsIsContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -10479,41 +10306,195 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsXorContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode XOR() { return GetToken(VBAParser.XOR, 0); }
+	public partial class VsModContext : ValueStmtContext {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode MOD() { return GetToken(VBAParser.MOD, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public VsXorContext(ValueStmtContext context) { CopyFrom(context); }
+		public VsModContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsXor(this);
+			if (typedListener != null) typedListener.EnterVsMod(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsXor(this);
+			if (typedListener != null) typedListener.ExitVsMod(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsXor(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsMod(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsAmpContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode AMPERSAND() { return GetToken(VBAParser.AMPERSAND, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsAmpContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsAmp(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsAmp(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsAmp(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsOrContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode OR() { return GetToken(VBAParser.OR, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsOrContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsOr(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsOr(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsOr(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsMinusContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsMinusContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsMinus(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsMinus(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsMinus(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsLiteralContext : ValueStmtContext {
+		public LiteralContext literal() {
+			return GetRuleContext<LiteralContext>(0);
+		}
+		public VsLiteralContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsLiteral(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsLiteral(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsLiteral(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsEqvContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode EQV() { return GetToken(VBAParser.EQV, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsEqvContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsEqv(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsEqv(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsEqv(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsImpContext : ValueStmtContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode IMP() { return GetToken(VBAParser.IMP, 0); }
+		public ValueStmtContext valueStmt(int i) {
+			return GetRuleContext<ValueStmtContext>(i);
+		}
+		public VsImpContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsImp(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsImp(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsImp(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class VsGtContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode GT() { return GetToken(VBAParser.GT, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -10533,30 +10514,49 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class VsLeqContext : ValueStmtContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public ITerminalNode LEQ() { return GetToken(VBAParser.LEQ, 0); }
+	public partial class VsEqContext : ValueStmtContext {
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
-		public VsLeqContext(ValueStmtContext context) { CopyFrom(context); }
+		public VsEqContext(ValueStmtContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.EnterVsLeq(this);
+			if (typedListener != null) typedListener.EnterVsEq(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			IVBAListener typedListener = listener as IVBAListener;
-			if (typedListener != null) typedListener.ExitVsLeq(this);
+			if (typedListener != null) typedListener.ExitVsEq(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitVsLeq(this);
+			if (typedVisitor != null) return typedVisitor.VisitVsEq(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VsMidContext : ValueStmtContext {
+		public MidStmtContext midStmt() {
+			return GetRuleContext<MidStmtContext>(0);
+		}
+		public VsMidContext(ValueStmtContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.EnterVsMid(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAListener typedListener = listener as IVBAListener;
+			if (typedListener != null) typedListener.ExitVsMid(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAVisitor<TResult> typedVisitor = visitor as IVBAVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVsMid(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -10713,7 +10713,7 @@ public partial class VBAParser : Parser {
 				State = 1961;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-				while (_la==T__6 || _la==WS) {
+				while (_la==T__1 || _la==WS) {
 					{
 					{
 					State = 1952;
@@ -10724,7 +10724,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 1954; Match(T__6);
+					State = 1954; Match(T__1);
 					State = 1956;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -11249,15 +11249,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class VariableStmtContext : ParserRuleContext {
-		public ITerminalNode DIM() { return GetToken(VBAParser.DIM, 0); }
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
 		public VariableListStmtContext variableListStmt() {
 			return GetRuleContext<VariableListStmtContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode DIM() { return GetToken(VBAParser.DIM, 0); }
 		public VisibilityContext visibility() {
 			return GetRuleContext<VisibilityContext>(0);
 		}
@@ -11337,15 +11337,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class VariableListStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public VariableSubStmtContext variableSubStmt(int i) {
-			return GetRuleContext<VariableSubStmtContext>(i);
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public IReadOnlyList<VariableSubStmtContext> variableSubStmt() {
 			return GetRuleContexts<VariableSubStmtContext>();
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public VariableSubStmtContext variableSubStmt(int i) {
+			return GetRuleContext<VariableSubStmtContext>(i);
 		}
 		public VariableListStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -11392,7 +11392,7 @@ public partial class VBAParser : Parser {
 						}
 					}
 
-					State = 2147; Match(T__6);
+					State = 2147; Match(T__1);
 					State = 2149;
 					_la = _input.La(1);
 					if (_la==WS) {
@@ -11423,23 +11423,23 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class VariableSubStmtContext : ParserRuleContext {
-		public AsTypeClauseContext asTypeClause() {
-			return GetRuleContext<AsTypeClauseContext>(0);
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public SubscriptsContext subscripts() {
-			return GetRuleContext<SubscriptsContext>(0);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public AsTypeClauseContext asTypeClause() {
+			return GetRuleContext<AsTypeClauseContext>(0);
+		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public SubscriptsContext subscripts() {
+			return GetRuleContext<SubscriptsContext>(0);
 		}
 		public VariableSubStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -11493,7 +11493,7 @@ public partial class VBAParser : Parser {
 
 				State = 2169;
 				_la = _input.La(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
 					{
 					State = 2165; subscripts();
 					State = 2167;
@@ -11550,19 +11550,19 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class WhileWendStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
-		public ITerminalNode NEWLINE(int i) {
-			return GetToken(VBAParser.NEWLINE, i);
-		}
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public BlockContext block(int i) {
 			return GetRuleContext<BlockContext>(i);
 		}
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
+		public ITerminalNode NEWLINE(int i) {
+			return GetToken(VBAParser.NEWLINE, i);
+		}
 		public ITerminalNode WEND() { return GetToken(VBAParser.WEND, 0); }
+		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
 		public IReadOnlyList<BlockContext> block() {
 			return GetRuleContexts<BlockContext>();
 		}
@@ -11642,14 +11642,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class WidthStmtContext : ParserRuleContext {
-		public ITerminalNode WIDTH() { return GetToken(VBAParser.WIDTH, 0); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public ITerminalNode WIDTH() { return GetToken(VBAParser.WIDTH, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
 		}
@@ -11692,7 +11692,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 2208; Match(T__6);
+			State = 2208; Match(T__1);
 			State = 2210;
 			_la = _input.La(1);
 			if (_la==WS) {
@@ -11716,26 +11716,26 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class WithStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
-		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		public ITerminalNode WITH() { return GetToken(VBAParser.WITH, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode END_WITH() { return GetToken(VBAParser.END_WITH, 0); }
+		public IReadOnlyList<ITerminalNode> NEWLINE() { return GetTokens(VBAParser.NEWLINE); }
 		public ITerminalNode NEWLINE(int i) {
 			return GetToken(VBAParser.NEWLINE, i);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode WITH() { return GetToken(VBAParser.WITH, 0); }
 		public TypeContext type() {
 			return GetRuleContext<TypeContext>(0);
 		}
-		public ITerminalNode END_WITH() { return GetToken(VBAParser.END_WITH, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
 		}
 		public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
+		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
 		public WithStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -11799,7 +11799,7 @@ public partial class VBAParser : Parser {
 			} while ( _la==NEWLINE );
 			State = 2233;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (EXIT_DO - 64)) | (1L << (EXIT_FOR - 64)) | (1L << (EXIT_FUNCTION - 64)) | (1L << (EXIT_PROPERTY - 64)) | (1L << (EXIT_SUB - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LINE_INPUT - 64)) | (1L << (LSET - 64)) | (1L << (MACRO_IF - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (ON_ERROR - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==L_SQUARE_BRACKET || _la==IDENTIFIER) {
 				{
 				State = 2227; block();
 				State = 2229;
@@ -11833,16 +11833,16 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class WriteStmtContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public FileNumberContext fileNumber() {
-			return GetRuleContext<FileNumberContext>(0);
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
 		}
-		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public OutputListContext outputList() {
 			return GetRuleContext<OutputListContext>(0);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
+		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
+		public FileNumberContext fileNumber() {
+			return GetRuleContext<FileNumberContext>(0);
 		}
 		public WriteStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -11883,7 +11883,7 @@ public partial class VBAParser : Parser {
 				}
 			}
 
-			State = 2243; Match(T__6);
+			State = 2243; Match(T__1);
 			State = 2248;
 			switch ( Interpreter.AdaptivePredict(_input,355,_ctx) ) {
 			case 1:
@@ -11948,9 +11948,9 @@ public partial class VBAParser : Parser {
 			{
 			State = 2251;
 			_la = _input.La(1);
-			if (_la==T__3) {
+			if (_la==T__6) {
 				{
-				State = 2250; Match(T__3);
+				State = 2250; Match(T__6);
 				}
 			}
 
@@ -12191,18 +12191,30 @@ public partial class VBAParser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode CALL() { return GetToken(VBAParser.CALL, 0); }
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ArgsCallContext argsCall() {
-			return GetRuleContext<ArgsCallContext>(0);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
+		public ITerminalNode CALL() { return GetToken(VBAParser.CALL, 0); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public ArgsCallContext argsCall() {
+			return GetRuleContext<ArgsCallContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ECS_ProcedureCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12230,6 +12242,7 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 216, RULE_eCS_ProcedureCall);
 		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 2261; Match(CALL);
@@ -12277,6 +12290,31 @@ public partial class VBAParser : Parser {
 				}
 				break;
 			}
+			State = 2291;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,365,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2283;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2282; Match(WS);
+						}
+					}
+
+					State = 2285; Match(LPAREN);
+					State = 2286; subscripts();
+					State = 2287; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2293;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,365,_ctx);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -12291,24 +12329,36 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ECS_MemberProcedureCallContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode CALL() { return GetToken(VBAParser.CALL, 0); }
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
 		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ECS_MemberProcedureCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12336,61 +12386,87 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 218, RULE_eCS_MemberProcedureCall);
 		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2282; Match(CALL);
-			State = 2283; Match(WS);
-			State = 2285;
-			switch ( Interpreter.AdaptivePredict(_input,364,_ctx) ) {
+			State = 2294; Match(CALL);
+			State = 2295; Match(WS);
+			State = 2297;
+			switch ( Interpreter.AdaptivePredict(_input,366,_ctx) ) {
 			case 1:
 				{
-				State = 2284; implicitCallStmt_InStmt();
+				State = 2296; implicitCallStmt_InStmt();
 				}
 				break;
 			}
-			State = 2287; Match(T__7);
-			State = 2288; ambiguousIdentifier();
-			State = 2290;
-			switch ( Interpreter.AdaptivePredict(_input,365,_ctx) ) {
+			State = 2299; Match(T__0);
+			State = 2300; ambiguousIdentifier();
+			State = 2302;
+			switch ( Interpreter.AdaptivePredict(_input,367,_ctx) ) {
 			case 1:
 				{
-				State = 2289; typeHint();
+				State = 2301; typeHint();
 				}
 				break;
 			}
-			State = 2305;
-			switch ( Interpreter.AdaptivePredict(_input,369,_ctx) ) {
+			State = 2317;
+			switch ( Interpreter.AdaptivePredict(_input,371,_ctx) ) {
 			case 1:
 				{
-				State = 2293;
+				State = 2305;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2292; Match(WS);
+					State = 2304; Match(WS);
 					}
 				}
 
-				State = 2295; Match(LPAREN);
-				State = 2297;
-				switch ( Interpreter.AdaptivePredict(_input,367,_ctx) ) {
+				State = 2307; Match(LPAREN);
+				State = 2309;
+				switch ( Interpreter.AdaptivePredict(_input,369,_ctx) ) {
 				case 1:
 					{
-					State = 2296; Match(WS);
+					State = 2308; Match(WS);
 					}
 					break;
 				}
-				State = 2299; argsCall();
-				State = 2301;
+				State = 2311; argsCall();
+				State = 2313;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2300; Match(WS);
+					State = 2312; Match(WS);
 					}
 				}
 
-				State = 2303; Match(RPAREN);
+				State = 2315; Match(RPAREN);
 				}
 				break;
+			}
+			State = 2328;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,373,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2320;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2319; Match(WS);
+						}
+					}
+
+					State = 2322; Match(LPAREN);
+					State = 2323; subscripts();
+					State = 2324; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2330;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,373,_ctx);
 			}
 			}
 		}
@@ -12437,19 +12513,19 @@ public partial class VBAParser : Parser {
 		ImplicitCallStmt_InBlockContext _localctx = new ImplicitCallStmt_InBlockContext(_ctx, State);
 		EnterRule(_localctx, 220, RULE_implicitCallStmt_InBlock);
 		try {
-			State = 2309;
-			switch ( Interpreter.AdaptivePredict(_input,370,_ctx) ) {
+			State = 2333;
+			switch ( Interpreter.AdaptivePredict(_input,374,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2307; iCS_B_MemberProcedureCall();
+				State = 2331; iCS_B_MemberProcedureCall();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2308; iCS_B_ProcedureCall();
+				State = 2332; iCS_B_ProcedureCall();
 				}
 				break;
 			}
@@ -12466,21 +12542,38 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ICS_B_MemberProcedureCallContext : ParserRuleContext {
-		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
-			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
-		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public DictionaryCallStmtContext dictionaryCallStmt() {
-			return GetRuleContext<DictionaryCallStmtContext>(0);
 		}
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
 		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public ImplicitCallStmt_InStmtContext implicitCallStmt_InStmt() {
+			return GetRuleContext<ImplicitCallStmt_InStmtContext>(0);
+		}
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
+		}
+		public DictionaryCallStmtContext dictionaryCallStmt() {
+			return GetRuleContext<DictionaryCallStmtContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ICS_B_MemberProcedureCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12506,43 +12599,70 @@ public partial class VBAParser : Parser {
 	public ICS_B_MemberProcedureCallContext iCS_B_MemberProcedureCall() {
 		ICS_B_MemberProcedureCallContext _localctx = new ICS_B_MemberProcedureCallContext(_ctx, State);
 		EnterRule(_localctx, 222, RULE_iCS_B_MemberProcedureCall);
+		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2312;
-			switch ( Interpreter.AdaptivePredict(_input,371,_ctx) ) {
+			State = 2336;
+			switch ( Interpreter.AdaptivePredict(_input,375,_ctx) ) {
 			case 1:
 				{
-				State = 2311; implicitCallStmt_InStmt();
+				State = 2335; implicitCallStmt_InStmt();
 				}
 				break;
 			}
-			State = 2314; Match(T__7);
-			State = 2315; ambiguousIdentifier();
-			State = 2317;
-			switch ( Interpreter.AdaptivePredict(_input,372,_ctx) ) {
+			State = 2338; Match(T__0);
+			State = 2339; ambiguousIdentifier();
+			State = 2341;
+			switch ( Interpreter.AdaptivePredict(_input,376,_ctx) ) {
 			case 1:
 				{
-				State = 2316; typeHint();
+				State = 2340; typeHint();
 				}
 				break;
 			}
-			State = 2321;
-			switch ( Interpreter.AdaptivePredict(_input,373,_ctx) ) {
+			State = 2345;
+			switch ( Interpreter.AdaptivePredict(_input,377,_ctx) ) {
 			case 1:
 				{
-				State = 2319; Match(WS);
-				State = 2320; argsCall();
+				State = 2343; Match(WS);
+				State = 2344; argsCall();
 				}
 				break;
 			}
-			State = 2324;
-			switch ( Interpreter.AdaptivePredict(_input,374,_ctx) ) {
+			State = 2348;
+			switch ( Interpreter.AdaptivePredict(_input,378,_ctx) ) {
 			case 1:
 				{
-				State = 2323; dictionaryCallStmt();
+				State = 2347; dictionaryCallStmt();
 				}
 				break;
+			}
+			State = 2359;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,380,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2351;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2350; Match(WS);
+						}
+					}
+
+					State = 2353; Match(LPAREN);
+					State = 2354; subscripts();
+					State = 2355; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2361;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,380,_ctx);
 			}
 			}
 		}
@@ -12558,12 +12678,29 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ICS_B_ProcedureCallContext : ParserRuleContext {
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
 		public CertainIdentifierContext certainIdentifier() {
 			return GetRuleContext<CertainIdentifierContext>(0);
 		}
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ICS_B_ProcedureCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12589,18 +12726,45 @@ public partial class VBAParser : Parser {
 	public ICS_B_ProcedureCallContext iCS_B_ProcedureCall() {
 		ICS_B_ProcedureCallContext _localctx = new ICS_B_ProcedureCallContext(_ctx, State);
 		EnterRule(_localctx, 224, RULE_iCS_B_ProcedureCall);
+		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2326; certainIdentifier();
-			State = 2329;
-			switch ( Interpreter.AdaptivePredict(_input,375,_ctx) ) {
+			State = 2362; certainIdentifier();
+			State = 2365;
+			switch ( Interpreter.AdaptivePredict(_input,381,_ctx) ) {
 			case 1:
 				{
-				State = 2327; Match(WS);
-				State = 2328; argsCall();
+				State = 2363; Match(WS);
+				State = 2364; argsCall();
 				}
 				break;
+			}
+			State = 2376;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,383,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2368;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2367; Match(WS);
+						}
+					}
+
+					State = 2370; Match(LPAREN);
+					State = 2371; subscripts();
+					State = 2372; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2378;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,383,_ctx);
 			}
 			}
 		}
@@ -12616,17 +12780,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ImplicitCallStmt_InStmtContext : ParserRuleContext {
-		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
-			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
-		}
 		public ICS_S_MembersCallContext iCS_S_MembersCall() {
 			return GetRuleContext<ICS_S_MembersCallContext>(0);
 		}
-		public ICS_S_DictionaryCallContext iCS_S_DictionaryCall() {
-			return GetRuleContext<ICS_S_DictionaryCallContext>(0);
-		}
 		public ICS_S_VariableOrProcedureCallContext iCS_S_VariableOrProcedureCall() {
 			return GetRuleContext<ICS_S_VariableOrProcedureCallContext>(0);
+		}
+		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
+			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
+		}
+		public ICS_S_DictionaryCallContext iCS_S_DictionaryCall() {
+			return GetRuleContext<ICS_S_DictionaryCallContext>(0);
 		}
 		public ImplicitCallStmt_InStmtContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12653,33 +12817,33 @@ public partial class VBAParser : Parser {
 		ImplicitCallStmt_InStmtContext _localctx = new ImplicitCallStmt_InStmtContext(_ctx, State);
 		EnterRule(_localctx, 226, RULE_implicitCallStmt_InStmt);
 		try {
-			State = 2335;
-			switch ( Interpreter.AdaptivePredict(_input,376,_ctx) ) {
+			State = 2383;
+			switch ( Interpreter.AdaptivePredict(_input,384,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2331; iCS_S_MembersCall();
+				State = 2379; iCS_S_MembersCall();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2332; iCS_S_VariableOrProcedureCall();
+				State = 2380; iCS_S_VariableOrProcedureCall();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 2333; iCS_S_ProcedureOrArrayCall();
+				State = 2381; iCS_S_ProcedureOrArrayCall();
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 2334; iCS_S_DictionaryCall();
+				State = 2382; iCS_S_DictionaryCall();
 				}
 				break;
 			}
@@ -12699,11 +12863,29 @@ public partial class VBAParser : Parser {
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public TypeHintContext typeHint() {
+			return GetRuleContext<TypeHintContext>(0);
+		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
+		}
 		public DictionaryCallStmtContext dictionaryCallStmt() {
 			return GetRuleContext<DictionaryCallStmtContext>(0);
 		}
-		public TypeHintContext typeHint() {
-			return GetRuleContext<TypeHintContext>(0);
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ICS_S_VariableOrProcedureCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12729,25 +12911,52 @@ public partial class VBAParser : Parser {
 	public ICS_S_VariableOrProcedureCallContext iCS_S_VariableOrProcedureCall() {
 		ICS_S_VariableOrProcedureCallContext _localctx = new ICS_S_VariableOrProcedureCallContext(_ctx, State);
 		EnterRule(_localctx, 228, RULE_iCS_S_VariableOrProcedureCall);
+		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2337; ambiguousIdentifier();
-			State = 2339;
-			switch ( Interpreter.AdaptivePredict(_input,377,_ctx) ) {
+			State = 2385; ambiguousIdentifier();
+			State = 2387;
+			switch ( Interpreter.AdaptivePredict(_input,385,_ctx) ) {
 			case 1:
 				{
-				State = 2338; typeHint();
+				State = 2386; typeHint();
 				}
 				break;
 			}
-			State = 2342;
-			switch ( Interpreter.AdaptivePredict(_input,378,_ctx) ) {
+			State = 2390;
+			switch ( Interpreter.AdaptivePredict(_input,386,_ctx) ) {
 			case 1:
 				{
-				State = 2341; dictionaryCallStmt();
+				State = 2389; dictionaryCallStmt();
 				}
 				break;
+			}
+			State = 2401;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,388,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2393;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2392; Match(WS);
+						}
+					}
+
+					State = 2395; Match(LPAREN);
+					State = 2396; subscripts();
+					State = 2397; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2403;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,388,_ctx);
 			}
 			}
 		}
@@ -12763,26 +12972,38 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ICS_S_ProcedureOrArrayCallContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
-		public DictionaryCallStmtContext dictionaryCallStmt() {
-			return GetRuleContext<DictionaryCallStmtContext>(0);
-		}
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
 		public ArgsCallContext argsCall() {
 			return GetRuleContext<ArgsCallContext>(0);
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
 		}
 		public BaseTypeContext baseType() {
 			return GetRuleContext<BaseTypeContext>(0);
 		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
+		}
+		public DictionaryCallStmtContext dictionaryCallStmt() {
+			return GetRuleContext<DictionaryCallStmtContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public TypeHintContext typeHint() {
 			return GetRuleContext<TypeHintContext>(0);
+		}
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ICS_S_ProcedureOrArrayCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12810,71 +13031,97 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 230, RULE_iCS_S_ProcedureOrArrayCall);
 		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2346;
-			switch ( Interpreter.AdaptivePredict(_input,379,_ctx) ) {
+			State = 2406;
+			switch ( Interpreter.AdaptivePredict(_input,389,_ctx) ) {
 			case 1:
 				{
-				State = 2344; ambiguousIdentifier();
+				State = 2404; ambiguousIdentifier();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2345; baseType();
+				State = 2405; baseType();
 				}
 				break;
 			}
-			State = 2349;
+			State = 2409;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4))) != 0) || _la==AMPERSAND) {
 				{
-				State = 2348; typeHint();
+				State = 2408; typeHint();
 				}
 			}
 
-			State = 2352;
+			State = 2412;
 			_la = _input.La(1);
 			if (_la==WS) {
 				{
-				State = 2351; Match(WS);
+				State = 2411; Match(WS);
 				}
 			}
 
-			State = 2354; Match(LPAREN);
-			State = 2356;
-			switch ( Interpreter.AdaptivePredict(_input,382,_ctx) ) {
+			State = 2414; Match(LPAREN);
+			State = 2416;
+			switch ( Interpreter.AdaptivePredict(_input,392,_ctx) ) {
 			case 1:
 				{
-				State = 2355; Match(WS);
+				State = 2415; Match(WS);
 				}
 				break;
 			}
-			State = 2362;
+			State = 2422;
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__6) | (1L << T__2) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (WS - 192)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__2) | (1L << T__1) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)) | (1L << (WS - 192)))) != 0)) {
 				{
-				State = 2358; argsCall();
-				State = 2360;
+				State = 2418; argsCall();
+				State = 2420;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2359; Match(WS);
+					State = 2419; Match(WS);
 					}
 				}
 
 				}
 			}
 
-			State = 2364; Match(RPAREN);
-			State = 2366;
-			switch ( Interpreter.AdaptivePredict(_input,385,_ctx) ) {
+			State = 2424; Match(RPAREN);
+			State = 2426;
+			switch ( Interpreter.AdaptivePredict(_input,395,_ctx) ) {
 			case 1:
 				{
-				State = 2365; dictionaryCallStmt();
+				State = 2425; dictionaryCallStmt();
 				}
 				break;
+			}
+			State = 2437;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,397,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2429;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2428; Match(WS);
+						}
+					}
+
+					State = 2431; Match(LPAREN);
+					State = 2432; subscripts();
+					State = 2433; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2439;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,397,_ctx);
 			}
 			}
 		}
@@ -12890,20 +13137,38 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ICS_S_MembersCallContext : ParserRuleContext {
-		public DictionaryCallStmtContext dictionaryCallStmt() {
-			return GetRuleContext<DictionaryCallStmtContext>(0);
+		public ICS_S_MemberCallContext iCS_S_MemberCall(int i) {
+			return GetRuleContext<ICS_S_MemberCallContext>(i);
 		}
-		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
-			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
+		public IReadOnlyList<ITerminalNode> RPAREN() { return GetTokens(VBAParser.RPAREN); }
+		public SubscriptsContext subscripts(int i) {
+			return GetRuleContext<SubscriptsContext>(i);
 		}
 		public IReadOnlyList<ICS_S_MemberCallContext> iCS_S_MemberCall() {
 			return GetRuleContexts<ICS_S_MemberCallContext>();
 		}
+		public DictionaryCallStmtContext dictionaryCallStmt() {
+			return GetRuleContext<DictionaryCallStmtContext>(0);
+		}
 		public ICS_S_VariableOrProcedureCallContext iCS_S_VariableOrProcedureCall() {
 			return GetRuleContext<ICS_S_VariableOrProcedureCallContext>(0);
 		}
-		public ICS_S_MemberCallContext iCS_S_MemberCall(int i) {
-			return GetRuleContext<ICS_S_MemberCallContext>(i);
+		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
+			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
+		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public ITerminalNode RPAREN(int i) {
+			return GetToken(VBAParser.RPAREN, i);
+		}
+		public IReadOnlyList<ITerminalNode> LPAREN() { return GetTokens(VBAParser.LPAREN); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<SubscriptsContext> subscripts() {
+			return GetRuleContexts<SubscriptsContext>();
+		}
+		public ITerminalNode LPAREN(int i) {
+			return GetToken(VBAParser.LPAREN, i);
 		}
 		public ICS_S_MembersCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -12929,25 +13194,26 @@ public partial class VBAParser : Parser {
 	public ICS_S_MembersCallContext iCS_S_MembersCall() {
 		ICS_S_MembersCallContext _localctx = new ICS_S_MembersCallContext(_ctx, State);
 		EnterRule(_localctx, 232, RULE_iCS_S_MembersCall);
+		int _la;
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2370;
-			switch ( Interpreter.AdaptivePredict(_input,386,_ctx) ) {
+			State = 2442;
+			switch ( Interpreter.AdaptivePredict(_input,398,_ctx) ) {
 			case 1:
 				{
-				State = 2368; iCS_S_VariableOrProcedureCall();
+				State = 2440; iCS_S_VariableOrProcedureCall();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2369; iCS_S_ProcedureOrArrayCall();
+				State = 2441; iCS_S_ProcedureOrArrayCall();
 				}
 				break;
 			}
-			State = 2373;
+			State = 2445;
 			_errHandler.Sync(this);
 			_alt = 1;
 			do {
@@ -12955,24 +13221,49 @@ public partial class VBAParser : Parser {
 				case 1:
 					{
 					{
-					State = 2372; iCS_S_MemberCall();
+					State = 2444; iCS_S_MemberCall();
 					}
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 2375;
+				State = 2447;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,387,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,399,_ctx);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
-			State = 2378;
-			switch ( Interpreter.AdaptivePredict(_input,388,_ctx) ) {
+			State = 2450;
+			switch ( Interpreter.AdaptivePredict(_input,400,_ctx) ) {
 			case 1:
 				{
-				State = 2377; dictionaryCallStmt();
+				State = 2449; dictionaryCallStmt();
 				}
 				break;
+			}
+			State = 2461;
+			_errHandler.Sync(this);
+			_alt = Interpreter.AdaptivePredict(_input,402,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2453;
+					_la = _input.La(1);
+					if (_la==WS) {
+						{
+						State = 2452; Match(WS);
+						}
+					}
+
+					State = 2455; Match(LPAREN);
+					State = 2456; subscripts();
+					State = 2457; Match(RPAREN);
+					}
+					} 
+				}
+				State = 2463;
+				_errHandler.Sync(this);
+				_alt = Interpreter.AdaptivePredict(_input,402,_ctx);
 			}
 			}
 		}
@@ -12988,11 +13279,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ICS_S_MemberCallContext : ParserRuleContext {
-		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
-			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
-		}
 		public ICS_S_VariableOrProcedureCallContext iCS_S_VariableOrProcedureCall() {
 			return GetRuleContext<ICS_S_VariableOrProcedureCallContext>(0);
+		}
+		public ICS_S_ProcedureOrArrayCallContext iCS_S_ProcedureOrArrayCall() {
+			return GetRuleContext<ICS_S_ProcedureOrArrayCallContext>(0);
 		}
 		public ICS_S_MemberCallContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -13022,23 +13313,23 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2380;
+			State = 2464;
 			_la = _input.La(1);
-			if ( !(_la==T__7 || _la==T__1) ) {
+			if ( !(_la==T__7 || _la==T__0) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
-			State = 2383;
-			switch ( Interpreter.AdaptivePredict(_input,389,_ctx) ) {
+			State = 2467;
+			switch ( Interpreter.AdaptivePredict(_input,403,_ctx) ) {
 			case 1:
 				{
-				State = 2381; iCS_S_VariableOrProcedureCall();
+				State = 2465; iCS_S_VariableOrProcedureCall();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2382; iCS_S_ProcedureOrArrayCall();
+				State = 2466; iCS_S_ProcedureOrArrayCall();
 				}
 				break;
 			}
@@ -13086,7 +13377,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2385; dictionaryCallStmt();
+			State = 2469; dictionaryCallStmt();
 			}
 		}
 		catch (RecognitionException re) {
@@ -13101,13 +13392,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ArgsCallContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ArgCallContext> argCall() {
-			return GetRuleContexts<ArgCallContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ArgCallContext> argCall() {
+			return GetRuleContexts<ArgCallContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ArgCallContext argCall(int i) {
 			return GetRuleContext<ArgCallContext>(i);
 		}
@@ -13140,94 +13431,94 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2399;
+			State = 2483;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,393,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,407,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2388;
+					State = 2472;
 					_la = _input.La(1);
-					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__1) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__7) | (1L << T__0) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (LPAREN - 192)) | (1L << (MINUS - 192)) | (1L << (PLUS - 192)) | (1L << (L_SQUARE_BRACKET - 192)) | (1L << (STRINGLITERAL - 192)) | (1L << (DATELITERAL - 192)) | (1L << (COLORLITERAL - 192)) | (1L << (INTEGERLITERAL - 192)) | (1L << (DOUBLELITERAL - 192)) | (1L << (IDENTIFIER - 192)))) != 0)) {
 						{
-						State = 2387; argCall();
+						State = 2471; argCall();
 						}
 					}
 
-					State = 2391;
+					State = 2475;
 					_la = _input.La(1);
 					if (_la==WS) {
 						{
-						State = 2390; Match(WS);
+						State = 2474; Match(WS);
 						}
 					}
 
-					State = 2393;
+					State = 2477;
 					_la = _input.La(1);
-					if ( !(_la==T__6 || _la==T__2) ) {
+					if ( !(_la==T__2 || _la==T__1) ) {
 					_errHandler.RecoverInline(this);
 					}
 					Consume();
-					State = 2395;
-					switch ( Interpreter.AdaptivePredict(_input,392,_ctx) ) {
+					State = 2479;
+					switch ( Interpreter.AdaptivePredict(_input,406,_ctx) ) {
 					case 1:
 						{
-						State = 2394; Match(WS);
+						State = 2478; Match(WS);
 						}
 						break;
 					}
 					}
 					} 
 				}
-				State = 2401;
+				State = 2485;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,393,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,407,_ctx);
 			}
-			State = 2402; argCall();
-			State = 2415;
+			State = 2486; argCall();
+			State = 2499;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,397,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,411,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2404;
+					State = 2488;
 					_la = _input.La(1);
 					if (_la==WS) {
 						{
-						State = 2403; Match(WS);
+						State = 2487; Match(WS);
 						}
 					}
 
-					State = 2406;
+					State = 2490;
 					_la = _input.La(1);
-					if ( !(_la==T__6 || _la==T__2) ) {
+					if ( !(_la==T__2 || _la==T__1) ) {
 					_errHandler.RecoverInline(this);
 					}
 					Consume();
-					State = 2408;
-					switch ( Interpreter.AdaptivePredict(_input,395,_ctx) ) {
+					State = 2492;
+					switch ( Interpreter.AdaptivePredict(_input,409,_ctx) ) {
 					case 1:
 						{
-						State = 2407; Match(WS);
+						State = 2491; Match(WS);
 						}
 						break;
 					}
-					State = 2411;
-					switch ( Interpreter.AdaptivePredict(_input,396,_ctx) ) {
+					State = 2495;
+					switch ( Interpreter.AdaptivePredict(_input,410,_ctx) ) {
 					case 1:
 						{
-						State = 2410; argCall();
+						State = 2494; argCall();
 						}
 						break;
 					}
 					}
 					} 
 				}
-				State = 2417;
+				State = 2501;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,397,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,411,_ctx);
 			}
 			}
 		}
@@ -13243,11 +13534,11 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ArgCallContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
+		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
 		public ValueStmtContext valueStmt() {
 			return GetRuleContext<ValueStmtContext>(0);
 		}
-		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public ITerminalNode PARAMARRAY() { return GetToken(VBAParser.PARAMARRAY, 0); }
 		public ITerminalNode BYVAL() { return GetToken(VBAParser.BYVAL, 0); }
 		public ArgCallContext(ParserRuleContext parent, int invokingState)
@@ -13278,21 +13569,21 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2420;
-			switch ( Interpreter.AdaptivePredict(_input,398,_ctx) ) {
+			State = 2504;
+			switch ( Interpreter.AdaptivePredict(_input,412,_ctx) ) {
 			case 1:
 				{
-				State = 2418;
+				State = 2502;
 				_la = _input.La(1);
 				if ( !(_la==BYVAL || _la==BYREF || _la==PARAMARRAY) ) {
 				_errHandler.RecoverInline(this);
 				}
 				Consume();
-				State = 2419; Match(WS);
+				State = 2503; Match(WS);
 				}
 				break;
 			}
-			State = 2422; valueStmt(0);
+			State = 2506; valueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -13340,13 +13631,13 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2424; Match(T__1);
-			State = 2425; ambiguousIdentifier();
-			State = 2427;
-			switch ( Interpreter.AdaptivePredict(_input,399,_ctx) ) {
+			State = 2508; Match(T__7);
+			State = 2509; ambiguousIdentifier();
+			State = 2511;
+			switch ( Interpreter.AdaptivePredict(_input,413,_ctx) ) {
 			case 1:
 				{
-				State = 2426; typeHint();
+				State = 2510; typeHint();
 				}
 				break;
 			}
@@ -13364,17 +13655,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ArgListContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ArgContext> arg() {
-			return GetRuleContexts<ArgContext>();
+		public ArgContext arg(int i) {
+			return GetRuleContext<ArgContext>(i);
 		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
-		public ArgContext arg(int i) {
-			return GetRuleContext<ArgContext>(i);
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public IReadOnlyList<ArgContext> arg() {
+			return GetRuleContexts<ArgContext>();
 		}
 		public ArgListContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -13405,64 +13696,64 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2429; Match(LPAREN);
-			State = 2447;
-			switch ( Interpreter.AdaptivePredict(_input,404,_ctx) ) {
+			State = 2513; Match(LPAREN);
+			State = 2531;
+			switch ( Interpreter.AdaptivePredict(_input,418,_ctx) ) {
 			case 1:
 				{
-				State = 2431;
+				State = 2515;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2430; Match(WS);
+					State = 2514; Match(WS);
 					}
 				}
 
-				State = 2433; arg();
-				State = 2444;
+				State = 2517; arg();
+				State = 2528;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,403,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,417,_ctx);
 				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
-						State = 2435;
+						State = 2519;
 						_la = _input.La(1);
 						if (_la==WS) {
 							{
-							State = 2434; Match(WS);
+							State = 2518; Match(WS);
 							}
 						}
 
-						State = 2437; Match(T__6);
-						State = 2439;
+						State = 2521; Match(T__1);
+						State = 2523;
 						_la = _input.La(1);
 						if (_la==WS) {
 							{
-							State = 2438; Match(WS);
+							State = 2522; Match(WS);
 							}
 						}
 
-						State = 2441; arg();
+						State = 2525; arg();
 						}
 						} 
 					}
-					State = 2446;
+					State = 2530;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,403,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,417,_ctx);
 				}
 				}
 				break;
 			}
-			State = 2450;
+			State = 2534;
 			_la = _input.La(1);
 			if (_la==WS) {
 				{
-				State = 2449; Match(WS);
+				State = 2533; Match(WS);
 				}
 			}
 
-			State = 2452; Match(RPAREN);
+			State = 2536; Match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -13477,25 +13768,25 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ArgContext : ParserRuleContext {
+		public AmbiguousIdentifierContext ambiguousIdentifier() {
+			return GetRuleContext<AmbiguousIdentifierContext>(0);
+		}
+		public ArgDefaultValueContext argDefaultValue() {
+			return GetRuleContext<ArgDefaultValueContext>(0);
+		}
+		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
 		public ITerminalNode OPTIONAL() { return GetToken(VBAParser.OPTIONAL, 0); }
 		public AsTypeClauseContext asTypeClause() {
 			return GetRuleContext<AsTypeClauseContext>(0);
 		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public AmbiguousIdentifierContext ambiguousIdentifier() {
-			return GetRuleContext<AmbiguousIdentifierContext>(0);
-		}
-		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
-		public ArgDefaultValueContext argDefaultValue() {
-			return GetRuleContext<ArgDefaultValueContext>(0);
-		}
-		public ITerminalNode PARAMARRAY() { return GetToken(VBAParser.PARAMARRAY, 0); }
 		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public ITerminalNode PARAMARRAY() { return GetToken(VBAParser.PARAMARRAY, 0); }
 		public ITerminalNode BYVAL() { return GetToken(VBAParser.BYVAL, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
-		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
 		public ArgContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -13524,86 +13815,86 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2456;
-			switch ( Interpreter.AdaptivePredict(_input,406,_ctx) ) {
+			State = 2540;
+			switch ( Interpreter.AdaptivePredict(_input,420,_ctx) ) {
 			case 1:
 				{
-				State = 2454; Match(OPTIONAL);
-				State = 2455; Match(WS);
+				State = 2538; Match(OPTIONAL);
+				State = 2539; Match(WS);
 				}
 				break;
 			}
-			State = 2460;
-			switch ( Interpreter.AdaptivePredict(_input,407,_ctx) ) {
+			State = 2544;
+			switch ( Interpreter.AdaptivePredict(_input,421,_ctx) ) {
 			case 1:
 				{
-				State = 2458;
+				State = 2542;
 				_la = _input.La(1);
 				if ( !(_la==BYVAL || _la==BYREF) ) {
 				_errHandler.RecoverInline(this);
 				}
 				Consume();
-				State = 2459; Match(WS);
+				State = 2543; Match(WS);
 				}
 				break;
 			}
-			State = 2464;
-			switch ( Interpreter.AdaptivePredict(_input,408,_ctx) ) {
+			State = 2548;
+			switch ( Interpreter.AdaptivePredict(_input,422,_ctx) ) {
 			case 1:
 				{
-				State = 2462; Match(PARAMARRAY);
-				State = 2463; Match(WS);
+				State = 2546; Match(PARAMARRAY);
+				State = 2547; Match(WS);
 				}
 				break;
 			}
-			State = 2466; ambiguousIdentifier();
-			State = 2475;
-			switch ( Interpreter.AdaptivePredict(_input,411,_ctx) ) {
+			State = 2550; ambiguousIdentifier();
+			State = 2559;
+			switch ( Interpreter.AdaptivePredict(_input,425,_ctx) ) {
 			case 1:
 				{
-				State = 2468;
+				State = 2552;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2467; Match(WS);
+					State = 2551; Match(WS);
 					}
 				}
 
-				State = 2470; Match(LPAREN);
-				State = 2472;
+				State = 2554; Match(LPAREN);
+				State = 2556;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2471; Match(WS);
+					State = 2555; Match(WS);
 					}
 				}
 
-				State = 2474; Match(RPAREN);
+				State = 2558; Match(RPAREN);
 				}
 				break;
 			}
-			State = 2479;
-			switch ( Interpreter.AdaptivePredict(_input,412,_ctx) ) {
+			State = 2563;
+			switch ( Interpreter.AdaptivePredict(_input,426,_ctx) ) {
 			case 1:
 				{
-				State = 2477; Match(WS);
-				State = 2478; asTypeClause();
+				State = 2561; Match(WS);
+				State = 2562; asTypeClause();
 				}
 				break;
 			}
-			State = 2485;
-			switch ( Interpreter.AdaptivePredict(_input,414,_ctx) ) {
+			State = 2569;
+			switch ( Interpreter.AdaptivePredict(_input,428,_ctx) ) {
 			case 1:
 				{
-				State = 2482;
+				State = 2566;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2481; Match(WS);
+					State = 2565; Match(WS);
 					}
 				}
 
-				State = 2484; argDefaultValue();
+				State = 2568; argDefaultValue();
 				}
 				break;
 			}
@@ -13621,10 +13912,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ArgDefaultValueContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public LiteralContext literal() {
 			return GetRuleContext<LiteralContext>(0);
 		}
@@ -13657,26 +13948,26 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2487; Match(EQ);
-			State = 2489;
+			State = 2571; Match(EQ);
+			State = 2573;
 			_la = _input.La(1);
 			if (_la==WS) {
 				{
-				State = 2488; Match(WS);
+				State = 2572; Match(WS);
 				}
 			}
 
-			State = 2493;
-			switch ( Interpreter.AdaptivePredict(_input,416,_ctx) ) {
+			State = 2577;
+			switch ( Interpreter.AdaptivePredict(_input,430,_ctx) ) {
 			case 1:
 				{
-				State = 2491; literal();
+				State = 2575; literal();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2492; ambiguousIdentifier();
+				State = 2576; ambiguousIdentifier();
 				}
 				break;
 			}
@@ -13694,16 +13985,16 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SubscriptsContext : ParserRuleContext {
-		public IReadOnlyList<SubscriptContext> subscript() {
-			return GetRuleContexts<SubscriptContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public SubscriptContext subscript(int i) {
-			return GetRuleContext<SubscriptContext>(i);
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<SubscriptContext> subscript() {
+			return GetRuleContexts<SubscriptContext>();
+		}
+		public SubscriptContext subscript(int i) {
+			return GetRuleContext<SubscriptContext>(i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public SubscriptsContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -13733,38 +14024,38 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2495; subscript();
-			State = 2506;
+			State = 2579; subscript();
+			State = 2590;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,419,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,433,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2497;
+					State = 2581;
 					_la = _input.La(1);
 					if (_la==WS) {
 						{
-						State = 2496; Match(WS);
+						State = 2580; Match(WS);
 						}
 					}
 
-					State = 2499; Match(T__6);
-					State = 2501;
+					State = 2583; Match(T__1);
+					State = 2585;
 					_la = _input.La(1);
 					if (_la==WS) {
 						{
-						State = 2500; Match(WS);
+						State = 2584; Match(WS);
 						}
 					}
 
-					State = 2503; subscript();
+					State = 2587; subscript();
 					}
 					} 
 				}
-				State = 2508;
+				State = 2592;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,419,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,433,_ctx);
 			}
 			}
 		}
@@ -13780,13 +14071,13 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class SubscriptContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public IReadOnlyList<ValueStmtContext> valueStmt() {
-			return GetRuleContexts<ValueStmtContext>();
-		}
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
+		public IReadOnlyList<ValueStmtContext> valueStmt() {
+			return GetRuleContexts<ValueStmtContext>();
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
 		public ValueStmtContext valueStmt(int i) {
 			return GetRuleContext<ValueStmtContext>(i);
@@ -13818,18 +14109,18 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2514;
-			switch ( Interpreter.AdaptivePredict(_input,420,_ctx) ) {
+			State = 2598;
+			switch ( Interpreter.AdaptivePredict(_input,434,_ctx) ) {
 			case 1:
 				{
-				State = 2509; valueStmt(0);
-				State = 2510; Match(WS);
-				State = 2511; Match(TO);
-				State = 2512; Match(WS);
+				State = 2593; valueStmt(0);
+				State = 2594; Match(WS);
+				State = 2595; Match(TO);
+				State = 2596; Match(WS);
 				}
 				break;
 			}
-			State = 2516; valueStmt(0);
+			State = 2600; valueStmt(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -13844,18 +14135,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AmbiguousIdentifierContext : ParserRuleContext {
-		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBAParser.R_SQUARE_BRACKET, 0); }
-		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBAParser.L_SQUARE_BRACKET, 0); }
 		public AmbiguousKeywordContext ambiguousKeyword(int i) {
 			return GetRuleContext<AmbiguousKeywordContext>(i);
 		}
 		public ITerminalNode IDENTIFIER(int i) {
 			return GetToken(VBAParser.IDENTIFIER, i);
 		}
-		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBAParser.IDENTIFIER); }
 		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
+		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBAParser.IDENTIFIER); }
+		public ITerminalNode L_SQUARE_BRACKET() { return GetToken(VBAParser.L_SQUARE_BRACKET, 0); }
+		public ITerminalNode R_SQUARE_BRACKET() { return GetToken(VBAParser.R_SQUARE_BRACKET, 0); }
 		public AmbiguousIdentifierContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -13883,7 +14174,7 @@ public partial class VBAParser : Parser {
 		int _la;
 		try {
 			int _alt;
-			State = 2532;
+			State = 2616;
 			switch (_input.La(1)) {
 			case ACCESS:
 			case ADDRESSOF:
@@ -14032,18 +14323,18 @@ public partial class VBAParser : Parser {
 			case IDENTIFIER:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2520;
+				State = 2604;
 				_errHandler.Sync(this);
 				_alt = 1;
 				do {
 					switch (_alt) {
 					case 1:
 						{
-						State = 2520;
+						State = 2604;
 						switch (_input.La(1)) {
 						case IDENTIFIER:
 							{
-							State = 2518; Match(IDENTIFIER);
+							State = 2602; Match(IDENTIFIER);
 							}
 							break;
 						case ACCESS:
@@ -14191,7 +14482,7 @@ public partial class VBAParser : Parser {
 						case WRITE:
 						case XOR:
 							{
-							State = 2519; ambiguousKeyword();
+							State = 2603; ambiguousKeyword();
 							}
 							break;
 						default:
@@ -14202,26 +14493,26 @@ public partial class VBAParser : Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					State = 2522;
+					State = 2606;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,422,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,436,_ctx);
 				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 				}
 				break;
 			case L_SQUARE_BRACKET:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2524; Match(L_SQUARE_BRACKET);
-				State = 2527;
+				State = 2608; Match(L_SQUARE_BRACKET);
+				State = 2611;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
 				do {
 					{
-					State = 2527;
+					State = 2611;
 					switch (_input.La(1)) {
 					case IDENTIFIER:
 						{
-						State = 2525; Match(IDENTIFIER);
+						State = 2609; Match(IDENTIFIER);
 						}
 						break;
 					case ACCESS:
@@ -14369,18 +14660,18 @@ public partial class VBAParser : Parser {
 					case WRITE:
 					case XOR:
 						{
-						State = 2526; ambiguousKeyword();
+						State = 2610; ambiguousKeyword();
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
 					}
-					State = 2529;
+					State = 2613;
 					_errHandler.Sync(this);
 					_la = _input.La(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0) || _la==IDENTIFIER );
-				State = 2531; Match(R_SQUARE_BRACKET);
+				State = 2615; Match(R_SQUARE_BRACKET);
 				}
 				break;
 			default:
@@ -14399,18 +14690,18 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AsTypeClauseContext : ParserRuleContext {
-		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
-		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
 		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
 		public TypeContext type() {
 			return GetRuleContext<TypeContext>(0);
 		}
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
+		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
 		public FieldLengthContext fieldLength() {
 			return GetRuleContext<FieldLengthContext>(0);
 		}
+		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
 		public AsTypeClauseContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -14438,24 +14729,24 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2534; Match(AS);
-			State = 2535; Match(WS);
-			State = 2538;
-			switch ( Interpreter.AdaptivePredict(_input,426,_ctx) ) {
+			State = 2618; Match(AS);
+			State = 2619; Match(WS);
+			State = 2622;
+			switch ( Interpreter.AdaptivePredict(_input,440,_ctx) ) {
 			case 1:
 				{
-				State = 2536; Match(NEW);
-				State = 2537; Match(WS);
+				State = 2620; Match(NEW);
+				State = 2621; Match(WS);
 				}
 				break;
 			}
-			State = 2540; type();
-			State = 2543;
-			switch ( Interpreter.AdaptivePredict(_input,427,_ctx) ) {
+			State = 2624; type();
+			State = 2627;
+			switch ( Interpreter.AdaptivePredict(_input,441,_ctx) ) {
 			case 1:
 				{
-				State = 2541; Match(WS);
-				State = 2542; fieldLength();
+				State = 2625; Match(WS);
+				State = 2626; fieldLength();
 				}
 				break;
 			}
@@ -14474,15 +14765,15 @@ public partial class VBAParser : Parser {
 
 	public partial class BaseTypeContext : ParserRuleContext {
 		public ITerminalNode COLLECTION() { return GetToken(VBAParser.COLLECTION, 0); }
-		public ITerminalNode BYTE() { return GetToken(VBAParser.BYTE, 0); }
-		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
-		public ITerminalNode BOOLEAN() { return GetToken(VBAParser.BOOLEAN, 0); }
+		public ITerminalNode INTEGER() { return GetToken(VBAParser.INTEGER, 0); }
 		public ITerminalNode LONG() { return GetToken(VBAParser.LONG, 0); }
+		public ITerminalNode VARIANT() { return GetToken(VBAParser.VARIANT, 0); }
+		public ITerminalNode BYTE() { return GetToken(VBAParser.BYTE, 0); }
+		public ITerminalNode STRING() { return GetToken(VBAParser.STRING, 0); }
+		public ITerminalNode BOOLEAN() { return GetToken(VBAParser.BOOLEAN, 0); }
+		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
 		public ITerminalNode DOUBLE() { return GetToken(VBAParser.DOUBLE, 0); }
 		public ITerminalNode SINGLE() { return GetToken(VBAParser.SINGLE, 0); }
-		public ITerminalNode VARIANT() { return GetToken(VBAParser.VARIANT, 0); }
-		public ITerminalNode STRING() { return GetToken(VBAParser.STRING, 0); }
-		public ITerminalNode INTEGER() { return GetToken(VBAParser.INTEGER, 0); }
 		public BaseTypeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -14511,7 +14802,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2545;
+			State = 2629;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << BYTE) | (1L << COLLECTION) | (1L << DATE) | (1L << DOUBLE))) != 0) || _la==INTEGER || _la==LONG || ((((_la - 158)) & ~0x3f) == 0 && ((1L << (_la - 158)) & ((1L << (SINGLE - 158)) | (1L << (STRING - 158)) | (1L << (VARIANT - 158)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -14537,10 +14828,10 @@ public partial class VBAParser : Parser {
 		public ITerminalNode IDENTIFIER(int i) {
 			return GetToken(VBAParser.IDENTIFIER, i);
 		}
-		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBAParser.IDENTIFIER); }
 		public IReadOnlyList<AmbiguousKeywordContext> ambiguousKeyword() {
 			return GetRuleContexts<AmbiguousKeywordContext>();
 		}
+		public IReadOnlyList<ITerminalNode> IDENTIFIER() { return GetTokens(VBAParser.IDENTIFIER); }
 		public CertainIdentifierContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -14567,19 +14858,19 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 260, RULE_certainIdentifier);
 		try {
 			int _alt;
-			State = 2562;
+			State = 2646;
 			switch (_input.La(1)) {
 			case IDENTIFIER:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2547; Match(IDENTIFIER);
-				State = 2552;
+				State = 2631; Match(IDENTIFIER);
+				State = 2636;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,429,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,443,_ctx);
 				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
-						State = 2550;
+						State = 2634;
 						switch (_input.La(1)) {
 						case ACCESS:
 						case ADDRESSOF:
@@ -14726,12 +15017,12 @@ public partial class VBAParser : Parser {
 						case WRITE:
 						case XOR:
 							{
-							State = 2548; ambiguousKeyword();
+							State = 2632; ambiguousKeyword();
 							}
 							break;
 						case IDENTIFIER:
 							{
-							State = 2549; Match(IDENTIFIER);
+							State = 2633; Match(IDENTIFIER);
 							}
 							break;
 						default:
@@ -14739,9 +15030,9 @@ public partial class VBAParser : Parser {
 						}
 						} 
 					}
-					State = 2554;
+					State = 2638;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,429,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,443,_ctx);
 				}
 				}
 				break;
@@ -14891,15 +15182,15 @@ public partial class VBAParser : Parser {
 			case XOR:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2555; ambiguousKeyword();
-				State = 2558;
+				State = 2639; ambiguousKeyword();
+				State = 2642;
 				_errHandler.Sync(this);
 				_alt = 1;
 				do {
 					switch (_alt) {
 					case 1:
 						{
-						State = 2558;
+						State = 2642;
 						switch (_input.La(1)) {
 						case ACCESS:
 						case ADDRESSOF:
@@ -15046,12 +15337,12 @@ public partial class VBAParser : Parser {
 						case WRITE:
 						case XOR:
 							{
-							State = 2556; ambiguousKeyword();
+							State = 2640; ambiguousKeyword();
 							}
 							break;
 						case IDENTIFIER:
 							{
-							State = 2557; Match(IDENTIFIER);
+							State = 2641; Match(IDENTIFIER);
 							}
 							break;
 						default:
@@ -15062,9 +15353,9 @@ public partial class VBAParser : Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					State = 2560;
+					State = 2644;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,431,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,445,_ctx);
 				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 				}
 				break;
@@ -15084,14 +15375,14 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class ComparisonOperatorContext : ParserRuleContext {
-		public ITerminalNode NEQ() { return GetToken(VBAParser.NEQ, 0); }
 		public ITerminalNode GEQ() { return GetToken(VBAParser.GEQ, 0); }
-		public ITerminalNode LT() { return GetToken(VBAParser.LT, 0); }
-		public ITerminalNode LEQ() { return GetToken(VBAParser.LEQ, 0); }
-		public ITerminalNode LIKE() { return GetToken(VBAParser.LIKE, 0); }
+		public ITerminalNode NEQ() { return GetToken(VBAParser.NEQ, 0); }
 		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
+		public ITerminalNode LEQ() { return GetToken(VBAParser.LEQ, 0); }
+		public ITerminalNode LT() { return GetToken(VBAParser.LT, 0); }
 		public ITerminalNode GT() { return GetToken(VBAParser.GT, 0); }
 		public ITerminalNode EQ() { return GetToken(VBAParser.EQ, 0); }
+		public ITerminalNode LIKE() { return GetToken(VBAParser.LIKE, 0); }
 		public ComparisonOperatorContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15120,7 +15411,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2564;
+			State = 2648;
 			_la = _input.La(1);
 			if ( !(_la==IS || _la==LIKE || ((((_la - 188)) & ~0x3f) == 0 && ((1L << (_la - 188)) & ((1L << (EQ - 188)) | (1L << (GEQ - 188)) | (1L << (GT - 188)) | (1L << (LEQ - 188)) | (1L << (LT - 188)) | (1L << (NEQ - 188)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -15175,27 +15466,27 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2566; ambiguousIdentifier();
-			State = 2571;
+			State = 2650; ambiguousIdentifier();
+			State = 2655;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,433,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,447,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 2567;
+					State = 2651;
 					_la = _input.La(1);
-					if ( !(_la==T__7 || _la==T__1) ) {
+					if ( !(_la==T__7 || _la==T__0) ) {
 					_errHandler.RecoverInline(this);
 					}
 					Consume();
-					State = 2568; ambiguousIdentifier();
+					State = 2652; ambiguousIdentifier();
 					}
 					} 
 				}
-				State = 2573;
+				State = 2657;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,433,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,447,_ctx);
 			}
 			}
 		}
@@ -15211,12 +15502,12 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class FieldLengthContext : ParserRuleContext {
-		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public AmbiguousIdentifierContext ambiguousIdentifier() {
 			return GetRuleContext<AmbiguousIdentifierContext>(0);
 		}
 		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
 		public ITerminalNode MULT() { return GetToken(VBAParser.MULT, 0); }
+		public ITerminalNode WS() { return GetToken(VBAParser.WS, 0); }
 		public FieldLengthContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15245,20 +15536,20 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2574; Match(MULT);
-			State = 2576;
+			State = 2658; Match(MULT);
+			State = 2660;
 			_la = _input.La(1);
 			if (_la==WS) {
 				{
-				State = 2575; Match(WS);
+				State = 2659; Match(WS);
 				}
 			}
 
-			State = 2580;
+			State = 2664;
 			switch (_input.La(1)) {
 			case INTEGERLITERAL:
 				{
-				State = 2578; Match(INTEGERLITERAL);
+				State = 2662; Match(INTEGERLITERAL);
 				}
 				break;
 			case ACCESS:
@@ -15408,7 +15699,7 @@ public partial class VBAParser : Parser {
 			case L_SQUARE_BRACKET:
 			case IDENTIFIER:
 				{
-				State = 2579; ambiguousIdentifier();
+				State = 2663; ambiguousIdentifier();
 				}
 				break;
 			default:
@@ -15428,17 +15719,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LetterrangeContext : ParserRuleContext {
-		public IReadOnlyList<CertainIdentifierContext> certainIdentifier() {
-			return GetRuleContexts<CertainIdentifierContext>();
-		}
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
-		public ITerminalNode WS(int i) {
-			return GetToken(VBAParser.WS, i);
-		}
 		public CertainIdentifierContext certainIdentifier(int i) {
 			return GetRuleContext<CertainIdentifierContext>(i);
 		}
+		public ITerminalNode WS(int i) {
+			return GetToken(VBAParser.WS, i);
+		}
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public IReadOnlyList<CertainIdentifierContext> certainIdentifier() {
+			return GetRuleContexts<CertainIdentifierContext>();
+		}
+		public ITerminalNode MINUS() { return GetToken(VBAParser.MINUS, 0); }
 		public LetterrangeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15467,29 +15758,29 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2582; certainIdentifier();
-			State = 2591;
-			switch ( Interpreter.AdaptivePredict(_input,438,_ctx) ) {
+			State = 2666; certainIdentifier();
+			State = 2675;
+			switch ( Interpreter.AdaptivePredict(_input,452,_ctx) ) {
 			case 1:
 				{
-				State = 2584;
+				State = 2668;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2583; Match(WS);
+					State = 2667; Match(WS);
 					}
 				}
 
-				State = 2586; Match(MINUS);
-				State = 2588;
+				State = 2670; Match(MINUS);
+				State = 2672;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2587; Match(WS);
+					State = 2671; Match(WS);
 					}
 				}
 
-				State = 2590; certainIdentifier();
+				State = 2674; certainIdentifier();
 				}
 				break;
 			}
@@ -15537,8 +15828,8 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2593; ambiguousIdentifier();
-			State = 2594; Match(T__5);
+			State = 2677; ambiguousIdentifier();
+			State = 2678; Match(T__3);
 			}
 		}
 		catch (RecognitionException re) {
@@ -15553,15 +15844,15 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class LiteralContext : ParserRuleContext {
+		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
+		public ITerminalNode NULL() { return GetToken(VBAParser.NULL, 0); }
+		public ITerminalNode STRINGLITERAL() { return GetToken(VBAParser.STRINGLITERAL, 0); }
+		public ITerminalNode FALSE() { return GetToken(VBAParser.FALSE, 0); }
+		public ITerminalNode TRUE() { return GetToken(VBAParser.TRUE, 0); }
+		public ITerminalNode NOTHING() { return GetToken(VBAParser.NOTHING, 0); }
+		public ITerminalNode DATELITERAL() { return GetToken(VBAParser.DATELITERAL, 0); }
 		public ITerminalNode DOUBLELITERAL() { return GetToken(VBAParser.DOUBLELITERAL, 0); }
 		public ITerminalNode COLORLITERAL() { return GetToken(VBAParser.COLORLITERAL, 0); }
-		public ITerminalNode TRUE() { return GetToken(VBAParser.TRUE, 0); }
-		public ITerminalNode INTEGERLITERAL() { return GetToken(VBAParser.INTEGERLITERAL, 0); }
-		public ITerminalNode STRINGLITERAL() { return GetToken(VBAParser.STRINGLITERAL, 0); }
-		public ITerminalNode NULL() { return GetToken(VBAParser.NULL, 0); }
-		public ITerminalNode NOTHING() { return GetToken(VBAParser.NOTHING, 0); }
-		public ITerminalNode FALSE() { return GetToken(VBAParser.FALSE, 0); }
-		public ITerminalNode DATELITERAL() { return GetToken(VBAParser.DATELITERAL, 0); }
 		public LiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15590,7 +15881,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2596;
+			State = 2680;
 			_la = _input.La(1);
 			if ( !(((((_la - 74)) & ~0x3f) == 0 && ((1L << (_la - 74)) & ((1L << (FALSE - 74)) | (1L << (NOTHING - 74)) | (1L << (NULL - 74)))) != 0) || ((((_la - 170)) & ~0x3f) == 0 && ((1L << (_la - 170)) & ((1L << (TRUE - 170)) | (1L << (STRINGLITERAL - 170)) | (1L << (DATELITERAL - 170)) | (1L << (COLORLITERAL - 170)) | (1L << (INTEGERLITERAL - 170)) | (1L << (DOUBLELITERAL - 170)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -15610,17 +15901,17 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class TypeContext : ParserRuleContext {
-		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
-		public ComplexTypeContext complexType() {
-			return GetRuleContext<ComplexTypeContext>(0);
-		}
-		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public ITerminalNode WS(int i) {
 			return GetToken(VBAParser.WS, i);
 		}
 		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public IReadOnlyList<ITerminalNode> WS() { return GetTokens(VBAParser.WS); }
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
 		public BaseTypeContext baseType() {
 			return GetRuleContext<BaseTypeContext>(0);
+		}
+		public ComplexTypeContext complexType() {
+			return GetRuleContext<ComplexTypeContext>(0);
 		}
 		public TypeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -15650,42 +15941,42 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2600;
-			switch ( Interpreter.AdaptivePredict(_input,439,_ctx) ) {
+			State = 2684;
+			switch ( Interpreter.AdaptivePredict(_input,453,_ctx) ) {
 			case 1:
 				{
-				State = 2598; baseType();
+				State = 2682; baseType();
 				}
 				break;
 
 			case 2:
 				{
-				State = 2599; complexType();
+				State = 2683; complexType();
 				}
 				break;
 			}
-			State = 2610;
-			switch ( Interpreter.AdaptivePredict(_input,442,_ctx) ) {
+			State = 2694;
+			switch ( Interpreter.AdaptivePredict(_input,456,_ctx) ) {
 			case 1:
 				{
-				State = 2603;
+				State = 2687;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2602; Match(WS);
+					State = 2686; Match(WS);
 					}
 				}
 
-				State = 2605; Match(LPAREN);
-				State = 2607;
+				State = 2689; Match(LPAREN);
+				State = 2691;
 				_la = _input.La(1);
 				if (_la==WS) {
 					{
-					State = 2606; Match(WS);
+					State = 2690; Match(WS);
 					}
 				}
 
-				State = 2609; Match(RPAREN);
+				State = 2693; Match(RPAREN);
 				}
 				break;
 			}
@@ -15731,9 +16022,9 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2612;
+			State = 2696;
 			_la = _input.La(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__4) | (1L << T__3) | (1L << T__1) | (1L << T__0))) != 0) || _la==AMPERSAND) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__8) | (1L << T__7) | (1L << T__6) | (1L << T__5) | (1L << T__4))) != 0) || _la==AMPERSAND) ) {
 			_errHandler.RecoverInline(this);
 			}
 			Consume();
@@ -15751,10 +16042,10 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class VisibilityContext : ParserRuleContext {
+		public ITerminalNode FRIEND() { return GetToken(VBAParser.FRIEND, 0); }
 		public ITerminalNode PUBLIC() { return GetToken(VBAParser.PUBLIC, 0); }
 		public ITerminalNode GLOBAL() { return GetToken(VBAParser.GLOBAL, 0); }
 		public ITerminalNode PRIVATE() { return GetToken(VBAParser.PRIVATE, 0); }
-		public ITerminalNode FRIEND() { return GetToken(VBAParser.FRIEND, 0); }
 		public VisibilityContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15783,7 +16074,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2614;
+			State = 2698;
 			_la = _input.La(1);
 			if ( !(((((_la - 76)) & ~0x3f) == 0 && ((1L << (_la - 76)) & ((1L << (FRIEND - 76)) | (1L << (GLOBAL - 76)) | (1L << (PRIVATE - 76)) | (1L << (PUBLIC - 76)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -15803,150 +16094,150 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class AmbiguousKeywordContext : ParserRuleContext {
-		public ITerminalNode RESET() { return GetToken(VBAParser.RESET, 0); }
-		public ITerminalNode GET() { return GetToken(VBAParser.GET, 0); }
-		public ITerminalNode MID() { return GetToken(VBAParser.MID, 0); }
-		public ITerminalNode ELSEIF() { return GetToken(VBAParser.ELSEIF, 0); }
-		public ITerminalNode LOCK() { return GetToken(VBAParser.LOCK, 0); }
-		public ITerminalNode VERSION() { return GetToken(VBAParser.VERSION, 0); }
-		public ITerminalNode SENDKEYS() { return GetToken(VBAParser.SENDKEYS, 0); }
-		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
-		public ITerminalNode EACH() { return GetToken(VBAParser.EACH, 0); }
-		public ITerminalNode DIM() { return GetToken(VBAParser.DIM, 0); }
-		public ITerminalNode ERASE() { return GetToken(VBAParser.ERASE, 0); }
-		public ITerminalNode DO() { return GetToken(VBAParser.DO, 0); }
-		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
-		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
-		public ITerminalNode UNLOCK() { return GetToken(VBAParser.UNLOCK, 0); }
-		public ITerminalNode DEFBYTE() { return GetToken(VBAParser.DEFBYTE, 0); }
-		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
-		public ITerminalNode DEFSTR() { return GetToken(VBAParser.DEFSTR, 0); }
-		public ITerminalNode UNLOAD() { return GetToken(VBAParser.UNLOAD, 0); }
-		public ITerminalNode LONG() { return GetToken(VBAParser.LONG, 0); }
-		public ITerminalNode OR() { return GetToken(VBAParser.OR, 0); }
-		public ITerminalNode WITH() { return GetToken(VBAParser.WITH, 0); }
-		public ITerminalNode DELETESETTING() { return GetToken(VBAParser.DELETESETTING, 0); }
-		public ITerminalNode PUBLIC() { return GetToken(VBAParser.PUBLIC, 0); }
-		public ITerminalNode OPTIONAL() { return GetToken(VBAParser.OPTIONAL, 0); }
-		public ITerminalNode EQV() { return GetToken(VBAParser.EQV, 0); }
-		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
-		public ITerminalNode ELSE() { return GetToken(VBAParser.ELSE, 0); }
-		public ITerminalNode CLOSE() { return GetToken(VBAParser.CLOSE, 0); }
 		public ITerminalNode CASE() { return GetToken(VBAParser.CASE, 0); }
-		public ITerminalNode ERROR() { return GetToken(VBAParser.ERROR, 0); }
-		public ITerminalNode CONST() { return GetToken(VBAParser.CONST, 0); }
-		public ITerminalNode NULL() { return GetToken(VBAParser.NULL, 0); }
-		public ITerminalNode TAB() { return GetToken(VBAParser.TAB, 0); }
-		public ITerminalNode DEFCUR() { return GetToken(VBAParser.DEFCUR, 0); }
-		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
-		public ITerminalNode INPUT() { return GetToken(VBAParser.INPUT, 0); }
-		public ITerminalNode TRUE() { return GetToken(VBAParser.TRUE, 0); }
-		public ITerminalNode ADDRESSOF() { return GetToken(VBAParser.ADDRESSOF, 0); }
-		public ITerminalNode TEXT() { return GetToken(VBAParser.TEXT, 0); }
-		public ITerminalNode ACCESS() { return GetToken(VBAParser.ACCESS, 0); }
-		public ITerminalNode RSET() { return GetToken(VBAParser.RSET, 0); }
-		public ITerminalNode RANDOM() { return GetToken(VBAParser.RANDOM, 0); }
-		public ITerminalNode DEFINT() { return GetToken(VBAParser.DEFINT, 0); }
-		public ITerminalNode MKDIR() { return GetToken(VBAParser.MKDIR, 0); }
-		public ITerminalNode CLASS() { return GetToken(VBAParser.CLASS, 0); }
-		public ITerminalNode IN() { return GetToken(VBAParser.IN, 0); }
-		public ITerminalNode DEFSNG() { return GetToken(VBAParser.DEFSNG, 0); }
-		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
-		public ITerminalNode LET() { return GetToken(VBAParser.LET, 0); }
-		public ITerminalNode RETURN() { return GetToken(VBAParser.RETURN, 0); }
-		public ITerminalNode DEFDEC() { return GetToken(VBAParser.DEFDEC, 0); }
-		public ITerminalNode RESUME() { return GetToken(VBAParser.RESUME, 0); }
-		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
-		public ITerminalNode COLLECTION() { return GetToken(VBAParser.COLLECTION, 0); }
-		public ITerminalNode PRIVATE() { return GetToken(VBAParser.PRIVATE, 0); }
-		public ITerminalNode LOOP() { return GetToken(VBAParser.LOOP, 0); }
-		public ITerminalNode FRIEND() { return GetToken(VBAParser.FRIEND, 0); }
-		public ITerminalNode NOTHING() { return GetToken(VBAParser.NOTHING, 0); }
-		public ITerminalNode WITHEVENTS() { return GetToken(VBAParser.WITHEVENTS, 0); }
-		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
-		public ITerminalNode DEFVAR() { return GetToken(VBAParser.DEFVAR, 0); }
-		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
 		public ITerminalNode APPACTIVATE() { return GetToken(VBAParser.APPACTIVATE, 0); }
-		public ITerminalNode SPC() { return GetToken(VBAParser.SPC, 0); }
-		public ITerminalNode SETATTR() { return GetToken(VBAParser.SETATTR, 0); }
-		public ITerminalNode LIB() { return GetToken(VBAParser.LIB, 0); }
-		public ITerminalNode OPEN() { return GetToken(VBAParser.OPEN, 0); }
-		public ITerminalNode KILL() { return GetToken(VBAParser.KILL, 0); }
-		public ITerminalNode STRING() { return GetToken(VBAParser.STRING, 0); }
-		public ITerminalNode BEGIN() { return GetToken(VBAParser.BEGIN, 0); }
-		public ITerminalNode RANDOMIZE() { return GetToken(VBAParser.RANDOMIZE, 0); }
-		public ITerminalNode FALSE() { return GetToken(VBAParser.FALSE, 0); }
-		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
-		public ITerminalNode ENUM() { return GetToken(VBAParser.ENUM, 0); }
-		public ITerminalNode CALL() { return GetToken(VBAParser.CALL, 0); }
-		public ITerminalNode TIME() { return GetToken(VBAParser.TIME, 0); }
-		public ITerminalNode DECLARE() { return GetToken(VBAParser.DECLARE, 0); }
-		public ITerminalNode PRESERVE() { return GetToken(VBAParser.PRESERVE, 0); }
-		public ITerminalNode TYPEOF() { return GetToken(VBAParser.TYPEOF, 0); }
-		public ITerminalNode STEP() { return GetToken(VBAParser.STEP, 0); }
-		public ITerminalNode DOUBLE() { return GetToken(VBAParser.DOUBLE, 0); }
-		public ITerminalNode CHDIR() { return GetToken(VBAParser.CHDIR, 0); }
-		public ITerminalNode LOAD() { return GetToken(VBAParser.LOAD, 0); }
-		public ITerminalNode SINGLE() { return GetToken(VBAParser.SINGLE, 0); }
-		public ITerminalNode ME() { return GetToken(VBAParser.ME, 0); }
-		public ITerminalNode SAVEPICTURE() { return GetToken(VBAParser.SAVEPICTURE, 0); }
-		public ITerminalNode WIDTH() { return GetToken(VBAParser.WIDTH, 0); }
-		public ITerminalNode STOP() { return GetToken(VBAParser.STOP, 0); }
-		public ITerminalNode IF() { return GetToken(VBAParser.IF, 0); }
-		public ITerminalNode RMDIR() { return GetToken(VBAParser.RMDIR, 0); }
-		public ITerminalNode SHARED() { return GetToken(VBAParser.SHARED, 0); }
-		public ITerminalNode NAME() { return GetToken(VBAParser.NAME, 0); }
-		public ITerminalNode IMPLEMENTS() { return GetToken(VBAParser.IMPLEMENTS, 0); }
-		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
-		public ITerminalNode DEFLNG() { return GetToken(VBAParser.DEFLNG, 0); }
-		public ITerminalNode LIKE() { return GetToken(VBAParser.LIKE, 0); }
-		public ITerminalNode VARIANT() { return GetToken(VBAParser.VARIANT, 0); }
-		public ITerminalNode TYPE() { return GetToken(VBAParser.TYPE, 0); }
-		public ITerminalNode DEFDATE() { return GetToken(VBAParser.DEFDATE, 0); }
-		public ITerminalNode IMP() { return GetToken(VBAParser.IMP, 0); }
-		public ITerminalNode BYVAL() { return GetToken(VBAParser.BYVAL, 0); }
-		public ITerminalNode RAISEEVENT() { return GetToken(VBAParser.RAISEEVENT, 0); }
-		public ITerminalNode BYTE() { return GetToken(VBAParser.BYTE, 0); }
-		public ITerminalNode EVENT() { return GetToken(VBAParser.EVENT, 0); }
-		public ITerminalNode PARAMARRAY() { return GetToken(VBAParser.PARAMARRAY, 0); }
-		public ITerminalNode READ() { return GetToken(VBAParser.READ, 0); }
-		public ITerminalNode NOT() { return GetToken(VBAParser.NOT, 0); }
-		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
-		public ITerminalNode CHDRIVE() { return GetToken(VBAParser.CHDRIVE, 0); }
-		public ITerminalNode MOD() { return GetToken(VBAParser.MOD, 0); }
-		public ITerminalNode SET() { return GetToken(VBAParser.SET, 0); }
-		public ITerminalNode APPEND() { return GetToken(VBAParser.APPEND, 0); }
-		public ITerminalNode AND() { return GetToken(VBAParser.AND, 0); }
-		public ITerminalNode WEND() { return GetToken(VBAParser.WEND, 0); }
-		public ITerminalNode ATTRIBUTE() { return GetToken(VBAParser.ATTRIBUTE, 0); }
-		public ITerminalNode ALIAS() { return GetToken(VBAParser.ALIAS, 0); }
-		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
-		public ITerminalNode ON() { return GetToken(VBAParser.ON, 0); }
-		public ITerminalNode BOOLEAN() { return GetToken(VBAParser.BOOLEAN, 0); }
-		public ITerminalNode GLOBAL() { return GetToken(VBAParser.GLOBAL, 0); }
-		public ITerminalNode BEEP() { return GetToken(VBAParser.BEEP, 0); }
-		public ITerminalNode LSET() { return GetToken(VBAParser.LSET, 0); }
-		public ITerminalNode SAVESETTING() { return GetToken(VBAParser.SAVESETTING, 0); }
-		public ITerminalNode UNTIL() { return GetToken(VBAParser.UNTIL, 0); }
-		public ITerminalNode REM() { return GetToken(VBAParser.REM, 0); }
-		public ITerminalNode LEN() { return GetToken(VBAParser.LEN, 0); }
-		public ITerminalNode PRINT() { return GetToken(VBAParser.PRINT, 0); }
-		public ITerminalNode DATABASE() { return GetToken(VBAParser.DATABASE, 0); }
-		public ITerminalNode XOR() { return GetToken(VBAParser.XOR, 0); }
 		public ITerminalNode DEFOBJ() { return GetToken(VBAParser.DEFOBJ, 0); }
-		public ITerminalNode SELECT() { return GetToken(VBAParser.SELECT, 0); }
-		public ITerminalNode DEFDBL() { return GetToken(VBAParser.DEFDBL, 0); }
-		public ITerminalNode PUT() { return GetToken(VBAParser.PUT, 0); }
-		public ITerminalNode FILECOPY() { return GetToken(VBAParser.FILECOPY, 0); }
-		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
-		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
-		public ITerminalNode OUTPUT() { return GetToken(VBAParser.OUTPUT, 0); }
-		public ITerminalNode REDIM() { return GetToken(VBAParser.REDIM, 0); }
-		public ITerminalNode DEFBOOL() { return GetToken(VBAParser.DEFBOOL, 0); }
-		public ITerminalNode INTEGER() { return GetToken(VBAParser.INTEGER, 0); }
+		public ITerminalNode ELSE() { return GetToken(VBAParser.ELSE, 0); }
+		public ITerminalNode IF() { return GetToken(VBAParser.IF, 0); }
+		public ITerminalNode RESET() { return GetToken(VBAParser.RESET, 0); }
+		public ITerminalNode XOR() { return GetToken(VBAParser.XOR, 0); }
+		public ITerminalNode TIME() { return GetToken(VBAParser.TIME, 0); }
+		public ITerminalNode RAISEEVENT() { return GetToken(VBAParser.RAISEEVENT, 0); }
+		public ITerminalNode LOAD() { return GetToken(VBAParser.LOAD, 0); }
+		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
+		public ITerminalNode DEFSNG() { return GetToken(VBAParser.DEFSNG, 0); }
+		public ITerminalNode GOSUB() { return GetToken(VBAParser.GOSUB, 0); }
+		public ITerminalNode ENUM() { return GetToken(VBAParser.ENUM, 0); }
+		public ITerminalNode GLOBAL() { return GetToken(VBAParser.GLOBAL, 0); }
+		public ITerminalNode PARAMARRAY() { return GetToken(VBAParser.PARAMARRAY, 0); }
+		public ITerminalNode ME() { return GetToken(VBAParser.ME, 0); }
 		public ITerminalNode SUB() { return GetToken(VBAParser.SUB, 0); }
+		public ITerminalNode FOR() { return GetToken(VBAParser.FOR, 0); }
+		public ITerminalNode LSET() { return GetToken(VBAParser.LSET, 0); }
+		public ITerminalNode WIDTH() { return GetToken(VBAParser.WIDTH, 0); }
+		public ITerminalNode STRING() { return GetToken(VBAParser.STRING, 0); }
+		public ITerminalNode MOD() { return GetToken(VBAParser.MOD, 0); }
+		public ITerminalNode OR() { return GetToken(VBAParser.OR, 0); }
+		public ITerminalNode DOUBLE() { return GetToken(VBAParser.DOUBLE, 0); }
+		public ITerminalNode BYVAL() { return GetToken(VBAParser.BYVAL, 0); }
+		public ITerminalNode IN() { return GetToken(VBAParser.IN, 0); }
+		public ITerminalNode BINARY() { return GetToken(VBAParser.BINARY, 0); }
+		public ITerminalNode SAVESETTING() { return GetToken(VBAParser.SAVESETTING, 0); }
+		public ITerminalNode TEXT() { return GetToken(VBAParser.TEXT, 0); }
+		public ITerminalNode SENDKEYS() { return GetToken(VBAParser.SENDKEYS, 0); }
+		public ITerminalNode PUBLIC() { return GetToken(VBAParser.PUBLIC, 0); }
+		public ITerminalNode PUT() { return GetToken(VBAParser.PUT, 0); }
+		public ITerminalNode MKDIR() { return GetToken(VBAParser.MKDIR, 0); }
+		public ITerminalNode SINGLE() { return GetToken(VBAParser.SINGLE, 0); }
+		public ITerminalNode ERROR() { return GetToken(VBAParser.ERROR, 0); }
+		public ITerminalNode TYPE() { return GetToken(VBAParser.TYPE, 0); }
+		public ITerminalNode CALL() { return GetToken(VBAParser.CALL, 0); }
+		public ITerminalNode RMDIR() { return GetToken(VBAParser.RMDIR, 0); }
+		public ITerminalNode SPC() { return GetToken(VBAParser.SPC, 0); }
+		public ITerminalNode AS() { return GetToken(VBAParser.AS, 0); }
+		public ITerminalNode NOT() { return GetToken(VBAParser.NOT, 0); }
+		public ITerminalNode BEEP() { return GetToken(VBAParser.BEEP, 0); }
+		public ITerminalNode STATIC() { return GetToken(VBAParser.STATIC, 0); }
+		public ITerminalNode DO() { return GetToken(VBAParser.DO, 0); }
+		public ITerminalNode DIM() { return GetToken(VBAParser.DIM, 0); }
+		public ITerminalNode OUTPUT() { return GetToken(VBAParser.OUTPUT, 0); }
+		public ITerminalNode KILL() { return GetToken(VBAParser.KILL, 0); }
+		public ITerminalNode IMPLEMENTS() { return GetToken(VBAParser.IMPLEMENTS, 0); }
+		public ITerminalNode VERSION() { return GetToken(VBAParser.VERSION, 0); }
+		public ITerminalNode ACCESS() { return GetToken(VBAParser.ACCESS, 0); }
+		public ITerminalNode COLLECTION() { return GetToken(VBAParser.COLLECTION, 0); }
+		public ITerminalNode DECLARE() { return GetToken(VBAParser.DECLARE, 0); }
+		public ITerminalNode TRUE() { return GetToken(VBAParser.TRUE, 0); }
+		public ITerminalNode RESUME() { return GetToken(VBAParser.RESUME, 0); }
+		public ITerminalNode VARIANT() { return GetToken(VBAParser.VARIANT, 0); }
+		public ITerminalNode BOOLEAN() { return GetToken(VBAParser.BOOLEAN, 0); }
+		public ITerminalNode WHILE() { return GetToken(VBAParser.WHILE, 0); }
+		public ITerminalNode DEFDBL() { return GetToken(VBAParser.DEFDBL, 0); }
+		public ITerminalNode FUNCTION() { return GetToken(VBAParser.FUNCTION, 0); }
+		public ITerminalNode LONG() { return GetToken(VBAParser.LONG, 0); }
+		public ITerminalNode REM() { return GetToken(VBAParser.REM, 0); }
+		public ITerminalNode RSET() { return GetToken(VBAParser.RSET, 0); }
+		public ITerminalNode ADDRESSOF() { return GetToken(VBAParser.ADDRESSOF, 0); }
+		public ITerminalNode GOTO() { return GetToken(VBAParser.GOTO, 0); }
+		public ITerminalNode ATTRIBUTE() { return GetToken(VBAParser.ATTRIBUTE, 0); }
+		public ITerminalNode TYPEOF() { return GetToken(VBAParser.TYPEOF, 0); }
+		public ITerminalNode SELECT() { return GetToken(VBAParser.SELECT, 0); }
+		public ITerminalNode UNLOCK() { return GetToken(VBAParser.UNLOCK, 0); }
+		public ITerminalNode SET() { return GetToken(VBAParser.SET, 0); }
+		public ITerminalNode ERASE() { return GetToken(VBAParser.ERASE, 0); }
+		public ITerminalNode INTEGER() { return GetToken(VBAParser.INTEGER, 0); }
+		public ITerminalNode FALSE() { return GetToken(VBAParser.FALSE, 0); }
+		public ITerminalNode PRESERVE() { return GetToken(VBAParser.PRESERVE, 0); }
+		public ITerminalNode STOP() { return GetToken(VBAParser.STOP, 0); }
+		public ITerminalNode SHARED() { return GetToken(VBAParser.SHARED, 0); }
+		public ITerminalNode APPEND() { return GetToken(VBAParser.APPEND, 0); }
+		public ITerminalNode CHDIR() { return GetToken(VBAParser.CHDIR, 0); }
+		public ITerminalNode PRIVATE() { return GetToken(VBAParser.PRIVATE, 0); }
+		public ITerminalNode UNLOAD() { return GetToken(VBAParser.UNLOAD, 0); }
+		public ITerminalNode DEFBYTE() { return GetToken(VBAParser.DEFBYTE, 0); }
+		public ITerminalNode RETURN() { return GetToken(VBAParser.RETURN, 0); }
+		public ITerminalNode NULL() { return GetToken(VBAParser.NULL, 0); }
+		public ITerminalNode NAME() { return GetToken(VBAParser.NAME, 0); }
+		public ITerminalNode BEGIN() { return GetToken(VBAParser.BEGIN, 0); }
+		public ITerminalNode LOCK() { return GetToken(VBAParser.LOCK, 0); }
+		public ITerminalNode WEND() { return GetToken(VBAParser.WEND, 0); }
+		public ITerminalNode DEFSTR() { return GetToken(VBAParser.DEFSTR, 0); }
+		public ITerminalNode IMP() { return GetToken(VBAParser.IMP, 0); }
+		public ITerminalNode DEFVAR() { return GetToken(VBAParser.DEFVAR, 0); }
+		public ITerminalNode CHDRIVE() { return GetToken(VBAParser.CHDRIVE, 0); }
+		public ITerminalNode EVENT() { return GetToken(VBAParser.EVENT, 0); }
+		public ITerminalNode CONST() { return GetToken(VBAParser.CONST, 0); }
+		public ITerminalNode ELSEIF() { return GetToken(VBAParser.ELSEIF, 0); }
+		public ITerminalNode PRINT() { return GetToken(VBAParser.PRINT, 0); }
+		public ITerminalNode DEFINT() { return GetToken(VBAParser.DEFINT, 0); }
+		public ITerminalNode NOTHING() { return GetToken(VBAParser.NOTHING, 0); }
+		public ITerminalNode THEN() { return GetToken(VBAParser.THEN, 0); }
+		public ITerminalNode DATABASE() { return GetToken(VBAParser.DATABASE, 0); }
+		public ITerminalNode BYTE() { return GetToken(VBAParser.BYTE, 0); }
+		public ITerminalNode INPUT() { return GetToken(VBAParser.INPUT, 0); }
+		public ITerminalNode STEP() { return GetToken(VBAParser.STEP, 0); }
+		public ITerminalNode SAVEPICTURE() { return GetToken(VBAParser.SAVEPICTURE, 0); }
 		public ITerminalNode SEEK() { return GetToken(VBAParser.SEEK, 0); }
+		public ITerminalNode TAB() { return GetToken(VBAParser.TAB, 0); }
+		public ITerminalNode RANDOM() { return GetToken(VBAParser.RANDOM, 0); }
+		public ITerminalNode IS() { return GetToken(VBAParser.IS, 0); }
+		public ITerminalNode LOOP() { return GetToken(VBAParser.LOOP, 0); }
+		public ITerminalNode DEFCUR() { return GetToken(VBAParser.DEFCUR, 0); }
+		public ITerminalNode ALIAS() { return GetToken(VBAParser.ALIAS, 0); }
+		public ITerminalNode DATE() { return GetToken(VBAParser.DATE, 0); }
+		public ITerminalNode DEFDATE() { return GetToken(VBAParser.DEFDATE, 0); }
+		public ITerminalNode CLASS() { return GetToken(VBAParser.CLASS, 0); }
+		public ITerminalNode LET() { return GetToken(VBAParser.LET, 0); }
+		public ITerminalNode FRIEND() { return GetToken(VBAParser.FRIEND, 0); }
+		public ITerminalNode EQV() { return GetToken(VBAParser.EQV, 0); }
+		public ITerminalNode READ() { return GetToken(VBAParser.READ, 0); }
+		public ITerminalNode TO() { return GetToken(VBAParser.TO, 0); }
+		public ITerminalNode DEFBOOL() { return GetToken(VBAParser.DEFBOOL, 0); }
+		public ITerminalNode OPEN() { return GetToken(VBAParser.OPEN, 0); }
+		public ITerminalNode DELETESETTING() { return GetToken(VBAParser.DELETESETTING, 0); }
+		public ITerminalNode CLOSE() { return GetToken(VBAParser.CLOSE, 0); }
+		public ITerminalNode AND() { return GetToken(VBAParser.AND, 0); }
+		public ITerminalNode DEFLNG() { return GetToken(VBAParser.DEFLNG, 0); }
+		public ITerminalNode MID() { return GetToken(VBAParser.MID, 0); }
+		public ITerminalNode ON() { return GetToken(VBAParser.ON, 0); }
+		public ITerminalNode WITH() { return GetToken(VBAParser.WITH, 0); }
+		public ITerminalNode DEFDEC() { return GetToken(VBAParser.DEFDEC, 0); }
+		public ITerminalNode SETATTR() { return GetToken(VBAParser.SETATTR, 0); }
+		public ITerminalNode WRITE() { return GetToken(VBAParser.WRITE, 0); }
+		public ITerminalNode LEN() { return GetToken(VBAParser.LEN, 0); }
+		public ITerminalNode EACH() { return GetToken(VBAParser.EACH, 0); }
+		public ITerminalNode NEW() { return GetToken(VBAParser.NEW, 0); }
+		public ITerminalNode GET() { return GetToken(VBAParser.GET, 0); }
+		public ITerminalNode FILECOPY() { return GetToken(VBAParser.FILECOPY, 0); }
+		public ITerminalNode LIB() { return GetToken(VBAParser.LIB, 0); }
+		public ITerminalNode NEXT() { return GetToken(VBAParser.NEXT, 0); }
+		public ITerminalNode OPTIONAL() { return GetToken(VBAParser.OPTIONAL, 0); }
+		public ITerminalNode REDIM() { return GetToken(VBAParser.REDIM, 0); }
 		public ITerminalNode END() { return GetToken(VBAParser.END, 0); }
+		public ITerminalNode UNTIL() { return GetToken(VBAParser.UNTIL, 0); }
+		public ITerminalNode LIKE() { return GetToken(VBAParser.LIKE, 0); }
+		public ITerminalNode RANDOMIZE() { return GetToken(VBAParser.RANDOMIZE, 0); }
+		public ITerminalNode WITHEVENTS() { return GetToken(VBAParser.WITHEVENTS, 0); }
 		public AmbiguousKeywordContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -15975,7 +16266,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2616;
+			State = 2700;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPACTIVATE) | (1L << APPEND) | (1L << AS) | (1L << BEGIN) | (1L << BEEP) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE) | (1L << CALL) | (1L << CASE) | (1L << CHDIR) | (1L << CHDRIVE) | (1L << CLASS) | (1L << CLOSE) | (1L << COLLECTION) | (1L << CONST) | (1L << DATABASE) | (1L << DATE) | (1L << DECLARE) | (1L << DEFBOOL) | (1L << DEFBYTE) | (1L << DEFDATE) | (1L << DEFDBL) | (1L << DEFDEC) | (1L << DEFCUR) | (1L << DEFINT) | (1L << DEFLNG) | (1L << DEFOBJ) | (1L << DEFSNG) | (1L << DEFSTR) | (1L << DEFVAR) | (1L << DELETESETTING) | (1L << DIM) | (1L << DO) | (1L << DOUBLE) | (1L << EACH) | (1L << ELSE) | (1L << ELSEIF) | (1L << END))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (ENUM - 64)) | (1L << (EQV - 64)) | (1L << (ERASE - 64)) | (1L << (ERROR - 64)) | (1L << (EVENT - 64)) | (1L << (FALSE - 64)) | (1L << (FILECOPY - 64)) | (1L << (FRIEND - 64)) | (1L << (FOR - 64)) | (1L << (FUNCTION - 64)) | (1L << (GET - 64)) | (1L << (GLOBAL - 64)) | (1L << (GOSUB - 64)) | (1L << (GOTO - 64)) | (1L << (IF - 64)) | (1L << (IMP - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (KILL - 64)) | (1L << (LOAD - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)) | (1L << (LOOP - 64)) | (1L << (LEN - 64)) | (1L << (LET - 64)) | (1L << (LIB - 64)) | (1L << (LIKE - 64)) | (1L << (LSET - 64)) | (1L << (ME - 64)) | (1L << (MID - 64)) | (1L << (MKDIR - 64)) | (1L << (MOD - 64)) | (1L << (NAME - 64)) | (1L << (NEXT - 64)) | (1L << (NEW - 64)) | (1L << (NOT - 64)) | (1L << (NOTHING - 64)) | (1L << (NULL - 64)) | (1L << (ON - 64)) | (1L << (OPEN - 64)) | (1L << (OPTIONAL - 64)) | (1L << (OR - 64)) | (1L << (OUTPUT - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PRIVATE - 128)) | (1L << (PUBLIC - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (RANDOMIZE - 128)) | (1L << (RAISEEVENT - 128)) | (1L << (READ - 128)) | (1L << (REDIM - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (RESUME - 128)) | (1L << (RETURN - 128)) | (1L << (RMDIR - 128)) | (1L << (RSET - 128)) | (1L << (SAVEPICTURE - 128)) | (1L << (SAVESETTING - 128)) | (1L << (SEEK - 128)) | (1L << (SELECT - 128)) | (1L << (SENDKEYS - 128)) | (1L << (SET - 128)) | (1L << (SETATTR - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STATIC - 128)) | (1L << (STEP - 128)) | (1L << (STOP - 128)) | (1L << (STRING - 128)) | (1L << (SUB - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TIME - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)) | (1L << (TYPE - 128)) | (1L << (TYPEOF - 128)) | (1L << (UNLOAD - 128)) | (1L << (UNLOCK - 128)) | (1L << (UNTIL - 128)) | (1L << (VARIANT - 128)) | (1L << (VERSION - 128)) | (1L << (WEND - 128)) | (1L << (WHILE - 128)) | (1L << (WIDTH - 128)) | (1L << (WITH - 128)) | (1L << (WITHEVENTS - 128)) | (1L << (WRITE - 128)) | (1L << (XOR - 128)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -16034,19 +16325,19 @@ public partial class VBAParser : Parser {
 
 		case 15: return Precpred(_ctx, 6);
 
-		case 17: return Precpred(_ctx, 4);
-
 		case 16: return Precpred(_ctx, 5);
 
-		case 19: return Precpred(_ctx, 2);
+		case 17: return Precpred(_ctx, 4);
 
 		case 18: return Precpred(_ctx, 3);
+
+		case 19: return Precpred(_ctx, 2);
 		}
 		return true;
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xD8\xA3D\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xD8\xA91\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -16247,35 +16538,41 @@ public partial class VBAParser : Parser {
 		"\x5j\x8BC\nj\x3j\x3j\x3k\x3k\x3k\x3k\x5k\x8C4\nk\x3k\x3k\x5k\x8C8\nk\x3"+
 		"k\x5k\x8CB\nk\x3l\x5l\x8CE\nl\x3l\x3l\x5l\x8D2\nl\x3m\x3m\x5m\x8D6\nm"+
 		"\x3n\x3n\x3n\x3n\x5n\x8DC\nn\x3n\x5n\x8DF\nn\x3n\x3n\x5n\x8E3\nn\x3n\x3"+
-		"n\x5n\x8E7\nn\x3n\x3n\x5n\x8EB\nn\x3o\x3o\x3o\x5o\x8F0\no\x3o\x3o\x3o"+
-		"\x5o\x8F5\no\x3o\x5o\x8F8\no\x3o\x3o\x5o\x8FC\no\x3o\x3o\x5o\x900\no\x3"+
-		"o\x3o\x5o\x904\no\x3p\x3p\x5p\x908\np\x3q\x5q\x90B\nq\x3q\x3q\x3q\x5q"+
-		"\x910\nq\x3q\x3q\x5q\x914\nq\x3q\x5q\x917\nq\x3r\x3r\x3r\x5r\x91C\nr\x3"+
-		"s\x3s\x3s\x3s\x5s\x922\ns\x3t\x3t\x5t\x926\nt\x3t\x5t\x929\nt\x3u\x3u"+
-		"\x5u\x92D\nu\x3u\x5u\x930\nu\x3u\x5u\x933\nu\x3u\x3u\x5u\x937\nu\x3u\x3"+
-		"u\x5u\x93B\nu\x5u\x93D\nu\x3u\x3u\x5u\x941\nu\x3v\x3v\x5v\x945\nv\x3v"+
-		"\x6v\x948\nv\rv\xEv\x949\x3v\x5v\x94D\nv\x3w\x3w\x3w\x5w\x952\nw\x3x\x3"+
-		"x\x3y\x5y\x957\ny\x3y\x5y\x95A\ny\x3y\x3y\x5y\x95E\ny\ay\x960\ny\fy\xE"+
-		"y\x963\vy\x3y\x3y\x5y\x967\ny\x3y\x3y\x5y\x96B\ny\x3y\x5y\x96E\ny\ay\x970"+
-		"\ny\fy\xEy\x973\vy\x3z\x3z\x5z\x977\nz\x3z\x3z\x3{\x3{\x3{\x5{\x97E\n"+
-		"{\x3|\x3|\x5|\x982\n|\x3|\x3|\x5|\x986\n|\x3|\x3|\x5|\x98A\n|\x3|\a|\x98D"+
-		"\n|\f|\xE|\x990\v|\x5|\x992\n|\x3|\x5|\x995\n|\x3|\x3|\x3}\x3}\x5}\x99B"+
-		"\n}\x3}\x3}\x5}\x99F\n}\x3}\x3}\x5}\x9A3\n}\x3}\x3}\x5}\x9A7\n}\x3}\x3"+
-		"}\x5}\x9AB\n}\x3}\x5}\x9AE\n}\x3}\x3}\x5}\x9B2\n}\x3}\x5}\x9B5\n}\x3}"+
-		"\x5}\x9B8\n}\x3~\x3~\x5~\x9BC\n~\x3~\x3~\x5~\x9C0\n~\x3\x7F\x3\x7F\x5"+
-		"\x7F\x9C4\n\x7F\x3\x7F\x3\x7F\x5\x7F\x9C8\n\x7F\x3\x7F\a\x7F\x9CB\n\x7F"+
-		"\f\x7F\xE\x7F\x9CE\v\x7F\x3\x80\x3\x80\x3\x80\x3\x80\x3\x80\x5\x80\x9D5"+
-		"\n\x80\x3\x80\x3\x80\x3\x81\x3\x81\x6\x81\x9DB\n\x81\r\x81\xE\x81\x9DC"+
-		"\x3\x81\x3\x81\x3\x81\x6\x81\x9E2\n\x81\r\x81\xE\x81\x9E3\x3\x81\x5\x81"+
-		"\x9E7\n\x81\x3\x82\x3\x82\x3\x82\x3\x82\x5\x82\x9ED\n\x82\x3\x82\x3\x82"+
-		"\x3\x82\x5\x82\x9F2\n\x82\x3\x83\x3\x83\x3\x84\x3\x84\x3\x84\a\x84\x9F9"+
-		"\n\x84\f\x84\xE\x84\x9FC\v\x84\x3\x84\x3\x84\x3\x84\x6\x84\xA01\n\x84"+
-		"\r\x84\xE\x84\xA02\x5\x84\xA05\n\x84\x3\x85\x3\x85\x3\x86\x3\x86\x3\x86"+
-		"\a\x86\xA0C\n\x86\f\x86\xE\x86\xA0F\v\x86\x3\x87\x3\x87\x5\x87\xA13\n"+
-		"\x87\x3\x87\x3\x87\x5\x87\xA17\n\x87\x3\x88\x3\x88\x5\x88\xA1B\n\x88\x3"+
-		"\x88\x3\x88\x5\x88\xA1F\n\x88\x3\x88\x5\x88\xA22\n\x88\x3\x89\x3\x89\x3"+
-		"\x89\x3\x8A\x3\x8A\x3\x8B\x3\x8B\x5\x8B\xA2B\n\x8B\x3\x8B\x5\x8B\xA2E"+
-		"\n\x8B\x3\x8B\x3\x8B\x5\x8B\xA32\n\x8B\x3\x8B\x5\x8B\xA35\n\x8B\x3\x8C"+
+		"n\x5n\x8E7\nn\x3n\x3n\x5n\x8EB\nn\x3n\x5n\x8EE\nn\x3n\x3n\x3n\x3n\an\x8F4"+
+		"\nn\fn\xEn\x8F7\vn\x3o\x3o\x3o\x5o\x8FC\no\x3o\x3o\x3o\x5o\x901\no\x3"+
+		"o\x5o\x904\no\x3o\x3o\x5o\x908\no\x3o\x3o\x5o\x90C\no\x3o\x3o\x5o\x910"+
+		"\no\x3o\x5o\x913\no\x3o\x3o\x3o\x3o\ao\x919\no\fo\xEo\x91C\vo\x3p\x3p"+
+		"\x5p\x920\np\x3q\x5q\x923\nq\x3q\x3q\x3q\x5q\x928\nq\x3q\x3q\x5q\x92C"+
+		"\nq\x3q\x5q\x92F\nq\x3q\x5q\x932\nq\x3q\x3q\x3q\x3q\aq\x938\nq\fq\xEq"+
+		"\x93B\vq\x3r\x3r\x3r\x5r\x940\nr\x3r\x5r\x943\nr\x3r\x3r\x3r\x3r\ar\x949"+
+		"\nr\fr\xEr\x94C\vr\x3s\x3s\x3s\x3s\x5s\x952\ns\x3t\x3t\x5t\x956\nt\x3"+
+		"t\x5t\x959\nt\x3t\x5t\x95C\nt\x3t\x3t\x3t\x3t\at\x962\nt\ft\xEt\x965\v"+
+		"t\x3u\x3u\x5u\x969\nu\x3u\x5u\x96C\nu\x3u\x5u\x96F\nu\x3u\x3u\x5u\x973"+
+		"\nu\x3u\x3u\x5u\x977\nu\x5u\x979\nu\x3u\x3u\x5u\x97D\nu\x3u\x5u\x980\n"+
+		"u\x3u\x3u\x3u\x3u\au\x986\nu\fu\xEu\x989\vu\x3v\x3v\x5v\x98D\nv\x3v\x6"+
+		"v\x990\nv\rv\xEv\x991\x3v\x5v\x995\nv\x3v\x5v\x998\nv\x3v\x3v\x3v\x3v"+
+		"\av\x99E\nv\fv\xEv\x9A1\vv\x3w\x3w\x3w\x5w\x9A6\nw\x3x\x3x\x3y\x5y\x9AB"+
+		"\ny\x3y\x5y\x9AE\ny\x3y\x3y\x5y\x9B2\ny\ay\x9B4\ny\fy\xEy\x9B7\vy\x3y"+
+		"\x3y\x5y\x9BB\ny\x3y\x3y\x5y\x9BF\ny\x3y\x5y\x9C2\ny\ay\x9C4\ny\fy\xE"+
+		"y\x9C7\vy\x3z\x3z\x5z\x9CB\nz\x3z\x3z\x3{\x3{\x3{\x5{\x9D2\n{\x3|\x3|"+
+		"\x5|\x9D6\n|\x3|\x3|\x5|\x9DA\n|\x3|\x3|\x5|\x9DE\n|\x3|\a|\x9E1\n|\f"+
+		"|\xE|\x9E4\v|\x5|\x9E6\n|\x3|\x5|\x9E9\n|\x3|\x3|\x3}\x3}\x5}\x9EF\n}"+
+		"\x3}\x3}\x5}\x9F3\n}\x3}\x3}\x5}\x9F7\n}\x3}\x3}\x5}\x9FB\n}\x3}\x3}\x5"+
+		"}\x9FF\n}\x3}\x5}\xA02\n}\x3}\x3}\x5}\xA06\n}\x3}\x5}\xA09\n}\x3}\x5}"+
+		"\xA0C\n}\x3~\x3~\x5~\xA10\n~\x3~\x3~\x5~\xA14\n~\x3\x7F\x3\x7F\x5\x7F"+
+		"\xA18\n\x7F\x3\x7F\x3\x7F\x5\x7F\xA1C\n\x7F\x3\x7F\a\x7F\xA1F\n\x7F\f"+
+		"\x7F\xE\x7F\xA22\v\x7F\x3\x80\x3\x80\x3\x80\x3\x80\x3\x80\x5\x80\xA29"+
+		"\n\x80\x3\x80\x3\x80\x3\x81\x3\x81\x6\x81\xA2F\n\x81\r\x81\xE\x81\xA30"+
+		"\x3\x81\x3\x81\x3\x81\x6\x81\xA36\n\x81\r\x81\xE\x81\xA37\x3\x81\x5\x81"+
+		"\xA3B\n\x81\x3\x82\x3\x82\x3\x82\x3\x82\x5\x82\xA41\n\x82\x3\x82\x3\x82"+
+		"\x3\x82\x5\x82\xA46\n\x82\x3\x83\x3\x83\x3\x84\x3\x84\x3\x84\a\x84\xA4D"+
+		"\n\x84\f\x84\xE\x84\xA50\v\x84\x3\x84\x3\x84\x3\x84\x6\x84\xA55\n\x84"+
+		"\r\x84\xE\x84\xA56\x5\x84\xA59\n\x84\x3\x85\x3\x85\x3\x86\x3\x86\x3\x86"+
+		"\a\x86\xA60\n\x86\f\x86\xE\x86\xA63\v\x86\x3\x87\x3\x87\x5\x87\xA67\n"+
+		"\x87\x3\x87\x3\x87\x5\x87\xA6B\n\x87\x3\x88\x3\x88\x5\x88\xA6F\n\x88\x3"+
+		"\x88\x3\x88\x5\x88\xA73\n\x88\x3\x88\x5\x88\xA76\n\x88\x3\x89\x3\x89\x3"+
+		"\x89\x3\x8A\x3\x8A\x3\x8B\x3\x8B\x5\x8B\xA7F\n\x8B\x3\x8B\x5\x8B\xA82"+
+		"\n\x8B\x3\x8B\x3\x8B\x5\x8B\xA86\n\x8B\x3\x8B\x5\x8B\xA89\n\x8B\x3\x8C"+
 		"\x3\x8C\x3\x8D\x3\x8D\x3\x8E\x3\x8E\x3\x8E\x2\x2\x3\xC6\x8F\x2\x2\x4\x2"+
 		"\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2"+
 		"\x1C\x2\x1E\x2 \x2\"\x2$\x2&\x2(\x2*\x2,\x2.\x2\x30\x2\x32\x2\x34\x2\x36"+
@@ -16292,229 +16589,229 @@ public partial class VBAParser : Parser {
 		"\x2\x116\x2\x118\x2\x11A\x2\x2\x16\x5\x2\x16\x16##\xA8\xA8\x4\x2PP\xA6"+
 		"\xA6\x3\x2&\x31\x4\x2\xB1\xB1\xB5\xB5\x3\x2GK\x5\x2\xBE\xBE\xC5\xC5\xC9"+
 		"\xC9\a\x2\x12\x12\x16\x16YY\x81\x81\x8C\x8C\x4\x2\x8F\x90\xB9\xB9\x4\x2"+
-		"\x66h\x9F\x9F\x4\x2\x5\x5\t\t\x4\x2\xA1\xA1\xA7\xA7\x4\x2\x4\x4\n\n\x4"+
-		"\x2\x18\x19\x82\x82\x3\x2\x18\x19\f\x2\x17\x17\x1A\x1A!!$$\x35\x35[[_"+
-		"_\xA0\xA0\xA5\xA5\xB2\xB2\a\x2ZZ\x64\x64\xBE\xC1\xC3\xC3\xC7\xC7\x6\x2"+
-		"LLvw\xAC\xAC\xCE\xD2\x6\x2\x3\x3\a\b\n\v\xBB\xBB\x6\x2NNRR\x85\x85\x8A"+
-		"\x8A\v\x2\f\x38\x41\x46L\x64iinxz{\x80\x85\x8A\x8F\x91\xBA\xBD9\x2\x11C"+
-		"\x3\x2\x2\x2\x4\x120\x3\x2\x2\x2\x6\x157\x3\x2\x2\x2\b\x15D\x3\x2\x2\x2"+
-		"\n\x16E\x3\x2\x2\x2\f\x17F\x3\x2\x2\x2\xE\x183\x3\x2\x2\x2\x10\x197\x3"+
-		"\x2\x2\x2\x12\x1A0\x3\x2\x2\x2\x14\x1A2\x3\x2\x2\x2\x16\x1B5\x3\x2\x2"+
-		"\x2\x18\x1B7\x3\x2\x2\x2\x1A\x1B9\x3\x2\x2\x2\x1C\x1D1\x3\x2\x2\x2\x1E"+
-		"\x22A\x3\x2\x2\x2 \x22C\x3\x2\x2\x2\"\x239\x3\x2\x2\x2$\x23B\x3\x2\x2"+
-		"\x2&\x23F\x3\x2\x2\x2(\x243\x3\x2\x2\x2*\x258\x3\x2\x2\x2,\x26A\x3\x2"+
-		"\x2\x2.\x27B\x3\x2\x2\x2\x30\x288\x3\x2\x2\x2\x32\x2A7\x3\x2\x2\x2\x34"+
-		"\x2B7\x3\x2\x2\x2\x36\x301\x3\x2\x2\x2\x38\x303\x3\x2\x2\x2:\x308\x3\x2"+
-		"\x2\x2<\x31A\x3\x2\x2\x2>\x32A\x3\x2\x2\x2@\x32E\x3\x2\x2\x2\x42\x335"+
-		"\x3\x2\x2\x2\x44\x33F\x3\x2\x2\x2\x46\x341\x3\x2\x2\x2H\x34D\x3\x2\x2"+
-		"\x2J\x36B\x3\x2\x2\x2L\x39C\x3\x2\x2\x2N\x3BE\x3\x2\x2\x2P\x3D4\x3\x2"+
-		"\x2\x2R\x3D8\x3\x2\x2\x2T\x3F5\x3\x2\x2\x2V\x3F7\x3\x2\x2\x2X\x409\x3"+
-		"\x2\x2\x2Z\x40B\x3\x2\x2\x2\\\x41D\x3\x2\x2\x2^\x42B\x3\x2\x2\x2`\x42F"+
-		"\x3\x2\x2\x2\x62\x43E\x3\x2\x2\x2\x64\x444\x3\x2\x2\x2\x66\x450\x3\x2"+
-		"\x2\x2h\x45C\x3\x2\x2\x2j\x460\x3\x2\x2\x2l\x473\x3\x2\x2\x2n\x47F\x3"+
-		"\x2\x2\x2p\x48B\x3\x2\x2\x2r\x49F\x3\x2\x2\x2t\x4B3\x3\x2\x2\x2v\x4C1"+
-		"\x3\x2\x2\x2x\x4CF\x3\x2\x2\x2z\x4D3\x3\x2\x2\x2|\x4DB\x3\x2\x2\x2~\x4E5"+
-		"\x3\x2\x2\x2\x80\x4F9\x3\x2\x2\x2\x82\x50D\x3\x2\x2\x2\x84\x54F\x3\x2"+
-		"\x2\x2\x86\x562\x3\x2\x2\x2\x88\x564\x3\x2\x2\x2\x8A\x574\x3\x2\x2\x2"+
-		"\x8C\x599\x3\x2\x2\x2\x8E\x5BA\x3\x2\x2\x2\x90\x5D8\x3\x2\x2\x2\x92\x5EE"+
-		"\x3\x2\x2\x2\x94\x601\x3\x2\x2\x2\x96\x606\x3\x2\x2\x2\x98\x61A\x3\x2"+
-		"\x2\x2\x9A\x62B\x3\x2\x2\x2\x9C\x62D\x3\x2\x2\x2\x9E\x635\x3\x2\x2\x2"+
-		"\xA0\x637\x3\x2\x2\x2\xA2\x63B\x3\x2\x2\x2\xA4\x647\x3\x2\x2\x2\xA6\x653"+
-		"\x3\x2\x2\x2\xA8\x66F\x3\x2\x2\x2\xAA\x67B\x3\x2\x2\x2\xAC\x690\x3\x2"+
-		"\x2\x2\xAE\x6D9\x3\x2\x2\x2\xB0\x6DB\x3\x2\x2\x2\xB2\x6E8\x3\x2\x2\x2"+
-		"\xB4\x6F4\x3\x2\x2\x2\xB6\x700\x3\x2\x2\x2\xB8\x705\x3\x2\x2\x2\xBA\x723"+
-		"\x3\x2\x2\x2\xBC\x730\x3\x2\x2\x2\xBE\x742\x3\x2\x2\x2\xC0\x75C\x3\x2"+
-		"\x2\x2\xC2\x765\x3\x2\x2\x2\xC4\x769\x3\x2\x2\x2\xC6\x7B2\x3\x2\x2\x2"+
-		"\xC8\x858\x3\x2\x2\x2\xCA\x861\x3\x2\x2\x2\xCC\x86F\x3\x2\x2\x2\xCE\x88A"+
-		"\x3\x2\x2\x2\xD0\x89C\x3\x2\x2\x2\xD2\x8A8\x3\x2\x2\x2\xD4\x8BF\x3\x2"+
-		"\x2\x2\xD6\x8CD\x3\x2\x2\x2\xD8\x8D5\x3\x2\x2\x2\xDA\x8D7\x3\x2\x2\x2"+
-		"\xDC\x8EC\x3\x2\x2\x2\xDE\x907\x3\x2\x2\x2\xE0\x90A\x3\x2\x2\x2\xE2\x918"+
-		"\x3\x2\x2\x2\xE4\x921\x3\x2\x2\x2\xE6\x923\x3\x2\x2\x2\xE8\x92C\x3\x2"+
-		"\x2\x2\xEA\x944\x3\x2\x2\x2\xEC\x94E\x3\x2\x2\x2\xEE\x953\x3\x2\x2\x2"+
-		"\xF0\x961\x3\x2\x2\x2\xF2\x976\x3\x2\x2\x2\xF4\x97A\x3\x2\x2\x2\xF6\x97F"+
-		"\x3\x2\x2\x2\xF8\x99A\x3\x2\x2\x2\xFA\x9B9\x3\x2\x2\x2\xFC\x9C1\x3\x2"+
-		"\x2\x2\xFE\x9D4\x3\x2\x2\x2\x100\x9E6\x3\x2\x2\x2\x102\x9E8\x3\x2\x2\x2"+
-		"\x104\x9F3\x3\x2\x2\x2\x106\xA04\x3\x2\x2\x2\x108\xA06\x3\x2\x2\x2\x10A"+
-		"\xA08\x3\x2\x2\x2\x10C\xA10\x3\x2\x2\x2\x10E\xA18\x3\x2\x2\x2\x110\xA23"+
-		"\x3\x2\x2\x2\x112\xA26\x3\x2\x2\x2\x114\xA2A\x3\x2\x2\x2\x116\xA36\x3"+
-		"\x2\x2\x2\x118\xA38\x3\x2\x2\x2\x11A\xA3A\x3\x2\x2\x2\x11C\x11D\x5\x4"+
-		"\x3\x2\x11D\x11E\a\x2\x2\x3\x11E\x3\x3\x2\x2\x2\x11F\x121\a\xD8\x2\x2"+
-		"\x120\x11F\x3\x2\x2\x2\x120\x121\x3\x2\x2\x2\x121\x125\x3\x2\x2\x2\x122"+
-		"\x124\a\xD6\x2\x2\x123\x122\x3\x2\x2\x2\x124\x127\x3\x2\x2\x2\x125\x123"+
-		"\x3\x2\x2\x2\x125\x126\x3\x2\x2\x2\x126\x12E\x3\x2\x2\x2\x127\x125\x3"+
-		"\x2\x2\x2\x128\x12A\x5\x6\x4\x2\x129\x12B\a\xD6\x2\x2\x12A\x129\x3\x2"+
-		"\x2\x2\x12B\x12C\x3\x2\x2\x2\x12C\x12A\x3\x2\x2\x2\x12C\x12D\x3\x2\x2"+
-		"\x2\x12D\x12F\x3\x2\x2\x2\x12E\x128\x3\x2\x2\x2\x12E\x12F\x3\x2\x2\x2"+
-		"\x12F\x131\x3\x2\x2\x2\x130\x132\x5\b\x5\x2\x131\x130\x3\x2\x2\x2\x131"+
-		"\x132\x3\x2\x2\x2\x132\x136\x3\x2\x2\x2\x133\x135\a\xD6\x2\x2\x134\x133"+
-		"\x3\x2\x2\x2\x135\x138\x3\x2\x2\x2\x136\x134\x3\x2\x2\x2\x136\x137\x3"+
-		"\x2\x2\x2\x137\x13A\x3\x2\x2\x2\x138\x136\x3\x2\x2\x2\x139\x13B\x5\f\a"+
-		"\x2\x13A\x139\x3\x2\x2\x2\x13A\x13B\x3\x2\x2\x2\x13B\x13F\x3\x2\x2\x2"+
-		"\x13C\x13E\a\xD6\x2\x2\x13D\x13C\x3\x2\x2\x2\x13E\x141\x3\x2\x2\x2\x13F"+
-		"\x13D\x3\x2\x2\x2\x13F\x140\x3\x2\x2\x2\x140\x143\x3\x2\x2\x2\x141\x13F"+
-		"\x3\x2\x2\x2\x142\x144\x5\xE\b\x2\x143\x142\x3\x2\x2\x2\x143\x144\x3\x2"+
-		"\x2\x2\x144\x148\x3\x2\x2\x2\x145\x147\a\xD6\x2\x2\x146\x145\x3\x2\x2"+
-		"\x2\x147\x14A\x3\x2\x2\x2\x148\x146\x3\x2\x2\x2\x148\x149\x3\x2\x2\x2"+
-		"\x149\x14C\x3\x2\x2\x2\x14A\x148\x3\x2\x2\x2\x14B\x14D\x5\x14\v\x2\x14C"+
-		"\x14B\x3\x2\x2\x2\x14C\x14D\x3\x2\x2\x2\x14D\x151\x3\x2\x2\x2\x14E\x150"+
-		"\a\xD6\x2\x2\x14F\x14E\x3\x2\x2\x2\x150\x153\x3\x2\x2\x2\x151\x14F\x3"+
-		"\x2\x2\x2\x151\x152\x3\x2\x2\x2\x152\x155\x3\x2\x2\x2\x153\x151\x3\x2"+
-		"\x2\x2\x154\x156\a\xD8\x2\x2\x155\x154\x3\x2\x2\x2\x155\x156\x3\x2\x2"+
-		"\x2\x156\x5\x3\x2\x2\x2\x157\x158\a\xB3\x2\x2\x158\x159\a\xD8\x2\x2\x159"+
-		"\x15A\a\xD2\x2\x2\x15A\x15B\a\xD8\x2\x2\x15B\x15C\a\x1F\x2\x2\x15C\a\x3"+
-		"\x2\x2\x2\x15D\x15F\a\x14\x2\x2\x15E\x160\a\xD6\x2\x2\x15F\x15E\x3\x2"+
-		"\x2\x2\x160\x161\x3\x2\x2\x2\x161\x15F\x3\x2\x2\x2\x161\x162\x3\x2\x2"+
-		"\x2\x162\x164\x3\x2\x2\x2\x163\x165\x5\n\x6\x2\x164\x163\x3\x2\x2\x2\x165"+
-		"\x166\x3\x2\x2\x2\x166\x164\x3\x2\x2\x2\x166\x167\x3\x2\x2\x2\x167\x168"+
-		"\x3\x2\x2\x2\x168\x16A\a\x41\x2\x2\x169\x16B\a\xD6\x2\x2\x16A\x169\x3"+
-		"\x2\x2\x2\x16B\x16C\x3\x2\x2\x2\x16C\x16A\x3\x2\x2\x2\x16C\x16D\x3\x2"+
-		"\x2\x2\x16D\t\x3\x2\x2\x2\x16E\x170\x5\x100\x81\x2\x16F\x171\a\xD8\x2"+
-		"\x2\x170\x16F\x3\x2\x2\x2\x170\x171\x3\x2\x2\x2\x171\x172\x3\x2\x2\x2"+
-		"\x172\x174\a\xBE\x2\x2\x173\x175\a\xD8\x2\x2\x174\x173\x3\x2\x2\x2\x174"+
-		"\x175\x3\x2\x2\x2\x175\x176\x3\x2\x2\x2\x176\x177\x5\x112\x8A\x2\x177"+
-		"\x178\a\xD6\x2\x2\x178\v\x3\x2\x2\x2\x179\x17B\x5\x1A\xE\x2\x17A\x17C"+
-		"\a\xD6\x2\x2\x17B\x17A\x3\x2\x2\x2\x17C\x17D\x3\x2\x2\x2\x17D\x17B\x3"+
-		"\x2\x2\x2\x17D\x17E\x3\x2\x2\x2\x17E\x180\x3\x2\x2\x2\x17F\x179\x3\x2"+
-		"\x2\x2\x180\x181\x3\x2\x2\x2\x181\x17F\x3\x2\x2\x2\x181\x182\x3\x2\x2"+
-		"\x2\x182\r\x3\x2\x2\x2\x183\x18C\x5\x12\n\x2\x184\x186\a\xD6\x2\x2\x185"+
-		"\x184\x3\x2\x2\x2\x186\x187\x3\x2\x2\x2\x187\x185\x3\x2\x2\x2\x187\x188"+
-		"\x3\x2\x2\x2\x188\x189\x3\x2\x2\x2\x189\x18B\x5\x12\n\x2\x18A\x185\x3"+
-		"\x2\x2\x2\x18B\x18E\x3\x2\x2\x2\x18C\x18A\x3\x2\x2\x2\x18C\x18D\x3\x2"+
-		"\x2\x2\x18D\xF\x3\x2\x2\x2\x18E\x18C\x3\x2\x2\x2\x18F\x190\a|\x2\x2\x190"+
-		"\x191\a\xD8\x2\x2\x191\x198\a\xD1\x2\x2\x192\x193\a~\x2\x2\x193\x194\a"+
-		"\xD8\x2\x2\x194\x198\t\x2\x2\x2\x195\x198\a}\x2\x2\x196\x198\a\x7F\x2"+
-		"\x2\x197\x18F\x3\x2\x2\x2\x197\x192\x3\x2\x2\x2\x197\x195\x3\x2\x2\x2"+
-		"\x197\x196\x3\x2\x2\x2\x198\x11\x3\x2\x2\x2\x199\x1A1\x5\x18\r\x2\x19A"+
-		"\x1A1\x5\x30\x19\x2\x19B\x1A1\x5:\x1E\x2\x19C\x1A1\x5\x42\"\x2\x19D\x1A1"+
-		"\x5n\x38\x2\x19E\x1A1\x5\x10\t\x2\x19F\x1A1\x5\xBC_\x2\x1A0\x199\x3\x2"+
-		"\x2\x2\x1A0\x19A\x3\x2\x2\x2\x1A0\x19B\x3\x2\x2\x2\x1A0\x19C\x3\x2\x2"+
-		"\x2\x1A0\x19D\x3\x2\x2\x2\x1A0\x19E\x3\x2\x2\x2\x1A0\x19F\x3\x2\x2\x2"+
-		"\x1A1\x13\x3\x2\x2\x2\x1A2\x1AB\x5\x16\f\x2\x1A3\x1A5\a\xD6\x2\x2\x1A4"+
-		"\x1A3\x3\x2\x2\x2\x1A5\x1A6\x3\x2\x2\x2\x1A6\x1A4\x3\x2\x2\x2\x1A6\x1A7"+
-		"\x3\x2\x2\x2\x1A7\x1A8\x3\x2\x2\x2\x1A8\x1AA\x5\x16\f\x2\x1A9\x1A4\x3"+
-		"\x2\x2\x2\x1AA\x1AD\x3\x2\x2\x2\x1AB\x1A9\x3\x2\x2\x2\x1AB\x1AC\x3\x2"+
-		"\x2\x2\x1AC\x15\x3\x2\x2\x2\x1AD\x1AB\x3\x2\x2\x2\x1AE\x1B6\x5\x18\r\x2"+
-		"\x1AF\x1B6\x5L\'\x2\x1B0\x1B6\x5n\x38\x2\x1B1\x1B6\x5\x8A\x46\x2\x1B2"+
-		"\x1B6\x5\x8CG\x2\x1B3\x1B6\x5\x8EH\x2\x1B4\x1B6\x5\xB8]\x2\x1B5\x1AE\x3"+
-		"\x2\x2\x2\x1B5\x1AF\x3\x2\x2\x2\x1B5\x1B0\x3\x2\x2\x2\x1B5\x1B1\x3\x2"+
-		"\x2\x2\x1B5\x1B2\x3\x2\x2\x2\x1B5\x1B3\x3\x2\x2\x2\x1B5\x1B4\x3\x2\x2"+
-		"\x2\x1B6\x17\x3\x2\x2\x2\x1B7\x1B8\x5\x1C\xF\x2\x1B8\x19\x3\x2\x2\x2\x1B9"+
-		"\x1BA\a\x10\x2\x2\x1BA\x1BB\a\xD8\x2\x2\x1BB\x1BD\x5\xE4s\x2\x1BC\x1BE"+
-		"\a\xD8\x2\x2\x1BD\x1BC\x3\x2\x2\x2\x1BD\x1BE\x3\x2\x2\x2\x1BE\x1BF\x3"+
-		"\x2\x2\x2\x1BF\x1C1\a\xBE\x2\x2\x1C0\x1C2\a\xD8\x2\x2\x1C1\x1C0\x3\x2"+
-		"\x2\x2\x1C1\x1C2\x3\x2\x2\x2\x1C2\x1C3\x3\x2\x2\x2\x1C3\x1CE\x5\x112\x8A"+
-		"\x2\x1C4\x1C6\a\xD8\x2\x2\x1C5\x1C4\x3\x2\x2\x2\x1C5\x1C6\x3\x2\x2\x2"+
-		"\x1C6\x1C7\x3\x2\x2\x2\x1C7\x1C9\a\x5\x2\x2\x1C8\x1CA\a\xD8\x2\x2\x1C9"+
-		"\x1C8\x3\x2\x2\x2\x1C9\x1CA\x3\x2\x2\x2\x1CA\x1CB\x3\x2\x2\x2\x1CB\x1CD"+
-		"\x5\x112\x8A\x2\x1CC\x1C5\x3\x2\x2\x2\x1CD\x1D0\x3\x2\x2\x2\x1CE\x1CC"+
-		"\x3\x2\x2\x2\x1CE\x1CF\x3\x2\x2\x2\x1CF\x1B\x3\x2\x2\x2\x1D0\x1CE\x3\x2"+
-		"\x2\x2\x1D1\x1DE\x5\x1E\x10\x2\x1D2\x1D4\a\xD6\x2\x2\x1D3\x1D2\x3\x2\x2"+
-		"\x2\x1D4\x1D7\x3\x2\x2\x2\x1D5\x1D3\x3\x2\x2\x2\x1D5\x1D6\x3\x2\x2\x2"+
-		"\x1D6\x1D9\x3\x2\x2\x2\x1D7\x1D5\x3\x2\x2\x2\x1D8\x1DA\a\xD8\x2\x2\x1D9"+
-		"\x1D8\x3\x2\x2\x2\x1D9\x1DA\x3\x2\x2\x2\x1DA\x1DB\x3\x2\x2\x2\x1DB\x1DD"+
-		"\x5\x1E\x10\x2\x1DC\x1D5\x3\x2\x2\x2\x1DD\x1E0\x3\x2\x2\x2\x1DE\x1DC\x3"+
-		"\x2\x2\x2\x1DE\x1DF\x3\x2\x2\x2\x1DF\x1E4\x3\x2\x2\x2\x1E0\x1DE\x3\x2"+
-		"\x2\x2\x1E1\x1E3\a\xD6\x2\x2\x1E2\x1E1\x3\x2\x2\x2\x1E3\x1E6\x3\x2\x2"+
-		"\x2\x1E4\x1E2\x3\x2\x2\x2\x1E4\x1E5\x3\x2\x2\x2\x1E5\x1D\x3\x2\x2\x2\x1E6"+
-		"\x1E4\x3\x2\x2\x2\x1E7\x22B\x5\x110\x89\x2\x1E8\x22B\x5 \x11\x2\x1E9\x22B"+
-		"\x5\x1A\xE\x2\x1EA\x22B\x5\"\x12\x2\x1EB\x22B\x5$\x13\x2\x1EC\x22B\x5"+
-		"&\x14\x2\x1ED\x22B\x5(\x15\x2\x1EE\x22B\x5*\x16\x2\x1EF\x22B\x5.\x18\x2"+
-		"\x1F0\x22B\x5\x34\x1B\x2\x1F1\x22B\x5\x32\x1A\x2\x1F2\x22B\x5\x36\x1C"+
-		"\x2\x1F3\x22B\x5\x38\x1D\x2\x1F4\x22B\x5> \x2\x1F5\x22B\x5@!\x2\x1F6\x22B"+
-		"\x5\x44#\x2\x1F7\x22B\x5\xD8m\x2\x1F8\x22B\x5\x46$\x2\x1F9\x22B\x5H%\x2"+
-		"\x1FA\x22B\x5J&\x2\x1FB\x22B\x5N(\x2\x1FC\x22B\x5P)\x2\x1FD\x22B\x5R*"+
-		"\x2\x1FE\x22B\x5T+\x2\x1FF\x22B\x5^\x30\x2\x200\x22B\x5`\x31\x2\x201\x22B"+
-		"\x5\x62\x32\x2\x202\x22B\x5\x64\x33\x2\x203\x22B\x5\x66\x34\x2\x204\x22B"+
-		"\x5h\x35\x2\x205\x22B\x5j\x36\x2\x206\x22B\x5l\x37\x2\x207\x22B\x5n\x38"+
-		"\x2\x208\x22B\x5v<\x2\x209\x22B\x5x=\x2\x20A\x22B\x5z>\x2\x20B\x22B\x5"+
-		"|?\x2\x20C\x22B\x5~@\x2\x20D\x22B\x5\x80\x41\x2\x20E\x22B\x5\x82\x42\x2"+
-		"\x20F\x22B\x5\x88\x45\x2\x210\x22B\x5\x90I\x2\x211\x22B\x5\x92J\x2\x212"+
-		"\x22B\x5\x94K\x2\x213\x22B\x5\x96L\x2\x214\x22B\x5\x9AN\x2\x215\x22B\x5"+
-		"\x9CO\x2\x216\x22B\x5\x9EP\x2\x217\x22B\x5\xA0Q\x2\x218\x22B\x5\xA2R\x2"+
-		"\x219\x22B\x5\xA4S\x2\x21A\x22B\x5\xA6T\x2\x21B\x22B\x5\xA8U\x2\x21C\x22B"+
-		"\x5\xAAV\x2\x21D\x22B\x5\xB0Y\x2\x21E\x22B\x5\xB2Z\x2\x21F\x22B\x5\xB4"+
-		"[\x2\x220\x22B\x5\xB6\\\x2\x221\x22B\x5\xBA^\x2\x222\x22B\x5\xC2\x62\x2"+
-		"\x223\x22B\x5\xC4\x63\x2\x224\x22B\x5\xC8\x65\x2\x225\x22B\x5\xCEh\x2"+
-		"\x226\x22B\x5\xD0i\x2\x227\x22B\x5\xD2j\x2\x228\x22B\x5\xD4k\x2\x229\x22B"+
-		"\x5\xDEp\x2\x22A\x1E7\x3\x2\x2\x2\x22A\x1E8\x3\x2\x2\x2\x22A\x1E9\x3\x2"+
-		"\x2\x2\x22A\x1EA\x3\x2\x2\x2\x22A\x1EB\x3\x2\x2\x2\x22A\x1EC\x3\x2\x2"+
-		"\x2\x22A\x1ED\x3\x2\x2\x2\x22A\x1EE\x3\x2\x2\x2\x22A\x1EF\x3\x2\x2\x2"+
-		"\x22A\x1F0\x3\x2\x2\x2\x22A\x1F1\x3\x2\x2\x2\x22A\x1F2\x3\x2\x2\x2\x22A"+
-		"\x1F3\x3\x2\x2\x2\x22A\x1F4\x3\x2\x2\x2\x22A\x1F5\x3\x2\x2\x2\x22A\x1F6"+
-		"\x3\x2\x2\x2\x22A\x1F7\x3\x2\x2\x2\x22A\x1F8\x3\x2\x2\x2\x22A\x1F9\x3"+
-		"\x2\x2\x2\x22A\x1FA\x3\x2\x2\x2\x22A\x1FB\x3\x2\x2\x2\x22A\x1FC\x3\x2"+
-		"\x2\x2\x22A\x1FD\x3\x2\x2\x2\x22A\x1FE\x3\x2\x2\x2\x22A\x1FF\x3\x2\x2"+
-		"\x2\x22A\x200\x3\x2\x2\x2\x22A\x201\x3\x2\x2\x2\x22A\x202\x3\x2\x2\x2"+
-		"\x22A\x203\x3\x2\x2\x2\x22A\x204\x3\x2\x2\x2\x22A\x205\x3\x2\x2\x2\x22A"+
-		"\x206\x3\x2\x2\x2\x22A\x207\x3\x2\x2\x2\x22A\x208\x3\x2\x2\x2\x22A\x209"+
-		"\x3\x2\x2\x2\x22A\x20A\x3\x2\x2\x2\x22A\x20B\x3\x2\x2\x2\x22A\x20C\x3"+
-		"\x2\x2\x2\x22A\x20D\x3\x2\x2\x2\x22A\x20E\x3\x2\x2\x2\x22A\x20F\x3\x2"+
-		"\x2\x2\x22A\x210\x3\x2\x2\x2\x22A\x211\x3\x2\x2\x2\x22A\x212\x3\x2\x2"+
-		"\x2\x22A\x213\x3\x2\x2\x2\x22A\x214\x3\x2\x2\x2\x22A\x215\x3\x2\x2\x2"+
-		"\x22A\x216\x3\x2\x2\x2\x22A\x217\x3\x2\x2\x2\x22A\x218\x3\x2\x2\x2\x22A"+
-		"\x219\x3\x2\x2\x2\x22A\x21A\x3\x2\x2\x2\x22A\x21B\x3\x2\x2\x2\x22A\x21C"+
-		"\x3\x2\x2\x2\x22A\x21D\x3\x2\x2\x2\x22A\x21E\x3\x2\x2\x2\x22A\x21F\x3"+
-		"\x2\x2\x2\x22A\x220\x3\x2\x2\x2\x22A\x221\x3\x2\x2\x2\x22A\x222\x3\x2"+
-		"\x2\x2\x22A\x223\x3\x2\x2\x2\x22A\x224\x3\x2\x2\x2\x22A\x225\x3\x2\x2"+
-		"\x2\x22A\x226\x3\x2\x2\x2\x22A\x227\x3\x2\x2\x2\x22A\x228\x3\x2\x2\x2"+
-		"\x22A\x229\x3\x2\x2\x2\x22B\x1F\x3\x2\x2\x2\x22C\x22D\a\x11\x2\x2\x22D"+
-		"\x22E\a\xD8\x2\x2\x22E\x237\x5\xC6\x64\x2\x22F\x231\a\xD8\x2\x2\x230\x22F"+
-		"\x3\x2\x2\x2\x230\x231\x3\x2\x2\x2\x231\x232\x3\x2\x2\x2\x232\x234\a\x5"+
-		"\x2\x2\x233\x235\a\xD8\x2\x2\x234\x233\x3\x2\x2\x2\x234\x235\x3\x2\x2"+
-		"\x2\x235\x236\x3\x2\x2\x2\x236\x238\x5\xC6\x64\x2\x237\x230\x3\x2\x2\x2"+
-		"\x237\x238\x3\x2\x2\x2\x238!\x3\x2\x2\x2\x239\x23A\a\x15\x2\x2\x23A#\x3"+
-		"\x2\x2\x2\x23B\x23C\a\x1D\x2\x2\x23C\x23D\a\xD8\x2\x2\x23D\x23E\x5\xC6"+
-		"\x64\x2\x23E%\x3\x2\x2\x2\x23F\x240\a\x1E\x2\x2\x240\x241\a\xD8\x2\x2"+
-		"\x241\x242\x5\xC6\x64\x2\x242\'\x3\x2\x2\x2\x243\x253\a \x2\x2\x244\x245"+
-		"\a\xD8\x2\x2\x245\x250\x5\xD6l\x2\x246\x248\a\xD8\x2\x2\x247\x246\x3\x2"+
-		"\x2\x2\x247\x248\x3\x2\x2\x2\x248\x249\x3\x2\x2\x2\x249\x24B\a\x5\x2\x2"+
-		"\x24A\x24C\a\xD8\x2\x2\x24B\x24A\x3\x2\x2\x2\x24B\x24C\x3\x2\x2\x2\x24C"+
-		"\x24D\x3\x2\x2\x2\x24D\x24F\x5\xD6l\x2\x24E\x247\x3\x2\x2\x2\x24F\x252"+
-		"\x3\x2\x2\x2\x250\x24E\x3\x2\x2\x2\x250\x251\x3\x2\x2\x2\x251\x254\x3"+
-		"\x2\x2\x2\x252\x250\x3\x2\x2\x2\x253\x244\x3\x2\x2\x2\x253\x254\x3\x2"+
-		"\x2\x2\x254)\x3\x2\x2\x2\x255\x256\x5\x118\x8D\x2\x256\x257\a\xD8\x2\x2"+
-		"\x257\x259\x3\x2\x2\x2\x258\x255\x3\x2\x2\x2\x258\x259\x3\x2\x2\x2\x259"+
-		"\x25A\x3\x2\x2\x2\x25A\x25B\a\"\x2\x2\x25B\x25C\a\xD8\x2\x2\x25C\x267"+
-		"\x5,\x17\x2\x25D\x25F\a\xD8\x2\x2\x25E\x25D\x3\x2\x2\x2\x25E\x25F\x3\x2"+
-		"\x2\x2\x25F\x260\x3\x2\x2\x2\x260\x262\a\x5\x2\x2\x261\x263\a\xD8\x2\x2"+
-		"\x262\x261\x3\x2\x2\x2\x262\x263\x3\x2\x2\x2\x263\x264\x3\x2\x2\x2\x264"+
-		"\x266\x5,\x17\x2\x265\x25E\x3\x2\x2\x2\x266\x269\x3\x2\x2\x2\x267\x265"+
-		"\x3\x2\x2\x2\x267\x268\x3\x2\x2\x2\x268+\x3\x2\x2\x2\x269\x267\x3\x2\x2"+
-		"\x2\x26A\x26C\x5\x100\x81\x2\x26B\x26D\x5\x116\x8C\x2\x26C\x26B\x3\x2"+
-		"\x2\x2\x26C\x26D\x3\x2\x2\x2\x26D\x270\x3\x2\x2\x2\x26E\x26F\a\xD8\x2"+
-		"\x2\x26F\x271\x5\x102\x82\x2\x270\x26E\x3\x2\x2\x2\x270\x271\x3\x2\x2"+
-		"\x2\x271\x273\x3\x2\x2\x2\x272\x274\a\xD8\x2\x2\x273\x272\x3\x2\x2\x2"+
-		"\x273\x274\x3\x2\x2\x2\x274\x275\x3\x2\x2\x2\x275\x277\a\xBE\x2\x2\x276"+
-		"\x278\a\xD8\x2\x2\x277\x276\x3\x2\x2\x2\x277\x278\x3\x2\x2\x2\x278\x279"+
-		"\x3\x2\x2\x2\x279\x27A\x5\xC6\x64\x2\x27A-\x3\x2\x2\x2\x27B\x27D\a$\x2"+
-		"\x2\x27C\x27E\a\xD8\x2\x2\x27D\x27C\x3\x2\x2\x2\x27D\x27E\x3\x2\x2\x2"+
-		"\x27E\x27F\x3\x2\x2\x2\x27F\x281\a\xBE\x2\x2\x280\x282\a\xD8\x2\x2\x281"+
-		"\x280\x3\x2\x2\x2\x281\x282\x3\x2\x2\x2\x282\x283\x3\x2\x2\x2\x283\x284"+
-		"\x5\xC6\x64\x2\x284/\x3\x2\x2\x2\x285\x286\x5\x118\x8D\x2\x286\x287\a"+
-		"\xD8\x2\x2\x287\x289\x3\x2\x2\x2\x288\x285\x3\x2\x2\x2\x288\x289\x3\x2"+
-		"\x2\x2\x289\x28A\x3\x2\x2\x2\x28A\x28B\a%\x2\x2\x28B\x28E\a\xD8\x2\x2"+
-		"\x28C\x28D\a\x89\x2\x2\x28D\x28F\a\xD8\x2\x2\x28E\x28C\x3\x2\x2\x2\x28E"+
-		"\x28F\x3\x2\x2\x2\x28F\x290\x3\x2\x2\x2\x290\x291\t\x3\x2\x2\x291\x292"+
-		"\a\xD8\x2\x2\x292\x293\x5\x100\x81\x2\x293\x294\a\xD8\x2\x2\x294\x295"+
-		"\a\x63\x2\x2\x295\x296\a\xD8\x2\x2\x296\x29B\a\xCE\x2\x2\x297\x298\a\xD8"+
-		"\x2\x2\x298\x299\a\xE\x2\x2\x299\x29A\a\xD8\x2\x2\x29A\x29C\a\xCE\x2\x2"+
-		"\x29B\x297\x3\x2\x2\x2\x29B\x29C\x3\x2\x2\x2\x29C\x2A1\x3\x2\x2\x2\x29D"+
-		"\x29F\a\xD8\x2\x2\x29E\x29D\x3\x2\x2\x2\x29E\x29F\x3\x2\x2\x2\x29F\x2A0"+
-		"\x3\x2\x2\x2\x2A0\x2A2\x5\xF6|\x2\x2A1\x29E\x3\x2\x2\x2\x2A1\x2A2\x3\x2"+
-		"\x2\x2\x2A2\x2A5\x3\x2\x2\x2\x2A3\x2A4\a\xD8\x2\x2\x2A4\x2A6\x5\x102\x82"+
+		"\x66h\x9F\x9F\x3\x2\t\n\x4\x2\xA1\xA1\xA7\xA7\x4\x2\x4\x4\v\v\x4\x2\x18"+
+		"\x19\x82\x82\x3\x2\x18\x19\f\x2\x17\x17\x1A\x1A!!$$\x35\x35[[__\xA0\xA0"+
+		"\xA5\xA5\xB2\xB2\a\x2ZZ\x64\x64\xBE\xC1\xC3\xC3\xC7\xC7\x6\x2LLvw\xAC"+
+		"\xAC\xCE\xD2\x4\x2\x3\a\xBB\xBB\x6\x2NNRR\x85\x85\x8A\x8A\v\x2\f\x38\x41"+
+		"\x46L\x64iinxz{\x80\x85\x8A\x8F\x91\xBA\xC3B\x2\x11C\x3\x2\x2\x2\x4\x120"+
+		"\x3\x2\x2\x2\x6\x157\x3\x2\x2\x2\b\x15D\x3\x2\x2\x2\n\x16E\x3\x2\x2\x2"+
+		"\f\x17F\x3\x2\x2\x2\xE\x183\x3\x2\x2\x2\x10\x197\x3\x2\x2\x2\x12\x1A0"+
+		"\x3\x2\x2\x2\x14\x1A2\x3\x2\x2\x2\x16\x1B5\x3\x2\x2\x2\x18\x1B7\x3\x2"+
+		"\x2\x2\x1A\x1B9\x3\x2\x2\x2\x1C\x1D1\x3\x2\x2\x2\x1E\x22A\x3\x2\x2\x2"+
+		" \x22C\x3\x2\x2\x2\"\x239\x3\x2\x2\x2$\x23B\x3\x2\x2\x2&\x23F\x3\x2\x2"+
+		"\x2(\x243\x3\x2\x2\x2*\x258\x3\x2\x2\x2,\x26A\x3\x2\x2\x2.\x27B\x3\x2"+
+		"\x2\x2\x30\x288\x3\x2\x2\x2\x32\x2A7\x3\x2\x2\x2\x34\x2B7\x3\x2\x2\x2"+
+		"\x36\x301\x3\x2\x2\x2\x38\x303\x3\x2\x2\x2:\x308\x3\x2\x2\x2<\x31A\x3"+
+		"\x2\x2\x2>\x32A\x3\x2\x2\x2@\x32E\x3\x2\x2\x2\x42\x335\x3\x2\x2\x2\x44"+
+		"\x33F\x3\x2\x2\x2\x46\x341\x3\x2\x2\x2H\x34D\x3\x2\x2\x2J\x36B\x3\x2\x2"+
+		"\x2L\x39C\x3\x2\x2\x2N\x3BE\x3\x2\x2\x2P\x3D4\x3\x2\x2\x2R\x3D8\x3\x2"+
+		"\x2\x2T\x3F5\x3\x2\x2\x2V\x3F7\x3\x2\x2\x2X\x409\x3\x2\x2\x2Z\x40B\x3"+
+		"\x2\x2\x2\\\x41D\x3\x2\x2\x2^\x42B\x3\x2\x2\x2`\x42F\x3\x2\x2\x2\x62\x43E"+
+		"\x3\x2\x2\x2\x64\x444\x3\x2\x2\x2\x66\x450\x3\x2\x2\x2h\x45C\x3\x2\x2"+
+		"\x2j\x460\x3\x2\x2\x2l\x473\x3\x2\x2\x2n\x47F\x3\x2\x2\x2p\x48B\x3\x2"+
+		"\x2\x2r\x49F\x3\x2\x2\x2t\x4B3\x3\x2\x2\x2v\x4C1\x3\x2\x2\x2x\x4CF\x3"+
+		"\x2\x2\x2z\x4D3\x3\x2\x2\x2|\x4DB\x3\x2\x2\x2~\x4E5\x3\x2\x2\x2\x80\x4F9"+
+		"\x3\x2\x2\x2\x82\x50D\x3\x2\x2\x2\x84\x54F\x3\x2\x2\x2\x86\x562\x3\x2"+
+		"\x2\x2\x88\x564\x3\x2\x2\x2\x8A\x574\x3\x2\x2\x2\x8C\x599\x3\x2\x2\x2"+
+		"\x8E\x5BA\x3\x2\x2\x2\x90\x5D8\x3\x2\x2\x2\x92\x5EE\x3\x2\x2\x2\x94\x601"+
+		"\x3\x2\x2\x2\x96\x606\x3\x2\x2\x2\x98\x61A\x3\x2\x2\x2\x9A\x62B\x3\x2"+
+		"\x2\x2\x9C\x62D\x3\x2\x2\x2\x9E\x635\x3\x2\x2\x2\xA0\x637\x3\x2\x2\x2"+
+		"\xA2\x63B\x3\x2\x2\x2\xA4\x647\x3\x2\x2\x2\xA6\x653\x3\x2\x2\x2\xA8\x66F"+
+		"\x3\x2\x2\x2\xAA\x67B\x3\x2\x2\x2\xAC\x690\x3\x2\x2\x2\xAE\x6D9\x3\x2"+
+		"\x2\x2\xB0\x6DB\x3\x2\x2\x2\xB2\x6E8\x3\x2\x2\x2\xB4\x6F4\x3\x2\x2\x2"+
+		"\xB6\x700\x3\x2\x2\x2\xB8\x705\x3\x2\x2\x2\xBA\x723\x3\x2\x2\x2\xBC\x730"+
+		"\x3\x2\x2\x2\xBE\x742\x3\x2\x2\x2\xC0\x75C\x3\x2\x2\x2\xC2\x765\x3\x2"+
+		"\x2\x2\xC4\x769\x3\x2\x2\x2\xC6\x7B2\x3\x2\x2\x2\xC8\x858\x3\x2\x2\x2"+
+		"\xCA\x861\x3\x2\x2\x2\xCC\x86F\x3\x2\x2\x2\xCE\x88A\x3\x2\x2\x2\xD0\x89C"+
+		"\x3\x2\x2\x2\xD2\x8A8\x3\x2\x2\x2\xD4\x8BF\x3\x2\x2\x2\xD6\x8CD\x3\x2"+
+		"\x2\x2\xD8\x8D5\x3\x2\x2\x2\xDA\x8D7\x3\x2\x2\x2\xDC\x8F8\x3\x2\x2\x2"+
+		"\xDE\x91F\x3\x2\x2\x2\xE0\x922\x3\x2\x2\x2\xE2\x93C\x3\x2\x2\x2\xE4\x951"+
+		"\x3\x2\x2\x2\xE6\x953\x3\x2\x2\x2\xE8\x968\x3\x2\x2\x2\xEA\x98C\x3\x2"+
+		"\x2\x2\xEC\x9A2\x3\x2\x2\x2\xEE\x9A7\x3\x2\x2\x2\xF0\x9B5\x3\x2\x2\x2"+
+		"\xF2\x9CA\x3\x2\x2\x2\xF4\x9CE\x3\x2\x2\x2\xF6\x9D3\x3\x2\x2\x2\xF8\x9EE"+
+		"\x3\x2\x2\x2\xFA\xA0D\x3\x2\x2\x2\xFC\xA15\x3\x2\x2\x2\xFE\xA28\x3\x2"+
+		"\x2\x2\x100\xA3A\x3\x2\x2\x2\x102\xA3C\x3\x2\x2\x2\x104\xA47\x3\x2\x2"+
+		"\x2\x106\xA58\x3\x2\x2\x2\x108\xA5A\x3\x2\x2\x2\x10A\xA5C\x3\x2\x2\x2"+
+		"\x10C\xA64\x3\x2\x2\x2\x10E\xA6C\x3\x2\x2\x2\x110\xA77\x3\x2\x2\x2\x112"+
+		"\xA7A\x3\x2\x2\x2\x114\xA7E\x3\x2\x2\x2\x116\xA8A\x3\x2\x2\x2\x118\xA8C"+
+		"\x3\x2\x2\x2\x11A\xA8E\x3\x2\x2\x2\x11C\x11D\x5\x4\x3\x2\x11D\x11E\a\x2"+
+		"\x2\x3\x11E\x3\x3\x2\x2\x2\x11F\x121\a\xD8\x2\x2\x120\x11F\x3\x2\x2\x2"+
+		"\x120\x121\x3\x2\x2\x2\x121\x125\x3\x2\x2\x2\x122\x124\a\xD6\x2\x2\x123"+
+		"\x122\x3\x2\x2\x2\x124\x127\x3\x2\x2\x2\x125\x123\x3\x2\x2\x2\x125\x126"+
+		"\x3\x2\x2\x2\x126\x12E\x3\x2\x2\x2\x127\x125\x3\x2\x2\x2\x128\x12A\x5"+
+		"\x6\x4\x2\x129\x12B\a\xD6\x2\x2\x12A\x129\x3\x2\x2\x2\x12B\x12C\x3\x2"+
+		"\x2\x2\x12C\x12A\x3\x2\x2\x2\x12C\x12D\x3\x2\x2\x2\x12D\x12F\x3\x2\x2"+
+		"\x2\x12E\x128\x3\x2\x2\x2\x12E\x12F\x3\x2\x2\x2\x12F\x131\x3\x2\x2\x2"+
+		"\x130\x132\x5\b\x5\x2\x131\x130\x3\x2\x2\x2\x131\x132\x3\x2\x2\x2\x132"+
+		"\x136\x3\x2\x2\x2\x133\x135\a\xD6\x2\x2\x134\x133\x3\x2\x2\x2\x135\x138"+
+		"\x3\x2\x2\x2\x136\x134\x3\x2\x2\x2\x136\x137\x3\x2\x2\x2\x137\x13A\x3"+
+		"\x2\x2\x2\x138\x136\x3\x2\x2\x2\x139\x13B\x5\f\a\x2\x13A\x139\x3\x2\x2"+
+		"\x2\x13A\x13B\x3\x2\x2\x2\x13B\x13F\x3\x2\x2\x2\x13C\x13E\a\xD6\x2\x2"+
+		"\x13D\x13C\x3\x2\x2\x2\x13E\x141\x3\x2\x2\x2\x13F\x13D\x3\x2\x2\x2\x13F"+
+		"\x140\x3\x2\x2\x2\x140\x143\x3\x2\x2\x2\x141\x13F\x3\x2\x2\x2\x142\x144"+
+		"\x5\xE\b\x2\x143\x142\x3\x2\x2\x2\x143\x144\x3\x2\x2\x2\x144\x148\x3\x2"+
+		"\x2\x2\x145\x147\a\xD6\x2\x2\x146\x145\x3\x2\x2\x2\x147\x14A\x3\x2\x2"+
+		"\x2\x148\x146\x3\x2\x2\x2\x148\x149\x3\x2\x2\x2\x149\x14C\x3\x2\x2\x2"+
+		"\x14A\x148\x3\x2\x2\x2\x14B\x14D\x5\x14\v\x2\x14C\x14B\x3\x2\x2\x2\x14C"+
+		"\x14D\x3\x2\x2\x2\x14D\x151\x3\x2\x2\x2\x14E\x150\a\xD6\x2\x2\x14F\x14E"+
+		"\x3\x2\x2\x2\x150\x153\x3\x2\x2\x2\x151\x14F\x3\x2\x2\x2\x151\x152\x3"+
+		"\x2\x2\x2\x152\x155\x3\x2\x2\x2\x153\x151\x3\x2\x2\x2\x154\x156\a\xD8"+
+		"\x2\x2\x155\x154\x3\x2\x2\x2\x155\x156\x3\x2\x2\x2\x156\x5\x3\x2\x2\x2"+
+		"\x157\x158\a\xB3\x2\x2\x158\x159\a\xD8\x2\x2\x159\x15A\a\xD2\x2\x2\x15A"+
+		"\x15B\a\xD8\x2\x2\x15B\x15C\a\x1F\x2\x2\x15C\a\x3\x2\x2\x2\x15D\x15F\a"+
+		"\x14\x2\x2\x15E\x160\a\xD6\x2\x2\x15F\x15E\x3\x2\x2\x2\x160\x161\x3\x2"+
+		"\x2\x2\x161\x15F\x3\x2\x2\x2\x161\x162\x3\x2\x2\x2\x162\x164\x3\x2\x2"+
+		"\x2\x163\x165\x5\n\x6\x2\x164\x163\x3\x2\x2\x2\x165\x166\x3\x2\x2\x2\x166"+
+		"\x164\x3\x2\x2\x2\x166\x167\x3\x2\x2\x2\x167\x168\x3\x2\x2\x2\x168\x16A"+
+		"\a\x41\x2\x2\x169\x16B\a\xD6\x2\x2\x16A\x169\x3\x2\x2\x2\x16B\x16C\x3"+
+		"\x2\x2\x2\x16C\x16A\x3\x2\x2\x2\x16C\x16D\x3\x2\x2\x2\x16D\t\x3\x2\x2"+
+		"\x2\x16E\x170\x5\x100\x81\x2\x16F\x171\a\xD8\x2\x2\x170\x16F\x3\x2\x2"+
+		"\x2\x170\x171\x3\x2\x2\x2\x171\x172\x3\x2\x2\x2\x172\x174\a\xBE\x2\x2"+
+		"\x173\x175\a\xD8\x2\x2\x174\x173\x3\x2\x2\x2\x174\x175\x3\x2\x2\x2\x175"+
+		"\x176\x3\x2\x2\x2\x176\x177\x5\x112\x8A\x2\x177\x178\a\xD6\x2\x2\x178"+
+		"\v\x3\x2\x2\x2\x179\x17B\x5\x1A\xE\x2\x17A\x17C\a\xD6\x2\x2\x17B\x17A"+
+		"\x3\x2\x2\x2\x17C\x17D\x3\x2\x2\x2\x17D\x17B\x3\x2\x2\x2\x17D\x17E\x3"+
+		"\x2\x2\x2\x17E\x180\x3\x2\x2\x2\x17F\x179\x3\x2\x2\x2\x180\x181\x3\x2"+
+		"\x2\x2\x181\x17F\x3\x2\x2\x2\x181\x182\x3\x2\x2\x2\x182\r\x3\x2\x2\x2"+
+		"\x183\x18C\x5\x12\n\x2\x184\x186\a\xD6\x2\x2\x185\x184\x3\x2\x2\x2\x186"+
+		"\x187\x3\x2\x2\x2\x187\x185\x3\x2\x2\x2\x187\x188\x3\x2\x2\x2\x188\x189"+
+		"\x3\x2\x2\x2\x189\x18B\x5\x12\n\x2\x18A\x185\x3\x2\x2\x2\x18B\x18E\x3"+
+		"\x2\x2\x2\x18C\x18A\x3\x2\x2\x2\x18C\x18D\x3\x2\x2\x2\x18D\xF\x3\x2\x2"+
+		"\x2\x18E\x18C\x3\x2\x2\x2\x18F\x190\a|\x2\x2\x190\x191\a\xD8\x2\x2\x191"+
+		"\x198\a\xD1\x2\x2\x192\x193\a~\x2\x2\x193\x194\a\xD8\x2\x2\x194\x198\t"+
+		"\x2\x2\x2\x195\x198\a}\x2\x2\x196\x198\a\x7F\x2\x2\x197\x18F\x3\x2\x2"+
+		"\x2\x197\x192\x3\x2\x2\x2\x197\x195\x3\x2\x2\x2\x197\x196\x3\x2\x2\x2"+
+		"\x198\x11\x3\x2\x2\x2\x199\x1A1\x5\x18\r\x2\x19A\x1A1\x5\x30\x19\x2\x19B"+
+		"\x1A1\x5:\x1E\x2\x19C\x1A1\x5\x42\"\x2\x19D\x1A1\x5n\x38\x2\x19E\x1A1"+
+		"\x5\x10\t\x2\x19F\x1A1\x5\xBC_\x2\x1A0\x199\x3\x2\x2\x2\x1A0\x19A\x3\x2"+
+		"\x2\x2\x1A0\x19B\x3\x2\x2\x2\x1A0\x19C\x3\x2\x2\x2\x1A0\x19D\x3\x2\x2"+
+		"\x2\x1A0\x19E\x3\x2\x2\x2\x1A0\x19F\x3\x2\x2\x2\x1A1\x13\x3\x2\x2\x2\x1A2"+
+		"\x1AB\x5\x16\f\x2\x1A3\x1A5\a\xD6\x2\x2\x1A4\x1A3\x3\x2\x2\x2\x1A5\x1A6"+
+		"\x3\x2\x2\x2\x1A6\x1A4\x3\x2\x2\x2\x1A6\x1A7\x3\x2\x2\x2\x1A7\x1A8\x3"+
+		"\x2\x2\x2\x1A8\x1AA\x5\x16\f\x2\x1A9\x1A4\x3\x2\x2\x2\x1AA\x1AD\x3\x2"+
+		"\x2\x2\x1AB\x1A9\x3\x2\x2\x2\x1AB\x1AC\x3\x2\x2\x2\x1AC\x15\x3\x2\x2\x2"+
+		"\x1AD\x1AB\x3\x2\x2\x2\x1AE\x1B6\x5\x18\r\x2\x1AF\x1B6\x5L\'\x2\x1B0\x1B6"+
+		"\x5n\x38\x2\x1B1\x1B6\x5\x8A\x46\x2\x1B2\x1B6\x5\x8CG\x2\x1B3\x1B6\x5"+
+		"\x8EH\x2\x1B4\x1B6\x5\xB8]\x2\x1B5\x1AE\x3\x2\x2\x2\x1B5\x1AF\x3\x2\x2"+
+		"\x2\x1B5\x1B0\x3\x2\x2\x2\x1B5\x1B1\x3\x2\x2\x2\x1B5\x1B2\x3\x2\x2\x2"+
+		"\x1B5\x1B3\x3\x2\x2\x2\x1B5\x1B4\x3\x2\x2\x2\x1B6\x17\x3\x2\x2\x2\x1B7"+
+		"\x1B8\x5\x1C\xF\x2\x1B8\x19\x3\x2\x2\x2\x1B9\x1BA\a\x10\x2\x2\x1BA\x1BB"+
+		"\a\xD8\x2\x2\x1BB\x1BD\x5\xE4s\x2\x1BC\x1BE\a\xD8\x2\x2\x1BD\x1BC\x3\x2"+
+		"\x2\x2\x1BD\x1BE\x3\x2\x2\x2\x1BE\x1BF\x3\x2\x2\x2\x1BF\x1C1\a\xBE\x2"+
+		"\x2\x1C0\x1C2\a\xD8\x2\x2\x1C1\x1C0\x3\x2\x2\x2\x1C1\x1C2\x3\x2\x2\x2"+
+		"\x1C2\x1C3\x3\x2\x2\x2\x1C3\x1CE\x5\x112\x8A\x2\x1C4\x1C6\a\xD8\x2\x2"+
+		"\x1C5\x1C4\x3\x2\x2\x2\x1C5\x1C6\x3\x2\x2\x2\x1C6\x1C7\x3\x2\x2\x2\x1C7"+
+		"\x1C9\a\n\x2\x2\x1C8\x1CA\a\xD8\x2\x2\x1C9\x1C8\x3\x2\x2\x2\x1C9\x1CA"+
+		"\x3\x2\x2\x2\x1CA\x1CB\x3\x2\x2\x2\x1CB\x1CD\x5\x112\x8A\x2\x1CC\x1C5"+
+		"\x3\x2\x2\x2\x1CD\x1D0\x3\x2\x2\x2\x1CE\x1CC\x3\x2\x2\x2\x1CE\x1CF\x3"+
+		"\x2\x2\x2\x1CF\x1B\x3\x2\x2\x2\x1D0\x1CE\x3\x2\x2\x2\x1D1\x1DE\x5\x1E"+
+		"\x10\x2\x1D2\x1D4\a\xD6\x2\x2\x1D3\x1D2\x3\x2\x2\x2\x1D4\x1D7\x3\x2\x2"+
+		"\x2\x1D5\x1D3\x3\x2\x2\x2\x1D5\x1D6\x3\x2\x2\x2\x1D6\x1D9\x3\x2\x2\x2"+
+		"\x1D7\x1D5\x3\x2\x2\x2\x1D8\x1DA\a\xD8\x2\x2\x1D9\x1D8\x3\x2\x2\x2\x1D9"+
+		"\x1DA\x3\x2\x2\x2\x1DA\x1DB\x3\x2\x2\x2\x1DB\x1DD\x5\x1E\x10\x2\x1DC\x1D5"+
+		"\x3\x2\x2\x2\x1DD\x1E0\x3\x2\x2\x2\x1DE\x1DC\x3\x2\x2\x2\x1DE\x1DF\x3"+
+		"\x2\x2\x2\x1DF\x1E4\x3\x2\x2\x2\x1E0\x1DE\x3\x2\x2\x2\x1E1\x1E3\a\xD6"+
+		"\x2\x2\x1E2\x1E1\x3\x2\x2\x2\x1E3\x1E6\x3\x2\x2\x2\x1E4\x1E2\x3\x2\x2"+
+		"\x2\x1E4\x1E5\x3\x2\x2\x2\x1E5\x1D\x3\x2\x2\x2\x1E6\x1E4\x3\x2\x2\x2\x1E7"+
+		"\x22B\x5\x110\x89\x2\x1E8\x22B\x5 \x11\x2\x1E9\x22B\x5\x1A\xE\x2\x1EA"+
+		"\x22B\x5\"\x12\x2\x1EB\x22B\x5$\x13\x2\x1EC\x22B\x5&\x14\x2\x1ED\x22B"+
+		"\x5(\x15\x2\x1EE\x22B\x5*\x16\x2\x1EF\x22B\x5.\x18\x2\x1F0\x22B\x5\x34"+
+		"\x1B\x2\x1F1\x22B\x5\x32\x1A\x2\x1F2\x22B\x5\x36\x1C\x2\x1F3\x22B\x5\x38"+
+		"\x1D\x2\x1F4\x22B\x5> \x2\x1F5\x22B\x5@!\x2\x1F6\x22B\x5\x44#\x2\x1F7"+
+		"\x22B\x5\xD8m\x2\x1F8\x22B\x5\x46$\x2\x1F9\x22B\x5H%\x2\x1FA\x22B\x5J"+
+		"&\x2\x1FB\x22B\x5N(\x2\x1FC\x22B\x5P)\x2\x1FD\x22B\x5R*\x2\x1FE\x22B\x5"+
+		"T+\x2\x1FF\x22B\x5^\x30\x2\x200\x22B\x5`\x31\x2\x201\x22B\x5\x62\x32\x2"+
+		"\x202\x22B\x5\x64\x33\x2\x203\x22B\x5\x66\x34\x2\x204\x22B\x5h\x35\x2"+
+		"\x205\x22B\x5j\x36\x2\x206\x22B\x5l\x37\x2\x207\x22B\x5n\x38\x2\x208\x22B"+
+		"\x5v<\x2\x209\x22B\x5x=\x2\x20A\x22B\x5z>\x2\x20B\x22B\x5|?\x2\x20C\x22B"+
+		"\x5~@\x2\x20D\x22B\x5\x80\x41\x2\x20E\x22B\x5\x82\x42\x2\x20F\x22B\x5"+
+		"\x88\x45\x2\x210\x22B\x5\x90I\x2\x211\x22B\x5\x92J\x2\x212\x22B\x5\x94"+
+		"K\x2\x213\x22B\x5\x96L\x2\x214\x22B\x5\x9AN\x2\x215\x22B\x5\x9CO\x2\x216"+
+		"\x22B\x5\x9EP\x2\x217\x22B\x5\xA0Q\x2\x218\x22B\x5\xA2R\x2\x219\x22B\x5"+
+		"\xA4S\x2\x21A\x22B\x5\xA6T\x2\x21B\x22B\x5\xA8U\x2\x21C\x22B\x5\xAAV\x2"+
+		"\x21D\x22B\x5\xB0Y\x2\x21E\x22B\x5\xB2Z\x2\x21F\x22B\x5\xB4[\x2\x220\x22B"+
+		"\x5\xB6\\\x2\x221\x22B\x5\xBA^\x2\x222\x22B\x5\xC2\x62\x2\x223\x22B\x5"+
+		"\xC4\x63\x2\x224\x22B\x5\xC8\x65\x2\x225\x22B\x5\xCEh\x2\x226\x22B\x5"+
+		"\xD0i\x2\x227\x22B\x5\xD2j\x2\x228\x22B\x5\xD4k\x2\x229\x22B\x5\xDEp\x2"+
+		"\x22A\x1E7\x3\x2\x2\x2\x22A\x1E8\x3\x2\x2\x2\x22A\x1E9\x3\x2\x2\x2\x22A"+
+		"\x1EA\x3\x2\x2\x2\x22A\x1EB\x3\x2\x2\x2\x22A\x1EC\x3\x2\x2\x2\x22A\x1ED"+
+		"\x3\x2\x2\x2\x22A\x1EE\x3\x2\x2\x2\x22A\x1EF\x3\x2\x2\x2\x22A\x1F0\x3"+
+		"\x2\x2\x2\x22A\x1F1\x3\x2\x2\x2\x22A\x1F2\x3\x2\x2\x2\x22A\x1F3\x3\x2"+
+		"\x2\x2\x22A\x1F4\x3\x2\x2\x2\x22A\x1F5\x3\x2\x2\x2\x22A\x1F6\x3\x2\x2"+
+		"\x2\x22A\x1F7\x3\x2\x2\x2\x22A\x1F8\x3\x2\x2\x2\x22A\x1F9\x3\x2\x2\x2"+
+		"\x22A\x1FA\x3\x2\x2\x2\x22A\x1FB\x3\x2\x2\x2\x22A\x1FC\x3\x2\x2\x2\x22A"+
+		"\x1FD\x3\x2\x2\x2\x22A\x1FE\x3\x2\x2\x2\x22A\x1FF\x3\x2\x2\x2\x22A\x200"+
+		"\x3\x2\x2\x2\x22A\x201\x3\x2\x2\x2\x22A\x202\x3\x2\x2\x2\x22A\x203\x3"+
+		"\x2\x2\x2\x22A\x204\x3\x2\x2\x2\x22A\x205\x3\x2\x2\x2\x22A\x206\x3\x2"+
+		"\x2\x2\x22A\x207\x3\x2\x2\x2\x22A\x208\x3\x2\x2\x2\x22A\x209\x3\x2\x2"+
+		"\x2\x22A\x20A\x3\x2\x2\x2\x22A\x20B\x3\x2\x2\x2\x22A\x20C\x3\x2\x2\x2"+
+		"\x22A\x20D\x3\x2\x2\x2\x22A\x20E\x3\x2\x2\x2\x22A\x20F\x3\x2\x2\x2\x22A"+
+		"\x210\x3\x2\x2\x2\x22A\x211\x3\x2\x2\x2\x22A\x212\x3\x2\x2\x2\x22A\x213"+
+		"\x3\x2\x2\x2\x22A\x214\x3\x2\x2\x2\x22A\x215\x3\x2\x2\x2\x22A\x216\x3"+
+		"\x2\x2\x2\x22A\x217\x3\x2\x2\x2\x22A\x218\x3\x2\x2\x2\x22A\x219\x3\x2"+
+		"\x2\x2\x22A\x21A\x3\x2\x2\x2\x22A\x21B\x3\x2\x2\x2\x22A\x21C\x3\x2\x2"+
+		"\x2\x22A\x21D\x3\x2\x2\x2\x22A\x21E\x3\x2\x2\x2\x22A\x21F\x3\x2\x2\x2"+
+		"\x22A\x220\x3\x2\x2\x2\x22A\x221\x3\x2\x2\x2\x22A\x222\x3\x2\x2\x2\x22A"+
+		"\x223\x3\x2\x2\x2\x22A\x224\x3\x2\x2\x2\x22A\x225\x3\x2\x2\x2\x22A\x226"+
+		"\x3\x2\x2\x2\x22A\x227\x3\x2\x2\x2\x22A\x228\x3\x2\x2\x2\x22A\x229\x3"+
+		"\x2\x2\x2\x22B\x1F\x3\x2\x2\x2\x22C\x22D\a\x11\x2\x2\x22D\x22E\a\xD8\x2"+
+		"\x2\x22E\x237\x5\xC6\x64\x2\x22F\x231\a\xD8\x2\x2\x230\x22F\x3\x2\x2\x2"+
+		"\x230\x231\x3\x2\x2\x2\x231\x232\x3\x2\x2\x2\x232\x234\a\n\x2\x2\x233"+
+		"\x235\a\xD8\x2\x2\x234\x233\x3\x2\x2\x2\x234\x235\x3\x2\x2\x2\x235\x236"+
+		"\x3\x2\x2\x2\x236\x238\x5\xC6\x64\x2\x237\x230\x3\x2\x2\x2\x237\x238\x3"+
+		"\x2\x2\x2\x238!\x3\x2\x2\x2\x239\x23A\a\x15\x2\x2\x23A#\x3\x2\x2\x2\x23B"+
+		"\x23C\a\x1D\x2\x2\x23C\x23D\a\xD8\x2\x2\x23D\x23E\x5\xC6\x64\x2\x23E%"+
+		"\x3\x2\x2\x2\x23F\x240\a\x1E\x2\x2\x240\x241\a\xD8\x2\x2\x241\x242\x5"+
+		"\xC6\x64\x2\x242\'\x3\x2\x2\x2\x243\x253\a \x2\x2\x244\x245\a\xD8\x2\x2"+
+		"\x245\x250\x5\xD6l\x2\x246\x248\a\xD8\x2\x2\x247\x246\x3\x2\x2\x2\x247"+
+		"\x248\x3\x2\x2\x2\x248\x249\x3\x2\x2\x2\x249\x24B\a\n\x2\x2\x24A\x24C"+
+		"\a\xD8\x2\x2\x24B\x24A\x3\x2\x2\x2\x24B\x24C\x3\x2\x2\x2\x24C\x24D\x3"+
+		"\x2\x2\x2\x24D\x24F\x5\xD6l\x2\x24E\x247\x3\x2\x2\x2\x24F\x252\x3\x2\x2"+
+		"\x2\x250\x24E\x3\x2\x2\x2\x250\x251\x3\x2\x2\x2\x251\x254\x3\x2\x2\x2"+
+		"\x252\x250\x3\x2\x2\x2\x253\x244\x3\x2\x2\x2\x253\x254\x3\x2\x2\x2\x254"+
+		")\x3\x2\x2\x2\x255\x256\x5\x118\x8D\x2\x256\x257\a\xD8\x2\x2\x257\x259"+
+		"\x3\x2\x2\x2\x258\x255\x3\x2\x2\x2\x258\x259\x3\x2\x2\x2\x259\x25A\x3"+
+		"\x2\x2\x2\x25A\x25B\a\"\x2\x2\x25B\x25C\a\xD8\x2\x2\x25C\x267\x5,\x17"+
+		"\x2\x25D\x25F\a\xD8\x2\x2\x25E\x25D\x3\x2\x2\x2\x25E\x25F\x3\x2\x2\x2"+
+		"\x25F\x260\x3\x2\x2\x2\x260\x262\a\n\x2\x2\x261\x263\a\xD8\x2\x2\x262"+
+		"\x261\x3\x2\x2\x2\x262\x263\x3\x2\x2\x2\x263\x264\x3\x2\x2\x2\x264\x266"+
+		"\x5,\x17\x2\x265\x25E\x3\x2\x2\x2\x266\x269\x3\x2\x2\x2\x267\x265\x3\x2"+
+		"\x2\x2\x267\x268\x3\x2\x2\x2\x268+\x3\x2\x2\x2\x269\x267\x3\x2\x2\x2\x26A"+
+		"\x26C\x5\x100\x81\x2\x26B\x26D\x5\x116\x8C\x2\x26C\x26B\x3\x2\x2\x2\x26C"+
+		"\x26D\x3\x2\x2\x2\x26D\x270\x3\x2\x2\x2\x26E\x26F\a\xD8\x2\x2\x26F\x271"+
+		"\x5\x102\x82\x2\x270\x26E\x3\x2\x2\x2\x270\x271\x3\x2\x2\x2\x271\x273"+
+		"\x3\x2\x2\x2\x272\x274\a\xD8\x2\x2\x273\x272\x3\x2\x2\x2\x273\x274\x3"+
+		"\x2\x2\x2\x274\x275\x3\x2\x2\x2\x275\x277\a\xBE\x2\x2\x276\x278\a\xD8"+
+		"\x2\x2\x277\x276\x3\x2\x2\x2\x277\x278\x3\x2\x2\x2\x278\x279\x3\x2\x2"+
+		"\x2\x279\x27A\x5\xC6\x64\x2\x27A-\x3\x2\x2\x2\x27B\x27D\a$\x2\x2\x27C"+
+		"\x27E\a\xD8\x2\x2\x27D\x27C\x3\x2\x2\x2\x27D\x27E\x3\x2\x2\x2\x27E\x27F"+
+		"\x3\x2\x2\x2\x27F\x281\a\xBE\x2\x2\x280\x282\a\xD8\x2\x2\x281\x280\x3"+
+		"\x2\x2\x2\x281\x282\x3\x2\x2\x2\x282\x283\x3\x2\x2\x2\x283\x284\x5\xC6"+
+		"\x64\x2\x284/\x3\x2\x2\x2\x285\x286\x5\x118\x8D\x2\x286\x287\a\xD8\x2"+
+		"\x2\x287\x289\x3\x2\x2\x2\x288\x285\x3\x2\x2\x2\x288\x289\x3\x2\x2\x2"+
+		"\x289\x28A\x3\x2\x2\x2\x28A\x28B\a%\x2\x2\x28B\x28E\a\xD8\x2\x2\x28C\x28D"+
+		"\a\x89\x2\x2\x28D\x28F\a\xD8\x2\x2\x28E\x28C\x3\x2\x2\x2\x28E\x28F\x3"+
+		"\x2\x2\x2\x28F\x290\x3\x2\x2\x2\x290\x291\t\x3\x2\x2\x291\x292\a\xD8\x2"+
+		"\x2\x292\x293\x5\x100\x81\x2\x293\x294\a\xD8\x2\x2\x294\x295\a\x63\x2"+
+		"\x2\x295\x296\a\xD8\x2\x2\x296\x29B\a\xCE\x2\x2\x297\x298\a\xD8\x2\x2"+
+		"\x298\x299\a\xE\x2\x2\x299\x29A\a\xD8\x2\x2\x29A\x29C\a\xCE\x2\x2\x29B"+
+		"\x297\x3\x2\x2\x2\x29B\x29C\x3\x2\x2\x2\x29C\x2A1\x3\x2\x2\x2\x29D\x29F"+
+		"\a\xD8\x2\x2\x29E\x29D\x3\x2\x2\x2\x29E\x29F\x3\x2\x2\x2\x29F\x2A0\x3"+
+		"\x2\x2\x2\x2A0\x2A2\x5\xF6|\x2\x2A1\x29E\x3\x2\x2\x2\x2A1\x2A2\x3\x2\x2"+
+		"\x2\x2A2\x2A5\x3\x2\x2\x2\x2A3\x2A4\a\xD8\x2\x2\x2A4\x2A6\x5\x102\x82"+
 		"\x2\x2A5\x2A3\x3\x2\x2\x2\x2A5\x2A6\x3\x2\x2\x2\x2A6\x31\x3\x2\x2\x2\x2A7"+
 		"\x2A8\t\x4\x2\x2\x2A8\x2A9\a\xD8\x2\x2\x2A9\x2B4\x5\x10E\x88\x2\x2AA\x2AC"+
 		"\a\xD8\x2\x2\x2AB\x2AA\x3\x2\x2\x2\x2AB\x2AC\x3\x2\x2\x2\x2AC\x2AD\x3"+
-		"\x2\x2\x2\x2AD\x2AF\a\x5\x2\x2\x2AE\x2B0\a\xD8\x2\x2\x2AF\x2AE\x3\x2\x2"+
+		"\x2\x2\x2\x2AD\x2AF\a\n\x2\x2\x2AE\x2B0\a\xD8\x2\x2\x2AF\x2AE\x3\x2\x2"+
 		"\x2\x2AF\x2B0\x3\x2\x2\x2\x2B0\x2B1\x3\x2\x2\x2\x2B1\x2B3\x5\x10E\x88"+
 		"\x2\x2B2\x2AB\x3\x2\x2\x2\x2B3\x2B6\x3\x2\x2\x2\x2B4\x2B2\x3\x2\x2\x2"+
 		"\x2B4\x2B5\x3\x2\x2\x2\x2B5\x33\x3\x2\x2\x2\x2B6\x2B4\x3\x2\x2\x2\x2B7"+
 		"\x2B8\a\x32\x2\x2\x2B8\x2B9\a\xD8\x2\x2\x2B9\x2BB\x5\xC6\x64\x2\x2BA\x2BC"+
 		"\a\xD8\x2\x2\x2BB\x2BA\x3\x2\x2\x2\x2BB\x2BC\x3\x2\x2\x2\x2BC\x2BD\x3"+
-		"\x2\x2\x2\x2BD\x2BF\a\x5\x2\x2\x2BE\x2C0\a\xD8\x2\x2\x2BF\x2BE\x3\x2\x2"+
+		"\x2\x2\x2\x2BD\x2BF\a\n\x2\x2\x2BE\x2C0\a\xD8\x2\x2\x2BF\x2BE\x3\x2\x2"+
 		"\x2\x2BF\x2C0\x3\x2\x2\x2\x2C0\x2C1\x3\x2\x2\x2\x2C1\x2CA\x5\xC6\x64\x2"+
 		"\x2C2\x2C4\a\xD8\x2\x2\x2C3\x2C2\x3\x2\x2\x2\x2C3\x2C4\x3\x2\x2\x2\x2C4"+
-		"\x2C5\x3\x2\x2\x2\x2C5\x2C7\a\x5\x2\x2\x2C6\x2C8\a\xD8\x2\x2\x2C7\x2C6"+
+		"\x2C5\x3\x2\x2\x2\x2C5\x2C7\a\n\x2\x2\x2C6\x2C8\a\xD8\x2\x2\x2C7\x2C6"+
 		"\x3\x2\x2\x2\x2C7\x2C8\x3\x2\x2\x2\x2C8\x2C9\x3\x2\x2\x2\x2C9\x2CB\x5"+
 		"\xC6\x64\x2\x2CA\x2C3\x3\x2\x2\x2\x2CA\x2CB\x3\x2\x2\x2\x2CB\x35\x3\x2"+
 		"\x2\x2\x2CC\x2CE\a\x34\x2\x2\x2CD\x2CF\a\xD6\x2\x2\x2CE\x2CD\x3\x2\x2"+
@@ -16561,7 +16858,7 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x33C\x33D\x3\x2\x2\x2\x33D\x33E\x5\xF6|\x2\x33E\x43\x3\x2"+
 		"\x2\x2\x33F\x340\t\x6\x2\x2\x340\x45\x3\x2\x2\x2\x341\x342\aM\x2\x2\x342"+
 		"\x343\a\xD8\x2\x2\x343\x345\x5\xC6\x64\x2\x344\x346\a\xD8\x2\x2\x345\x344"+
-		"\x3\x2\x2\x2\x345\x346\x3\x2\x2\x2\x346\x347\x3\x2\x2\x2\x347\x349\a\x5"+
+		"\x3\x2\x2\x2\x345\x346\x3\x2\x2\x2\x346\x347\x3\x2\x2\x2\x347\x349\a\n"+
 		"\x2\x2\x348\x34A\a\xD8\x2\x2\x349\x348\x3\x2\x2\x2\x349\x34A\x3\x2\x2"+
 		"\x2\x34A\x34B\x3\x2\x2\x2\x34B\x34C\x5\xC6\x64\x2\x34CG\x3\x2\x2\x2\x34D"+
 		"\x34E\aO\x2\x2\x34E\x34F\a\xD8\x2\x2\x34F\x350\a\x36\x2\x2\x350\x351\a"+
@@ -16608,11 +16905,11 @@ public partial class VBAParser : Parser {
 		"\x3BA\x3B4\x3\x2\x2\x2\x3BA\x3BB\x3\x2\x2\x2\x3BB\x3BC\x3\x2\x2\x2\x3BC"+
 		"\x3BD\a:\x2\x2\x3BDM\x3\x2\x2\x2\x3BE\x3BF\aQ\x2\x2\x3BF\x3C0\a\xD8\x2"+
 		"\x2\x3C0\x3C2\x5\xC6\x64\x2\x3C1\x3C3\a\xD8\x2\x2\x3C2\x3C1\x3\x2\x2\x2"+
-		"\x3C2\x3C3\x3\x2\x2\x2\x3C3\x3C4\x3\x2\x2\x2\x3C4\x3C6\a\x5\x2\x2\x3C5"+
+		"\x3C2\x3C3\x3\x2\x2\x2\x3C3\x3C4\x3\x2\x2\x2\x3C4\x3C6\a\n\x2\x2\x3C5"+
 		"\x3C7\a\xD8\x2\x2\x3C6\x3C5\x3\x2\x2\x2\x3C6\x3C7\x3\x2\x2\x2\x3C7\x3C9"+
 		"\x3\x2\x2\x2\x3C8\x3CA\x5\xC6\x64\x2\x3C9\x3C8\x3\x2\x2\x2\x3C9\x3CA\x3"+
 		"\x2\x2\x2\x3CA\x3CC\x3\x2\x2\x2\x3CB\x3CD\a\xD8\x2\x2\x3CC\x3CB\x3\x2"+
-		"\x2\x2\x3CC\x3CD\x3\x2\x2\x2\x3CD\x3CE\x3\x2\x2\x2\x3CE\x3D0\a\x5\x2\x2"+
+		"\x2\x2\x3CC\x3CD\x3\x2\x2\x2\x3CD\x3CE\x3\x2\x2\x2\x3CE\x3D0\a\n\x2\x2"+
 		"\x3CF\x3D1\a\xD8\x2\x2\x3D0\x3CF\x3\x2\x2\x2\x3D0\x3D1\x3\x2\x2\x2\x3D1"+
 		"\x3D2\x3\x2\x2\x2\x3D2\x3D3\x5\xC6\x64\x2\x3D3O\x3\x2\x2\x2\x3D4\x3D5"+
 		"\aS\x2\x2\x3D5\x3D6\a\xD8\x2\x2\x3D6\x3D7\x5\xC6\x64\x2\x3D7Q\x3\x2\x2"+
@@ -16648,7 +16945,7 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x42A]\x3\x2\x2\x2\x42B\x42C\aW\x2\x2\x42C\x42D\a\xD8\x2\x2"+
 		"\x42D\x42E\x5\x100\x81\x2\x42E_\x3\x2\x2\x2\x42F\x430\aY\x2\x2\x430\x431"+
 		"\a\xD8\x2\x2\x431\x43A\x5\xD6l\x2\x432\x434\a\xD8\x2\x2\x433\x432\x3\x2"+
-		"\x2\x2\x433\x434\x3\x2\x2\x2\x434\x435\x3\x2\x2\x2\x435\x437\a\x5\x2\x2"+
+		"\x2\x2\x433\x434\x3\x2\x2\x2\x434\x435\x3\x2\x2\x2\x435\x437\a\n\x2\x2"+
 		"\x436\x438\a\xD8\x2\x2\x437\x436\x3\x2\x2\x2\x437\x438\x3\x2\x2\x2\x438"+
 		"\x439\x3\x2\x2\x2\x439\x43B\x5\xC6\x64\x2\x43A\x433\x3\x2\x2\x2\x43B\x43C"+
 		"\x3\x2\x2\x2\x43C\x43A\x3\x2\x2\x2\x43C\x43D\x3\x2\x2\x2\x43D\x61\x3\x2"+
@@ -16660,13 +16957,13 @@ public partial class VBAParser : Parser {
 		"\x44C\x44B\x3\x2\x2\x2\x44C\x44D\x3\x2\x2\x2\x44D\x44E\x3\x2\x2\x2\x44E"+
 		"\x44F\x5\xC6\x64\x2\x44F\x65\x3\x2\x2\x2\x450\x451\a\x65\x2\x2\x451\x452"+
 		"\a\xD8\x2\x2\x452\x454\x5\xD6l\x2\x453\x455\a\xD8\x2\x2\x454\x453\x3\x2"+
-		"\x2\x2\x454\x455\x3\x2\x2\x2\x455\x456\x3\x2\x2\x2\x456\x458\a\x5\x2\x2"+
+		"\x2\x2\x454\x455\x3\x2\x2\x2\x455\x456\x3\x2\x2\x2\x456\x458\a\n\x2\x2"+
 		"\x457\x459\a\xD8\x2\x2\x458\x457\x3\x2\x2\x2\x458\x459\x3\x2\x2\x2\x459"+
 		"\x45A\x3\x2\x2\x2\x45A\x45B\x5\xC6\x64\x2\x45Bg\x3\x2\x2\x2\x45C\x45D"+
 		"\a]\x2\x2\x45D\x45E\a\xD8\x2\x2\x45E\x45F\x5\xC6\x64\x2\x45Fi\x3\x2\x2"+
 		"\x2\x460\x461\a^\x2\x2\x461\x462\a\xD8\x2\x2\x462\x471\x5\xC6\x64\x2\x463"+
 		"\x465\a\xD8\x2\x2\x464\x463\x3\x2\x2\x2\x464\x465\x3\x2\x2\x2\x465\x466"+
-		"\x3\x2\x2\x2\x466\x468\a\x5\x2\x2\x467\x469\a\xD8\x2\x2\x468\x467\x3\x2"+
+		"\x3\x2\x2\x2\x466\x468\a\n\x2\x2\x467\x469\a\xD8\x2\x2\x468\x467\x3\x2"+
 		"\x2\x2\x468\x469\x3\x2\x2\x2\x469\x46A\x3\x2\x2\x2\x46A\x46F\x5\xC6\x64"+
 		"\x2\x46B\x46C\a\xD8\x2\x2\x46C\x46D\a\xAB\x2\x2\x46D\x46E\a\xD8\x2\x2"+
 		"\x46E\x470\x5\xC6\x64\x2\x46F\x46B\x3\x2\x2\x2\x46F\x470\x3\x2\x2\x2\x470"+
@@ -16715,14 +17012,14 @@ public partial class VBAParser : Parser {
 		"\x4E7\a\xD8\x2\x2\x4E7\x4E8\x5\xC6\x64\x2\x4E8\x4E9\a\xD8\x2\x2\x4E9\x4EA"+
 		"\aT\x2\x2\x4EA\x4EB\a\xD8\x2\x2\x4EB\x4F6\x5\xC6\x64\x2\x4EC\x4EE\a\xD8"+
 		"\x2\x2\x4ED\x4EC\x3\x2\x2\x2\x4ED\x4EE\x3\x2\x2\x2\x4EE\x4EF\x3\x2\x2"+
-		"\x2\x4EF\x4F1\a\x5\x2\x2\x4F0\x4F2\a\xD8\x2\x2\x4F1\x4F0\x3\x2\x2\x2\x4F1"+
+		"\x2\x4EF\x4F1\a\n\x2\x2\x4F0\x4F2\a\xD8\x2\x2\x4F1\x4F0\x3\x2\x2\x2\x4F1"+
 		"\x4F2\x3\x2\x2\x2\x4F2\x4F3\x3\x2\x2\x2\x4F3\x4F5\x5\xC6\x64\x2\x4F4\x4ED"+
 		"\x3\x2\x2\x2\x4F5\x4F8\x3\x2\x2\x2\x4F6\x4F4\x3\x2\x2\x2\x4F6\x4F7\x3"+
 		"\x2\x2\x2\x4F7\x7F\x3\x2\x2\x2\x4F8\x4F6\x3\x2\x2\x2\x4F9\x4FA\ax\x2\x2"+
 		"\x4FA\x4FB\a\xD8\x2\x2\x4FB\x4FC\x5\xC6\x64\x2\x4FC\x4FD\a\xD8\x2\x2\x4FD"+
 		"\x4FE\aS\x2\x2\x4FE\x4FF\a\xD8\x2\x2\x4FF\x50A\x5\xC6\x64\x2\x500\x502"+
 		"\a\xD8\x2\x2\x501\x500\x3\x2\x2\x2\x501\x502\x3\x2\x2\x2\x502\x503\x3"+
-		"\x2\x2\x2\x503\x505\a\x5\x2\x2\x504\x506\a\xD8\x2\x2\x505\x504\x3\x2\x2"+
+		"\x2\x2\x2\x503\x505\a\n\x2\x2\x504\x506\a\xD8\x2\x2\x505\x504\x3\x2\x2"+
 		"\x2\x505\x506\x3\x2\x2\x2\x506\x507\x3\x2\x2\x2\x507\x509\x5\xC6\x64\x2"+
 		"\x508\x501\x3\x2\x2\x2\x509\x50C\x3\x2\x2\x2\x50A\x508\x3\x2\x2\x2\x50A"+
 		"\x50B\x3\x2\x2\x2\x50B\x81\x3\x2\x2\x2\x50C\x50A\x3\x2\x2\x2\x50D\x50E"+
@@ -16761,7 +17058,7 @@ public partial class VBAParser : Parser {
 		"\x563\x3\x2\x2\x2\x562\x551\x3\x2\x2\x2\x562\x552\x3\x2\x2\x2\x563\x87"+
 		"\x3\x2\x2\x2\x564\x565\a\x84\x2\x2\x565\x566\a\xD8\x2\x2\x566\x568\x5"+
 		"\xD6l\x2\x567\x569\a\xD8\x2\x2\x568\x567\x3\x2\x2\x2\x568\x569\x3\x2\x2"+
-		"\x2\x569\x56A\x3\x2\x2\x2\x56A\x56F\a\x5\x2\x2\x56B\x56D\a\xD8\x2\x2\x56C"+
+		"\x2\x569\x56A\x3\x2\x2\x2\x56A\x56F\a\n\x2\x2\x56B\x56D\a\xD8\x2\x2\x56C"+
 		"\x56B\x3\x2\x2\x2\x56C\x56D\x3\x2\x2\x2\x56D\x56E\x3\x2\x2\x2\x56E\x570"+
 		"\x5\x84\x43\x2\x56F\x56C\x3\x2\x2\x2\x56F\x570\x3\x2\x2\x2\x570\x89\x3"+
 		"\x2\x2\x2\x571\x572\x5\x118\x8D\x2\x572\x573\a\xD8\x2\x2\x573\x575\x3"+
@@ -16805,11 +17102,11 @@ public partial class VBAParser : Parser {
 		"\x2\x5D4\x5CE\x3\x2\x2\x2\x5D4\x5D5\x3\x2\x2\x2\x5D5\x5D6\x3\x2\x2\x2"+
 		"\x5D6\x5D7\a<\x2\x2\x5D7\x8F\x3\x2\x2\x2\x5D8\x5D9\a\x8B\x2\x2\x5D9\x5DA"+
 		"\a\xD8\x2\x2\x5DA\x5DC\x5\xD6l\x2\x5DB\x5DD\a\xD8\x2\x2\x5DC\x5DB\x3\x2"+
-		"\x2\x2\x5DC\x5DD\x3\x2\x2\x2\x5DD\x5DE\x3\x2\x2\x2\x5DE\x5E0\a\x5\x2\x2"+
+		"\x2\x2\x5DC\x5DD\x3\x2\x2\x2\x5DD\x5DE\x3\x2\x2\x2\x5DE\x5E0\a\n\x2\x2"+
 		"\x5DF\x5E1\a\xD8\x2\x2\x5E0\x5DF\x3\x2\x2\x2\x5E0\x5E1\x3\x2\x2\x2\x5E1"+
 		"\x5E3\x3\x2\x2\x2\x5E2\x5E4\x5\xC6\x64\x2\x5E3\x5E2\x3\x2\x2\x2\x5E3\x5E4"+
 		"\x3\x2\x2\x2\x5E4\x5E6\x3\x2\x2\x2\x5E5\x5E7\a\xD8\x2\x2\x5E6\x5E5\x3"+
-		"\x2\x2\x2\x5E6\x5E7\x3\x2\x2\x2\x5E7\x5E8\x3\x2\x2\x2\x5E8\x5EA\a\x5\x2"+
+		"\x2\x2\x2\x5E6\x5E7\x3\x2\x2\x2\x5E7\x5E8\x3\x2\x2\x2\x5E8\x5EA\a\n\x2"+
 		"\x2\x5E9\x5EB\a\xD8\x2\x2\x5EA\x5E9\x3\x2\x2\x2\x5EA\x5EB\x3\x2\x2\x2"+
 		"\x5EB\x5EC\x3\x2\x2\x2\x5EC\x5ED\x5\xC6\x64\x2\x5ED\x91\x3\x2\x2\x2\x5EE"+
 		"\x5EF\a\x8E\x2\x2\x5EF\x5F0\a\xD8\x2\x2\x5F0\x5FF\x5\x100\x81\x2\x5F1"+
@@ -16825,7 +17122,7 @@ public partial class VBAParser : Parser {
 		"\x609\a\x83\x2\x2\x609\x60B\a\xD8\x2\x2\x60A\x608\x3\x2\x2\x2\x60A\x60B"+
 		"\x3\x2\x2\x2\x60B\x60C\x3\x2\x2\x2\x60C\x617\x5\x98M\x2\x60D\x60F\a\xD8"+
 		"\x2\x2\x60E\x60D\x3\x2\x2\x2\x60E\x60F\x3\x2\x2\x2\x60F\x610\x3\x2\x2"+
-		"\x2\x610\x612\a\x5\x2\x2\x611\x613\a\xD8\x2\x2\x612\x611\x3\x2\x2\x2\x612"+
+		"\x2\x610\x612\a\n\x2\x2\x611\x613\a\xD8\x2\x2\x612\x611\x3\x2\x2\x2\x612"+
 		"\x613\x3\x2\x2\x2\x613\x614\x3\x2\x2\x2\x614\x616\x5\x98M\x2\x615\x60E"+
 		"\x3\x2\x2\x2\x616\x619\x3\x2\x2\x2\x617\x615\x3\x2\x2\x2\x617\x618\x3"+
 		"\x2\x2\x2\x618\x97\x3\x2\x2\x2\x619\x617\x3\x2\x2\x2\x61A\x61C\x5\xE4"+
@@ -16847,22 +17144,22 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x643\x644\x3\x2\x2\x2\x644\x645\x3\x2\x2\x2\x645\x646\x5\xC6\x64"+
 		"\x2\x646\xA3\x3\x2\x2\x2\x647\x648\a\x98\x2\x2\x648\x649\a\xD8\x2\x2\x649"+
 		"\x64B\x5\xC6\x64\x2\x64A\x64C\a\xD8\x2\x2\x64B\x64A\x3\x2\x2\x2\x64B\x64C"+
-		"\x3\x2\x2\x2\x64C\x64D\x3\x2\x2\x2\x64D\x64F\a\x5\x2\x2\x64E\x650\a\xD8"+
+		"\x3\x2\x2\x2\x64C\x64D\x3\x2\x2\x2\x64D\x64F\a\n\x2\x2\x64E\x650\a\xD8"+
 		"\x2\x2\x64F\x64E\x3\x2\x2\x2\x64F\x650\x3\x2\x2\x2\x650\x651\x3\x2\x2"+
 		"\x2\x651\x652\x5\xC6\x64\x2\x652\xA5\x3\x2\x2\x2\x653\x654\a\x99\x2\x2"+
 		"\x654\x655\a\xD8\x2\x2\x655\x657\x5\xC6\x64\x2\x656\x658\a\xD8\x2\x2\x657"+
 		"\x656\x3\x2\x2\x2\x657\x658\x3\x2\x2\x2\x658\x659\x3\x2\x2\x2\x659\x65B"+
-		"\a\x5\x2\x2\x65A\x65C\a\xD8\x2\x2\x65B\x65A\x3\x2\x2\x2\x65B\x65C\x3\x2"+
+		"\a\n\x2\x2\x65A\x65C\a\xD8\x2\x2\x65B\x65A\x3\x2\x2\x2\x65B\x65C\x3\x2"+
 		"\x2\x2\x65C\x65D\x3\x2\x2\x2\x65D\x65F\x5\xC6\x64\x2\x65E\x660\a\xD8\x2"+
 		"\x2\x65F\x65E\x3\x2\x2\x2\x65F\x660\x3\x2\x2\x2\x660\x661\x3\x2\x2\x2"+
-		"\x661\x663\a\x5\x2\x2\x662\x664\a\xD8\x2\x2\x663\x662\x3\x2\x2\x2\x663"+
+		"\x661\x663\a\n\x2\x2\x662\x664\a\xD8\x2\x2\x663\x662\x3\x2\x2\x2\x663"+
 		"\x664\x3\x2\x2\x2\x664\x665\x3\x2\x2\x2\x665\x667\x5\xC6\x64\x2\x666\x668"+
 		"\a\xD8\x2\x2\x667\x666\x3\x2\x2\x2\x667\x668\x3\x2\x2\x2\x668\x669\x3"+
-		"\x2\x2\x2\x669\x66B\a\x5\x2\x2\x66A\x66C\a\xD8\x2\x2\x66B\x66A\x3\x2\x2"+
+		"\x2\x2\x2\x669\x66B\a\n\x2\x2\x66A\x66C\a\xD8\x2\x2\x66B\x66A\x3\x2\x2"+
 		"\x2\x66B\x66C\x3\x2\x2\x2\x66C\x66D\x3\x2\x2\x2\x66D\x66E\x5\xC6\x64\x2"+
 		"\x66E\xA7\x3\x2\x2\x2\x66F\x670\a\x9A\x2\x2\x670\x671\a\xD8\x2\x2\x671"+
 		"\x673\x5\xC6\x64\x2\x672\x674\a\xD8\x2\x2\x673\x672\x3\x2\x2\x2\x673\x674"+
-		"\x3\x2\x2\x2\x674\x675\x3\x2\x2\x2\x675\x677\a\x5\x2\x2\x676\x678\a\xD8"+
+		"\x3\x2\x2\x2\x674\x675\x3\x2\x2\x2\x675\x677\a\n\x2\x2\x676\x678\a\xD8"+
 		"\x2\x2\x677\x676\x3\x2\x2\x2\x677\x678\x3\x2\x2\x2\x678\x679\x3\x2\x2"+
 		"\x2\x679\x67A\x5\xC6\x64\x2\x67A\xA9\x3\x2\x2\x2\x67B\x67C\a\x9B\x2\x2"+
 		"\x67C\x67D\a\xD8\x2\x2\x67D\x67E\a\x1C\x2\x2\x67E\x67F\a\xD8\x2\x2\x67F"+
@@ -16874,7 +17171,7 @@ public partial class VBAParser : Parser {
 		"\x68D\x3\x2\x2\x2\x68D\x68E\x3\x2\x2\x2\x68E\x68F\a=\x2\x2\x68F\xAB\x3"+
 		"\x2\x2\x2\x690\x691\a\x1C\x2\x2\x691\x692\a\xD8\x2\x2\x692\x694\x5\xAE"+
 		"X\x2\x693\x695\a\xD8\x2\x2\x694\x693\x3\x2\x2\x2\x694\x695\x3\x2\x2\x2"+
-		"\x695\x6A4\x3\x2\x2\x2\x696\x698\a\x6\x2\x2\x697\x696\x3\x2\x2\x2\x697"+
+		"\x695\x6A4\x3\x2\x2\x2\x696\x698\a\b\x2\x2\x697\x696\x3\x2\x2\x2\x697"+
 		"\x698\x3\x2\x2\x2\x698\x69C\x3\x2\x2\x2\x699\x69B\a\xD6\x2\x2\x69A\x699"+
 		"\x3\x2\x2\x2\x69B\x69E\x3\x2\x2\x2\x69C\x69A\x3\x2\x2\x2\x69C\x69D\x3"+
 		"\x2\x2\x2\x69D\x6A5\x3\x2\x2\x2\x69E\x69C\x3\x2\x2\x2\x69F\x6A1\a\xD6"+
@@ -16889,26 +17186,26 @@ public partial class VBAParser : Parser {
 		"\x6B6\a\xD8\x2\x2\x6B5\x6B4\x3\x2\x2\x2\x6B5\x6B6\x3\x2\x2\x2\x6B6\x6B7"+
 		"\x3\x2\x2\x2\x6B7\x6B8\x5\xC6\x64\x2\x6B8\x6DA\x3\x2\x2\x2\x6B9\x6C4\x5"+
 		"\xC6\x64\x2\x6BA\x6BC\a\xD8\x2\x2\x6BB\x6BA\x3\x2\x2\x2\x6BB\x6BC\x3\x2"+
-		"\x2\x2\x6BC\x6BD\x3\x2\x2\x2\x6BD\x6BF\a\x5\x2\x2\x6BE\x6C0\a\xD8\x2\x2"+
+		"\x2\x2\x6BC\x6BD\x3\x2\x2\x2\x6BD\x6BF\a\n\x2\x2\x6BE\x6C0\a\xD8\x2\x2"+
 		"\x6BF\x6BE\x3\x2\x2\x2\x6BF\x6C0\x3\x2\x2\x2\x6C0\x6C1\x3\x2\x2\x2\x6C1"+
 		"\x6C3\x5\xC6\x64\x2\x6C2\x6BB\x3\x2\x2\x2\x6C3\x6C6\x3\x2\x2\x2\x6C4\x6C2"+
 		"\x3\x2\x2\x2\x6C4\x6C5\x3\x2\x2\x2\x6C5\x6DA\x3\x2\x2\x2\x6C6\x6C4\x3"+
 		"\x2\x2\x2\x6C7\x6C8\a\xD1\x2\x2\x6C8\x6C9\a\xD8\x2\x2\x6C9\x6CA\a\xAB"+
 		"\x2\x2\x6CA\x6CB\a\xD8\x2\x2\x6CB\x6D6\x5\xC6\x64\x2\x6CC\x6CE\a\xD8\x2"+
 		"\x2\x6CD\x6CC\x3\x2\x2\x2\x6CD\x6CE\x3\x2\x2\x2\x6CE\x6CF\x3\x2\x2\x2"+
-		"\x6CF\x6D1\a\x5\x2\x2\x6D0\x6D2\a\xD8\x2\x2\x6D1\x6D0\x3\x2\x2\x2\x6D1"+
+		"\x6CF\x6D1\a\n\x2\x2\x6D0\x6D2\a\xD8\x2\x2\x6D1\x6D0\x3\x2\x2\x2\x6D1"+
 		"\x6D2\x3\x2\x2\x2\x6D2\x6D3\x3\x2\x2\x2\x6D3\x6D5\x5\xC6\x64\x2\x6D4\x6CD"+
 		"\x3\x2\x2\x2\x6D5\x6D8\x3\x2\x2\x2\x6D6\x6D4\x3\x2\x2\x2\x6D6\x6D7\x3"+
 		"\x2\x2\x2\x6D7\x6DA\x3\x2\x2\x2\x6D8\x6D6\x3\x2\x2\x2\x6D9\x6AE\x3\x2"+
 		"\x2\x2\x6D9\x6AF\x3\x2\x2\x2\x6D9\x6B9\x3\x2\x2\x2\x6D9\x6C7\x3\x2\x2"+
 		"\x2\x6DA\xAF\x3\x2\x2\x2\x6DB\x6DC\a\x9C\x2\x2\x6DC\x6DD\a\xD8\x2\x2\x6DD"+
 		"\x6E6\x5\xC6\x64\x2\x6DE\x6E0\a\xD8\x2\x2\x6DF\x6DE\x3\x2\x2\x2\x6DF\x6E0"+
-		"\x3\x2\x2\x2\x6E0\x6E1\x3\x2\x2\x2\x6E1\x6E3\a\x5\x2\x2\x6E2\x6E4\a\xD8"+
+		"\x3\x2\x2\x2\x6E0\x6E1\x3\x2\x2\x2\x6E1\x6E3\a\n\x2\x2\x6E2\x6E4\a\xD8"+
 		"\x2\x2\x6E3\x6E2\x3\x2\x2\x2\x6E3\x6E4\x3\x2\x2\x2\x6E4\x6E5\x3\x2\x2"+
 		"\x2\x6E5\x6E7\x5\xC6\x64\x2\x6E6\x6DF\x3\x2\x2\x2\x6E6\x6E7\x3\x2\x2\x2"+
 		"\x6E7\xB1\x3\x2\x2\x2\x6E8\x6E9\a\x9E\x2\x2\x6E9\x6EA\a\xD8\x2\x2\x6EA"+
 		"\x6EC\x5\xC6\x64\x2\x6EB\x6ED\a\xD8\x2\x2\x6EC\x6EB\x3\x2\x2\x2\x6EC\x6ED"+
-		"\x3\x2\x2\x2\x6ED\x6EE\x3\x2\x2\x2\x6EE\x6F0\a\x5\x2\x2\x6EF\x6F1\a\xD8"+
+		"\x3\x2\x2\x2\x6ED\x6EE\x3\x2\x2\x2\x6EE\x6F0\a\n\x2\x2\x6EF\x6F1\a\xD8"+
 		"\x2\x2\x6F0\x6EF\x3\x2\x2\x2\x6F0\x6F1\x3\x2\x2\x2\x6F1\x6F2\x3\x2\x2"+
 		"\x2\x6F2\x6F3\x5\xC6\x64\x2\x6F3\xB3\x3\x2\x2\x2\x6F4\x6F5\a\x9D\x2\x2"+
 		"\x6F5\x6F6\a\xD8\x2\x2\x6F6\x6F8\x5\xE4s\x2\x6F7\x6F9\a\xD8\x2\x2\x6F8"+
@@ -16956,7 +17253,7 @@ public partial class VBAParser : Parser {
 		"\x2\x764\xC1\x3\x2\x2\x2\x765\x766\a\xAF\x2\x2\x766\x767\a\xD8\x2\x2\x767"+
 		"\x768\x5\xC6\x64\x2\x768\xC3\x3\x2\x2\x2\x769\x76A\a\xB0\x2\x2\x76A\x76B"+
 		"\a\xD8\x2\x2\x76B\x77A\x5\xC6\x64\x2\x76C\x76E\a\xD8\x2\x2\x76D\x76C\x3"+
-		"\x2\x2\x2\x76D\x76E\x3\x2\x2\x2\x76E\x76F\x3\x2\x2\x2\x76F\x771\a\x5\x2"+
+		"\x2\x2\x2\x76D\x76E\x3\x2\x2\x2\x76E\x76F\x3\x2\x2\x2\x76F\x771\a\n\x2"+
 		"\x2\x770\x772\a\xD8\x2\x2\x771\x770\x3\x2\x2\x2\x771\x772\x3\x2\x2\x2"+
 		"\x772\x773\x3\x2\x2\x2\x773\x778\x5\xC6\x64\x2\x774\x775\a\xD8\x2\x2\x775"+
 		"\x776\a\xAB\x2\x2\x776\x777\a\xD8\x2\x2\x777\x779\x5\xC6\x64\x2\x778\x774"+
@@ -16976,7 +17273,7 @@ public partial class VBAParser : Parser {
 		"\x5\xE4s\x2\x79C\x79E\a\xC2\x2\x2\x79D\x79F\a\xD8\x2\x2\x79E\x79D\x3\x2"+
 		"\x2\x2\x79E\x79F\x3\x2\x2\x2\x79F\x7A0\x3\x2\x2\x2\x7A0\x7AB\x5\xC6\x64"+
 		"\x2\x7A1\x7A3\a\xD8\x2\x2\x7A2\x7A1\x3\x2\x2\x2\x7A2\x7A3\x3\x2\x2\x2"+
-		"\x7A3\x7A4\x3\x2\x2\x2\x7A4\x7A6\a\x5\x2\x2\x7A5\x7A7\a\xD8\x2\x2\x7A6"+
+		"\x7A3\x7A4\x3\x2\x2\x2\x7A4\x7A6\a\n\x2\x2\x7A5\x7A7\a\xD8\x2\x2\x7A6"+
 		"\x7A5\x3\x2\x2\x2\x7A6\x7A7\x3\x2\x2\x2\x7A7\x7A8\x3\x2\x2\x2\x7A8\x7AA"+
 		"\x5\xC6\x64\x2\x7A9\x7A2\x3\x2\x2\x2\x7AA\x7AD\x3\x2\x2\x2\x7AB\x7A9\x3"+
 		"\x2\x2\x2\x7AB\x7AC\x3\x2\x2\x2\x7AC\x7AE\x3\x2\x2\x2\x7AD\x7AB\x3\x2"+
@@ -17057,7 +17354,7 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x85D\x85B\x3\x2\x2\x2\x85D\x85E\x3\x2\x2\x2\x85E\x85F\x3\x2\x2"+
 		"\x2\x85F\x860\x5\xCA\x66\x2\x860\xC9\x3\x2\x2\x2\x861\x86C\x5\xCCg\x2"+
 		"\x862\x864\a\xD8\x2\x2\x863\x862\x3\x2\x2\x2\x863\x864\x3\x2\x2\x2\x864"+
-		"\x865\x3\x2\x2\x2\x865\x867\a\x5\x2\x2\x866\x868\a\xD8\x2\x2\x867\x866"+
+		"\x865\x3\x2\x2\x2\x865\x867\a\n\x2\x2\x866\x868\a\xD8\x2\x2\x867\x866"+
 		"\x3\x2\x2\x2\x867\x868\x3\x2\x2\x2\x868\x869\x3\x2\x2\x2\x869\x86B\x5"+
 		"\xCCg\x2\x86A\x863\x3\x2\x2\x2\x86B\x86E\x3\x2\x2\x2\x86C\x86A\x3\x2\x2"+
 		"\x2\x86C\x86D\x3\x2\x2\x2\x86D\xCB\x3\x2\x2\x2\x86E\x86C\x3\x2\x2\x2\x86F"+
@@ -17080,7 +17377,7 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x2\x898\x89A\x3\x2\x2\x2\x899\x897\x3\x2\x2\x2\x89A\x89B\a\xB4"+
 		"\x2\x2\x89B\xCF\x3\x2\x2\x2\x89C\x89D\a\xB6\x2\x2\x89D\x89E\a\xD8\x2\x2"+
 		"\x89E\x8A0\x5\xC6\x64\x2\x89F\x8A1\a\xD8\x2\x2\x8A0\x89F\x3\x2\x2\x2\x8A0"+
-		"\x8A1\x3\x2\x2\x2\x8A1\x8A2\x3\x2\x2\x2\x8A2\x8A4\a\x5\x2\x2\x8A3\x8A5"+
+		"\x8A1\x3\x2\x2\x2\x8A1\x8A2\x3\x2\x2\x2\x8A2\x8A4\a\n\x2\x2\x8A3\x8A5"+
 		"\a\xD8\x2\x2\x8A4\x8A3\x3\x2\x2\x2\x8A4\x8A5\x3\x2\x2\x2\x8A5\x8A6\x3"+
 		"\x2\x2\x2\x8A6\x8A7\x5\xC6\x64\x2\x8A7\xD1\x3\x2\x2\x2\x8A8\x8A9\a\xB7"+
 		"\x2\x2\x8A9\x8AE\a\xD8\x2\x2\x8AA\x8AF\x5\xE4s\x2\x8AB\x8AC\at\x2\x2\x8AC"+
@@ -17093,10 +17390,10 @@ public partial class VBAParser : Parser {
 		"\x8BB\x8BC\x3\x2\x2\x2\x8BC\x8BD\x3\x2\x2\x2\x8BD\x8BE\a@\x2\x2\x8BE\xD3"+
 		"\x3\x2\x2\x2\x8BF\x8C0\a\xB9\x2\x2\x8C0\x8C1\a\xD8\x2\x2\x8C1\x8C3\x5"+
 		"\xD6l\x2\x8C2\x8C4\a\xD8\x2\x2\x8C3\x8C2\x3\x2\x2\x2\x8C3\x8C4\x3\x2\x2"+
-		"\x2\x8C4\x8C5\x3\x2\x2\x2\x8C5\x8CA\a\x5\x2\x2\x8C6\x8C8\a\xD8\x2\x2\x8C7"+
+		"\x2\x8C4\x8C5\x3\x2\x2\x2\x8C5\x8CA\a\n\x2\x2\x8C6\x8C8\a\xD8\x2\x2\x8C7"+
 		"\x8C6\x3\x2\x2\x2\x8C7\x8C8\x3\x2\x2\x2\x8C8\x8C9\x3\x2\x2\x2\x8C9\x8CB"+
 		"\x5\x84\x43\x2\x8CA\x8C7\x3\x2\x2\x2\x8CA\x8CB\x3\x2\x2\x2\x8CB\xD5\x3"+
-		"\x2\x2\x2\x8CC\x8CE\a\b\x2\x2\x8CD\x8CC\x3\x2\x2\x2\x8CD\x8CE\x3\x2\x2"+
+		"\x2\x2\x2\x8CC\x8CE\a\x5\x2\x2\x8CD\x8CC\x3\x2\x2\x2\x8CD\x8CE\x3\x2\x2"+
 		"\x2\x8CE\x8D1\x3\x2\x2\x2\x8CF\x8D2\x5\x100\x81\x2\x8D0\x8D2\a\xD1\x2"+
 		"\x2\x8D1\x8CF\x3\x2\x2\x2\x8D1\x8D0\x3\x2\x2\x2\x8D2\xD7\x3\x2\x2\x2\x8D3"+
 		"\x8D6\x5\xDAn\x2\x8D4\x8D6\x5\xDCo\x2\x8D5\x8D3\x3\x2\x2\x2\x8D5\x8D4"+
@@ -17108,170 +17405,202 @@ public partial class VBAParser : Parser {
 		"\x8E2\x8E3\x3\x2\x2\x2\x8E3\x8E4\x3\x2\x2\x2\x8E4\x8E6\x5\xF0y\x2\x8E5"+
 		"\x8E7\a\xD8\x2\x2\x8E6\x8E5\x3\x2\x2\x2\x8E6\x8E7\x3\x2\x2\x2\x8E7\x8E8"+
 		"\x3\x2\x2\x2\x8E8\x8E9\a\xCB\x2\x2\x8E9\x8EB\x3\x2\x2\x2\x8EA\x8DE\x3"+
-		"\x2\x2\x2\x8EA\x8EB\x3\x2\x2\x2\x8EB\xDB\x3\x2\x2\x2\x8EC\x8ED\a\x1B\x2"+
-		"\x2\x8ED\x8EF\a\xD8\x2\x2\x8EE\x8F0\x5\xE4s\x2\x8EF\x8EE\x3\x2\x2\x2\x8EF"+
-		"\x8F0\x3\x2\x2\x2\x8F0\x8F1\x3\x2\x2\x2\x8F1\x8F2\a\x4\x2\x2\x8F2\x8F4"+
-		"\x5\x100\x81\x2\x8F3\x8F5\x5\x116\x8C\x2\x8F4\x8F3\x3\x2\x2\x2\x8F4\x8F5"+
-		"\x3\x2\x2\x2\x8F5\x903\x3\x2\x2\x2\x8F6\x8F8\a\xD8\x2\x2\x8F7\x8F6\x3"+
-		"\x2\x2\x2\x8F7\x8F8\x3\x2\x2\x2\x8F8\x8F9\x3\x2\x2\x2\x8F9\x8FB\a\xC2"+
-		"\x2\x2\x8FA\x8FC\a\xD8\x2\x2\x8FB\x8FA\x3\x2\x2\x2\x8FB\x8FC\x3\x2\x2"+
-		"\x2\x8FC\x8FD\x3\x2\x2\x2\x8FD\x8FF\x5\xF0y\x2\x8FE\x900\a\xD8\x2\x2\x8FF"+
-		"\x8FE\x3\x2\x2\x2\x8FF\x900\x3\x2\x2\x2\x900\x901\x3\x2\x2\x2\x901\x902"+
-		"\a\xCB\x2\x2\x902\x904\x3\x2\x2\x2\x903\x8F7\x3\x2\x2\x2\x903\x904\x3"+
-		"\x2\x2\x2\x904\xDD\x3\x2\x2\x2\x905\x908\x5\xE0q\x2\x906\x908\x5\xE2r"+
-		"\x2\x907\x905\x3\x2\x2\x2\x907\x906\x3\x2\x2\x2\x908\xDF\x3\x2\x2\x2\x909"+
-		"\x90B\x5\xE4s\x2\x90A\x909\x3\x2\x2\x2\x90A\x90B\x3\x2\x2\x2\x90B\x90C"+
-		"\x3\x2\x2\x2\x90C\x90D\a\x4\x2\x2\x90D\x90F\x5\x100\x81\x2\x90E\x910\x5"+
-		"\x116\x8C\x2\x90F\x90E\x3\x2\x2\x2\x90F\x910\x3\x2\x2\x2\x910\x913\x3"+
-		"\x2\x2\x2\x911\x912\a\xD8\x2\x2\x912\x914\x5\xF0y\x2\x913\x911\x3\x2\x2"+
-		"\x2\x913\x914\x3\x2\x2\x2\x914\x916\x3\x2\x2\x2\x915\x917\x5\xF4{\x2\x916"+
-		"\x915\x3\x2\x2\x2\x916\x917\x3\x2\x2\x2\x917\xE1\x3\x2\x2\x2\x918\x91B"+
-		"\x5\x106\x84\x2\x919\x91A\a\xD8\x2\x2\x91A\x91C\x5\xF0y\x2\x91B\x919\x3"+
-		"\x2\x2\x2\x91B\x91C\x3\x2\x2\x2\x91C\xE3\x3\x2\x2\x2\x91D\x922\x5\xEA"+
-		"v\x2\x91E\x922\x5\xE6t\x2\x91F\x922\x5\xE8u\x2\x920\x922\x5\xEEx\x2\x921"+
-		"\x91D\x3\x2\x2\x2\x921\x91E\x3\x2\x2\x2\x921\x91F\x3\x2\x2\x2\x921\x920"+
-		"\x3\x2\x2\x2\x922\xE5\x3\x2\x2\x2\x923\x925\x5\x100\x81\x2\x924\x926\x5"+
-		"\x116\x8C\x2\x925\x924\x3\x2\x2\x2\x925\x926\x3\x2\x2\x2\x926\x928\x3"+
-		"\x2\x2\x2\x927\x929\x5\xF4{\x2\x928\x927\x3\x2\x2\x2\x928\x929\x3\x2\x2"+
-		"\x2\x929\xE7\x3\x2\x2\x2\x92A\x92D\x5\x100\x81\x2\x92B\x92D\x5\x104\x83"+
-		"\x2\x92C\x92A\x3\x2\x2\x2\x92C\x92B\x3\x2\x2\x2\x92D\x92F\x3\x2\x2\x2"+
-		"\x92E\x930\x5\x116\x8C\x2\x92F\x92E\x3\x2\x2\x2\x92F\x930\x3\x2\x2\x2"+
-		"\x930\x932\x3\x2\x2\x2\x931\x933\a\xD8\x2\x2\x932\x931\x3\x2\x2\x2\x932"+
-		"\x933\x3\x2\x2\x2\x933\x934\x3\x2\x2\x2\x934\x936\a\xC2\x2\x2\x935\x937"+
-		"\a\xD8\x2\x2\x936\x935\x3\x2\x2\x2\x936\x937\x3\x2\x2\x2\x937\x93C\x3"+
-		"\x2\x2\x2\x938\x93A\x5\xF0y\x2\x939\x93B\a\xD8\x2\x2\x93A\x939\x3\x2\x2"+
-		"\x2\x93A\x93B\x3\x2\x2\x2\x93B\x93D\x3\x2\x2\x2\x93C\x938\x3\x2\x2\x2"+
-		"\x93C\x93D\x3\x2\x2\x2\x93D\x93E\x3\x2\x2\x2\x93E\x940\a\xCB\x2\x2\x93F"+
-		"\x941\x5\xF4{\x2\x940\x93F\x3\x2\x2\x2\x940\x941\x3\x2\x2\x2\x941\xE9"+
-		"\x3\x2\x2\x2\x942\x945\x5\xE6t\x2\x943\x945\x5\xE8u\x2\x944\x942\x3\x2"+
-		"\x2\x2\x944\x943\x3\x2\x2\x2\x944\x945\x3\x2\x2\x2\x945\x947\x3\x2\x2"+
-		"\x2\x946\x948\x5\xECw\x2\x947\x946\x3\x2\x2\x2\x948\x949\x3\x2\x2\x2\x949"+
-		"\x947\x3\x2\x2\x2\x949\x94A\x3\x2\x2\x2\x94A\x94C\x3\x2\x2\x2\x94B\x94D"+
-		"\x5\xF4{\x2\x94C\x94B\x3\x2\x2\x2\x94C\x94D\x3\x2\x2\x2\x94D\xEB\x3\x2"+
-		"\x2\x2\x94E\x951\t\r\x2\x2\x94F\x952\x5\xE6t\x2\x950\x952\x5\xE8u\x2\x951"+
-		"\x94F\x3\x2\x2\x2\x951\x950\x3\x2\x2\x2\x952\xED\x3\x2\x2\x2\x953\x954"+
-		"\x5\xF4{\x2\x954\xEF\x3\x2\x2\x2\x955\x957\x5\xF2z\x2\x956\x955\x3\x2"+
-		"\x2\x2\x956\x957\x3\x2\x2\x2\x957\x959\x3\x2\x2\x2\x958\x95A\a\xD8\x2"+
-		"\x2\x959\x958\x3\x2\x2\x2\x959\x95A\x3\x2\x2\x2\x95A\x95B\x3\x2\x2\x2"+
-		"\x95B\x95D\t\v\x2\x2\x95C\x95E\a\xD8\x2\x2\x95D\x95C\x3\x2\x2\x2\x95D"+
-		"\x95E\x3\x2\x2\x2\x95E\x960\x3\x2\x2\x2\x95F\x956\x3\x2\x2\x2\x960\x963"+
-		"\x3\x2\x2\x2\x961\x95F\x3\x2\x2\x2\x961\x962\x3\x2\x2\x2\x962\x964\x3"+
-		"\x2\x2\x2\x963\x961\x3\x2\x2\x2\x964\x971\x5\xF2z\x2\x965\x967\a\xD8\x2"+
-		"\x2\x966\x965\x3\x2\x2\x2\x966\x967\x3\x2\x2\x2\x967\x968\x3\x2\x2\x2"+
-		"\x968\x96A\t\v\x2\x2\x969\x96B\a\xD8\x2\x2\x96A\x969\x3\x2\x2\x2\x96A"+
-		"\x96B\x3\x2\x2\x2\x96B\x96D\x3\x2\x2\x2\x96C\x96E\x5\xF2z\x2\x96D\x96C"+
-		"\x3\x2\x2\x2\x96D\x96E\x3\x2\x2\x2\x96E\x970\x3\x2\x2\x2\x96F\x966\x3"+
-		"\x2\x2\x2\x970\x973\x3\x2\x2\x2\x971\x96F\x3\x2\x2\x2\x971\x972\x3\x2"+
-		"\x2\x2\x972\xF1\x3\x2\x2\x2\x973\x971\x3\x2\x2\x2\x974\x975\t\xE\x2\x2"+
-		"\x975\x977\a\xD8\x2\x2\x976\x974\x3\x2\x2\x2\x976\x977\x3\x2\x2\x2\x977"+
-		"\x978\x3\x2\x2\x2\x978\x979\x5\xC6\x64\x2\x979\xF3\x3\x2\x2\x2\x97A\x97B"+
-		"\a\n\x2\x2\x97B\x97D\x5\x100\x81\x2\x97C\x97E\x5\x116\x8C\x2\x97D\x97C"+
-		"\x3\x2\x2\x2\x97D\x97E\x3\x2\x2\x2\x97E\xF5\x3\x2\x2\x2\x97F\x991\a\xC2"+
-		"\x2\x2\x980\x982\a\xD8\x2\x2\x981\x980\x3\x2\x2\x2\x981\x982\x3\x2\x2"+
-		"\x2\x982\x983\x3\x2\x2\x2\x983\x98E\x5\xF8}\x2\x984\x986\a\xD8\x2\x2\x985"+
-		"\x984\x3\x2\x2\x2\x985\x986\x3\x2\x2\x2\x986\x987\x3\x2\x2\x2\x987\x989"+
-		"\a\x5\x2\x2\x988\x98A\a\xD8\x2\x2\x989\x988\x3\x2\x2\x2\x989\x98A\x3\x2"+
-		"\x2\x2\x98A\x98B\x3\x2\x2\x2\x98B\x98D\x5\xF8}\x2\x98C\x985\x3\x2\x2\x2"+
-		"\x98D\x990\x3\x2\x2\x2\x98E\x98C\x3\x2\x2\x2\x98E\x98F\x3\x2\x2\x2\x98F"+
-		"\x992\x3\x2\x2\x2\x990\x98E\x3\x2\x2\x2\x991\x981\x3\x2\x2\x2\x991\x992"+
-		"\x3\x2\x2\x2\x992\x994\x3\x2\x2\x2\x993\x995\a\xD8\x2\x2\x994\x993\x3"+
-		"\x2\x2\x2\x994\x995\x3\x2\x2\x2\x995\x996\x3\x2\x2\x2\x996\x997\a\xCB"+
-		"\x2\x2\x997\xF7\x3\x2\x2\x2\x998\x999\a{\x2\x2\x999\x99B\a\xD8\x2\x2\x99A"+
-		"\x998\x3\x2\x2\x2\x99A\x99B\x3\x2\x2\x2\x99B\x99E\x3\x2\x2\x2\x99C\x99D"+
-		"\t\xF\x2\x2\x99D\x99F\a\xD8\x2\x2\x99E\x99C\x3\x2\x2\x2\x99E\x99F\x3\x2"+
-		"\x2\x2\x99F\x9A2\x3\x2\x2\x2\x9A0\x9A1\a\x82\x2\x2\x9A1\x9A3\a\xD8\x2"+
-		"\x2\x9A2\x9A0\x3\x2\x2\x2\x9A2\x9A3\x3\x2\x2\x2\x9A3\x9A4\x3\x2\x2\x2"+
-		"\x9A4\x9AD\x5\x100\x81\x2\x9A5\x9A7\a\xD8\x2\x2\x9A6\x9A5\x3\x2\x2\x2"+
-		"\x9A6\x9A7\x3\x2\x2\x2\x9A7\x9A8\x3\x2\x2\x2\x9A8\x9AA\a\xC2\x2\x2\x9A9"+
-		"\x9AB\a\xD8\x2\x2\x9AA\x9A9\x3\x2\x2\x2\x9AA\x9AB\x3\x2\x2\x2\x9AB\x9AC"+
-		"\x3\x2\x2\x2\x9AC\x9AE\a\xCB\x2\x2\x9AD\x9A6\x3\x2\x2\x2\x9AD\x9AE\x3"+
-		"\x2\x2\x2\x9AE\x9B1\x3\x2\x2\x2\x9AF\x9B0\a\xD8\x2\x2\x9B0\x9B2\x5\x102"+
-		"\x82\x2\x9B1\x9AF\x3\x2\x2\x2\x9B1\x9B2\x3\x2\x2\x2\x9B2\x9B7\x3\x2\x2"+
-		"\x2\x9B3\x9B5\a\xD8\x2\x2\x9B4\x9B3\x3\x2\x2\x2\x9B4\x9B5\x3\x2\x2\x2"+
-		"\x9B5\x9B6\x3\x2\x2\x2\x9B6\x9B8\x5\xFA~\x2\x9B7\x9B4\x3\x2\x2\x2\x9B7"+
-		"\x9B8\x3\x2\x2\x2\x9B8\xF9\x3\x2\x2\x2\x9B9\x9BB\a\xBE\x2\x2\x9BA\x9BC"+
-		"\a\xD8\x2\x2\x9BB\x9BA\x3\x2\x2\x2\x9BB\x9BC\x3\x2\x2\x2\x9BC\x9BF\x3"+
-		"\x2\x2\x2\x9BD\x9C0\x5\x112\x8A\x2\x9BE\x9C0\x5\x100\x81\x2\x9BF\x9BD"+
-		"\x3\x2\x2\x2\x9BF\x9BE\x3\x2\x2\x2\x9C0\xFB\x3\x2\x2\x2\x9C1\x9CC\x5\xFE"+
-		"\x80\x2\x9C2\x9C4\a\xD8\x2\x2\x9C3\x9C2\x3\x2\x2\x2\x9C3\x9C4\x3\x2\x2"+
-		"\x2\x9C4\x9C5\x3\x2\x2\x2\x9C5\x9C7\a\x5\x2\x2\x9C6\x9C8\a\xD8\x2\x2\x9C7"+
-		"\x9C6\x3\x2\x2\x2\x9C7\x9C8\x3\x2\x2\x2\x9C8\x9C9\x3\x2\x2\x2\x9C9\x9CB"+
-		"\x5\xFE\x80\x2\x9CA\x9C3\x3\x2\x2\x2\x9CB\x9CE\x3\x2\x2\x2\x9CC\x9CA\x3"+
-		"\x2\x2\x2\x9CC\x9CD\x3\x2\x2\x2\x9CD\xFD\x3\x2\x2\x2\x9CE\x9CC\x3\x2\x2"+
-		"\x2\x9CF\x9D0\x5\xC6\x64\x2\x9D0\x9D1\a\xD8\x2\x2\x9D1\x9D2\a\xAB\x2\x2"+
-		"\x9D2\x9D3\a\xD8\x2\x2\x9D3\x9D5\x3\x2\x2\x2\x9D4\x9CF\x3\x2\x2\x2\x9D4"+
-		"\x9D5\x3\x2\x2\x2\x9D5\x9D6\x3\x2\x2\x2\x9D6\x9D7\x5\xC6\x64\x2\x9D7\xFF"+
-		"\x3\x2\x2\x2\x9D8\x9DB\a\xD4\x2\x2\x9D9\x9DB\x5\x11A\x8E\x2\x9DA\x9D8"+
-		"\x3\x2\x2\x2\x9DA\x9D9\x3\x2\x2\x2\x9DB\x9DC\x3\x2\x2\x2\x9DC\x9DA\x3"+
-		"\x2\x2\x2\x9DC\x9DD\x3\x2\x2\x2\x9DD\x9E7\x3\x2\x2\x2\x9DE\x9E1\a\xCC"+
-		"\x2\x2\x9DF\x9E2\a\xD4\x2\x2\x9E0\x9E2\x5\x11A\x8E\x2\x9E1\x9DF\x3\x2"+
-		"\x2\x2\x9E1\x9E0\x3\x2\x2\x2\x9E2\x9E3\x3\x2\x2\x2\x9E3\x9E1\x3\x2\x2"+
-		"\x2\x9E3\x9E4\x3\x2\x2\x2\x9E4\x9E5\x3\x2\x2\x2\x9E5\x9E7\a\xCD\x2\x2"+
-		"\x9E6\x9DA\x3\x2\x2\x2\x9E6\x9DE\x3\x2\x2\x2\x9E7\x101\x3\x2\x2\x2\x9E8"+
-		"\x9E9\a\x13\x2\x2\x9E9\x9EC\a\xD8\x2\x2\x9EA\x9EB\at\x2\x2\x9EB\x9ED\a"+
-		"\xD8\x2\x2\x9EC\x9EA\x3\x2\x2\x2\x9EC\x9ED\x3\x2\x2\x2\x9ED\x9EE\x3\x2"+
-		"\x2\x2\x9EE\x9F1\x5\x114\x8B\x2\x9EF\x9F0\a\xD8\x2\x2\x9F0\x9F2\x5\x10C"+
-		"\x87\x2\x9F1\x9EF\x3\x2\x2\x2\x9F1\x9F2\x3\x2\x2\x2\x9F2\x103\x3\x2\x2"+
-		"\x2\x9F3\x9F4\t\x10\x2\x2\x9F4\x105\x3\x2\x2\x2\x9F5\x9FA\a\xD4\x2\x2"+
-		"\x9F6\x9F9\x5\x11A\x8E\x2\x9F7\x9F9\a\xD4\x2\x2\x9F8\x9F6\x3\x2\x2\x2"+
-		"\x9F8\x9F7\x3\x2\x2\x2\x9F9\x9FC\x3\x2\x2\x2\x9FA\x9F8\x3\x2\x2\x2\x9FA"+
-		"\x9FB\x3\x2\x2\x2\x9FB\xA05\x3\x2\x2\x2\x9FC\x9FA\x3\x2\x2\x2\x9FD\xA00"+
-		"\x5\x11A\x8E\x2\x9FE\xA01\x5\x11A\x8E\x2\x9FF\xA01\a\xD4\x2\x2\xA00\x9FE"+
-		"\x3\x2\x2\x2\xA00\x9FF\x3\x2\x2\x2\xA01\xA02\x3\x2\x2\x2\xA02\xA00\x3"+
-		"\x2\x2\x2\xA02\xA03\x3\x2\x2\x2\xA03\xA05\x3\x2\x2\x2\xA04\x9F5\x3\x2"+
-		"\x2\x2\xA04\x9FD\x3\x2\x2\x2\xA05\x107\x3\x2\x2\x2\xA06\xA07\t\x11\x2"+
-		"\x2\xA07\x109\x3\x2\x2\x2\xA08\xA0D\x5\x100\x81\x2\xA09\xA0A\t\r\x2\x2"+
-		"\xA0A\xA0C\x5\x100\x81\x2\xA0B\xA09\x3\x2\x2\x2\xA0C\xA0F\x3\x2\x2\x2"+
-		"\xA0D\xA0B\x3\x2\x2\x2\xA0D\xA0E\x3\x2\x2\x2\xA0E\x10B\x3\x2\x2\x2\xA0F"+
-		"\xA0D\x3\x2\x2\x2\xA10\xA12\a\xC6\x2\x2\xA11\xA13\a\xD8\x2\x2\xA12\xA11"+
-		"\x3\x2\x2\x2\xA12\xA13\x3\x2\x2\x2\xA13\xA16\x3\x2\x2\x2\xA14\xA17\a\xD1"+
-		"\x2\x2\xA15\xA17\x5\x100\x81\x2\xA16\xA14\x3\x2\x2\x2\xA16\xA15\x3\x2"+
-		"\x2\x2\xA17\x10D\x3\x2\x2\x2\xA18\xA21\x5\x106\x84\x2\xA19\xA1B\a\xD8"+
-		"\x2\x2\xA1A\xA19\x3\x2\x2\x2\xA1A\xA1B\x3\x2\x2\x2\xA1B\xA1C\x3\x2\x2"+
-		"\x2\xA1C\xA1E\a\xC4\x2\x2\xA1D\xA1F\a\xD8\x2\x2\xA1E\xA1D\x3\x2\x2\x2"+
-		"\xA1E\xA1F\x3\x2\x2\x2\xA1F\xA20\x3\x2\x2\x2\xA20\xA22\x5\x106\x84\x2"+
-		"\xA21\xA1A\x3\x2\x2\x2\xA21\xA22\x3\x2\x2\x2\xA22\x10F\x3\x2\x2\x2\xA23"+
-		"\xA24\x5\x100\x81\x2\xA24\xA25\a\x6\x2\x2\xA25\x111\x3\x2\x2\x2\xA26\xA27"+
-		"\t\x12\x2\x2\xA27\x113\x3\x2\x2\x2\xA28\xA2B\x5\x104\x83\x2\xA29\xA2B"+
-		"\x5\x10A\x86\x2\xA2A\xA28\x3\x2\x2\x2\xA2A\xA29\x3\x2\x2\x2\xA2B\xA34"+
-		"\x3\x2\x2\x2\xA2C\xA2E\a\xD8\x2\x2\xA2D\xA2C\x3\x2\x2\x2\xA2D\xA2E\x3"+
-		"\x2\x2\x2\xA2E\xA2F\x3\x2\x2\x2\xA2F\xA31\a\xC2\x2\x2\xA30\xA32\a\xD8"+
-		"\x2\x2\xA31\xA30\x3\x2\x2\x2\xA31\xA32\x3\x2\x2\x2\xA32\xA33\x3\x2\x2"+
-		"\x2\xA33\xA35\a\xCB\x2\x2\xA34\xA2D\x3\x2\x2\x2\xA34\xA35\x3\x2\x2\x2"+
-		"\xA35\x115\x3\x2\x2\x2\xA36\xA37\t\x13\x2\x2\xA37\x117\x3\x2\x2\x2\xA38"+
-		"\xA39\t\x14\x2\x2\xA39\x119\x3\x2\x2\x2\xA3A\xA3B\t\x15\x2\x2\xA3B\x11B"+
-		"\x3\x2\x2\x2\x1BD\x120\x125\x12C\x12E\x131\x136\x13A\x13F\x143\x148\x14C"+
-		"\x151\x155\x161\x166\x16C\x170\x174\x17D\x181\x187\x18C\x197\x1A0\x1A6"+
-		"\x1AB\x1B5\x1BD\x1C1\x1C5\x1C9\x1CE\x1D5\x1D9\x1DE\x1E4\x22A\x230\x234"+
-		"\x237\x247\x24B\x250\x253\x258\x25E\x262\x267\x26C\x270\x273\x277\x27D"+
-		"\x281\x288\x28E\x29B\x29E\x2A1\x2A5\x2AB\x2AF\x2B4\x2BB\x2BF\x2C3\x2C7"+
-		"\x2CA\x2D0\x2D6\x2D8\x2E3\x2E9\x2EB\x2F3\x2F9\x301\x308\x310\x315\x31C"+
-		"\x320\x323\x328\x335\x33B\x345\x349\x353\x35C\x362\x364\x369\x36F\x373"+
-		"\x376\x37A\x385\x38A\x390\x392\x397\x39C\x3A0\x3A6\x3A9\x3AD\x3B2\x3B8"+
-		"\x3BA\x3C2\x3C6\x3C9\x3CC\x3D0\x3E7\x3ED\x3F1\x3F5\x3FF\x405\x407\x413"+
-		"\x419\x41B\x421\x427\x429\x433\x437\x43C\x444\x448\x44C\x454\x458\x464"+
-		"\x468\x46F\x471\x477\x47B\x483\x487\x48D\x495\x49B\x49D\x4A1\x4A9\x4AF"+
-		"\x4B1\x4B7\x4BD\x4BF\x4C3\x4C7\x4CB\x4E3\x4ED\x4F1\x4F6\x501\x505\x50A"+
-		"\x518\x51C\x525\x529\x52C\x530\x534\x537\x53B\x53F\x542\x546\x549\x54D"+
-		"\x54F\x554\x558\x55C\x560\x562\x568\x56C\x56F\x574\x578\x57E\x581\x585"+
-		"\x58A\x590\x592\x599\x59D\x5A3\x5A6\x5AB\x5B1\x5B3\x5BA\x5BE\x5C4\x5C7"+
-		"\x5CC\x5D2\x5D4\x5DC\x5E0\x5E3\x5E6\x5EA\x5F2\x5F6\x5FA\x5FC\x5FF\x604"+
-		"\x60A\x60E\x612\x617\x61C\x620\x624\x629\x631\x633\x63F\x643\x64B\x64F"+
-		"\x657\x65B\x65F\x663\x667\x66B\x673\x677\x683\x688\x68C\x694\x697\x69C"+
-		"\x6A2\x6A4\x6AA\x6AC\x6B1\x6B5\x6BB\x6BF\x6C4\x6CD\x6D1\x6D6\x6D9\x6DF"+
-		"\x6E3\x6E6\x6EC\x6F0\x6F8\x6FC\x705\x709\x70F\x712\x717\x71D\x71F\x725"+
-		"\x729\x730\x738\x73D\x744\x748\x74B\x74E\x751\x755\x75A\x763\x76D\x771"+
-		"\x778\x77A\x785\x789\x78F\x794\x79E\x7A2\x7A6\x7AB\x7B2\x7C0\x7C4\x7C9"+
-		"\x7CD\x7D2\x7D6\x7DB\x7DF\x7E4\x7E8\x7ED\x7F1\x7FB\x7FF\x804\x808\x80D"+
-		"\x811\x816\x81A\x81F\x823\x828\x82C\x83B\x83F\x844\x848\x850\x852\x858"+
-		"\x85D\x863\x867\x86C\x871\x875\x879\x87B\x87F\x881\x884\x888\x890\x897"+
-		"\x8A0\x8A4\x8AE\x8B3\x8B9\x8BB\x8C3\x8C7\x8CA\x8CD\x8D1\x8D5\x8DB\x8DE"+
-		"\x8E2\x8E6\x8EA\x8EF\x8F4\x8F7\x8FB\x8FF\x903\x907\x90A\x90F\x913\x916"+
-		"\x91B\x921\x925\x928\x92C\x92F\x932\x936\x93A\x93C\x940\x944\x949\x94C"+
-		"\x951\x956\x959\x95D\x961\x966\x96A\x96D\x971\x976\x97D\x981\x985\x989"+
-		"\x98E\x991\x994\x99A\x99E\x9A2\x9A6\x9AA\x9AD\x9B1\x9B4\x9B7\x9BB\x9BF"+
-		"\x9C3\x9C7\x9CC\x9D4\x9DA\x9DC\x9E1\x9E3\x9E6\x9EC\x9F1\x9F8\x9FA\xA00"+
-		"\xA02\xA04\xA0D\xA12\xA16\xA1A\xA1E\xA21\xA2A\xA2D\xA31\xA34";
+		"\x2\x2\x2\x8EA\x8EB\x3\x2\x2\x2\x8EB\x8F5\x3\x2\x2\x2\x8EC\x8EE\a\xD8"+
+		"\x2\x2\x8ED\x8EC\x3\x2\x2\x2\x8ED\x8EE\x3\x2\x2\x2\x8EE\x8EF\x3\x2\x2"+
+		"\x2\x8EF\x8F0\a\xC2\x2\x2\x8F0\x8F1\x5\xFC\x7F\x2\x8F1\x8F2\a\xCB\x2\x2"+
+		"\x8F2\x8F4\x3\x2\x2\x2\x8F3\x8ED\x3\x2\x2\x2\x8F4\x8F7\x3\x2\x2\x2\x8F5"+
+		"\x8F3\x3\x2\x2\x2\x8F5\x8F6\x3\x2\x2\x2\x8F6\xDB\x3\x2\x2\x2\x8F7\x8F5"+
+		"\x3\x2\x2\x2\x8F8\x8F9\a\x1B\x2\x2\x8F9\x8FB\a\xD8\x2\x2\x8FA\x8FC\x5"+
+		"\xE4s\x2\x8FB\x8FA\x3\x2\x2\x2\x8FB\x8FC\x3\x2\x2\x2\x8FC\x8FD\x3\x2\x2"+
+		"\x2\x8FD\x8FE\a\v\x2\x2\x8FE\x900\x5\x100\x81\x2\x8FF\x901\x5\x116\x8C"+
+		"\x2\x900\x8FF\x3\x2\x2\x2\x900\x901\x3\x2\x2\x2\x901\x90F\x3\x2\x2\x2"+
+		"\x902\x904\a\xD8\x2\x2\x903\x902\x3\x2\x2\x2\x903\x904\x3\x2\x2\x2\x904"+
+		"\x905\x3\x2\x2\x2\x905\x907\a\xC2\x2\x2\x906\x908\a\xD8\x2\x2\x907\x906"+
+		"\x3\x2\x2\x2\x907\x908\x3\x2\x2\x2\x908\x909\x3\x2\x2\x2\x909\x90B\x5"+
+		"\xF0y\x2\x90A\x90C\a\xD8\x2\x2\x90B\x90A\x3\x2\x2\x2\x90B\x90C\x3\x2\x2"+
+		"\x2\x90C\x90D\x3\x2\x2\x2\x90D\x90E\a\xCB\x2\x2\x90E\x910\x3\x2\x2\x2"+
+		"\x90F\x903\x3\x2\x2\x2\x90F\x910\x3\x2\x2\x2\x910\x91A\x3\x2\x2\x2\x911"+
+		"\x913\a\xD8\x2\x2\x912\x911\x3\x2\x2\x2\x912\x913\x3\x2\x2\x2\x913\x914"+
+		"\x3\x2\x2\x2\x914\x915\a\xC2\x2\x2\x915\x916\x5\xFC\x7F\x2\x916\x917\a"+
+		"\xCB\x2\x2\x917\x919\x3\x2\x2\x2\x918\x912\x3\x2\x2\x2\x919\x91C\x3\x2"+
+		"\x2\x2\x91A\x918\x3\x2\x2\x2\x91A\x91B\x3\x2\x2\x2\x91B\xDD\x3\x2\x2\x2"+
+		"\x91C\x91A\x3\x2\x2\x2\x91D\x920\x5\xE0q\x2\x91E\x920\x5\xE2r\x2\x91F"+
+		"\x91D\x3\x2\x2\x2\x91F\x91E\x3\x2\x2\x2\x920\xDF\x3\x2\x2\x2\x921\x923"+
+		"\x5\xE4s\x2\x922\x921\x3\x2\x2\x2\x922\x923\x3\x2\x2\x2\x923\x924\x3\x2"+
+		"\x2\x2\x924\x925\a\v\x2\x2\x925\x927\x5\x100\x81\x2\x926\x928\x5\x116"+
+		"\x8C\x2\x927\x926\x3\x2\x2\x2\x927\x928\x3\x2\x2\x2\x928\x92B\x3\x2\x2"+
+		"\x2\x929\x92A\a\xD8\x2\x2\x92A\x92C\x5\xF0y\x2\x92B\x929\x3\x2\x2\x2\x92B"+
+		"\x92C\x3\x2\x2\x2\x92C\x92E\x3\x2\x2\x2\x92D\x92F\x5\xF4{\x2\x92E\x92D"+
+		"\x3\x2\x2\x2\x92E\x92F\x3\x2\x2\x2\x92F\x939\x3\x2\x2\x2\x930\x932\a\xD8"+
+		"\x2\x2\x931\x930\x3\x2\x2\x2\x931\x932\x3\x2\x2\x2\x932\x933\x3\x2\x2"+
+		"\x2\x933\x934\a\xC2\x2\x2\x934\x935\x5\xFC\x7F\x2\x935\x936\a\xCB\x2\x2"+
+		"\x936\x938\x3\x2\x2\x2\x937\x931\x3\x2\x2\x2\x938\x93B\x3\x2\x2\x2\x939"+
+		"\x937\x3\x2\x2\x2\x939\x93A\x3\x2\x2\x2\x93A\xE1\x3\x2\x2\x2\x93B\x939"+
+		"\x3\x2\x2\x2\x93C\x93F\x5\x106\x84\x2\x93D\x93E\a\xD8\x2\x2\x93E\x940"+
+		"\x5\xF0y\x2\x93F\x93D\x3\x2\x2\x2\x93F\x940\x3\x2\x2\x2\x940\x94A\x3\x2"+
+		"\x2\x2\x941\x943\a\xD8\x2\x2\x942\x941\x3\x2\x2\x2\x942\x943\x3\x2\x2"+
+		"\x2\x943\x944\x3\x2\x2\x2\x944\x945\a\xC2\x2\x2\x945\x946\x5\xFC\x7F\x2"+
+		"\x946\x947\a\xCB\x2\x2\x947\x949\x3\x2\x2\x2\x948\x942\x3\x2\x2\x2\x949"+
+		"\x94C\x3\x2\x2\x2\x94A\x948\x3\x2\x2\x2\x94A\x94B\x3\x2\x2\x2\x94B\xE3"+
+		"\x3\x2\x2\x2\x94C\x94A\x3\x2\x2\x2\x94D\x952\x5\xEAv\x2\x94E\x952\x5\xE6"+
+		"t\x2\x94F\x952\x5\xE8u\x2\x950\x952\x5\xEEx\x2\x951\x94D\x3\x2\x2\x2\x951"+
+		"\x94E\x3\x2\x2\x2\x951\x94F\x3\x2\x2\x2\x951\x950\x3\x2\x2\x2\x952\xE5"+
+		"\x3\x2\x2\x2\x953\x955\x5\x100\x81\x2\x954\x956\x5\x116\x8C\x2\x955\x954"+
+		"\x3\x2\x2\x2\x955\x956\x3\x2\x2\x2\x956\x958\x3\x2\x2\x2\x957\x959\x5"+
+		"\xF4{\x2\x958\x957\x3\x2\x2\x2\x958\x959\x3\x2\x2\x2\x959\x963\x3\x2\x2"+
+		"\x2\x95A\x95C\a\xD8\x2\x2\x95B\x95A\x3\x2\x2\x2\x95B\x95C\x3\x2\x2\x2"+
+		"\x95C\x95D\x3\x2\x2\x2\x95D\x95E\a\xC2\x2\x2\x95E\x95F\x5\xFC\x7F\x2\x95F"+
+		"\x960\a\xCB\x2\x2\x960\x962\x3\x2\x2\x2\x961\x95B\x3\x2\x2\x2\x962\x965"+
+		"\x3\x2\x2\x2\x963\x961\x3\x2\x2\x2\x963\x964\x3\x2\x2\x2\x964\xE7\x3\x2"+
+		"\x2\x2\x965\x963\x3\x2\x2\x2\x966\x969\x5\x100\x81\x2\x967\x969\x5\x104"+
+		"\x83\x2\x968\x966\x3\x2\x2\x2\x968\x967\x3\x2\x2\x2\x969\x96B\x3\x2\x2"+
+		"\x2\x96A\x96C\x5\x116\x8C\x2\x96B\x96A\x3\x2\x2\x2\x96B\x96C\x3\x2\x2"+
+		"\x2\x96C\x96E\x3\x2\x2\x2\x96D\x96F\a\xD8\x2\x2\x96E\x96D\x3\x2\x2\x2"+
+		"\x96E\x96F\x3\x2\x2\x2\x96F\x970\x3\x2\x2\x2\x970\x972\a\xC2\x2\x2\x971"+
+		"\x973\a\xD8\x2\x2\x972\x971\x3\x2\x2\x2\x972\x973\x3\x2\x2\x2\x973\x978"+
+		"\x3\x2\x2\x2\x974\x976\x5\xF0y\x2\x975\x977\a\xD8\x2\x2\x976\x975\x3\x2"+
+		"\x2\x2\x976\x977\x3\x2\x2\x2\x977\x979\x3\x2\x2\x2\x978\x974\x3\x2\x2"+
+		"\x2\x978\x979\x3\x2\x2\x2\x979\x97A\x3\x2\x2\x2\x97A\x97C\a\xCB\x2\x2"+
+		"\x97B\x97D\x5\xF4{\x2\x97C\x97B\x3\x2\x2\x2\x97C\x97D\x3\x2\x2\x2\x97D"+
+		"\x987\x3\x2\x2\x2\x97E\x980\a\xD8\x2\x2\x97F\x97E\x3\x2\x2\x2\x97F\x980"+
+		"\x3\x2\x2\x2\x980\x981\x3\x2\x2\x2\x981\x982\a\xC2\x2\x2\x982\x983\x5"+
+		"\xFC\x7F\x2\x983\x984\a\xCB\x2\x2\x984\x986\x3\x2\x2\x2\x985\x97F\x3\x2"+
+		"\x2\x2\x986\x989\x3\x2\x2\x2\x987\x985\x3\x2\x2\x2\x987\x988\x3\x2\x2"+
+		"\x2\x988\xE9\x3\x2\x2\x2\x989\x987\x3\x2\x2\x2\x98A\x98D\x5\xE6t\x2\x98B"+
+		"\x98D\x5\xE8u\x2\x98C\x98A\x3\x2\x2\x2\x98C\x98B\x3\x2\x2\x2\x98C\x98D"+
+		"\x3\x2\x2\x2\x98D\x98F\x3\x2\x2\x2\x98E\x990\x5\xECw\x2\x98F\x98E\x3\x2"+
+		"\x2\x2\x990\x991\x3\x2\x2\x2\x991\x98F\x3\x2\x2\x2\x991\x992\x3\x2\x2"+
+		"\x2\x992\x994\x3\x2\x2\x2\x993\x995\x5\xF4{\x2\x994\x993\x3\x2\x2\x2\x994"+
+		"\x995\x3\x2\x2\x2\x995\x99F\x3\x2\x2\x2\x996\x998\a\xD8\x2\x2\x997\x996"+
+		"\x3\x2\x2\x2\x997\x998\x3\x2\x2\x2\x998\x999\x3\x2\x2\x2\x999\x99A\a\xC2"+
+		"\x2\x2\x99A\x99B\x5\xFC\x7F\x2\x99B\x99C\a\xCB\x2\x2\x99C\x99E\x3\x2\x2"+
+		"\x2\x99D\x997\x3\x2\x2\x2\x99E\x9A1\x3\x2\x2\x2\x99F\x99D\x3\x2\x2\x2"+
+		"\x99F\x9A0\x3\x2\x2\x2\x9A0\xEB\x3\x2\x2\x2\x9A1\x99F\x3\x2\x2\x2\x9A2"+
+		"\x9A5\t\r\x2\x2\x9A3\x9A6\x5\xE6t\x2\x9A4\x9A6\x5\xE8u\x2\x9A5\x9A3\x3"+
+		"\x2\x2\x2\x9A5\x9A4\x3\x2\x2\x2\x9A6\xED\x3\x2\x2\x2\x9A7\x9A8\x5\xF4"+
+		"{\x2\x9A8\xEF\x3\x2\x2\x2\x9A9\x9AB\x5\xF2z\x2\x9AA\x9A9\x3\x2\x2\x2\x9AA"+
+		"\x9AB\x3\x2\x2\x2\x9AB\x9AD\x3\x2\x2\x2\x9AC\x9AE\a\xD8\x2\x2\x9AD\x9AC"+
+		"\x3\x2\x2\x2\x9AD\x9AE\x3\x2\x2\x2\x9AE\x9AF\x3\x2\x2\x2\x9AF\x9B1\t\v"+
+		"\x2\x2\x9B0\x9B2\a\xD8\x2\x2\x9B1\x9B0\x3\x2\x2\x2\x9B1\x9B2\x3\x2\x2"+
+		"\x2\x9B2\x9B4\x3\x2\x2\x2\x9B3\x9AA\x3\x2\x2\x2\x9B4\x9B7\x3\x2\x2\x2"+
+		"\x9B5\x9B3\x3\x2\x2\x2\x9B5\x9B6\x3\x2\x2\x2\x9B6\x9B8\x3\x2\x2\x2\x9B7"+
+		"\x9B5\x3\x2\x2\x2\x9B8\x9C5\x5\xF2z\x2\x9B9\x9BB\a\xD8\x2\x2\x9BA\x9B9"+
+		"\x3\x2\x2\x2\x9BA\x9BB\x3\x2\x2\x2\x9BB\x9BC\x3\x2\x2\x2\x9BC\x9BE\t\v"+
+		"\x2\x2\x9BD\x9BF\a\xD8\x2\x2\x9BE\x9BD\x3\x2\x2\x2\x9BE\x9BF\x3\x2\x2"+
+		"\x2\x9BF\x9C1\x3\x2\x2\x2\x9C0\x9C2\x5\xF2z\x2\x9C1\x9C0\x3\x2\x2\x2\x9C1"+
+		"\x9C2\x3\x2\x2\x2\x9C2\x9C4\x3\x2\x2\x2\x9C3\x9BA\x3\x2\x2\x2\x9C4\x9C7"+
+		"\x3\x2\x2\x2\x9C5\x9C3\x3\x2\x2\x2\x9C5\x9C6\x3\x2\x2\x2\x9C6\xF1\x3\x2"+
+		"\x2\x2\x9C7\x9C5\x3\x2\x2\x2\x9C8\x9C9\t\xE\x2\x2\x9C9\x9CB\a\xD8\x2\x2"+
+		"\x9CA\x9C8\x3\x2\x2\x2\x9CA\x9CB\x3\x2\x2\x2\x9CB\x9CC\x3\x2\x2\x2\x9CC"+
+		"\x9CD\x5\xC6\x64\x2\x9CD\xF3\x3\x2\x2\x2\x9CE\x9CF\a\x4\x2\x2\x9CF\x9D1"+
+		"\x5\x100\x81\x2\x9D0\x9D2\x5\x116\x8C\x2\x9D1\x9D0\x3\x2\x2\x2\x9D1\x9D2"+
+		"\x3\x2\x2\x2\x9D2\xF5\x3\x2\x2\x2\x9D3\x9E5\a\xC2\x2\x2\x9D4\x9D6\a\xD8"+
+		"\x2\x2\x9D5\x9D4\x3\x2\x2\x2\x9D5\x9D6\x3\x2\x2\x2\x9D6\x9D7\x3\x2\x2"+
+		"\x2\x9D7\x9E2\x5\xF8}\x2\x9D8\x9DA\a\xD8\x2\x2\x9D9\x9D8\x3\x2\x2\x2\x9D9"+
+		"\x9DA\x3\x2\x2\x2\x9DA\x9DB\x3\x2\x2\x2\x9DB\x9DD\a\n\x2\x2\x9DC\x9DE"+
+		"\a\xD8\x2\x2\x9DD\x9DC\x3\x2\x2\x2\x9DD\x9DE\x3\x2\x2\x2\x9DE\x9DF\x3"+
+		"\x2\x2\x2\x9DF\x9E1\x5\xF8}\x2\x9E0\x9D9\x3\x2\x2\x2\x9E1\x9E4\x3\x2\x2"+
+		"\x2\x9E2\x9E0\x3\x2\x2\x2\x9E2\x9E3\x3\x2\x2\x2\x9E3\x9E6\x3\x2\x2\x2"+
+		"\x9E4\x9E2\x3\x2\x2\x2\x9E5\x9D5\x3\x2\x2\x2\x9E5\x9E6\x3\x2\x2\x2\x9E6"+
+		"\x9E8\x3\x2\x2\x2\x9E7\x9E9\a\xD8\x2\x2\x9E8\x9E7\x3\x2\x2\x2\x9E8\x9E9"+
+		"\x3\x2\x2\x2\x9E9\x9EA\x3\x2\x2\x2\x9EA\x9EB\a\xCB\x2\x2\x9EB\xF7\x3\x2"+
+		"\x2\x2\x9EC\x9ED\a{\x2\x2\x9ED\x9EF\a\xD8\x2\x2\x9EE\x9EC\x3\x2\x2\x2"+
+		"\x9EE\x9EF\x3\x2\x2\x2\x9EF\x9F2\x3\x2\x2\x2\x9F0\x9F1\t\xF\x2\x2\x9F1"+
+		"\x9F3\a\xD8\x2\x2\x9F2\x9F0\x3\x2\x2\x2\x9F2\x9F3\x3\x2\x2\x2\x9F3\x9F6"+
+		"\x3\x2\x2\x2\x9F4\x9F5\a\x82\x2\x2\x9F5\x9F7\a\xD8\x2\x2\x9F6\x9F4\x3"+
+		"\x2\x2\x2\x9F6\x9F7\x3\x2\x2\x2\x9F7\x9F8\x3\x2\x2\x2\x9F8\xA01\x5\x100"+
+		"\x81\x2\x9F9\x9FB\a\xD8\x2\x2\x9FA\x9F9\x3\x2\x2\x2\x9FA\x9FB\x3\x2\x2"+
+		"\x2\x9FB\x9FC\x3\x2\x2\x2\x9FC\x9FE\a\xC2\x2\x2\x9FD\x9FF\a\xD8\x2\x2"+
+		"\x9FE\x9FD\x3\x2\x2\x2\x9FE\x9FF\x3\x2\x2\x2\x9FF\xA00\x3\x2\x2\x2\xA00"+
+		"\xA02\a\xCB\x2\x2\xA01\x9FA\x3\x2\x2\x2\xA01\xA02\x3\x2\x2\x2\xA02\xA05"+
+		"\x3\x2\x2\x2\xA03\xA04\a\xD8\x2\x2\xA04\xA06\x5\x102\x82\x2\xA05\xA03"+
+		"\x3\x2\x2\x2\xA05\xA06\x3\x2\x2\x2\xA06\xA0B\x3\x2\x2\x2\xA07\xA09\a\xD8"+
+		"\x2\x2\xA08\xA07\x3\x2\x2\x2\xA08\xA09\x3\x2\x2\x2\xA09\xA0A\x3\x2\x2"+
+		"\x2\xA0A\xA0C\x5\xFA~\x2\xA0B\xA08\x3\x2\x2\x2\xA0B\xA0C\x3\x2\x2\x2\xA0C"+
+		"\xF9\x3\x2\x2\x2\xA0D\xA0F\a\xBE\x2\x2\xA0E\xA10\a\xD8\x2\x2\xA0F\xA0E"+
+		"\x3\x2\x2\x2\xA0F\xA10\x3\x2\x2\x2\xA10\xA13\x3\x2\x2\x2\xA11\xA14\x5"+
+		"\x112\x8A\x2\xA12\xA14\x5\x100\x81\x2\xA13\xA11\x3\x2\x2\x2\xA13\xA12"+
+		"\x3\x2\x2\x2\xA14\xFB\x3\x2\x2\x2\xA15\xA20\x5\xFE\x80\x2\xA16\xA18\a"+
+		"\xD8\x2\x2\xA17\xA16\x3\x2\x2\x2\xA17\xA18\x3\x2\x2\x2\xA18\xA19\x3\x2"+
+		"\x2\x2\xA19\xA1B\a\n\x2\x2\xA1A\xA1C\a\xD8\x2\x2\xA1B\xA1A\x3\x2\x2\x2"+
+		"\xA1B\xA1C\x3\x2\x2\x2\xA1C\xA1D\x3\x2\x2\x2\xA1D\xA1F\x5\xFE\x80\x2\xA1E"+
+		"\xA17\x3\x2\x2\x2\xA1F\xA22\x3\x2\x2\x2\xA20\xA1E\x3\x2\x2\x2\xA20\xA21"+
+		"\x3\x2\x2\x2\xA21\xFD\x3\x2\x2\x2\xA22\xA20\x3\x2\x2\x2\xA23\xA24\x5\xC6"+
+		"\x64\x2\xA24\xA25\a\xD8\x2\x2\xA25\xA26\a\xAB\x2\x2\xA26\xA27\a\xD8\x2"+
+		"\x2\xA27\xA29\x3\x2\x2\x2\xA28\xA23\x3\x2\x2\x2\xA28\xA29\x3\x2\x2\x2"+
+		"\xA29\xA2A\x3\x2\x2\x2\xA2A\xA2B\x5\xC6\x64\x2\xA2B\xFF\x3\x2\x2\x2\xA2C"+
+		"\xA2F\a\xD4\x2\x2\xA2D\xA2F\x5\x11A\x8E\x2\xA2E\xA2C\x3\x2\x2\x2\xA2E"+
+		"\xA2D\x3\x2\x2\x2\xA2F\xA30\x3\x2\x2\x2\xA30\xA2E\x3\x2\x2\x2\xA30\xA31"+
+		"\x3\x2\x2\x2\xA31\xA3B\x3\x2\x2\x2\xA32\xA35\a\xCC\x2\x2\xA33\xA36\a\xD4"+
+		"\x2\x2\xA34\xA36\x5\x11A\x8E\x2\xA35\xA33\x3\x2\x2\x2\xA35\xA34\x3\x2"+
+		"\x2\x2\xA36\xA37\x3\x2\x2\x2\xA37\xA35\x3\x2\x2\x2\xA37\xA38\x3\x2\x2"+
+		"\x2\xA38\xA39\x3\x2\x2\x2\xA39\xA3B\a\xCD\x2\x2\xA3A\xA2E\x3\x2\x2\x2"+
+		"\xA3A\xA32\x3\x2\x2\x2\xA3B\x101\x3\x2\x2\x2\xA3C\xA3D\a\x13\x2\x2\xA3D"+
+		"\xA40\a\xD8\x2\x2\xA3E\xA3F\at\x2\x2\xA3F\xA41\a\xD8\x2\x2\xA40\xA3E\x3"+
+		"\x2\x2\x2\xA40\xA41\x3\x2\x2\x2\xA41\xA42\x3\x2\x2\x2\xA42\xA45\x5\x114"+
+		"\x8B\x2\xA43\xA44\a\xD8\x2\x2\xA44\xA46\x5\x10C\x87\x2\xA45\xA43\x3\x2"+
+		"\x2\x2\xA45\xA46\x3\x2\x2\x2\xA46\x103\x3\x2\x2\x2\xA47\xA48\t\x10\x2"+
+		"\x2\xA48\x105\x3\x2\x2\x2\xA49\xA4E\a\xD4\x2\x2\xA4A\xA4D\x5\x11A\x8E"+
+		"\x2\xA4B\xA4D\a\xD4\x2\x2\xA4C\xA4A\x3\x2\x2\x2\xA4C\xA4B\x3\x2\x2\x2"+
+		"\xA4D\xA50\x3\x2\x2\x2\xA4E\xA4C\x3\x2\x2\x2\xA4E\xA4F\x3\x2\x2\x2\xA4F"+
+		"\xA59\x3\x2\x2\x2\xA50\xA4E\x3\x2\x2\x2\xA51\xA54\x5\x11A\x8E\x2\xA52"+
+		"\xA55\x5\x11A\x8E\x2\xA53\xA55\a\xD4\x2\x2\xA54\xA52\x3\x2\x2\x2\xA54"+
+		"\xA53\x3\x2\x2\x2\xA55\xA56\x3\x2\x2\x2\xA56\xA54\x3\x2\x2\x2\xA56\xA57"+
+		"\x3\x2\x2\x2\xA57\xA59\x3\x2\x2\x2\xA58\xA49\x3\x2\x2\x2\xA58\xA51\x3"+
+		"\x2\x2\x2\xA59\x107\x3\x2\x2\x2\xA5A\xA5B\t\x11\x2\x2\xA5B\x109\x3\x2"+
+		"\x2\x2\xA5C\xA61\x5\x100\x81\x2\xA5D\xA5E\t\r\x2\x2\xA5E\xA60\x5\x100"+
+		"\x81\x2\xA5F\xA5D\x3\x2\x2\x2\xA60\xA63\x3\x2\x2\x2\xA61\xA5F\x3\x2\x2"+
+		"\x2\xA61\xA62\x3\x2\x2\x2\xA62\x10B\x3\x2\x2\x2\xA63\xA61\x3\x2\x2\x2"+
+		"\xA64\xA66\a\xC6\x2\x2\xA65\xA67\a\xD8\x2\x2\xA66\xA65\x3\x2\x2\x2\xA66"+
+		"\xA67\x3\x2\x2\x2\xA67\xA6A\x3\x2\x2\x2\xA68\xA6B\a\xD1\x2\x2\xA69\xA6B"+
+		"\x5\x100\x81\x2\xA6A\xA68\x3\x2\x2\x2\xA6A\xA69\x3\x2\x2\x2\xA6B\x10D"+
+		"\x3\x2\x2\x2\xA6C\xA75\x5\x106\x84\x2\xA6D\xA6F\a\xD8\x2\x2\xA6E\xA6D"+
+		"\x3\x2\x2\x2\xA6E\xA6F\x3\x2\x2\x2\xA6F\xA70\x3\x2\x2\x2\xA70\xA72\a\xC4"+
+		"\x2\x2\xA71\xA73\a\xD8\x2\x2\xA72\xA71\x3\x2\x2\x2\xA72\xA73\x3\x2\x2"+
+		"\x2\xA73\xA74\x3\x2\x2\x2\xA74\xA76\x5\x106\x84\x2\xA75\xA6E\x3\x2\x2"+
+		"\x2\xA75\xA76\x3\x2\x2\x2\xA76\x10F\x3\x2\x2\x2\xA77\xA78\x5\x100\x81"+
+		"\x2\xA78\xA79\a\b\x2\x2\xA79\x111\x3\x2\x2\x2\xA7A\xA7B\t\x12\x2\x2\xA7B"+
+		"\x113\x3\x2\x2\x2\xA7C\xA7F\x5\x104\x83\x2\xA7D\xA7F\x5\x10A\x86\x2\xA7E"+
+		"\xA7C\x3\x2\x2\x2\xA7E\xA7D\x3\x2\x2\x2\xA7F\xA88\x3\x2\x2\x2\xA80\xA82"+
+		"\a\xD8\x2\x2\xA81\xA80\x3\x2\x2\x2\xA81\xA82\x3\x2\x2\x2\xA82\xA83\x3"+
+		"\x2\x2\x2\xA83\xA85\a\xC2\x2\x2\xA84\xA86\a\xD8\x2\x2\xA85\xA84\x3\x2"+
+		"\x2\x2\xA85\xA86\x3\x2\x2\x2\xA86\xA87\x3\x2\x2\x2\xA87\xA89\a\xCB\x2"+
+		"\x2\xA88\xA81\x3\x2\x2\x2\xA88\xA89\x3\x2\x2\x2\xA89\x115\x3\x2\x2\x2"+
+		"\xA8A\xA8B\t\x13\x2\x2\xA8B\x117\x3\x2\x2\x2\xA8C\xA8D\t\x14\x2\x2\xA8D"+
+		"\x119\x3\x2\x2\x2\xA8E\xA8F\t\x15\x2\x2\xA8F\x11B\x3\x2\x2\x2\x1CB\x120"+
+		"\x125\x12C\x12E\x131\x136\x13A\x13F\x143\x148\x14C\x151\x155\x161\x166"+
+		"\x16C\x170\x174\x17D\x181\x187\x18C\x197\x1A0\x1A6\x1AB\x1B5\x1BD\x1C1"+
+		"\x1C5\x1C9\x1CE\x1D5\x1D9\x1DE\x1E4\x22A\x230\x234\x237\x247\x24B\x250"+
+		"\x253\x258\x25E\x262\x267\x26C\x270\x273\x277\x27D\x281\x288\x28E\x29B"+
+		"\x29E\x2A1\x2A5\x2AB\x2AF\x2B4\x2BB\x2BF\x2C3\x2C7\x2CA\x2D0\x2D6\x2D8"+
+		"\x2E3\x2E9\x2EB\x2F3\x2F9\x301\x308\x310\x315\x31C\x320\x323\x328\x335"+
+		"\x33B\x345\x349\x353\x35C\x362\x364\x369\x36F\x373\x376\x37A\x385\x38A"+
+		"\x390\x392\x397\x39C\x3A0\x3A6\x3A9\x3AD\x3B2\x3B8\x3BA\x3C2\x3C6\x3C9"+
+		"\x3CC\x3D0\x3E7\x3ED\x3F1\x3F5\x3FF\x405\x407\x413\x419\x41B\x421\x427"+
+		"\x429\x433\x437\x43C\x444\x448\x44C\x454\x458\x464\x468\x46F\x471\x477"+
+		"\x47B\x483\x487\x48D\x495\x49B\x49D\x4A1\x4A9\x4AF\x4B1\x4B7\x4BD\x4BF"+
+		"\x4C3\x4C7\x4CB\x4E3\x4ED\x4F1\x4F6\x501\x505\x50A\x518\x51C\x525\x529"+
+		"\x52C\x530\x534\x537\x53B\x53F\x542\x546\x549\x54D\x54F\x554\x558\x55C"+
+		"\x560\x562\x568\x56C\x56F\x574\x578\x57E\x581\x585\x58A\x590\x592\x599"+
+		"\x59D\x5A3\x5A6\x5AB\x5B1\x5B3\x5BA\x5BE\x5C4\x5C7\x5CC\x5D2\x5D4\x5DC"+
+		"\x5E0\x5E3\x5E6\x5EA\x5F2\x5F6\x5FA\x5FC\x5FF\x604\x60A\x60E\x612\x617"+
+		"\x61C\x620\x624\x629\x631\x633\x63F\x643\x64B\x64F\x657\x65B\x65F\x663"+
+		"\x667\x66B\x673\x677\x683\x688\x68C\x694\x697\x69C\x6A2\x6A4\x6AA\x6AC"+
+		"\x6B1\x6B5\x6BB\x6BF\x6C4\x6CD\x6D1\x6D6\x6D9\x6DF\x6E3\x6E6\x6EC\x6F0"+
+		"\x6F8\x6FC\x705\x709\x70F\x712\x717\x71D\x71F\x725\x729\x730\x738\x73D"+
+		"\x744\x748\x74B\x74E\x751\x755\x75A\x763\x76D\x771\x778\x77A\x785\x789"+
+		"\x78F\x794\x79E\x7A2\x7A6\x7AB\x7B2\x7C0\x7C4\x7C9\x7CD\x7D2\x7D6\x7DB"+
+		"\x7DF\x7E4\x7E8\x7ED\x7F1\x7FB\x7FF\x804\x808\x80D\x811\x816\x81A\x81F"+
+		"\x823\x828\x82C\x83B\x83F\x844\x848\x850\x852\x858\x85D\x863\x867\x86C"+
+		"\x871\x875\x879\x87B\x87F\x881\x884\x888\x890\x897\x8A0\x8A4\x8AE\x8B3"+
+		"\x8B9\x8BB\x8C3\x8C7\x8CA\x8CD\x8D1\x8D5\x8DB\x8DE\x8E2\x8E6\x8EA\x8ED"+
+		"\x8F5\x8FB\x900\x903\x907\x90B\x90F\x912\x91A\x91F\x922\x927\x92B\x92E"+
+		"\x931\x939\x93F\x942\x94A\x951\x955\x958\x95B\x963\x968\x96B\x96E\x972"+
+		"\x976\x978\x97C\x97F\x987\x98C\x991\x994\x997\x99F\x9A5\x9AA\x9AD\x9B1"+
+		"\x9B5\x9BA\x9BE\x9C1\x9C5\x9CA\x9D1\x9D5\x9D9\x9DD\x9E2\x9E5\x9E8\x9EE"+
+		"\x9F2\x9F6\x9FA\x9FE\xA01\xA05\xA08\xA0B\xA0F\xA13\xA17\xA1B\xA20\xA28"+
+		"\xA2E\xA30\xA35\xA37\xA3A\xA40\xA45\xA4C\xA4E\xA54\xA56\xA58\xA61\xA66"+
+		"\xA6A\xA6E\xA72\xA75\xA7E\xA81\xA85\xA88";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
