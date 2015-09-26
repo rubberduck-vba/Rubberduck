@@ -3201,5 +3201,14 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter..
+        /// </summary>
+        public static string WriteOnlyProperty_ {
+            get {
+                return ResourceManager.GetString("WriteOnlyProperty_", resourceCulture);
+            }
+        }
     }
 }
