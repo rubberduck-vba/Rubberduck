@@ -59,6 +59,7 @@
 *   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
 *     a function call that returns an array that is immediately accessed.
 *   - added macroConstStmt (#CONST) rule.
+*   - amended block rule to support instruction separators.
 *
 *======================================================================================
 *
@@ -145,7 +146,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (NEWLINE* WS? blockStmt)* NEWLINE*;
+block : blockStmt (WS? ':')* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
 
 blockStmt : lineLabel
     | appactivateStmt
