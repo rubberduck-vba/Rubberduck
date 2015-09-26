@@ -818,8 +818,8 @@ namespace Rubberduck.Parsing.Symbols
                         || item.Accessibility == Accessibility.Global
                         || _moduleTypes.Contains(item.DeclarationType)))
                 // todo: refactor
-                ?? matches.SingleOrDefault(item => item.IsBuiltIn &&
-                    !item.DeclarationType.HasFlag(DeclarationType.Member)
+                ?? matches.SingleOrDefault(item => item.IsBuiltIn 
+                    //!item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event 
                     && (item.Accessibility == Accessibility.Public
                         || item.Accessibility == Accessibility.Global
