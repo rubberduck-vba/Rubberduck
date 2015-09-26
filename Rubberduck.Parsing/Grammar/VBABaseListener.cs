@@ -671,6 +671,19 @@ public partial class VBABaseListener : IVBAListener {
 	public virtual void ExitModuleBody([NotNull] VBAParser.ModuleBodyContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.caseCondSelection"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.caseCondSelection"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.widthStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

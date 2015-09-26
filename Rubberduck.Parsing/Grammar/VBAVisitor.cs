@@ -383,6 +383,14 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitModuleBody([NotNull] VBAParser.ModuleBodyContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by the <c>caseCondSelection</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.widthStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -644,7 +652,7 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>caseCondTo</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -913,7 +921,7 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>caseCondValue</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
@@ -1052,7 +1060,7 @@ public interface IVBAVisitor<Result> : IParseTreeVisitor<Result> {
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>caseCondIs</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>

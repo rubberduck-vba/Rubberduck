@@ -60,6 +60,7 @@
 *     a function call that returns an array that is immediately accessed.
 *   - added macroConstStmt (#CONST) rule.
 *   - amended block rule to support instruction separators.
+*   - amended selectCaseStmt rules to support all valid syntaxes.
 *
 *======================================================================================
 *
@@ -446,17 +447,21 @@ selectCaseStmt :
 	WS? END_SELECT
 ;
 
+sC_Selection :
+    IS WS? comparisonOperator WS? valueStmt                         # caseCondIs
+    | valueStmt WS TO WS valueStmt                                # caseCondTo
+    | valueStmt                                                     # caseCondValue
+;
+
 sC_Case : 
-	CASE WS sC_Cond WS? (':'? NEWLINE* | NEWLINE+)  
-	(block NEWLINE+)?
+	CASE WS sC_Cond WS? (':'? NEWLINE*)
+	(block NEWLINE+)*
 ;
 
 // ELSE first, so that it is not interpreted as a variable call
-sC_Cond : 
-	ELSE 															# caseCondElse
-	| IS WS? comparisonOperator WS? valueStmt 						# caseCondIs
-	| valueStmt (WS? ',' WS? valueStmt)* 							# caseCondValue
-	| INTEGERLITERAL WS TO WS valueStmt (WS? ',' WS? valueStmt)* 	# caseCondTo
+sC_Cond :
+    ELSE                                                            # caseCondElse
+    | sC_Selection (WS? ',' WS? sC_Selection)*                      # caseCondSelection
 ;
 
 sendkeysStmt : SENDKEYS WS valueStmt (WS? ',' WS? valueStmt)?;

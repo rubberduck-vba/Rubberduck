@@ -587,6 +587,19 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitModuleBody([NotNull] VBAParser.ModuleBodyContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>caseCondSelection</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>caseCondSelection</c>
+	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCaseCondSelection([NotNull] VBAParser.CaseCondSelectionContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.widthStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1000,13 +1013,13 @@ public interface IVBAListener : IParseTreeListener {
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>caseCondTo</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterCaseCondTo([NotNull] VBAParser.CaseCondToContext context);
 	/// <summary>
 	/// Exit a parse tree produced by the <c>caseCondTo</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCaseCondTo([NotNull] VBAParser.CaseCondToContext context);
@@ -1427,13 +1440,13 @@ public interface IVBAListener : IParseTreeListener {
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>caseCondValue</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterCaseCondValue([NotNull] VBAParser.CaseCondValueContext context);
 	/// <summary>
 	/// Exit a parse tree produced by the <c>caseCondValue</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCaseCondValue([NotNull] VBAParser.CaseCondValueContext context);
@@ -1648,13 +1661,13 @@ public interface IVBAListener : IParseTreeListener {
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>caseCondIs</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterCaseCondIs([NotNull] VBAParser.CaseCondIsContext context);
 	/// <summary>
 	/// Exit a parse tree produced by the <c>caseCondIs</c>
-	/// labeled alternative in <see cref="VBAParser.sC_Cond"/>.
+	/// labeled alternative in <see cref="VBAParser.sC_Selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCaseCondIs([NotNull] VBAParser.CaseCondIsContext context);
