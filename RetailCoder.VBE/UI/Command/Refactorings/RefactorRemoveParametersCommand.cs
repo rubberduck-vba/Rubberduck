@@ -13,29 +13,29 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRemoveParametersCommand(VBE ide, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
-            : base (ide, parser, editor)
+        public RefactorRemoveParametersCommand(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+            : base (vbe, parser, editor)
         {
             _wrapperWrapperFactory = wrapperWrapperFactory;
         }
 
         public override void Execute(object parameter)
         {
-            if (_ide.ActiveCodePane == null)
+            if (Vbe.ActiveCodePane == null)
             {
                 return;
             }
-            var codePane = _wrapperWrapperFactory.Create(_ide.ActiveCodePane);
+            var codePane = _wrapperWrapperFactory.Create(Vbe.ActiveCodePane);
             var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
             // duplicates ReorderParameters Implementation until here... extract common method?
             // TryGetQualifiedSelection?
             var progress = new ParsingProgressPresenter();
-            var result = progress.Parse(_parser, _ide.ActiveVBProject);
+            var result = progress.Parse(Parser, Vbe.ActiveVBProject);
 
             using (var view = new RemoveParametersDialog())
             {
-                var factory = new RemoveParametersPresenterFactory(_editor, view, result, new MessageBox());
-                var refactoring = new RemoveParametersRefactoring(factory, _editor);
+                var factory = new RemoveParametersPresenterFactory(Editor, view, result, new MessageBox());
+                var refactoring = new RemoveParametersRefactoring(factory, Editor);
                 refactoring.Refactor(selection);
             }
         }

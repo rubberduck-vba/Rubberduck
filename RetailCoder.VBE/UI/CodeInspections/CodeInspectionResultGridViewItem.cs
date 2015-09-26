@@ -13,8 +13,8 @@ namespace Rubberduck.UI.CodeInspections
         public CodeInspectionResultGridViewItem(ICodeInspectionResult result)
         {
             _item = result;
-            _icon = GetSeverityIcon(result.Severity);
-            _severity = result.Severity;
+            _icon = GetSeverityIcon(result.Inspection.Severity);
+            _severity = result.Inspection.Severity;
             _selection = result.QualifiedSelection;
             _issue = result.Name;
             _quickFix = result.QuickFixes.FirstOrDefault();

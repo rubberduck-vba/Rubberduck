@@ -10,8 +10,7 @@ namespace Rubberduck.UnitTesting
     [ProgId(ProgId)]
     public class PermissiveAssertClass : AssertClass
     {
-        private const string ClassId = "";
-        // FIXME generate a GUID
+        private const string ClassId = "40F71F29-D63F-4481-8A7D-E04A4B054501";
         private const string ProgId = "Rubberduck.PermissiveAssertClass";
 
         /// <summary>

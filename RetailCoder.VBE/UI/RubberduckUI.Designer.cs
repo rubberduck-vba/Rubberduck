@@ -1243,6 +1243,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specify &apos;Option Explicit&apos;.
+        /// </summary>
+        public static string Inspections_SpecifyOptionExplicit {
+            get {
+                return ResourceManager.GetString("Inspections_SpecifyOptionExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string Inspections_SpecifyPublicModifierExplicitly {
@@ -1677,6 +1686,33 @@ namespace Rubberduck.UI {
         public static string PromptLoadDefaultConfig {
             get {
                 return ResourceManager.GetString("PromptLoadDefaultConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This instance.
+        /// </summary>
+        public static string QuickFix_ThisInstance {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All instances in module.
+        /// </summary>
+        public static string QuickFix_ThisModule {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All instances in project.
+        /// </summary>
+        public static string QuickFix_ThisProject {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
             }
         }
         

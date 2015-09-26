@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                     && declaration.References.Any(reference => reference.IsAssignment));
 
             var issues = assignedByValParameters
-                .Select(param => new AssignedByValParameterInspectionResult(string.Format(Description, param.IdentifierName), Severity, param.Context, param.QualifiedName));
+                .Select(param => new AssignedByValParameterInspectionResult(this, string.Format(Description, param.IdentifierName), param.Context, param.QualifiedName));
 
             return issues;
         }

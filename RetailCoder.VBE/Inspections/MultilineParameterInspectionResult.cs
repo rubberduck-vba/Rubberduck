@@ -11,8 +11,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public MultilineParameterInspectionResult(string inspection, CodeInspectionSeverity severity, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, severity, qualifiedName.QualifiedModuleName, context)
+        public MultilineParameterInspectionResult(IInspection inspection, string result, ParserRuleContext context, QualifiedMemberName qualifiedName)
+            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = new[]
             {

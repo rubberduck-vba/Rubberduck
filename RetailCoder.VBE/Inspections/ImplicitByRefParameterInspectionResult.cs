@@ -12,26 +12,13 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitByRefParameterInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
-            : base(inspection,type, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitByRefParameterInspectionResult(IInspection inspection, string result, QualifiedContext<VBAParser.ArgContext> qualifiedContext)
+            : base(inspection, result, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
-            // array parameters & paramarrays must be passed by reference
-            var context = (VBAParser.ArgContext) Context;
-            if ((context.LPAREN() != null && context.RPAREN() != null) || context.PARAMARRAY() != null)
-            {
-                _quickFixes = new[]
+            _quickFixes = new[]
                 {
                     new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
                 };
-            }
-            else
-            {
-                _quickFixes = new[]
-                {
-                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByRefExplicitly, Tokens.ByRef), 
-                    new ImplicitByRefParameterQuickFix(Context, QualifiedSelection, RubberduckUI.Inspections_PassParamByValue, Tokens.ByVal), 
-                };
-            }
         }
 
         public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }

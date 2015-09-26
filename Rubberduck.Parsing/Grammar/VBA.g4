@@ -56,6 +56,11 @@
 *   - blockStmt rules being sorted alphabetically was wrong. moved implicit call statement last.
 *   - '!' in dictionary call statement rule gets picked up as a type hint; changed member call
 *     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
+*   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
+*     a function call that returns an array that is immediately accessed.
+*   - added macroConstStmt (#CONST) rule.
+*   - amended block rule to support instruction separators.
+*   - amended selectCaseStmt rules to support all valid syntaxes.
 *
 *======================================================================================
 *
@@ -72,7 +77,6 @@
 * v1.0 Initial revision
 */
 
-//grammar VisualBasic6;
 grammar VBA;
 
 // module ----------------------------------
@@ -117,6 +121,7 @@ moduleDeclarationsElement :
 	| declareStmt
 	| enumerationStmt 
 	| eventStmt
+	| macroConstStmt
 	| macroIfThenElseStmt
 	| moduleOption
 	| typeStmt
@@ -142,7 +147,7 @@ moduleBlock : block;
 
 attributeStmt : ATTRIBUTE WS implicitCallStmt_InStmt WS? EQ WS? literal (WS? ',' WS? literal)*;
 
-block : blockStmt (NEWLINE* WS? blockStmt)* NEWLINE*;
+block : blockStmt (WS? ':')* (NEWLINE* WS? blockStmt)* WS? NEWLINE*;
 
 blockStmt : lineLabel
     | appactivateStmt
@@ -341,6 +346,8 @@ lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
 
+macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
+
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
 macroIfBlockStmt : 
@@ -440,17 +447,21 @@ selectCaseStmt :
 	WS? END_SELECT
 ;
 
+sC_Selection :
+    IS WS? comparisonOperator WS? valueStmt                         # caseCondIs
+    | valueStmt WS TO WS valueStmt                                # caseCondTo
+    | valueStmt                                                     # caseCondValue
+;
+
 sC_Case : 
-	CASE WS sC_Cond WS? (':'? NEWLINE* | NEWLINE+)  
-	(block NEWLINE+)?
+	CASE WS sC_Cond WS? (':'? NEWLINE*)
+	(block NEWLINE+)*
 ;
 
 // ELSE first, so that it is not interpreted as a variable call
-sC_Cond : 
-	ELSE 															# caseCondElse
-	| IS WS? comparisonOperator WS? valueStmt 						# caseCondIs
-	| valueStmt (WS? ',' WS? valueStmt)* 							# caseCondValue
-	| INTEGERLITERAL WS TO WS valueStmt (WS? ',' WS? valueStmt)* 	# caseCondTo
+sC_Cond :
+    ELSE                                                            # caseCondElse
+    | sC_Selection (WS? ',' WS? sC_Selection)*                      # caseCondSelection
 ;
 
 sendkeysStmt : SENDKEYS WS valueStmt (WS? ',' WS? valueStmt)?;
@@ -493,7 +504,7 @@ valueStmt :
 	| midStmt 												# vsMid
 	| ADDRESSOF WS valueStmt 								# vsAddressOf
 	| implicitCallStmt_InStmt WS? ASSIGN WS? valueStmt 		# vsAssign
-
+	
 	| valueStmt WS IS WS valueStmt 							# vsIs
 	| valueStmt WS LIKE WS valueStmt 						# vsLike
 	| valueStmt WS? GEQ WS? valueStmt 						# vsGeq
@@ -544,7 +555,7 @@ withStmt :
 writeStmt : WRITE WS fileNumber WS? ',' (WS? outputList)?;
 
 
-fileNumber : '#'? (ambiguousIdentifier | INTEGERLITERAL);
+fileNumber : '#'? (ambiguousIdentifier | valueStmt);
 
 
 // complex call statements ----------------------------------
@@ -555,10 +566,12 @@ explicitCallStmt :
 ;
 
 // parantheses are required in case of args -> empty parantheses are removed
-eCS_ProcedureCall : CALL WS ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)?;
+eCS_ProcedureCall : CALL WS ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)? (WS? LPAREN subscripts RPAREN)*;
+
+
 
 // parantheses are required in case of args -> empty parantheses are removed
-eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)?;
+eCS_MemberProcedureCall : CALL WS implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS? LPAREN WS? argsCall WS? RPAREN)? (WS? LPAREN subscripts RPAREN)*;
 
 
 implicitCallStmt_InBlock :
@@ -566,12 +579,12 @@ implicitCallStmt_InBlock :
 	| iCS_B_ProcedureCall
 ;
 
-iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt?;
+iCS_B_MemberProcedureCall : implicitCallStmt_InStmt? '.' ambiguousIdentifier typeHint? (WS argsCall)? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
 // parantheses are forbidden in case of args
 // variables cannot be called in blocks
 // certainIdentifier instead of ambiguousIdentifier for preventing ambiguity with statement keywords 
-iCS_B_ProcedureCall : certainIdentifier (WS argsCall)?;
+iCS_B_ProcedureCall : certainIdentifier (WS argsCall)? (WS? LPAREN subscripts RPAREN)*;
 
 
 // iCS_S_MembersCall first, so that member calls are not resolved as separate iCS_S_VariableOrProcedureCalls
@@ -582,11 +595,11 @@ implicitCallStmt_InStmt :
 	| iCS_S_DictionaryCall
 ;
 
-iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? dictionaryCallStmt?;
+iCS_S_VariableOrProcedureCall : ambiguousIdentifier typeHint? dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN dictionaryCallStmt?;
+iCS_S_ProcedureOrArrayCall : (ambiguousIdentifier | baseType) typeHint? WS? LPAREN WS? (argsCall WS?)? RPAREN dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
-iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? iCS_S_MemberCall+ dictionaryCallStmt?;
+iCS_S_MembersCall : (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall)? iCS_S_MemberCall+ dictionaryCallStmt? (WS? LPAREN subscripts RPAREN)*;
 
 iCS_S_MemberCall : ('.' | '!') (iCS_S_VariableOrProcedureCall | iCS_S_ProcedureOrArrayCall);
 
@@ -774,6 +787,7 @@ LOCK_READ : L O C K ' ' R E A D;
 LOCK_WRITE : L O C K ' ' W R I T E;
 LOCK_READ_WRITE : L O C K ' ' R E A D ' ' W R I T E;
 LSET : L S E T;
+MACRO_CONST : '#' C O N S T ' ';
 MACRO_IF : '#' I F ' ';
 MACRO_ELSEIF : '#' E L S E I F ' ';
 MACRO_ELSE : '#' E L S E ' ';

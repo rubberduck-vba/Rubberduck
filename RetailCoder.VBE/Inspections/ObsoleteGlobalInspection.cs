@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections
             var issues = from item in parseResult.Declarations.Items
                          where !item.IsBuiltIn && item.Accessibility == Accessibility.Global
                          && item.Context != null
-                         select new ObsoleteGlobalInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
+                         select new ObsoleteGlobalInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context));
 
             return issues;
         }

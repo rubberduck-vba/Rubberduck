@@ -22,7 +22,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
 
-            _navigateCommand = new NavigateCommand(wrapper);
+            _navigateCommand = new NavigateCommand();
 
             _runAllTestsCommand = new RunAllTestsCommand(testEngine, model);
             _addTestModuleCommand = new AddTestModuleCommand(vbe);

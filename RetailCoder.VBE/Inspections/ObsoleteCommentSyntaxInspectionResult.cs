@@ -13,8 +13,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ObsoleteCommentSyntaxInspectionResult(string inspection, CodeInspectionSeverity type, CommentNode comment) 
-            : base(inspection, type, comment)
+        public ObsoleteCommentSyntaxInspectionResult(IInspection inspection, CommentNode comment) 
+            : base(inspection, inspection.Description, comment)
         {
             _quickFixes = new CodeInspectionQuickFix[]
             {

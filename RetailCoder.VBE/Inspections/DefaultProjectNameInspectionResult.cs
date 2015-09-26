@@ -15,8 +15,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public DefaultProjectNameInspectionResult(string inspection, CodeInspectionSeverity type, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory) 
-            : base(inspection, type, target)
+        public DefaultProjectNameInspectionResult(IInspection inspection, Declaration target, VBProjectParseResult parseResult, ICodePaneWrapperFactory wrapperFactory)
+            : base(inspection, string.Format(inspection.Description, target.IdentifierName), target)
         {
             _quickFixes = new[]
             {
@@ -55,5 +55,8 @@ namespace Rubberduck.Inspections
                 refactoring.Refactor(_target);
             }
         }
+
+        public override bool CanFixInModule { get { return false; } }
+        public override bool CanFixInProject { get { return false; } }
     }
 }
