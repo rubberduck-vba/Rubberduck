@@ -19,6 +19,7 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
+        // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
         private static readonly string[] PrimitiveTypes =
         {
             Tokens.Boolean,
@@ -59,7 +60,7 @@ namespace Rubberduck.Inspections
                 !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && PrimitiveTypes.Contains(declaration.AsTypeName)
+                //&& PrimitiveTypes.Contains(declaration.AsTypeName) // suggest passing object types ByRef?
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
