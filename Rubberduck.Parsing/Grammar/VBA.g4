@@ -58,6 +58,7 @@
 *     to accept '!' as well as '.', but this complicates resolving the '!' shorthand syntax.
 *   - added a subscripts rule in procedure calls, to avoid breaking the parser with 
 *     a function call that returns an array that is immediately accessed.
+*   - added macroConstStmt (#CONST) rule.
 *
 *======================================================================================
 *
@@ -74,7 +75,6 @@
 * v1.0 Initial revision
 */
 
-//grammar VisualBasic6;
 grammar VBA;
 
 // module ----------------------------------
@@ -119,6 +119,7 @@ moduleDeclarationsElement :
 	| declareStmt
 	| enumerationStmt 
 	| eventStmt
+	| macroConstStmt
 	| macroIfThenElseStmt
 	| moduleOption
 	| typeStmt
@@ -342,6 +343,8 @@ loadStmt : LOAD WS valueStmt;
 lockStmt : LOCK WS valueStmt (WS? ',' WS? valueStmt (WS TO WS valueStmt)?)?;
 
 lsetStmt : LSET WS implicitCallStmt_InStmt WS? EQ WS? valueStmt;
+
+macroConstStmt : MACRO_CONST WS? ambiguousIdentifier WS? EQ WS? valueStmt;
 
 macroIfThenElseStmt : macroIfBlockStmt macroElseIfBlockStmt* macroElseBlockStmt? MACRO_END_IF;
 
@@ -778,6 +781,7 @@ LOCK_READ : L O C K ' ' R E A D;
 LOCK_WRITE : L O C K ' ' W R I T E;
 LOCK_READ_WRITE : L O C K ' ' R E A D ' ' W R I T E;
 LSET : L S E T;
+MACRO_CONST : '#' C O N S T ' ';
 MACRO_IF : '#' I F ' ';
 MACRO_ELSEIF : '#' E L S E I F ' ';
 MACRO_ELSE : '#' E L S E ' ';

@@ -1838,6 +1838,17 @@ public interface IVBAListener : IParseTreeListener {
 	void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.macroConstStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroConstStmt([NotNull] VBAParser.MacroConstStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.macroConstStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroConstStmt([NotNull] VBAParser.MacroConstStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.iCS_B_ProcedureCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
