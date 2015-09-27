@@ -401,10 +401,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\RubberduckUI.jp.Designer.cs">
+    <Compile Include="UI\RubberduckUI.ja.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.jp.resx</DependentUpon>
+      <DependentUpon>RubberduckUI.ja.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\RubberduckUI.sv.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -757,9 +757,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.jp.resx">
+    <EmbeddedResource Include="UI\RubberduckUI.ja.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.jp.Designer.cs</LastGenOutput>
+      <LastGenOutput>RubberduckUI.ja.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RubberduckUI.sv.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -49,7 +49,6 @@
 *   - added moduleDeclarations rule, moved moduleOptions there; options can now be
 *     located anywhere in declarations section, without breaking the parser.
 *   - added support for Option Compare Database.
-*   - added support for numbered lines (amended lineLabel rule).
 *   - added support for VBA 7.0 PtrSafe attribute for Declare statements.
 *   - implemented a fileNumber rule to locate identifier usages in file numbers.
 *   - added support for anonymous declarations in With blocks (With New Something)

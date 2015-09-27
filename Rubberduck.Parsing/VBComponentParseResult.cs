@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
             _comments = comments;
             _tokenStream = tokenStream;
 
-            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, wrapperFactory);
+            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type);
             var walker = new ParseTreeWalker();
             walker.Walk(listener, _parseTree);
 
