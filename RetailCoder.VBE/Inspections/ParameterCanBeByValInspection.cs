@@ -93,6 +93,12 @@ namespace Rubberduck.Inspections
                     {
                         foreach (var reference in item)
                         {
+                            if (reference.Context.Parent is VBAParser.ICS_S_VariableOrProcedureCallContext)
+                            {
+                                // parameterless call (what's this doing here?)
+                                continue;
+                            }
+
                             var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
                             if (context == null)
                             {

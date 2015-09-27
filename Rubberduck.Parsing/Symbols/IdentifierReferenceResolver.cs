@@ -625,7 +625,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifiers = context.ambiguousIdentifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            
+            if (identifier == null)
+            {
+                return;
+            }
+
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
             identifier.AddReference(reference);
@@ -641,6 +645,10 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifiers = context.ambiguousIdentifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
+            if (identifier == null)
+            {
+                return;
+            }
 
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
