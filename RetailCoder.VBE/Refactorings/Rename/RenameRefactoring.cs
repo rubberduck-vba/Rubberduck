@@ -55,10 +55,11 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private Declaration AmbiguousId()
+        private Declaration FindDeclarationForIdentifier()
         {
             var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
-                                              || _model.Target.ParentScope.Contains(item.ParentScope))
+                                              || (item.ParentScope == null && _model.Target.ParentScope == null 
+                                              || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
                                               && _model.NewName == item.IdentifierName).ToList();
 
             if (values.Any())
@@ -120,10 +121,10 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var ambiguousId = AmbiguousId();
-            if (ambiguousId != null)
+            var declaration = FindDeclarationForIdentifier();
+            if (declaration != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, ambiguousId.IdentifierName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
                 var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 

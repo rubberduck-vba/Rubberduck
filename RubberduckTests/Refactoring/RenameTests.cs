@@ -55,7 +55,8 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             //Assert
-            Assert.AreEqual(expectedCode, module.Lines());
+            var actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
