@@ -57,10 +57,12 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration FindDeclarationForIdentifier()
         {
-            var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
-                                              || (item.ParentScope == null && _model.Target.ParentScope == null 
-                                              || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
-                                              && _model.NewName == item.IdentifierName).ToList();
+            var values = _model.Declarations.Items.Where(item => 
+                _model.NewName == item.IdentifierName 
+                && ((item.Scope.Contains(_model.Target.Scope)
+                || (item.ParentScope == null && string.IsNullOrEmpty(_model.Target.ParentScope)) 
+                || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
+                ).ToList();
 
             if (values.Any())
             {
@@ -101,7 +103,8 @@ namespace Rubberduck.Refactorings.Rename
                 if (target == null) { continue; }
 
                 values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
-                                              || target.ParentScope.Contains(item.ParentScope))
+                                              || (item.ParentScope == null && string.IsNullOrEmpty(target.ParentScope))
+                                              || (item.ParentScope != null && target.ParentScope.Contains(item.ParentScope)))
                                               && _model.NewName == item.IdentifierName).ToList();
 
                 if (values.Any())
