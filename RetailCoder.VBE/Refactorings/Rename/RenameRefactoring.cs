@@ -55,11 +55,14 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private Declaration AmbiguousId()
+        private Declaration FindDeclarationForIdentifier()
         {
-            var values = _model.Declarations.Items.Where(item => (item.Scope.Contains(_model.Target.Scope)
-                                              || _model.Target.ParentScope.Contains(item.ParentScope))
-                                              && _model.NewName == item.IdentifierName).ToList();
+            var values = _model.Declarations.Items.Where(item => 
+                _model.NewName == item.IdentifierName 
+                && ((item.Scope.Contains(_model.Target.Scope)
+                || (item.ParentScope == null && string.IsNullOrEmpty(_model.Target.ParentScope)) 
+                || (item.ParentScope != null && _model.Target.ParentScope.Contains(item.ParentScope))))
+                ).ToList();
 
             if (values.Any())
             {
@@ -100,7 +103,8 @@ namespace Rubberduck.Refactorings.Rename
                 if (target == null) { continue; }
 
                 values = _model.Declarations.Items.Where(item => (item.Scope.Contains(target.Scope)
-                                              || target.ParentScope.Contains(item.ParentScope))
+                                              || (item.ParentScope == null && string.IsNullOrEmpty(target.ParentScope))
+                                              || (item.ParentScope != null && target.ParentScope.Contains(item.ParentScope)))
                                               && _model.NewName == item.IdentifierName).ToList();
 
                 if (values.Any())
@@ -120,10 +124,10 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var ambiguousId = AmbiguousId();
-            if (ambiguousId != null)
+            var declaration = FindDeclarationForIdentifier();
+            if (declaration != null)
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, ambiguousId.IdentifierName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, declaration.IdentifierName);
                 var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
