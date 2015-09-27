@@ -7,9 +7,10 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class IdentifierReference
     {
-        public IdentifierReference(QualifiedModuleName qualifiedName, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
+        public IdentifierReference(QualifiedModuleName qualifiedName, string parentScope, string identifierName, Selection selection, ParserRuleContext context, Declaration declaration, bool isAssignmentTarget = false, bool hasExplicitLetStatement = false)
         {
             _qualifiedName = qualifiedName;
+            _parentScope = parentScope;
             _identifierName = identifierName;
             _selection = selection;
             _context = context;
@@ -26,6 +27,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly Selection _selection;
         public Selection Selection { get { return _selection; } }
+
+        private readonly string _parentScope;
+        public string ParentScope { get { return _parentScope; } }
 
         private readonly bool _isAssignmentTarget;
         public bool IsAssignment { get { return _isAssignmentTarget; } }

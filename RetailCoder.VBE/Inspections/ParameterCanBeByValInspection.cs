@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections
         public CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public CodeInspectionSeverity Severity { get; set; }
 
-        private static string[] PrimitiveTypes =
+        // if we don't want to suggest passing non-primitive types ByRef (i.e. object types and Variant), then we need this:
+        private static readonly string[] PrimitiveTypes =
         {
             Tokens.Boolean,
             Tokens.Byte,
@@ -59,19 +60,59 @@ namespace Rubberduck.Inspections
                 !ignoredScopes.Contains(declaration.ParentScope)
                 && declaration.DeclarationType == DeclarationType.Parameter
                 && !interfaceMembers.Select(m => m.Scope).Contains(declaration.ParentScope)
-                && PrimitiveTypes.Contains(declaration.AsTypeName)
+                //&& PrimitiveTypes.Contains(declaration.AsTypeName) // suggest passing object types ByRef?
                 && ((VBAParser.ArgContext) declaration.Context).BYVAL() == null
                 && !IsUsedAsByRefParam(parseResult.Declarations, declaration)
                 && !declaration.References.Any(reference => reference.IsAssignment))
-                .Select(issue => new ParameterCanBeByValInspectionResult(string.Format(Description, issue.IdentifierName), Severity, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, string.Format(Description, issue.IdentifierName), ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName));
 
             return issues;
         }
 
         private bool IsUsedAsByRefParam(Declarations declarations, Declaration parameter)
         {
-            // todo: enable tracking parameter references 
-            // by linking Parameter declarations to their parent Procedure/Function/Property member.
+            // find the procedure calls in the procedure of the parameter.
+            // note: works harder than it needs to when procedure has more than a single procedure call...
+            //       ...but caching [declarations] would be a memory leak
+            var procedureCalls = declarations.Items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
+                .SelectMany(member => member.References.Where(reference => reference.ParentScope == parameter.ParentScope))
+                .GroupBy(call => call.Declaration)
+                .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
+
+            foreach (var item in procedureCalls)
+            {
+                var calledProcedureArgs = declarations.Items
+                    .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
+                    .OrderBy(arg => arg.Selection.StartLine)
+                    .ThenBy(arg => arg.Selection.StartColumn)
+                    .ToArray();
+
+                for (var i = 0; i < calledProcedureArgs.Count(); i++)
+                {
+                    if (((VBAParser.ArgContext) calledProcedureArgs[i].Context).BYVAL() == null)
+                    {
+                        foreach (var reference in item)
+                        {
+                            if (reference.Context.Parent is VBAParser.ICS_S_VariableOrProcedureCallContext)
+                            {
+                                // parameterless call (what's this doing here?)
+                                continue;
+                            }
+
+                            var context = ((dynamic)reference.Context.Parent).argsCall() as VBAParser.ArgsCallContext;
+                            if (context == null)
+                            {
+                                continue;
+                            }
+                            if (parameter.IdentifierName == context.GetText())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
             return false;
         }
     }

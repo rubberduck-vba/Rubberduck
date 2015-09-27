@@ -147,7 +147,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             var name = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
-            return new IdentifierReference(_qualifiedModuleName, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
+            return new IdentifierReference(_qualifiedModuleName, _currentScope.Scope, name, selection, callSiteContext, callee, isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private Declaration ResolveType(VBAParser.ComplexTypeContext context)
@@ -367,8 +367,8 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     localScope = _currentScope;
                 }
-                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget)
-                      ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement, isAssignmentTarget);
+                parent = ResolveInternal(context.iCS_S_ProcedureOrArrayCall(), localScope, accessorType, hasExplicitLetStatement)
+                      ?? ResolveInternal(context.iCS_S_VariableOrProcedureCall(), localScope, accessorType, hasExplicitLetStatement);
 
                 parent = ResolveType(parent);
             }
@@ -625,7 +625,11 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifiers = context.ambiguousIdentifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
-            
+            if (identifier == null)
+            {
+                return;
+            }
+
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
             identifier.AddReference(reference);
@@ -641,6 +645,10 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifiers = context.ambiguousIdentifier();
             var identifier = ResolveInternal(identifiers[0], _currentScope, ContextAccessorType.AssignValue, null, false, true);
+            if (identifier == null)
+            {
+                return;
+            }
 
             // each iteration counts as an assignment
             var reference = CreateReference(identifiers[0], identifier, true);
@@ -818,8 +826,8 @@ namespace Rubberduck.Parsing.Symbols
                         || item.Accessibility == Accessibility.Global
                         || _moduleTypes.Contains(item.DeclarationType)))
                 // todo: refactor
-                ?? matches.SingleOrDefault(item => item.IsBuiltIn &&
-                    !item.DeclarationType.HasFlag(DeclarationType.Member)
+                ?? matches.SingleOrDefault(item => item.IsBuiltIn 
+                    //!item.DeclarationType.HasFlag(DeclarationType.Member)
                     && item.DeclarationType != DeclarationType.Event 
                     && (item.Accessibility == Accessibility.Public
                         || item.Accessibility == Accessibility.Global

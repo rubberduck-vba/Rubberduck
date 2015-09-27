@@ -12,10 +12,10 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ParameterNotUsedInspectionResult(string inspection, CodeInspectionSeverity type,
+        public ParameterNotUsedInspectionResult(IInspection inspection, string result,
             ParserRuleContext context, QualifiedMemberName qualifiedName, bool isInterfaceImplementation, 
             RemoveParametersRefactoring refactoring, VBProjectParseResult parseResult)
-            : base(inspection, type, qualifiedName.QualifiedModuleName, context)
+            : base(inspection, result, qualifiedName.QualifiedModuleName, context)
         {
             _quickFixes = isInterfaceImplementation ? new CodeInspectionQuickFix[] {} : new[]
             {

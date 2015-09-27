@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -17,16 +16,13 @@ namespace Rubberduck.UI.CodeInspections
     {
         private CodeInspectionsWindow Control { get { return UserControl as CodeInspectionsWindow; } }
 
-        private IEnumerable<VBProjectParseResult> _parseResults;
         private IList<ICodeInspectionResult> _results;
-        private GridViewSort<CodeInspectionResultGridViewItem> _gridViewSort;
         private readonly IInspector _inspector;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
 
         /// <summary>
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="_inspector_Reset"/> is <c>null</c>.</exception>
-        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window, ICodePaneWrapperFactory wrapperFactory)
+        public CodeInspectionsDockablePresenter(IInspector inspector, VBE vbe, AddIn addin, CodeInspectionsWindow window)
             :base(vbe, addin, window)
         {
             _inspector = inspector;
@@ -34,32 +30,6 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Reset += _inspector_Reset;
             _inspector.Parsing += _inspector_Parsing;
             _inspector.ParseCompleted += _inspector_ParseCompleted;
-
-            _gridViewSort = new GridViewSort<CodeInspectionResultGridViewItem>(RubberduckUI.Component, false);
-            _wrapperFactory = wrapperFactory;
-
-            Control.RefreshCodeInspections += Control_RefreshCodeInspections;
-            Control.NavigateCodeIssue += Control_NavigateCodeIssue;
-            Control.QuickFix += Control_QuickFix;
-            Control.CopyResults += Control_CopyResultsToClipboard;
-            Control.Cancel += Control_Cancel;
-            Control.SortColumn += SortColumn;
-        }
-
-        private void SortColumn(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            var columnName = Control.GridView.Columns[e.ColumnIndex].Name;
-            if (columnName == "Icon") { columnName = "Severity"; }
-
-            Control.InspectionResults = new BindingList<CodeInspectionResultGridViewItem>(_gridViewSort.Sort(Control.InspectionResults.AsEnumerable(), columnName).ToList());
-        }
-
-        private void Control_Cancel(object sender, EventArgs e)
-        {
-            if (_cancelTokenSource != null)
-            { 
-                _cancelTokenSource.Cancel();
-            }
         }
 
         private void _inspector_ParseCompleted(object sender, ParseCompletedEventArgs e)
@@ -69,8 +39,7 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            ToggleParsingStatus(false);
-            _parseResults = e.ParseResults;
+            //ToggleParsingStatus(false);
         }
 
         private void _inspector_Parsing(object sender, EventArgs e)
@@ -80,90 +49,22 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            ToggleParsingStatus();
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.EnableRefresh(false);
-            });
-        }
-
-        private void ToggleParsingStatus(bool isParsing = true)
-        {
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.ToggleParsingStatus(isParsing);
-            });
+            //ToggleParsingStatus();
         }
 
         private void Control_CopyResultsToClipboard(object sender, EventArgs e)
         {
-            var results = string.Join("\n", _results.Select(FormatResultForClipboard));
-            var resource = _results.Count == 1
-                ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
-                : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
-            var text = string.Format(resource, DateTime.Now, _results.Count) + results;
-
-            Clipboard.SetText(text);
-        }
-
-        private string FormatResultForClipboard(ICodeInspectionResult result)
-        {
-            var module = result.QualifiedSelection.QualifiedName;
-            return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
-                result.Severity,
-                result.Name,
-                module.ProjectName,
-                module.ComponentName,
-                result.QualifiedSelection.Selection.StartLine);
         }
 
         private int _issues;
         private void _inspector_IssuesFound(object sender, InspectorIssuesFoundEventArg e)
         {
             Interlocked.Add(ref _issues, e.Issues.Count);
-            Control.Invoke((MethodInvoker) delegate
-            {
-                var newCount = _issues;
-                Control.SetIssuesStatus(newCount);
-            });
-        }
-
-        private void Control_QuickFix(object sender, QuickFixEventArgs e)
-        {
-            e.QuickFix();
-            Control_RefreshCodeInspections(null, EventArgs.Empty);
         }
 
         public override void Show()
         {
             base.Show();
-            Refresh();
-        }
-
-        private void Control_NavigateCodeIssue(object sender, NavigateCodeEventArgs e)
-        {
-            try
-            {
-                if (e.QualifiedName.Component == null)
-                {
-                    return;
-                }
-                var codePane = _wrapperFactory.Create(e.QualifiedName.Component.CodeModule.CodePane);
-                codePane.Selection = e.Selection;
-            }
-            catch (COMException)
-            {
-                // gulp
-            }
-            catch (Exception exception)
-            {
-                // debug    
-            }
-        }
-
-        private void Control_RefreshCodeInspections(object sender, EventArgs e)
-        {
             Refresh();
         }
 
@@ -173,7 +74,6 @@ namespace Rubberduck.UI.CodeInspections
             _cancelTokenSource = new CancellationTokenSource();
             var token = _cancelTokenSource.Token;
 
-            Control.EnableRefresh(false);
             Control.Cursor = Cursors.WaitCursor;
 
             await Task.Run(() => RefreshAsync(token), token);
@@ -181,13 +81,11 @@ namespace Rubberduck.UI.CodeInspections
             {
                 var results = _results.Select(item => new CodeInspectionResultGridViewItem(item));
 
-                Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
-                _gridViewSort.Sort(results, _gridViewSort.ColumnName,
-                    _gridViewSort.SortedAscending).ToList()));
+                //Control.SetContent(new BindingList<CodeInspectionResultGridViewItem>(
+                //_gridViewSort.Sort(results, _gridViewSort.ColumnName,
+                //    _gridViewSort.SortedAscending).ToList();
             }
 
-            Control.SetIssuesStatus(_issues, true);
-            Control.EnableRefresh();
             Control.Cursor = Cursors.Default;
         }
 
@@ -212,13 +110,13 @@ namespace Rubberduck.UI.CodeInspections
         private void _inspector_Reset(object sender, EventArgs e)
         {
             _issues = 0;
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.SetIssuesStatus(_issues);
-                Control.InspectionResults.Clear();
-                Control.EnableRefresh();
-                Control.Cursor = Cursors.Default;
-            });
+            //Control.Invoke((MethodInvoker) delegate
+            //{
+            //    Control.SetIssuesStatus(_issues);
+            //    Control.InspectionResults.Clear();
+            //    Control.EnableRefresh();
+            //    Control.Cursor = Cursors.Default;
+            //});
         }
 
         protected override void Dispose(bool disposing)
@@ -229,13 +127,6 @@ namespace Rubberduck.UI.CodeInspections
             _inspector.Reset -= _inspector_Reset;
             _inspector.Parsing -= _inspector_Parsing;
             _inspector.ParseCompleted -= _inspector_ParseCompleted;
-
-            Control.RefreshCodeInspections -= Control_RefreshCodeInspections;
-            Control.NavigateCodeIssue -= Control_NavigateCodeIssue;
-            Control.QuickFix -= Control_QuickFix;
-            Control.CopyResults -= Control_CopyResultsToClipboard;
-            Control.Cancel -= Control_Cancel;
-            Control.SortColumn -= SortColumn;
 
             base.Dispose(true);
         }

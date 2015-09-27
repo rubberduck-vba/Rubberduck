@@ -12,8 +12,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes; 
 
-        public OptionExplicitInspectionResult(string inspection, CodeInspectionSeverity type, QualifiedModuleName qualifiedName) 
-            : base(inspection, type, new CommentNode("", new QualifiedSelection(qualifiedName, Selection.Home)))
+        public OptionExplicitInspectionResult(IInspection inspection, QualifiedModuleName qualifiedName) 
+            : base(inspection, inspection.Description, new CommentNode(string.Empty, new QualifiedSelection(qualifiedName, Selection.Home)))
         {
             _quickFixes = new[]
             {
@@ -26,9 +26,8 @@ namespace Rubberduck.Inspections
 
     public class OptionExplicitQuickFix : CodeInspectionQuickFix
     {
-        // todo: add a resource string for "Specify Option Explicit".
         public OptionExplicitQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, RubberduckUI.OptionExplicit)
+            : base(context, selection, RubberduckUI.Inspections_SpecifyOptionExplicit)
         {
         }
 

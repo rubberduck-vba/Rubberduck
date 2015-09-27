@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                             || item.DeclarationType == DeclarationType.Constant)
                 .GroupBy(variable => variable.Context.Parent as ParserRuleContext)
                 .Where(grouping => grouping.Count() > 1)
-                .Select(grouping => new MultipleDeclarationsInspectionResult(Description, Severity, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
+                .Select(grouping => new MultipleDeclarationsInspectionResult(this, Description, new QualifiedContext<ParserRuleContext>(grouping.First().QualifiedName.QualifiedModuleName, grouping.Key)));
 
             return issues;
         }

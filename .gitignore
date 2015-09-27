@@ -126,6 +126,9 @@ ClientBin/
 *.pfx
 *.publishsettings
 
+# Monodevelop detritus
+*.userprefs
+
 # RIA/Silverlight projects
 Generated_Code/
 

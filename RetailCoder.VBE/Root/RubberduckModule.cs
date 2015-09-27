@@ -10,7 +10,6 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI;
-using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
@@ -47,31 +46,15 @@ namespace Rubberduck.Root
                 Assembly.GetAssembly(typeof(IRubberduckParser))
             };
 
-            BindMenuTypes();
-            BindToolbarTypes();
-
             ApplyConfigurationConvention(assemblies);
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
             Bind<IPresenter>().To<TestExplorerDockablePresenter>().WhenInjectedInto<TestExplorerCommand>().InSingletonScope();
-            
-            // todo: something smarter than that involving IHostApplication
-            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>();
+            Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
             
             Bind<IDockableUserControl>().To<TestExplorerWindow>().WhenInjectedInto<TestExplorerDockablePresenter>().InSingletonScope()
                 .WithPropertyValue("ViewModel", _kernel.Get<TestExplorerViewModel>());
-        }
-
-        private void BindMenuTypes()
-        {
-            _kernel.Bind<IMenu>().To<RubberduckMenu>(); // todo: confirm RubberduckMenuFactory is actually needed
-            _kernel.Bind<IMenu>().To<FormContextMenu>().WhenTargetHas<FormContextMenuAttribute>();
-        }
-
-        private void BindToolbarTypes()
-        {
-            _kernel.Bind<IToolbar>().To<CodeInspectionsToolbar>().WhenTargetHas<CodeInspectionsToolbarAttribute>();
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
@@ -81,7 +64,7 @@ namespace Rubberduck.Root
                 // inspections & factories have their own binding rules
                 .Where(type => !type.Name.EndsWith("Factory") && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
-                .Configure(binding => binding.InThreadScope()));
+                .Configure(binding => binding.InThreadScope())); // TransientScope wouldn't dispose disposables
         }
 
         // note: settings namespace classes are injected in singleton scope

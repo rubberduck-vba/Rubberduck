@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.VBEHost
             object[] paramArray = { }; //PowerPoint requires a paramarray, so we pass it an empty array.
 
             var call = GenerateMethodCall(qualifiedMemberName);
-            Application.Run(call, paramArray);
+            Application.Run(call, ref paramArray);
         }
 
         private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)

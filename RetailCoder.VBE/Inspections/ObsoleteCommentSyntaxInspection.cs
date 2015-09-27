@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
             {
                 if (comment.Marker == Tokens.Rem)
                 {
-                    yield return new ObsoleteCommentSyntaxInspectionResult(Description, Severity, comment);
+                    yield return new ObsoleteCommentSyntaxInspectionResult(this, comment);
                 }
             }
         }

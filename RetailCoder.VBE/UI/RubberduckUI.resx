@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -630,6 +630,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Language_FR" xml:space="preserve">
     <value>French</value>
   </data>
+  <data name="Language_JP" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Remove Parameters</value>
   </data>
@@ -1125,7 +1128,61 @@ Are you sure you want to proceed with this rename?</value>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
-  <data name="Language_JP" xml:space="preserve">
-    <value>Japanese</value>
+  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
+    <value>All Opened Files</value>
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
+    <value>All Open Projects</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
+    <value>Current Block</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
+    <value>Current File</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
+    <value>Current Project</value>
+  </data>
+  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="RegexSearchReplace_Caption" xml:space="preserve">
+    <value>Regex Search &amp; Replace</value>
+  </data>
+  <data name="RegexSearchReplace_FindButtonLabel" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
+    <value>Scope:</value>
+  </data>
+  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
+    <value>Search:</value>
+  </data>
+  <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
+    <value>Specify 'Option Explicit'</value>
+  </data>
+  <data name="QuickFix_ThisInstance" xml:space="preserve">
+    <value>This instance</value>
+  </data>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value>All instances in module</value>
+  </data>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value>All instances in project</value>
+  </data>
+  <data name="WriteOnlyProperty_" xml:space="preserve">
+    <value>Property '{0}' has no getter.</value>
+  </data>
+  <data name="UntypedFunctionUsage_" xml:space="preserve">
+    <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
   </data>
 </root>

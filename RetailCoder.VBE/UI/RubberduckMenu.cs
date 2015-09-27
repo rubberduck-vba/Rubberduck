@@ -4,34 +4,22 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using Ninject;
 using Ninject.Parameters;
-using Rubberduck.Navigation;
 using Rubberduck.Inspections;
+using Rubberduck.Navigation;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Settings;
-using Rubberduck.ToDoItems;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI
 {
-    public interface IRubberduckMenuFactory
-    {
-        IMenu Create();
-    }
-
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class RubberduckMenuAttribute : Attribute
-    {
-    }
-
     public class RubberduckMenu : Menu, IMenu
     {
         private readonly TestMenu _testMenu;
@@ -84,7 +72,7 @@ namespace Rubberduck.UI
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer, _wrapperFactory);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _wrapperFactory, _implementationsNavigator, _referencesNavigator);

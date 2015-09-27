@@ -14,8 +14,8 @@ namespace Rubberduck.Inspections
     {
         private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
 
-        public ImplicitVariantReturnTypeInspectionResult(string name, CodeInspectionSeverity severity, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(name, severity, qualifiedContext.ModuleName, qualifiedContext.Context)
+        public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string name, QualifiedContext<ParserRuleContext> qualifiedContext)
+            : base(inspection, name, qualifiedContext.ModuleName, qualifiedContext.Context)
         {
             _quickFixes = new[]
             {

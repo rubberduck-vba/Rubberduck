@@ -1243,6 +1243,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specify &apos;Option Explicit&apos;.
+        /// </summary>
+        public static string Inspections_SpecifyOptionExplicit {
+            get {
+                return ResourceManager.GetString("Inspections_SpecifyOptionExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string Inspections_SpecifyPublicModifierExplicitly {
@@ -1681,6 +1690,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This instance.
+        /// </summary>
+        public static string QuickFix_ThisInstance {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All instances in module.
+        /// </summary>
+        public static string QuickFix_ThisModule {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All instances in project.
+        /// </summary>
+        public static string QuickFix_ThisProject {
+            get {
+                return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method &apos;{0}&apos; implements &apos;{1}.{2}&apos;. Change interface signature? (will propagate to all implementations).
         /// </summary>
         public static string Refactoring_TargetIsInterfaceMemberImplementation {
@@ -1731,6 +1767,123 @@ namespace Rubberduck.UI {
         public static string Refresh {
             get {
                 return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regex Search &amp; Replace.
+        /// </summary>
+        public static string RegexSearchReplace_Caption {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find.
+        /// </summary>
+        public static string RegexSearchReplace_FindButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_FindButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace All.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceAllButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceAllButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceButtonLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace:.
+        /// </summary>
+        public static string RegexSearchReplace_ReplaceLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ReplaceLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scope:.
+        /// </summary>
+        public static string RegexSearchReplace_ScopeLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_ScopeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search:.
+        /// </summary>
+        public static string RegexSearchReplace_SearchLabel {
+            get {
+                return ResourceManager.GetString("RegexSearchReplace_SearchLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Opened Files.
+        /// </summary>
+        public static string RegexSearchReplaceScope_AllOpenedFiles {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Open Projects.
+        /// </summary>
+        public static string RegexSearchReplaceScope_AllOpenProjects {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_AllOpenProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Block.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentBlock {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current File.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentFile {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Project.
+        /// </summary>
+        public static string RegexSearchReplaceScope_CurrentProject {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_CurrentProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection.
+        /// </summary>
+        public static string RegexSearchReplaceScope_Selection {
+            get {
+                return ResourceManager.GetString("RegexSearchReplaceScope_Selection", resourceCulture);
             }
         }
         
@@ -3014,6 +3167,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of untyped function &apos;{0}&apos;. String-returning version &apos;{0}$&apos; is available..
+        /// </summary>
+        public static string UntypedFunctionUsage_ {
+            get {
+                return ResourceManager.GetString("UntypedFunctionUsage_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
         /// </summary>
         public static string VariableNotAssigned_ {
@@ -3037,6 +3199,15 @@ namespace Rubberduck.UI {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter..
+        /// </summary>
+        public static string WriteOnlyProperty_ {
+            get {
+                return ResourceManager.GetString("WriteOnlyProperty_", resourceCulture);
             }
         }
     }

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
@@ -30,7 +28,7 @@ namespace Rubberduck.Inspections
                 var walker = new ParseTreeWalker();
 
                 walker.Walk(listener, result.ParseTree);
-                issues.AddRange(listener.Contexts.Select(context => new ObsoleteCallStatementUsageInspectionResult(Description, Severity,
+                issues.AddRange(listener.Contexts.Select(context => new ObsoleteCallStatementUsageInspectionResult(this, 
                     new QualifiedContext<VBAParser.ExplicitCallStmtContext>(result.QualifiedName, context))));
             }
 
@@ -55,14 +53,9 @@ namespace Rubberduck.Inspections
                 }
 
                 var memberCall = context.eCS_MemberProcedureCall();
-                if (memberCall != null)
-                {
-                    if (memberCall.CALL() != null)
-                    {
-                        _contexts.Add(context);
-                        return;
-                    }
-                }
+                if (memberCall == null) return;
+                if (memberCall.CALL() == null) return;
+                _contexts.Add(context);
             }
         }
     }
