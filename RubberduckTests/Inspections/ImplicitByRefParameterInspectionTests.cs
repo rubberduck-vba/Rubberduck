@@ -181,35 +181,6 @@ End Sub";
         }
 
         [TestMethod]
-        public void ImplicitByRefParameter_QuickFixWorks_PassByVal()
-        {
-            const string inputCode =
-@"Sub Foo(arg1 As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo(ByVal arg1 As Integer)
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", vbext_ProjectProtection.vbext_pp_none)
-                .AddComponent("Class1", vbext_ComponentType.vbext_ct_ClassModule, inputCode)
-                .Build().Object;
-            var module = project.VBComponents.Item(0).CodeModule;
-
-            var codePaneFactory = new CodePaneWrapperFactory();
-            var parseResult = new RubberduckParser(codePaneFactory).Parse(project);
-
-            var inspection = new ImplicitByRefParameterInspection();
-            var inspectionResults = inspection.GetInspectionResults(parseResult);
-
-            inspectionResults.First().QuickFixes.ElementAt(1).Fix();
-
-            Assert.AreEqual(expectedCode, module.Lines());
-        }
-
-        [TestMethod]
         public void ImplicitByRefParameter_QuickFixWorks_ParamArrayMustBePassedByRef()
         {
             const string inputCode =

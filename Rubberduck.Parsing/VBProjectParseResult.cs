@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing
 
             var projectIdentifier = project.Name;
             var memberName = new QualifiedMemberName(new QualifiedModuleName(project), projectIdentifier);
-            var projectDeclaration = new Declaration(memberName, null, null, projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project);
+            var projectDeclaration = new Declaration(memberName, null, null, projectIdentifier, false, false, Accessibility.Global, DeclarationType.Project, false);
             _declarations.Add(projectDeclaration);
 
             foreach (var declaration in VbaStandardLib.Declarations)

@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -13,21 +12,19 @@ namespace Rubberduck.Parsing.Symbols
         public Declarations Declarations { get { return _declarations; } }
 
         private readonly QualifiedModuleName _qualifiedName;
-        private readonly ICodePaneWrapperFactory _wrapperFactory;
         private readonly Declaration _moduleDeclaration;
 
         private string _currentScope;
         private Declaration _parentDeclaration;
 
-        public DeclarationSymbolsListener(VBComponentParseResult result, ICodePaneWrapperFactory wrapperFactory)
-            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type, wrapperFactory)
+        public DeclarationSymbolsListener(VBComponentParseResult result)
+            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type)
         {
         }
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, ICodePaneWrapperFactory wrapperFactory)
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type)
         {
             _qualifiedName = qualifiedName;
-            _wrapperFactory = wrapperFactory;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module

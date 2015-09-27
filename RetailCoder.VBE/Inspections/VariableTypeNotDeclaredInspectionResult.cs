@@ -37,7 +37,8 @@ namespace Rubberduck.Inspections
 
             // methods return empty string if soft-cast context is null - just concat results:
             string originalInstruction;
-            var fix = DeclareExplicitVariant(Context.Parent as VBAParser.VariableSubStmtContext, out originalInstruction);
+            
+            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, out originalInstruction);
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
@@ -46,7 +47,12 @@ namespace Rubberduck.Inspections
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context.Parent as VBAParser.ArgContext, out originalInstruction);
+                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction);
+            }
+
+            if (string.IsNullOrEmpty(originalInstruction))
+            {
+                return;
             }
 
             var fixedCodeLine = codeLine.Replace(originalInstruction, fix);

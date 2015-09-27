@@ -124,7 +124,8 @@ End Sub";
             var inspection = new VariableTypeNotDeclaredInspection();
             inspection.GetInspectionResults(parseResult).First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Lines());
+            var actual = module.Lines();
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
