@@ -212,13 +212,7 @@ namespace Rubberduck.UI
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private void OnReorderParametersButtonClick(CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            if (IDE.ActiveCodePane == null)
-            {
-                return;
-            }
-            var codePane = _wrapperWrapperFactory.Create(IDE.ActiveCodePane);
-            var selection = new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
-            ReorderParameters(selection);
+            new RefactorReorderParametersCommand(IDE, _parser, _editor, _wrapperWrapperFactory).Execute(null);
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]
