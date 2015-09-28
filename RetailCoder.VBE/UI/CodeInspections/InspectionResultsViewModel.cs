@@ -49,6 +49,10 @@ namespace Rubberduck.UI.CodeInspections
                 _selectedItem = value; 
                 OnPropertyChanged();
                 CanQuickFix = _selectedItem != null && _selectedItem.HasQuickFixes;
+
+                var defaultFix = _selectedItem != null ? _selectedItem.DefaultQuickFix : null;
+                CanExecuteQuickFixInModule = defaultFix != null && defaultFix.CanFixInModule;
+                CanExecuteQuickFixInProject = defaultFix != null && defaultFix.CanFixInProject;
             }
         }
 
@@ -85,6 +89,7 @@ namespace Rubberduck.UI.CodeInspections
             var results = await _inspector.FindIssuesAsync(projectParseResult, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
+            SelectedItem = null;
         }
 
         private void ExecuteQuickFixes(IEnumerable<CodeInspectionQuickFix> quickFixes)
@@ -108,6 +113,13 @@ namespace Rubberduck.UI.CodeInspections
             ExecuteQuickFixes(new[] {quickFix});
         }
 
+        private bool _canExecuteQuickFixInModule;
+        public bool CanExecuteQuickFixInModule
+        {
+            get { return _canExecuteQuickFixInModule; }
+            set { _canExecuteQuickFixInModule = value; OnPropertyChanged(); }
+        }
+
         private void ExecuteQuickFixInModuleCommand(object parameter)
         {
             var quickFix = parameter as CodeInspectionQuickFix;
@@ -123,6 +135,13 @@ namespace Rubberduck.UI.CodeInspections
                 .ThenByDescending(item => item.Selection.Selection.EndColumn);
 
             ExecuteQuickFixes(items);
+        }
+
+        private bool _canExecuteQuickFixInProject;
+        public bool CanExecuteQuickFixInProject
+        {
+            get { return _canExecuteQuickFixInProject; }
+            set { _canExecuteQuickFixInProject = value; OnPropertyChanged(); }
         }
 
         private void ExecuteQuickFixInProjectCommand(object parameter)

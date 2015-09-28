@@ -41,5 +41,7 @@ namespace Rubberduck.Inspections
 
             module.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
         }
+
+        public override bool CanFixInModule { get { return false; } }
     }
 }

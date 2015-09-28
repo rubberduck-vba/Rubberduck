@@ -79,5 +79,7 @@ namespace Rubberduck.Inspections
         public virtual IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return new CodeInspectionQuickFix[] {}; } }
 
         public bool HasQuickFixes { get { return QuickFixes.Any(); } }
+
+        public virtual CodeInspectionQuickFix DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
     }
 }
