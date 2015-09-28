@@ -377,9 +377,8 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\RefactoringsParentMenu.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorRemoveParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRenameCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\RefactorRenameCommandMenuItem.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorReorderParametersCommand.cs" />
-    <Compile Include="UI\Command\RefactorRenameCommand.cs" />
-    <Compile Include="UI\Command\RefactorReorderParametersCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RefactorReorderParametersCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\RubberduckParentMenu.cs" />
     <Compile Include="UI\Command\RegexSearchReplaceCommand.cs" />

@@ -10,6 +10,39 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
+        
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        
+        <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+
+            <Setter Property="Width" Value="Auto"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                  ContentTemplate="{TemplateBinding  ContentTemplate}"
+                                  VerticalAlignment="Center">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -213,6 +246,19 @@
                     <TextBlock Margin="4" Text="{Binding SelectedItem.Name}" FontWeight="Bold" TextWrapping="Wrap"/>
                 </StackPanel>
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" TextWrapping="Wrap" />
+                
+                <WrapPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding QuickFixInModuleCommand}"
+                            CommandParameter="{Binding SelectedItem.DefaultQuickFix}"
+                            Content="Fix all occurrences in module" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding QuickFixInProjectCommand}"
+                            CommandParameter="{Binding SelectedItem.DefaultQuickFix}"
+                            Content="Fix all occurrences in project" />
+                </WrapPanel>
             </StackPanel>
         </Border>
         
