@@ -10,11 +10,11 @@ using Rubberduck.UI.Refactorings;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorRenameParametersCommand : RefactorCommandBase
+    public class RefactorRenameCommand : RefactorCommandBase
     {
         private readonly ICodePaneWrapperFactory _wrapperWrapperFactory;
 
-        public RefactorRenameParametersCommand(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
+        public RefactorRenameCommand(VBE vbe, IRubberduckParser parser, IActiveCodePaneEditor editor, ICodePaneWrapperFactory wrapperWrapperFactory) 
             : base (vbe, parser, editor)
         {
             _wrapperWrapperFactory = wrapperWrapperFactory;
