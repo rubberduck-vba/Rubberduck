@@ -335,6 +335,8 @@
     <Compile Include="Inspections\IdentifierNotUsedInspectionResult.cs" />
     <Compile Include="Inspections\VariableNotAssignedInspection.cs" />
     <Compile Include="Inspections\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="UI\CodeInspections\InspectionDescriptionConverter.cs" />
+    <Compile Include="UI\CodeInspections\InspectionImageSourceConverter.cs" />
     <Compile Include="UI\CodeInspections\InspectionResultsControl.xaml.cs">
       <DependentUpon>InspectionResultsControl.xaml</DependentUpon>
     </Compile>
