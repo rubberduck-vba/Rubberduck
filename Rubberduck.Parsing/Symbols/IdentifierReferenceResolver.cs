@@ -631,8 +631,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // each iteration counts as an assignment
-            var reference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(reference);
+            var assignmentReference = CreateReference(identifiers[0], identifier, true);
+            identifier.AddReference(assignmentReference);
+
+            // each iteration also counts as a plain usage
+            var usageReference = CreateReference(identifiers[0], identifier);
+            identifier.AddReference(usageReference);
 
             if (identifiers.Count > 1)
             {
@@ -651,8 +655,12 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             // each iteration counts as an assignment
-            var reference = CreateReference(identifiers[0], identifier, true);
-            identifier.AddReference(reference);
+            var assignmentReference = CreateReference(identifiers[0], identifier, true);
+            identifier.AddReference(assignmentReference);
+
+            // each iteration also counts as a plain usage
+            var usageReference = CreateReference(identifiers[0], identifier);
+            identifier.AddReference(usageReference);
 
             if (identifiers.Count > 1)
             {
