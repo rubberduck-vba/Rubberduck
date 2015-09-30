@@ -588,7 +588,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Prozedur '{0}' wird nicht verwendet</value>
   </data>
   <data name="UnassignedVariableUsage_" xml:space="preserve">
-    <value>Verwendung der nicht zugewiesenen Variable '{0}'</value>
+    <value>Benutzung der nicht zugewiesenen Variable '{0}'</value>
   </data>
   <data name="VariableNotAssigned_" xml:space="preserve">
     <value>Variable '{0}' wird nie ein Wert zugewiesen</value>
