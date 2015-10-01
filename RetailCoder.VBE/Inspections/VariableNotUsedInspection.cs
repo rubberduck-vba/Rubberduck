@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections
         {
             var declarations = parseResult.Declarations.Items.Where(declaration =>
                 !declaration.IsBuiltIn 
-                //&& !declaration.IsArray()
+                && !declaration.IsWithEvents
                 && declaration.DeclarationType == DeclarationType.Variable
                 && declaration.References.All(reference => reference.IsAssignment));
 
