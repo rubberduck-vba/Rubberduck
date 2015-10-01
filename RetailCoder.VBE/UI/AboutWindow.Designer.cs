@@ -65,6 +65,7 @@ namespace Rubberduck.UI
             this.SpecialThanksList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SpecialThanksList.ForeColor = System.Drawing.Color.DimGray;
             this.SpecialThanksList.FormattingEnabled = true;
+            this.SpecialThanksList.HorizontalScrollbar = true;
             this.SpecialThanksList.Items.AddRange(new object[] {
             global::Rubberduck.UI.RubberduckUI.About_Community,
             "Code Review Stack Exchange",
