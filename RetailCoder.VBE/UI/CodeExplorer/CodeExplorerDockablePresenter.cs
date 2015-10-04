@@ -14,7 +14,7 @@ using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 
 namespace Rubberduck.UI.CodeExplorer
 {
-    public class CodeExplorerDockablePresenter : DockablePresenterBase
+    public class CodeExplorerDockablePresenter : DockableToolwindowPresenter
     {
         private readonly IRubberduckParser _parser;
         private readonly ICodePaneWrapperFactory _wrapperFactory;

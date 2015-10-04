@@ -53,6 +53,11 @@ namespace Rubberduck.Parsing.VBA
 
         public VBProjectParseResult Parse(VBProject project, object owner = null)
         {
+            if (project == null)
+            {
+                return null;
+            }
+
             if (owner != null)
             {
                 OnParseStarted(new[]{project.Name}, owner);

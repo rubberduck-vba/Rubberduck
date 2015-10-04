@@ -15,14 +15,19 @@ namespace Rubberduck.UI.CodeInspections
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
         public CodeInspectionsWindow()
-            : this(null)
-        {
-        }
-
-        public CodeInspectionsWindow(InspectionResultsViewModel viewModel)
         {
             InitializeComponent();
-            inspectionResultsControl1.DataContext = viewModel;
+        }
+
+        private InspectionResultsViewModel _viewModel;
+        public InspectionResultsViewModel ViewModel
+        {
+            get { return _viewModel; }
+            set
+            {
+                _viewModel = value;
+                wpfInspectionResultsControl.DataContext = _viewModel;
+            }
         }
     }
 }

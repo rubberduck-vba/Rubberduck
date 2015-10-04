@@ -22,7 +22,6 @@ namespace Rubberduck.UI
 {
     public class RubberduckMenu : Menu, IMenu
     {
-        private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
@@ -72,7 +71,7 @@ namespace Rubberduck.UI
             _todoItemsMenu = new ToDoItemsMenu(vbe, addIn, todoExplorer, todoPresenter);
 
             var inspectionExplorer = new CodeInspectionsWindow();
-            var inspectionPresenter = new CodeInspectionsDockablePresenter(inspector, vbe, addIn, inspectionExplorer);
+            var inspectionPresenter = new CodeInspectionsDockablePresenter(vbe, addIn, inspectionExplorer);
             _codeInspectionsMenu = new CodeInspectionsMenu(vbe, addIn, inspectionExplorer, inspectionPresenter);
 
             _refactorMenu = new RefactorMenu(IDE, AddIn, parser, editor, _wrapperFactory, _implementationsNavigator, _referencesNavigator);
@@ -106,7 +105,6 @@ namespace Rubberduck.UI
 
         private void CodePresenterRunAllAllTests(object sender, EventArgs e)
         {
-            _testMenu.RunAllTests();
         }
 
         public void Initialize()

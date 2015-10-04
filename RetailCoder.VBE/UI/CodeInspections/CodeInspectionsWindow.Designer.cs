@@ -32,7 +32,7 @@ namespace Rubberduck.UI.CodeInspections
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.inspectionResultsControl1 = new Rubberduck.UI.CodeInspections.InspectionResultsControl();
+            this.wpfInspectionResultsControl = new Rubberduck.UI.CodeInspections.InspectionResultsControl();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.CodeInspections
             this.elementHost1.Size = new System.Drawing.Size(555, 125);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.inspectionResultsControl1;
+            this.elementHost1.Child = this.wpfInspectionResultsControl;
             // 
             // CodeInspectionsWindow
             // 
@@ -60,7 +60,7 @@ namespace Rubberduck.UI.CodeInspections
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private InspectionResultsControl inspectionResultsControl1;
+        private InspectionResultsControl wpfInspectionResultsControl;
 
     }
 }

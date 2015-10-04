@@ -20,12 +20,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<CodeInspectionResultBase> GetInspectionResults(VBProjectParseResult parseResult)
         {
-            var declarations = parseResult.Declarations.Items.Where(declaration =>
-                !declaration.IsBuiltIn &&
-                (declaration.DeclarationType == DeclarationType.Constant)
+            var results = parseResult.Declarations.Items.Where(declaration =>
+                !declaration.IsBuiltIn 
+                && declaration.DeclarationType == DeclarationType.Constant
                 && !declaration.References.Any());
 
-            foreach (var issue in declarations)
+            foreach (var issue in results)
             {
                 yield return new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).ambiguousIdentifier(), issue.QualifiedName.QualifiedModuleName);
             }

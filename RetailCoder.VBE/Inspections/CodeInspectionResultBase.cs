@@ -81,5 +81,17 @@ namespace Rubberduck.Inspections
         public bool HasQuickFixes { get { return QuickFixes.Any(); } }
 
         public virtual CodeInspectionQuickFix DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
+
+        public override string ToString()
+        {
+            var module = QualifiedSelection.QualifiedName;
+            return string.Format(
+                "{0}: {1} - {2}.{3}, line {4}",
+                Inspection.Severity,
+                Name,
+                module.ProjectName,
+                module.ComponentName,
+                QualifiedSelection.Selection.StartLine);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace Rubberduck.UI.ToDoItems
     /// <summary>
     /// Presenter for the to-do items explorer.
     /// </summary>
-    public class ToDoExplorerDockablePresenter : DockablePresenterBase
+    public class ToDoExplorerDockablePresenter : DockableToolwindowPresenter
     {
         private readonly IRubberduckParser _parser;
         private readonly IEnumerable<ToDoMarker> _markers;

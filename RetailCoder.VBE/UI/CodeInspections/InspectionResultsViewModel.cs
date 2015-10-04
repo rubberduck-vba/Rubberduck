@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.UI.Command;
 
@@ -17,12 +17,14 @@ namespace Rubberduck.UI.CodeInspections
         private readonly IInspector _inspector;
         private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
+        private readonly IClipboardWriter _clipboard;
 
-        public InspectionResultsViewModel(IInspector inspector, VBE vbe, INavigateCommand navigateCommand)
+        public InspectionResultsViewModel(IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard)
         {
             _inspector = inspector;
             _vbe = vbe;
             _navigateCommand = navigateCommand;
+            _clipboard = clipboard;
             _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)));
             _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
@@ -164,25 +166,13 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            var results = string.Join("\n", _results.Select(FormatResultForClipboard));
+            var results = string.Join("\n", _results.Select(result => result.ToString()), "\n");
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
             var text = string.Format(resource, DateTime.Now, _results.Count) + results;
 
-            Clipboard.SetText(text);
-        }
-
-        private string FormatResultForClipboard(ICodeInspectionResult result)
-        {
-            var module = result.QualifiedSelection.QualifiedName;
-            return string.Format(
-                "{0}: {1} - {2}.{3}, line {4}",
-                result.Inspection.Severity,
-                result.Name,
-                module.ProjectName,
-                module.ComponentName,
-                result.QualifiedSelection.Selection.StartLine);
+            _clipboard.Write(text);
         }
 
         private void ExecuteExportResultsCommand(object parameter)

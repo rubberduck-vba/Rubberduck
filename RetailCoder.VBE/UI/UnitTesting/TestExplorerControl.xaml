@@ -56,14 +56,14 @@
         
         <CollectionViewSource x:Key="OutcomeGroupViewSource" Source="{Binding Model.Tests}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Outcome" />
+                <PropertyGroupDescription PropertyName="Result.Outcome" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
         <DataTemplate x:Key="TestMethodTemplate" DataType="{x:Type unitTesting:TestMethod}">
             <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource IconStyle}" 
-                       Source="{Binding Outcome, Converter={StaticResource OutcomeIconConverter}}"
+                       Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}"
                        VerticalAlignment="Center" />
                 <TextBlock Margin="4" 
                            VerticalAlignment="Center" 
