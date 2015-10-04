@@ -213,10 +213,6 @@
             <Button Command="{Binding CopyResultsCommand}">
                 <Image Height="16" Source="../../Resources/document-copy.png" />
             </Button>
-
-            <Button Command="{Binding ExportResultsCommand}">
-                <Image Height="16" Source="../../Resources/disk.png" />
-            </Button>
             
             <ToggleButton x:Name="TreeViewStyleToggle" Click="ToggleButton_Click">
                 <Image Style="{StaticResource IconStyle}"

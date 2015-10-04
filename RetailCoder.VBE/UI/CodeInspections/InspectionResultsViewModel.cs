@@ -30,7 +30,6 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
-            _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -175,9 +174,5 @@ namespace Rubberduck.UI.CodeInspections
             _clipboard.Write(text);
         }
 
-        private void ExecuteExportResultsCommand(object parameter)
-        {
-            
-        }
     }
 }
