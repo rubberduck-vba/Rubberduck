@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
+using Rubberduck.Common;
 using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
 using resx = Rubberduck.UI.RubberduckUI;
@@ -14,12 +15,14 @@ namespace Rubberduck.UI.UnitTesting
     {
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModelBase _model;
+        private readonly IClipboardWriter _clipboard;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model, IClipboardWriter clipboard)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _model = model;
+            _clipboard = clipboard;
 
             _navigateCommand = new NavigateCommand();
 
@@ -223,7 +226,14 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            throw new NotImplementedException();
+            var results = string.Join("\n", _model.Tests.Select(test => test.ToString()));
+            var passed = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Succeeded) + " " + TestOutcome.Succeeded;
+            var failed = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Failed) + " " + TestOutcome.Failed;
+            var inconclusive = _model.Tests.Count(test => test.Result.Outcome == TestOutcome.Inconclusive) + " " + TestOutcome.Inconclusive;
+            var resource = "Rubberduck Unit Tests - {0}\n{1} | {2} | {3}\n";
+            var text = string.Format(resource, DateTime.Now, passed, failed, inconclusive) + results;
+
+            _clipboard.Write(text);
         }
     }
 }

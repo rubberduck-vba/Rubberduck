@@ -22,7 +22,6 @@ namespace Rubberduck.UI
 {
     public class RubberduckMenu : Menu, IMenu
     {
-        private readonly TestMenu _testMenu;
         private readonly ToDoItemsMenu _todoItemsMenu;
         private readonly CodeExplorerMenu _codeExplorerMenu;
         private readonly CodeInspectionsMenu _codeInspectionsMenu;
@@ -106,7 +105,6 @@ namespace Rubberduck.UI
 
         private void CodePresenterRunAllAllTests(object sender, EventArgs e)
         {
-            _testMenu.RunAllTests();
         }
 
         public void Initialize()
