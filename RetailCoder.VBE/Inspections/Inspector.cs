@@ -67,6 +67,11 @@ namespace Rubberduck.Inspections
 
         public async Task<IList<ICodeInspectionResult>> FindIssuesAsync(VBProjectParseResult project, CancellationToken token)
         {
+            if (project == null)
+            {
+                return new ICodeInspectionResult[]{};
+            }
+
             await Task.Yield();
 
             OnReset();

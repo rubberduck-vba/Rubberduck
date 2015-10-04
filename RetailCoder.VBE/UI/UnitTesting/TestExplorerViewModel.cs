@@ -6,7 +6,6 @@ using System.Windows.Threading;
 using Microsoft.Vbe.Interop;
 using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;
 using resx = Rubberduck.UI.RubberduckUI;
 
 namespace Rubberduck.UI.UnitTesting
@@ -16,7 +15,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ITestEngine _testEngine;
         private readonly TestExplorerModelBase _model;
 
-        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, ICodePaneWrapperFactory wrapper, TestExplorerModelBase model)
+        public TestExplorerViewModel(VBE vbe, ITestEngine testEngine, TestExplorerModelBase model)
         {
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
@@ -60,15 +59,13 @@ namespace Rubberduck.UI.UnitTesting
             return true; //_model.LastRun.Any();
         }
 
-        public event EventHandler<TestCompletedEventArgs> TestCompleted;
-        private void TestEngineTestCompleted(object sender, TestCompletedEventArgs e)
+        public event EventHandler<EventArgs> TestCompleted;
+        private void TestEngineTestCompleted(object sender, EventArgs e)
         {
-            _model.AddExecutedTest(e.Test);
-
             var handler = TestCompleted;
             if (handler != null)
             {
-                handler.Invoke(this, e);
+                handler.Invoke(sender, e);
             }
         }
 

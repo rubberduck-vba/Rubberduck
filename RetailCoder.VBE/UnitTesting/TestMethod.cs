@@ -27,8 +27,6 @@ namespace Rubberduck.UnitTesting
         private readonly VBE _vbe;
         public QualifiedMemberName QualifiedMemberName { get { return _qualifiedMemberName; } }
 
-        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedMemberName.QualifiedModuleName; } }
-
         public void Run()
         {
             _assertResults.Clear(); //clear previous results to account for changes being made

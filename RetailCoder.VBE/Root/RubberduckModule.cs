@@ -10,6 +10,7 @@ using Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI;
+using Rubberduck.UI.CodeInspections;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.VBEHost;
@@ -50,11 +51,17 @@ namespace Rubberduck.Root
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
 
-            Bind<IPresenter>().To<TestExplorerDockablePresenter>().WhenInjectedInto<TestExplorerCommand>().InSingletonScope();
             Bind<TestExplorerModelBase>().To<StandardModuleTestExplorerModel>(); // note: ThisOutlookSessionTestExplorerModel is useless
-            
-            Bind<IDockableUserControl>().To<TestExplorerWindow>().WhenInjectedInto<TestExplorerDockablePresenter>().InSingletonScope()
-                .WithPropertyValue("ViewModel", _kernel.Get<TestExplorerViewModel>());
+
+            Bind<IPresenter>().To<TestExplorerDockablePresenter>()
+                .WhenInjectedInto<TestExplorerCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new TestExplorerWindow { ViewModel = _kernel.Get<TestExplorerViewModel>()});
+
+            Bind<IPresenter>().To<CodeInspectionsDockablePresenter>()
+                .WhenInjectedInto<RunCodeInspectionsCommand>()
+                .InSingletonScope()
+                .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>()});
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
