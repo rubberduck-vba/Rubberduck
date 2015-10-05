@@ -39,7 +39,6 @@ namespace Rubberduck.UI.UnitTesting
             _runSelectedTestCommand = new DelegateCommand(ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
 
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
-            _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
         }
 
         private bool CanExecuteRunPassedTestsCommand(object obj)
@@ -112,9 +111,6 @@ namespace Rubberduck.UI.UnitTesting
 
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
-
-        private readonly ICommand _exportResultsCommand;
-        public ICommand ExportResultsCommand { get { return _exportResultsCommand; } }
 
         private readonly NavigateCommand _navigateCommand;
         public ICommand NavigateCommand { get { return _navigateCommand; } }
@@ -217,11 +213,6 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.Run(new[]{SelectedItem});
             IsBusy = false;
             EvaluateCanExecute();
-        }
-
-        private void ExecuteExportResultsCommand(object parameter)
-        {
-            throw new NotImplementedException();
         }
 
         private void ExecuteCopyResultsCommand(object parameter)

@@ -30,7 +30,6 @@ namespace Rubberduck.UI.CodeInspections
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
             _copyResultsCommand = new DelegateCommand(ExecuteCopyResultsCommand);
-            _exportResultsCommand = new DelegateCommand(ExecuteExportResultsCommand);
         }
 
         private ObservableCollection<ICodeInspectionResult> _results;
@@ -75,22 +74,24 @@ namespace Rubberduck.UI.CodeInspections
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
 
-        private readonly ICommand _exportResultsCommand;
-        public ICommand ExportResultsCommand { get { return _exportResultsCommand; } }
-
         private bool _canRefresh = true;
         public bool CanRefresh { get { return _canRefresh; } private set { _canRefresh = value; OnPropertyChanged(); } }
 
         private bool _canQuickFix;
         public bool CanQuickFix { get { return _canQuickFix; } set { _canQuickFix = value; OnPropertyChanged(); } }
 
+        private bool _isBusy;
+        public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
+
         private async void ExecuteRefreshCommandAsync(object parameter)
         {
-            CanRefresh = false;
+            CanRefresh = false; // if commands' CanExecute worked as expected, this junk wouldn't be needed
+            IsBusy = true;
             var projectParseResult = await _inspector.Parse(_vbe.ActiveVBProject, this);
             var results = await _inspector.FindIssuesAsync(projectParseResult, CancellationToken.None);
             Results = new ObservableCollection<ICodeInspectionResult>(results);
             CanRefresh = true;
+            IsBusy = false;
             SelectedItem = null;
         }
 
@@ -175,9 +176,5 @@ namespace Rubberduck.UI.CodeInspections
             _clipboard.Write(text);
         }
 
-        private void ExecuteExportResultsCommand(object parameter)
-        {
-            
-        }
     }
 }

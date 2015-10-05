@@ -16,7 +16,7 @@ namespace Rubberduck.UnitTesting
         private readonly TestExplorerModelBase _model;
         private readonly VBE _vbe;
 
-        // can't be assigned from constructor because there is no ActiveVBProject at startup:
+        // can't be assigned from constructor because ActiveVBProject is null at startup:
         private IHostApplication _hostApplication; 
 
         public TestEngine(TestExplorerModelBase model, VBE vbe)
