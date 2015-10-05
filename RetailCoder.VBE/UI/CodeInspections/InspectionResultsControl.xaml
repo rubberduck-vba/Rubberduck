@@ -230,6 +230,11 @@
                 <resx:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
         </TreeView>
+        
+        <resx:BusyIndicator Grid.Row="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Width="50" Height="50"
+                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
