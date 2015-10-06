@@ -245,6 +245,10 @@ namespace Rubberduck.Parsing.Symbols
 
             var parentContext = callSiteContext.Parent;
             var identifierName = callSiteContext.GetText();
+
+            var sibling = parentContext.ChildCount > 1 ? parentContext.GetChild(1) : null;
+            var hasStringQualifier = sibling is VBAParser.TypeHintContext && sibling.GetText() == "$";
+
             Declaration callee = null;
             if (localScope.DeclarationType == DeclarationType.Variable)
             {
@@ -260,7 +264,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                             ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                             ?? FindModuleScopeDeclaration(identifierName, localScope)
-                            ?? FindProjectScopeDeclaration(identifierName);
+                            ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
             }
 
             if (callee == null)
@@ -271,7 +275,7 @@ namespace Rubberduck.Parsing.Symbols
                 callee = FindLocalScopeDeclaration(identifierName, localScope, parentContext, isAssignmentTarget)
                          ?? FindModuleScopeProcedure(identifierName, localScope, accessorType, isAssignmentTarget)
                          ?? FindModuleScopeDeclaration(identifierName, localScope)
-                         ?? FindProjectScopeDeclaration(identifierName);
+                         ?? FindProjectScopeDeclaration(identifierName, hasStringQualifier);
             }
 
             if (callee == null)
@@ -822,9 +826,10 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration FindProjectScopeDeclaration(string identifierName)
+        private Declaration FindProjectScopeDeclaration(string identifierName, bool hasStringQualifier = false)
         {
-            var matches = _declarations[identifierName].ToList();
+            var matches = _declarations.Items.Where(item => !item.IsBuiltIn && item.IdentifierName == identifierName
+                || item.IdentifierName == identifierName + (hasStringQualifier ? "$" : string.Empty)).ToList();
             try
             {
                 return matches.SingleOrDefault(item => !item.IsBuiltIn &&

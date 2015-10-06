@@ -886,7 +886,7 @@ namespace Rubberduck.UI {
         /// </summary>
         public static System.Drawing.Icon Ducky {
             get {
-                object obj = ResourceManager.GetObject("Ducky");
+                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -1713,6 +1713,15 @@ namespace Rubberduck.UI {
         public static string QuickFix_ThisProject {
             get {
                 return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &apos;{0}$&apos; instead of &apos;{0}&apos;..
+        /// </summary>
+        public static string QuickFixUseTypedFunction_ {
+            get {
+                return ResourceManager.GetString("QuickFixUseTypedFunction_", resourceCulture);
             }
         }
         
