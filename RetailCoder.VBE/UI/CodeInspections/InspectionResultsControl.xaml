@@ -123,11 +123,11 @@
                 <TextBlock Margin="4" 
                            VerticalAlignment="Center" 
                            Text="{Binding Name, Converter={StaticResource InspectionDescriptionConverter}}"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="0,4,4,4" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -139,11 +139,11 @@
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="4,0,4,0" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
 
@@ -157,11 +157,11 @@
                 <TextBlock VerticalAlignment="Center" 
                            Text="{Binding Name}"
                            FontWeight="Bold"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
                 <TextBlock Margin="4,0,4,0" 
                            VerticalAlignment="Center" 
                            Text="{Binding ItemCount, StringFormat=({0})}" 
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </HierarchicalDataTemplate>
         

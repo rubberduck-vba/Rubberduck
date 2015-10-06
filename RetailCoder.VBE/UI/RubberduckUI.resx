@@ -1185,4 +1185,7 @@ Are you sure you want to proceed with this rename?</value>
   <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value>Use of untyped function '{0}'. String-returning version '{0}$' is available.</value>
   </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value>Use '{0}$' instead of '{0}'.</value>
+  </data>
 </root>

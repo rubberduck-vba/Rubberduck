@@ -270,6 +270,7 @@
     <Compile Include="AppMenu.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Inspections\CodeInspectionQuickFix.cs" />
+    <Compile Include="Inspections\UntypedFunctionUsageInspectionResult.cs" />
     <Compile Include="Inspections\WriteOnlyPropertyInspection.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspection.cs" />
     <Compile Include="Navigation\NavigateAllReferences.cs" />
