@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
             _comments = comments;
             _tokenStream = tokenStream;
 
-            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type);
+            var listener = new DeclarationSymbolsListener(_qualifiedName, Accessibility.Implicit, _component.Type, _comments);
             var walker = new ParseTreeWalker();
             walker.Walk(listener, _parseTree);
 
@@ -35,10 +35,10 @@ namespace Rubberduck.Parsing
         private readonly QualifiedModuleName _qualifiedName;
         public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
 
-        private IParseTree _parseTree;
+        private readonly IParseTree _parseTree;
         public IParseTree ParseTree { get { return _parseTree; } }
 
-        private IEnumerable<CommentNode> _comments;
+        private readonly IEnumerable<CommentNode> _comments;
         public IEnumerable<CommentNode> Comments { get { return _comments; } }
 
         private readonly ITokenStream _tokenStream;
