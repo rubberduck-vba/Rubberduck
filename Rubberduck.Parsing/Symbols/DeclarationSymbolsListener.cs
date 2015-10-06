@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Nodes;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -17,14 +20,47 @@ namespace Rubberduck.Parsing.Symbols
         private string _currentScope;
         private Declaration _parentDeclaration;
 
-        public DeclarationSymbolsListener(VBComponentParseResult result)
-            : this(result.QualifiedName, Accessibility.Implicit, result.Component.Type)
+        private readonly IEnumerable<CommentNode> _comments;
+
+        private string FindAnnotations()
         {
+            if (_comments == null)
+            {
+                return null;
+            }
+
+            var lastDeclarationsSectionLine = _qualifiedName.Component.CodeModule.CountOfDeclarationLines;
+            var annotations = _comments.Where(comment => comment.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine
+                && comment.CommentText.StartsWith("@")).ToArray();
+
+            if (annotations.Any())
+            {
+                return string.Join("\n", annotations.Select(annotation => annotation.CommentText));
+            }
+
+            return null;
         }
 
-        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type)
+        private string FindAnnotations(int line)
+        {
+            if (_comments == null)
+            {
+                return null;
+            }
+
+            var commentAbove = _comments.SingleOrDefault(comment => comment.QualifiedSelection.Selection.EndLine == line - 1);
+            if (commentAbove != null && commentAbove.CommentText.StartsWith("@"))
+            {
+                return commentAbove.CommentText;
+            }
+
+            return null;
+        }
+
+        public DeclarationSymbolsListener(QualifiedModuleName qualifiedName, Accessibility componentAccessibility, vbext_ComponentType type, IEnumerable<CommentNode> comments)
         {
             _qualifiedName = qualifiedName;
+            _comments = comments;
 
             var declarationType = type == vbext_ComponentType.vbext_ct_StdModule
                 ? DeclarationType.Module
@@ -45,7 +81,9 @@ namespace Rubberduck.Parsing.Symbols
                 componentAccessibility,
                 declarationType,
                 null,
-                Selection.Home);
+                Selection.Home,
+                false, 
+                FindAnnotations());
 
             _declarations.Add(_moduleDeclaration);
             _parentDeclaration = _moduleDeclaration;
@@ -83,7 +121,8 @@ namespace Rubberduck.Parsing.Symbols
 
         private Declaration CreateDeclaration(string identifierName, string asTypeName, Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool selfAssigned = false, bool withEvents = false)
         {
-            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection);
+            var annotations = FindAnnotations(selection.StartLine);
+            return new Declaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScope, asTypeName, selfAssigned, withEvents, accessibility, declarationType, context, selection, false, annotations);
         }
 
         /// <summary>

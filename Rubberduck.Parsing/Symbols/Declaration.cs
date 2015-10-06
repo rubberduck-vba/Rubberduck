@@ -17,13 +17,13 @@ namespace Rubberduck.Parsing.Symbols
     {
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true)
-            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn)
+            Accessibility accessibility, DeclarationType declarationType, bool isBuiltIn = true, string annotations = null)
+            :this(qualifiedName, parentDeclaration, parentScope, asTypeName, isSelfAssigned, isWithEvents, accessibility, declarationType, null, Selection.Home, isBuiltIn, annotations)
         {}
 
         public Declaration(QualifiedMemberName qualifiedName, Declaration parentDeclaration, string parentScope,
             string asTypeName, bool isSelfAssigned, bool isWithEvents,
-            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false)
+            Accessibility accessibility, DeclarationType declarationType, ParserRuleContext context, Selection selection, bool isBuiltIn = false, string annotations = null)
         {
             _qualifiedName = qualifiedName;
             _parentDeclaration = parentDeclaration;
@@ -37,6 +37,7 @@ namespace Rubberduck.Parsing.Symbols
             _selection = selection;
             _context = context;
             _isBuiltIn = isBuiltIn;
+            _annotations = annotations;
         }
 
         private readonly bool _isBuiltIn;
@@ -53,6 +54,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IList<IdentifierReference> _references = new List<IdentifierReference>();
         public IEnumerable<IdentifierReference> References { get { return _references; } }
+
+        private readonly string _annotations;
+        public string Annotations { get { return _annotations; } }
 
         public void AddReference(IdentifierReference reference)
         {
