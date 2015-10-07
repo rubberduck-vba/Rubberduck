@@ -222,6 +222,7 @@
         </ToolBar>
         
         <TreeView Grid.Row="1" x:Name="InspectionResultsTreeView"
+                  IsEnabled="{Binding CanRefresh}"
                   ItemsSource="{Binding Source={StaticResource InspectionTypeGroupViewSource}, Path=Groups}"
                   ItemTemplate="{StaticResource InspectionTypeGroupsTemplate}"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
@@ -259,6 +260,11 @@
                             Command="{Binding QuickFixInProjectCommand}"
                             CommandParameter="{Binding SelectedItem.DefaultQuickFix}"
                             Content="Fix all occurrences in project" />
+                    <Button Style="{StaticResource LinkButton}" Margin="4"
+                            Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding DisableInspectionCommand}"
+                            CommandParameter="{Binding SelectedItem.Inspection}"
+                            Content="Disable this inspection" />
                 </WrapPanel>
             </StackPanel>
         </Border>

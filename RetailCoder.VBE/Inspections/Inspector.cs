@@ -74,6 +74,7 @@ namespace Rubberduck.Inspections
 
             await Task.Yield();
 
+            UpdateInspectionSeverity();
             OnReset();
 
             var allIssues = new ConcurrentBag<ICodeInspectionResult>();
