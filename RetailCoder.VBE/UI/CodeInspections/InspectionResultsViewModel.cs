@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
+using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeInspections
@@ -18,14 +19,17 @@ namespace Rubberduck.UI.CodeInspections
         private readonly VBE _vbe;
         private readonly INavigateCommand _navigateCommand;
         private readonly IClipboardWriter _clipboard;
+        private readonly IGeneralConfigService _configService;
 
-        public InspectionResultsViewModel(IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard)
+        public InspectionResultsViewModel(IInspector inspector, VBE vbe, INavigateCommand navigateCommand, IClipboardWriter clipboard, IGeneralConfigService configService)
         {
             _inspector = inspector;
             _vbe = vbe;
             _navigateCommand = navigateCommand;
             _clipboard = clipboard;
+            _configService = configService;
             _refreshCommand = new DelegateCommand(async param => await Task.Run(() => ExecuteRefreshCommandAsync(param)));
+            _disableInspectionCommand = new DelegateCommand(ExecuteDisableInspectionCommand);
             _quickFixCommand = new DelegateCommand(ExecuteQuickFixCommand);
             _quickFixInModuleCommand = new DelegateCommand(ExecuteQuickFixInModuleCommand);
             _quickFixInProjectCommand = new DelegateCommand(ExecuteQuickFixInProjectCommand);
@@ -54,6 +58,7 @@ namespace Rubberduck.UI.CodeInspections
                 var defaultFix = _selectedItem != null ? _selectedItem.DefaultQuickFix : null;
                 CanExecuteQuickFixInModule = defaultFix != null && defaultFix.CanFixInModule;
                 CanExecuteQuickFixInProject = defaultFix != null && defaultFix.CanFixInProject;
+                CanDisableInspection = _selectedItem != null;
             }
         }
 
@@ -70,6 +75,9 @@ namespace Rubberduck.UI.CodeInspections
 
         private readonly ICommand _quickFixInProjectCommand;
         public ICommand QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
+
+        private readonly ICommand _disableInspectionCommand;
+        public ICommand DisableInspectionCommand { get { return _disableInspectionCommand; } }
 
         private readonly ICommand _copyResultsCommand;
         public ICommand CopyResultsCommand { get { return _copyResultsCommand; } }
@@ -145,6 +153,29 @@ namespace Rubberduck.UI.CodeInspections
         {
             get { return _canExecuteQuickFixInProject; }
             set { _canExecuteQuickFixInProject = value; OnPropertyChanged(); }
+        }
+
+        private void ExecuteDisableInspectionCommand(object parameter)
+        {
+            var inspection = parameter as IInspection;
+            if (inspection == null)
+            {
+                return;
+            }
+
+            var config = _configService.LoadConfiguration();
+
+            var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == inspection.Name);
+            setting.Severity = CodeInspectionSeverity.DoNotShow;
+
+            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => ExecuteRefreshCommandAsync(null));
+        }
+
+        private bool _canDisableInspection;
+        public bool CanDisableInspection
+        {
+            get { return _canDisableInspection; }
+            set { _canDisableInspection = value; OnPropertyChanged(); }
         }
 
         private void ExecuteQuickFixInProjectCommand(object parameter)

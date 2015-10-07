@@ -886,7 +886,7 @@ namespace Rubberduck.UI {
         /// </summary>
         public static System.Drawing.Icon Ducky {
             get {
-                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
+                object obj = ResourceManager.GetObject("Ducky");
                 return ((System.Drawing.Icon)(obj));
             }
         }

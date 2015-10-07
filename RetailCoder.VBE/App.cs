@@ -67,7 +67,6 @@ namespace Rubberduck
 
         private void LoadConfig()
         {
-
             _logger.Debug("Loading configuration");
             _config = _configService.LoadConfiguration();
 
@@ -75,6 +74,7 @@ namespace Rubberduck
             try
             {
                 RubberduckUI.Culture = CultureInfo.GetCultureInfo(_config.UserSettings.LanguageSetting.Code);
+                _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
             {
