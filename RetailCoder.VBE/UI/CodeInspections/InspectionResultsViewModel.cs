@@ -81,7 +81,8 @@ namespace Rubberduck.UI.CodeInspections
                         if (inspection != null)
                         {
                             SelectedInspection = inspection;
-                            _defaultFix = _results.First(item => item.Inspection == inspection).DefaultQuickFix;
+                            var result = _results.FirstOrDefault(item => item.Inspection == inspection);
+                            _defaultFix = result == null ? null : result.DefaultQuickFix;
                         }
                     }
                 }
