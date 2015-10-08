@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Vbe.Interop;
 using Moq;
+using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Mocks
 {
@@ -195,12 +196,19 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+        private static readonly string[] ModuleBodyTokens =
+        {
+            Tokens.Sub, Tokens.Function, Tokens.Property
+        };
+
         private Mock<CodeModule> CreateCodeModuleMock(string content)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<CodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
+            codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
+                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
 
             // ReSharper disable once UseIndexedProperty
             codeModule.Setup(m => m.get_Lines(It.IsAny<int>(), It.IsAny<int>()))
