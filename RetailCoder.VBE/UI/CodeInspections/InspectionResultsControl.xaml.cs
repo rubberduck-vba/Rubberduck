@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Rubberduck.Inspections;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -56,7 +57,13 @@ namespace Rubberduck.UI.CodeInspections
                 return;
             }
 
-            var arg = ViewModel.SelectedItem.QualifiedSelection.GetNavitationArgs();
+            var selectedResult = ViewModel.SelectedItem as CodeInspectionResultBase;
+            if (selectedResult == null)
+            {
+                return;
+            }
+
+            var arg = selectedResult.QualifiedSelection.GetNavitationArgs();
             ViewModel.NavigateCommand.Execute(arg);
         }
     }

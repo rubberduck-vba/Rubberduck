@@ -1170,14 +1170,11 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Inspections_SpecifyOptionExplicit" xml:space="preserve">
     <value>Specify 'Option Explicit'</value>
   </data>
-  <data name="QuickFix_ThisInstance" xml:space="preserve">
-    <value>This instance</value>
-  </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>All instances in module</value>
+    <value>Fix all occurrences in module</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>All instances in project</value>
+    <value>Fix all occurrences in project</value>
   </data>
   <data name="WriteOnlyProperty_" xml:space="preserve">
     <value>Property '{0}' has no getter.</value>
@@ -1187,5 +1184,8 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
     <value>Use '{0}$' instead of '{0}'.</value>
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Disable this inspection</value>
   </data>
 </root>

@@ -8,6 +8,7 @@ namespace Rubberduck.Inspections
     public interface ICodeInspectionResult
     {
         IEnumerable<CodeInspectionQuickFix> QuickFixes { get; }
+        CodeInspectionQuickFix DefaultQuickFix { get; }
         ParserRuleContext Context { get; }
         string Name { get; }
         QualifiedSelection QualifiedSelection { get; }
