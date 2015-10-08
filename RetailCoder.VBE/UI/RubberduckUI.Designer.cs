@@ -882,11 +882,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable this inspection.
+        /// </summary>
+        public static string DisableThisInspection {
+            get {
+                return ResourceManager.GetString("DisableThisInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon Ducky {
             get {
-                object obj = ResourceManager.GetObject("Ducky");
+                object obj = ResourceManager.GetObject("Ducky", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -1690,16 +1699,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This instance.
-        /// </summary>
-        public static string QuickFix_ThisInstance {
-            get {
-                return ResourceManager.GetString("QuickFix_ThisInstance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All instances in module.
+        ///   Looks up a localized string similar to Fix all occurrences in module.
         /// </summary>
         public static string QuickFix_ThisModule {
             get {
@@ -1708,7 +1708,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All instances in project.
+        ///   Looks up a localized string similar to Fix all occurrences in project.
         /// </summary>
         public static string QuickFix_ThisProject {
             get {

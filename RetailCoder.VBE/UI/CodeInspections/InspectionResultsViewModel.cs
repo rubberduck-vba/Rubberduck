@@ -4,12 +4,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Common;
 using Rubberduck.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.CodeInspections
 {
@@ -44,21 +46,61 @@ namespace Rubberduck.UI.CodeInspections
             set { _results = value; OnPropertyChanged(); }
         }
 
-        private CodeInspectionResultBase _selectedItem;
+        private object _selectedItem;
+        private CodeInspectionQuickFix _defaultFix;
 
-        public CodeInspectionResultBase SelectedItem
+        public object SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value; 
                 OnPropertyChanged();
-                CanQuickFix = _selectedItem != null && _selectedItem.HasQuickFixes;
 
-                var defaultFix = _selectedItem != null ? _selectedItem.DefaultQuickFix : null;
-                CanExecuteQuickFixInModule = defaultFix != null && defaultFix.CanFixInModule;
-                CanExecuteQuickFixInProject = defaultFix != null && defaultFix.CanFixInProject;
-                CanDisableInspection = _selectedItem != null;
+                SelectedInspection = null;
+                CanQuickFix = false;
+                CanExecuteQuickFixInModule = false;
+                CanExecuteQuickFixInProject = false;
+
+                var inspectionResult = _selectedItem as CodeInspectionResultBase;
+
+                if (inspectionResult != null)
+                {
+                    SelectedInspection = inspectionResult.Inspection;
+                    CanQuickFix = inspectionResult.HasQuickFixes;
+                    _defaultFix = inspectionResult.DefaultQuickFix;
+                    CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
+                }
+                else
+                {
+                    var viewGroup = _selectedItem as CollectionViewGroup;
+                    if (viewGroup != null)
+                    {
+                        var grouping = viewGroup;
+                        var inspection = grouping.Name as IInspection;
+                        if (inspection != null)
+                        {
+                            SelectedInspection = inspection;
+                            var result = _results.FirstOrDefault(item => item.Inspection == inspection);
+                            _defaultFix = result == null ? null : result.DefaultQuickFix;
+                        }
+                    }
+                }
+
+                CanDisableInspection = SelectedInspection != null;
+                CanExecuteQuickFixInProject = _defaultFix != null && _defaultFix.CanFixInProject;
+            }
+        }
+
+        private IInspection _selectedInspection;
+
+        public IInspection SelectedInspection
+        {
+            get { return _selectedInspection; }
+            set
+            {
+                _selectedInspection = value;
+                OnPropertyChanged();
             }
         }
 
@@ -133,15 +175,20 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteQuickFixInModuleCommand(object parameter)
         {
-            var quickFix = parameter as CodeInspectionQuickFix;
-            if (quickFix == null)
+            if (_defaultFix == null)
             {
                 return;
             }
 
-            var items = _results.Where(result => result.Inspection == SelectedItem.Inspection
-                && result.QualifiedSelection.QualifiedName == SelectedItem.QualifiedSelection.QualifiedName)
-                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == quickFix.GetType()))
+            var selectedResult = SelectedItem as CodeInspectionResultBase;
+            if (selectedResult == null)
+            {
+                return;
+            }
+
+            var items = _results.Where(result => result.Inspection == SelectedInspection
+                && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
+                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
                 .OrderByDescending(item => item.Selection.Selection.EndLine)
                 .ThenByDescending(item => item.Selection.Selection.EndColumn);
 
@@ -157,15 +204,14 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteDisableInspectionCommand(object parameter)
         {
-            var inspection = parameter as IInspection;
-            if (inspection == null)
+            if (_selectedInspection == null)
             {
                 return;
             }
 
             var config = _configService.LoadConfiguration();
 
-            var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == inspection.Name);
+            var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
             Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => ExecuteRefreshCommandAsync(null));
@@ -180,15 +226,13 @@ namespace Rubberduck.UI.CodeInspections
 
         private void ExecuteQuickFixInProjectCommand(object parameter)
         {
-            var quickFix = parameter as CodeInspectionQuickFix;
-            if (quickFix == null)
+            if (_defaultFix == null)
             {
                 return;
             }
 
-            var items = _results.Where(result => result.Inspection == SelectedItem.Inspection
-                && result.QualifiedSelection.QualifiedName.Project == SelectedItem.QualifiedSelection.QualifiedName.Project)
-                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == quickFix.GetType()))
+            var items = _results.Where(result => result.Inspection == SelectedInspection)
+                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
                 .OrderBy(item => item.Selection.QualifiedName.ComponentName)
                 .ThenByDescending(item => item.Selection.Selection.EndLine)
                 .ThenByDescending(item => item.Selection.Selection.EndColumn);
