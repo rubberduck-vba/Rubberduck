@@ -2,6 +2,7 @@ using Microsoft.Vbe.Interop;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing;
 using Rubberduck.Refactorings.ExtractMethod;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.Refactorings

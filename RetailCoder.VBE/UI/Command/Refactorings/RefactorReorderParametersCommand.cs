@@ -2,6 +2,7 @@
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.Refactorings.ReorderParameters;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;

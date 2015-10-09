@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.FindSymbol;
+using Rubberduck.UI.ParserProgress;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.VBEInterfaces.RubberduckCodePane;

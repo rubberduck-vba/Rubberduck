@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 using Rubberduck.UI.FindSymbol;
+using Rubberduck.UI.ParserProgress;
 
 namespace Rubberduck.UI.Command
 {

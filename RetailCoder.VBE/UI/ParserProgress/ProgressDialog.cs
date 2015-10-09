@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.ParserProgress
 {
     public partial class ProgressDialog : Form
     {

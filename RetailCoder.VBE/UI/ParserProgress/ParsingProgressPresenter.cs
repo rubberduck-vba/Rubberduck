@@ -1,7 +1,7 @@
 ﻿using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.ParserProgress
 {
     public class ParsingProgressPresenter
     {

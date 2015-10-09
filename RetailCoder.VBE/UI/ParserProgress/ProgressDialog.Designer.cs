@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Rubberduck.UI
+namespace Rubberduck.UI.ParserProgress
 {
     partial class ProgressDialog
     {

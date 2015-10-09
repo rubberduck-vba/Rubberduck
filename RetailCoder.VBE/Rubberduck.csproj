@@ -469,13 +469,13 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\ProgressDialog.cs">
+    <Compile Include="UI\ParserProgress\ProgressDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\ProgressDialog.Designer.cs">
+    <Compile Include="UI\ParserProgress\ProgressDialog.Designer.cs">
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ParsingProgressPresenter.cs" />
+    <Compile Include="UI\ParserProgress\ParsingProgressPresenter.cs" />
     <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -773,7 +773,7 @@
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProgressDialog.resx">
+    <EmbeddedResource Include="UI\ParserProgress\ProgressDialog.resx">
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
