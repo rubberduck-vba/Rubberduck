@@ -42,12 +42,24 @@ namespace Rubberduck.UI.ParserProgress
             _parser.ParseStarted += _parser_ParseStarted;
             _parser.ParseProgress += _parser_ParseProgress;
             _parser.ResolutionProgress += _parser_ResolutionProgress;
+            _parser.ParseCompleted += _parser_ParseCompleted;
             
-            _parser.Parse(_project);
+            _parser.Parse(_project, this);
 
+            _parser.ParseCompleted += _parser_ParseCompleted;
             _parser.ResolutionProgress -= _parser_ResolutionProgress;
             _parser.ParseStarted -= _parser_ParseStarted;
             _parser.ParseProgress -= _parser_ParseProgress;
+        }
+
+        public event EventHandler<ParseCompletedEventArgs> Completed;
+        void _parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
+        {
+            var handler = Completed;
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
 
         void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)

@@ -13,20 +13,21 @@ namespace Rubberduck.UI.ParserProgress
             : this()
         {
             var viewModel = new ParserProgessViewModel(parser, project);
+            viewModel.Completed += viewModel_Completed;
+
             parserProgessControl.DataContext = viewModel;
             parserProgessControl.ExpanderStateChanged += parserProgessControl_ExpanderStateChanged;
+        }
 
-            parser.ParseCompleted += parser_ParseCompleted;
+        void viewModel_Completed(object sender, ParseCompletedEventArgs e)
+        {
+            Result = e.ParseResults.FirstOrDefault();
+            Close();
         }
 
         void parserProgessControl_ExpanderStateChanged(object sender, ParserProgessControl.ExpanderStateChangedEventArgs e)
         {
-            Height = e.IsExpanded ? 200 : 96;
-        }
-
-        void parser_ParseCompleted(object sender, ParseCompletedEventArgs e)
-        {
-            Result = e.ParseResults.FirstOrDefault();
+            Height = e.IsExpanded ? 255 : 96;
         }
 
         //public for designer only

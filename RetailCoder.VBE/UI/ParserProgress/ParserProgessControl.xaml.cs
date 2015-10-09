@@ -34,6 +34,7 @@ namespace Rubberduck.UI.ParserProgress
                 return;
             }
 
+            InvalidateVisual();
             viewModel.Start();
         }
 
