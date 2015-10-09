@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using Microsoft.Vbe.Interop;
 using Rubberduck.Parsing.Symbols;
@@ -47,19 +48,24 @@ namespace Rubberduck.Parsing
         {
             foreach (var componentParseResult in _parseResults)
             {
-                OnProgress(componentParseResult);
+                //OnProgress(componentParseResult);
+                var component = componentParseResult;
+                Task.Run(() => Resolve(component));
+            }
+        }
 
-                try
-                {
-                    var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
-                    var listener = new IdentifierReferenceListener(resolver);
-                    var walker = new ParseTreeWalker();
-                    walker.Walk(listener, componentParseResult.ParseTree);
-                }
-                catch (InvalidOperationException)
-                {
-                    // could not resolve all identifier references in this module.
-                }
+        private void Resolve(VBComponentParseResult componentParseResult)
+        {
+            try
+            {
+                var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
+                var listener = new IdentifierReferenceListener(resolver);
+                var walker = new ParseTreeWalker();
+                walker.Walk(listener, componentParseResult.ParseTree);
+            }
+            catch (InvalidOperationException)
+            {
+                // could not resolve all identifier references in this module.
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
@@ -52,7 +53,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ParserRuleContext _context;
         public ParserRuleContext Context { get { return _context; } }
 
-        private readonly IList<IdentifierReference> _references = new List<IdentifierReference>();
+        private readonly ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References { get { return _references; } }
 
         private readonly string _annotations;
