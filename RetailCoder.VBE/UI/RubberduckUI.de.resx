@@ -1177,4 +1177,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
   <data name="UntypedFunctionUsage_" xml:space="preserve">
     <value>Benutzung der nicht typisierten Funktion '{0}'. Die 'String' zurückgebende Version '{0}$' ist verfügbar.</value>
   </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value>Benutze '{0}$' anstelle von '{0}'</value>
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Blockiere diese Inspektion</value>
+  </data>
 </root>
