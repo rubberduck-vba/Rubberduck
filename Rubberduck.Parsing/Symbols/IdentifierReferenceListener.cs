@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
@@ -5,6 +8,19 @@ namespace Rubberduck.Parsing.Symbols
     public class IdentifierReferenceListener : VBABaseListener
     {
         private readonly IdentifierReferenceResolver _resolver;
+        public event EventHandler<MemberProcessedEventArgs> MemberProcessed;
+
+        private void OnMemberProcessed(string name)
+        {
+            var handler = MemberProcessed;
+            if (handler == null)
+            {
+                return;
+            }
+
+            var args = new MemberProcessedEventArgs(name);
+            handler.Invoke(this, args);
+        }
 
         public IdentifierReferenceListener(IdentifierReferenceResolver resolver)
         {
@@ -20,6 +36,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
         {
             _resolver.SetCurrentScope();
+            OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -30,6 +47,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _resolver.SetCurrentScope();
+            OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -40,6 +58,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _resolver.SetCurrentScope();
+            OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -50,6 +69,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _resolver.SetCurrentScope();
+            OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
@@ -60,6 +80,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _resolver.SetCurrentScope();
+            OnMemberProcessed(context.ambiguousIdentifier().GetText());
         }
 
         public override void EnterWithStmt(VBAParser.WithStmtContext context)

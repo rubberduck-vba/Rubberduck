@@ -65,6 +65,7 @@ namespace Rubberduck.UI.ParserProgress
         void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
         {
             StatusText = "Resolving...";
+            
         }
 
         void _parser_ParseProgress(object sender, ParseProgressEventArgs e)

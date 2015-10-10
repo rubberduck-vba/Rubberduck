@@ -35,12 +35,12 @@ namespace Rubberduck.Parsing
 
         public event EventHandler<ResolutionProgressEventArgs> Progress;
 
-        private void OnProgress(VBComponentParseResult result)
+        private void OnProgress(ResolutionProgressEventArgs args)
         {
             var handler = Progress;
             if (handler != null)
             {
-                handler(null, new ResolutionProgressEventArgs(result.Component));
+                handler(this, args);
             }
         }
 
@@ -48,7 +48,6 @@ namespace Rubberduck.Parsing
         {
             foreach (var componentParseResult in _parseResults)
             {
-                //OnProgress(componentParseResult);
                 var component = componentParseResult;
                 Task.Run(() => Resolve(component));
             }
@@ -58,8 +57,17 @@ namespace Rubberduck.Parsing
         {
             try
             {
+                var memberCount = componentParseResult.Declarations.Count(item => item.DeclarationType.HasFlag(DeclarationType.Member));
+                var processedCount = 0;
+
                 var resolver = new IdentifierReferenceResolver(componentParseResult.QualifiedName, _declarations);
                 var listener = new IdentifierReferenceListener(resolver);
+                listener.MemberProcessed += delegate
+                {
+                    processedCount++;
+                    OnProgress(new ResolutionProgressEventArgs(componentParseResult.Component, (decimal)processedCount / memberCount));
+                };
+
                 var walker = new ParseTreeWalker();
                 walker.Walk(listener, componentParseResult.ParseTree);
             }

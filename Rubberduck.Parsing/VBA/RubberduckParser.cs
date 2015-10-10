@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void parseResult_Progress(object sender, ResolutionProgressEventArgs e)
         {
-            OnResolveProgress(e.Component);
+            OnResolveProgress(e);
         }
 
         public IParseTree Parse(string code, out ITokenStream outStream)
@@ -237,12 +237,12 @@ namespace Rubberduck.Parsing.VBA
         }
 
         public event EventHandler<ResolutionProgressEventArgs> ResolutionProgress;
-        private void OnResolveProgress(VBComponent component)
+        private void OnResolveProgress(ResolutionProgressEventArgs args)
         {
             var handler = ResolutionProgress;
             if (handler != null)
             {
-                handler(this, new ResolutionProgressEventArgs(component));
+                handler(this, args);
             }
         }
 
