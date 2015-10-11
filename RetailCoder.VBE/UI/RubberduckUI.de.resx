@@ -489,7 +489,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Voriges</value>
   </data>
   <data name="Severity" xml:space="preserve">
-    <value>Schärfe</value>
+    <value>Sensitivität</value>
   </data>
   <data name="SourceControl_CreateNewRepo" xml:space="preserve">
     <value>Neues Repository erstellen</value>
