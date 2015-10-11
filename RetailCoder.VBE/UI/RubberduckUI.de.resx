@@ -197,7 +197,7 @@
     <value>ToDo Einstellungen</value>
   </data>
   <data name="SettingsInstructions_CodeInspections" xml:space="preserve">
-    <value>Konfiguriere Inspektionssensitivität. Zum Deaktivieren einer Inspektion "Nicht anzeigen" auswählen.</value>
+    <value>Konfiguriere Untersuchungssensitivität. Zum Deaktivieren einer Untersuchungsart "Nicht anzeigen" auswählen.</value>
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
@@ -456,10 +456,10 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Implementierungen von '{0}'</value>
   </data>
   <data name="CodeInspections" xml:space="preserve">
-    <value>Code Inspektionen</value>
+    <value>Code Untersuchung</value>
   </data>
   <data name="CodeInspections_Run" xml:space="preserve">
-    <value>Code-Inspektionen ausführen</value>
+    <value>Code-Untersuchung ausführen</value>
   </data>
   <data name="Fix" xml:space="preserve">
     <value>Beheben</value>
@@ -489,7 +489,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Voriges</value>
   </data>
   <data name="Severity" xml:space="preserve">
-    <value>Schärfe</value>
+    <value>Sensitivität</value>
   </data>
   <data name="SourceControl_CreateNewRepo" xml:space="preserve">
     <value>Neues Repository erstellen</value>
@@ -684,7 +684,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Ordner umschalten</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
-    <value>Inspektionsresultate in Zwischenablage kopieren</value>
+    <value>Untersuchungsergebnisse in Zwischenablage kopieren</value>
   </data>
   <data name="Go" xml:space="preserve">
     <value>Los</value>
@@ -702,7 +702,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Das Problem beheben</value>
   </data>
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
-    <value>Inspektionen ausführen</value>
+    <value>Code-Untersuchung ausführen</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Beschreibung</value>
@@ -1061,7 +1061,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Rubberduck - Zweig erstellen</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck Code Untersuchungen - {0} {1} Problem gefunden.</value>
+    <value>Rubberduck Code Untersuchung - {0} {1} Problem gefunden.</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>Kein Repository gefunden.</value>
@@ -1094,7 +1094,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Vorschlag</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck Code Untersuchungen - {0} {1} Probleme gefunden</value>
+    <value>Rubberduck Code Untersuchung - {0} {1} Probleme gefunden</value>
   </data>
   <data name="ToDoPriority_Medium" xml:space="preserve">
     <value>Mittel</value>
@@ -1181,6 +1181,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren.</value>
     <value>Benutze '{0}$' anstelle von '{0}'</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
-    <value>Blockiere diese Inspektion</value>
+    <value>Blockiere diese Untersuchung</value>
   </data>
 </root>
