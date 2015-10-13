@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -12,6 +13,11 @@ namespace Rubberduck
         public AppMenu(IEnumerable<IParentMenuItem> menus)
         {
             _menus = menus;
+            Debug.Print("in AppMenu ctor");
+            foreach (var parentMenuItem in menus)
+            {
+                Debug.Print("'{0}' ({1})", parentMenuItem.Key, parentMenuItem.GetHashCode());
+            }
         }
 
         public void Initialize()

@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing
             }
         }
 
-        public void Resolve()
+        public async Task ResolveAsync()
         {
             foreach (var componentParseResult in _parseResults)
             {

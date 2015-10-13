@@ -2114,7 +2114,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resolving &apos;{0}&apos;....
+        ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
             get {

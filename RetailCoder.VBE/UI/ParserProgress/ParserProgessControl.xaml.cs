@@ -33,9 +33,7 @@ namespace Rubberduck.UI.ParserProgress
             {
                 return;
             }
-
-            InvalidateVisual();
-            viewModel.Start();
+            Task.Run(() => viewModel.Start());
         }
 
         public event EventHandler<ExpanderStateChangedEventArgs> ExpanderStateChanged;

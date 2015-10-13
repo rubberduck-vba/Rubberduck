@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Extensibility;
@@ -38,6 +39,8 @@ namespace Rubberduck
             {
                 _kernel.Load(new RubberduckModule(_kernel, (VBE)Application, (AddIn)AddInInst));
                 _kernel.Load(new CommandBarsModule(_kernel));
+                
+                Debug.Print("in OnConnection, ready.");
                 var app = _kernel.Get<App>();
                 app.Startup();
             }

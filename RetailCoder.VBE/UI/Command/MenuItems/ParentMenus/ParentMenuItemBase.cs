@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -62,6 +63,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 _items[item] = InitializeChildControl(item as ICommandMenuItem)
                             ?? InitializeChildControl(item as IParentMenuItem);
             }
+
+            Debug.Print("'{0}' menu initialized.", _key);
         }
 
         private CommandBarControl InitializeChildControl(IParentMenuItem item)
@@ -90,9 +93,22 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.Tag = item.Key;
             child.Caption = item.Caption.Invoke();
 
-            child.Click += delegate { item.Command.Execute(null); };
+            Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
 
+            child.Click +=child_Click;
             return child;
+        }
+
+        private void child_Click(CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.Key == Ctrl.Tag) as ICommandMenuItem;
+            if (item == null)
+            {
+                return;
+            }
+
+            Debug.WriteLine("Executing click handler for menu item {0}, control id {1}", Item.GetHashCode(), Ctrl.GetHashCode());
+            item.Command.Execute(null);
         }
 
         private static void SetButtonImage(CommandBarButton button, Image image, Image mask)

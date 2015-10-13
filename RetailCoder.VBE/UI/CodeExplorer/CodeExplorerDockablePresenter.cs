@@ -24,8 +24,8 @@ namespace Rubberduck.UI.CodeExplorer
             : base(vbe, addIn, view)
         {
             _parser = parser;
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParseCompleted += _parser_ParseCompleted;
+            //_parser.ParseStarted += _parser_ParseStarted;
+            //_parser.ParseCompleted += _parser_ParseCompleted;
             RegisterControlEvents();
             _wrapperFactory = wrapperFactory;
         }
@@ -255,13 +255,13 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void RefreshExplorerTreeView()
         {
-            Control.Invoke((MethodInvoker) delegate
-            {
-                Control.SolutionTree.Nodes.Clear();
-                Control.ShowDesignerButton.Enabled = false;
-            });
+            //Control.Invoke((MethodInvoker) delegate
+            //{
+            //    Control.SolutionTree.Nodes.Clear();
+            //    Control.ShowDesignerButton.Enabled = false;
+            //});
 
-            _parser.Parse(VBE, this);
+            //_parser.Parse(VBE, this);
         }
 
         private void AddProjectNodes(VBProjectParseResult parseResult, TreeNode root)

@@ -18,6 +18,11 @@ namespace Rubberduck.UI.ParserProgress
         public ParserProgessViewModel(IRubberduckParser parser, VBProject project)
         {
             _parser = parser;
+            _parser.ParseStarted += _parser_ParseStarted;
+            _parser.ParseProgress += _parser_ParseProgress;
+            _parser.ResolutionProgress += _parser_ResolutionProgress;
+            _parser.ParseCompleted += _parser_ParseCompleted;
+
             _project = project;
             var details = _project.VBComponents.Cast<VBComponent>().Select(component => new ComponentProgressViewModel(component)).ToList();
             _details = new ObservableCollection<ComponentProgressViewModel>(details);
@@ -38,18 +43,8 @@ namespace Rubberduck.UI.ParserProgress
         public IEnumerable<ComponentProgressViewModel> Details { get { return _details; } }
 
         public void Start()
-        {
-            _parser.ParseStarted += _parser_ParseStarted;
-            _parser.ParseProgress += _parser_ParseProgress;
-            _parser.ResolutionProgress += _parser_ResolutionProgress;
-            _parser.ParseCompleted += _parser_ParseCompleted;
-            
+        {            
             _parser.Parse(_project, this);
-
-            _parser.ParseCompleted += _parser_ParseCompleted;
-            _parser.ResolutionProgress -= _parser_ResolutionProgress;
-            _parser.ParseStarted -= _parser_ParseStarted;
-            _parser.ParseProgress -= _parser_ParseProgress;
         }
 
         public event EventHandler<ParseCompletedEventArgs> Completed;
@@ -64,8 +59,13 @@ namespace Rubberduck.UI.ParserProgress
 
         void _parser_ResolutionProgress(object sender, ResolutionProgressEventArgs e)
         {
-            StatusText = "Resolving...";
-            
+            StatusText = RubberduckUI.ResolutionProgress;
+            var row = _details.SingleOrDefault(vm => vm.ComponentName == e.Component.Name);
+            if (row == null)
+            {
+                return;
+            }
+            row.ResolutionProgressPercent = e.PercentProgress;
         }
 
         void _parser_ParseProgress(object sender, ParseProgressEventArgs e)

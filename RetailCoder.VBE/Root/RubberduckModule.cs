@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Vbe.Interop;
@@ -32,6 +33,8 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
+            Debug.Print("in RubberduckModule.Load()");
+
             _kernel.Bind<App>().ToSelf();
 
             // bind VBE and AddIn dependencies to host-provided instances.
@@ -62,6 +65,8 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<RunCodeInspectionsCommand>()
                 .InSingletonScope()
                 .WithConstructorArgument<IDockableUserControl>(new CodeInspectionsWindow { ViewModel = _kernel.Get<InspectionResultsViewModel>()});
+
+            Debug.Print("completed RubberduckModule.Load()");
         }
 
         private void ApplyDefaultInterfacesConvention(IEnumerable<Assembly> assemblies)
