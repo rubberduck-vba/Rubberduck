@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                             ?? InitializeChildControl(item as IParentMenuItem);
             }
 
-            Debug.Print("'{0}' menu initialized.", _key);
+            Debug.Print("'{0}' ({1}) parent menu initialized, hash code {2}.", _key, GetHashCode(), Item.GetHashCode());
         }
 
         private CommandBarControl InitializeChildControl(IParentMenuItem item)
@@ -95,19 +95,26 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
             Debug.WriteLine("Menu item '{0}' created; hash code: {1} (command hash code {2})", child.Caption, child.GetHashCode(), item.Command.GetHashCode());
 
-            child.Click +=child_Click;
+            child.Click += child_Click;
             return child;
         }
+
+        // note: HAAAAACK!!!
+        private static int _lastHashCode;
 
         private void child_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.Key == Ctrl.Tag) as ICommandMenuItem;
-            if (item == null)
+            if (item == null || Ctrl.GetHashCode() == _lastHashCode)
             {
                 return;
             }
 
-            Debug.WriteLine("Executing click handler for menu item {0}, control id {1}", Item.GetHashCode(), Ctrl.GetHashCode());
+            // without this hack, handler runs once for each menu item that's hooked up to the command.
+            // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
+            _lastHashCode = Ctrl.GetHashCode();
+
+            Debug.WriteLine("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), Ctrl.Caption, Ctrl.GetHashCode());
             item.Command.Execute(null);
         }
 

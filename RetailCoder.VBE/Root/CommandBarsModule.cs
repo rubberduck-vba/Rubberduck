@@ -10,6 +10,8 @@ using Ninject;
 using Ninject.Extensions.NamedScope;
 using Ninject.Modules;
 using Rubberduck.Navigation;
+using Rubberduck.Settings;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
@@ -34,8 +36,6 @@ namespace Rubberduck.Root
 
         public override void Load()
         {
-            Debug.Print("in CommandBarsModule.Load()");
-
             BindCommandsToMenuItems();
 
             ConfigureRubberduckMenu();
@@ -43,8 +43,6 @@ namespace Rubberduck.Root
             ConfigureFormDesignerContextMenu();
             ConfigureFormDesignerControlContextMenu();
             ConfigureProjectExplorerContextMenu();
-
-            Debug.Print("completed CommandBarsModule.Load()");
         }
 
         private void ConfigureRubberduckMenu()
@@ -100,6 +98,7 @@ namespace Rubberduck.Root
         private void BindParentMenuItem<TParentMenu>(CommandBarControls parent, int beforeIndex, IEnumerable<IMenuItem> items)
         {
             _kernel.Bind<IParentMenuItem>().To(typeof(TParentMenu))
+                .WhenInjectedInto<IAppMenu>()
                 .InCallScope()
                 .WithConstructorArgument("items", items)
                 .WithConstructorArgument("beforeIndex", beforeIndex)
@@ -125,7 +124,7 @@ namespace Rubberduck.Root
             _kernel.Bind<IDeclarationNavigator>().To<NavigateAllReferences>().WhenTargetHas<FindReferencesAttribute>();
 
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
+                .Where(type => type.IsClass && type.Namespace != null && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
                 .ToList();
 
             // note: ICommand naming convention: [Foo]Command
@@ -140,8 +139,7 @@ namespace Rubberduck.Root
                     var item = types.SingleOrDefault(type => type.Name == commandName + "CommandMenuItem");
                     if (item != null)
                     {
-                        _kernel.Bind(item).ToSelf();
-                        _kernel.Bind<ICommand>().To(command).WhenInjectedInto(item).InSingletonScope();
+                        _kernel.Bind<ICommand>().To(command).WhenInjectedExactlyInto(item).InSingletonScope();
                     }
                 }
                 catch (InvalidOperationException exception)
@@ -153,7 +151,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetRubberduckMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 _kernel.Get<AboutCommandMenuItem>(),
                 _kernel.Get<OptionsCommandMenuItem>(),
@@ -206,7 +204,7 @@ namespace Rubberduck.Root
 
         private IEnumerable<IMenuItem> GetCodePaneContextMenuItems()
         {
-            return new[]
+            return new IMenuItem[]
             {
                 GetRefactoringsParentMenu(),
                 _kernel.Get<RegexSearchReplaceCommandMenuItem>(),
